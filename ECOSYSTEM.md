@@ -118,7 +118,7 @@ Extensions to Hermes's built-in memory system — external providers, context en
 | Repository | Description | Stars | Maturity |
 |:-----------|:------------|------:|:---------|
 | [vectorize-io/hindsight](https://github.com/vectorize-io/hindsight) | Long-term memory provider with retain/recall/reflect workflows | 8,362 | Production |
-| [elkimek/honcho-self-hosted](https://github.com/elkimek/honcho-self-hosted) | Self-hosted Honcho memory backend for cross-session persistence | 126 | Beta |
+| [plastic-labs/honcho](https://github.com/plastic-labs/honcho) | Memory library for building stateful agents | 2285 | Production |
 | [yoloshii/ClawMem](https://github.com/yoloshii/ClawMem) | On-device memory and context engine for agents | 86 | Beta |
 | [plur-ai/plur](https://github.com/plur-ai/plur) | Shared memory layer with open engram YAML format for multi-agent systems | 31 | Beta |
 | [amanning3390/flowstate-qmd](https://github.com/amanning3390/flowstate-qmd) | Anticipatory memory with RAG and vector search | — | Experimental |
