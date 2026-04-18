@@ -1462,10 +1462,13 @@
         signal: controller.signal
       });
 
-      if (!res.ok && res.headers.get('content-type')?.includes('application/json')) {
-        const errData = await res.json();
+      if (!res.ok) {
         clearTimeout(timeoutId);
-        throw new Error(errData.error || 'Error ' + res.status);
+        if (res.headers.get('content-type')?.includes('application/json')) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || 'Error ' + res.status);
+        }
+        throw new Error('Error ' + res.status + '. Please try again.');
       }
 
       if (!res.body) {
