@@ -27,10 +27,6 @@
 
 <a class="skip-link" href="#main">Skip to content</a>
 
-<button id="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
-  <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
-</button>
-
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
@@ -44,6 +40,9 @@
     <a href="/reports/state-of-hermes-april-2026">reports</a>
     <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
   </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
 </header>
 
 <div class="breadcrumb" aria-label="Breadcrumb">
@@ -88,7 +87,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>HermesClaw</h3>
+    <h4>HermesClaw</h4>
 <p><strong>Dual-open <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> and <a href="https://github.com/openclaw/openclaw">OpenClaw</a> on the same WeChat account. One command to install.</strong></p>
 <p><strong>在同一个微信账号上同时双开 <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> 和 <a href="https://github.com/openclaw/openclaw">OpenClaw</a>。一条命令安装。</strong></p>
 <p align="center">
@@ -106,12 +105,12 @@
 </p>
 
 <hr>
-<h4>Why HermesClaw</h4>
+<h5>Why HermesClaw</h5>
 <p>Both Hermes Agent and OpenClaw now support WeChat natively — <strong>but you can&#39;t run both on the same account.</strong> Each gateway exclusively locks the iLink connection. If you start both, one gets 403 errors and drops messages.</p>
 <p>HermesClaw solves this by becoming the <strong>sole iLink poller</strong>, then running two local proxy servers — one for each gateway. Each gateway believes it&#39;s talking to the real iLink API.</p>
 <p>现在 Hermes 和 OpenClaw 都原生支持微信了——<strong>但你不能在同一个账号上双开。</strong> 每个 Gateway 会独占 iLink 连接。HermesClaw 解决这个问题：它作为唯一的 iLink 轮询者，运行两个本地代理，让两个 Gateway 各连各的。</p>
 <hr>
-<h4>Special Thanks</h4>
+<h5>Special Thanks</h5>
 <p>Special thanks to the <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> team at Nous Research for recognizing and recommending <strong>HermesClaw</strong> in the <code>Community</code> section of their official GitHub README.</p>
 <p>特别感谢 Nous Research 的 <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> 团队，在其 GitHub 官方 README 的 <code>Community</code> 区收录并推荐 <strong>HermesClaw</strong>。</p>
 <p align="center">
@@ -123,7 +122,7 @@
 <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent README - Community</a></p>
 </blockquote>
 <hr>
-<h4>Before / After</h4>
+<h5>Before / After</h5>
 <table>
 <thead>
 <tr>
@@ -164,7 +163,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h4>Architecture</h4>
+<h5>Architecture</h5>
 <pre><code>                    ┌────────── iLink API ──────────┐
                     │  ilinkai.weixin.qq.com        │
                     └──────────┬────────────────────┘
@@ -196,7 +195,7 @@
 <p>HermesClaw is a thin Python proxy (~500 lines). It does <strong>not</strong> process media, call agent APIs, or touch agent memory. It just queues and forwards raw iLink protocol messages. Each gateway handles its own media decryption, markdown formatting, and AI interaction natively.</p>
 <p>HermesClaw 只是一个轻量转发代理（~500 行），不处理媒体、不调 Agent API、不动记忆。每个 Gateway 原生处理自己的媒体解密和 AI 交互。</p>
 <hr>
-<h4>Prerequisites</h4>
+<h5>Prerequisites</h5>
 <p>Before installing HermesClaw, you need <strong>at least one</strong> of:</p>
 <ol>
 <li><strong>OpenClaw + clawbot</strong> (<code>openclaw-weixin</code>) — installed and logged into WeChat</li>
@@ -205,7 +204,7 @@
 <p>Both installed = full dual-open. One installed = single-agent mode with the option to add the other later.</p>
 <p>安装 HermesClaw 前，需要至少安装以下其中一个：OpenClaw 的 clawbot，或者 Hermes 的微信 Gateway。</p>
 <hr>
-<h4>Quick Install</h4>
+<h5>Quick Install</h5>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/AaronWong1999/hermesclaw/main/install.sh | bash
 </code></pre>
 <p>The installer will:</p>
@@ -219,7 +218,7 @@
 <li>Set up the <code>hermesclaw</code> systemd service</li>
 </ol>
 <p>After install, restart your gateways and send <code>/whoami</code> in WeChat.</p>
-<h5>AI-assisted install</h5>
+<h6>AI-assisted install</h6>
 <p>Drop this into any AI agent on the target machine:</p>
 <pre><code class="language-text">Run: curl -fsSL https://raw.githubusercontent.com/AaronWong1999/hermesclaw/main/install.sh | bash
 
@@ -238,7 +237,7 @@ by paragraphs.  The fix script is at fix_hermes_splitting.sh.
 Restart gateways.  Verify /whoami works in WeChat.
 </code></pre>
 <hr>
-<h4>Commands</h4>
+<h5>Commands</h5>
 <table>
 <thead>
 <tr>
@@ -269,7 +268,7 @@ Restart gateways.  Verify /whoami works in WeChat.
 </tbody></table>
 <p>Default route is <strong>Hermes</strong>. In <code>/both</code> mode, replies are prefixed with <code>[Hermes Agent]</code> / <code>[OpenClaw]</code> for attribution.</p>
 <hr>
-<h4>Project layout</h4>
+<h5>Project layout</h5>
 <pre><code class="language-text">hermesclaw.py             # ~500 lines. Dual-proxy router.
 install.sh                # Smart auto-detecting installer.
 fix_hermes_splitting.sh   # Patch Hermes weixin.py (optional, recommended).
@@ -279,7 +278,7 @@ LICENSE
 docs/                     # Screenshots and media.
 </code></pre>
 <hr>
-<h4>Media handling</h4>
+<h5>Media handling</h5>
 <p>HermesClaw forwards <strong>raw iLink protocol messages</strong> to each gateway. This means:</p>
 <ul>
 <li><strong>Text</strong> — forwarded as-is</li>
@@ -288,13 +287,13 @@ docs/                     # Screenshots and media.
 </ul>
 <p>HermesClaw does <strong>not</strong> do AES decryption, CDN downloads, or media re-encoding. That&#39;s each gateway&#39;s job.</p>
 <hr>
-<h4>Uninstall</h4>
-<h5>AI-assisted</h5>
+<h5>Uninstall</h5>
+<h6>AI-assisted</h6>
 <pre><code class="language-text">Stop and disable the hermesclaw systemd service.  Restore openclaw-weixin
 account .bak files.  Remove WEIXIN_BASE_URL override from ~/.hermes/.env
 (or restore .bak).  Optionally remove ~/hermesclaw directory.
 </code></pre>
-<h5>Manual</h5>
+<h6>Manual</h6>
 <pre><code class="language-bash">sudo systemctl stop hermesclaw
 sudo systemctl disable hermesclaw
 sudo rm -f /etc/systemd/system/hermesclaw.service
@@ -310,18 +309,18 @@ find &quot;$HOME&quot; -maxdepth 5 -name &quot;*.json.bak&quot; -path &quot;*/op
 rm -rf &quot;$HOME/hermesclaw&quot;
 </code></pre>
 <hr>
-<h4>Star History</h4>
+<h5>Star History</h5>
 <a href="https://www.star-history.com/#AaronWong1999/hermesclaw&Date">
   <img src="https://api.star-history.com/svg?repos=AaronWong1999/hermesclaw&type=Date" alt="Star History Chart" width="600">
 </a>
 
 <hr>
-<h4>Changelog</h4>
-<h5>v0.2.1 (2026-04-12)</h5>
+<h5>Changelog</h5>
+<h6>v0.2.1 (2026-04-12)</h6>
 <ul>
 <li><strong>Fix: Hermes message splitting</strong> — The installer now offers to patch Hermes Agent&#39;s <code>weixin.py</code> to disable newline-based message splitting during installation (recommended, default Yes). This ensures long replies are sent as single messages instead of being split by paragraphs. Existing users can run <code>bash fix_hermes_splitting.sh</code> manually.</li>
 </ul>
-<h5>v0.2.0</h5>
+<h6>v0.2.0</h6>
 <ul>
 <li><strong>Complete rewrite</strong>: dual-proxy gateway architecture.</li>
 <li>Removed ~400 lines of AES/CDN media processing.</li>
@@ -332,10 +331,10 @@ rm -rf &quot;$HOME/hermesclaw&quot;
 <li><strong>Improved error handling</strong> — <code>BrokenPipeError</code> now caught and logged as DEBUG.</li>
 </ul>
 <hr>
-<h4>License</h4>
+<h5>License</h5>
 <p><a href="LICENSE">MIT</a> — by <a href="https://github.com/AaronWong1999">@AaronWong1999</a> · <a href="https://x.com/AaronYonW">X @AaronYonW</a></p>
 <hr>
-<h4>Credits</h4>
+<h5>Credits</h5>
 <ul>
 <li><a href="https://github.com/NousResearch/hermes-agent">NousResearch/hermes-agent</a> — the agent that grows with you.</li>
 <li><a href="https://github.com/openclaw/openclaw">openclaw/openclaw</a> — your own personal AI assistant. The lobster way. 🦞</li>

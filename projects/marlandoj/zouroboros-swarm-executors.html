@@ -27,10 +27,6 @@
 
 <a class="skip-link" href="#main">Skip to content</a>
 
-<button id="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
-  <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
-</button>
-
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
@@ -44,6 +40,9 @@
     <a href="/reports/state-of-hermes-april-2026">reports</a>
     <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
   </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
 </header>
 
 <div class="breadcrumb" aria-label="Breadcrumb">
@@ -92,14 +91,14 @@
 <p><strong>⚠️ DEPRECATED</strong> — This repository has been archived. All code has been migrated to the <a href="https://github.com/marlandoj/Zouroboros">Zouroboros monorepo</a> under <code>packages/swarm/src/executor/</code>. Please open issues and PRs there.</p>
 </blockquote>
 <hr>
-<h3>Zouroboros Swarm Executors</h3>
+<h4>Zouroboros Swarm Executors</h4>
 <blockquote>
 <p>Turn any CLI tool into a first-class AI persona on <a href="https://zo.computer">Zo Computer</a>. Each executor gets consistent identity, shared memory, and full swarm integration through a simple bash bridge script.</p>
 <p>Part of the <a href="https://github.com/marlandoj/zouroboros">Zouroboros</a> ecosystem — self-improving AI development tools for Zo Computer.</p>
 </blockquote>
 <p><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a></p>
 <hr>
-<h4>What This Is</h4>
+<h5>What This Is</h5>
 <p>This skill manages the local executors that power the <a href="https://github.com/marlandoj/zouroboros-swarm-orchestrator">zouroboros-swarm-orchestrator</a>. Instead of routing every task through a remote API, the orchestrator can send work to CLI tools running on your machine:</p>
 <ul>
 <li><strong>4 Built-in Executors</strong> -- Claude Code, Hermes, Gemini, and Codex, each wrapped in a bridge script</li>
@@ -108,7 +107,7 @@
 <li><strong>Health Checks</strong> -- Doctor script validates all bridges, environment variables, and CLI tools</li>
 <li><strong>Custom Executors</strong> -- Add your own CLI tool as an executor with a template bridge script and a registry entry</li>
 </ul>
-<h5>Available Executors</h5>
+<h6>Available Executors</h6>
 <table>
 <thead>
 <tr>
@@ -144,9 +143,9 @@
 </tr>
 </tbody></table>
 <hr>
-<h4>Quick Start</h4>
+<h5>Quick Start</h5>
 <p>There are two ways to use executors: through the <strong>Zo chat window</strong> (natural language) or the <strong>terminal</strong> (direct commands).</p>
-<h5>Option 1: Natural Language via Zo Chat</h5>
+<h6>Option 1: Natural Language via Zo Chat</h6>
 <p>You don&#39;t need to call bridge scripts directly. The swarm orchestrator routes tasks to executors automatically. Just describe what you need:</p>
 <pre><code>Run a security audit on my project using a swarm.
 Use Claude Code for the code review and Hermes for the web research.
@@ -159,7 +158,7 @@ Use Claude Code for the code review and Hermes for the web research.
 <li><em>&quot;Ask Gemini to analyze this 500-page PDF&quot;</em></li>
 </ul>
 <p>Zo knows which bridge script to call and handles the invocation.</p>
-<h5>Option 2: Terminal (Direct Bridge Calls)</h5>
+<h6>Option 2: Terminal (Direct Bridge Calls)</h6>
 <h6>Call an executor directly</h6>
 <pre><code class="language-bash"># Ask Claude Code to review a file
 bash Skills/zo-swarm-executors/bridges/claude-code-bridge.sh \
@@ -185,9 +184,9 @@ bun scripts/doctor.ts
 <pre><code class="language-bash">bun scripts/test-harness.ts
 </code></pre>
 <hr>
-<h4>Using Executors with the Swarm Orchestrator</h4>
+<h5>Using Executors with the Swarm Orchestrator</h5>
 <p>The orchestrator discovers executors through the registry file. When a task&#39;s persona matches a local executor, it routes the task to the bridge script instead of the API.</p>
-<h5>Example: Website review with mixed executors</h5>
+<h6>Example: Website review with mixed executors</h6>
 <p>Create a task file (<code>tasks/site-review.json</code>):</p>
 <pre><code class="language-json">[
   {
@@ -224,9 +223,9 @@ bun orchestrate-v4.ts ../tasks/site-review.json --swarm-id site-review
 <pre><code>Run the swarm task file at Skills/zo-swarm-orchestrator/tasks/site-review.json
 </code></pre>
 <hr>
-<h4>Adding Your Own Executor</h4>
+<h5>Adding Your Own Executor</h5>
 <p>You can turn any CLI tool into a swarm executor in two steps.</p>
-<h5>Step 1: Create a bridge script</h5>
+<h6>Step 1: Create a bridge script</h6>
 <p>Use the template as a starting point:</p>
 <pre><code class="language-bash">cp Skills/zo-swarm-executors/bridges/template-bridge.sh \
    Skills/zo-swarm-executors/bridges/my-tool-bridge.sh
@@ -243,7 +242,7 @@ TIMEOUT=&quot;${MY_TOOL_TIMEOUT:-300}&quot;
 cd &quot;$WORKDIR&quot;
 timeout &quot;$TIMEOUT&quot; my-tool --prompt &quot;$PROMPT&quot; 2&gt;/dev/null
 </code></pre>
-<h5>Step 2: Register in the executor registry</h5>
+<h6>Step 2: Register in the executor registry</h6>
 <p>Add an entry to <code>registry/executor-registry.json</code>:</p>
 <pre><code class="language-json">{
   &quot;id&quot;: &quot;my-tool&quot;,
@@ -264,7 +263,7 @@ The bridge script is at Skills/zo-swarm-executors/bridges/my-tool-bridge.sh.
 It&#39;s good at my-domain tasks.
 </code></pre>
 <hr>
-<h4>Environment Variables</h4>
+<h5>Environment Variables</h5>
 <table>
 <thead>
 <tr>
@@ -310,12 +309,12 @@ It&#39;s good at my-domain tasks.
 </tr>
 </tbody></table>
 <hr>
-<h4>Model Routing via OmniRoute</h4>
+<h5>Model Routing via OmniRoute</h5>
 <blockquote>
 <p>Powered by <a href="https://github.com/diegosouzapw/OmniRoute">OmniRoute</a> — a unified AI proxy/router for multi-provider LLM aggregation.</p>
 </blockquote>
 <p>When used with the <a href="https://github.com/marlandoj/zouroboros-swarm-orchestrator">zouroboros-swarm-orchestrator</a> (v4.7+), each bridge receives a <code>SWARM_RESOLVED_MODEL</code> env var that tells it which OmniRoute combo or model to use. The orchestrator picks this based on the task&#39;s complexity tier — trivial tasks get cheap models, complex tasks get powerful ones.</p>
-<h5>Fallback chain per bridge</h5>
+<h6>Fallback chain per bridge</h6>
 <p>Each bridge reads the model in this priority order:</p>
 <table>
 <thead>
@@ -352,10 +351,10 @@ It&#39;s good at my-domain tasks.
 </tr>
 </tbody></table>
 <p>The Gemini bridge has special handling: if the resolved model is an OmniRoute combo (contains <code>swarm-</code>), it skips it and falls back to the native Gemini model, since the Gemini CLI talks directly to Google&#39;s API rather than through OmniRoute.</p>
-<h5>Standalone usage</h5>
+<h6>Standalone usage</h6>
 <p>When calling bridges directly (without the orchestrator), <code>SWARM_RESOLVED_MODEL</code> won&#39;t be set and the bridge falls through to the executor-specific env var or CLI default. No behavior change for standalone use.</p>
 <hr>
-<h4>Repository Structure</h4>
+<h5>Repository Structure</h5>
 <pre><code>zouroboros-swarm-executors/
 ├── SKILL.md                         # Skill manifest
 ├── README.md                        # This file
@@ -376,7 +375,7 @@ It&#39;s good at my-domain tasks.
     └── BRIDGE_PROTOCOL.md          # Full protocol specification
 </code></pre>
 <hr>
-<h4>How the Bridge Protocol Works</h4>
+<h5>How the Bridge Protocol Works</h5>
 <p>Every bridge script follows the same contract:</p>
 <pre><code>Input:  bash bridge.sh &quot;prompt&quot; [workdir]
 Output: plain text on stdout
@@ -384,14 +383,14 @@ Errors: stderr + non-zero exit code
 </code></pre>
 <p>The bridge handles binary resolution, timeout enforcement, output cleanup, and environment setup. The orchestrator (or you) doesn&#39;t need to know how the CLI works internally. Just send a prompt, get text back.</p>
 <hr>
-<h4>Related Skills</h4>
+<h5>Related Skills</h5>
 <ul>
 <li><a href="https://github.com/marlandoj/zouroboros-swarm-orchestrator">zouroboros-swarm-orchestrator</a> -- The orchestrator that routes tasks to these executors</li>
 <li><a href="https://github.com/marlandoj/zouroboros-memory-system">zouroboros-memory-system</a> -- Shared memory that all executors can read and write</li>
 <li><a href="https://github.com/marlandoj/zouroboros-persona-creator">zouroboros-persona-creator</a> -- Create personas that can be assigned to executors</li>
 </ul>
 <hr>
-<h4>Contributing</h4>
+<h5>Contributing</h5>
 <ol>
 <li>Fork the repository</li>
 <li>Create your feature branch (<code>git checkout -b feature/my-improvement</code>)</li>
@@ -400,7 +399,7 @@ Errors: stderr + non-zero exit code
 <li>Open a Pull Request</li>
 </ol>
 <hr>
-<h4>License</h4>
+<h5>License</h5>
 <p>MIT License -- Use freely, commercially or personally.</p>
   </section>
 </details>

@@ -183,6 +183,9 @@ function renderMasthead(activeNav) {
   <nav class="mast-nav" aria-label="Primary">
     ${navHtml}
   </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
 </header>`;
 }
 
@@ -252,10 +255,6 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary) {
 <body>
 
 <a class="skip-link" href="#main">Skip to content</a>
-
-<button id="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
-  <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
-</button>
 
 ${renderMasthead("map")}
 
@@ -395,10 +394,6 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
 <body>
 
 <a class="skip-link" href="#main">Skip to content</a>
-
-<button id="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
-  <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
-</button>
 
 ${renderMasthead("lists")}
 

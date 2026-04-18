@@ -27,10 +27,6 @@
 
 <a class="skip-link" href="#main">Skip to content</a>
 
-<button id="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
-  <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
-</button>
-
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
@@ -44,6 +40,9 @@
     <a href="/reports/state-of-hermes-april-2026">reports</a>
     <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
   </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
 </header>
 
 <div class="breadcrumb" aria-label="Breadcrumb">
@@ -102,14 +101,14 @@
 <p>Based on the <a href="https://papers.voltropy.com/LCM">LCM paper</a> by Ehrlich &amp; Blackman (Voltropy PBC, Feb 2026).
 Inspired by <a href="https://github.com/martian-engineering/lossless-claw">lossless-claw</a> for OpenClaw.</p>
 <hr>
-<h4>The Problem</h4>
+<h5>The Problem</h5>
 <p>When context fills up, agents replace your conversation with a flat lossy summary.
 Details get lost. The model confidently misremembers. No way to go back.</p>
 <p align="center">
   <img src="https://raw.githubusercontent.com/stephenschoettler/hermes-lcm/main/docs/standard_compression.png" alt="Standard compression" width="700">
 </p>
 
-<h4>The Fix</h4>
+<h5>The Fix</h5>
 <p>Every message persisted. Hierarchical DAG summaries. Agent tools to drill back
 into anything that was compacted.</p>
 <p align="center">
@@ -120,9 +119,9 @@ into anything that was compacted.</p>
   <img src="https://raw.githubusercontent.com/stephenschoettler/hermes-lcm/main/docs/architecture.png" alt="Architecture" width="700">
 </p>
 
-<h4>Why This Plugin</h4>
+<h5>Why This Plugin</h5>
 <p>~5,000 lines of Python. Zero external dependencies. 200+ tests that run standalone in under a second. Full lossless context management — immutable-first store, hierarchical DAG, agent retrieval tools, guided compression, assembly guardrails, session filtering — in a single lightweight plugin that drops into Hermes with no build step, no runtime overhead, and nothing to configure beyond <code>context.engine: lcm</code>.</p>
-<h4>What It Does</h4>
+<h5>What It Does</h5>
 <ul>
 <li><strong>Immutable-first store</strong> — every message persisted in SQLite, with only narrow explicit opt-in GC tombstones for already-externalized summarized tool results</li>
 <li><strong>Summary DAG</strong> — hierarchical compaction (D0 minutes → D1 hours → D2 days)</li>
@@ -134,13 +133,13 @@ into anything that was compacted.</p>
 <li><strong>Session filtering</strong> — exclude noisy sessions entirely or mark them read-only with glob patterns</li>
 <li><strong>Profile-scoped</strong> — separate DB per Hermes profile</li>
 </ul>
-<h4>Requirements</h4>
+<h5>Requirements</h5>
 <ul>
 <li>Hermes Agent with the <strong>pluggable context engine slot</strong> (<a href="https://github.com/NousResearch/hermes-agent/pull/7464">PR #7464</a>)</li>
 <li>Python 3.11+</li>
 <li>No additional dependencies (uses Hermes auxiliary LLM for summarization)</li>
 </ul>
-<h4>Install</h4>
+<h5>Install</h5>
 <pre><code class="language-bash"># Clone into the context engine plugin directory
 git clone https://github.com/stephenschoettler/hermes-lcm \
   ~/.hermes/hermes-agent/plugins/context_engine/lcm
@@ -149,7 +148,7 @@ git clone https://github.com/stephenschoettler/hermes-lcm \
 git clone https://github.com/stephenschoettler/hermes-lcm \
   ~/.hermes/profiles/myprofile/hermes-agent/plugins/context_engine/lcm
 </code></pre>
-<h4>Update</h4>
+<h5>Update</h5>
 <pre><code class="language-bash">cd ~/.hermes/hermes-agent/plugins/context_engine/lcm &amp;&amp; git pull
 </code></pre>
 <p>Restart Hermes after updating.</p>
@@ -175,7 +174,7 @@ Select <strong>Context Engine</strong> and pick <code>lcm</code> from the radiol
 Provider Plugins:
   Context Engine: lcm
 </code></pre>
-<h4>Configuration</h4>
+<h5>Configuration</h5>
 <p>Environment variables (all optional):</p>
 <table>
 <thead>
@@ -292,7 +291,7 @@ Provider Plugins:
 </tr>
 </tbody></table>
 <p>The point-8 compaction knobs are intentionally opt-in. <code>cache_friendly_*</code> is a plugin-local prompt-stability heuristic, not a claim that Hermes currently passes true prompt-cache metrics into <code>hermes-lcm</code>.</p>
-<h5>Large tool-output handling</h5>
+<h6>Large tool-output handling</h6>
 <p><code>hermes-lcm</code> now has a three-step opt-in path for oversized tool results:</p>
 <ol>
 <li><strong>9B externalization</strong> — large tool results are written to plugin-managed JSON files instead of being kept inline for compaction prompts</li>
@@ -320,7 +319,7 @@ Provider Plugins:
 <li><code>platform:session_id</code></li>
 </ul>
 <p>That means patterns like <code>cron:*</code> can catch Hermes cron sessions today, while plain raw session-id matching still works if you know the exact IDs you want to target.</p>
-<h4>Agent Tools</h4>
+<h5>Agent Tools</h5>
 <table>
 <thead>
 <tr>
@@ -353,7 +352,7 @@ Provider Plugins:
 <td>Run diagnostics — database integrity, FTS index sync, orphaned nodes, config validation, context pressure.</td>
 </tr>
 </tbody></table>
-<h4>Gateway Slash Commands</h4>
+<h5>Gateway Slash Commands</h5>
 <p>When Hermes host support for plugin slash commands is available, <code>hermes-lcm</code> also exposes a <code>/lcm</code> operator surface for quick diagnostics and safe maintenance prep from chat:</p>
 <ul>
 <li><code>/lcm</code> or <code>/lcm status</code> — current session/runtime status</li>
@@ -363,7 +362,7 @@ Provider Plugins:
 <li><code>/lcm backup</code> — create a timestamped SQLite backup before any future cleanup workflow</li>
 </ul>
 <p>The cleanup path stays intentionally narrow and backup-first; broader retention/prune workflows should still start with diagnostics before any apply/delete step.</p>
-<h4>How It Works</h4>
+<h5>How It Works</h5>
 <ol>
 <li><strong>Ingest</strong> — every message persisted verbatim in an immutable SQLite store</li>
 <li><strong>Compact</strong> — when context pressure builds, older messages outside the fresh tail are summarized into D0 leaf nodes</li>
@@ -372,7 +371,7 @@ Provider Plugins:
 <li><strong>Assemble</strong> — active context = system prompt + highest-depth summaries + fresh tail</li>
 <li><strong>Retrieve</strong> — agent uses <code>lcm_grep</code>/<code>lcm_describe</code>/<code>lcm_expand</code>/<code>lcm_expand_query</code> to drill into compacted history or synthesize answers from expanded context</li>
 </ol>
-<h4>Architecture</h4>
+<h5>Architecture</h5>
 <pre><code>hermes-lcm/
 ├── plugin.yaml      # manifest
 ├── __init__.py      # register(ctx) → ctx.register_context_engine()
@@ -392,7 +391,7 @@ Provider Plugins:
 python -m pytest tests/ -v
 </code></pre>
 <p>No Hermes Agent checkout required — the test suite includes a lightweight ABC stub so it runs standalone.</p>
-<h4>Context Engine Slot</h4>
+<h5>Context Engine Slot</h5>
 <p>Requires the <strong>pluggable context engine slot</strong> — an ABC (<code>ContextEngine</code>) in
 hermes-agent core that makes the <code>ContextCompressor</code> swappable via the plugin
 system. Config-driven selection via <code>context.engine</code> in config.yaml, with a
@@ -403,7 +402,7 @@ system. Config-driven selection via <code>context.engine</code> in config.yaml, 
 <li><strong>Issue:</strong> <a href="https://github.com/NousResearch/hermes-agent/issues/5701">NousResearch/hermes-agent#5701</a> (closed by #7464)</li>
 <li><strong>Paper:</strong> <a href="https://papers.voltropy.com/LCM">papers.voltropy.com/LCM</a></li>
 </ul>
-<h4>Contributing</h4>
+<h5>Contributing</h5>
 <p>Issues and PRs welcome. This project has active community contributors and CI runs on every push and PR.</p>
 <ul>
 <li><strong>Bug fixes</strong> and <strong>correctness improvements</strong> are always top priority</li>
@@ -412,7 +411,7 @@ system. Config-driven selection via <code>context.engine</code> in config.yaml, 
 </ul>
 <p>See <a href="https://github.com/stephenschoettler/hermes-lcm/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> for issue, branch, validation, and PR guidance.
 See the <a href="https://github.com/stephenschoettler/hermes-lcm/releases">releases page</a> for changelogs.</p>
-<h4>License</h4>
+<h5>License</h5>
 <p>MIT</p>
   </section>
 </details>

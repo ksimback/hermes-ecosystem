@@ -27,10 +27,6 @@
 
 <a class="skip-link" href="#main">Skip to content</a>
 
-<button id="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
-  <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
-</button>
-
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
@@ -44,6 +40,9 @@
     <a href="/reports/state-of-hermes-april-2026">reports</a>
     <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
   </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
 </header>
 
 <div class="breadcrumb" aria-label="Breadcrumb">
@@ -88,14 +87,14 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>hermes-android</h3>
+    <h4>hermes-android</h4>
 <p>Give your AI agent hands. Remote Android device control for <a href="https://github.com/NousResearch/hermes-agent">hermes-agent</a>.</p>
-<h4>How it works</h4>
+<h5>How it works</h5>
 <pre><code>Phone (home WiFi)  ──WebSocket──&gt;  Hermes Server (cloud)  &lt;──HTTP──  AI Agent
                                    relay on port 8766
 </code></pre>
 <p>The phone connects <strong>out</strong> to your Hermes server — works behind any NAT, no port forwarding, no VPN, no USB. Just a 6-character pairing code.</p>
-<h4>Repository Structure</h4>
+<h5>Repository Structure</h5>
 <p>This repo contains <strong>two components</strong>:</p>
 <table>
 <thead>
@@ -122,7 +121,7 @@
 <blockquote>
 <p><strong>Note:</strong> The Python code exists here for standalone development and testing (<code>pip install -e .</code>, <code>pytest</code>). The production copy is in the hermes-agent repo. The Android app does not use or depend on the Python files.</p>
 </blockquote>
-<h4>Install as hermes-agent plugin (v0.3.0+)</h4>
+<h5>Install as hermes-agent plugin (v0.3.0+)</h5>
 <pre><code class="language-bash">curl -sSL https://raw.githubusercontent.com/raulvidis/hermes-android/main/install.sh | bash
 </code></pre>
 <p>Or manually:</p>
@@ -130,14 +129,14 @@
 cp -r hermes-android-plugin ~/.hermes/plugins/hermes-android
 </code></pre>
 <p>Restart hermes — run <code>/plugins</code> to verify. Should show: <code>✓ hermes-android v0.3.0 (36 tools)</code></p>
-<h4>Quick Start</h4>
-<h5>1. Install the bridge app on your phone</h5>
+<h5>Quick Start</h5>
+<h6>1. Install the bridge app on your phone</h6>
 <p>Build with Android Studio or from command line:</p>
 <pre><code class="language-bash">cd hermes-android-bridge
 ./gradlew assembleDebug
 adb install app/build/outputs/apk/debug/app-debug.apk
 </code></pre>
-<h5>2. Grant permissions on the phone</h5>
+<h6>2. Grant permissions on the phone</h6>
 <ul>
 <li>Open Hermes Bridge app</li>
 <li>Tap <strong>Enable Accessibility Service</strong> → find Hermes Bridge → toggle ON</li>
@@ -152,15 +151,15 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 </li>
 <li>Enable <strong>Notification Listener</strong> in <strong>Settings &gt; Apps &gt; Special app access &gt; Notification access</strong> → enable Hermes Bridge (for <code>android_notifications</code> / <code>android_events</code>)</li>
 </ul>
-<h5>3. Connect to your Hermes server</h5>
+<h6>3. Connect to your Hermes server</h6>
 <p>Tell hermes (via Telegram, Discord, etc):</p>
 <pre><code>Connect to my phone, code is &lt;CODE&gt;
 </code></pre>
 <p>Where <code>&lt;CODE&gt;</code> is the 6-character pairing code shown in the app.</p>
 <p>Hermes will reply with the server address. Enter it in the app and tap <strong>Connect</strong>.</p>
-<h5>4. Done</h5>
+<h6>4. Done</h6>
 <p>The agent can now control your phone. Try: &quot;open Instagram&quot;, &quot;take a screenshot&quot;, &quot;what apps do I have?&quot;</p>
-<h4>Tools (36)</h4>
+<h5>Tools (36)</h5>
 <table>
 <thead>
 <tr>
@@ -317,7 +316,7 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 <td>Stop text-to-speech</td>
 </tr>
 </tbody></table>
-<h4>Permissions</h4>
+<h5>Permissions</h5>
 <table>
 <thead>
 <tr>
@@ -367,7 +366,7 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 <td><code>android_notifications</code>, <code>android_events</code></td>
 </tr>
 </tbody></table>
-<h4>Architecture</h4>
+<h5>Architecture</h5>
 <p><strong>Android app (Kotlin):</strong></p>
 <ul>
 <li>AccessibilityService reads the UI tree and performs taps/types/swipes</li>
@@ -384,7 +383,7 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 <li>Rate-limited authentication (5 attempts / 60s, then 5min block)</li>
 <li>Auto-detects server public IP for setup instructions</li>
 </ul>
-<h4>Security</h4>
+<h5>Security</h5>
 <p>See <a href="https://github.com/raulvidis/hermes-android/blob/main/SECURITY.md">SECURITY.md</a> for details. Key points:</p>
 <ul>
 <li>Pairing code authentication with rate limiting</li>
@@ -392,7 +391,7 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 <li>Currently unencrypted (<code>ws://</code>) — use TLS proxy for production</li>
 <li>Full device access once paired — only connect to trusted servers</li>
 </ul>
-<h4>Development</h4>
+<h5>Development</h5>
 <pre><code class="language-bash"># Python tests
 pip install -e &quot;.[dev]&quot;
 python -m pytest tests/
@@ -401,9 +400,9 @@ python -m pytest tests/
 cd hermes-android-bridge
 ./gradlew assembleDebug
 </code></pre>
-<h4>Roadmap</h4>
+<h5>Roadmap</h5>
 <p>This is a working prototype. The vision: <strong>give Hermes its own phone</strong> — a fully autonomous mobile presence.</p>
-<h5>v0.2 — Polish &amp; Reliability</h5>
+<h6>v0.2 — Polish &amp; Reliability</h6>
 <ul>
 <li><input disabled="" type="checkbox"> TLS/WSS support for encrypted phone-server communication</li>
 <li><input disabled="" type="checkbox"> Persistent relay service (systemd unit, auto-start with gateway)</li>
@@ -411,7 +410,7 @@ cd hermes-android-bridge
 <li><input disabled="" type="checkbox"> Better error reporting (screenshot + annotated explanation on failure)</li>
 <li><input disabled="" type="checkbox"> Auto-reconnect relay on gateway restart</li>
 </ul>
-<h5>v0.3 — Richer Phone Interaction</h5>
+<h6>v0.3 — Richer Phone Interaction</h6>
 <ul>
 <li><input checked="" disabled="" type="checkbox"> <strong>Notification listener</strong> — agent reads incoming notifications in real-time</li>
 <li><input checked="" disabled="" type="checkbox"> <strong>Clipboard bridge</strong> — copy/paste between server and phone</li>
@@ -419,34 +418,34 @@ cd hermes-android-bridge
 <li><input checked="" disabled="" type="checkbox"> <strong>Direct SMS/calls</strong> — send texts and make calls without navigating the UI</li>
 <li><input checked="" disabled="" type="checkbox"> <strong>Location sharing</strong> — agent knows where the phone is for contextual tasks</li>
 </ul>
-<h5>v0.4 — Multi-Device &amp; Automation</h5>
+<h6>v0.4 — Multi-Device &amp; Automation</h6>
 <ul>
 <li><input disabled="" type="checkbox"> <strong>Multiple phones</strong> — connect more than one device to the same relay</li>
 <li><input disabled="" type="checkbox"> <strong>Scheduled automations</strong> — &quot;every morning, check my commute price on Bolt&quot;</li>
 <li><input disabled="" type="checkbox"> <strong>Event triggers</strong> — &quot;when a notification arrives from this app, do X&quot;</li>
 <li><input disabled="" type="checkbox"> <strong>Macro recording</strong> — watch a workflow once, replay it on demand</li>
 </ul>
-<h5>v0.5 — Hermes Gets a Voice</h5>
+<h6>v0.5 — Hermes Gets a Voice</h6>
 <ul>
 <li><input disabled="" type="checkbox"> <strong>Phone call capability</strong> — agent can answer and speak in phone calls using TTS/STT</li>
 <li><input disabled="" type="checkbox"> <strong>Voice assistant mode</strong> — always-listening on the phone, responds via speaker</li>
 <li><input disabled="" type="checkbox"> <strong>Call handling</strong> — &quot;answer my phone, take a message, tell them I&#39;ll call back&quot;</li>
 </ul>
-<h5>v0.6 — On-Device Intelligence</h5>
+<h6>v0.6 — On-Device Intelligence</h6>
 <ul>
 <li><input disabled="" type="checkbox"> <strong>Local model execution</strong> — run small models (Qwen 0.5B, Gemma 2B) directly on the phone</li>
 <li><input disabled="" type="checkbox"> <strong>Offline fallback</strong> — basic commands work without server connection using on-device model</li>
 <li><input disabled="" type="checkbox"> <strong>Hybrid routing</strong> — simple tasks run locally, complex tasks go to the server</li>
 <li><input disabled="" type="checkbox"> <strong>On-device app adapters</strong> — fast structured parsing without round-tripping to server</li>
 </ul>
-<h5>Future Ideas</h5>
+<h6>Future Ideas</h6>
 <ul>
 <li><input disabled="" type="checkbox"> iOS support via Shortcuts/accessibility bridge</li>
 <li><input disabled="" type="checkbox"> Web dashboard for monitoring phone activity</li>
 <li><input disabled="" type="checkbox"> Cross-app workflows (&quot;find a restaurant on Maps, share on WhatsApp, book an Uber there&quot;)</li>
 <li><input disabled="" type="checkbox"> Dedicated &quot;Hermes Phone&quot; — a phone that boots straight into agent mode</li>
 </ul>
-<h4>Links</h4>
+<h5>Links</h5>
 <ul>
 <li><strong>hermes-agent</strong>: <a href="https://github.com/NousResearch/hermes-agent">github.com/NousResearch/hermes-agent</a></li>
 </ul>

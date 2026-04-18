@@ -27,10 +27,6 @@
 
 <a class="skip-link" href="#main">Skip to content</a>
 
-<button id="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
-  <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
-</button>
-
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
@@ -44,6 +40,9 @@
     <a href="/reports/state-of-hermes-april-2026">reports</a>
     <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
   </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
 </header>
 
 <div class="breadcrumb" aria-label="Breadcrumb">
@@ -88,10 +87,10 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>maestro</h3>
+    <h4>maestro</h4>
 <p>Maestro is a local-first conductor for multi-agent software engineering. It gives you one CLI and one on-disk state model for missions, features, assertions, handoffs, checkpoints, memory, and project context so separate agent sessions can collaborate without a server, database, or background daemon.</p>
 <p>It is designed for a workflow where a human operator coordinates multiple terminals, while Maestro keeps the shared state disciplined and inspectable.</p>
-<h4>Why Maestro</h4>
+<h5>Why Maestro</h5>
 <ul>
 <li>Shared state lives on disk in <code>.maestro/</code>, not in chat history.</li>
 <li>Missions break work into milestones, features, and validation assertions.</li>
@@ -100,7 +99,7 @@
 <li>Mission Control gives you a read-only TUI and JSON snapshots of current state.</li>
 <li>The runtime stays local-first: filesystem, git, config, and terminal tools.</li>
 </ul>
-<h4>At A Glance</h4>
+<h5>At A Glance</h5>
 <pre><code class="language-mermaid">flowchart LR
   human[&quot;Human operator&quot;]
   maestro[&quot;Maestro CLI + .maestro/ state&quot;]
@@ -116,7 +115,7 @@
   maestro --&gt; tui
 </code></pre>
 <p>Maestro is the shared state layer in the middle. The human moves between terminals; agents read and write through the same local CLI surface.</p>
-<h4>What Maestro Is Not</h4>
+<h5>What Maestro Is Not</h5>
 <ul>
 <li>It does not spawn or supervise LLM agents for you.</li>
 <li>It is not a hosted orchestration service.</li>
@@ -124,7 +123,7 @@
 <li>It does not require a database, queue, or network API to work.</li>
 </ul>
 <p>The human operator is the bridge between terminals. Maestro is the shared state layer underneath that workflow.</p>
-<h4>Core Concepts</h4>
+<h5>Core Concepts</h5>
 <table>
 <thead>
 <tr>
@@ -181,10 +180,10 @@
 <td>A read-only dashboard for previewing mission state interactively or as JSON.</td>
 </tr>
 </tbody></table>
-<h4>Mission Control Preview</h4>
+<h5>Mission Control Preview</h5>
 <p>Mission Control gives you a read-only terminal dashboard over the current Maestro state.</p>
 <p><img src="https://raw.githubusercontent.com/ReinaMacCredy/maestro/main/assets/images/Misson_Control_Preview.png" alt="Mission Control preview"></p>
-<h4>How Work Flows</h4>
+<h5>How Work Flows</h5>
 <pre><code class="language-mermaid">flowchart TD
   init[&quot;Initialize project&quot;] --&gt; plan[&quot;Create mission plan JSON&quot;]
   plan --&gt; mission[&quot;maestro mission create --file plan.json&quot;]
@@ -198,14 +197,14 @@
   checkpoint --&gt; seal[&quot;maestro milestone seal &lt;milestone-id&gt; --mission &lt;mission-id&gt;&quot;]
 </code></pre>
 <p>The loop is deliberately simple: define work, hand it off, update progress, validate the outcome, and checkpoint before sealing the milestone.</p>
-<h4>Installation</h4>
-<h5>Requirements</h5>
+<h5>Installation</h5>
+<h6>Requirements</h6>
 <ul>
 <li><a href="https://bun.sh/">Bun</a></li>
 <li>Git</li>
 <li>A local agent harness in another terminal, such as Claude Code, Codex, Gemini CLI, or Droid CLI</li>
 </ul>
-<h5>Install From Release</h5>
+<h6>Install From Release</h6>
 <p>Install the latest published Maestro binary:</p>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/ReinaMacCredy/maestro/main/scripts/install.sh | bash
 </code></pre>
@@ -215,12 +214,12 @@
 <p>After installation, refresh to the latest published release with:</p>
 <pre><code class="language-bash">maestro update
 </code></pre>
-<h5>Build From Source</h5>
+<h6>Build From Source</h6>
 <pre><code class="language-bash">bun install
 bun run build
 </code></pre>
 <p>This produces the compiled binary at <code>./dist/maestro</code>.</p>
-<h5>Install Locally</h5>
+<h6>Install Locally</h6>
 <pre><code class="language-bash">bun run release:local
 command -v maestro
 maestro --version
@@ -229,12 +228,12 @@ maestro --version
 <pre><code class="language-bash">maestro install
 </code></pre>
 <p><code>./dist/maestro</code> is the fresh repo build. <code>maestro</code> on your <code>PATH</code> is the installed local binary.</p>
-<h4>Quick Start</h4>
-<h5>1. Initialize a project</h5>
+<h5>Quick Start</h5>
+<h6>1. Initialize a project</h6>
 <pre><code class="language-bash">maestro init
 </code></pre>
 <p>This creates the local <code>.maestro/</code> workspace for the current repository.</p>
-<h5>2. Create a mission plan file</h5>
+<h6>2. Create a mission plan file</h6>
 <p><code>mission create</code> expects a JSON plan file. A minimal example:</p>
 <pre><code class="language-json">{
   &quot;title&quot;: &quot;Add authentication&quot;,
@@ -289,17 +288,17 @@ maestro --version
   ]
 }
 </code></pre>
-<h5>3. Create and approve the mission</h5>
+<h6>3. Create and approve the mission</h6>
 <pre><code class="language-bash">maestro mission create --file plan.json
 maestro mission list
 maestro mission approve &lt;mission-id&gt;
 </code></pre>
-<h5>4. Generate a worker prompt</h5>
+<h6>4. Generate a worker prompt</h6>
 <pre><code class="language-bash">maestro feature list --mission &lt;mission-id&gt;
 maestro feature prompt &lt;feature-id&gt; --mission &lt;mission-id&gt; --out worker-prompt.md
 </code></pre>
 <p>This writes the prompt to <code>worker-prompt.md</code> and also stores it under <code>.maestro/missions/&lt;mission-id&gt;/workers/&lt;feature-id&gt;/prompt.md</code>.</p>
-<h5>5. Create and pick up a handoff</h5>
+<h6>5. Create and pick up a handoff</h6>
 <p>Create an execute-mode handoff:</p>
 <pre><code class="language-bash">maestro handoff create \
   --mode execute \
@@ -318,7 +317,7 @@ maestro handoff pickup
 maestro handoff pickup --json
 maestro handoff pickup --claim --agent codex-cli
 </code></pre>
-<h5>6. Track progress, validate, and seal</h5>
+<h6>6. Track progress, validate, and seal</h6>
 <pre><code class="language-bash">maestro feature update auth-impl --mission &lt;mission-id&gt; --status in-progress
 maestro feature update auth-impl --mission &lt;mission-id&gt; --status review
 maestro validate show --mission &lt;mission-id&gt;
@@ -326,9 +325,9 @@ maestro validate update auth-login-works --mission &lt;mission-id&gt; --result p
 maestro checkpoint save --mission &lt;mission-id&gt;
 maestro milestone seal implement --mission &lt;mission-id&gt;
 </code></pre>
-<h4>Handoffs</h4>
+<h5>Handoffs</h5>
 <p>Handoffs are Maestro&#39;s compact transfer format for moving work between terminals. Each handoff is stored on disk as structured JSON and also caches a UKI v5.4 transfer string so another agent can pick it up directly.</p>
-<h5>What a handoff contains</h5>
+<h6>What a handoff contains</h6>
 <p>A handoff always includes:</p>
 <ul>
 <li><code>mode</code>: either <code>plan</code> or <code>execute</code></li>
@@ -340,7 +339,7 @@ maestro milestone seal implement --mission &lt;mission-id&gt;
 <li>at least one scoped confidence value via <code>--confidence-work</code> or <code>--confidence-summary</code></li>
 </ul>
 <p>It can also include decisions, signal deltas, Maestro references, plan paths, touched files, completed work, validation evidence, boundary state, risks, blind spots, and a metaphor anchor.</p>
-<h5>Handoff status flow</h5>
+<h6>Handoff status flow</h6>
 <pre><code class="language-mermaid">flowchart LR
   pending[&quot;pending&quot;] --&gt; picked[&quot;picked-up&quot;]
   picked --&gt; completed[&quot;completed&quot;]
@@ -350,7 +349,7 @@ maestro milestone seal implement --mission &lt;mission-id&gt;
 <li><code>pickup --claim</code> atomically moves a pending handoff to <code>picked-up</code></li>
 <li><code>list --status ...</code> lets you inspect <code>pending</code>, <code>picked-up</code>, or <code>completed</code> handoffs</li>
 </ul>
-<h5>Create output</h5>
+<h6>Create output</h6>
 <p>Creating a handoff returns the handoff id, detected agent/session identity, current status, and the compressed UKI string. The CLI prints the UKI payload as one line, but in the README it is wrapped by block here for readability:</p>
 <pre><code class="language-text">[ok] Handoff created: 2026-04-09-001
   Mode: execute
@@ -404,7 +403,7 @@ MODE-execute
 
 MODE-execute|CURRENT_STATE-execute_in_progress|SESSION_CORE-handoff_real_example|CAUSAL_DRIVERS-NONE|DIVERGENCES-NONE|MAESTRO_REFS-NONE|DECISIONS-preserve_pickup_clarity|SIGNAL_DELTA-NONE|TOUCHED_FILES-file_src_auth_ts|COMPLETED_WORK-auth_flow_scaffolded|VALIDATION-compiled_cli_green|ARTIFACTS-file_src_auth_ts|READ_MORE-file_src_auth_ts|BOUNDARY_STATE-NONE|RISKS-green_tests_masked_contract_drift|BLIND_SPOT-green_tests_masked_contract_drift|METAPHOR-baton_pass_snapshot|NEXT_ACTION-pick_up_auth_impl|CS-work_0.9|SUMMARY-Handoff_real_example-ready-low_risk
 </code></pre>
-<h5>Pickup output formats</h5>
+<h6>Pickup output formats</h6>
 <p><code>maestro handoff pickup</code> supports three output modes:</p>
 <ul>
 <li>default output: the raw UKI transfer string</li>
@@ -416,7 +415,7 @@ MODE-execute|CURRENT_STATE-execute_in_progress|SESSION_CORE-handoff_real_example
 </code></pre>
 <pre><code class="language-text">MODE-execute|CURRENT_STATE-execute_in_progress|SESSION_CORE-handoff_real_example|CAUSAL_DRIVERS-NONE|DIVERGENCES-NONE|MAESTRO_REFS-NONE|DECISIONS-preserve_pickup_clarity|SIGNAL_DELTA-NONE|TOUCHED_FILES-file_src_auth_ts|COMPLETED_WORK-auth_flow_scaffolded|VALIDATION-compiled_cli_green|ARTIFACTS-file_src_auth_ts|READ_MORE-file_src_auth_ts|BOUNDARY_STATE-NONE|RISKS-green_tests_masked_contract_drift|BLIND_SPOT-green_tests_masked_contract_drift|METAPHOR-baton_pass_snapshot|NEXT_ACTION-pick_up_auth_impl|CS-work_0.9|SUMMARY-Handoff_real_example-ready-low_risk
 </code></pre>
-<h5>Typical handoff loop</h5>
+<h6>Typical handoff loop</h6>
 <pre><code class="language-bash">maestro handoff create \
   --mode execute \
   --session-core execute_auth_flow \
@@ -433,7 +432,7 @@ maestro handoff pickup
 maestro handoff pickup --claim --agent codex-cli
 </code></pre>
 <p>Use <code>handoff list</code> when you want a queue view, <code>pickup</code> when another agent should resume directly from the UKI string, <code>pickup --paste</code> when you are pasting into a general agent chat, and <code>pickup --json</code> when a script or debugging session needs the structured record.</p>
-<h4>Common Commands</h4>
+<h5>Common Commands</h5>
 <table>
 <thead>
 <tr>
@@ -539,7 +538,7 @@ maestro handoff pickup --claim --agent codex-cli
 </tr>
 </tbody></table>
 <p>Run <code>maestro &lt;command&gt; --help</code> for full flags and examples.</p>
-<h4>Mission Control</h4>
+<h5>Mission Control</h5>
 <p>Mission Control is a read-only dashboard over Maestro state. It supports:</p>
 <ul>
 <li>Interactive TTY mode with <code>maestro mission-control</code></li>
@@ -566,7 +565,7 @@ maestro handoff pickup --claim --agent codex-cli
 </ul>
 <p>Aliases: <code>feat</code>, <code>deps</code>, <code>cfg</code>, <code>mem</code>, <code>agent</code>, <code>event</code>, <code>task</code>, <code>principle</code>. Mission-only screens are skipped automatically when running in home mode.</p>
 <p>For non-interactive environments, prefer <code>--preview</code>, <code>--preview all</code>, or <code>--json</code>.</p>
-<h4>Architecture</h4>
+<h5>Architecture</h5>
 <pre><code class="language-mermaid">flowchart TD
   cli[&quot;CLI commands&quot;] --&gt; usecases[&quot;Use cases&quot;]
   usecases --&gt; domain[&quot;Domain models + validators&quot;]
@@ -576,7 +575,7 @@ maestro handoff pickup --claim --agent codex-cli
   state --&gt; tui[&quot;Mission Control snapshots&quot;]
 </code></pre>
 <p>The codebase follows a hexagonal shape: commands call use cases, use cases depend on domain rules and ports, and adapters implement those ports against the local filesystem and environment.</p>
-<h4>Storage Model</h4>
+<h5>Storage Model</h5>
 <p>Maestro stores project-local state in <code>.maestro/</code> and user-level defaults in <code>~/.maestro/</code>.</p>
 <pre><code class="language-text">.maestro/
 ├── config.yaml
@@ -604,7 +603,7 @@ maestro handoff pickup --claim --agent codex-cli
     └── projects.json
 </code></pre>
 <p>The design is intentionally transparent: state is inspectable, diffable, and easy to back up. <code>.maestro/tasks/**</code> and <code>.maestro/principles.jsonl</code> are intentionally repo-tracked so the daily queue and behavioral rules are reviewed like any other code change; <code>.maestro/missions/**</code> and <code>.maestro/handoffs/**</code> stay ignored as local orchestration artifacts.</p>
-<h4>Codebase Layout</h4>
+<h5>Codebase Layout</h5>
 <p>Maestro is organized as a feature-first hexagonal codebase:</p>
 <ul>
 <li><code>src/features/&lt;name&gt;/</code> -- each feature is a bounded context containing its own <code>commands/</code>, <code>usecases/</code>, <code>domain/</code>, <code>ports/</code>, <code>adapters/</code>, plus a <code>services.ts</code> composition factory and <code>index.ts</code> public surface. Current features: <code>ratchet</code>, <code>handoff</code>, <code>notes</code>, <code>graph</code>, <code>session</code>, <code>memory</code>, <code>mission</code> (with <code>feature/</code>, <code>validation/</code>, <code>checkpoint/</code> subfolders and behavioral principles), <code>agent</code> (library-only; composes worker prompts and manages harness config injection), <code>task</code> (Claude-style blocker graph for the daily loop), <code>reply</code> (worker reply ingest with principle gating), and <code>bundle</code> (portable mission archive).</li>
@@ -620,7 +619,7 @@ maestro handoff pickup --claim --agent codex-cli
 <li><code>bundle</code> may import from <code>mission</code>, <code>reply</code>, <code>handoff</code>, and <code>session</code> through their public surfaces, because bundle is a read-only aggregator that snapshots every mission artifact into a portable archive.</li>
 </ul>
 <p>The runtime is intentionally narrow: filesystem-backed stores, git integration, config handling, and a terminal UI. There is no database adapter or network service in the main workflow.</p>
-<h4>Development</h4>
+<h5>Development</h5>
 <pre><code class="language-bash">bun run build
 bun run typecheck
 bun test
@@ -634,7 +633,7 @@ maestro --help
 maestro mission-control --preview --size 120x40 --format plain
 maestro mission-control --render-check --size 120x40
 </code></pre>
-<h4>Supported Agent Config Injection</h4>
+<h5>Supported Agent Config Injection</h5>
 <p><code>maestro install</code> and <code>maestro update</code> can inject instruction blocks for:</p>
 <ul>
 <li>Claude Code</li>
@@ -643,7 +642,7 @@ maestro mission-control --render-check --size 120x40
 <li>Droid CLI</li>
 </ul>
 <p>These instruction blocks help each harness read and write shared Maestro state consistently.</p>
-<h4>License</h4>
+<h5>License</h5>
 <p>MIT</p>
   </section>
 </details>
