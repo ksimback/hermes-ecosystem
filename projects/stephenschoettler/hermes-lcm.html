@@ -18,178 +18,9 @@
 <script>
   (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
 </script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-  :root {
-    --bg-base: #0a0a0f; --bg-card: #13131f; --bg-code: rgba(255,255,255,0.06);
-    --border-subtle: #1e1e30; --border-default: #2a2a44;
-    --text-primary: #e0e0e8; --text-secondary: #b0b0c8; --text-tertiary: #9494b0;
-    --text-muted: #7878a0; --text-link: #a78bfa; --text-link-hover: #c4b5fd;
-    --brand-purple: #a78bfa; --brand-star: #fbbf24;
-    --overlay-subtle: rgba(255,255,255,0.04); --overlay-medium: rgba(255,255,255,0.08);
-  }
-  [data-theme="light"] {
-    --bg-base: #fafafc; --bg-card: #ffffff; --bg-code: rgba(20,20,40,0.06);
-    --border-subtle: #e8e8f0; --border-default: #d0d0dc;
-    --text-primary: #1a1a2e; --text-secondary: #3a3a52; --text-tertiary: #5a5a78;
-    --text-muted: #7a7a96; --text-link: #6d4fc4; --text-link-hover: #5b3fb5;
-    --brand-star: #d97706;
-    --overlay-subtle: rgba(20,20,40,0.03); --overlay-medium: rgba(20,20,40,0.08);
-  }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg-base); color: var(--text-primary);
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    transition: background 0.2s, color 0.2s;
-  }
-  a { color: var(--text-link); text-decoration: none; }
-  a:hover { color: var(--text-link-hover); text-decoration: underline; }
-
-  .nav {
-    padding: 16px 24px; border-bottom: 1px solid var(--border-subtle);
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 960px; margin: 0 auto;
-  }
-  .nav-brand { font-size: 15px; font-weight: 800; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
-  .nav-actions { display: flex; gap: 8px; align-items: center; }
-  .nav-link { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 6px 12px; border-radius: 6px; }
-  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
-  #theme-toggle {
-    width: 34px; height: 34px; border-radius: 50%; background: var(--bg-card);
-    border: 1px solid var(--border-subtle); color: var(--text-secondary);
-    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;
-  }
-  #theme-toggle:hover { border-color: var(--brand-purple); }
-  #theme-toggle .icon-sun { display: none; }
-  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
-  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
-
-  .project { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-
-  .breadcrumb { margin-bottom: 16px; }
-  .breadcrumb a {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.8px; padding: 3px 10px; border-radius: 4px;
-    background: var(--overlay-medium); color: var(--text-tertiary);
-  }
-  .breadcrumb a:hover { text-decoration: none; color: var(--text-primary); }
-
-  .project h1 {
-    font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.3px;
-  }
-  .project-desc {
-    font-size: 16px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;
-  }
-  .meta-row {
-    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-    margin-bottom: 20px; font-size: 13px; color: var(--text-tertiary);
-  }
-  .meta-row .stars { color: var(--brand-star); font-weight: 700; }
-  .meta-row .badge {
-    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.3px;
-  }
-  .meta-row .badge-official { background: rgba(167,139,250,0.15); color: var(--brand-purple); }
-  .meta-row .badge-lang { background: var(--overlay-medium); }
-
-  .actions { display: flex; gap: 8px; margin-bottom: 32px; }
-  .actions a {
-    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
-    transition: opacity 0.15s;
-  }
-  .actions .btn-primary {
-    background: linear-gradient(135deg, #a78bfa, #818cf8);
-    color: #fff;
-  }
-  .actions .btn-primary:hover { opacity: 0.85; text-decoration: none; color: #fff; }
-  .actions .btn-secondary {
-    background: var(--overlay-medium); color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
-  }
-  .actions .btn-secondary:hover { color: var(--text-primary); text-decoration: none; }
-
-  /* README styles */
-  .readme {
-    border-top: 1px solid var(--border-subtle); padding-top: 32px; margin-bottom: 40px;
-  }
-  .readme h1 { font-size: 24px; font-weight: 800; margin: 32px 0 12px; }
-  .readme h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
-  .readme h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; }
-  .readme h4, .readme h5, .readme h6 { font-size: 14px; font-weight: 700; margin: 20px 0 6px; }
-  .readme p { font-size: 14px; line-height: 1.7; margin-bottom: 14px; color: var(--text-secondary); }
-  .readme a { color: var(--text-link); }
-  .readme strong { color: var(--text-primary); }
-  .readme img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
-  .readme ul, .readme ol { margin: 8px 0 16px 24px; font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
-  .readme li { margin-bottom: 4px; }
-  .readme code {
-    background: var(--bg-code); padding: 2px 6px; border-radius: 4px;
-    font-size: 12.5px; font-family: 'SF Mono', Menlo, Consolas, monospace;
-  }
-  .readme pre {
-    background: var(--bg-card); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0 16px;
-  }
-  .readme pre code { background: none; padding: 0; font-size: 12.5px; }
-  .readme table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
-  .readme th { text-align: left; padding: 8px 10px; background: var(--overlay-medium); font-weight: 700; border-bottom: 1px solid var(--border-subtle); color: var(--text-tertiary); }
-  .readme td { padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
-  .readme blockquote { border-left: 3px solid var(--brand-purple); background: rgba(167,139,250,0.05); padding: 10px 16px; margin: 12px 0; border-radius: 0 8px 8px 0; color: var(--text-secondary); }
-  .readme hr { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
-  .readme .no-readme { color: var(--text-muted); font-style: italic; padding: 40px 0; text-align: center; }
-
-  /* Project summary (LLM-generated) */
-  .project-summary { margin-bottom: 32px; }
-  .project-summary h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-  .project-summary .summary-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
-  .summary-highlights {
-    list-style: none; margin: 0; padding: 0;
-    display: flex; flex-wrap: wrap; gap: 8px;
-  }
-  .summary-highlights li {
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 500;
-    color: var(--text-secondary);
-  }
-
-  /* Collapsed README */
-  .readme-details { border-top: 1px solid var(--border-subtle); margin-bottom: 40px; }
-  .readme-toggle {
-    padding: 16px 0; font-size: 13px; font-weight: 700; color: var(--text-tertiary);
-    cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .readme-toggle:hover { color: var(--text-primary); }
-
-  /* Related projects */
-  .related { border-top: 1px solid var(--border-subtle); padding-top: 24px; }
-  .related h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; color: var(--text-tertiary); }
-  .related-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-  .related-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--overlay-subtle); border: 1px solid var(--border-subtle);
-    border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 500;
-    color: var(--text-secondary); white-space: nowrap;
-  }
-  .related-chip:hover { background: var(--overlay-medium); color: var(--text-primary); text-decoration: none; }
-  .related-stars { font-size: 10px; font-weight: 700; color: var(--brand-star); }
-  .list-link { margin-top: 12px; font-size: 13px; }
-
-  .page-footer {
-    text-align: center; margin-top: 40px; padding-top: 24px;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 11px; color: var(--text-muted);
-  }
-  .page-footer a { color: var(--text-link); }
-
-  @media (max-width: 600px) {
-    .project { padding: 24px 16px 60px; }
-    .project h1 { font-size: 22px; }
-  }
-</style>
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
 </head>
 <body>
 <nav class="nav">
@@ -209,7 +40,7 @@
   <p class="project-desc">Lossless Context Management plugin for Hermes Agent — DAG-based context engine that never loses a message</p>
 
   <div class="meta-row">
-    <span class="stars">★ 187</span>
+    <span class="stars">★ 189</span>
     <span class="badge badge-lang">Python</span>
     
     
@@ -268,13 +99,15 @@ into anything that was compacted.</p>
 </p>
 
 <h2>Why This Plugin</h2>
-<p>~5,000 lines of Python. Zero external dependencies. 192 tests that run standalone in under a second. Full lossless context management — immutable store, hierarchical DAG, agent retrieval tools, guided compression, assembly guardrails, session filtering — in a single lightweight plugin that drops into Hermes with no build step, no runtime overhead, and nothing to configure beyond <code>context.engine: lcm</code>.</p>
+<p>~5,000 lines of Python. Zero external dependencies. 200+ tests that run standalone in under a second. Full lossless context management — immutable-first store, hierarchical DAG, agent retrieval tools, guided compression, assembly guardrails, session filtering — in a single lightweight plugin that drops into Hermes with no build step, no runtime overhead, and nothing to configure beyond <code>context.engine: lcm</code>.</p>
 <h2>What It Does</h2>
 <ul>
-<li><strong>Immutable store</strong> — every message persisted in SQLite, never modified</li>
+<li><strong>Immutable-first store</strong> — every message persisted in SQLite, with only narrow explicit opt-in GC tombstones for already-externalized summarized tool results</li>
 <li><strong>Summary DAG</strong> — hierarchical compaction (D0 minutes → D1 hours → D2 days)</li>
 <li><strong>3-level escalation</strong> — L1 detailed → L2 bullets → L3 deterministic truncate (guaranteed convergence)</li>
 <li><strong>Agent tools</strong> — <code>lcm_grep</code>, <code>lcm_describe</code>, <code>lcm_expand</code>, <code>lcm_expand_query</code> for structured retrieval</li>
+<li><strong>Large tool-output handling</strong> — opt-in externalization for oversized tool results, inspectable later via <code>externalized_ref</code></li>
+<li><strong>Optional transcript GC</strong> — opt-in rewrite of already-externalized summarized tool-result rows to compact GC placeholders instead of deleting them</li>
 <li><strong>Current-turn search</strong> — live messages ingested before tool execution</li>
 <li><strong>Session filtering</strong> — exclude noisy sessions entirely or mark them read-only with glob patterns</li>
 <li><strong>Profile-scoped</strong> — separate DB per Hermes profile</li>
@@ -386,6 +219,26 @@ Provider Plugins:
 <td>Comma-separated glob patterns for sessions that stay read-only (<code>platform:session_id</code> matching supported)</td>
 </tr>
 <tr>
+<td><code>LCM_LARGE_OUTPUT_EXTERNALIZATION_ENABLED</code></td>
+<td><code>false</code></td>
+<td>Opt-in externalization of oversized tool-result content into plugin-managed storage</td>
+</tr>
+<tr>
+<td><code>LCM_LARGE_OUTPUT_EXTERNALIZATION_THRESHOLD_CHARS</code></td>
+<td><code>12000</code></td>
+<td>Character threshold above which tool results are externalized</td>
+</tr>
+<tr>
+<td><code>LCM_LARGE_OUTPUT_EXTERNALIZATION_PATH</code></td>
+<td><code>~/.hermes/lcm-large-outputs</code></td>
+<td>Override storage directory for externalized payloads</td>
+</tr>
+<tr>
+<td><code>LCM_LARGE_OUTPUT_TRANSCRIPT_GC_ENABLED</code></td>
+<td><code>false</code></td>
+<td>Opt-in rewrite of already-externalized summarized tool-result transcript rows to compact GC placeholders</td>
+</tr>
+<tr>
 <td><code>LCM_SUMMARY_MODEL</code></td>
 <td><em>(auxiliary)</em></td>
 <td>Override model for summarization</td>
@@ -417,6 +270,22 @@ Provider Plugins:
 </tr>
 </tbody></table>
 <p>The point-8 compaction knobs are intentionally opt-in. <code>cache_friendly_*</code> is a plugin-local prompt-stability heuristic, not a claim that Hermes currently passes true prompt-cache metrics into <code>hermes-lcm</code>.</p>
+<h3>Large tool-output handling</h3>
+<p><code>hermes-lcm</code> now has a three-step opt-in path for oversized tool results:</p>
+<ol>
+<li><strong>9B externalization</strong> — large tool results are written to plugin-managed JSON files instead of being kept inline for compaction prompts</li>
+<li><strong>9C retrieval</strong> — those payloads stay inspectable later through <code>lcm_describe(externalized_ref=...)</code>, <code>lcm_expand(externalized_ref=...)</code>, or expanded summary sources that attach <code>externalized</code> metadata</li>
+<li><strong>9D transcript GC</strong> — if <code>LCM_LARGE_OUTPUT_TRANSCRIPT_GC_ENABLED=true</code>, already-externalized tool-result rows that were successfully summarized can be rewritten to compact GC placeholders instead of keeping the full raw blob inline forever</li>
+</ol>
+<p>Important boundaries:</p>
+<ul>
+<li>all of this remains <strong>opt-in</strong></li>
+<li>transcript GC rewrites only <strong>tool-role</strong> rows that already have a same-session externalized payload</li>
+<li>the row itself is kept (same <code>store_id</code>), so summary <code>source_ids</code> still resolve cleanly</li>
+<li>pinned messages are skipped</li>
+<li>payload files are <strong>not</strong> deleted by transcript GC; retrieval stays lossless via <code>externalized_ref</code></li>
+<li>transcript GC updates the stored row content and therefore changes raw-message searchability: search should still find summaries / refs, but <code>lcm_grep</code> will no longer match the original giant tool blob text after GC</li>
+</ul>
 <p>Pattern syntax matches <code>lossless-claw</code>:</p>
 <ul>
 <li><code>*</code> matches within one colon-delimited segment</li>
@@ -443,11 +312,11 @@ Provider Plugins:
 </tr>
 <tr>
 <td><code>lcm_describe</code></td>
-<td>Inspect DAG structure — token counts, children, expand hints. No node_id = session overview.</td>
+<td>Inspect DAG structure or an <code>externalized_ref</code> payload preview without loading full payload content. No node_id/externalized_ref = session overview.</td>
 </tr>
 <tr>
 <td><code>lcm_expand</code></td>
-<td>Recover original content from a summary node. Token-budgeted.</td>
+<td>Recover original content from a summary node, or open a stored <code>externalized_ref</code> payload directly.</td>
 </tr>
 <tr>
 <td><code>lcm_expand_query</code></td>
@@ -463,14 +332,15 @@ Provider Plugins:
 </tr>
 </tbody></table>
 <h2>Gateway Slash Commands</h2>
-<p>When Hermes host support for plugin slash commands is available, <code>hermes-lcm</code> also exposes a <code>/lcm</code> operator surface for quick read-only diagnostics from chat:</p>
+<p>When Hermes host support for plugin slash commands is available, <code>hermes-lcm</code> also exposes a <code>/lcm</code> operator surface for quick diagnostics and safe maintenance prep from chat:</p>
 <ul>
 <li><code>/lcm</code> or <code>/lcm status</code> — current session/runtime status</li>
 <li><code>/lcm doctor</code> — SQLite + FTS health checks and store/node totals</li>
 <li><code>/lcm doctor clean</code> — best-effort read-only scan for obvious junk/noise sessions matched from stored session keys</li>
+<li><code>/lcm doctor clean apply</code> — backup-first cleanup for safe pattern-matched junk/noise session candidates</li>
 <li><code>/lcm backup</code> — create a timestamped SQLite backup before any future cleanup workflow</li>
 </ul>
-<p><code>/lcm doctor clean apply</code> is intentionally not implemented yet. This slice is diagnostics-first and backup-first.</p>
+<p>The cleanup path stays intentionally narrow and backup-first; broader retention/prune workflows should still start with diagnostics before any apply/delete step.</p>
 <h2>How It Works</h2>
 <ol>
 <li><strong>Ingest</strong> — every message persisted verbatim in an immutable SQLite store</li>
@@ -518,7 +388,8 @@ system. Config-driven selection via <code>context.engine</code> in config.yaml, 
 <li><strong>New features</strong> should be scoped and backwards-compatible</li>
 <li><strong>Tests required</strong> — run <code>python -m pytest tests/ -v</code> before submitting</li>
 </ul>
-<p>See the <a href="https://github.com/stephenschoettler/hermes-lcm/releases">releases page</a> for changelogs.</p>
+<p>See <a href="https://github.com/stephenschoettler/hermes-lcm/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> for issue, branch, validation, and PR guidance.
+See the <a href="https://github.com/stephenschoettler/hermes-lcm/releases">releases page</a> for changelogs.</p>
 <h2>License</h2>
 <p>MIT</p>
 
