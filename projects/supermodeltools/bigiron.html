@@ -18,6 +18,7 @@
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/assets/css/tokens.css">
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="stylesheet" href="/assets/css/page.css">
@@ -104,7 +105,7 @@
 <p>An AI-native software development system that integrates <strong><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a></strong> with the <strong><a href="https://supermodeltools.com">Supermodel Code Graph API</a></strong> to make structural code intelligence a first-class citizen at every phase of the SDLC.</p>
 <p>The graph replaces file loading for context. The agent stays architecturally aligned across sessions. Phase gates enforce quality without human gatekeeping. The system improves itself with every completed task.</p>
 <hr>
-<h2>Quick Start</h2>
+<h4>Quick Start</h4>
 <pre><code class="language-bash"># 1. Set required env vars
 export SUPERMODEL_API_KEY=your_key_here
 export GITHUB_TOKEN=your_token_here   # optional — for PR automation
@@ -122,7 +123,7 @@ hermes
 factory run ./my-project &quot;Add rate limiting to the order API&quot;
 </code></pre>
 <hr>
-<h2>The <code>factory</code> CLI</h2>
+<h4>The <code>factory</code> CLI</h4>
 <p>The top-level entry point. Three modes:</p>
 <pre><code class="language-bash"># Run the full 8-phase SDLC cycle autonomously on a goal
 factory run &lt;codebase&gt; &quot;&lt;goal&gt;&quot;
@@ -140,7 +141,7 @@ factory improve ./demo
 </code></pre>
 <p>Hermes is launched with all relevant skills pre-loaded and runs autonomously through the phases, using the graph at each step.</p>
 <hr>
-<h2>Demo</h2>
+<h4>Demo</h4>
 <p>A complete layered Python app is included in <code>demo/</code> as a factory target. Run the full 8-phase cycle on it:</p>
 <pre><code class="language-bash">./scripts/demo_run.sh ./demo &quot;Add rate limiting to the order API&quot;
 </code></pre>
@@ -156,13 +157,13 @@ factory improve ./demo
 <li><strong>36 tests</strong> organized in dependency order</li>
 </ul>
 <hr>
-<h2>How It Works</h2>
+<h4>How It Works</h4>
 <p>See <a href="https://github.com/supermodeltools/bigiron/blob/main/docs/ARCHITECTURE.md"><code>docs/ARCHITECTURE.md</code></a> for the full design. The short version:</p>
 <p><strong>Supermodel</strong> ships as an MCP server that Hermes consumes natively. It maintains a persistent multi-layered graph of the codebase — call graph, dependency graph, domain graph, AST. The agent queries this graph instead of loading files.</p>
 <p><strong>Hermes</strong> runs a skill at each SDLC phase. Each skill knows how to use the graph API for that specific phase: blast radius before planning, arch validation before coding, topological test ordering, graph-diff quality gates.</p>
 <p><strong>The result:</strong> the agent always knows what&#39;s connected to what, never hallucinates signatures, and can&#39;t accidentally violate the architecture without it being caught at a gate.</p>
 <hr>
-<h2>The 8 Phases</h2>
+<h4>The 8 Phases</h4>
 <table>
 <thead>
 <tr>
@@ -214,7 +215,7 @@ factory improve ./demo
 </tbody></table>
 <p>Phases run in order. No phase advances without passing its graph-based gate.</p>
 <hr>
-<h2>CI Integration</h2>
+<h4>CI Integration</h4>
 <p><code>graph_gate.sh</code> wraps the Supermodel REST API for use in git hooks, GitHub Actions, or any CI pipeline:</p>
 <pre><code class="language-bash"># Architecture gate (pre-code)
 ./scripts/graph_gate.sh arch ./my-project
@@ -233,7 +234,7 @@ factory improve ./demo
 </code></pre>
 <p>Exit code <code>0</code> = PASS, <code>1</code> = FAIL. Drop into any CI step.</p>
 <hr>
-<h2>File Layout</h2>
+<h4>File Layout</h4>
 <pre><code>big-iron/
 ├── factory                 ← main entry point (run/health/improve)
 ├── README.md
@@ -269,7 +270,7 @@ factory improve ./demo
     └── tests/
 </code></pre>
 <hr>
-<h2>Prerequisites</h2>
+<h4>Prerequisites</h4>
 <ul>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — <code>pip install hermes-agent</code></li>
 <li><a href="https://nodejs.org">Node.js</a> ≥ 18 (for Supermodel MCP server)</li>
@@ -277,7 +278,7 @@ factory improve ./demo
 <li>Python ≥ 3.11 (for demo codebase)</li>
 </ul>
 <hr>
-<h2>References</h2>
+<h4>References</h4>
 <ul>
 <li><a href="https://github.com/supermodeltools/bigiron/blob/main/docs/ARCHITECTURE.md">Architecture</a></li>
 <li><a href="https://github.com/supermodeltools/bigiron/blob/main/AGENTS.md">Agent Rules</a></li>

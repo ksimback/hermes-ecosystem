@@ -33,6 +33,12 @@ function isAbsoluteUrl(url) {
   return /^(?:https?:\/\/|data:|mailto:|#|\/\/)/.test(url.trim());
 }
 
+// ── Safe external link (http/https only; blocks javascript:, data:, etc.) ──
+function safeExternalUrl(url) {
+  if (!url || typeof url !== "string") return null;
+  return /^https?:\/\//i.test(url.trim()) ? url.trim() : null;
+}
+
 // ── Strip leading ./ from paths and encode spaces ──
 function cleanRelativePath(p) {
   return p.replace(/^\.\//, "").replace(/ /g, "%20");
@@ -96,6 +102,14 @@ renderer.image = function ({ href, title, text }) {
   }
   const titleAttr = title ? ` title="${escapeHtml(title)}"` : "";
   return `<img src="${escapeHtml(src)}" alt="${escapeHtml(text || "")}"${titleAttr}>`;
+};
+
+// Demote README heading levels so each page has a single <h1> (DESIGN.md §11).
+// README h1 → h2, h2 → h3, ..., h5 → h6, h6 clamped to h6.
+renderer.heading = function ({ tokens, depth }) {
+  const text = this.parser.parseInline(tokens);
+  const level = Math.min(depth + 1, 6);
+  return `<h${level}>${text}</h${level}>\n`;
 };
 
 marked.setOptions({
@@ -230,6 +244,7 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary) {
 <script>${THEME_INIT}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/assets/css/tokens.css">
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="stylesheet" href="/assets/css/page.css">
@@ -265,8 +280,8 @@ ${renderMasthead("map")}
   </div>
 
   <div class="actions">
-    <a href="${escapeHtml(repo.url)}" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
-    ${meta.homepage ? `<a href="${escapeHtml(meta.homepage)}" target="_blank" rel="noopener" class="btn-secondary">homepage</a>` : ""}
+    <a href="${escapeHtml(safeExternalUrl(repo.url) || "#")}" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    ${safeExternalUrl(meta.homepage) ? `<a href="${escapeHtml(safeExternalUrl(meta.homepage))}" target="_blank" rel="noopener" class="btn-secondary">homepage</a>` : ""}
   </div>
 </section>
 
@@ -372,6 +387,7 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
 <script>${THEME_INIT}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/assets/css/tokens.css">
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="stylesheet" href="/assets/css/page.css">
@@ -492,14 +508,22 @@ async function main() {
         }
       }
     } else {
-      // Offline: reuse the README HTML already baked into the existing page
+      // Offline: reuse the README HTML already baked into the existing page.
+      // Demote heading levels (h1→h2, ..., h5→h6) so the page has one <h1>,
+      // matching what the online `marked` renderer emits.
       const existingPath = path.join(projectsDir, repo.owner, `${repo.repo}.html`);
       if (fs.existsSync(existingPath)) {
         try {
           const existing = fs.readFileSync(existingPath, "utf-8");
           const match = existing.match(/<section class="readme"[^>]*>([\s\S]*?)<\/section>/);
           if (match && !match[1].includes("no-readme")) {
-            readmeHtml = match[1].trim();
+            readmeHtml = match[1]
+              .replace(/<(\/?)h5(\s|>)/g, "<$1h6$2")
+              .replace(/<(\/?)h4(\s|>)/g, "<$1h5$2")
+              .replace(/<(\/?)h3(\s|>)/g, "<$1h4$2")
+              .replace(/<(\/?)h2(\s|>)/g, "<$1h3$2")
+              .replace(/<(\/?)h1(\s|>)/g, "<$1h2$2")
+              .trim();
           }
         } catch {}
       }

@@ -18,6 +18,7 @@
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/assets/css/tokens.css">
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="stylesheet" href="/assets/css/page.css">
@@ -101,7 +102,7 @@
 <p><strong>Hermes Agent (NousResearch) running inside NVIDIA OpenShell.</strong></p>
 <p>NVIDIA built OpenShell to hardware-enforce AI agent behavior — blocking network egress, filesystem writes, and dangerous syscalls at the kernel level. HermesClaw is a community implementation that puts Hermes Agent inside the same sandbox. The agent gets its full capability stack while the OS enforces hard limits. If a skill goes rogue, the kernel stops it.</p>
 <hr>
-<h2>Table of Contents</h2>
+<h4>Table of Contents</h4>
 <ul>
 <li><a href="#architecture">Architecture</a></li>
 <li><a href="#quick-start">Quick Start</a><ul>
@@ -123,15 +124,15 @@
 <li><a href="#related">Related Projects</a></li>
 </ul>
 <hr>
-<h2>Architecture</h2>
+<h4>Architecture</h4>
 <p align="center">
   <img src="https://raw.githubusercontent.com/TheAiSingularity/hermesclaw/main/assets/architecture.png" alt="HermesClaw Architecture" width="780">
 </p>
 
 <p>OpenShell intercepts every call to <code>inference.local</code> inside the sandbox and routes it to the configured backend. Hermes never knows it&#39;s sandboxed.</p>
 <hr>
-<h2>Quick Start</h2>
-<h3>Path 1 — Docker (no NVIDIA hardware required)</h3>
+<h4>Quick Start</h4>
+<h5>Path 1 — Docker (no NVIDIA hardware required)</h5>
 <p>All Hermes features work. No kernel-level sandbox enforcement — Docker isolation only.</p>
 <p><strong>Step 1 — Clone and configure</strong></p>
 <pre><code class="language-bash">git clone https://github.com/TheAiSingularity/hermesclaw
@@ -162,7 +163,7 @@ llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99 --lo
 docker exec -it hermesclaw hermes chat -q &quot;hello&quot;
 </code></pre>
 <hr>
-<h3>Path 2 — OpenShell Sandbox (full hardware enforcement)</h3>
+<h5>Path 2 — OpenShell Sandbox (full hardware enforcement)</h5>
 <p>Requires Linux + NVIDIA GPU + OpenShell installed.</p>
 <pre><code class="language-bash"># Install OpenShell (requires NVIDIA account)
 curl -fsSL https://www.nvidia.com/openshell.sh | bash
@@ -186,7 +187,7 @@ llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99
 ./scripts/hermesclaw chat &quot;hello&quot;  # one-shot message
 </code></pre>
 <hr>
-<h2>What OpenShell Enforces</h2>
+<h4>What OpenShell Enforces</h4>
 <table>
 <thead>
 <tr>
@@ -218,7 +219,7 @@ llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99
 </tbody></table>
 <p>All four layers are enforced <strong>out-of-process</strong> — even a fully compromised Hermes instance cannot override them.</p>
 <hr>
-<h2>Policy Presets</h2>
+<h4>Policy Presets</h4>
 <p>Switch security posture <strong>without restarting</strong> the sandbox:</p>
 <pre><code class="language-bash">./scripts/hermesclaw policy-set strict      # inference only (default)
 ./scripts/hermesclaw policy-set gateway     # + Telegram + Discord
@@ -257,7 +258,7 @@ llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99
 </tr>
 </tbody></table>
 <hr>
-<h2>Hermes Features Inside the Sandbox</h2>
+<h4>Hermes Features Inside the Sandbox</h4>
 <table>
 <thead>
 <tr>
@@ -333,7 +334,7 @@ llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99
 </tr>
 </tbody></table>
 <hr>
-<h2>Skills Library</h2>
+<h4>Skills Library</h4>
 <p>Pre-built skills that encode recurring workflows. Install with one command, invoke via chat:</p>
 <pre><code class="language-bash">./skills/install.sh research-digest     # weekly arXiv digest → Telegram
 ./skills/install.sh code-review         # local code review (CLI or VS Code ACP)
@@ -349,7 +350,7 @@ llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99
 </code></pre>
 <p>Full index: <a href="skills/">skills/README.md</a></p>
 <hr>
-<h2>Use Cases</h2>
+<h4>Use Cases</h4>
 <p>Seven end-to-end guides covering real deployment scenarios — each with prerequisites, setup steps, automated tests, and a NemoClaw comparison:</p>
 <table>
 <thead>
@@ -397,7 +398,7 @@ llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99
 </tbody></table>
 <p>Full index and NemoClaw compatibility table: <a href="docs/use-cases/">docs/use-cases/</a></p>
 <hr>
-<h2>HermesClaw vs NemoClaw</h2>
+<h4>HermesClaw vs NemoClaw</h4>
 <p>Full comparison and test results: <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/docs/test-results.md">docs/test-results.md</a> · <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/docs/test-results-uc.md">docs/test-results-uc.md</a></p>
 <table>
 <thead>
@@ -469,7 +470,7 @@ llama-server -m models/your-model.gguf --port 8080 --ctx-size 32768 -ngl 99
 </tr>
 </tbody></table>
 <hr>
-<h2>hermesclaw CLI</h2>
+<h4>hermesclaw CLI</h4>
 <pre><code>hermesclaw onboard                    First-time setup and prerequisite check
 hermesclaw start [--gpu] [--policy]   Start sandbox (OpenShell) or docker compose
 hermesclaw stop                       Stop sandbox (memories + skills preserved)
@@ -484,12 +485,12 @@ hermesclaw version                    Print version
 hermesclaw uninstall                  Remove Docker image (data preserved)
 </code></pre>
 <hr>
-<h2>Personalise Hermes</h2>
+<h4>Personalise Hermes</h4>
 <pre><code class="language-bash">cp configs/persona.yaml.example configs/persona.yaml
 </code></pre>
 <p>Edit <code>configs/persona.yaml</code> — set your name, role, expertise, ticker watchlist, and response style. Hermes loads this into every session. For deeper personalisation, edit <code>~/.hermes/SOUL.md</code> — this goes directly into the system prompt.</p>
 <hr>
-<h2>Project Structure</h2>
+<h4>Project Structure</h4>
 <pre><code>hermesclaw/
 ├── Dockerfile                          # Hermes Agent on debian:bookworm-slim
 ├── docker-compose.yml                  # Hermes container (llama-server runs on host)
@@ -528,7 +529,7 @@ hermesclaw uninstall                  Remove Docker image (data preserved)
 └── models/                            # Drop .gguf model weights here
 </code></pre>
 <hr>
-<h2>Diagnostics &amp; Testing</h2>
+<h4>Diagnostics &amp; Testing</h4>
 <pre><code class="language-bash"># Check your environment
 ./scripts/doctor.sh           # full diagnostic
 ./scripts/doctor.sh --quick   # skip slow checks
@@ -544,7 +545,7 @@ bash scripts/test-uc-04.sh          # data analyst (Postgres + anomaly detection
 bash scripts/test-uc-07.sh          # trader (latency measurement)
 </code></pre>
 <hr>
-<h2>Contributing</h2>
+<h4>Contributing</h4>
 <p>HermesClaw welcomes contributions — especially:</p>
 <ul>
 <li><strong>OpenShell policy corrections</strong> — if you have access to a real OpenShell environment, correctness fixes are the highest-value contribution</li>
@@ -561,7 +562,7 @@ shellcheck scripts/hermesclaw  # lint before submitting
 </code></pre>
 <p>Full guide: <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> · <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/CODE_OF_CONDUCT.md">Code of Conduct</a> · <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/CHANGELOG.md">Changelog</a></p>
 <hr>
-<h2>Related</h2>
+<h4>Related</h4>
 <ul>
 <li><a href="https://github.com/TheAiSingularity/hermes-agent-nemoclaw-openclaw">hermes-agent-nemoclaw-openclaw</a> — The parent repo: Hermes + NemoClaw + lightweight bots in one stack</li>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — NousResearch&#39;s agent (18k ⭐)</li>

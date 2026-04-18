@@ -18,6 +18,7 @@
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/assets/css/tokens.css">
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="stylesheet" href="/assets/css/page.css">
@@ -87,7 +88,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h1>GLADIATOR</h1>
+    <h3>GLADIATOR</h3>
 <p><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
 <a href="https://github.com/runtimenoteslabs/gladiator/releases"><img src="https://img.shields.io/github/v/release/runtimenoteslabs/gladiator" alt="GitHub release"></a>
 <a href="https://github.com/NousResearch/hermes-agent"><img src="https://img.shields.io/badge/Powered%20by-Hermes%20Agent-blue" alt="Hermes Agent"></a>
@@ -110,7 +111,7 @@
 </p>
 
 <hr>
-<h2>What You&#39;ll See</h2>
+<h4>What You&#39;ll See</h4>
 <ol>
 <li><strong>Landing page</strong>: explains the product (llm-judge), the rules and the two rival companies</li>
 <li><strong>Live dashboard</strong>: 9-section narrative: scoreboard, task boards, code comparison, Gantt chart, audit trail, learning evidence, merge controls</li>
@@ -118,7 +119,7 @@
 <li><strong>Winner announcement</strong>: auto-detects completion, declares winner by projected GitHub stars</li>
 <li><strong>Merge</strong>: companies unite, skills transfer across teams, proving Hermes learning is real</li>
 </ol>
-<h2>Architecture</h2>
+<h4>Architecture</h4>
 <p align="center">
   <img src="https://raw.githubusercontent.com/runtimenoteslabs/gladiator/main/assets/hermes_system_architecture.svg" alt="System Architecture" width="680"/>
 </p>
@@ -158,7 +159,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h2>Prerequisites</h2>
+<h4>Prerequisites</h4>
 <table>
 <thead>
 <tr>
@@ -199,8 +200,8 @@
 </tr>
 </tbody></table>
 <hr>
-<h2>Setup Guide</h2>
-<h3>Step 1: Install Hermes Agent</h3>
+<h4>Setup Guide</h4>
+<h5>Step 1: Install Hermes Agent</h5>
 <pre><code class="language-bash"># Official installer
 curl -fsSL https://hermes.nousresearch.com/install.sh | bash
 
@@ -216,7 +217,7 @@ EOF
 # Test
 hermes chat -q &quot;Say hello in 5 words&quot; -Q --provider anthropic -m claude-haiku-4-5-20251001
 </code></pre>
-<h3>Step 2: Install &amp; Configure Paperclip</h3>
+<h5>Step 2: Install &amp; Configure Paperclip</h5>
 <pre><code class="language-bash"># Clone Paperclip
 cd ~
 git clone https://github.com/paperclipai/paperclip.git
@@ -285,7 +286,7 @@ if (typeof v === &quot;string&quot;) {
 </code></pre>
 </li>
 </ol>
-<h3>Step 3: Clone Gladiator</h3>
+<h5>Step 3: Clone Gladiator</h5>
 <pre><code class="language-bash">cd ~/python_projects  # or wherever you prefer
 git clone https://github.com/runtimenoteslabs/gladiator.git
 cd gladiator
@@ -299,7 +300,7 @@ pip install fastapi uvicorn httpx rich sse-starlette
 cp .env.example .env
 # Edit .env and add your ANTHROPIC_API_KEY
 </code></pre>
-<h3>Step 4: Create Companies &amp; Agents in Paperclip</h3>
+<h5>Step 4: Create Companies &amp; Agents in Paperclip</h5>
 <p>Start Paperclip first:</p>
 <pre><code class="language-bash">cd ~/paperclip
 DATABASE_URL=&quot;postgres://paperclip:paperclip@localhost:5432/paperclip&quot; pnpm dev &amp;
@@ -317,12 +318,12 @@ curl -s http://localhost:3100/api/health  # Should return {&quot;status&quot;:&q
 <li>Isolated <code>~/.hermes/gladiator/{agent-id}/</code> homes with SOUL.md personalities</li>
 <li><code>gladiator_config.json</code> with all company/agent UUIDs</li>
 </ul>
-<h3>Step 5: Start the Dashboard</h3>
+<h5>Step 5: Start the Dashboard</h5>
 <pre><code class="language-bash">cd ~/python_projects/gladiator
 ./base-product/.venv/bin/python -m uvicorn dashboard.server:app --host 0.0.0.0 --port 4000
 </code></pre>
 <p>Open <a href="http://localhost:4000/landing">http://localhost:4000/landing</a> in your browser.</p>
-<h3>Step 6: Launch Demo</h3>
+<h5>Step 6: Launch Demo</h5>
 <p>Click <strong>LAUNCH DEMO</strong> on the landing page. Everything else is automated:</p>
 <ul>
 <li>Evidence watcher auto-starts</li>
@@ -333,8 +334,8 @@ curl -s http://localhost:3100/api/health  # Should return {&quot;status&quot;:&q
 <li>Click <strong>MERGE</strong> after winner to demonstrate cross-company skill transfer</li>
 </ul>
 <hr>
-<h2>Running the Demo</h2>
-<h3>Quick Start (after initial setup)</h3>
+<h4>Running the Demo</h4>
+<h5>Quick Start (after initial setup)</h5>
 <pre><code class="language-bash"># Terminal 1: Paperclip
 cd ~/paperclip
 DATABASE_URL=&quot;postgres://paperclip:paperclip@localhost:5432/paperclip&quot; pnpm dev
@@ -345,7 +346,7 @@ cd ~/python_projects/gladiator
 
 # Browser: http://localhost:4000/landing → Click LAUNCH DEMO
 </code></pre>
-<h3>What Happens During a Run</h3>
+<h5>What Happens During a Run</h5>
 <table>
 <thead>
 <tr>
@@ -375,7 +376,7 @@ cd ~/python_projects/gladiator
 </tr>
 </tbody></table>
 <p>Each run costs roughly <strong>$5-6 on the Anthropic API</strong> (9 Sonnet agents doing tool-heavy work). Budget accordingly.</p>
-<h3>Dashboard Pages</h3>
+<h5>Dashboard Pages</h5>
 <table>
 <thead>
 <tr>
@@ -401,7 +402,7 @@ cd ~/python_projects/gladiator
 </tr>
 </tbody></table>
 <hr>
-<h2>Project Structure</h2>
+<h4>Project Structure</h4>
 <pre><code>gladiator/
 ├── base-product/           # Canonical llm-judge starter code
 │   └── src/llm_judge/      # judge.py, cli.py, display.py
@@ -436,7 +437,7 @@ cd ~/python_projects/gladiator
 ├── .env.example            # API key template
 └── gladiator_config.example.json  # Config template
 </code></pre>
-<h3>Runtime State (gitignored, regenerated per run)</h3>
+<h5>Runtime State (gitignored, regenerated per run)</h5>
 <table>
 <thead>
 <tr>
@@ -466,11 +467,11 @@ cd ~/python_projects/gladiator
 </tr>
 </tbody></table>
 <hr>
-<h2>How It Works</h2>
-<h3>The Competition</h3>
+<h4>How It Works</h4>
+<h5>The Competition</h5>
 <p>Both companies start with identical copies of <strong>llm-judge</strong>, a CLI tool that compares LLM responses side-by-side. Each company&#39;s agents work autonomously to improve the product and maximize projected GitHub stars.</p>
 <p><strong>Star formula:</strong> <code>tasks_done × 8 + unique_skills × 5 + skill_versions × 3</code></p>
-<h3>Hermes Features Used</h3>
+<h5>Hermes Features Used</h5>
 <table>
 <thead>
 <tr>
@@ -505,7 +506,7 @@ cd ~/python_projects/gladiator
 <td><code>learning_milestones</code> type=cross_agent</td>
 </tr>
 </tbody></table>
-<h3>Paperclip Orchestration</h3>
+<h5>Paperclip Orchestration</h5>
 <ul>
 <li><strong>Companies</strong> define budget and organizational structure</li>
 <li><strong>Agents</strong> are autonomous workers with roles, models and heartbeat intervals</li>
@@ -513,11 +514,11 @@ cd ~/python_projects/gladiator
 <li><strong>Heartbeats</strong> trigger agent execution at configured intervals</li>
 <li>The <strong>hermes_local</strong> adapter spawns <code>hermes chat -q &quot;prompt&quot; -Q</code> as a subprocess</li>
 </ul>
-<h3>Token Optimization</h3>
+<h5>Token Optimization</h5>
 <p>Hermes has built-in Anthropic prompt caching (<code>system_and_3</code> strategy, 5-minute TTL). We also trim unused bundled skills and reduce tool definitions for non-code agents to cut input tokens.</p>
 <hr>
-<h2>Troubleshooting</h2>
-<h3>Paperclip won&#39;t start</h3>
+<h4>Troubleshooting</h4>
+<h5>Paperclip won&#39;t start</h5>
 <pre><code class="language-bash"># Check PostgreSQL is running
 pg_isready -h localhost -p 5432
 
@@ -527,44 +528,44 @@ lsof -i :3100
 # WSL2: start PostgreSQL manually
 sudo service postgresql start
 </code></pre>
-<h3>Agents not completing tasks</h3>
+<h5>Agents not completing tasks</h5>
 <ul>
 <li>Check agent status in Paperclip UI (<a href="http://localhost:3100">http://localhost:3100</a>)</li>
 <li>Check <code>~/.hermes/gladiator/{agent}/logs/errors.log</code> for API errors</li>
 <li>&quot;Invalid API response after 3 retries&quot; = Anthropic API rate limit or empty response (usually transient)</li>
 <li>Verify <code>.env</code> has valid <code>ANTHROPIC_API_KEY</code></li>
 </ul>
-<h3>Dashboard shows empty panels</h3>
+<h5>Dashboard shows empty panels</h5>
 <ul>
 <li>Evidence watcher must be running (auto-starts on LAUNCH DEMO)</li>
 <li>Check <code>/tmp/watcher.log</code> for errors</li>
 <li>Verify <code>evidence.db</code> exists and has data</li>
 </ul>
-<h3>&quot;adapter_failed&quot; in Paperclip</h3>
+<h5>&quot;adapter_failed&quot; in Paperclip</h5>
 <ul>
 <li>The <code>&quot;NaN&quot; bigint</code> error is cosmetic. Paperclip can&#39;t parse Hermes token output. Tasks still complete fine.</li>
 </ul>
-<h3>Competition never ends</h3>
+<h5>Competition never ends</h5>
 <ul>
 <li>Timer auto-stops at 600 seconds even if agents stall</li>
 <li>If dashboard was restarted mid-competition, in-memory state is lost. Use LAUNCH DEMO to restart</li>
 </ul>
 <hr>
-<h2>Future Ideas</h2>
+<h4>Future Ideas</h4>
 <ul>
 <li><strong>Espionage mechanic.</strong> Agents browse each other&#39;s public GitHub and adapt strategy based on what the competitor shipped.</li>
 <li><strong>Spectator voting.</strong> Dashboard lets visitors vote on which strategy they think will win, shown as a live poll.</li>
 <li><strong>ClipMart export.</strong> Package both company configs as Paperclip ClipMart templates so anyone can import and run their own Gladiator match.</li>
 </ul>
 <hr>
-<h2>Credits</h2>
+<h4>Credits</h4>
 <p>Built by <a href="https://github.com/runtimenoteslabs">RuntimeNotes Labs</a> for the Nous Research Hermes Agent Hackathon.</p>
 <ul>
 <li><strong><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a></strong> by Nous Research. Autonomous AI agent with persistent memory, skills and session continuity</li>
 <li><strong><a href="https://github.com/paperclipai/paperclip">Paperclip</a></strong> by Paperclip AI. AI company orchestration platform</li>
 <li><strong>Claude Sonnet</strong> by Anthropic. Powers all 9 agents</li>
 </ul>
-<h2>License</h2>
+<h4>License</h4>
 <p>This project is licensed under the <a href="LICENSE">MIT License</a>.</p>
   </section>
 </details>

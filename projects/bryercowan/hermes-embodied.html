@@ -18,6 +18,7 @@
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/assets/css/tokens.css">
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="stylesheet" href="/assets/css/page.css">
@@ -87,14 +88,14 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h1>Hermes Embodied: Self-Improving Robotics via Hermes Agent</h1>
+    <h3>Hermes Embodied: Self-Improving Robotics via Hermes Agent</h3>
 <blockquote>
 <p>&quot;Any robot owner can fine-tune a state-of-the-art VLA by talking to their agent. No ML expertise needed.&quot;</p>
 </blockquote>
-<h2>What Is This?</h2>
+<h4>What Is This?</h4>
 <p>Hermes Embodied turns <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> into a <strong>self-improving robotics trainer</strong>. It adds three Hermes skills that close the loop between robot execution, training data collection, and model improvement — all orchestrated through natural language.</p>
 <p>The same self-improvement loop that Hermes uses to get better at coding tasks (via Tinker-Atropos RL) now extends to <strong>physical robot control</strong> via Vision-Language-Action models.</p>
-<h2>Architecture</h2>
+<h4>Architecture</h4>
 <pre><code>┌─────────────────────────────────────────────────────┐
 │                   HERMES AGENT                       │
 │  (Reasoning Layer — plans, monitors, orchestrates)   │
@@ -117,7 +118,7 @@
 │  (Franka Panda sim tasks)          (Physical arm)    │
 └─────────────────────────────────────────────────────┘
 </code></pre>
-<h2>The Self-Improvement Loop</h2>
+<h4>The Self-Improvement Loop</h4>
 <ol>
 <li><strong>Deploy</strong> — Hermes loads a VLA checkpoint and runs it in sim (or on hardware)</li>
 <li><strong>Collect</strong> — Every rollout is recorded as a LeRobot trajectory (state, action, camera, reward)</li>
@@ -127,15 +128,15 @@
 <li><strong>Promote</strong> — If new model is better, it becomes the active policy</li>
 <li><strong>Repeat</strong> — Scheduled via Hermes cron, runs autonomously</li>
 </ol>
-<h2>Skills</h2>
-<h3><code>vast-gpu</code> — Cloud GPU Infrastructure</h3>
+<h4>Skills</h4>
+<h5><code>vast-gpu</code> — Cloud GPU Infrastructure</h5>
 <p>Provision, monitor, and teardown GPU instances on Vast.ai through natural language.</p>
 <ul>
 <li>&quot;Spin up an A100 for training&quot; → finds cheapest A100, creates instance, returns SSH access</li>
 <li>&quot;How&#39;s my training instance?&quot; → checks status, GPU utilization, cost so far</li>
 <li>&quot;Tear down the GPU&quot; → destroys instance, confirms billing stopped</li>
 </ul>
-<h3><code>vla-trainer</code> — VLA Fine-Tuning Pipeline</h3>
+<h5><code>vla-trainer</code> — VLA Fine-Tuning Pipeline</h5>
 <p>End-to-end fine-tuning of Vision-Language-Action models.</p>
 <ul>
 <li>Supports SmolVLA (450M, fast) and GR00T N1.5 (3B, powerful)</li>
@@ -143,7 +144,7 @@
 <li>Runs training on Vast.ai with WandB monitoring</li>
 <li>Open-loop evaluation with trajectory visualization</li>
 </ul>
-<h3><code>robot-loop</code> — Continuous Improvement</h3>
+<h5><code>robot-loop</code> — Continuous Improvement</h5>
 <p>The autonomous improvement cycle.</p>
 <ul>
 <li>Runs VLA inference in MuJoCo simulation</li>
@@ -152,7 +153,7 @@
 <li>A/B tests new checkpoints against current best</li>
 <li>Promotes winners, logs everything</li>
 </ul>
-<h2>Quick Start</h2>
+<h4>Quick Start</h4>
 <pre><code class="language-bash"># Tell Hermes what you want
 &quot;Set up a simulation environment for pick-and-place tasks&quot;
 
@@ -166,7 +167,7 @@
 
 # Hermes runs inference in sim, collects trajectories, schedules retraining
 </code></pre>
-<h2>Hardware Support (Optional)</h2>
+<h4>Hardware Support (Optional)</h4>
 <p>For physical deployment on SO-ARM101:</p>
 <ul>
 <li>Leader arm (teleoperation/demo recording)</li>
@@ -174,7 +175,7 @@
 <li>USB cameras (wrist + global view)</li>
 <li>Any Linux machine with USB ports</li>
 </ul>
-<h2>Models Supported</h2>
+<h4>Models Supported</h4>
 <table>
 <thead>
 <tr>
@@ -207,14 +208,14 @@
 <td>Latest, best performance</td>
 </tr>
 </tbody></table>
-<h2>Cost Estimate</h2>
+<h4>Cost Estimate</h4>
 <ul>
 <li>Vast.ai A100 80GB: ~$1/hr → ~$4 per training run</li>
 <li>Vast.ai A6000 48GB: ~$0.50/hr → ~$2 per training run</li>
 <li>Simulation: Free (local CPU/GPU)</li>
 <li>Physical arm (optional): ~$200-$440</li>
 </ul>
-<h2>Project Structure</h2>
+<h4>Project Structure</h4>
 <pre><code>hermes-embodied/
 ├── README.md
 ├── skills/
@@ -237,7 +238,7 @@
 └── docs/
     └── ARCHITECTURE.md
 </code></pre>
-<h2>Built With</h2>
+<h4>Built With</h4>
 <ul>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — AI agent framework with skills, memory, and RL training</li>
 <li><a href="https://github.com/huggingface/lerobot">LeRobot</a> — Open-source robotics framework by Hugging Face</li>
@@ -246,7 +247,7 @@
 <li><a href="https://mujoco.org/">MuJoCo</a> — Physics simulation for robotics</li>
 <li><a href="https://wandb.ai">WandB</a> — Experiment tracking</li>
 </ul>
-<h2>License</h2>
+<h4>License</h4>
 <p>MIT</p>
   </section>
 </details>

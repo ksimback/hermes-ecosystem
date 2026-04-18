@@ -35,6 +35,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/assets/css/tokens.css">
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="stylesheet" href="/assets/css/index.css">
@@ -1114,13 +1115,10 @@
   const ttDesc = document.getElementById('tt-desc');
 
   function initTooltips() {
-    document.querySelectorAll('.repo-row[data-desc], .featured-name[data-desc]').forEach(item => {
+    document.querySelectorAll('.repo-row[data-desc]').forEach(item => {
       item.addEventListener('mouseenter', e => {
-        const nameEl = item.querySelector('.repo-name, .featured-name');
-        const nameText = item.classList.contains('featured-name')
-          ? item.textContent.trim()
-          : (nameEl ? nameEl.textContent.replace('official', '').trim() : '');
-        ttName.textContent = nameText;
+        const nameEl = item.querySelector('.repo-name');
+        ttName.textContent = nameEl ? nameEl.textContent.replace('official', '').trim() : '';
         ttDesc.textContent = item.getAttribute('data-desc') || '';
         tooltip.style.display = 'block';
         positionTooltip(e);
@@ -1470,6 +1468,11 @@
         const errData = await res.json();
         clearTimeout(timeoutId);
         throw new Error(errData.error || 'Error ' + res.status);
+      }
+
+      if (!res.body) {
+        clearTimeout(timeoutId);
+        throw new Error('Empty response body. Please try again.');
       }
 
       const reader = res.body.getReader();

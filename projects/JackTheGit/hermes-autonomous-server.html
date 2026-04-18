@@ -18,6 +18,7 @@
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/assets/css/tokens.css">
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="stylesheet" href="/assets/css/page.css">
@@ -87,7 +88,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h1>🚀 Hermes Agent – Autonomous Linux Server Setup</h1>
+    <h3>🚀 Hermes Agent – Autonomous Linux Server Setup</h3>
 <p align="center">
   A clean, reboot-safe, headless deployment guide for Hermes Agent.
 </p>
@@ -105,7 +106,7 @@
 <p>No shell loops.<br>No fragile TTY hacks.<br>No third-party hosting required.</p>
 <p>Clean, production-ready architecture.</p>
 <hr>
-<h1>📌 Overview</h1>
+<h3>📌 Overview</h3>
 <p>This guide shows how to:</p>
 <ul>
 <li>Install Hermes Agent</li>
@@ -117,7 +118,7 @@
 </ul>
 <p>Once configured, Hermes runs fully autonomous.</p>
 <hr>
-<h1>🧩 What This Is Not</h1>
+<h3>🧩 What This Is Not</h3>
 <ul>
 <li>Not an official Hermes project</li>
 <li>Not affiliated with Nous Research</li>
@@ -125,7 +126,7 @@
 </ul>
 <p>This is a deployment guide for running Hermes autonomously on your own infrastructure.</p>
 <hr>
-<h1>🔑 Requirements</h1>
+<h3>🔑 Requirements</h3>
 <p>You need an active <strong>Nous Portal subscription</strong>:</p>
 <p>👉 <a href="https://portal.nousresearch.com/billing">https://portal.nousresearch.com/billing</a></p>
 <p>Hermes uses Nous Portal for model access.</p>
@@ -138,7 +139,7 @@
 <p>💡 At the time of writing, the basic subscription may be activated using the promotional code <code>HERMESAGENT</code> (availability subject to change).<br>Check the billing page for current eligibility.</p>
 </blockquote>
 <hr>
-<h1>🖥 Supported Environment</h1>
+<h3>🖥 Supported Environment</h3>
 <ul>
 <li>Ubuntu / Debian (tested)</li>
 <li>Dedicated server or VPS</li>
@@ -146,14 +147,14 @@
 <li>Non-root user recommended</li>
 </ul>
 <hr>
-<h1>📦 Installation</h1>
-<h2>1️⃣ Create a Dedicated User</h2>
+<h3>📦 Installation</h3>
+<h4>1️⃣ Create a Dedicated User</h4>
 <pre><code class="language-bash">sudo adduser hermes
 sudo usermod -aG sudo hermes
 su - hermes
 </code></pre>
 <hr>
-<h2>2️⃣ Install Hermes Agent</h2>
+<h4>2️⃣ Install Hermes Agent</h4>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
 </code></pre>
 <p>Verify installation:</p>
@@ -163,7 +164,7 @@ su - hermes
 <pre><code>/home/hermes/.local/bin/hermes
 </code></pre>
 <hr>
-<h2>3️⃣ Authenticate with Nous Portal</h2>
+<h4>3️⃣ Authenticate with Nous Portal</h4>
 <pre><code class="language-bash">hermes login
 </code></pre>
 <p>Complete browser authentication.</p>
@@ -174,7 +175,7 @@ su - hermes
 <pre><code>Nous Portal ✓ logged in
 </code></pre>
 <hr>
-<h1>⏰ Create Autonomous Cron Job</h1>
+<h3>⏰ Create Autonomous Cron Job</h3>
 <p>Start Hermes:</p>
 <pre><code class="language-bash">hermes chat
 </code></pre>
@@ -189,7 +190,7 @@ Limit response to 180 words.
 <pre><code>Ctrl + C
 </code></pre>
 <hr>
-<h1>⚙ Enable Hermes Gateway (System-Level Service)</h1>
+<h3>⚙ Enable Hermes Gateway (System-Level Service)</h3>
 <p>Some VPS environments do not support <code>systemctl --user</code>.
 Use a system-level service instead.</p>
 <p>Create service file:</p>
@@ -217,7 +218,7 @@ sudo systemctl enable hermes-gateway
 sudo systemctl start hermes-gateway
 </code></pre>
 <hr>
-<h1>✅ Verify Everything</h1>
+<h3>✅ Verify Everything</h3>
 <p>Check gateway:</p>
 <pre><code class="language-bash">sudo systemctl status hermes-gateway
 </code></pre>
@@ -228,7 +229,7 @@ sudo systemctl start hermes-gateway
 <pre><code>✓ Gateway is running — cron jobs will fire automatically
 </code></pre>
 <hr>
-<h1>🏗 Architecture</h1>
+<h3>🏗 Architecture</h3>
 <pre><code>Systemd (system service)
         ↓
 Hermes Gateway
@@ -240,7 +241,7 @@ Claude Model (Nous Portal)
 Local Output Files
 </code></pre>
 <hr>
-<h1>💰 Cost Considerations</h1>
+<h3>💰 Cost Considerations</h3>
 <p>Example configuration:</p>
 <ul>
 <li>10-minute interval</li>
@@ -253,7 +254,7 @@ Typically ~$8–12/month depending on model and output size.</p>
 <pre><code>Update cronjob &lt;job_id&gt; to run every 15 minutes.
 </code></pre>
 <hr>
-<h1>📊 Monitoring</h1>
+<h3>📊 Monitoring</h3>
 <p>Gateway logs:</p>
 <pre><code class="language-bash">journalctl -u hermes-gateway -f
 </code></pre>
@@ -264,7 +265,7 @@ Typically ~$8–12/month depending on model and output size.</p>
 <pre><code class="language-bash">hermes cron status
 </code></pre>
 <hr>
-<h1>🔄 Reboot Safety</h1>
+<h3>🔄 Reboot Safety</h3>
 <p>This setup:</p>
 <ul>
 <li>Auto-starts on reboot</li>
@@ -273,13 +274,13 @@ Typically ~$8–12/month depending on model and output size.</p>
 <li>Automatically restarts if gateway crashes</li>
 </ul>
 <hr>
-<h1>🧼 Uninstall</h1>
+<h3>🧼 Uninstall</h3>
 <pre><code class="language-bash">sudo systemctl stop hermes-gateway
 sudo systemctl disable hermes-gateway
 hermes uninstall
 </code></pre>
 <hr>
-<h1>🎯 Why This Approach?</h1>
+<h3>🎯 Why This Approach?</h3>
 <p>✔ Uses native Hermes scheduler
 ✔ Avoids shell-based infinite loops
 ✔ Avoids TTY emulation hacks
@@ -287,7 +288,7 @@ hermes uninstall
 ✔ Minimal operational complexity
 ✔ Fully self-hosted</p>
 <hr>
-<h1>⚠ Important Notes</h1>
+<h3>⚠ Important Notes</h3>
 <ul>
 <li>Nous Portal subscription required:
 <a href="https://portal.nousresearch.com/billing">https://portal.nousresearch.com/billing</a></li>
@@ -296,7 +297,7 @@ hermes uninstall
 <li>Monitor billing regularly</li>
 </ul>
 <hr>
-<h1>🔒 Security Considerations</h1>
+<h3>🔒 Security Considerations</h3>
 <ul>
 <li>Do not expose your server publicly without firewall rules.</li>
 <li>Avoid running Hermes as root.</li>
@@ -305,7 +306,7 @@ hermes uninstall
 </ul>
 <p>This guide assumes a trusted VPS or dedicated environment.</p>
 <hr>
-<h2>Disclaimer</h2>
+<h4>Disclaimer</h4>
 <p>This repository is an independent deployment guide and is not affiliated with or endorsed by Nous Research.</p>
   </section>
 </details>

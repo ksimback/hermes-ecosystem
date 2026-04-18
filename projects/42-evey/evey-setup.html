@@ -18,6 +18,7 @@
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/assets/css/tokens.css">
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="stylesheet" href="/assets/css/page.css">
@@ -94,27 +95,27 @@
   \___|  \_/ \___| \__, |    |___/\___|\__|\__,_| .__/
                    |___/                         |_|
 </code></pre>
-<h1>Evey Setup</h1>
+<h3>Evey Setup</h3>
 <blockquote>
 <p><strong>Support Evey</strong> — runs 24/7 on free models, hardware costs ~$69/mo: <strong><a href="https://evey.cc/donate.html">Donate</a></strong> (BTC, ETH, SOL, XRP, DOGE)</p>
 </blockquote>
 <p>One script. Zero cost. Full autonomous AI agent stack.</p>
 <p>Bootstrap a complete <a href="https://github.com/NousResearch/hermes-agent">hermes-agent</a> stack with model routing, GPU inference, and 29 community plugins in under 5 minutes.</p>
 <hr>
-<h2>Quick Start</h2>
+<h4>Quick Start</h4>
 <pre><code class="language-bash">git clone https://github.com/42-evey/evey-setup.git
 cd evey-setup
 bash setup.sh
 </code></pre>
 <p>The installer walks you through API keys, scaffolds the directory, writes all configs, and clones hermes-agent. Then pick a service tier and start containers.</p>
 <p>Or run all 4 phases at once: <code>bash install.sh</code></p>
-<h3>Let Claude Code Do It</h3>
+<h5>Let Claude Code Do It</h5>
 <p>Paste this into Claude Code and let it handle the whole setup:</p>
 <blockquote>
 <p>Clone <a href="https://github.com/42-evey/evey-setup.git">https://github.com/42-evey/evey-setup.git</a> and run the setup. Read the CLAUDE.md first for context. Run each phase (setup.sh, setup-services.sh, install-plugins.sh, configure.sh) in order. Use the &quot;full&quot; service tier and install all plugins. After setup, verify all services are healthy with docker compose ps.</p>
 </blockquote>
 <hr>
-<h2>What You Get</h2>
+<h4>What You Get</h4>
 <table>
 <thead>
 <tr>
@@ -176,7 +177,7 @@ bash setup.sh
 </tbody></table>
 <p>Plus <strong>29 community plugins</strong> for autonomy, memory, quality validation, social features, and more.</p>
 <hr>
-<h2>Prerequisites</h2>
+<h4>Prerequisites</h4>
 <ul>
 <li><strong>Docker</strong> &gt;= 24.0 with Docker Compose v2</li>
 <li><strong>Git</strong></li>
@@ -185,7 +186,7 @@ bash setup.sh
 <li><strong>NVIDIA GPU</strong> (optional) -- Ollama falls back to CPU if no GPU detected</li>
 </ul>
 <hr>
-<h2>Architecture</h2>
+<h4>Architecture</h4>
 <pre><code> User
   |
   |  Telegram / CLI / Discord
@@ -219,41 +220,41 @@ bash setup.sh
 </code></pre>
 <p>All ports bind to <code>127.0.0.1</code> only (not exposed to the network).</p>
 <hr>
-<h2>Stack Tiers</h2>
+<h4>Stack Tiers</h4>
 <p>Three docker-compose templates are provided. Choose your tier at install time.</p>
-<h3>Base (3 services)</h3>
+<h5>Base (3 services)</h5>
 <pre><code>hermes-agent + LiteLLM + Ollama
 </code></pre>
 <p>Minimum viable stack. Good for testing and getting started.</p>
-<h3>Services (7 services)</h3>
+<h5>Services (7 services)</h5>
 <pre><code>Base + MQTT + SearXNG + Qdrant + ntfy
 </code></pre>
 <p>Adds real-time messaging, web search, vector memory, and push notifications.</p>
-<h3>Full (12+ services)</h3>
+<h5>Full (12+ services)</h5>
 <pre><code>Services + n8n + Langfuse + Uptime Kuma + Postgres backends
 </code></pre>
 <p>Complete production stack with workflow automation, cost tracking, and monitoring.</p>
 <hr>
-<h2>Step-by-Step Usage</h2>
+<h4>Step-by-Step Usage</h4>
 <p>The setup is split into 4 phases. Each phase is a separate script that can be run independently.</p>
-<h3>Phase 1: Foundation</h3>
+<h5>Phase 1: Foundation</h5>
 <pre><code class="language-bash">bash setup.sh
 </code></pre>
 <p>Checks prerequisites (Docker &gt;= 24, Compose v2, git, 5GB disk), asks for API keys (OpenRouter, Telegram, Discord), generates secure internal secrets, scaffolds the directory structure, clones hermes-agent, and writes all config files.</p>
-<h3>Phase 2: Service Deployment</h3>
+<h5>Phase 2: Service Deployment</h5>
 <pre><code class="language-bash">bash setup-services.sh
 </code></pre>
 <p>Choose a stack tier (base/services/full), check port availability, detect GPU, copy the matching docker-compose template, and start containers. Waits for services to become healthy.</p>
-<h3>Phase 3: Plugins</h3>
+<h5>Phase 3: Plugins</h5>
 <pre><code class="language-bash">bash install-plugins.sh
 </code></pre>
 <p>Interactive category menu. Select which plugin groups to install (core, observability, social, memory, quality, extra). Clones from the plugin repository and copies selected plugins into the agent data directory.</p>
-<h3>Phase 4: Configuration</h3>
+<h5>Phase 4: Configuration</h5>
 <pre><code class="language-bash">bash configure.sh
 </code></pre>
 <p>Interactive wizard for brain model selection, compression threshold, cron job scheduling, Telegram pairing, and SOUL.md personality preset. Generates helper scripts in <code>scripts/</code>.</p>
 <hr>
-<h2>Configuration</h2>
+<h4>Configuration</h4>
 <p>After setup, all configuration lives in your install directory:</p>
 <pre><code>hermes-stack/
   .env                          # API keys and secrets (gitignored)
@@ -270,7 +271,7 @@ bash setup.sh
   src/
     hermes-agent/               # Agent source (cloned from NousResearch)
 </code></pre>
-<h3>Key config files</h3>
+<h5>Key config files</h5>
 <table>
 <thead>
 <tr>
@@ -295,7 +296,7 @@ bash setup.sh
 <td>Agent personality and decision framework</td>
 </tr>
 </tbody></table>
-<h3>Models</h3>
+<h5>Models</h5>
 <p>The default setup uses entirely free models:</p>
 <ul>
 <li><strong>Brain</strong>: MiMo-V2-Pro via OpenRouter (free, 1M context)</li>
@@ -304,11 +305,11 @@ bash setup.sh
 </ul>
 <p>Daily cost: <strong>$0</strong>.</p>
 <hr>
-<h2>Plugins</h2>
+<h4>Plugins</h4>
 <p>Install plugins interactively after setup:</p>
 <pre><code class="language-bash">bash install-plugins.sh
 </code></pre>
-<h3>Categories</h3>
+<h5>Categories</h5>
 <table>
 <thead>
 <tr>
@@ -350,7 +351,7 @@ bash setup.sh
 </tbody></table>
 <p>All plugins come from <a href="https://github.com/42-evey/hermes-plugins">42-evey/hermes-plugins</a>.</p>
 <hr>
-<h2>Common Commands</h2>
+<h4>Common Commands</h4>
 <pre><code class="language-bash"># Service management
 docker compose up -d                    # start all services
 docker compose down                     # stop all services
@@ -370,50 +371,50 @@ docker exec hermes-ollama ollama pull hermes3:8b    # pull a local model
 docker exec hermes-ollama ollama list               # list local models
 </code></pre>
 <hr>
-<h2>Troubleshooting</h2>
-<h3>LiteLLM fails to start</h3>
+<h4>Troubleshooting</h4>
+<h5>LiteLLM fails to start</h5>
 <ul>
 <li>Check your OpenRouter API key in <code>.env</code></li>
 <li>Run <code>docker compose logs hermes-litellm</code> for details</li>
 <li>Verify config syntax: <code>python3 -c &quot;import yaml; yaml.safe_load(open(&#39;config/litellm.yaml&#39;))&quot;</code></li>
 </ul>
-<h3>Ollama GPU errors</h3>
+<h5>Ollama GPU errors</h5>
 <ul>
 <li>If no NVIDIA GPU: remove the <code>deploy:</code> block from <code>hermes-ollama</code> in <code>docker-compose.yml</code></li>
 <li>If GPU exists but fails: ensure <a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">NVIDIA Container Toolkit</a> is installed</li>
 <li>Ollama works on CPU too, just slower</li>
 </ul>
-<h3>Port conflicts</h3>
+<h5>Port conflicts</h5>
 <ul>
 <li>The installer checks ports before starting. If a port is in use:<pre><code class="language-bash">ss -tlnp | grep :4000    # find what is using the port
 </code></pre>
 </li>
 <li>Change the host port in <code>docker-compose.yml</code> (e.g., <code>&quot;127.0.0.1:4001:4000&quot;</code>)</li>
 </ul>
-<h3>Agent not responding</h3>
+<h5>Agent not responding</h5>
 <ul>
 <li>Check if LiteLLM is healthy first (agent depends on it)</li>
 <li>Run <code>docker compose restart hermes-agent</code></li>
 <li>Check <code>docker compose logs hermes-agent --tail 50</code></li>
 </ul>
-<h3>Plugins not loading</h3>
+<h5>Plugins not loading</h5>
 <ul>
 <li>Plugins go in <code>data/hermes/plugins/</code></li>
 <li>Restart the agent after installing: <code>docker compose restart hermes-agent</code></li>
 <li>Check plugin README files for any required config.yaml changes</li>
 </ul>
-<h3>Existing installation</h3>
+<h5>Existing installation</h5>
 <ul>
 <li>Re-running <code>setup.sh</code> on an existing directory will ask before overwriting</li>
 <li>Config files are replaced but data volumes are preserved</li>
 <li>Back up <code>.env</code> before re-running if you customized it</li>
 </ul>
 <hr>
-<h2>Security</h2>
+<h4>Security</h4>
 <p>This stack is designed for <strong>local-only deployment</strong> on a single machine. It is not intended to be exposed to the public internet.</p>
-<h3>Network isolation</h3>
+<h5>Network isolation</h5>
 <p>Every service port binds to <code>127.0.0.1</code>, meaning traffic never leaves your machine. No service is reachable from the network unless you explicitly change the port bindings in <code>docker-compose.yml</code>. If you need remote access, use an SSH tunnel or a reverse proxy with authentication -- do not change <code>127.0.0.1</code> to <code>0.0.0.0</code>.</p>
-<h3>Secrets management</h3>
+<h5>Secrets management</h5>
 <ul>
 <li>All API keys and internal service passwords are auto-generated by <code>setup.sh</code> using <code>openssl rand</code> and written to <code>.env</code></li>
 <li><code>.env</code> is set to <code>chmod 600</code> (owner-read/write only) and is gitignored</li>
@@ -421,7 +422,7 @@ docker exec hermes-ollama ollama list               # list local models
 <li>SearXNG secret key is randomly generated at install time (not hardcoded)</li>
 <li>No hardcoded credentials anywhere in the codebase</li>
 </ul>
-<h3>Service defaults</h3>
+<h5>Service defaults</h5>
 <ul>
 <li>MQTT allows anonymous access -- this is safe because the broker only listens on localhost. If you expose port 1883, configure authentication first.</li>
 <li>PII redaction and secret redaction are enabled by default in the agent config (<code>data/hermes/config.yaml</code>)</li>
@@ -429,7 +430,7 @@ docker exec hermes-ollama ollama list               # list local models
 <li>All docker containers use <code>json-file</code> logging with 10MB rotation to prevent disk exhaustion</li>
 </ul>
 <hr>
-<h2>Project Structure</h2>
+<h4>Project Structure</h4>
 <pre><code>evey-setup/
   setup.sh                 # Phase 1: prerequisites, scaffold, secrets, config files
   setup-services.sh        # Phase 2: tier selection, docker-compose, start containers
@@ -450,10 +451,10 @@ docker exec hermes-ollama ollama list               # list local models
   LICENSE
 </code></pre>
 <hr>
-<h2>License</h2>
+<h4>License</h4>
 <p>MIT License. See <a href="LICENSE">LICENSE</a>.</p>
 <hr>
-<h2>Credits</h2>
+<h4>Credits</h4>
 <p>Built by <a href="https://evey.cc">Evey</a> -- an autonomous AI agent running 24/7 on a self-hosted stack.</p>
 <p>Powered by <a href="https://github.com/NousResearch/hermes-agent">hermes-agent</a> from Nous Research.</p>
   </section>

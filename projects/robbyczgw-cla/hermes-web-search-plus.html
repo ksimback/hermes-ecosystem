@@ -18,6 +18,7 @@
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/assets/css/tokens.css">
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="stylesheet" href="/assets/css/page.css">
@@ -87,13 +88,13 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h1>web-search-plus — Hermes Plugin</h1>
+    <h3>web-search-plus — Hermes Plugin</h3>
 <p>Multi-provider web search with intelligent auto-routing for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>.</p>
 <blockquote>
 <p>Ported from <a href="https://github.com/robbyczgw-cla/web-search-plus-plugin">web-search-plus-plugin</a> (OpenClaw) to the Hermes Plugin API.</p>
 </blockquote>
 <hr>
-<h2>Quick Start</h2>
+<h4>Quick Start</h4>
 <pre><code class="language-bash">git clone https://github.com/robbyczgw-cla/hermes-web-search-plus.git ~/.hermes/plugins/web-search-plus
 cd ~/.hermes/plugins/web-search-plus
 cp .env.template .env          # fill in at least SERPER_API_KEY
@@ -101,7 +102,7 @@ pip install requests
 </code></pre>
 <p>That&#39;s it. Start Hermes and use <code>web_search_plus</code>.</p>
 <hr>
-<h2>Features</h2>
+<h4>Features</h4>
 <ul>
 <li><strong>Intelligent auto-routing</strong> — picks the best provider based on query intent</li>
 <li><strong>7 providers</strong> — Serper, Tavily, Exa, Querit, Perplexity, You.com, SearXNG</li>
@@ -112,7 +113,7 @@ pip install requests
 <li><strong>Local caching</strong> — avoids duplicate API calls (1h TTL)</li>
 </ul>
 <hr>
-<h2>Provider Routing</h2>
+<h4>Provider Routing</h4>
 <table>
 <thead>
 <tr>
@@ -159,8 +160,8 @@ pip install requests
 </tbody></table>
 <p>Auto-routing scores providers based on query signals (keywords, intent, linguistic patterns). Every response includes a <code>routing</code> field explaining why a provider was chosen. Override anytime with <code>provider=&quot;serper&quot;</code> etc.</p>
 <hr>
-<h2>Installation</h2>
-<h3>API Keys</h3>
+<h4>Installation</h4>
+<h5>API Keys</h5>
 <pre><code class="language-bash"># Required (at least one)
 SERPER_API_KEY=your-key        # https://serper.dev — 2,500 free/mo
 TAVILY_API_KEY=your-key        # https://tavily.com — 1,000 free/mo
@@ -177,8 +178,8 @@ SEARXNG_INSTANCE_URL=https://your-instance.example.com
 <p>Python 3.8+ required. For Exa deep research: <code>pip install httpx</code> (optional).</p>
 </blockquote>
 <hr>
-<h2>Usage</h2>
-<h3>Parameters</h3>
+<h4>Usage</h4>
+<h5>Parameters</h5>
 <table>
 <thead>
 <tr>
@@ -231,7 +232,7 @@ SEARXNG_INSTANCE_URL=https://your-instance.example.com
 <td>Blacklist: <code>[&quot;reddit.com&quot;]</code></td>
 </tr>
 </tbody></table>
-<h3>Examples</h3>
+<h5>Examples</h5>
 <pre><code class="language-python">web_search_plus(query=&quot;Graz weather today&quot;)
 # → auto-routed to Serper (local/weather intent)
 
@@ -247,12 +248,12 @@ web_search_plus(query=&quot;OpenAI news&quot;, time_range=&quot;day&quot;)
 web_search_plus(query=&quot;LoRA fine-tuning&quot;, include_domains=[&quot;arxiv.org&quot;])
 # → arxiv only
 </code></pre>
-<h3>CLI testing</h3>
+<h5>CLI testing</h5>
 <pre><code class="language-bash">python3 ~/.hermes/plugins/web-search-plus/search.py \
   --query &quot;test query&quot; --provider auto --max-results 5 --compact
 </code></pre>
 <hr>
-<h2>Architecture</h2>
+<h4>Architecture</h4>
 <pre><code>__init__.py      — Hermes plugin entry, tool schema, handler
 search.py        — Core engine: providers, routing, caching, fallback
 plugin.yaml      — Plugin manifest
@@ -261,7 +262,7 @@ CHANGELOG.md     — Version history
 </code></pre>
 <p>The plugin runs <code>search.py</code> as a subprocess with a 75s timeout (for Exa deep-reasoning queries).</p>
 <hr>
-<h2>Related</h2>
+<h4>Related</h4>
 <ul>
 <li><a href="https://github.com/robbyczgw-cla/web-search-plus-plugin">web-search-plus-plugin</a> — TypeScript version for OpenClaw</li>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — the agent this plugin runs on</li>
