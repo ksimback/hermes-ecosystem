@@ -19,7 +19,7 @@
 <meta name="twitter:title" content="The State of Hermes Agent — April 2026">
 <meta name="twitter:description" content="57,200 stars in 6 weeks. 80+ ecosystem projects. The full community report.">
 <meta name="twitter:image" content="https://hermesatlas.com/reports/assets/og-report-q1.jpg">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>
   (function() {
     try {
@@ -32,246 +32,47 @@
     }
   })();
 </script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-  :root {
-    --bg-base: #0a0a0f;
-    --bg-card: #13131f;
-    --bg-code: rgba(255,255,255,0.06);
-    --border-subtle: #1e1e30;
-    --text-primary: #e0e0e8;
-    --text-secondary: #b0b0c8;
-    --text-tertiary: #9494b0;
-    --text-muted: #7878a0;
-    --text-link: #a78bfa;
-    --text-link-hover: #c4b5fd;
-    --brand-purple: #a78bfa;
-    --table-header-bg: rgba(167,139,250,0.08);
-    --table-row-alt: rgba(255,255,255,0.02);
-    --table-border: rgba(255,255,255,0.06);
-    --blockquote-border: #a78bfa;
-    --blockquote-bg: rgba(167,139,250,0.05);
-    --img-border: rgba(255,255,255,0.08);
-    --badge-bg: rgba(167,139,250,0.12);
-    --badge-text: #c4b5fd;
-  }
-
-  [data-theme="light"] {
-    --bg-base: #fafafc;
-    --bg-card: #ffffff;
-    --bg-code: rgba(20,20,40,0.06);
-    --border-subtle: #e8e8f0;
-    --text-primary: #1a1a2e;
-    --text-secondary: #3a3a52;
-    --text-tertiary: #5a5a78;
-    --text-muted: #7a7a96;
-    --text-link: #6d4fc4;
-    --text-link-hover: #5b3fb5;
-    --table-header-bg: rgba(167,139,250,0.1);
-    --table-row-alt: rgba(20,20,40,0.02);
-    --table-border: rgba(20,20,40,0.08);
-    --blockquote-border: #7c3aed;
-    --blockquote-bg: rgba(167,139,250,0.06);
-    --img-border: rgba(20,20,40,0.1);
-    --badge-bg: rgba(167,139,250,0.15);
-    --badge-text: #5b3fb5;
-  }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg-base);
-    color: var(--text-primary);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-    transition: background 0.2s, color 0.2s;
-  }
-
-  a { color: var(--text-link); text-decoration: none; }
-  a:hover { color: var(--text-link-hover); text-decoration: underline; }
-
-  /* ── Nav bar ── */
-  .nav {
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--border-subtle);
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 960px; margin: 0 auto;
-  }
-  .nav-brand {
-    font-size: 15px; font-weight: 800; color: var(--text-primary);
-    text-decoration: none; display: flex; align-items: center; gap: 8px;
-  }
-  .nav-brand:hover { color: var(--text-link); text-decoration: none; }
-  .nav-actions { display: flex; gap: 8px; align-items: center; }
-  .nav-link {
-    font-size: 12px; font-weight: 600; color: var(--text-tertiary);
-    padding: 6px 12px; border-radius: 6px;
-    transition: color 0.15s, background 0.15s;
-  }
-  .nav-link:hover { color: var(--text-primary); background: var(--bg-code); text-decoration: none; }
-
-  #theme-toggle {
-    width: 34px; height: 34px; border-radius: 50%;
-    background: var(--bg-card); border: 1px solid var(--border-subtle);
-    color: var(--text-secondary); cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; transition: border-color 0.15s;
-  }
-  #theme-toggle:hover { border-color: var(--brand-purple); }
-  #theme-toggle .icon-sun { display: none; }
-  #theme-toggle .icon-moon { display: block; }
-  [data-theme="light"] #theme-toggle .icon-sun { display: block; }
-  [data-theme="light"] #theme-toggle .icon-moon { display: none; }
-
-  /* ── Article layout ── */
-  .article {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 48px 24px 80px;
-  }
-
-  .article-header {
-    margin-bottom: 40px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--border-subtle);
-  }
-  .article-badge {
-    display: inline-block;
-    padding: 3px 10px; border-radius: 4px;
-    background: var(--badge-bg); color: var(--badge-text);
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.5px; margin-bottom: 16px;
-  }
-  .article-header h1 {
-    font-size: 32px; font-weight: 900; line-height: 1.2;
-    letter-spacing: -0.5px; margin-bottom: 12px;
-    background: linear-gradient(135deg, #c084fc, #818cf8, #60a5fa);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .article-header .subtitle {
-    font-size: 17px; color: var(--text-secondary);
-    line-height: 1.5; font-weight: 500;
-  }
-  .article-header .meta {
-    margin-top: 12px; font-size: 13px; color: var(--text-muted);
-  }
-
-  /* ── Article body ── */
-  .article h2 {
-    font-size: 22px; font-weight: 800; margin: 48px 0 16px;
-    letter-spacing: -0.3px; color: var(--text-primary);
-  }
-  .article h3 {
-    font-size: 16px; font-weight: 700; margin: 32px 0 12px;
-    color: var(--text-primary);
-  }
-  .article p {
-    font-size: 15px; line-height: 1.75; margin-bottom: 16px;
-    color: var(--text-secondary);
-  }
-  .article strong { color: var(--text-primary); font-weight: 700; }
-  .article em { font-style: italic; }
-
-  .article ul, .article ol {
-    margin: 12px 0 20px 24px;
-    font-size: 15px; line-height: 1.75;
-    color: var(--text-secondary);
-  }
-  .article li { margin-bottom: 6px; }
-
-  .article code {
-    background: var(--bg-code); padding: 2px 6px;
-    border-radius: 4px; font-size: 13px;
-    font-family: 'SF Mono', Menlo, Consolas, monospace;
-  }
-
-  .article blockquote {
-    border-left: 3px solid var(--blockquote-border);
-    background: var(--blockquote-bg);
-    padding: 12px 16px; margin: 20px 0;
-    border-radius: 0 8px 8px 0;
-    font-style: italic; color: var(--text-secondary);
-  }
-
-  .article img {
-    max-width: 100%; border-radius: 10px;
-    border: 1px solid var(--img-border);
-    margin: 20px 0;
-  }
-
-  .article hr {
-    border: none; border-top: 1px solid var(--border-subtle);
-    margin: 40px 0;
-  }
-
-  /* ── Tables ── */
-  .article table {
-    width: 100%; border-collapse: collapse;
-    margin: 20px 0; font-size: 13px;
-  }
-  .article th {
-    text-align: left; padding: 10px 12px;
-    background: var(--table-header-bg);
-    font-weight: 700; font-size: 11px;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    color: var(--text-tertiary);
-    border-bottom: 1px solid var(--table-border);
-  }
-  .article td {
-    padding: 9px 12px;
-    border-bottom: 1px solid var(--table-border);
-    color: var(--text-secondary);
-  }
-  .article tr:nth-child(even) td { background: var(--table-row-alt); }
-
-  /* ── Footer ── */
-  .article-footer {
-    margin-top: 48px; padding-top: 24px;
-    border-top: 1px solid var(--border-subtle);
-    text-align: center;
-  }
-  .article-footer p { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
-  .article-footer .cta {
-    display: inline-block; margin-top: 12px;
-    padding: 10px 24px; border-radius: 8px;
-    background: linear-gradient(135deg, #a78bfa, #818cf8);
-    color: #fff; font-size: 13px; font-weight: 700;
-    transition: opacity 0.2s;
-  }
-  .article-footer .cta:hover { opacity: 0.85; text-decoration: none; color: #fff; }
-
-  @media (max-width: 600px) {
-    .article { padding: 32px 16px 60px; }
-    .article-header h1 { font-size: 26px; }
-    .article h2 { font-size: 19px; }
-  }
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
 </head>
 <body>
 
-<!-- Nav -->
-<nav class="nav">
-  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
-  <div class="nav-actions">
-    <a href="/" class="nav-link">Ecosystem Map</a>
-    <button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
-      <span class="icon-moon">☾</span>
-      <span class="icon-sun">☀</span>
-    </button>
-  </div>
-</nav>
+<a class="skip-link" href="#main">Skip to content</a>
 
-<article class="article">
+<button id="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+  <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+</button>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>apr·2026</span>
+    <span>93·repos</span>
+    <span>hermes·v0.10.0</span>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/reports/state-of-hermes-april-2026" class="active">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span>reports<span class="sep">/</span>state of hermes — april 2026
+</div>
+
+<article class="article" id="main">
 
 <!-- Header -->
 <header class="article-header">
-  <div class="article-badge">Community Report</div>
-  <h1>The State of Hermes Agent — April 2026</h1>
-  <p class="subtitle">A community report on the first six weeks of Nous Research's self-improving AI agent</p>
-  <p class="meta">Published April 11, 2026 · 10 min read · <a href="https://hermesatlas.com">hermesatlas.com</a></p>
+  <div class="article-badge">community report · q1 2026</div>
+  <h1>The state of Hermes Agent — April 2026</h1>
+  <p class="subtitle">A community report on the first six weeks of Nous Research's self-improving AI agent.</p>
+  <p class="meta">Published apr 11, 2026 · 10 min read · <a href="https://hermesatlas.com">hermesatlas.com</a></p>
 </header>
 
 <h2>TL;DR</h2>
@@ -475,18 +276,34 @@
   <p><strong>Methodology:</strong> Synthesized from 27 research files including official documentation, GitHub release notes, press coverage, X/Twitter analysis, Reddit discussion, and the awesome-hermes-agent curated list. All 80+ ecosystem repos are independently security-reviewed and live-tracked.</p>
   <p>Not affiliated with Nous Research. Hermes Atlas is an independent community project.</p>
   <p>Corrections welcome: <a href="https://github.com/ksimback/hermes-ecosystem/issues">open an issue</a></p>
-  <a class="cta" href="https://hermesatlas.com">Explore the Ecosystem Map →</a>
+  <a class="cta" href="https://hermesatlas.com">explore the ecosystem map →</a>
 </div>
 
 </article>
 
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
 <script>
-  document.getElementById('theme-toggle')?.addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme');
-    const next = current === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', next);
-    try { localStorage.setItem('theme', next); } catch (e) {}
-  });
+  (function(){
+    var t = document.getElementById('theme-toggle');
+    if (!t) return;
+    function render() {
+      var c = document.documentElement.getAttribute('data-theme');
+      t.querySelector('.tt-light').classList.toggle('tt-active', c === 'light');
+      t.querySelector('.tt-dark').classList.toggle('tt-active', c !== 'light');
+    }
+    render();
+    t.addEventListener('click', function() {
+      var c = document.documentElement.getAttribute('data-theme');
+      var n = c === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', n);
+      try { localStorage.setItem('theme', n); } catch (e) {}
+      render();
+    });
+  })();
 </script>
 
 </body>

@@ -21,12 +21,12 @@ const ROOT = path.resolve(__dirname, "..");
 const SITE_URL = "https://hermesatlas.com";
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-if (!GITHUB_TOKEN) {
-  console.error("Error: GITHUB_TOKEN environment variable required");
-  process.exit(1);
+const SKIP_FETCH = !GITHUB_TOKEN;
+if (SKIP_FETCH) {
+  console.warn("⚠ GITHUB_TOKEN not set — rendering pages from repos.json only (no README, no live metadata). CI will re-fetch.");
 }
 
-const GITHUB_HEADERS = githubHeaders(GITHUB_TOKEN);
+const GITHUB_HEADERS = GITHUB_TOKEN ? githubHeaders(GITHUB_TOKEN) : null;
 
 // ── Check if a URL is absolute (skip rewriting) ──
 function isAbsoluteUrl(url) {
@@ -140,6 +140,52 @@ for (const list of lists) {
   }
 }
 
+// ── Shared favicon (brutalist amber square + H) ──
+const FAVICON = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>`;
+
+// ── Shared theme init + toggle script ──
+const THEME_INIT = `(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();`;
+
+const THEME_TOGGLE_SCRIPT = `(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();`;
+
+// ── Shared masthead ──
+function renderMasthead(activeNav) {
+  const nav = [
+    { href: "/", label: "map", id: "map" },
+    { href: "/#curated-lists", label: "lists", id: "lists" },
+    { href: "/reports/state-of-hermes-april-2026", label: "reports", id: "reports" },
+    { href: "https://github.com/ksimback/hermes-ecosystem", label: "source", id: "source" },
+  ];
+  const navHtml = nav
+    .map(n => `<a href="${n.href}"${n.id === activeNav ? ' class="active"' : ""}>${n.label}</a>`)
+    .join("\n    ");
+  return `<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>apr·2026</span>
+    <span>93·repos</span>
+    <span>hermes·v0.10.0</span>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    ${navHtml}
+  </nav>
+</header>`;
+}
+
+// ── Shared footer ──
+const PAGE_FOOTER = `<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div>v2 · 2026.04</div>
+</footer>`;
+
+// ── Split owner/repo for display ──
+function splitName(full) {
+  // display name sometimes includes an `owner/` prefix; strip it for the repo portion
+  const idx = full.indexOf("/");
+  if (idx > -1) return { org: full.slice(0, idx).trim(), name: full.slice(idx + 1).trim() };
+  return { org: "", name: full };
+}
+
 // ── Project page template ──
 function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary) {
   const title = `${repo.name} — Hermes Agent ${repo.category} | Hermes Atlas`;
@@ -150,14 +196,19 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary) {
   const stars = meta.stars || repo.stars;
   const listSlug = categoryToListSlug[repo.category];
 
-  const relatedHtml = relatedRepos
+  const related = relatedRepos
     .filter((r) => r.repo !== repo.repo || r.owner !== repo.owner)
-    .slice(0, 8)
-    .map(
-      (r) =>
-        `<a href="/projects/${r.owner}/${r.repo}" class="related-chip">${r.name} <span class="related-stars">${formatStars(r.stars)}</span></a>`
-    )
-    .join("\n          ");
+    .slice(0, 8);
+
+  const relatedHtml = related
+    .map((r) => {
+      const s = r.meta?.stars || r.stars;
+      return `<a class="related-row" href="/projects/${r.owner}/${r.repo}">
+        <div class="stars">★ ${formatStars(s)}</div>
+        <div class="name"><span class="org">${escapeHtml(r.owner)} /</span> ${escapeHtml(r.repo)}</div>
+      </a>`;
+    })
+    .join("\n      ");
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -175,81 +226,86 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary) {
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="${escapeHtml(repo.name)} — Hermes Atlas">
 <meta name="twitter:description" content="${desc}">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
-<script>
-  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
-</script>
+<link rel="icon" href="${FAVICON}">
+<script>${THEME_INIT}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="/assets/css/tokens.css">
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="stylesheet" href="/assets/css/page.css">
 </head>
 <body>
-<nav class="nav">
-  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
-  <div class="nav-actions">
-    <a href="/" class="nav-link">Ecosystem Map</a>
-    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
-  </div>
-</nav>
 
-<article class="project">
-  <div class="breadcrumb">
-    <a href="/">${escapeHtml(repo.category)}</a>
-  </div>
+<a class="skip-link" href="#main">Skip to content</a>
 
-  <h1>${escapeHtml(repo.name)}${repo.official ? ' <span style="font-size:14px;color:var(--brand-purple)">OFFICIAL</span>' : ""}</h1>
+<button id="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+  <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+</button>
+
+${renderMasthead("map")}
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="${listSlug ? `/lists/${listSlug}` : "/"}">${escapeHtml(repo.category.toLowerCase())}</a><span class="sep">/</span>${escapeHtml(repo.repo.toLowerCase())}
+</div>
+
+<article id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">${escapeHtml(repo.owner)}</span><span class="slash">/</span>${escapeHtml(repo.repo)}${repo.official ? ' <span class="repo-flag">official</span>' : ""}
+  </h1>
   <p class="project-desc">${escapeHtml(meta.description || repo.description)}</p>
 
   <div class="meta-row">
-    <span class="stars">★ ${formatStars(stars).toLocaleString()}</span>
-    ${meta.language ? `<span class="badge badge-lang">${escapeHtml(meta.language)}</span>` : ""}
-    ${meta.license && meta.license !== "NOASSERTION" ? `<span class="badge badge-lang">${escapeHtml(meta.license)}</span>` : ""}
-    ${repo.official ? '<span class="badge badge-official">Nous Research</span>' : ""}
-    ${meta.pushedAt ? `<span>Updated ${new Date(meta.pushedAt).toLocaleDateString()}</span>` : ""}
+    <span class="stars">★ ${formatStars(stars)}</span>
+    ${meta.language ? `<span><span class="meta-label">lang</span>${escapeHtml(meta.language)}</span>` : ""}
+    ${meta.license && meta.license !== "NOASSERTION" ? `<span><span class="meta-label">license</span>${escapeHtml(meta.license)}</span>` : ""}
+    ${repo.official ? '<span><span class="meta-label">maintainer</span>Nous Research</span>' : ""}
+    ${meta.pushedAt ? `<span><span class="meta-label">updated</span>${new Date(meta.pushedAt).toISOString().slice(0, 10)}</span>` : ""}
   </div>
 
   <div class="actions">
-    <a href="${escapeHtml(repo.url)}" target="_blank" rel="noopener" class="btn-primary">View on GitHub →</a>
-    ${meta.homepage ? `<a href="${escapeHtml(meta.homepage)}" target="_blank" rel="noopener" class="btn-secondary">Homepage</a>` : ""}
+    <a href="${escapeHtml(repo.url)}" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    ${meta.homepage ? `<a href="${escapeHtml(meta.homepage)}" target="_blank" rel="noopener" class="btn-secondary">homepage</a>` : ""}
   </div>
+</section>
 
-  ${summary ? `
-  <section class="project-summary">
-    <h2>Overview</h2>
+${summary ? `
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
     <p class="summary-text">${escapeHtml(summary.summary)}</p>
     <ul class="summary-highlights">
       ${summary.highlights.map(h => `<li>${escapeHtml(h)}</li>`).join("\n      ")}
     </ul>
-  </section>` : ""}
+  </div>
+</section>` : ""}
 
-  <details class="readme-details"${summary ? "" : " open"}>
-    <summary class="readme-toggle">${summary ? "Full README from GitHub" : "README"}</summary>
-    <section class="readme" data-nosnippet>
-      ${readmeHtml || '<div class="no-readme">This project doesn\'t have a README yet. <a href="' + escapeHtml(repo.url) + '" target="_blank">Visit GitHub</a> for more details.</div>'}
-    </section>
-  </details>
+<details class="readme-details"${summary ? "" : " open"}>
+  <summary class="readme-toggle">${summary ? "full readme from github" : "readme"}</summary>
+  <section class="readme" data-nosnippet>
+    ${readmeHtml || '<div class="no-readme">This project doesn\'t have a README yet. <a href="' + escapeHtml(repo.url) + '" target="_blank">Visit GitHub</a> for more details.</div>'}
+  </section>
+</details>
 
-  <aside class="related">
-    <h2>More in ${escapeHtml(repo.category)}</h2>
-    <div class="related-grid">
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in ${escapeHtml(repo.category.toLowerCase())}</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
       ${relatedHtml}
     </div>
-    ${listSlug ? `<p class="list-link"><a href="/lists/${listSlug}">See all ${escapeHtml(repo.category)} projects →</a></p>` : ""}
-  </aside>
+    ${listSlug ? `<p class="list-link"><a href="/lists/${listSlug}">see all ${escapeHtml(repo.category.toLowerCase())} →</a></p>` : ""}
+  </div>
+</aside>
+
 </article>
 
-<div class="page-footer">
-  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
-</div>
+${PAGE_FOOTER}
 
-<script>
-  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
-    const c=document.documentElement.getAttribute('data-theme');
-    const n=c==='light'?'dark':'light';
-    document.documentElement.setAttribute('data-theme',n);
-    try{localStorage.setItem('theme',n)}catch(e){}
-  });
-</script>
+<script>${THEME_TOGGLE_SCRIPT}</script>
 </body>
 </html>`;
 }
@@ -260,18 +316,42 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
   const desc = escapeHtml(list.description.slice(0, 160));
   const canonicalUrl = `${SITE_URL}/lists/${list.slug}`;
 
-  const repoRows = matchedRepos
-    .sort((a, b) => (b.meta?.stars || b.stars) - (a.meta?.stars || a.stars))
-    .map(
-      (r, i) => `
-      <tr>
-        <td style="font-weight:700;color:var(--text-tertiary)">${i + 1}</td>
-        <td><a href="/projects/${r.owner}/${r.repo}"><strong>${escapeHtml(r.name)}</strong></a>${r.official ? ' <span style="font-size:10px;color:var(--brand-purple);font-weight:700">OFFICIAL</span>' : ""}</td>
-        <td style="color:var(--brand-star);font-weight:700">★ ${formatStars(r.meta?.stars || r.stars)}</td>
-        <td style="color:var(--text-secondary);font-size:13px">${escapeHtml((r.meta?.description || r.description).slice(0, 120))}</td>
-      </tr>`
-    )
-    .join("");
+  const sorted = matchedRepos.slice().sort((a, b) => (b.meta?.stars || b.stars) - (a.meta?.stars || a.stars));
+
+  const repoRows = sorted
+    .map((r, i) => {
+      const s = r.meta?.stars || r.stars;
+      const rank = String(i + 1).padStart(2, '0');
+      return `<a class="list-row" href="/projects/${r.owner}/${r.repo}">
+    <div class="list-rank">${rank}</div>
+    <div class="list-cell-body">
+      <div class="list-cell-name"><span class="org">${escapeHtml(r.owner)} /</span> ${escapeHtml(r.repo)}${r.official ? ' <span class="repo-flag">official</span>' : ""}</div>
+      <div class="list-cell-desc">${escapeHtml((r.meta?.description || r.description).slice(0, 140))}</div>
+    </div>
+    <div class="list-cell-stars">★ ${formatStars(s)}</div>
+  </a>`;
+    })
+    .join("\n  ");
+
+  const hasListicle = listSummaryEntries && Object.keys(listSummaryEntries).length > 0;
+  const listicleHtml = hasListicle ? `
+<section class="listicle" aria-label="Per-project breakdown">
+  <div class="section-label">breakdown</div>
+  <div class="listicle-entries">
+    ${sorted
+      .map(r => {
+        const key = `${r.owner}/${r.repo}`;
+        const entry = listSummaryEntries[key];
+        if (!entry) return "";
+        return `<article class="listicle-entry">
+      <h3><a href="/projects/${r.owner}/${r.repo}">${escapeHtml(r.owner)} / ${escapeHtml(r.repo)}</a></h3>
+      <p>${escapeHtml(entry)}</p>
+    </article>`;
+      })
+      .filter(Boolean)
+      .join("\n    ")}
+  </div>
+</section>` : "";
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -288,59 +368,52 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="${escapeHtml(list.title)}">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
-<script>
-  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
-</script>
+<link rel="icon" href="${FAVICON}">
+<script>${THEME_INIT}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="/assets/css/tokens.css">
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="stylesheet" href="/assets/css/page.css">
 </head>
 <body>
-<nav class="nav">
-  <a href="/" class="nav-brand">🗺️ Hermes Atlas</a>
-  <div class="nav-actions">
-    <a href="/" class="nav-link">Ecosystem Map</a>
-    <button id="theme-toggle" aria-label="Toggle theme"><span class="icon-moon">☾</span><span class="icon-sun">☀</span></button>
-  </div>
-</nav>
-<article class="list-page">
-  <h1>${escapeHtml(list.title)}</h1>
-  <p class="intro">${escapeHtml(list.description)}</p>
-  <table>
-    <thead><tr><th>#</th><th>Project</th><th>Stars</th><th>Description</th></tr></thead>
-    <tbody>${repoRows}</tbody>
-  </table>
-  ${listSummaryEntries && Object.keys(listSummaryEntries).length > 0 ? `
-  <section class="listicle">
-    <h2>Project Breakdown</h2>
-    ${matchedRepos
-      .sort((a, b) => (b.meta?.stars || b.stars) - (a.meta?.stars || a.stars))
-      .map(r => {
-        const key = `${r.owner}/${r.repo}`;
-        const desc = listSummaryEntries[key];
-        if (!desc) return "";
-        return `<div class="listicle-entry">
-      <h3><a href="/projects/${r.owner}/${r.repo}">${escapeHtml(r.name)}</a></h3>
-      <p>${escapeHtml(desc)}</p>
-    </div>`;
-      })
-      .filter(Boolean)
-      .join("\n    ")}
-  </section>` : ""}
-  <p class="back-link"><a href="/">← Back to Ecosystem Map</a></p>
-</article>
-<div class="page-footer">
-  <p><a href="/">Hermes Atlas</a> · The community map for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</p>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<button id="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+  <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+</button>
+
+${renderMasthead("lists")}
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/#curated-lists">lists</a><span class="sep">/</span>${escapeHtml(list.slug)}
 </div>
-<script>
-  document.getElementById('theme-toggle')?.addEventListener('click',()=>{
-    const c=document.documentElement.getAttribute('data-theme');
-    const n=c==='light'?'dark':'light';
-    document.documentElement.setAttribute('data-theme',n);
-    try{localStorage.setItem('theme',n)}catch(e){}
-  });
-</script>
+
+<article id="main">
+
+<section class="list-page">
+  <h1 class="list-title">${escapeHtml(list.title)}</h1>
+  <p class="list-intro">${escapeHtml(list.description)}</p>
+</section>
+
+<div class="list-table" aria-label="Ranked list">
+  <div class="list-table-head">
+    <div>#</div>
+    <div>project</div>
+    <div style="text-align:right">stars</div>
+  </div>
+  ${repoRows}
+</div>
+${listicleHtml}
+
+<div class="back-link"><a href="/">← back to the map</a></div>
+
+</article>
+
+${PAGE_FOOTER}
+
+<script>${THEME_TOGGLE_SCRIPT}</script>
 </body>
 </html>`;
 }
@@ -367,10 +440,15 @@ function generateSitemap(projectPages, listPages) {
 async function main() {
   console.log(`Building pages for ${repos.length} repos + ${lists.length} lists...\n`);
 
-  // Fetch metadata in one batch
-  console.log("Fetching metadata via GraphQL...");
-  const metadata = await fetchAllMetadata(repos, GITHUB_HEADERS);
-  console.log(`  Got metadata for ${Object.keys(metadata).length} repos\n`);
+  // Fetch metadata in one batch (skipped if no GITHUB_TOKEN)
+  let metadata = {};
+  if (GITHUB_HEADERS) {
+    console.log("Fetching metadata via GraphQL...");
+    metadata = await fetchAllMetadata(repos, GITHUB_HEADERS);
+    console.log(`  Got metadata for ${Object.keys(metadata).length} repos\n`);
+  } else {
+    console.log("Skipping GitHub metadata fetch (no token).\n");
+  }
 
   // Load generated summaries (if available)
   let summaries = {};
@@ -400,16 +478,30 @@ async function main() {
     const key = `${repo.owner}/${repo.repo}`;
     const meta = metadata[key] || {};
 
-    // Fetch README
-    const readmeRaw = await fetchReadme(repo.owner, repo.repo, GITHUB_HEADERS);
+    // Fetch README, or extract from existing page if offline
     let readmeHtml = null;
-    if (readmeRaw) {
-      try {
-        currentRawBase = `https://raw.githubusercontent.com/${repo.owner}/${repo.repo}/main/`;
-        const readmeFixed = rewriteRelativeUrls(readmeRaw, repo.owner, repo.repo);
-        readmeHtml = marked.parse(readmeFixed);
-      } catch (e) {
-        console.warn(`  Markdown parse error for ${key}: ${e.message}`);
+    if (GITHUB_HEADERS) {
+      const readmeRaw = await fetchReadme(repo.owner, repo.repo, GITHUB_HEADERS);
+      if (readmeRaw) {
+        try {
+          currentRawBase = `https://raw.githubusercontent.com/${repo.owner}/${repo.repo}/main/`;
+          const readmeFixed = rewriteRelativeUrls(readmeRaw, repo.owner, repo.repo);
+          readmeHtml = marked.parse(readmeFixed);
+        } catch (e) {
+          console.warn(`  Markdown parse error for ${key}: ${e.message}`);
+        }
+      }
+    } else {
+      // Offline: reuse the README HTML already baked into the existing page
+      const existingPath = path.join(projectsDir, repo.owner, `${repo.repo}.html`);
+      if (fs.existsSync(existingPath)) {
+        try {
+          const existing = fs.readFileSync(existingPath, "utf-8");
+          const match = existing.match(/<section class="readme"[^>]*>([\s\S]*?)<\/section>/);
+          if (match && !match[1].includes("no-readme")) {
+            readmeHtml = match[1].trim();
+          }
+        } catch {}
       }
     }
 
@@ -435,8 +527,8 @@ async function main() {
     generated++;
     process.stdout.write(`  ${generated}/${repos.length} ${key}\r`);
 
-    // Small delay to be polite to GitHub API
-    await new Promise((r) => setTimeout(r, 100));
+    // Small delay to be polite to GitHub API (only if fetching)
+    if (GITHUB_HEADERS) await new Promise((r) => setTimeout(r, 100));
   }
 
   console.log(`\n  Generated ${generated} project pages (${errors} errors)\n`);
