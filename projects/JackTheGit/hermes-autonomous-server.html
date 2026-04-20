@@ -90,7 +90,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h5>🚀 Hermes Agent – Autonomous Linux Server Setup</h5>
+    <h6>🚀 Hermes Agent – Autonomous Linux Server Setup</h6>
 <p align="center">
   A clean, reboot-safe, headless deployment guide for Hermes Agent.
 </p>
@@ -108,7 +108,7 @@
 <p>No shell loops.<br>No fragile TTY hacks.<br>No third-party hosting required.</p>
 <p>Clean, production-ready architecture.</p>
 <hr>
-<h5>📌 Overview</h5>
+<h6>📌 Overview</h6>
 <p>This guide shows how to:</p>
 <ul>
 <li>Install Hermes Agent</li>
@@ -120,7 +120,7 @@
 </ul>
 <p>Once configured, Hermes runs fully autonomous.</p>
 <hr>
-<h5>🧩 What This Is Not</h5>
+<h6>🧩 What This Is Not</h6>
 <ul>
 <li>Not an official Hermes project</li>
 <li>Not affiliated with Nous Research</li>
@@ -128,7 +128,7 @@
 </ul>
 <p>This is a deployment guide for running Hermes autonomously on your own infrastructure.</p>
 <hr>
-<h5>🔑 Requirements</h5>
+<h6>🔑 Requirements</h6>
 <p>You need an active <strong>Nous Portal subscription</strong>:</p>
 <p>👉 <a href="https://portal.nousresearch.com/billing">https://portal.nousresearch.com/billing</a></p>
 <p>Hermes uses Nous Portal for model access.</p>
@@ -141,7 +141,7 @@
 <p>💡 At the time of writing, the basic subscription may be activated using the promotional code <code>HERMESAGENT</code> (availability subject to change).<br>Check the billing page for current eligibility.</p>
 </blockquote>
 <hr>
-<h5>🖥 Supported Environment</h5>
+<h6>🖥 Supported Environment</h6>
 <ul>
 <li>Ubuntu / Debian (tested)</li>
 <li>Dedicated server or VPS</li>
@@ -149,7 +149,7 @@
 <li>Non-root user recommended</li>
 </ul>
 <hr>
-<h5>📦 Installation</h5>
+<h6>📦 Installation</h6>
 <h6>1️⃣ Create a Dedicated User</h6>
 <pre><code class="language-bash">sudo adduser hermes
 sudo usermod -aG sudo hermes
@@ -177,7 +177,7 @@ su - hermes
 <pre><code>Nous Portal ✓ logged in
 </code></pre>
 <hr>
-<h5>⏰ Create Autonomous Cron Job</h5>
+<h6>⏰ Create Autonomous Cron Job</h6>
 <p>Start Hermes:</p>
 <pre><code class="language-bash">hermes chat
 </code></pre>
@@ -192,7 +192,7 @@ Limit response to 180 words.
 <pre><code>Ctrl + C
 </code></pre>
 <hr>
-<h5>⚙ Enable Hermes Gateway (System-Level Service)</h5>
+<h6>⚙ Enable Hermes Gateway (System-Level Service)</h6>
 <p>Some VPS environments do not support <code>systemctl --user</code>.
 Use a system-level service instead.</p>
 <p>Create service file:</p>
@@ -220,7 +220,7 @@ sudo systemctl enable hermes-gateway
 sudo systemctl start hermes-gateway
 </code></pre>
 <hr>
-<h5>✅ Verify Everything</h5>
+<h6>✅ Verify Everything</h6>
 <p>Check gateway:</p>
 <pre><code class="language-bash">sudo systemctl status hermes-gateway
 </code></pre>
@@ -231,7 +231,7 @@ sudo systemctl start hermes-gateway
 <pre><code>✓ Gateway is running — cron jobs will fire automatically
 </code></pre>
 <hr>
-<h5>🏗 Architecture</h5>
+<h6>🏗 Architecture</h6>
 <pre><code>Systemd (system service)
         ↓
 Hermes Gateway
@@ -243,7 +243,7 @@ Claude Model (Nous Portal)
 Local Output Files
 </code></pre>
 <hr>
-<h5>💰 Cost Considerations</h5>
+<h6>💰 Cost Considerations</h6>
 <p>Example configuration:</p>
 <ul>
 <li>10-minute interval</li>
@@ -256,7 +256,7 @@ Typically ~$8–12/month depending on model and output size.</p>
 <pre><code>Update cronjob &lt;job_id&gt; to run every 15 minutes.
 </code></pre>
 <hr>
-<h5>📊 Monitoring</h5>
+<h6>📊 Monitoring</h6>
 <p>Gateway logs:</p>
 <pre><code class="language-bash">journalctl -u hermes-gateway -f
 </code></pre>
@@ -267,7 +267,7 @@ Typically ~$8–12/month depending on model and output size.</p>
 <pre><code class="language-bash">hermes cron status
 </code></pre>
 <hr>
-<h5>🔄 Reboot Safety</h5>
+<h6>🔄 Reboot Safety</h6>
 <p>This setup:</p>
 <ul>
 <li>Auto-starts on reboot</li>
@@ -276,13 +276,13 @@ Typically ~$8–12/month depending on model and output size.</p>
 <li>Automatically restarts if gateway crashes</li>
 </ul>
 <hr>
-<h5>🧼 Uninstall</h5>
+<h6>🧼 Uninstall</h6>
 <pre><code class="language-bash">sudo systemctl stop hermes-gateway
 sudo systemctl disable hermes-gateway
 hermes uninstall
 </code></pre>
 <hr>
-<h5>🎯 Why This Approach?</h5>
+<h6>🎯 Why This Approach?</h6>
 <p>✔ Uses native Hermes scheduler
 ✔ Avoids shell-based infinite loops
 ✔ Avoids TTY emulation hacks
@@ -290,7 +290,7 @@ hermes uninstall
 ✔ Minimal operational complexity
 ✔ Fully self-hosted</p>
 <hr>
-<h5>⚠ Important Notes</h5>
+<h6>⚠ Important Notes</h6>
 <ul>
 <li>Nous Portal subscription required:
 <a href="https://portal.nousresearch.com/billing">https://portal.nousresearch.com/billing</a></li>
@@ -299,7 +299,7 @@ hermes uninstall
 <li>Monitor billing regularly</li>
 </ul>
 <hr>
-<h5>🔒 Security Considerations</h5>
+<h6>🔒 Security Considerations</h6>
 <ul>
 <li>Do not expose your server publicly without firewall rules.</li>
 <li>Avoid running Hermes as root.</li>
@@ -329,7 +329,7 @@ hermes uninstall
         <div class="name"><span class="org">TheAiSingularity /</span> hermesclaw</div>
       </a>
       <a class="related-row" href="/projects/0xrsydn/nix-hermes-agent">
-        <div class="stars">★ 13</div>
+        <div class="stars">★ 11</div>
         <div class="name"><span class="org">0xrsydn /</span> nix-hermes-agent</div>
       </a>
       <a class="related-row" href="/projects/rookiemann/portable-hermes-agent">

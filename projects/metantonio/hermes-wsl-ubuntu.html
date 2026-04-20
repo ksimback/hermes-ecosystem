@@ -90,7 +90,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h5>Hermes Agent + llama.cpp + Qwen3.5 Integration Guide</h5>
+    <h6>Hermes Agent + llama.cpp + Qwen3.5 Integration Guide</h6>
 <p><img src="https://img.shields.io/badge/status-production--ready-brightgreen" alt="Status">
 <img src="https://img.shields.io/badge/platform-WSL2%20%2B%20Linux-blue" alt="Platform">
 <img src="https://img.shields.io/badge/GPU-RTX%204080%2012GB-purple" alt="GPU">
@@ -102,7 +102,7 @@
 <p>End-to-end setup for running <strong>Hermes Agent + llama.cpp + Qwen3.5</strong> locally with GPU acceleration (<strong>CUDA</strong> for Linux/WSL, <strong>Metal</strong> for macOS).</p>
 </blockquote>
 <hr>
-<h5>Table of Contents</h5>
+<h6>Table of Contents</h6>
 <ul>
 <li><a href="#system-requirements">System Requirements</a></li>
 <li><a href="#architecture-overview">Architecture Overview</a></li>
@@ -122,7 +122,7 @@
 <li><a href="#best-practices">Best Practices</a></li>
 </ul>
 <hr>
-<h5>System Requirements</h5>
+<h6>System Requirements</h6>
 <table>
 <thead>
 <tr>
@@ -165,7 +165,7 @@
 <li><strong>Package Manager:</strong> <code>apt</code> (Linux) or <code>brew</code> (macOS).</li>
 </ul>
 <hr>
-<h5>Architecture Overview</h5>
+<h6>Architecture Overview</h6>
 <pre><code class="language-mermaid">flowchart LR
     User --&gt;|Browser| WebUI[Hermes HUDUI]
     WebUI --&gt; Hermes
@@ -176,12 +176,12 @@
     Camofox --&gt; Web[Internet]
 </code></pre>
 <hr>
-<h5>Automatic installation</h5>
+<h6>Automatic installation</h6>
 <p>If you are in <strong>Linux</strong> or <strong>macOS</strong>, execute the following script to install CUDA (if applicable), Hermes, llama.cpp, Camofox and the Web UI. The script will automatically detect your platform.</p>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/metantonio/hermes-wsl-ubuntu/master/setup-wsl.sh -o setup-wsl.sh &amp;&amp; bash setup-wsl.sh
 </code></pre>
 <hr>
-<h5>Prerequisites &amp; Setup</h5>
+<h6>Prerequisites &amp; Setup</h6>
 <p>If you are in Windows, read and install <a href="https://github.com/metantonio/hermes-wsl-ubuntu/blob/main/WSL2.md">WSL2 - Ubuntu</a></p>
 <p>In Ubuntu:</p>
 <pre><code class="language-bash">sudo apt update &amp;&amp; sudo apt upgrade -y
@@ -199,7 +199,7 @@ sudo apt install -y build-essential cmake git curl wget htop
 <pre><code class="language-bash">sudo apt install nvidia-cuda-toolkit
 </code></pre>
 <hr>
-<h5>Hermes Agent Installation</h5>
+<h6>Hermes Agent Installation</h6>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
 </code></pre>
 <h6>Config</h6>
@@ -213,7 +213,7 @@ hermes config set LLM_MODEL Qwen3.5-9B-Q5_K_M
 hermes config set TELEGRAM_BOT_TOKEN Your_Telegram_API_Token
 </code></pre>
 <hr>
-<h5>llama.cpp Installation</h5>
+<h6>llama.cpp Installation</h6>
 <h6>Recommended Path</h6>
 <pre><code class="language-bash">sudo mkdir -p /opt/llama.cpp
 sudo chown -R $USER:$USER /opt/llama.cpp
@@ -245,7 +245,7 @@ cmake --build build --config Release
 <pre><code class="language-bash">./build/bin/llama-server -h
 </code></pre>
 <hr>
-<h5>Camofox Browser Server</h5>
+<h6>Camofox Browser Server</h6>
 <p>Camofox is a browser-automation server used by the Hermes Agent to perform web-browsing tasks.</p>
 <h6>Interaction</h6>
 <ul>
@@ -265,7 +265,7 @@ npm start &gt; camofox.log 2&gt;&amp;1 &amp;
 <pre><code class="language-bash">ps aux | grep camofox
 </code></pre>
 <hr>
-<h5>Hermes HUDUI (Web UI)</h5>
+<h6>Hermes HUDUI (Web UI)</h6>
 <p>Hermes HUDUI is the graphical interface for interacting with the Hermes Agent.</p>
 <h6>Interaction</h6>
 <ul>
@@ -283,7 +283,7 @@ hermes-hudui &gt; hermes-hudui.log 2&gt;&amp;1 &amp;
 <pre><code class="language-bash">sudo fuser -k 3001/tcp
 </code></pre>
 <hr>
-<h5>Hermes API Server</h5>
+<h6>Hermes API Server</h6>
 <p>The Hermes Agent includes an optional API server for remote integrations.</p>
 <h6>Interaction</h6>
 <ul>
@@ -300,7 +300,7 @@ API_SERVER_KEY=change-me-local-dev
 Change the <code>API_SERVER_KEY</code> manually for security in production environments.</p>
 </blockquote>
 <hr>
-<h5>Model Setup (Qwen3.5)</h5>
+<h6>Model Setup (Qwen3.5)</h6>
 <p>This will be created at your home directory</p>
 <pre><code class="language-bash">mkdir -p ~/models
 cd ~/models
@@ -393,7 +393,7 @@ wget https://huggingface.co/unsloth/Qwen3.5-9B-GGUF/resolve/main/Qwen3.5-9B-Q5_K
 </tr>
 </tbody></table>
 <hr>
-<h5>Running the Server</h5>
+<h6>Running the Server</h6>
 <pre><code class="language-bash">/opt/llama.cpp/build/bin/llama-server \
   -m ~/models/Qwen3.5-9B-Q5_K_M.gguf \
   -c 8192 \
@@ -404,7 +404,7 @@ wget https://huggingface.co/unsloth/Qwen3.5-9B-GGUF/resolve/main/Qwen3.5-9B-Q5_K
   --port 8080
 </code></pre>
 <hr>
-<h5>Usage Examples</h5>
+<h6>Usage Examples</h6>
 <h6>API (OpenAI Compatible)</h6>
 <pre><code class="language-bash">curl http://localhost:8080/v1/completions \
   -H &quot;Content-Type: application/json&quot; \
@@ -461,7 +461,7 @@ hermes chat --model qwen3.5-9B_Q5_K_M
 hermes gateway
 </code></pre>
 <hr>
-<h5>Performance &amp; Memory</h5>
+<h6>Performance &amp; Memory</h6>
 <h6>Memory Breakdown</h6>
 <pre><code class="language-mermaid">pie
     title VRAM Usage (Qwen 9B Q5_K_M has 32 layers)
@@ -635,7 +635,7 @@ hermes gateway
 </tr>
 </tbody></table>
 <hr>
-<h5>Troubleshooting</h5>
+<h6>Troubleshooting</h6>
 <h6>CUDA Out of Memory</h6>
 <pre><code class="language-bash">-ngl 28
 -c 4096
@@ -651,7 +651,7 @@ hermes gateway
 wsl --update
 </code></pre>
 <hr>
-<h5>Optimization Tips</h5>
+<h6>Optimization Tips</h6>
 <h6>Context vs Performance</h6>
 <pre><code class="language-mermaid">graph LR
     A[Small Context] --&gt;|Fast| B[High Speed]
@@ -665,7 +665,7 @@ wsl --update
 --threads 8
 </code></pre>
 <hr>
-<h5>Best Practices</h5>
+<h6>Best Practices</h6>
 <h6>Model Strategy</h6>
 <table>
 <thead>
@@ -701,7 +701,7 @@ chmod 755 /opt/llama.cpp/build/bin/llama-server
 <li>Do NOT expose publicly</li>
 </ul>
 <hr>
-<h5>Workflow</h5>
+<h6>Workflow</h6>
 <pre><code class="language-mermaid">sequenceDiagram
     participant User
     participant Hermes
@@ -716,7 +716,7 @@ chmod 755 /opt/llama.cpp/build/bin/llama-server
     Hermes--&gt;&gt;User: Output
 </code></pre>
 <hr>
-<h5>Production Checklist</h5>
+<h6>Production Checklist</h6>
 <ul>
 <li><input disabled="" type="checkbox"> GPU working (<code>nvidia-smi</code>)</li>
 <li><input disabled="" type="checkbox"> llama.cpp built with CUDA</li>
@@ -727,7 +727,7 @@ chmod 755 /opt/llama.cpp/build/bin/llama-server
 <li><input disabled="" type="checkbox"> Permissions secured</li>
 </ul>
 <hr>
-<h5>Resources</h5>
+<h6>Resources</h6>
 <ul>
 <li>llama.cpp  <a href="https://github.com/ggerganov/llama.cpp">https://github.com/ggerganov/llama.cpp</a></li>
 <li>Hermes Agent  <a href="https://hermes-agent.nousresearch.com/">https://hermes-agent.nousresearch.com/</a></li>
