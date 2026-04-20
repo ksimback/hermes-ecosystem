@@ -167,6 +167,7 @@ function renderMasthead(activeNav) {
   const nav = [
     { href: "/", label: "map", id: "map" },
     { href: "/#curated-lists", label: "lists", id: "lists" },
+    { href: "/guide/", label: "handbook", id: "handbook" },
     { href: "/reports/state-of-hermes-april-2026", label: "reports", id: "reports" },
     { href: "https://github.com/ksimback/hermes-ecosystem", label: "source", id: "source" },
   ];
@@ -204,7 +205,7 @@ function splitName(full) {
 }
 
 // ── Project page template ──
-function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary) {
+function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary, handbookMention) {
   const title = `${repo.name} — Hermes Agent ${repo.category} | Hermes Atlas`;
   const desc = escapeHtml(
     (meta.description || repo.description).slice(0, 160)
@@ -283,6 +284,13 @@ ${renderMasthead("map")}
     ${safeExternalUrl(meta.homepage) ? `<a href="${escapeHtml(safeExternalUrl(meta.homepage))}" target="_blank" rel="noopener" class="btn-secondary">homepage</a>` : ""}
   </div>
 </section>
+
+${handbookMention ? `
+<aside class="handbook-mention" aria-label="Mentioned in the Hermes Handbook">
+  <div class="hm-label">mentioned in</div>
+  <a class="hm-link" href="/guide/${handbookMention.chapter || ""}"><strong>The Hermes Handbook</strong> — beginner's guide →</a>
+  <p class="hm-context">${escapeHtml(handbookMention.context)}</p>
+</aside>` : ""}
 
 ${summary ? `
 <section class="project-summary">
@@ -434,6 +442,8 @@ function generateSitemap(projectPages, listPages) {
   const today = new Date().toISOString().slice(0, 10);
 
   let urls = `  <url><loc>${SITE_URL}/</loc><changefreq>daily</changefreq><priority>1.0</priority><lastmod>${today}</lastmod></url>\n`;
+  urls += `  <url><loc>${SITE_URL}/guide/</loc><changefreq>monthly</changefreq><priority>0.9</priority><lastmod>${today}</lastmod></url>\n`;
+  urls += `  <url><loc>${SITE_URL}/guide/vs-claude-code/</loc><changefreq>monthly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;
   urls += `  <url><loc>${SITE_URL}/reports/state-of-hermes-april-2026</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>\n`;
 
   for (const page of projectPages) {
@@ -472,6 +482,16 @@ async function main() {
     listSummaries = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "list-summaries.json"), "utf-8"));
     console.log(`  Loaded ${Object.keys(listSummaries).length} list summaries`);
   } catch { console.log("  No list-summaries.json found"); }
+
+  // Load handbook mentions (which projects are cited in The Hermes Handbook)
+  let handbookMentions = {};
+  try {
+    const hm = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "handbook-mentions.json"), "utf-8"));
+    for (const entry of hm.mentions || []) {
+      handbookMentions[entry.slug] = entry;
+    }
+    console.log(`  Loaded ${Object.keys(handbookMentions).length} handbook mentions`);
+  } catch { console.log("  No handbook-mentions.json found"); }
   console.log();
 
   // Ensure output directories exist
@@ -535,7 +555,8 @@ async function main() {
       { ...repo, ...meta },
       readmeHtml,
       relatedRepos,
-      summaries[key] || null
+      summaries[key] || null,
+      handbookMentions[key] || null
     );
 
     // Write file

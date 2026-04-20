@@ -54,6 +54,18 @@ async function main() {
     files.push({ path: ecosystemPath, source: "ECOSYSTEM.md" });
   }
 
+  // Published handbook pages (sourced from markdown drafts, labeled as URL paths for clean RAG citations)
+  const guideSources = [
+    { file: "handbook-hub.md", source: "guide/" },
+    { file: "handbook-vs-claude-code.md", source: "guide/vs-claude-code/" },
+  ];
+  for (const g of guideSources) {
+    const filePath = path.join(ROOT, "drafts", g.file);
+    if (fs.existsSync(filePath)) {
+      files.push({ path: filePath, source: g.source });
+    }
+  }
+
   console.log(`Found ${files.length} files to process`);
 
   // Chunk all files

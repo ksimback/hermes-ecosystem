@@ -87,6 +87,68 @@ v2 merged via PR #43. Kevin confirmed the live site looks great.
 
 ---
 
+## Phase 6 · The Hermes Handbook (SEO beginner's guide) — 🏗️ IN PROGRESS
+
+**Goal:** rank #1 for "hermes agent guide / tutorial / getting started" and adjacent long-tail. Drive organic traffic into the Atlas by becoming THE canonical beginner's reference. Leverages our unfair advantages (93 curated projects, 6 lists, report, RAG).
+
+**Architecture:** hub + satellites (topic cluster pattern)
+- `/guide/` — long-form hub, ~4,000 words, 10 chapters
+- `/guide/vs-claude-code/` — satellite #1 (ship alongside hub), high-intent comparison query
+- `/guide/install/`, `/guide/telegram-setup/`, `/guide/first-skill/` — satellites #2–#4, added based on GSC signal
+
+### Content
+
+- [ ] **Outline + keyword table** — 10 chapters with target query per chapter + H2 subheads. Kevin approves before drafting.
+- [ ] **Draft hub** — synthesize from `research/` (content exists; this is narrative + structure)
+- [ ] **Draft satellite #1** (`vs-claude-code/`) — ~1,200 words, comparison table, verdict
+- [ ] **FAQ block** — 8–12 beginner questions, `FAQPage` JSON-LD
+- [ ] **Voice pass** — slightly warmer than rest of site; beginner-friendly without losing brutalist discipline
+- [ ] **Fact-check pass** — every claim traceable to `research/` or `data/repos.json`
+
+### Template + schema
+
+- [ ] **`build-pages.js` extension** — `/guide/` template (matches `page.css` system; TOC sidebar on desktop; sticky "updated" stamp)
+- [ ] **JSON-LD injection** — `Article` + `HowTo` (install chapter) + `FAQPage` (FAQ chapter)
+- [ ] **OG images** — 1 per chapter for deep-link sharing (amber-H system, chapter title)
+- [ ] **"Copy link to section" buttons** on every H2
+
+### Internal linking
+
+- [ ] **Out-links from guide** — every "memory" → `/lists/best-memory-providers`, every "skill" → `/lists/top-skills`, etc. Target: 20–30 contextual internal links
+- [ ] **"Mentioned in the Handbook" badge** on project pages the guide cites (`build-pages.js` reads `data/handbook-mentions.json`). Target: ~20 projects
+
+### RAG integration
+
+- [ ] **Chunk the guide** — `build-chunks.js` picks up `/guide/` pages; chatbot answers from the guide directly. (Our moat — competing guides can't do this.)
+
+### Site placement
+
+- [ ] **Top nav** — add `handbook` link (between `lists` and `reports`)
+- [ ] **Homepage hero callout** — rotate report banner to handbook CTA at launch
+- [ ] **Sitemap regen** — `/guide/` + satellite URLs
+- [ ] **Robots/canonicals** — self-canonical, no noindex
+
+### Ship + measure
+
+- [ ] Local dogfood via `/browse`
+- [ ] Deploy preview on Vercel
+- [ ] Merge PR
+- [ ] **Outreach** — DM Nick Spisak, @teknium, Nous team; post in Nous Discord; X thread
+- [ ] **GSC monitoring** — impressions / CTR / position weekly for 4 weeks
+- [ ] **Satellite #1 ship** — alongside hub (or 1 week later if hub takes too long)
+- [ ] **Retro at week 4** — ranking, backlinks, traffic; decide which remaining satellites to build
+
+### Taste decisions (approved 2026-04-19)
+
+- Product name: **The Hermes Handbook** (brand) + SEO `<title>` "Hermes Agent: The Complete Beginner's Guide (2026)"
+- Positioning: aggressive — *the* canonical reference
+- Scope: hub + `/guide/vs-claude-code/` at launch; satellites #2–#4 based on GSC signal
+- Voice: slightly warmer than rest of site; still tight
+- **Byline:** every page credits `[Kevin Simback](https://x.com/ksimback)` — must be hyperlinked to X profile
+- **Dynamic metrics:** GitHub stars, forks, contributor counts etc. fetched live from `api.github.com/repos/NousResearch/hermes-agent` at write time, stamped "as of YYYY-MM-DD" in prose. Current snapshot (2026-04-19): **101,760 stars, 14,500 forks, 5,642 open issues, 395 watchers**.
+
+---
+
 ## Security hardening (deferred from v2 scope)
 
 Pre-existing v1 behavior, not v2-introduced. Tracked for a follow-up PR.
