@@ -78,11 +78,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Workspace is a native web-based command center designed to manage and orchestrate AI agents through a unified graphical interface. It functions as a Progressive Web App that connects to OpenAI-compatible backends or the Hermes gateway to provide real-time SSE streaming of agent outputs and tool calls. The platform integrates a terminal, file browser, and an inspector for searching and editing agent memory and skills. It supports local model providers like Ollama and LM Studio, offering enhanced session persistence and job tracking when routed through a dedicated gateway.</p>
+    <p class="summary-text">Hermes Workspace is a native web-based command center designed to provide a unified interface for managing AI agents. It integrates directly with the Hermes Agent gateway via real-time SSE streaming to offer a suite of tools including a terminal, memory browser, and skills manager. Users can browse and edit agent memory, manage over 2,000 skills, and monitor tool calls through a security-hardened dashboard. The platform supports any OpenAI-compatible backend and is available as a mobile-first Progressive Web App.</p>
     <ul class="summary-highlights">
-      <li>Unified interface for chat, terminal, memory browser, and skills management</li>
-      <li>Real-time SSE streaming with visual rendering for agent tool calls</li>
-      <li>Supports local backends including Ollama, Atomic Chat, and vLLM</li>
+      <li>Real-time SSE streaming for agent output and tool call rendering</li>
+      <li>Comprehensive memory and skills management with search and edit capabilities</li>
+      <li>Cross-platform support via mobile-first PWA and Docker deployment options</li>
     </ul>
   </div>
 </section>
@@ -96,12 +96,15 @@
 
 <h5>Hermes Workspace</h5>
 <p><strong>Your AI agent&#39;s command center — chat, files, memory, skills, and terminal in one place.</strong></p>
-<p><a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.0.0-6366F1.svg" alt="Version"></a>
+<p><a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.0.0-2557b7.svg" alt="Version"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
 <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D22.0.0-brightgreen.svg" alt="Node"></a>
 <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-6366F1.svg" alt="PRs Welcome"></a></p>
 <blockquote>
 <p>Not a chat wrapper. A complete workspace — orchestrate agents, browse memory, manage skills, and control everything from one interface.</p>
+</blockquote>
+<blockquote>
+<p><strong>v2 — zero-fork. Clone, don&#39;t fork.</strong> Runs on vanilla <a href="https://github.com/NousResearch/hermes-agent"><code>pip install hermes-agent</code></a>. No patches, no drift. Upgrade any time with <code>pip install -U hermes-agent</code>.</p>
 </blockquote>
 <p><img src="https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/docs/screenshots/splash.png" alt="Hermes Workspace"></p>
 </div>
@@ -122,36 +125,48 @@
 <thead>
 <tr>
 <th align="center">Chat</th>
-<th align="center">Files</th>
+<th align="center">Conductor</th>
 </tr>
 </thead>
 <tbody><tr>
 <td align="center"><img src="https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/docs/screenshots/chat.png" alt="Chat"></td>
-<td align="center"><img src="https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/docs/screenshots/files.png" alt="Files"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/docs/screenshots/conductor.png" alt="Conductor"></td>
 </tr>
 </tbody></table>
 <table>
 <thead>
 <tr>
-<th align="center">Terminal</th>
+<th align="center">Dashboard</th>
 <th align="center">Memory</th>
 </tr>
 </thead>
 <tbody><tr>
-<td align="center"><img src="https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/docs/screenshots/terminal.png" alt="Terminal"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/docs/screenshots/dashboard.png" alt="Dashboard"></td>
 <td align="center"><img src="https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/docs/screenshots/memory.png" alt="Memory"></td>
 </tr>
 </tbody></table>
 <table>
 <thead>
 <tr>
-<th align="center">Skills</th>
+<th align="center">Terminal</th>
 <th align="center">Settings</th>
 </tr>
 </thead>
 <tbody><tr>
-<td align="center"><img src="https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/docs/screenshots/skills.png" alt="Skills"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/docs/screenshots/terminal.png" alt="Terminal"></td>
 <td align="center"><img src="https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/docs/screenshots/settings.png" alt="Settings"></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="center">Tasks</th>
+<th align="center">Jobs</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><img src="https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/docs/screenshots/tasks.png" alt="Tasks"></td>
+<td align="center"><img src="https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/docs/screenshots/jobs.png" alt="Jobs"></td>
 </tr>
 </tbody></table>
 <hr>
@@ -170,13 +185,11 @@
 <li><code>GET /v1/models</code> recommended</li>
 </ul>
 <p>Example Hermes gateway setup:</p>
-<pre><code class="language-bash">git clone https://github.com/outsourc-e/hermes-agent.git
-cd hermes-agent
-python -m venv .venv
+<pre><code class="language-bash">python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -e .
+pip install hermes-agent
 hermes setup
-hermes --gateway
+hermes gateway run
 </code></pre>
 <p>If you&#39;re using another OpenAI-compatible server, just note its base URL.</p>
 <h6>Step 2: Install &amp; Run Hermes Workspace</h6>
@@ -427,11 +440,11 @@ cp .env.example .env
 <h6>&quot;Workspace loads but chat doesn&#39;t work&quot;</h6>
 <p>The workspace auto-detects your gateway&#39;s capabilities on startup. Check your terminal for a line like:</p>
 <pre><code>[gateway] http://127.0.0.1:8642 available: health, models; missing: sessions, skills, memory, config, jobs
-[gateway] Missing Hermes APIs detected. Update Hermes: cd hermes-agent &amp;&amp; git pull &amp;&amp; pip install -e . &amp;&amp; hermes --gateway
+[gateway] Missing Hermes APIs detected. Update Hermes: pip install -U hermes-agent &amp;&amp; hermes gateway run
 </code></pre>
-<p><strong>Fix:</strong> Use our fork which includes extended gateway endpoints:</p>
-<pre><code class="language-bash">git clone https://github.com/outsourc-e/hermes-agent.git
-cd hermes-agent &amp;&amp; pip install -e . &amp;&amp; hermes --gateway
+<p><strong>Fix:</strong> Upgrade to the latest stock <code>hermes-agent</code>, which now ships the extended endpoints:</p>
+<pre><code class="language-bash">pip install -U hermes-agent
+hermes gateway run
 </code></pre>
 <h6>&quot;Connection refused&quot; or workspace hangs on load</h6>
 <p>Your Hermes gateway isn&#39;t running. Start it:</p>

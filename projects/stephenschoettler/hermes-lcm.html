@@ -78,11 +78,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">hermes-lcm is a context management plugin for Hermes Agent designed to prevent information loss when conversation history exceeds the context window. It utilizes a hierarchical Directed Acyclic Graph (DAG) of summaries to compact old messages while maintaining a path for detailed retrieval. This approach provides the agent with autonomous tools to drill down into specific historical details without relying on external search methods.</p>
+    <p class="summary-text">Hermes-LCM is a context management plugin for the Hermes Agent that prevents information loss during long-running conversations. It replaces standard lossy compression with a hierarchical Directed Acyclic Graph (DAG) that persists all messages in a profile-scoped SQLite database. The system utilizes a three-level escalation strategy—ranging from detailed summaries to deterministic truncation—to maintain context window limits while preserving data lineage. Agents can autonomously retrieve original details from compacted history using a dedicated suite of tools like lcm_grep and lcm_expand.</p>
     <ul class="summary-highlights">
-      <li>Uses a hierarchical DAG for lossless message compaction</li>
-      <li>Provides agent tools for structured historical retrieval</li>
-      <li>Features an immutable-first SQLite message store</li>
+      <li>Hierarchical DAG-based summary engine for multi-level context compaction</li>
+      <li>Dedicated agent tools for structured retrieval of compacted conversation history</li>
+      <li>Immutable-first SQLite storage ensuring no message is ever deleted</li>
     </ul>
   </div>
 </section>
@@ -188,7 +188,7 @@ Select <strong>Context Engine</strong> and pick <code>lcm</code> from the radiol
 </code></pre>
 <p>Verify with <code>hermes plugins</code>:</p>
 <pre><code>Plugins (1):
-  ✓ hermes-lcm v0.4.0 (6 tools)
+  ✓ hermes-lcm v0.6.0 (6 tools)
 
 Provider Plugins:
   Context Engine: lcm
@@ -307,6 +307,11 @@ Provider Plugins:
 <td><code>LCM_NEW_SESSION_RETAIN_DEPTH</code></td>
 <td><code>2</code></td>
 <td>DAG depth retained after <code>/new</code> (<code>-1</code> = all, <code>0</code> = none, <code>2</code> = keep d2+)</td>
+</tr>
+<tr>
+<td><code>LCM_ENABLE_SLASH_COMMAND</code></td>
+<td><code>false</code></td>
+<td>Opt-in registration for <code>/lcm</code> gateway slash commands (recommended only for trusted operator contexts)</td>
 </tr>
 </tbody></table>
 <p>The point-8 compaction knobs are intentionally opt-in. <code>cache_friendly_*</code> is a plugin-local prompt-stability heuristic, not a claim that Hermes currently passes true prompt-cache metrics into <code>hermes-lcm</code>.</p>
