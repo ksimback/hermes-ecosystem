@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>bigiron — Hermes Agent Multi-Agent &amp; Orchestration | Hermes Atlas</title>
-<meta name="description" content="AI-native SDLC — Hermes Agent + Supermodel code graph, graph-gated at every phase">
+<meta name="description" content="Big Iron — AI-Native SDLC. Hermes Agent + Supermodel code graph, graph-gated at every phase.">
 <link rel="canonical" href="https://hermesatlas.com/projects/supermodeltools/bigiron">
 <meta property="og:title" content="bigiron — Hermes Atlas">
-<meta property="og:description" content="AI-native SDLC — Hermes Agent + Supermodel code graph, graph-gated at every phase">
+<meta property="og:description" content="Big Iron — AI-Native SDLC. Hermes Agent + Supermodel code graph, graph-gated at every phase.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/supermodeltools/bigiron">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="bigiron — Hermes Atlas">
-<meta name="twitter:description" content="AI-native SDLC — Hermes Agent + Supermodel code graph, graph-gated at every phase">
+<meta name="twitter:description" content="Big Iron — AI-Native SDLC. Hermes Agent + Supermodel code graph, graph-gated at every phase.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,14 +56,14 @@
   <h1 class="project-name">
     <span class="org">supermodeltools</span><span class="slash">/</span>bigiron
   </h1>
-  <p class="project-desc">AI-native SDLC — Hermes Agent + Supermodel code graph, graph-gated at every phase</p>
+  <p class="project-desc">Big Iron — AI-Native SDLC. Hermes Agent + Supermodel code graph, graph-gated at every phase.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 7</span>
+    <span class="stars">★ 9</span>
+    <span><span class="meta-label">lang</span>Shell</span>
     
     
-    
-    
+    <span><span class="meta-label">updated</span>2026-04-02</span>
   </div>
 
   <div class="actions">
@@ -107,7 +107,7 @@
 <p>An AI-native software development system that integrates <strong><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a></strong> with the <strong><a href="https://supermodeltools.com">Supermodel Code Graph API</a></strong> to make structural code intelligence a first-class citizen at every phase of the SDLC.</p>
 <p>The graph replaces file loading for context. The agent stays architecturally aligned across sessions. Phase gates enforce quality without human gatekeeping. The system improves itself with every completed task.</p>
 <hr>
-<h6>Quick Start</h6>
+<h3>Quick Start</h3>
 <pre><code class="language-bash"># 1. Set required env vars
 export SUPERMODEL_API_KEY=your_key_here
 export GITHUB_TOKEN=your_token_here   # optional — for PR automation
@@ -125,7 +125,7 @@ hermes
 factory run ./my-project &quot;Add rate limiting to the order API&quot;
 </code></pre>
 <hr>
-<h6>The <code>factory</code> CLI</h6>
+<h3>The <code>factory</code> CLI</h3>
 <p>The top-level entry point. Three modes:</p>
 <pre><code class="language-bash"># Run the full 8-phase SDLC cycle autonomously on a goal
 factory run &lt;codebase&gt; &quot;&lt;goal&gt;&quot;
@@ -143,7 +143,7 @@ factory improve ./demo
 </code></pre>
 <p>Hermes is launched with all relevant skills pre-loaded and runs autonomously through the phases, using the graph at each step.</p>
 <hr>
-<h6>Demo</h6>
+<h3>Demo</h3>
 <p>A complete layered Python app is included in <code>demo/</code> as a factory target. Run the full 8-phase cycle on it:</p>
 <pre><code class="language-bash">./scripts/demo_run.sh ./demo &quot;Add rate limiting to the order API&quot;
 </code></pre>
@@ -159,13 +159,13 @@ factory improve ./demo
 <li><strong>36 tests</strong> organized in dependency order</li>
 </ul>
 <hr>
-<h6>How It Works</h6>
+<h3>How It Works</h3>
 <p>See <a href="https://github.com/supermodeltools/bigiron/blob/main/docs/ARCHITECTURE.md"><code>docs/ARCHITECTURE.md</code></a> for the full design. The short version:</p>
 <p><strong>Supermodel</strong> ships as an MCP server that Hermes consumes natively. It maintains a persistent multi-layered graph of the codebase — call graph, dependency graph, domain graph, AST. The agent queries this graph instead of loading files.</p>
 <p><strong>Hermes</strong> runs a skill at each SDLC phase. Each skill knows how to use the graph API for that specific phase: blast radius before planning, arch validation before coding, topological test ordering, graph-diff quality gates.</p>
 <p><strong>The result:</strong> the agent always knows what&#39;s connected to what, never hallucinates signatures, and can&#39;t accidentally violate the architecture without it being caught at a gate.</p>
 <hr>
-<h6>The 8 Phases</h6>
+<h3>The 8 Phases</h3>
 <table>
 <thead>
 <tr>
@@ -217,7 +217,7 @@ factory improve ./demo
 </tbody></table>
 <p>Phases run in order. No phase advances without passing its graph-based gate.</p>
 <hr>
-<h6>CI Integration</h6>
+<h3>CI Integration</h3>
 <p><code>graph_gate.sh</code> wraps the Supermodel REST API for use in git hooks, GitHub Actions, or any CI pipeline:</p>
 <pre><code class="language-bash"># Architecture gate (pre-code)
 ./scripts/graph_gate.sh arch ./my-project
@@ -236,7 +236,7 @@ factory improve ./demo
 </code></pre>
 <p>Exit code <code>0</code> = PASS, <code>1</code> = FAIL. Drop into any CI step.</p>
 <hr>
-<h6>File Layout</h6>
+<h3>File Layout</h3>
 <pre><code>big-iron/
 ├── factory                 ← main entry point (run/health/improve)
 ├── README.md
@@ -272,7 +272,7 @@ factory improve ./demo
     └── tests/
 </code></pre>
 <hr>
-<h6>Prerequisites</h6>
+<h3>Prerequisites</h3>
 <ul>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — <code>pip install hermes-agent</code></li>
 <li><a href="https://nodejs.org">Node.js</a> ≥ 18 (for Supermodel MCP server)</li>
@@ -280,7 +280,7 @@ factory improve ./demo
 <li>Python ≥ 3.11 (for demo codebase)</li>
 </ul>
 <hr>
-<h6>References</h6>
+<h3>References</h3>
 <ul>
 <li><a href="https://github.com/supermodeltools/bigiron/blob/main/docs/ARCHITECTURE.md">Architecture</a></li>
 <li><a href="https://github.com/supermodeltools/bigiron/blob/main/AGENTS.md">Agent Rules</a></li>
@@ -288,6 +288,7 @@ factory improve ./demo
 <li><a href="https://supermodeltools.com">Supermodel</a></li>
 <li><a href="https://modelcontextprotocol.io">Model Context Protocol</a></li>
 </ul>
+
   </section>
 </details>
 
@@ -299,27 +300,27 @@ factory improve ./demo
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/builderz-labs/mission-control">
-        <div class="stars">★ 3.9K</div>
+        <div class="stars">★ 4.2K</div>
         <div class="name"><span class="org">builderz-labs /</span> mission-control</div>
       </a>
       <a class="related-row" href="/projects/swarmclawai/swarmclaw">
-        <div class="stars">★ 285</div>
+        <div class="stars">★ 377</div>
         <div class="name"><span class="org">swarmclawai /</span> swarmclaw</div>
       </a>
       <a class="related-row" href="/projects/howdymary/hermes-agent-metaharness">
-        <div class="stars">★ 46</div>
+        <div class="stars">★ 75</div>
         <div class="name"><span class="org">howdymary /</span> hermes-agent-metaharness</div>
       </a>
       <a class="related-row" href="/projects/runtimenoteslabs/gladiator">
-        <div class="stars">★ 29</div>
+        <div class="stars">★ 36</div>
         <div class="name"><span class="org">runtimenoteslabs /</span> gladiator</div>
       </a>
       <a class="related-row" href="/projects/1ilkhamov/opencode-hermes-multiagent">
-        <div class="stars">★ 28</div>
+        <div class="stars">★ 48</div>
         <div class="name"><span class="org">1ilkhamov /</span> opencode-hermes-multiagent</div>
       </a>
       <a class="related-row" href="/projects/Rainhoole/hermes-agent-acp-skill">
-        <div class="stars">★ 4</div>
+        <div class="stars">★ 8</div>
         <div class="name"><span class="org">Rainhoole /</span> hermes-agent-acp-skill</div>
       </a>
     </div>

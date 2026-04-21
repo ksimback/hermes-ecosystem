@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>icarus-plugin — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
-<meta name="description" content="Self-memory and replacement models — remember your work, train your replacement">
+<meta name="description" content="Self-memory and replacement models for Hermes agents. Remember your work. Train your replacement.">
 <link rel="canonical" href="https://hermesatlas.com/projects/esaradev/icarus-plugin">
 <meta property="og:title" content="icarus-plugin — Hermes Atlas">
-<meta property="og:description" content="Self-memory and replacement models — remember your work, train your replacement">
+<meta property="og:description" content="Self-memory and replacement models for Hermes agents. Remember your work. Train your replacement.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/esaradev/icarus-plugin">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="icarus-plugin — Hermes Atlas">
-<meta name="twitter:description" content="Self-memory and replacement models — remember your work, train your replacement">
+<meta name="twitter:description" content="Self-memory and replacement models for Hermes agents. Remember your work. Train your replacement.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,14 +56,14 @@
   <h1 class="project-name">
     <span class="org">esaradev</span><span class="slash">/</span>icarus-plugin
   </h1>
-  <p class="project-desc">Self-memory and replacement models — remember your work, train your replacement</p>
+  <p class="project-desc">Self-memory and replacement models for Hermes agents. Remember your work. Train your replacement.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 51</span>
+    <span class="stars">★ 93</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-04-18</span>
   </div>
 
   <div class="actions">
@@ -113,10 +113,10 @@
 <p><strong>Self-memory and replacement models for Hermes agents.</strong></p>
 <p><em>Remember your work. Train your replacement.</em></p>
 </blockquote>
-<h6>What this is</h6>
+<h3>What this is</h3>
 <p>Icarus is a <strong>Hermes plugin</strong>. It runs inside Hermes and gives agents shared memory, training data extraction, and a model replacement pipeline.</p>
 <p>Icarus is <strong>not</strong> an Obsidian plugin. Obsidian is an optional viewer/editor for the markdown files Icarus writes. You don&#39;t need Obsidian to use Icarus.</p>
-<h6>What this is not</h6>
+<h3>What this is not</h3>
 <ul>
 <li>Not an orchestration framework</li>
 <li>Not an agent router</li>
@@ -124,7 +124,7 @@
 <li>Not an Obsidian community plugin</li>
 <li>Not a standalone app</li>
 </ul>
-<h6>Architecture</h6>
+<h3>Architecture</h3>
 <pre><code>┌──────────────────────────────────────────────────────────┐
 │  Hermes Agent                                            │
 │  ├── Icarus plugin (this repo)                           │
@@ -150,13 +150,13 @@
 │                     fine-tuned replacement model          │
 └──────────────────────────────────────────────────────────┘
 </code></pre>
-<h6>2-minute quickstart</h6>
-<h6>1. Install the plugin</h6>
+<h3>2-minute quickstart</h3>
+<h4>1. Install the plugin</h4>
 <pre><code class="language-bash">git clone https://github.com/esaradev/icarus-plugin.git
 mkdir -p ~/.hermes/plugins/icarus
 cp -r icarus-plugin/* ~/.hermes/plugins/icarus/
 </code></pre>
-<h6>2. Set environment variables</h6>
+<h4>2. Set environment variables</h4>
 <p>Add to your Hermes profile <code>.env</code> (e.g. <code>~/.hermes/.env</code>):</p>
 <pre><code class="language-bash"># required: where Icarus writes notes
 FABRIC_DIR=~/Documents/my-vault/icarus
@@ -170,20 +170,20 @@ OBSIDIAN_VAULT_PATH=~/Documents/my-vault
 # optional: for training/eval tools
 TOGETHER_API_KEY=tok-...
 </code></pre>
-<h6>3. Start Hermes and verify</h6>
+<h4>3. Start Hermes and verify</h4>
 <pre><code class="language-bash">hermes chat
 </code></pre>
 <p>Type <code>/plugins</code> to verify:</p>
 <pre><code>Plugins (1):
   ✓ icarus v0.3.0 (16 tools, 4 hooks)
 </code></pre>
-<h6>4. Initialize Obsidian (optional)</h6>
+<h4>4. Initialize Obsidian (optional)</h4>
 <p>Inside your Hermes chat, say:</p>
 <blockquote>
 <p>Set up Obsidian for my notes</p>
 </blockquote>
 <p>The agent will call <code>fabric_init_obsidian</code>, which creates <code>.obsidian/app.json</code> at your vault root and <code>daily/</code> inside your notes directory.</p>
-<h6>5. Write a test note and verify</h6>
+<h4>5. Write a test note and verify</h4>
 <p>Inside Hermes:</p>
 <blockquote>
 <p>Write a fabric note about testing the setup</p>
@@ -194,7 +194,7 @@ TOGETHER_API_KEY=tok-...
 <li>A daily note at <code>daily/2026-04-01.md</code> with a wikilink to it</li>
 <li>YAML frontmatter visible in the note</li>
 </ul>
-<h6>What Icarus adds to Hermes</h6>
+<h3>What Icarus adds to Hermes</h3>
 <p>Hermes already has per-instance memory and a capable runtime. Icarus adds:</p>
 <ul>
 <li><strong>Cross-instance shared memory</strong> -- agents on different profiles read each other&#39;s work through a shared <code>FABRIC_DIR</code></li>
@@ -202,8 +202,8 @@ TOGETHER_API_KEY=tok-...
 <li><strong>Training data extraction</strong> -- fabric entries become fine-tuning pairs with quality filtering and pair weighting</li>
 <li><strong>Model replacement pipeline</strong> -- fine-tune a cheaper model from your agent&#39;s own history, eval it, switch to it</li>
 </ul>
-<h6>Tools</h6>
-<h6>Memory</h6>
+<h3>Tools</h3>
+<h4>Memory</h4>
 <table>
 <thead>
 <tr>
@@ -232,7 +232,7 @@ TOGETHER_API_KEY=tok-...
 <td>Set training value (high/normal/low) on an entry</td>
 </tr>
 </tbody></table>
-<h6>Training</h6>
+<h4>Training</h4>
 <table>
 <thead>
 <tr>
@@ -253,7 +253,7 @@ TOGETHER_API_KEY=tok-...
 <td>Check job progress, updates model registry</td>
 </tr>
 </tbody></table>
-<h6>Replacement models</h6>
+<h4>Replacement models</h4>
 <table>
 <thead>
 <tr>
@@ -278,7 +278,7 @@ TOGETHER_API_KEY=tok-...
 <td>Emergency rollback to previous model</td>
 </tr>
 </tbody></table>
-<h6>Operational</h6>
+<h4>Operational</h4>
 <table>
 <thead>
 <tr>
@@ -303,7 +303,7 @@ TOGETHER_API_KEY=tok-...
 <td>One-time Obsidian vault setup (Hermes tool, not a shell command)</td>
 </tr>
 </tbody></table>
-<h6>Hooks</h6>
+<h3>Hooks</h3>
 <p>4 automatic hooks fire without the agent calling anything:</p>
 <ul>
 <li><strong>on_session_start</strong> -- loads SOUL, pending handoffs, recent context</li>
@@ -311,7 +311,7 @@ TOGETHER_API_KEY=tok-...
 <li><strong>post_llm_call</strong> -- captures high-value decisions (decision + outcome + substantial user request)</li>
 <li><strong>on_session_end</strong> -- scores session quality, writes structured note if threshold met</li>
 </ul>
-<h6>Obsidian setup</h6>
+<h3>Obsidian setup</h3>
 <p>Icarus is a <strong>Hermes plugin</strong>, not an Obsidian plugin. Obsidian just reads the markdown files.</p>
 <p><strong>How it works:</strong></p>
 <ul>
@@ -329,7 +329,7 @@ TOGETHER_API_KEY=tok-...
 <pre><code>FABRIC_DIR=~/my-vault/icarus-notes
 OBSIDIAN_VAULT_PATH=~/my-vault
 </code></pre>
-<h6>Builder -&gt; reviewer -&gt; fix</h6>
+<h3>Builder -&gt; reviewer -&gt; fix</h3>
 <pre><code># builder finishes work, hands off
 fabric_write(type=&quot;code-session&quot;, summary=&quot;rate limiter ready&quot;,
              status=&quot;open&quot;, assigned_to=&quot;daedalus&quot;)
@@ -342,7 +342,7 @@ fabric_write(type=&quot;review&quot;, summary=&quot;found race condition&quot;,
 fabric_write(type=&quot;code-session&quot;, summary=&quot;fixed race condition&quot;,
              revises=&quot;icarus:a3f29b01&quot;)
 </code></pre>
-<h6>Memory -&gt; training -&gt; replacement model</h6>
+<h3>Memory -&gt; training -&gt; replacement model</h3>
 <pre><code>1. Work normally. The plugin captures decisions and completions automatically.
 
 2. Check readiness:
@@ -360,7 +360,7 @@ fabric_write(type=&quot;code-session&quot;, summary=&quot;fixed race condition&q
 6. Switch:
    fabric_switch_model(model_id=&quot;user/my-agent-v2-abc123&quot;)
 </code></pre>
-<h6>Training value</h6>
+<h3>Training value</h3>
 <p>Entries carry a <code>training_value</code> field: <code>high</code>, <code>normal</code>, or <code>low</code>.</p>
 <ul>
 <li><strong>high</strong> -- decisions with outcomes, completed reviews, successful fixes</li>
@@ -373,7 +373,7 @@ fabric_write(type=&quot;code-session&quot;, summary=&quot;fixed race condition&q
 <li><code>normal</code> -- excludes low-value and skips noisy unstructured session notes unless grounded</li>
 <li><code>high-volume</code> -- everything</li>
 </ul>
-<h6>Profiles (Hermes v0.6.0)</h6>
+<h3>Profiles (Hermes v0.6.0)</h3>
 <pre><code class="language-bash">hermes profile create coder
 hermes profile create reviewer --clone
 mkdir -p ~/.hermes-coder/plugins/icarus ~/.hermes-reviewer/plugins/icarus
@@ -382,14 +382,14 @@ cp -r icarus-plugin/* ~/.hermes-reviewer/plugins/icarus/
 hermes -p coder chat
 </code></pre>
 <p>Both profiles write to the same <code>FABRIC_DIR</code>, so the reviewer sees the coder&#39;s work.</p>
-<h6>Fallback models</h6>
+<h3>Fallback models</h3>
 <p>After switching to a replacement model, set the original as fallback in <code>config.yaml</code>:</p>
 <pre><code class="language-yaml">model: user/my-agent-v2-abc123
 fallback_model:
   provider: openrouter
   model: anthropic/claude-sonnet-4
 </code></pre>
-<h6>Troubleshooting</h6>
+<h3>Troubleshooting</h3>
 <p><strong>&quot;tool not found&quot; when calling fabric_write or fabric_recall</strong></p>
 <ul>
 <li>Run <code>/plugins</code> in Hermes. If Icarus isn&#39;t listed, the plugin isn&#39;t installed in the right directory.</li>
@@ -421,7 +421,7 @@ fallback_model:
 <ul>
 <li>Set <code>ICARUS_OBSIDIAN=1</code> in your <code>.env</code> and restart Hermes. Links are only added when this flag is set.</li>
 </ul>
-<h6>Validation</h6>
+<h3>Validation</h3>
 <p>After setup, verify everything works:</p>
 <pre><code>1. In Hermes: &quot;write a test note about validating the setup&quot;
 2. Check: ls $FABRIC_DIR/*.md (should show a new file)
@@ -429,18 +429,18 @@ fallback_model:
 4. Open vault in Obsidian: note should appear with frontmatter
 5. In Hermes: fabric_brief() (should show the note in recent work)
 </code></pre>
-<h6>Smoke test</h6>
+<h3>Smoke test</h3>
 <pre><code class="language-bash">bash scripts/smoke-handoff.sh
 bash scripts/test-plugin.sh
 </code></pre>
-<h6>Requirements</h6>
+<h3>Requirements</h3>
 <ul>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes</a> v0.6.0+</li>
 <li>Python 3.10+</li>
 <li><code>TOGETHER_API_KEY</code> in <code>.env</code> (for training/eval tools)</li>
 <li><code>FABRIC_DIR</code> set in <code>.env</code> (defaults to <code>~/fabric/</code>)</li>
 </ul>
-<h6>Files</h6>
+<h3>Files</h3>
 <pre><code>__init__.py           registration (16 tools, 4 hooks)
 plugin.yaml           manifest
 schemas.py            tool schemas (what the LLM sees)
@@ -455,8 +455,9 @@ scripts/
   smoke-handoff.sh    end-to-end handoff proof
   test-plugin.sh      66-test fixture suite
 </code></pre>
-<h6>License</h6>
+<h3>License</h3>
 <p>MIT</p>
+
   </section>
 </details>
 
@@ -468,35 +469,35 @@ scripts/
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
-        <div class="stars">★ 4.1K</div>
+        <div class="stars">★ 5.3K</div>
         <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
       </a>
       <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
-        <div class="stars">★ 759</div>
+        <div class="stars">★ 1.1K</div>
         <div class="name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
       </a>
       <a class="related-row" href="/projects/wondelai/skills">
-        <div class="stars">★ 480</div>
+        <div class="stars">★ 676</div>
         <div class="name"><span class="org">wondelai /</span> skills</div>
       </a>
       <a class="related-row" href="/projects/DougTrajano/pydantic-ai-skills">
-        <div class="stars">★ 220</div>
+        <div class="stars">★ 249</div>
         <div class="name"><span class="org">DougTrajano /</span> pydantic-ai-skills</div>
       </a>
       <a class="related-row" href="/projects/Agents365-ai/drawio-skill">
-        <div class="stars">★ 131</div>
+        <div class="stars">★ 370</div>
         <div class="name"><span class="org">Agents365-ai /</span> drawio-skill</div>
       </a>
       <a class="related-row" href="/projects/smartcontractkit/chainlink-agent-skills">
-        <div class="stars">★ 85</div>
+        <div class="stars">★ 87</div>
         <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
       </a>
       <a class="related-row" href="/projects/tlehman/litprog-skill">
-        <div class="stars">★ 81</div>
+        <div class="stars">★ 99</div>
         <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
       </a>
       <a class="related-row" href="/projects/chigwell/skilldock.io">
-        <div class="stars">★ 50</div>
+        <div class="stars">★ 55</div>
         <div class="name"><span class="org">chigwell /</span> skilldock.io</div>
       </a>
     </div>

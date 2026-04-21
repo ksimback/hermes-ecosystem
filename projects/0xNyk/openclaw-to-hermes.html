@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>openclaw-to-hermes — Hermes Agent Developer Tools | Hermes Atlas</title>
-<meta name="description" content="Migration tool from OpenClaw to Hermes Agent">
+<meta name="description" content="Migrate from OpenClaw to Hermes Agent — complete, battle-tested migration tool">
 <link rel="canonical" href="https://hermesatlas.com/projects/0xNyk/openclaw-to-hermes">
 <meta property="og:title" content="openclaw-to-hermes — Hermes Atlas">
-<meta property="og:description" content="Migration tool from OpenClaw to Hermes Agent">
+<meta property="og:description" content="Migrate from OpenClaw to Hermes Agent — complete, battle-tested migration tool">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/0xNyk/openclaw-to-hermes">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="openclaw-to-hermes — Hermes Atlas">
-<meta name="twitter:description" content="Migration tool from OpenClaw to Hermes Agent">
+<meta name="twitter:description" content="Migrate from OpenClaw to Hermes Agent — complete, battle-tested migration tool">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,14 +56,14 @@
   <h1 class="project-name">
     <span class="org">0xNyk</span><span class="slash">/</span>openclaw-to-hermes
   </h1>
-  <p class="project-desc">Migration tool from OpenClaw to Hermes Agent</p>
+  <p class="project-desc">Migrate from OpenClaw to Hermes Agent — complete, battle-tested migration tool</p>
 
   <div class="meta-row">
-    <span class="stars">★ 21</span>
+    <span class="stars">★ 24</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-03-26</span>
   </div>
 
   <div class="actions">
@@ -90,7 +90,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h6>openclaw-to-hermes</h6>
+    <h2>openclaw-to-hermes</h2>
 <p>Migrate from <a href="https://github.com/openclaw/openclaw">OpenClaw</a> to <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — a complete, battle-tested migration tool.</p>
 <p>Built from a real production migration. Fixes every issue we found in the existing <code>hermes-migrate</code> tool.</p>
 <blockquote>
@@ -100,7 +100,7 @@ hermes claw migrate --preset full --overwrite  # Full migration
 </code></pre>
 <p>This tool remains useful as a reference implementation and for users on older Hermes versions (pre-v0.3.0) where the native migration had known issues.</p>
 </blockquote>
-<h6>What It Does</h6>
+<h3>What It Does</h3>
 <ul>
 <li>Discovers all OpenClaw agents, workspaces, channels, and credentials</li>
 <li>Migrates SOUL.md, MEMORY.md, workspace files, skills, and memory archives</li>
@@ -112,7 +112,7 @@ hermes claw migrate --preset full --overwrite  # Full migration
 <li>Creates backup archive before any destructive operations</li>
 <li>Supports dry-run mode for safe preview</li>
 </ul>
-<h6>Quick Start</h6>
+<h3>Quick Start</h3>
 <pre><code class="language-bash"># Install
 pip install openclaw-to-hermes
 # or
@@ -130,7 +130,7 @@ oc2hermes --agent quant
 # Skip auto-start of hermes gateway
 oc2hermes --no-start
 </code></pre>
-<h6>What Gets Migrated</h6>
+<h3>What Gets Migrated</h3>
 <table>
 <thead>
 <tr>
@@ -195,13 +195,13 @@ oc2hermes --no-start
 <td>TTL, keep settings</td>
 </tr>
 </tbody></table>
-<h6>Prerequisites</h6>
+<h3>Prerequisites</h3>
 <ul>
 <li>OpenClaw installed and configured (<code>~/.openclaw/openclaw.json</code> exists)</li>
 <li>Hermes Agent installed (<code>hermes</code> CLI available or auto-installed)</li>
 <li>Python 3.10+</li>
 </ul>
-<h6>Architecture</h6>
+<h3>Architecture</h3>
 <pre><code>~/.openclaw/
 ├── openclaw.json              # Main config (agents, models, channels, tools)
 ├── state/
@@ -239,7 +239,7 @@ oc2hermes --no-start
 └── cron/
     └── jobs.json              # Scheduled tasks
 </code></pre>
-<h6>Known Issues with <code>hermes-migrate</code></h6>
+<h3>Known Issues with <code>hermes-migrate</code></h3>
 <p>This tool exists because the official <code>hermes-migrate</code> (v1.2.1) has several bugs:</p>
 <ol>
 <li><strong>Crashes on dict model configs</strong> — <code>agents.list[].model</code> can be <code>{&quot;primary&quot;: &quot;...&quot;, &quot;fallbacks&quot;: [...]}</code>, not just a string</li>
@@ -250,7 +250,7 @@ oc2hermes --no-start
 <li><strong>Missing croniter dependency</strong> — hermes-agent venv lacks croniter for cron job creation</li>
 <li><strong>Gateway restart hangs</strong> — <code>hermes gateway restart</code> can block indefinitely</li>
 </ol>
-<h6>Post-Migration Steps</h6>
+<h3>Post-Migration Steps</h3>
 <p>After running <code>oc2hermes</code>:</p>
 <ol>
 <li><strong>Verify credentials</strong>: <code>hermes status</code> — check API keys and auth providers</li>
@@ -259,7 +259,7 @@ oc2hermes --no-start
 <li><strong>Set home channel</strong>: Type <code>/sethome</code> in your Telegram chat with the bot</li>
 <li><strong>Verify cron jobs</strong>: <code>hermes cron list</code></li>
 </ol>
-<h6>Configuration</h6>
+<h3>Configuration</h3>
 <p>Create <code>~/.oc2hermes.yaml</code> to customize behavior:</p>
 <pre><code class="language-yaml"># Override workspace detection
 workspace: /home/user/clawd
@@ -281,7 +281,7 @@ openrouter_model: &quot;openrouter/auto&quot;
 # System env file path (for bot tokens)
 tenant_env: /etc/openclaw-tenants/{user}.env
 </code></pre>
-<h6>Development</h6>
+<h3>Development</h3>
 <pre><code class="language-bash">git clone https://github.com/0xNyk/openclaw-to-hermes.git
 cd openclaw-to-hermes
 uv venv &amp;&amp; source .venv/bin/activate
@@ -293,8 +293,9 @@ pytest
 # Lint
 ruff check .
 </code></pre>
-<h6>License</h6>
+<h3>License</h3>
 <p>MIT</p>
+
   </section>
 </details>
 
@@ -306,31 +307,31 @@ ruff check .
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/junhoyeo/tokscale">
-        <div class="stars">★ 1.7K</div>
+        <div class="stars">★ 2.0K</div>
         <div class="name"><span class="org">junhoyeo /</span> tokscale</div>
       </a>
       <a class="related-row" href="/projects/joeynyc/hermes-skins">
-        <div class="stars">★ 76</div>
+        <div class="stars">★ 248</div>
         <div class="name"><span class="org">joeynyc /</span> hermes-skins</div>
       </a>
       <a class="related-row" href="/projects/AlexAI-MCP/hermes-CCC">
-        <div class="stars">★ 56</div>
+        <div class="stars">★ 86</div>
         <div class="name"><span class="org">AlexAI-MCP /</span> hermes-CCC</div>
       </a>
       <a class="related-row" href="/projects/unmodeled-tyler/vessel-browser">
-        <div class="stars">★ 44</div>
+        <div class="stars">★ 54</div>
         <div class="name"><span class="org">unmodeled-tyler /</span> vessel-browser</div>
       </a>
       <a class="related-row" href="/projects/Abruptive/Ankh.md">
-        <div class="stars">★ 25</div>
+        <div class="stars">★ 34</div>
         <div class="name"><span class="org">Abruptive /</span> Ankh.md</div>
       </a>
       <a class="related-row" href="/projects/roli-lpci/lintlang">
-        <div class="stars">★ 24</div>
+        <div class="stars">★ 25</div>
         <div class="name"><span class="org">roli-lpci /</span> lintlang</div>
       </a>
       <a class="related-row" href="/projects/42-evey/evey-setup">
-        <div class="stars">★ 7</div>
+        <div class="stars">★ 11</div>
         <div class="name"><span class="org">42-evey /</span> evey-setup</div>
       </a>
     </div>

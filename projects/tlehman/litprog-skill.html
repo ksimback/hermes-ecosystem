@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>litprog-skill — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
-<meta name="description" content="Literate programming skill — weave code and documentation across agents">
+<meta name="description" content="Literate programming skill for agent harnesses like Claude Code, OpenCode and Hermes Agent">
 <link rel="canonical" href="https://hermesatlas.com/projects/tlehman/litprog-skill">
 <meta property="og:title" content="litprog-skill — Hermes Atlas">
-<meta property="og:description" content="Literate programming skill — weave code and documentation across agents">
+<meta property="og:description" content="Literate programming skill for agent harnesses like Claude Code, OpenCode and Hermes Agent">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/tlehman/litprog-skill">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="litprog-skill — Hermes Atlas">
-<meta name="twitter:description" content="Literate programming skill — weave code and documentation across agents">
+<meta name="twitter:description" content="Literate programming skill for agent harnesses like Claude Code, OpenCode and Hermes Agent">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,14 +56,14 @@
   <h1 class="project-name">
     <span class="org">tlehman</span><span class="slash">/</span>litprog-skill
   </h1>
-  <p class="project-desc">Literate programming skill — weave code and documentation across agents</p>
+  <p class="project-desc">Literate programming skill for agent harnesses like Claude Code, OpenCode and Hermes Agent</p>
 
   <div class="meta-row">
-    <span class="stars">★ 81</span>
+    <span class="stars">★ 99</span>
+    <span><span class="meta-label">lang</span>TypeScript</span>
     
     
-    
-    
+    <span><span class="meta-label">updated</span>2026-04-10</span>
   </div>
 
   <div class="actions">
@@ -90,9 +90,9 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h6>Literate Programming Skill for Claude Code</h6>
+    <h2>Literate Programming Skill for Claude Code</h2>
 <p>A Claude Code skill that transforms codebases into literate programs. These are documents written for human comprehension that also generate the original source code.</p>
-<h6>What is Literate Programming?</h6>
+<h3>What is Literate Programming?</h3>
 <p>Literate programming was invented by <strong>Donald Knuth</strong> in 1984. Knuth is the author of <em>The Art of Computer Programming</em>, creator of TeX, and winner of the 1974 Turing Award. He introduced literate programming as a paradigm where programs are written as essays for human readers, with code embedded in a narrative.</p>
 <p>A literate program produces two outputs:</p>
 <ul>
@@ -100,7 +100,7 @@
 <li><strong>Tangle</strong>: Extract runnable source files from the document.</li>
 </ul>
 <p>The key insight: present code in <em>psychological order</em>. That is, the order that makes it easiest to understand, not the order the compiler needs.</p>
-<h6>What This Skill Does</h6>
+<h3>What This Skill Does</h3>
 <ul>
 <li>Installs as a Claude Code skill (via <code>SKILL.md</code>)</li>
 <li>Gives Claude the ability to analyze a codebase and produce a <code>.lit.md</code> file</li>
@@ -111,29 +111,29 @@
 <li>Running <code>/literate-programming</code> on an existing <code>.lit.md</code> just weaves + tangles (idempotent)</li>
 <li>Supports PDF generation via Pandoc</li>
 </ul>
-<h6>Installation</h6>
+<h3>Installation</h3>
 <p>Copy <code>SKILL.md</code> into your project&#39;s <code>.claude/skills/</code> directory:</p>
 <pre><code class="language-bash">git clone https://github.com/tlehman/litprog-skill.git
 mkdir -p your-project/.claude/skills/
 cp litprog-skill/SKILL.md your-project/.claude/skills/literate-programming.md
 </code></pre>
 <p>Claude Code automatically discovers skills from <code>.claude/skills/</code> in your project root. After copying, the <code>/literate-programming</code> slash command will be available in any Claude Code session within that project.</p>
-<h6>Usage</h6>
-<h6>Create a literate program</h6>
+<h3>Usage</h3>
+<h4>Create a literate program</h4>
 <p>Ask Claude to create a literate program from your codebase:</p>
 <blockquote>
 <p>/literate-programming</p>
 </blockquote>
 <p>Claude will analyze your code, determine the best narrative order, and produce a <code>.lit.md</code> file with prose, diagrams, and named code chunks.</p>
 <p>If a <code>.lit.md</code> already exists, running <code>/literate-programming</code> will just tangle and weave the existing file without recreating it.</p>
-<h6>Reverse-sync (automatic)</h6>
+<h4>Reverse-sync (automatic)</h4>
 <p>After creation, a PostToolUse hook is configured so that when you edit a source file directly, the changes are automatically synced back into the <code>.lit.md</code> and re-tangled. This keeps the <code>.lit.md</code> as the single source of truth.</p>
 <p>The hook does NOT regenerate the PDF on every edit. To regenerate the PDF, run <code>/literate-programming</code> again.</p>
-<h6>Tangle (extract source code)</h6>
+<h4>Tangle (extract source code)</h4>
 <pre><code class="language-bash">bun run scripts/tangle.ts project.lit.md --output-dir ./src/
 </code></pre>
 <p>This expands all root chunks and writes the source files. Verify by diffing against the original source.</p>
-<h6>Weave (generate PDF)</h6>
+<h4>Weave (generate PDF)</h4>
 <pre><code class="language-bash">pandoc project.lit.md \
   -o project.pdf \
   --pdf-engine=xelatex \
@@ -143,7 +143,7 @@ cp litprog-skill/SKILL.md your-project/.claude/skills/literate-programming.md
 </code></pre>
 <p><strong>Prerequisites for weave:</strong> pandoc, xelatex, mermaid-filter</p>
 <p>For setup instructions, see <code>references/pandoc-setup.md</code>.</p>
-<h6>Why Use This?</h6>
+<h3>Why Use This?</h3>
 <ul>
 <li><strong>Optimized for reading</strong>: Code is read far more often than it is written. Literate programs optimize for reading.</li>
 <li><strong>Explains the why</strong>: Forces the author to explain <em>why</em>, not just <em>what</em>. Every code block is preceded by prose that motivates its existence.</li>
@@ -151,6 +151,7 @@ cp litprog-skill/SKILL.md your-project/.claude/skills/literate-programming.md
 <li><strong>Architectural clarity</strong>: Reveals architectural decisions that comments and READMEs miss. The narrative structure shows how pieces fit together.</li>
 <li><strong>Knowledge transfer</strong>: Useful for onboarding, code reviews, and preserving institutional knowledge. A new team member can read the literate program start to finish and understand the system.</li>
 </ul>
+
   </section>
 </details>
 
@@ -162,35 +163,35 @@ cp litprog-skill/SKILL.md your-project/.claude/skills/literate-programming.md
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
-        <div class="stars">★ 4.1K</div>
+        <div class="stars">★ 5.3K</div>
         <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
       </a>
       <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
-        <div class="stars">★ 759</div>
+        <div class="stars">★ 1.1K</div>
         <div class="name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
       </a>
       <a class="related-row" href="/projects/wondelai/skills">
-        <div class="stars">★ 480</div>
+        <div class="stars">★ 676</div>
         <div class="name"><span class="org">wondelai /</span> skills</div>
       </a>
       <a class="related-row" href="/projects/DougTrajano/pydantic-ai-skills">
-        <div class="stars">★ 220</div>
+        <div class="stars">★ 249</div>
         <div class="name"><span class="org">DougTrajano /</span> pydantic-ai-skills</div>
       </a>
       <a class="related-row" href="/projects/Agents365-ai/drawio-skill">
-        <div class="stars">★ 131</div>
+        <div class="stars">★ 370</div>
         <div class="name"><span class="org">Agents365-ai /</span> drawio-skill</div>
       </a>
       <a class="related-row" href="/projects/smartcontractkit/chainlink-agent-skills">
-        <div class="stars">★ 85</div>
+        <div class="stars">★ 87</div>
         <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
       </a>
       <a class="related-row" href="/projects/esaradev/icarus-plugin">
-        <div class="stars">★ 51</div>
+        <div class="stars">★ 93</div>
         <div class="name"><span class="org">esaradev /</span> icarus-plugin</div>
       </a>
       <a class="related-row" href="/projects/chigwell/skilldock.io">
-        <div class="stars">★ 50</div>
+        <div class="stars">★ 55</div>
         <div class="name"><span class="org">chigwell /</span> skilldock.io</div>
       </a>
     </div>

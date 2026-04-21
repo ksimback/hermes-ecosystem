@@ -59,11 +59,11 @@
   <p class="project-desc">Lossless Context Management plugin for Hermes Agent — DAG-based context engine that never loses a message</p>
 
   <div class="meta-row">
-    <span class="stars">★ 178</span>
+    <span class="stars">★ 239</span>
+    <span><span class="meta-label">lang</span>Python</span>
     
     
-    
-    
+    <span><span class="meta-label">updated</span>2026-04-21</span>
   </div>
 
   <div class="actions">
@@ -78,11 +78,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes-LCM is a context management plugin for the Hermes Agent that prevents information loss during long-running conversations. It replaces standard lossy compression with a hierarchical Directed Acyclic Graph (DAG) that persists all messages in a profile-scoped SQLite database. The system utilizes a three-level escalation strategy—ranging from detailed summaries to deterministic truncation—to maintain context window limits while preserving data lineage. Agents can autonomously retrieve original details from compacted history using a dedicated suite of tools like lcm_grep and lcm_expand.</p>
+    <p class="summary-text">Hermes-LCM is a context management plugin for the Hermes Agent that prevents information loss during long-running conversations. It replaces standard lossy summarization with a hierarchical Directed Acyclic Graph (DAG) engine that persists every message in an immutable-first SQLite store. When the context window fills, the system compacts history into multi-level summaries while providing the agent with specialized tools like lcm_grep and lcm_expand to retrieve original details. This approach ensures the agent maintains a direct, autonomous recall path for compacted data without relying on external cross-session retrieval.</p>
     <ul class="summary-highlights">
-      <li>Hierarchical DAG-based summary engine for multi-level context compaction</li>
-      <li>Dedicated agent tools for structured retrieval of compacted conversation history</li>
-      <li>Immutable-first SQLite storage ensuring no message is ever deleted</li>
+      <li>Hierarchical DAG-based compaction with three-level escalation logic</li>
+      <li>Immutable-first message persistence using profile-scoped SQLite databases</li>
+      <li>Agent tools for structured retrieval and expansion of compacted history</li>
     </ul>
   </div>
 </section>
@@ -104,14 +104,14 @@
 <p>Based on the <a href="https://papers.voltropy.com/LCM">LCM paper</a> by Ehrlich &amp; Blackman (Voltropy PBC, Feb 2026).
 Inspired by <a href="https://github.com/martian-engineering/lossless-claw">lossless-claw</a> for OpenClaw.</p>
 <hr>
-<h6>The Problem</h6>
+<h3>The Problem</h3>
 <p>When context fills up, agents replace your conversation with a flat lossy summary.
 Details get lost. The model confidently misremembers. No way to go back.</p>
 <p align="center">
   <img src="https://raw.githubusercontent.com/stephenschoettler/hermes-lcm/main/docs/standard_compression.png" alt="Standard compression" width="700">
 </p>
 
-<h6>The Fix</h6>
+<h3>The Fix</h3>
 <p>Every message persisted. Hierarchical DAG summaries. Agent tools to drill back
 into anything that was compacted.</p>
 <p align="center">
@@ -122,9 +122,9 @@ into anything that was compacted.</p>
   <img src="https://raw.githubusercontent.com/stephenschoettler/hermes-lcm/main/docs/architecture.png" alt="Architecture" width="700">
 </p>
 
-<h6>Why This Plugin</h6>
+<h3>Why This Plugin</h3>
 <p>~5,000 lines of Python. Zero external dependencies. 200+ tests that run standalone in under a second. Full lossless context management — immutable-first store, hierarchical DAG, agent retrieval tools, guided compression, assembly guardrails, session filtering — in a single lightweight plugin that drops into Hermes with no build step, no runtime overhead, and nothing to configure beyond <code>context.engine: lcm</code>.</p>
-<h6>What It Does</h6>
+<h3>What It Does</h3>
 <ul>
 <li><strong>Immutable-first store</strong> — every message persisted in SQLite, with only narrow explicit opt-in GC tombstones for already-externalized summarized tool results</li>
 <li><strong>Summary DAG</strong> — hierarchical compaction (D0 minutes → D1 hours → D2 days)</li>
@@ -136,7 +136,7 @@ into anything that was compacted.</p>
 <li><strong>Session filtering</strong> — exclude noisy sessions entirely or mark them read-only with glob patterns</li>
 <li><strong>Profile-scoped</strong> — separate DB per Hermes profile</li>
 </ul>
-<h6>LCM vs built-in compression</h6>
+<h3>LCM vs built-in compression</h3>
 <p>The important distinction is <strong>not</strong> &quot;LCM keeps raw data on disk while Hermes built-in compression deletes it everywhere.&quot;</p>
 <p>Hermes core persists original conversation history to <code>state.db</code> before built-in compression rewrites the active prompt window. That means built-in compression is still lossy in the <strong>active context</strong>, but earlier content can remain recoverable later through Hermes&#39; broader history path such as <code>session_search</code>.</p>
 <p><code>hermes-lcm</code> solves a different problem:</p>
@@ -152,48 +152,96 @@ into anything that was compacted.</p>
 <li><strong>LCM</strong> — the agent gets an explicit, lossless, current-session recall path inside the plugin itself</li>
 </ul>
 <p>That is why LCM positioning should focus on <strong>retrieval quality, autonomy, and drill-down behavior</strong>, not on claiming that Hermes core has no persisted record of pre-compression history.</p>
-<h6>Requirements</h6>
+<h3>Requirements</h3>
 <ul>
 <li>Hermes Agent with the <strong>pluggable context engine slot</strong> (<a href="https://github.com/NousResearch/hermes-agent/pull/7464">PR #7464</a>)</li>
 <li>Python 3.11+</li>
 <li>No additional dependencies (uses Hermes auxiliary LLM for summarization)</li>
 </ul>
-<h6>Install</h6>
-<pre><code class="language-bash"># Clone into the context engine plugin directory
-git clone https://github.com/stephenschoettler/hermes-lcm \
-  ~/.hermes/hermes-agent/plugins/context_engine/lcm
+<h3>Install</h3>
+<p>Canonical install path: clone <code>hermes-lcm</code> as a <strong>general user plugin</strong>.</p>
+<pre><code class="language-bash">git clone https://github.com/stephenschoettler/hermes-lcm \
+  ~/.hermes/plugins/hermes-lcm
+</code></pre>
+<p>For a profile-specific install:</p>
+<pre><code class="language-bash">git clone https://github.com/stephenschoettler/hermes-lcm \
+  ~/.hermes/profiles/myprofile/plugins/hermes-lcm
+</code></pre>
+<p>Or, from an existing checkout, install a symlink with the helper script:</p>
+<pre><code class="language-bash">./scripts/install.sh
+# Optional profile-aware install:
+HERMES_PROFILE=myprofile ./scripts/install.sh
+</code></pre>
+<h3>Activation</h3>
+<p>This install path uses <strong>two names</strong>:</p>
+<ul>
+<li>plugin manifest name: <code>hermes-lcm</code></li>
+<li>runtime context engine name: <code>lcm</code></li>
+</ul>
+<p>Your config must include both:</p>
+<pre><code class="language-yaml">plugins:
+  enabled:
+    - hermes-lcm
 
-# Or for a specific profile
-git clone https://github.com/stephenschoettler/hermes-lcm \
-  ~/.hermes/profiles/myprofile/hermes-agent/plugins/context_engine/lcm
-</code></pre>
-<h6>Update</h6>
-<pre><code class="language-bash">cd ~/.hermes/hermes-agent/plugins/context_engine/lcm &amp;&amp; git pull
-</code></pre>
-<p>Restart Hermes after updating.</p>
-<blockquote>
-<p><strong>Note:</strong> Context engines must be installed under <code>plugins/context_engine/&lt;name&gt;/</code>,
-not <code>plugins/&lt;name&gt;/</code>. The general <code>~/.hermes/plugins/</code> directory is for tools,
-hooks, and CLI extensions — context engines are discovered separately.</p>
-</blockquote>
-<p>Restart Hermes. Activate the engine — either via the interactive UI or config file:</p>
-<p><strong>Option A — <code>hermes plugins</code> UI:</strong></p>
-<pre><code>hermes plugins
-</code></pre>
-<p>The composite plugins screen shows provider categories at the bottom.
-Select <strong>Context Engine</strong> and pick <code>lcm</code> from the radiolist.</p>
-<p><strong>Option B — config.yaml:</strong></p>
-<pre><code class="language-yaml">context:
+context:
   engine: lcm
 </code></pre>
-<p>Verify with <code>hermes plugins</code>:</p>
+<p>Why both matter:</p>
+<ul>
+<li><code>plugins.enabled</code> loads the standalone plugin from <code>~/.hermes/plugins/hermes-lcm</code></li>
+<li><code>context.engine: lcm</code> selects the registered context engine at runtime</li>
+</ul>
+<h3>Update</h3>
+<p>If you cloned directly into the final plugin directory:</p>
+<pre><code class="language-bash">cd ~/.hermes/plugins/hermes-lcm &amp;&amp; git pull --ff-only
+</code></pre>
+<p>For a profile-specific install:</p>
+<pre><code class="language-bash">cd ~/.hermes/profiles/myprofile/plugins/hermes-lcm &amp;&amp; git pull --ff-only
+</code></pre>
+<p>If you used the helper scripts from a separate checkout:</p>
+<pre><code class="language-bash">./scripts/update.sh
+</code></pre>
+<p>Restart Hermes after updating.</p>
+<h3>Verification</h3>
+<p>Run:</p>
+<pre><code class="language-bash">hermes plugins
+</code></pre>
+<p>Expected signals:</p>
+<ul>
+<li>the plugin list includes <code>hermes-lcm</code></li>
+<li>the selected context engine is <code>lcm</code></li>
+</ul>
+<p>Typical output looks like:</p>
 <pre><code>Plugins (1):
-  ✓ hermes-lcm v0.6.0 (6 tools)
+  ✓ hermes-lcm v0.7.0 (6 tools)
 
 Provider Plugins:
   Context Engine: lcm
 </code></pre>
-<h6>Configuration</h6>
+<p>At runtime the tool list should include:</p>
+<ul>
+<li><code>lcm_grep</code></li>
+<li><code>lcm_describe</code></li>
+<li><code>lcm_expand</code></li>
+<li><code>lcm_expand_query</code></li>
+<li><code>lcm_status</code></li>
+<li><code>lcm_doctor</code></li>
+</ul>
+<h3>Legacy install path</h3>
+<p>Hermes still supports repo-shipped context engines under <code>plugins/context_engine/&lt;name&gt;/</code>, and older <code>hermes-lcm</code> installs may still live there.</p>
+<p>That path is now a compatibility fallback, not the preferred install model. The standalone general-plugin path above is canonical because it survives Hermes updates cleanly.</p>
+<p>If you are migrating an older install, move the checkout and then enable the plugin explicitly:</p>
+<pre><code class="language-bash">mv ~/.hermes/hermes-agent/plugins/context_engine/lcm ~/.hermes/plugins/hermes-lcm
+</code></pre>
+<p>Then make sure your config includes:</p>
+<pre><code class="language-yaml">plugins:
+  enabled:
+    - hermes-lcm
+
+context:
+  engine: lcm
+</code></pre>
+<h3>Configuration</h3>
 <p>Environment variables (all optional):</p>
 <table>
 <thead>
@@ -315,7 +363,7 @@ Provider Plugins:
 </tr>
 </tbody></table>
 <p>The point-8 compaction knobs are intentionally opt-in. <code>cache_friendly_*</code> is a plugin-local prompt-stability heuristic, not a claim that Hermes currently passes true prompt-cache metrics into <code>hermes-lcm</code>.</p>
-<h6>Large tool-output handling</h6>
+<h4>Large tool-output handling</h4>
 <p><code>hermes-lcm</code> now has a three-step opt-in path for oversized tool results:</p>
 <ol>
 <li><strong>9B externalization</strong> — large tool results are written to plugin-managed JSON files instead of being kept inline for compaction prompts</li>
@@ -343,7 +391,7 @@ Provider Plugins:
 <li><code>platform:session_id</code></li>
 </ul>
 <p>That means patterns like <code>cron:*</code> can catch Hermes cron sessions today, while plain raw session-id matching still works if you know the exact IDs you want to target.</p>
-<h6>Agent Tools</h6>
+<h3>Agent Tools</h3>
 <table>
 <thead>
 <tr>
@@ -376,7 +424,7 @@ Provider Plugins:
 <td>Run diagnostics — database integrity, FTS index sync, orphaned nodes, config validation, context pressure.</td>
 </tr>
 </tbody></table>
-<h6>Retrieval contract: <code>session_scope</code> × <code>source</code></h6>
+<h4>Retrieval contract: <code>session_scope</code> × <code>source</code></h4>
 <p><code>hermes-lcm</code> treats <code>session_scope</code> and <code>source</code> as independent filters:</p>
 <ul>
 <li><strong><code>session_scope</code></strong> decides which sessions are eligible</li>
@@ -389,14 +437,14 @@ Provider Plugins:
 <li>merged outputs like <code>lcm_grep</code></li>
 <li>carry-over/reassigned summary nodes after <code>/new</code></li>
 </ul>
-<h6>Raw messages</h6>
+<h5>Raw messages</h5>
 <ul>
 <li><code>current</code> + no <code>source</code> → all raw rows in the current session</li>
 <li><code>current</code> + <code>source=&#39;discord&#39;</code> → only current-session raw rows with source <code>discord</code></li>
 <li><code>all</code> + no <code>source</code> → all raw rows across sessions</li>
 <li><code>all</code> + <code>source=&#39;discord&#39;</code> → all raw rows across sessions with source <code>discord</code></li>
 </ul>
-<h6>DAG summaries</h6>
+<h5>DAG summaries</h5>
 <ul>
 <li><code>current</code> + no <code>source</code> → all summaries eligible in the current session</li>
 <li><code>current</code> + <code>source=&#39;discord&#39;</code> → only current-session summaries whose descendant raw-message lineage includes <code>discord</code></li>
@@ -404,21 +452,21 @@ Provider Plugins:
 <li><code>all</code> + <code>source=&#39;discord&#39;</code> → only summaries across sessions whose descendant raw-message lineage includes <code>discord</code></li>
 </ul>
 <p>Mixed-source nodes may match more than one <code>source</code> filter if their descendant lineage is mixed. Filtering is based on actual descendant lineage, not on whether the surrounding session happens to contain some message from that source.</p>
-<h6><code>unknown</code> source</h6>
+<h5><code>unknown</code> source</h5>
 <p><code>unknown</code> is treated as a real source value, not as a wildcard.</p>
 <ul>
 <li>omitting <code>source</code> means <strong>no source filtering</strong></li>
 <li><code>source=&#39;unknown&#39;</code> means only content whose stored source is <code>unknown</code></li>
 <li>legacy blank-source rows are treated as <code>unknown</code> for backward compatibility</li>
 </ul>
-<h6>Carry-over semantics</h6>
+<h5>Carry-over semantics</h5>
 <p><code>carry_over_new_session_context()</code> may reassign retained summary nodes into a new session, but that does <strong>not</strong> erase source lineage.</p>
 <ul>
 <li>session eligibility may change because the node now belongs to the new session</li>
 <li>source eligibility still comes from the node&#39;s descendant raw-message lineage</li>
 </ul>
 <p>So a carried-over node can be current-session content in the new session while still matching <code>source=&#39;discord&#39;</code> only if its descendant raw messages include <code>discord</code>.</p>
-<h6>Tool choice guidance: LCM tools vs <code>session_search</code></h6>
+<h4>Tool choice guidance: LCM tools vs <code>session_search</code></h4>
 <p>When both recall paths are available to the model:</p>
 <ul>
 <li>prefer <strong>LCM tools</strong> for recall inside the active/current conversation, especially when the relevant turns were compacted into summary nodes</li>
@@ -431,8 +479,9 @@ Provider Plugins:
 <li><code>session_search</code> is the broader Hermes-wide cross-session recall tool</li>
 <li>putting the distinction in the tool-facing docs/schema keeps ACP/API/editor flows from relying only on accidental schema wording when both surfaces are exposed at once</li>
 </ul>
-<h6>Gateway Slash Commands</h6>
-<p>When Hermes host support for plugin slash commands is available, <code>hermes-lcm</code> also exposes a <code>/lcm</code> operator surface for quick diagnostics and safe maintenance prep from chat:</p>
+<h3>Gateway Slash Commands</h3>
+<p>When Hermes host support for plugin slash commands is available, <code>hermes-lcm</code> can expose a <code>/lcm</code> operator surface for quick diagnostics and safe maintenance prep from chat.</p>
+<p>This surface is <strong>disabled by default</strong> and requires <code>LCM_ENABLE_SLASH_COMMAND=1</code> (or <code>true/yes/on</code>) before registration.</p>
 <ul>
 <li><code>/lcm</code> or <code>/lcm status</code> — current session/runtime status</li>
 <li><code>/lcm doctor</code> — SQLite + FTS health checks and store/node totals</li>
@@ -441,7 +490,7 @@ Provider Plugins:
 <li><code>/lcm backup</code> — create a timestamped SQLite backup before any future cleanup workflow</li>
 </ul>
 <p>The cleanup path stays intentionally narrow and backup-first; broader retention/prune workflows should still start with diagnostics before any apply/delete step.</p>
-<h6>How It Works</h6>
+<h3>How It Works</h3>
 <ol>
 <li><strong>Ingest</strong> — every message persisted verbatim in an immutable SQLite store</li>
 <li><strong>Compact</strong> — when context pressure builds, older messages outside the fresh tail are summarized into D0 leaf nodes</li>
@@ -450,7 +499,7 @@ Provider Plugins:
 <li><strong>Assemble</strong> — active context = system prompt + highest-depth summaries + fresh tail</li>
 <li><strong>Retrieve</strong> — agent uses <code>lcm_grep</code>/<code>lcm_describe</code>/<code>lcm_expand</code>/<code>lcm_expand_query</code> to drill into compacted history or synthesize answers from expanded context</li>
 </ol>
-<h6>Architecture</h6>
+<h3>Architecture</h3>
 <pre><code>hermes-lcm/
 ├── plugin.yaml      # manifest
 ├── __init__.py      # register(ctx) → ctx.register_context_engine()
@@ -470,18 +519,20 @@ Provider Plugins:
 python -m pytest tests/ -v
 </code></pre>
 <p>No Hermes Agent checkout required — the test suite includes a lightweight ABC stub so it runs standalone.</p>
-<h6>Context Engine Slot</h6>
+<h3>Context Engine Slot</h3>
 <p>Requires the <strong>pluggable context engine slot</strong> — an ABC (<code>ContextEngine</code>) in
 hermes-agent core that makes the <code>ContextCompressor</code> swappable via the plugin
-system. Config-driven selection via <code>context.engine</code> in config.yaml, with a
-<code>plugins/context_engine/</code> discovery directory. Same pattern as OpenClaw&#39;s
-<code>contextEngine</code> slot + <code>lossless-claw</code>.</p>
+system. Config-driven selection still happens via <code>context.engine</code> in
+<code>config.yaml</code>, but standalone installs now come from the canonical general-plugin
+path <code>~/.hermes/plugins/hermes-lcm</code> rather than the older in-repo
+<code>plugins/context_engine/</code> layout. Same pattern as OpenClaw&#39;s <code>contextEngine</code>
+slot + <code>lossless-claw</code>.</p>
 <ul>
 <li><strong>PR:</strong> <a href="https://github.com/NousResearch/hermes-agent/pull/7464">NousResearch/hermes-agent#7464</a> (supersedes <a href="https://github.com/NousResearch/hermes-agent/pull/6126">#6126</a>, <a href="https://github.com/NousResearch/hermes-agent/pull/5700">#5700</a>)</li>
 <li><strong>Issue:</strong> <a href="https://github.com/NousResearch/hermes-agent/issues/5701">NousResearch/hermes-agent#5701</a> (closed by #7464)</li>
 <li><strong>Paper:</strong> <a href="https://papers.voltropy.com/LCM">papers.voltropy.com/LCM</a></li>
 </ul>
-<h6>Contributing</h6>
+<h3>Contributing</h3>
 <p>Issues and PRs welcome. This project has active community contributors and CI runs on every push and PR.</p>
 <ul>
 <li><strong>Bug fixes</strong> and <strong>correctness improvements</strong> are always top priority</li>
@@ -490,8 +541,9 @@ system. Config-driven selection via <code>context.engine</code> in config.yaml, 
 </ul>
 <p>See <a href="https://github.com/stephenschoettler/hermes-lcm/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> for issue, branch, validation, and PR guidance.
 See the <a href="https://github.com/stephenschoettler/hermes-lcm/releases">releases page</a> for changelogs.</p>
-<h6>License</h6>
+<h3>License</h3>
 <p>MIT</p>
+
   </section>
 </details>
 
@@ -503,31 +555,31 @@ See the <a href="https://github.com/stephenschoettler/hermes-lcm/releases">relea
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 8.4K</div>
+        <div class="stars">★ 9.9K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
-        <div class="stars">★ 711</div>
+        <div class="stars">★ 784</div>
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 126</div>
+        <div class="stars">★ 168</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
-        <div class="stars">★ 86</div>
+        <div class="stars">★ 127</div>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 31</div>
+        <div class="stars">★ 46</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
-        <div class="stars">★ 5</div>
+        <div class="stars">★ 9</div>
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
       <a class="related-row" href="/projects/garrytan/gbrain">
-        <div class="stars">★ 8.9K</div>
+        <div class="stars">★ 9.8K</div>
         <div class="name"><span class="org">garrytan /</span> gbrain</div>
       </a>
     </div>

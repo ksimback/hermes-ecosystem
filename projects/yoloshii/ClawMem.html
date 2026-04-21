@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ClawMem — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="On-device memory and context engine for agents — local-first, no cloud dependencies">
+<meta name="description" content="On-device memory layer for AI agents. Claude Code, Hermes and OpenClaw. Hooks + MCP server + hybrid RAG search.">
 <link rel="canonical" href="https://hermesatlas.com/projects/yoloshii/ClawMem">
 <meta property="og:title" content="ClawMem — Hermes Atlas">
-<meta property="og:description" content="On-device memory and context engine for agents — local-first, no cloud dependencies">
+<meta property="og:description" content="On-device memory layer for AI agents. Claude Code, Hermes and OpenClaw. Hooks + MCP server + hybrid RAG search.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/yoloshii/ClawMem">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ClawMem — Hermes Atlas">
-<meta name="twitter:description" content="On-device memory and context engine for agents — local-first, no cloud dependencies">
+<meta name="twitter:description" content="On-device memory layer for AI agents. Claude Code, Hermes and OpenClaw. Hooks + MCP server + hybrid RAG search.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,14 +56,14 @@
   <h1 class="project-name">
     <span class="org">yoloshii</span><span class="slash">/</span>ClawMem
   </h1>
-  <p class="project-desc">On-device memory and context engine for agents — local-first, no cloud dependencies</p>
+  <p class="project-desc">On-device memory layer for AI agents. Claude Code, Hermes and OpenClaw. Hooks + MCP server + hybrid RAG search.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 86</span>
+    <span class="stars">★ 127</span>
+    <span><span class="meta-label">lang</span>TypeScript</span>
+    <span><span class="meta-label">license</span>MIT</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-04-19</span>
   </div>
 
   <div class="actions">
@@ -90,7 +90,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h6>ClawMem — On-device memory layer for Claude Code, OpenClaw, and Hermes agents</h6>
+    <h2>ClawMem — On-device memory layer for Claude Code, OpenClaw, and Hermes agents</h2>
 <p align="center">
   <img src="https://raw.githubusercontent.com/yoloshii/ClawMem/main/docs/clawmem_hero.jpg" alt="ClawMem" width="100%">
 </p>
@@ -99,7 +99,7 @@
 <p>ClawMem fuses recent research into a retrieval-augmented memory layer that agents actually use. The hybrid architecture combines <a href="https://github.com/tobi/qmd">QMD</a>-derived multi-signal retrieval (BM25 + vector search + reciprocal rank fusion + query expansion + cross-encoder reranking), <a href="https://github.com/sgx-labs/statelessagent">SAME</a>-inspired composite scoring (recency decay, confidence, content-type half-lives, co-activation reinforcement), <a href="https://arxiv.org/abs/2501.13956">MAGMA</a>-style intent classification with multi-graph traversal (semantic, temporal, and causal beam search), and <a href="https://arxiv.org/abs/2510.02178">A-MEM</a> self-evolving memory notes that enrich documents with keywords, tags, and causal links between entries. Pattern extraction from <a href="https://github.com/Gentleman-Programming/engram">Engram</a> adds deduplication windows, frequency-based durability scoring, and temporal navigation.</p>
 <p>Integrates via Claude Code hooks, an MCP server (works with any MCP-compatible client), a native OpenClaw plugin, or a Hermes Agent <code>MemoryProvider</code> plugin. All paths write to the same local SQLite vault. A decision captured during a Claude Code session shows up immediately when an OpenClaw or Hermes agent picks up the same project.</p>
 <p>TypeScript on Bun. MIT License.</p>
-<h6>What It Does</h6>
+<h3>What It Does</h3>
 <p>ClawMem turns your markdown notes, project docs, and research dumps into persistent memory for AI coding agents. It automatically:</p>
 <ul>
 <li><strong>Surfaces relevant context</strong> on every prompt (context-surfacing hook)</li>
@@ -135,13 +135,13 @@
 </ul>
 <p>Runs fully local with no API keys and no cloud services. Integrates via Claude Code hooks and MCP tools, as a native OpenClaw plugin, or as a Hermes Agent <code>MemoryProvider</code> plugin. All modes share the same vault for cross-runtime memory. Works with any MCP-compatible client.</p>
 <p>Full version history is in <a href="https://github.com/yoloshii/ClawMem/blob/main/RELEASE_NOTES.md">RELEASE_NOTES.md</a>. Upgrade instructions for existing vaults are in <a href="https://github.com/yoloshii/ClawMem/blob/main/docs/guides/upgrading.md">docs/guides/upgrading.md</a>.</p>
-<h6>Architecture</h6>
+<h3>Architecture</h3>
 <p align="center">
   <img src="https://raw.githubusercontent.com/yoloshii/ClawMem/main/docs/clawmem-architecture.png" alt="ClawMem Architecture" width="100%">
 </p>
 
-<h6>Install</h6>
-<h6>Platform Support</h6>
+<h3>Install</h3>
+<h4>Platform Support</h4>
 <table>
 <thead>
 <tr>
@@ -171,7 +171,7 @@
 <td>Bun and sqlite-vec work, but <code>bin/clawmem</code> wrapper is bash, hooks expect bash commands, and systemd services have no equivalent. Use WSL2 instead.</td>
 </tr>
 </tbody></table>
-<h6>Prerequisites</h6>
+<h4>Prerequisites</h4>
 <p><strong>Required:</strong></p>
 <ul>
 <li><a href="https://bun.sh">Bun</a> v1.0+ — runtime for ClawMem. On Linux, install via <code>curl -fsSL https://bun.sh/install | bash</code> (not snap — snap Bun cannot read stdin, which breaks hooks).</li>
@@ -189,18 +189,18 @@
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — for <code>MemoryProvider</code> plugin integration</li>
 <li><a href="https://github.com/dolthub/dolt">bd CLI</a> v0.58.0+ — for Beads issue tracker sync (only if using Beads)</li>
 </ul>
-<h6>Install from npm (recommended)</h6>
+<h4>Install from npm (recommended)</h4>
 <pre><code class="language-bash">npm install -g clawmem
 </code></pre>
 <p>If you use Bun as your package manager:</p>
 <pre><code class="language-bash">bun add -g clawmem
 </code></pre>
-<h6>Install from source</h6>
+<h4>Install from source</h4>
 <pre><code class="language-bash">git clone https://github.com/yoloshii/clawmem.git ~/clawmem
 cd ~/clawmem &amp;&amp; bun install
 ln -sf ~/clawmem/bin/clawmem ~/.bun/bin/clawmem
 </code></pre>
-<h6>Setup roadmap</h6>
+<h4>Setup roadmap</h4>
 <p>After installing, here&#39;s the full journey from zero to working memory:</p>
 <table>
 <thead>
@@ -256,7 +256,7 @@ ln -sf ~/clawmem/bin/clawmem ~/.bun/bin/clawmem
 </tbody></table>
 <p><strong>Fastest path:</strong> Step 1 alone gets you a working system with in-process CPU/GPU inference and default models — no manual model downloads or service configuration needed. Steps 2-4 are optional upgrades for better performance. Steps 5-6 are where you customize what gets indexed and how your agent connects.</p>
 <p><strong>Customize what gets indexed:</strong> Each collection has a <code>pattern</code> field in <code>~/.config/clawmem/config.yaml</code> (default: <code>**/*.md</code>). Tailor it per collection — index project docs, research notes, decision records, Obsidian vaults, or anything else your agents should know about. The more relevant content in the vault, the better retrieval works. See the <a href="https://github.com/yoloshii/ClawMem/blob/main/docs/quickstart.md#customize-index-patterns">quickstart</a> for config examples.</p>
-<h6>Quick start commands</h6>
+<h4>Quick start commands</h4>
 <pre><code class="language-bash"># One command: init + index + embed + hooks + MCP
 clawmem bootstrap ~/notes --name notes
 
@@ -275,7 +275,7 @@ clawmem update --embed
 # Verify
 clawmem doctor
 </code></pre>
-<h6>Upgrading</h6>
+<h4>Upgrading</h4>
 <pre><code class="language-bash">bun update -g clawmem   # or: npm update -g clawmem
 </code></pre>
 <p>Database schema migrates automatically on next startup (new tables and columns are added via <code>CREATE IF NOT EXISTS</code> / <code>ALTER TABLE ADD COLUMN</code>).</p>
@@ -286,15 +286,15 @@ clawmem embed             # Re-embed if upgrading embedding models (not needed f
 <p><code>--enrich</code> forces the complete A-MEM pipeline (entity extraction, link generation, memory evolution) on all documents, not just new ones. Without it, reindex only refreshes metadata for existing docs.</p>
 <p>Routine patch updates (e.g. 0.2.0 → 0.2.1) do not require reindexing.</p>
 <p>For version-specific upgrade notes (opt-in features, optional cleanup steps, verification commands), see <a href="https://github.com/yoloshii/ClawMem/blob/main/docs/guides/upgrading.md">docs/guides/upgrading.md</a>.</p>
-<h6>Integration</h6>
-<h6>Claude Code</h6>
+<h4>Integration</h4>
+<h5>Claude Code</h5>
 <p>ClawMem integrates via hooks (<code>settings.json</code>) and an MCP stdio server. Hooks handle 90% of retrieval automatically - the agent never needs to call tools for routine context.</p>
 <pre><code class="language-bash">clawmem setup hooks    # Install lifecycle hooks (SessionStart, UserPromptSubmit, Stop, PreCompact)
 clawmem setup mcp      # Register MCP server in ~/.claude.json (31 tools)
 </code></pre>
 <p><strong>Automatic (90%):</strong> <code>context-surfacing</code> injects relevant memory on every prompt. <code>postcompact-inject</code> re-injects state after compaction. <code>decision-extractor</code>, <code>handoff-generator</code>, <code>feedback-loop</code> capture session state on stop.</p>
 <p><strong>Agent-initiated (10%):</strong> MCP tools (<code>query</code>, <code>intent_search</code>, <code>find_causal_links</code>, <code>timeline</code>, etc.) for targeted retrieval when hooks don&#39;t surface what&#39;s needed.</p>
-<h6>OpenClaw</h6>
+<h5>OpenClaw</h5>
 <p>ClawMem registers as a native OpenClaw memory plugin (<code>kind: memory</code>, v0.10.0+). Same 90/10 automatic retrieval, delivered through OpenClaw&#39;s plugin-hook bus instead of Claude Code hooks.</p>
 <pre><code class="language-bash">clawmem setup openclaw   # Installs plugin into ~/.openclaw/extensions/clawmem (copy, not symlink)
 </code></pre>
@@ -315,7 +315,7 @@ clawmem setup mcp      # Register MCP server in ~/.claude.json (31 tools)
 <p><strong>OpenClaw v2026.4.11+ recommended (required for ClawMem v0.10.0+).</strong> v2026.4.11 introduced a new plugin discovery contract that requires each plugin directory to ship a <code>package.json</code> with <code>openclaw.extensions</code> declared, and that rejects symlinked plugin directories. ClawMem v0.10.0 includes both fixes. Older ClawMem versions (&lt; v0.10.0) on OpenClaw v2026.4.11+ will fail to discover silently — upgrade ClawMem, then re-run <code>clawmem setup openclaw</code>. See <a href="https://github.com/yoloshii/ClawMem/blob/main/docs/guides/upgrading.md#v090--v0100">docs/guides/upgrading.md</a>.</p>
 </blockquote>
 <p><strong>Alternative:</strong> OpenClaw agents can also use ClawMem&#39;s MCP server directly (<code>clawmem setup mcp</code>), with or without hooks. This gives full access to all 31 MCP tools but bypasses OpenClaw&#39;s plugin lifecycle, so you lose token budget awareness, native compaction orchestration, and the <code>agent_end</code> message pipeline. The native OpenClaw plugin is recommended for new setups; MCP is available as an additional or standalone integration.</p>
-<h6>Hermes Agent</h6>
+<h5>Hermes Agent</h5>
 <p>ClawMem integrates as a native MemoryProvider plugin — Hermes&#39;s pluggable interface for agent memory. Same automatic retrieval and extraction, delivered through Hermes&#39;s memory lifecycle instead of Claude Code hooks.</p>
 <p><strong>Install:</strong></p>
 <pre><code class="language-bash"># Preferred — user-plugin path (Hermes #10529, v2026.4.13+).
@@ -348,9 +348,9 @@ CLAWMEM_PROFILE=balanced               # speed | balanced | deep
 <p><strong>Requirements:</strong> <code>clawmem</code> binary on PATH and <code>clawmem serve</code> running (external mode) or the plugin starts it automatically (managed mode). Python 3.10+. No pip dependencies beyond Hermes itself (uses <code>urllib</code> for REST calls, <code>httpx</code> optional for better performance).</p>
 <p><strong>Alternative:</strong> Hermes also has built-in MCP client support. You can add ClawMem as an MCP server in Hermes&#39;s <code>config.yaml</code> under <code>mcp_servers</code> for tool-only access. But this misses the lifecycle hooks (prefetch, session_end, pre_compress), so the native plugin is recommended.</p>
 <p>See <a href="https://github.com/yoloshii/ClawMem/blob/main/docs/guides/hermes-plugin.md">Hermes plugin guide</a> for architecture details, lifecycle mapping, and troubleshooting.</p>
-<h6>Multi-Framework Operation</h6>
+<h5>Multi-Framework Operation</h5>
 <p>All three integrations share the same SQLite vault by default. Claude Code, OpenClaw, and Hermes can run simultaneously — decisions captured in one runtime are immediately available in the others, giving agents persistent shared memory across sessions and platforms. WAL mode + busy_timeout handles concurrent access.</p>
-<h6>Multi-Vault (Optional)</h6>
+<h5>Multi-Vault (Optional)</h5>
 <p>By default, ClawMem uses a single vault at <code>~/.cache/clawmem/index.sqlite</code>. For users who want separate memory domains (e.g., work vs personal, or isolated vaults per project), ClawMem supports named vaults.</p>
 <p><strong>Configure in <code>~/.config/clawmem/config.yaml</code>:</strong></p>
 <pre><code class="language-yaml">vaults:
@@ -375,7 +375,7 @@ list_vaults()
 vault_sync(vault=&quot;work&quot;, content_root=&quot;~/work/docs&quot;)
 </code></pre>
 <p><strong>Single-vault users:</strong> No action needed. Everything works without configuration. The <code>vault</code> parameter is always optional and ignored when no vaults are configured.</p>
-<h6>GPU Services</h6>
+<h4>GPU Services</h4>
 <p>ClawMem uses three <code>llama-server</code> (llama.cpp) instances for neural inference. All three have in-process fallbacks via <code>node-llama-cpp</code> (auto-downloads on first use), so ClawMem works without a dedicated GPU. <code>node-llama-cpp</code> auto-detects the best available backend — Metal on Apple Silicon, Vulkan where available, CPU as last resort. With GPU acceleration (Metal/Vulkan), in-process inference is fast for these small models (0.3B–1.7B); on CPU-only systems it is significantly slower. For production use, run the servers via <a href="https://github.com/yoloshii/ClawMem/blob/main/docs/guides/systemd-services.md">systemd services</a> to prevent silent fallback.</p>
 <p><strong>GPU with VRAM to spare (12GB+, recommended):</strong> ZeroEntropy&#39;s distillation-paired stack delivers best retrieval quality — total ~10GB VRAM.</p>
 <table>
@@ -447,19 +447,19 @@ vault_sync(vault=&quot;work&quot;, content_root=&quot;~/work/docs&quot;)
 </tbody></table>
 <p>The <code>bin/clawmem</code> wrapper defaults to <code>localhost:8088/8089/8090</code>. If a server is unreachable (transport error like ECONNREFUSED/ETIMEDOUT), ClawMem sets a 60-second cooldown and falls back to in-process inference via <code>node-llama-cpp</code> (auto-downloads the QMD native models on first use, uses Metal/Vulkan/CPU depending on hardware). HTTP errors (400/500) and user-cancelled requests do not trigger cooldown — the remote server is retried normally on the next call. With GPU acceleration the fallback is fast; on CPU-only it is significantly slower. ClawMem always works either way, but <strong>if you&#39;re running dedicated GPU servers, use <a href="https://github.com/yoloshii/ClawMem/blob/main/docs/guides/systemd-services.md">systemd services</a> to ensure they stay up</strong>.</p>
 <p>To prevent fallback and fail fast instead, set <code>CLAWMEM_NO_LOCAL_MODELS=true</code>.</p>
-<h6>Remote GPU (optional)</h6>
+<h5>Remote GPU (optional)</h5>
 <p>If your GPU lives on a separate machine, point the env vars at it:</p>
 <pre><code class="language-bash">export CLAWMEM_EMBED_URL=http://gpu-host:8088
 export CLAWMEM_LLM_URL=http://gpu-host:8089
 export CLAWMEM_RERANK_URL=http://gpu-host:8090
 </code></pre>
 <p>For remote setups, set <code>CLAWMEM_NO_LOCAL_MODELS=true</code> to prevent <code>node-llama-cpp</code> from auto-downloading multi-GB model files if a server is unreachable.</p>
-<h6>No Dedicated GPU (in-process inference)</h6>
+<h5>No Dedicated GPU (in-process inference)</h5>
 <p>All three QMD native models run locally without a dedicated GPU. <code>node-llama-cpp</code> auto-downloads them on first use (~300MB embedding + ~1.1GB LLM + ~600MB reranker) and auto-detects the best backend — <strong>Metal on Apple Silicon</strong> (fast, uses integrated GPU), <strong>Vulkan where available</strong> (fast, uses discrete or integrated GPU), or <strong>CPU as last resort</strong> (significantly slower). With Metal or Vulkan, in-process inference handles these small models well; CPU-only is functional but noticeably slower.</p>
 <p>Alternatively, use a <a href="#option-c-cloud-embedding-api">cloud embedding provider</a> if you prefer not to run models locally.</p>
-<h6>Embedding</h6>
+<h4>Embedding</h4>
 <p>ClawMem calls the OpenAI-compatible <code>/v1/embeddings</code> endpoint for all embedding operations. This works with local llama-server instances and cloud providers alike.</p>
-<h6>Option A: GPU with VRAM to spare (recommended)</h6>
+<h5>Option A: GPU with VRAM to spare (recommended)</h5>
 <p>Use <a href="https://huggingface.co/Abhiray/zembed-1-Q4_K_M-GGUF">zembed-1-Q4_K_M</a> — SOTA retrieval quality, distilled from zerank-2 via <a href="https://docs.zeroentropy.dev">ZeroEntropy&#39;s zELO methodology</a>. <strong>CC-BY-NC-4.0</strong> — non-commercial only.</p>
 <ul>
 <li>Size: 2.4GB, Dimensions: 2560, VRAM: ~4.4GB, Context: 32K tokens</li>
@@ -471,7 +471,7 @@ llama-server -m zembed-1-Q4_K_M.gguf \
   --embeddings --port 8088 --host 0.0.0.0 \
   -ngl 99 -c 8192 -b 2048 -ub 2048
 </code></pre>
-<h6>Option B: No GPU / GPU without VRAM to spare</h6>
+<h5>Option B: No GPU / GPU without VRAM to spare</h5>
 <p>Use <a href="https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF">EmbeddingGemma-300M-Q8_0</a> — the QMD native embedding model. Only 300MB, runs on CPU or any GPU.</p>
 <ul>
 <li>Size: 314MB, Dimensions: 768, VRAM: ~400MB (or CPU), Context: 2048 tokens</li>
@@ -489,7 +489,7 @@ llama-server -m embeddinggemma-300M-Q8_0.gguf \
   -c 2048 --batch-size 2048
 </code></pre>
 <p>For multilingual corpora, the SOTA zembed-1 (Option A) supports multilingual out of the box. For a lightweight alternative: <a href="https://huggingface.co/bartowski/granite-embedding-278m-multilingual-GGUF">granite-embedding-278m-multilingual-Q6_K</a> (314MB, set <code>CLAWMEM_EMBED_MAX_CHARS=1100</code> due to 512-token context).</p>
-<h6>Option C: Cloud Embedding API</h6>
+<h5>Option C: Cloud Embedding API</h5>
 <p>Alternatively, use a cloud embedding provider instead of running a local server. Any provider with an OpenAI-compatible <code>/v1/embeddings</code> endpoint works.</p>
 <p><strong>Configuration:</strong> Copy <code>.env.example</code> to <code>.env</code> and set your provider credentials:</p>
 <pre><code class="language-bash">cp .env.example .env
@@ -540,7 +540,7 @@ CLAWMEM_EMBED_MODEL=jina-embeddings-v5-text-small
 </tbody></table>
 <p>Cloud mode auto-detects your provider from the URL and sends the right parameters (Jina <code>task</code>, Voyage/Cohere <code>input_type</code>, OpenAI <code>dimensions</code>). Batch embedding (50 fragments/request), server-side truncation, adaptive TPM-aware pacing, and retry with jitter are all handled automatically. Set <code>CLAWMEM_EMBED_TPM_LIMIT</code> to match your provider tier (default: 100000). See <a href="https://github.com/yoloshii/ClawMem/blob/main/docs/guides/cloud-embedding.md">docs/guides/cloud-embedding.md</a> for full details.</p>
 <p><strong>Note:</strong> Cloud providers handle their own context window limits — ClawMem skips client-side truncation when an API key is set. Local llama-server truncates at <code>CLAWMEM_EMBED_MAX_CHARS</code> (default: 6000 chars).</p>
-<h6>Verify and embed</h6>
+<h5>Verify and embed</h5>
 <pre><code class="language-bash"># Verify endpoint is reachable
 curl $CLAWMEM_EMBED_URL/v1/embeddings \
   -H &quot;Content-Type: application/json&quot; \
@@ -550,7 +550,7 @@ curl $CLAWMEM_EMBED_URL/v1/embeddings \
 # Embed your vault
 ./bin/clawmem embed
 </code></pre>
-<h6>LLM Server</h6>
+<h4>LLM Server</h4>
 <p>Intent classification, query expansion, and A-MEM extraction use <a href="https://huggingface.co/tobil/qmd-query-expansion-1.7B-gguf">qmd-query-expansion-1.7B</a> — a Qwen3-1.7B finetuned by QMD specifically for generating search expansion terms (hyde, lexical, and vector variants). ~1.1GB at q4_k_m quantization, served via <code>llama-server</code> on port 8089.</p>
 <p><strong>Without a server:</strong> If <code>CLAWMEM_LLM_URL</code> is unset, <code>node-llama-cpp</code> auto-downloads the model on first use.</p>
 <p><strong>Performance (RTX 3090):</strong></p>
@@ -574,7 +574,7 @@ llama-server -m qmd-query-expansion-1.7B-q4_k_m.gguf \
   --port 8089 --host 0.0.0.0 \
   -ngl 99 -c 4096 --batch-size 512
 </code></pre>
-<h6>Reranker Server</h6>
+<h4>Reranker Server</h4>
 <p>Cross-encoder reranking for <code>query</code> and <code>intent_search</code> pipelines on port 8090. ClawMem calls the <code>/v1/rerank</code> endpoint (or falls back to scoring via <code>/v1/completions</code> for compatible servers).</p>
 <p>Scores each candidate against the original query (cross-encoder architecture). <code>query</code> pipeline: 4000 char context per doc (deep reranking); <code>intent_search</code>: 200 char context per doc (fast reranking).</p>
 <p><strong>GPU with VRAM to spare (recommended):</strong> <a href="https://huggingface.co/keisuke-miyako/zerank-2-gguf-q4_k_m">zerank-2-Q4_K_M</a> (2.4GB, ~3.3GB VRAM). Outperforms Cohere rerank-3.5 and Gemini 2.5 Flash. Optimal pairing with zembed-1 (same distillation architecture via zELO). <strong>CC-BY-NC-4.0</strong> — non-commercial only.</p>
@@ -593,7 +593,7 @@ llama-server -m Qwen3-Reranker-0.6B-Q8_0.gguf \
   -ngl 99 -c 2048 --batch-size 512
 </code></pre>
 <p><strong>Note:</strong> zerank-2 and zembed-1 use non-causal attention — <code>-ub</code> (ubatch) must equal <code>-b</code> (batch). Omitting <code>-ub</code> or setting it lower causes assertion crashes. qwen3-reranker-0.6B does not have this requirement. See <a href="https://github.com/ggml-org/llama.cpp/issues/12836">llama.cpp#12836</a>.</p>
-<h6>MCP Server</h6>
+<h4>MCP Server</h4>
 <p>ClawMem exposes 31 MCP tools via the <a href="https://modelcontextprotocol.io">Model Context Protocol</a> and an optional HTTP REST API. Any MCP-compatible client or HTTP client can use it.</p>
 <p><strong>Claude Code (automatic):</strong></p>
 <pre><code class="language-bash">./bin/clawmem setup mcp   # Registers in ~/.claude.json
@@ -611,7 +611,7 @@ llama-server -m Qwen3-Reranker-0.6B-Q8_0.gguf \
 </code></pre>
 <p>The server runs via stdio — no network port needed. The <code>bin/clawmem</code> wrapper sets the GPU endpoint env vars automatically.</p>
 <p><strong>Verify:</strong> After registering, your client should see tools including <code>memory_retrieve</code>, <code>search</code>, <code>vsearch</code>, <code>query</code>, <code>query_plan</code>, <code>intent_search</code>, <code>timeline</code>, etc.</p>
-<h6>HTTP REST API (optional)</h6>
+<h4>HTTP REST API (optional)</h4>
 <p>For web dashboards, non-MCP agents, cross-machine access, or programmatic use:</p>
 <pre><code class="language-bash">./bin/clawmem serve                          # localhost:7438, no auth
 ./bin/clawmem serve --port 8080              # custom port
@@ -728,12 +728,12 @@ CLAWMEM_API_TOKEN=secret ./bin/clawmem serve # with bearer token auth
   -H &#39;Content-Type: application/json&#39; \
   -d &#39;{&quot;query&quot;: &quot;authentication decisions&quot;, &quot;mode&quot;: &quot;hybrid&quot;, &quot;compact&quot;: true}&#39;
 </code></pre>
-<h6>Verify Installation</h6>
+<h4>Verify Installation</h4>
 <pre><code class="language-bash">./bin/clawmem doctor   # Full health check
 ./bin/clawmem status   # Quick index status
 bun test               # Run test suite
 </code></pre>
-<h6>Agent Instructions</h6>
+<h3>Agent Instructions</h3>
 <p>ClawMem ships three instruction files and an optional maintenance agent:</p>
 <table>
 <thead>
@@ -766,9 +766,9 @@ bun test               # Run test suite
 </tbody></table>
 <p><strong>Working in the ClawMem repo:</strong> No action needed — <code>CLAUDE.md</code> loads automatically.</p>
 <p><strong>Using ClawMem from other projects:</strong> Your agent needs instructions on how to use ClawMem&#39;s hooks and MCP tools. Two options:</p>
-<h6>Option A: Copy instructions into your project</h6>
+<h4>Option A: Copy instructions into your project</h4>
 <p>Copy the contents of <code>CLAUDE.md</code> (or the relevant sections) into your project&#39;s own <code>CLAUDE.md</code> or <code>AGENTS.md</code>. Simple but requires manual updates when ClawMem changes.</p>
-<h6>Option B: Add a trigger block (recommended)</h6>
+<h4>Option B: Add a trigger block (recommended)</h4>
 <p>Add this minimal trigger block to your global <code>~/.claude/CLAUDE.md</code>. It gives the agent routing rules always loaded, and tells it how to find the full reference (SKILL.md) shipped with your installation when deeper guidance is needed:</p>
 <pre><code class="language-markdown">## ClawMem
 
@@ -825,7 +825,7 @@ For detailed operational guidance (query optimization, troubleshooting, collecti
 </code></pre>
 <p>This gives your agent the 3-rule gate, tool routing, and proactive behaviors always loaded. When it needs deeper guidance, it locates and reads the full SKILL.md reference shipped with your installation — no symlinks or skill registration required.</p>
 <hr>
-<h6>CLI Reference</h6>
+<h3>CLI Reference</h3>
 <pre><code>clawmem init                                    Create DB + config
 clawmem bootstrap &lt;vault&gt; [--name N] [--skip-embed]  One-command setup
 clawmem collection add &lt;path&gt; --name &lt;name&gt;     Add a collection
@@ -866,7 +866,7 @@ clawmem path                                    Print database path
 clawmem doctor                                  Full health check
 clawmem status                                  Quick index status
 </code></pre>
-<h6>MCP Tools (31)</h6>
+<h3>MCP Tools (31)</h3>
 <p>Registered by <code>clawmem setup mcp</code>. Available to any MCP-compatible client.</p>
 <table>
 <thead>
@@ -880,7 +880,7 @@ clawmem status                                  Quick index status
 <td>Workflow guide: prefer <code>memory_retrieve</code> → match query type to tool → <code>multi_get</code> for full content</td>
 </tr>
 </tbody></table>
-<h6>Core Search &amp; Retrieval</h6>
+<h4>Core Search &amp; Retrieval</h4>
 <table>
 <thead>
 <tr>
@@ -917,7 +917,7 @@ clawmem status                                  Quick index status
 <td>USE THIS for &quot;what else relates to X&quot;, &quot;show me similar docs&quot;. Finds k-NN vector neighbors — discovers connections beyond keyword overlap that search/query cannot find.</td>
 </tr>
 </tbody></table>
-<h6>Intent-Aware Search</h6>
+<h4>Intent-Aware Search</h4>
 <table>
 <thead>
 <tr>
@@ -936,7 +936,7 @@ clawmem status                                  Quick index status
 </tbody></table>
 <p><strong><code>intent_search</code> pipeline:</strong> Query → Intent Classification → BM25 + Vector → Intent-Weighted RRF → Graph Expansion (WHY/ENTITY intents) → Cross-Encoder Reranking → Composite Scoring</p>
 <p><strong><code>query_plan</code> pipeline:</strong> Query → LLM decomposition into 2-4 typed clauses → Parallel execution (BM25/vector/graph per clause) → RRF merge across clauses → Composite scoring. Falls back to single-query for simple inputs.</p>
-<h6>Multi-Graph &amp; Causal</h6>
+<h4>Multi-Graph &amp; Causal</h4>
 <table>
 <thead>
 <tr>
@@ -965,7 +965,7 @@ clawmem status                                  Quick index status
 <td>Show the temporal neighborhood around a document — what was created/modified before and after it. Progressive disclosure: search → timeline (context) → get (full content). Supports same-collection scoping and session correlation.</td>
 </tr>
 </tbody></table>
-<h6>Beads Integration</h6>
+<h4>Beads Integration</h4>
 <table>
 <thead>
 <tr>
@@ -978,7 +978,7 @@ clawmem status                                  Quick index status
 <td>Sync Beads issues from Dolt backend (<code>bd</code> CLI) into memory: creates docs, bridges all dep types to <code>memory_relations</code>, runs A-MEM enrichment</td>
 </tr>
 </tbody></table>
-<h6>Vault Management</h6>
+<h4>Vault Management</h4>
 <table>
 <thead>
 <tr>
@@ -995,7 +995,7 @@ clawmem status                                  Quick index status
 <td>Index markdown from a directory into a named vault. Restricted-path validation rejects sensitive directories.</td>
 </tr>
 </tbody></table>
-<h6>Agent Diary</h6>
+<h4>Agent Diary</h4>
 <table>
 <thead>
 <tr>
@@ -1012,7 +1012,7 @@ clawmem status                                  Quick index status
 <td>Read recent diary entries. Filter by agent name.</td>
 </tr>
 </tbody></table>
-<h6>Memory Management &amp; Lifecycle</h6>
+<h4>Memory Management &amp; Lifecycle</h4>
 <table>
 <thead>
 <tr>
@@ -1059,6 +1059,7 @@ clawmem status                                  Quick index status
 </tbody></table>
 <hr>
 <p><em>README truncated. <a href="https://github.com/yoloshii/ClawMem#readme">Continue reading on GitHub</a></em></p>
+
   </section>
 </details>
 
@@ -1070,31 +1071,31 @@ clawmem status                                  Quick index status
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 8.4K</div>
+        <div class="stars">★ 9.9K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
-        <div class="stars">★ 711</div>
+        <div class="stars">★ 784</div>
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 126</div>
+        <div class="stars">★ 168</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 31</div>
+        <div class="stars">★ 46</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
-        <div class="stars">★ 5</div>
+        <div class="stars">★ 9</div>
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
       <a class="related-row" href="/projects/garrytan/gbrain">
-        <div class="stars">★ 8.9K</div>
+        <div class="stars">★ 9.8K</div>
         <div class="name"><span class="org">garrytan /</span> gbrain</div>
       </a>
       <a class="related-row" href="/projects/stephenschoettler/hermes-lcm">
-        <div class="stars">★ 178</div>
+        <div class="stars">★ 239</div>
         <div class="name"><span class="org">stephenschoettler /</span> hermes-lcm</div>
       </a>
     </div>

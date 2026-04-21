@@ -59,11 +59,11 @@
   <p class="project-desc">Run Hermes Agent and OpenClaw on the same WeChat account</p>
 
   <div class="meta-row">
-    <span class="stars">★ 112</span>
+    <span class="stars">★ 164</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-04-16</span>
   </div>
 
   <div class="actions">
@@ -78,10 +78,10 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">HermesClaw is an integration bridge that enables Hermes Agent and OpenClaw to operate simultaneously on a single WeChat account. It functions as a central iLink poller that creates two local proxy servers, allowing both gateways to receive messages without the 403 errors typically caused by token conflicts. Users can toggle between agents or receive responses from both simultaneously using commands like /hermes, /openclaw, and /both. The tool is a lightweight Python proxy that forwards raw protocol messages, ensuring native handling of media and voice transcriptions by each respective gateway.</p>
+    <p class="summary-text">HermesClaw is an integration bridge that enables a single WeChat account to run both Hermes Agent and OpenClaw simultaneously. It functions as a central iLink poller that creates two local proxy servers, allowing each agent gateway to receive messages without token conflicts or 403 errors. Users can toggle between agents or trigger simultaneous responses using commands like /hermes, /openclaw, or /both. The tool maintains native support for voice transcriptions and media files by forwarding raw iLink protocol messages to the respective gateways.</p>
     <ul class="summary-highlights">
-      <li>Enables dual-agent operation on one WeChat iLink account</li>
-      <li>Routes messages via /hermes, /openclaw, or /both commands</li>
+      <li>Enables dual-agent operation on a single WeChat iLink account</li>
+      <li>Routes messages via /hermes, /openclaw, and /both commands</li>
       <li>Automated installation script patches existing gateway configurations</li>
     </ul>
   </div>
@@ -90,7 +90,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h6>HermesClaw</h6>
+    <h2>HermesClaw</h2>
 <p><strong>Dual-open <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> and <a href="https://github.com/openclaw/openclaw">OpenClaw</a> on the same WeChat account. One command to install.</strong></p>
 <p><strong>在同一个微信账号上同时双开 <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> 和 <a href="https://github.com/openclaw/openclaw">OpenClaw</a>。一条命令安装。</strong></p>
 <p align="center">
@@ -108,12 +108,12 @@
 </p>
 
 <hr>
-<h6>Why HermesClaw</h6>
+<h3>Why HermesClaw</h3>
 <p>Both Hermes Agent and OpenClaw now support WeChat natively — <strong>but you can&#39;t run both on the same account.</strong> Each gateway exclusively locks the iLink connection. If you start both, one gets 403 errors and drops messages.</p>
 <p>HermesClaw solves this by becoming the <strong>sole iLink poller</strong>, then running two local proxy servers — one for each gateway. Each gateway believes it&#39;s talking to the real iLink API.</p>
 <p>现在 Hermes 和 OpenClaw 都原生支持微信了——<strong>但你不能在同一个账号上双开。</strong> 每个 Gateway 会独占 iLink 连接。HermesClaw 解决这个问题：它作为唯一的 iLink 轮询者，运行两个本地代理，让两个 Gateway 各连各的。</p>
 <hr>
-<h6>Special Thanks</h6>
+<h3>Special Thanks</h3>
 <p>Special thanks to the <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> team at Nous Research for recognizing and recommending <strong>HermesClaw</strong> in the <code>Community</code> section of their official GitHub README.</p>
 <p>特别感谢 Nous Research 的 <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> 团队，在其 GitHub 官方 README 的 <code>Community</code> 区收录并推荐 <strong>HermesClaw</strong>。</p>
 <p align="center">
@@ -125,7 +125,7 @@
 <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent README - Community</a></p>
 </blockquote>
 <hr>
-<h6>Before / After</h6>
+<h3>Before / After</h3>
 <table>
 <thead>
 <tr>
@@ -166,7 +166,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h6>Architecture</h6>
+<h3>Architecture</h3>
 <pre><code>                    ┌────────── iLink API ──────────┐
                     │  ilinkai.weixin.qq.com        │
                     └──────────┬────────────────────┘
@@ -198,7 +198,7 @@
 <p>HermesClaw is a thin Python proxy (~500 lines). It does <strong>not</strong> process media, call agent APIs, or touch agent memory. It just queues and forwards raw iLink protocol messages. Each gateway handles its own media decryption, markdown formatting, and AI interaction natively.</p>
 <p>HermesClaw 只是一个轻量转发代理（~500 行），不处理媒体、不调 Agent API、不动记忆。每个 Gateway 原生处理自己的媒体解密和 AI 交互。</p>
 <hr>
-<h6>Prerequisites</h6>
+<h3>Prerequisites</h3>
 <p>Before installing HermesClaw, you need <strong>at least one</strong> of:</p>
 <ol>
 <li><strong>OpenClaw + clawbot</strong> (<code>openclaw-weixin</code>) — installed and logged into WeChat</li>
@@ -207,7 +207,7 @@
 <p>Both installed = full dual-open. One installed = single-agent mode with the option to add the other later.</p>
 <p>安装 HermesClaw 前，需要至少安装以下其中一个：OpenClaw 的 clawbot，或者 Hermes 的微信 Gateway。</p>
 <hr>
-<h6>Quick Install</h6>
+<h3>Quick Install</h3>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/AaronWong1999/hermesclaw/main/install.sh | bash
 </code></pre>
 <p>The installer will:</p>
@@ -221,7 +221,7 @@
 <li>Set up the <code>hermesclaw</code> systemd service</li>
 </ol>
 <p>After install, restart your gateways and send <code>/whoami</code> in WeChat.</p>
-<h6>AI-assisted install</h6>
+<h4>AI-assisted install</h4>
 <p>Drop this into any AI agent on the target machine:</p>
 <pre><code class="language-text">Run: curl -fsSL https://raw.githubusercontent.com/AaronWong1999/hermesclaw/main/install.sh | bash
 
@@ -240,7 +240,7 @@ by paragraphs.  The fix script is at fix_hermes_splitting.sh.
 Restart gateways.  Verify /whoami works in WeChat.
 </code></pre>
 <hr>
-<h6>Commands</h6>
+<h3>Commands</h3>
 <table>
 <thead>
 <tr>
@@ -271,7 +271,7 @@ Restart gateways.  Verify /whoami works in WeChat.
 </tbody></table>
 <p>Default route is <strong>Hermes</strong>. In <code>/both</code> mode, replies are prefixed with <code>[Hermes Agent]</code> / <code>[OpenClaw]</code> for attribution.</p>
 <hr>
-<h6>Project layout</h6>
+<h3>Project layout</h3>
 <pre><code class="language-text">hermesclaw.py             # ~500 lines. Dual-proxy router.
 install.sh                # Smart auto-detecting installer.
 fix_hermes_splitting.sh   # Patch Hermes weixin.py (optional, recommended).
@@ -281,7 +281,7 @@ LICENSE
 docs/                     # Screenshots and media.
 </code></pre>
 <hr>
-<h6>Media handling</h6>
+<h3>Media handling</h3>
 <p>HermesClaw forwards <strong>raw iLink protocol messages</strong> to each gateway. This means:</p>
 <ul>
 <li><strong>Text</strong> — forwarded as-is</li>
@@ -290,13 +290,13 @@ docs/                     # Screenshots and media.
 </ul>
 <p>HermesClaw does <strong>not</strong> do AES decryption, CDN downloads, or media re-encoding. That&#39;s each gateway&#39;s job.</p>
 <hr>
-<h6>Uninstall</h6>
-<h6>AI-assisted</h6>
+<h3>Uninstall</h3>
+<h4>AI-assisted</h4>
 <pre><code class="language-text">Stop and disable the hermesclaw systemd service.  Restore openclaw-weixin
 account .bak files.  Remove WEIXIN_BASE_URL override from ~/.hermes/.env
 (or restore .bak).  Optionally remove ~/hermesclaw directory.
 </code></pre>
-<h6>Manual</h6>
+<h4>Manual</h4>
 <pre><code class="language-bash">sudo systemctl stop hermesclaw
 sudo systemctl disable hermesclaw
 sudo rm -f /etc/systemd/system/hermesclaw.service
@@ -312,18 +312,18 @@ find &quot;$HOME&quot; -maxdepth 5 -name &quot;*.json.bak&quot; -path &quot;*/op
 rm -rf &quot;$HOME/hermesclaw&quot;
 </code></pre>
 <hr>
-<h6>Star History</h6>
+<h3>Star History</h3>
 <a href="https://www.star-history.com/#AaronWong1999/hermesclaw&Date">
   <img src="https://api.star-history.com/svg?repos=AaronWong1999/hermesclaw&type=Date" alt="Star History Chart" width="600">
 </a>
 
 <hr>
-<h6>Changelog</h6>
-<h6>v0.2.1 (2026-04-12)</h6>
+<h3>Changelog</h3>
+<h4>v0.2.1 (2026-04-12)</h4>
 <ul>
 <li><strong>Fix: Hermes message splitting</strong> — The installer now offers to patch Hermes Agent&#39;s <code>weixin.py</code> to disable newline-based message splitting during installation (recommended, default Yes). This ensures long replies are sent as single messages instead of being split by paragraphs. Existing users can run <code>bash fix_hermes_splitting.sh</code> manually.</li>
 </ul>
-<h6>v0.2.0</h6>
+<h4>v0.2.0</h4>
 <ul>
 <li><strong>Complete rewrite</strong>: dual-proxy gateway architecture.</li>
 <li>Removed ~400 lines of AES/CDN media processing.</li>
@@ -334,16 +334,17 @@ rm -rf &quot;$HOME/hermesclaw&quot;
 <li><strong>Improved error handling</strong> — <code>BrokenPipeError</code> now caught and logged as DEBUG.</li>
 </ul>
 <hr>
-<h6>License</h6>
+<h3>License</h3>
 <p><a href="LICENSE">MIT</a> — by <a href="https://github.com/AaronWong1999">@AaronWong1999</a> · <a href="https://x.com/AaronYonW">X @AaronYonW</a></p>
 <hr>
-<h6>Credits</h6>
+<h3>Credits</h3>
 <ul>
 <li><a href="https://github.com/NousResearch/hermes-agent">NousResearch/hermes-agent</a> — the agent that grows with you.</li>
 <li><a href="https://github.com/openclaw/openclaw">openclaw/openclaw</a> — your own personal AI assistant. The lobster way. 🦞</li>
 <li>The Clawbot / openclaw-weixin maintainers for the iLink WeChat bridge.</li>
 </ul>
 <p>HermesClaw is a community bridge. It is not affiliated with NousResearch or OpenClaw.</p>
+
   </section>
 </details>
 
@@ -355,19 +356,19 @@ rm -rf &quot;$HOME/hermesclaw&quot;
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/raulvidis/hermes-android">
-        <div class="stars">★ 38</div>
+        <div class="stars">★ 61</div>
         <div class="name"><span class="org">raulvidis /</span> hermes-android</div>
       </a>
       <a class="related-row" href="/projects/teknium1/hermes-miniverse">
-        <div class="stars">★ 8</div>
+        <div class="stars">★ 15</div>
         <div class="name"><span class="org">teknium1 /</span> hermes-miniverse</div>
       </a>
       <a class="related-row" href="/projects/Ridwannurudeen/hermes-council">
-        <div class="stars">★ 6</div>
+        <div class="stars">★ 14</div>
         <div class="name"><span class="org">Ridwannurudeen /</span> hermes-council</div>
       </a>
       <a class="related-row" href="/projects/marlandoj/zouroboros-swarm-executors">
-        <div class="stars">★ 4</div>
+        <div class="stars">★ 5</div>
         <div class="name"><span class="org">marlandoj /</span> zouroboros-swarm-executors</div>
       </a>
       <a class="related-row" href="/projects/gizdusum/hermes-blockchain-oracle">
@@ -379,7 +380,7 @@ rm -rf &quot;$HOME/hermesclaw&quot;
         <div class="name"><span class="org">kevinmarmstrong /</span> hermes-claude-code-rc</div>
       </a>
       <a class="related-row" href="/projects/Codename-11/hermes-relay">
-        <div class="stars">★ 10</div>
+        <div class="stars">★ 11</div>
         <div class="name"><span class="org">Codename-11 /</span> hermes-relay</div>
       </a>
     </div>

@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hermes-skill-distillation — Hermes Agent Forks &amp; Derivatives | Hermes Atlas</title>
-<meta name="description" content="Generate agentic training trajectories from real-world tasks for Hermes 4 fine-tuning">
+<meta name="description" content="Hermes Agent Hackathon: RealWorldTaskEnv — generate agentic training trajectories from real-world tasks for Hermes 4 fine-tuning">
 <link rel="canonical" href="https://hermesatlas.com/projects/beardthelion/hermes-skill-distillation">
 <meta property="og:title" content="hermes-skill-distillation — Hermes Atlas">
-<meta property="og:description" content="Generate agentic training trajectories from real-world tasks for Hermes 4 fine-tuning">
+<meta property="og:description" content="Hermes Agent Hackathon: RealWorldTaskEnv — generate agentic training trajectories from real-world tasks for Hermes 4 fine-tuning">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/beardthelion/hermes-skill-distillation">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hermes-skill-distillation — Hermes Atlas">
-<meta name="twitter:description" content="Generate agentic training trajectories from real-world tasks for Hermes 4 fine-tuning">
+<meta name="twitter:description" content="Hermes Agent Hackathon: RealWorldTaskEnv — generate agentic training trajectories from real-world tasks for Hermes 4 fine-tuning">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,14 +56,14 @@
   <h1 class="project-name">
     <span class="org">beardthelion</span><span class="slash">/</span>hermes-skill-distillation
   </h1>
-  <p class="project-desc">Generate agentic training trajectories from real-world tasks for Hermes 4 fine-tuning</p>
+  <p class="project-desc">Hermes Agent Hackathon: RealWorldTaskEnv — generate agentic training trajectories from real-world tasks for Hermes 4 fine-tuning</p>
 
   <div class="meta-row">
-    <span class="stars">★ 1</span>
+    <span class="stars">★ 3</span>
+    <span><span class="meta-label">lang</span>Python</span>
     
     
-    
-    
+    <span><span class="meta-label">updated</span>2026-03-15</span>
   </div>
 
   <div class="actions">
@@ -78,11 +78,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">This project provides a skill distillation pipeline designed to fine-tune Hermes 4 using real-world agentic trajectories. It captures tool-use sessions across coding, research, and system administration tasks to generate high-quality training data that reflects actual user interactions. The system automatically scores these trajectories based on task completion, efficiency, and error recovery to create SFT-ready datasets or facilitate live reinforcement learning. By integrating with the Atropos training framework, it enables a closed loop where the agent's production performance informs the next model iteration.</p>
+    <p class="summary-text">This project provides a skill distillation pipeline designed to fine-tune Hermes 4 models using real-world agentic trajectories. It captures tool-use sessions from the Hermes agent and converts them into high-quality training data through a specialized environment and automated scoring system. The pipeline supports both offline SFT data generation and live reinforcement learning via integration with the Atropos training framework. By focusing on grounded tasks like coding and system administration, it enables a closed learning loop where agent performance directly informs model improvements.</p>
     <ul class="summary-highlights">
       <li>Generates SFT-ready JSONL data from 30 diverse real-world task categories</li>
-      <li>Automated multi-dimensional reward scoring for task completion and efficiency</li>
-      <li>Direct integration with Atropos for live RL and GRPO training</li>
+      <li>Automates trajectory scoring based on completion, efficiency, and error recovery</li>
+      <li>Integrates with Atropos for live reinforcement learning and model evaluation</li>
     </ul>
   </div>
 </section>
@@ -90,16 +90,16 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h6>Hermes Agent Hackathon — Skill Distillation Pipeline</h6>
+    <h2>Hermes Agent Hackathon — Skill Distillation Pipeline</h2>
 <blockquote>
 <p><strong>Demo concept:</strong> Use Hermes agent&#39;s real-world tool usage to generate high-quality agentic training trajectories for Hermes 4 fine-tuning.</p>
 </blockquote>
-<h6>The Idea</h6>
+<h3>The Idea</h3>
 <p>Hermes agent already runs real tasks for real users. Every session is a potential training example. This project turns that latent signal into a closed learning loop:</p>
 <pre><code>Hermes agent runs tasks → trajectories captured → judge scores them → Atropos fine-tunes Hermes 4 → better model → better agent
 </code></pre>
 <p>The key insight: <strong>real-world grounded trajectories beat synthetic benchmarks</strong>. A model that learned to use tools by actually using them in production is fundamentally different from one trained on curated academic tasks.</p>
-<h6>What We Built</h6>
+<h3>What We Built</h3>
 <p>A <code>RealWorldTaskEnv</code> Hermes environment that:</p>
 <ol>
 <li><strong>Runs a diverse task battery</strong> — 30 tasks across coding, web research, file ops, data analysis, sysadmin. Things users actually ask agents to do.</li>
@@ -108,7 +108,7 @@
 <li><strong>Connects to Atropos for live RL</strong> — <code>serve</code> mode wires directly into GRPO training.</li>
 <li><strong>Before/after comparison</strong> — <code>demo/compare_models.py</code> shows Hermes 4-14B vanilla vs. fine-tuned on 500 trajectories.</li>
 </ol>
-<h6>Quickstart</h6>
+<h3>Quickstart</h3>
 <pre><code class="language-bash"># Install
 pip install git+https://github.com/NousResearch/hermes-agent.git
 pip install git+https://github.com/NousResearch/atropos.git
@@ -130,12 +130,12 @@ python environments/real_world_task_env/real_world_task_env.py serve \
   --config environments/real_world_task_env/default.yaml \
   --openai.model_name NousResearch/Hermes-4-14B
 </code></pre>
-<h6>Demo Script</h6>
+<h3>Demo Script</h3>
 <pre><code class="language-bash"># Full before/after comparison demo
 bash demo/run_demo.sh
 </code></pre>
 <p>This runs 10 held-out tasks on both the baseline and fine-tuned model, prints a side-by-side score table, and saves trajectories for inspection.</p>
-<h6>Architecture</h6>
+<h3>Architecture</h3>
 <pre><code>real_world_task_env.py   — Environment class (HermesAgentBaseEnv subclass)
 tasks.json               — 30 diverse real-world tasks with verification specs
 judge_prompt.py          — LLM judge for open-ended task scoring
@@ -144,7 +144,7 @@ demo/
   run_demo.sh            — One-command demo
   compare_models.py      — Side-by-side model comparison
 </code></pre>
-<h6>Reward Function</h6>
+<h3>Reward Function</h3>
 <p>Three-component reward (all 0.0–1.0, weighted):</p>
 <table>
 <thead>
@@ -170,7 +170,7 @@ demo/
 <td>Judge model assesses whether agent handled errors gracefully</td>
 </tr>
 </tbody></table>
-<h6>Task Categories</h6>
+<h3>Task Categories</h3>
 <table>
 <thead>
 <tr>
@@ -205,9 +205,10 @@ demo/
 <td>5</td>
 </tr>
 </tbody></table>
-<h6>Why This Matters</h6>
+<h3>Why This Matters</h3>
 <p>Hermes agent&#39;s loop is: <strong>real task → tool use → outcome</strong>. That&#39;s the exact data distribution Hermes 4 needs to become an agentic model. This pipeline closes the loop — the agent that serves users becomes the teacher that trains the next version.</p>
 <p>Built for the Nous Research Hermes Agent Hackathon.</p>
+
   </section>
 </details>
 
@@ -219,11 +220,11 @@ demo/
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/nativ3ai/hermes-agent-camel">
-        <div class="stars">★ 12</div>
+        <div class="stars">★ 101</div>
         <div class="name"><span class="org">nativ3ai /</span> hermes-agent-camel</div>
       </a>
       <a class="related-row" href="/projects/kaminocorp/hermes-alpha">
-        <div class="stars">★ 8</div>
+        <div class="stars">★ 46</div>
         <div class="name"><span class="org">kaminocorp /</span> hermes-alpha</div>
       </a>
     </div>

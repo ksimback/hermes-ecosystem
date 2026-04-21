@@ -59,11 +59,11 @@
   <p class="project-desc">Function calling examples and training data for Hermes LLM models</p>
 
   <div class="meta-row">
-    <span class="stars">★ 1.2K</span>
-    
-    
+    <span class="stars">★ 1.3K</span>
+    <span><span class="meta-label">lang</span>Jupyter Notebook</span>
+    <span><span class="meta-label">license</span>MIT</span>
     <span><span class="meta-label">maintainer</span>Nous Research</span>
-    
+    <span><span class="meta-label">updated</span>2025-12-22</span>
   </div>
 
   <div class="actions">
@@ -78,11 +78,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">This repository provides the implementation and examples for enabling function calling and JSON mode in Hermes 2 Pro models. It utilizes a structured recursive loop to generate tool calls, execute them via Python scripts, and feed the results back into the model for final responses. Users can define custom tools using Pydantic models or modify existing financial data functions powered by the yfinance library. The system is designed for OpenAI-compatible workflows using the ChatML prompt format to ensure reliable multi-turn interactions.</p>
+    <p class="summary-text">This repository provides the official implementation and examples for function calling and JSON mode using the Hermes 2 Pro model. It utilizes a recursive loop to generate, execute, and process tool calls based on structured schemas, specifically supporting financial data retrieval via yfinance. Users can define custom tools using Python decorators or enforce structured outputs by serializing Pydantic models into JSON schemas. The project demonstrates multi-turn interactions using the ChatML format to maintain state between tool responses and assistant replies.</p>
     <ul class="summary-highlights">
-      <li>Implements recursive function calling and structured JSON mode inference</li>
-      <li>Supports custom tool definition via Pydantic and OpenAI-style schemas</li>
-      <li>Uses ChatML format for steerable multi-turn agentic dialogues</li>
+      <li>Enables recursive function calling and structured JSON mode inference</li>
+      <li>Supports custom tool definition via Python decorators and Pydantic</li>
+      <li>Uses ChatML prompt format for OpenAI-compatible multi-turn dialogue</li>
     </ul>
   </div>
 </section>
@@ -90,22 +90,22 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h6>Hermes-Function-Calling</h6>
+    <h2>Hermes-Function-Calling</h2>
 <p>This repository contains code for the Hermes Pro Large Language Model to perform function calling based on the provided schema. It allows users to query the model and retrieve information related to stock prices, company fundamentals, financial statements, and more.</p>
-<h6>Installation</h6>
+<h3>Installation</h3>
 <p>To install the required packages, run the following command:</p>
 <pre><code class="language-bash">pip install -r requirements.txt
 </code></pre>
-<h6>Usage</h6>
-<h6>Function calling</h6>
+<h3>Usage</h3>
+<h4>Function calling</h4>
 <p>To run the function call inference with a query, use the following command:</p>
 <pre><code class="language-bash">python functioncall.py --query &quot;I need the current stock price of Tesla (TSLA)&quot;
 </code></pre>
-<h6>Json mode</h6>
+<h4>Json mode</h4>
 <p>To run the json mode inference with a query, use the following command:</p>
 <pre><code class="language-bash">python jsonmode.py --query &quot;Please return a json object to represent Goku from the anime Dragon Ball Z?&quot;
 </code></pre>
-<h6>Command Line Arguments</h6>
+<h5>Command Line Arguments</h5>
 <ul>
 <li><code>--model_path</code>: Path to the model folder (default: &quot;NousResearch/Hermes-2-Pro-Llama-3-8B&quot;).</li>
 <li><code>--chat_template</code>: Chat template for prompt formatting (default: &quot;chatml&quot;).</li>
@@ -114,7 +114,7 @@
 <li><code>--query</code>: Query to be used for function call inference (default: &quot;I need the current stock price of Tesla (TSLA)&quot;).</li>
 <li><code>--max_depth</code>: Maximum number of recursive iterations (default: 5).</li>
 </ul>
-<h6>Adding Custom Functions</h6>
+<h3>Adding Custom Functions</h3>
 <p>To add your own functions for the model to use, you can modify the <code>functions.py</code> script. This script contains various functions that retrieve stock-related information using the <code>yfinance</code> library.</p>
 <p>Here&#39;s an example of how to add a new function:</p>
 <pre><code class="language-python">@tool
@@ -148,7 +148,7 @@ def get_new_function(symbol: str) -&gt; dict:
     return tools
 </code></pre>
 <p>This will ensure that your new function is included in the list of available tools for the model to use.</p>
-<h6>Adding Custom Pydantic Model</h6>
+<h3>Adding Custom Pydantic Model</h3>
 <p>To add your own pydantic models to create json schema for the model to use, you can replace the pydantic models in the <code>jsonmode.py</code> script. </p>
 <p>Here&#39;s an example of how to add a new pydantic model:</p>
 <pre><code class="language-python">from typing import List, Optional
@@ -169,7 +169,7 @@ class Character(BaseModel):
 <p>You need to serialize the pydantic model into json schema as follows:</p>
 <pre><code class="language-python">pydantic_schema = Character.schema_json()
 </code></pre>
-<h6>Key Scripts</h6>
+<h3>Key Scripts</h3>
 <p>The repository contains several key scripts that work together to enable function calling with the Hermes Pro Large Language Model:</p>
 <ul>
 <li><p><code>functions.py</code>: This script is where all the functions/tools you want the model to have access to are made available.</p>
@@ -183,7 +183,7 @@ class Character(BaseModel):
 <li><p><code>schema.py</code>: This script defines the Pydantic models used for representing function calls and function definitions. It provides a structured way to define and validate the function call schema.</p>
 </li>
 </ul>
-<h6>Inference Example Output</h6>
+<h3>Inference Example Output</h3>
 <p>Here&#39;s an example of the inference output:</p>
 <pre><code>&lt;|im_start|&gt;user
 Fetch the stock fundamentals data for Tesla (TSLA)&lt;|im_end|&gt;
@@ -212,7 +212,7 @@ The stock fundamentals data for Tesla (TSLA) are as follows:
 - **52-Week Low Price of the Stock**: $152.37
 This information provides a snapshot of Tesla&#39;s financial position and performance based on the fundamental data obtained from the yfinance API. It shows that Tesla has a substantial market capitalization and a relatively high P/E and P/B ratio compared to other stocks in its industry. The company does not pay a dividend at the moment, which is reflected by a &#39;Dividend Yield&#39; of &#39;None&#39;. The Beta value indicates that Tesla&#39;s stock has a moderate level of volatility relative to the market. The 52-week high and low prices give an idea of the stock&#39;s range over the past year. This data can be useful when assessing investment opportunities and making investment decisions.
 </code></pre>
-<h6>Prompt Format</h6>
+<h3>Prompt Format</h3>
 <p>Hermes 2 Pro uses ChatML as the prompt format, opening up a much more structured system for engaging the LLM in multi-turn chat dialogue.</p>
 <p>System prompts allow steerability and interesting new ways to interact with an LLM, guiding rules, roles, and stylistic choices of the model.</p>
 <p>This is a more complex format than alpaca or sharegpt, where special tokens were added to denote the beginning and end of any turn, along with roles for the turns.</p>
@@ -236,7 +236,7 @@ model.generate(**gen_input)
 </code></pre>
 <p>When tokenizing messages for generation, set add_generation_prompt=True when calling apply_chat_template(). This will append &lt;|im_start|&gt;assistant\n to your prompt, to ensure that the model continues with an assistant response.</p>
 <p>To utilize the prompt format without a system prompt, simply leave the line out.</p>
-<h6>Prompt Format for Function Calling</h6>
+<h3>Prompt Format for Function Calling</h3>
 <p>Our model was trained on specific system prompts and structures for Function Calling.</p>
 <p>You should use the system role with this message, followed by a function signature json as this example shows here.</p>
 <pre><code>&lt;|im_start|&gt;system
@@ -310,13 +310,14 @@ The stock fundamentals data for Tesla (TSLA) are as follows:
 
 This information provides a snapshot of Tesla&#39;s financial position and performance based on the fundamental data obtained from the yfinance API. It shows that Tesla has a substantial market capitalization and a relatively high P/E and P/B ratio compared to other stocks in its industry. The company does not pay a dividend at the moment, which is reflected by a &#39;Dividend Yield&#39; of &#39;None&#39;. The Beta value indicates that Tesla&#39;s stock has a moderate level of volatility relative to the market. The 52-week high and low prices give an idea of the stock&#39;s range over the past year. This data can be useful when assessing investment opportunities and making investment decisions.&lt;|im_end|&gt;
 </code></pre>
-<h6>Prompt Format for JSON Mode / Structured Outputs</h6>
+<h3>Prompt Format for JSON Mode / Structured Outputs</h3>
 <p>Our model was also trained on a specific system prompt for Structured Outputs, which should respond with only a json object response, in a specific json schema.</p>
 <p>Your schema can be made from a pydantic object using our codebase, with the standalone script jsonmode.py available here: <a href="https://github.com/NousResearch/Hermes-Function-Calling/tree/main">https://github.com/NousResearch/Hermes-Function-Calling/tree/main</a></p>
 <pre><code>&lt;|im_start|&gt;system
 You are a helpful assistant that answers in JSON. Here&#39;s the json schema you must adhere to:\n&lt;schema&gt;\n{schema}\n&lt;/schema&gt;&lt;|im_end|&gt;
 </code></pre>
 <p>Given the {schema} that you provide, it should follow the format of that json to create it&#39;s response, all you have to do is give a typical user prompt, and it will respond in JSON.</p>
+
   </section>
 </details>
 
@@ -328,23 +329,23 @@ You are a helpful assistant that answers in JSON. Here&#39;s the json schema you
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/NousResearch/hermes-agent">
-        <div class="stars">★ 83.3K</div>
+        <div class="stars">★ 106.3K</div>
         <div class="name"><span class="org">NousResearch /</span> hermes-agent</div>
       </a>
       <a class="related-row" href="/projects/NousResearch/atropos">
-        <div class="stars">★ 997</div>
+        <div class="stars">★ 1.1K</div>
         <div class="name"><span class="org">NousResearch /</span> atropos</div>
       </a>
       <a class="related-row" href="/projects/NousResearch/hermes-agent-self-evolution">
-        <div class="stars">★ 778</div>
+        <div class="stars">★ 2.0K</div>
         <div class="name"><span class="org">NousResearch /</span> hermes-agent-self-evolution</div>
       </a>
       <a class="related-row" href="/projects/NousResearch/hermes-paperclip-adapter">
-        <div class="stars">★ 663</div>
+        <div class="stars">★ 898</div>
         <div class="name"><span class="org">NousResearch /</span> hermes-paperclip-adapter</div>
       </a>
       <a class="related-row" href="/projects/NousResearch/autonovel">
-        <div class="stars">★ 401</div>
+        <div class="stars">★ 704</div>
         <div class="name"><span class="org">NousResearch /</span> autonovel</div>
       </a>
     </div>

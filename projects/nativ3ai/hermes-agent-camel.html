@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hermes-agent-camel — Hermes Agent Forks &amp; Derivatives | Hermes Atlas</title>
-<meta name="description" content="Hermes with integrated CaMeL trust boundaries for safer autonomous execution">
+<meta name="description" content="Hermes Agent fork with integrated CaMeL trust boundaries">
 <link rel="canonical" href="https://hermesatlas.com/projects/nativ3ai/hermes-agent-camel">
 <meta property="og:title" content="hermes-agent-camel — Hermes Atlas">
-<meta property="og:description" content="Hermes with integrated CaMeL trust boundaries for safer autonomous execution">
+<meta property="og:description" content="Hermes Agent fork with integrated CaMeL trust boundaries">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/nativ3ai/hermes-agent-camel">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hermes-agent-camel — Hermes Atlas">
-<meta name="twitter:description" content="Hermes with integrated CaMeL trust boundaries for safer autonomous execution">
+<meta name="twitter:description" content="Hermes Agent fork with integrated CaMeL trust boundaries">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,14 +56,14 @@
   <h1 class="project-name">
     <span class="org">nativ3ai</span><span class="slash">/</span>hermes-agent-camel
   </h1>
-  <p class="project-desc">Hermes with integrated CaMeL trust boundaries for safer autonomous execution</p>
+  <p class="project-desc">Hermes Agent fork with integrated CaMeL trust boundaries</p>
 
   <div class="meta-row">
-    <span class="stars">★ 12</span>
+    <span class="stars">★ 101</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-03-30</span>
   </div>
 
   <div class="actions">
@@ -90,7 +90,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h6>Hermes Agent + CaMeL</h6>
+    <h2>Hermes Agent + CaMeL</h2>
 <p>A publishable Hermes fork with CaMeL trust boundaries integrated into the runtime.</p>
 <p>This fork is designed for operators who want the Hermes agent loop to distinguish between:</p>
 <ul>
@@ -98,7 +98,7 @@
 <li>untrusted data: tool outputs, retrieved web content, browser content, files, session recall, MCP data</li>
 </ul>
 <p>Sensitive tools are authorized against a trusted operator plan instead of instructions embedded in untrusted content.</p>
-<h6>Research Provenance</h6>
+<h3>Research Provenance</h3>
 <p>This fork is inspired by Google Research&#39;s CaMeL paper and reference repository:</p>
 <ul>
 <li>Paper: <a href="https://arxiv.org/abs/2503.18813">https://arxiv.org/abs/2503.18813</a></li>
@@ -114,7 +114,7 @@
 <li>this fork focuses on Hermes-specific trust separation, tool gating, provenance handling, and operator-intent enforcement</li>
 </ul>
 <p>In other words, the design is research-inspired, but the implementation and problem framing are specific to Hermes.</p>
-<h6>What This Fork Changes</h6>
+<h3>What This Fork Changes</h3>
 <p>This fork adds a runtime security layer centered on <code>agent/camel_guard.py</code> and the Hermes tool loop.</p>
 <p>Main additions:</p>
 <ul>
@@ -137,7 +137,7 @@
 <li>browser interaction and selected external side effects</li>
 </ul>
 <p>Read-only actions such as <code>send_message(action=&quot;list&quot;)</code> and <code>cronjob(action=&quot;list&quot;)</code> remain allowed.</p>
-<h6>Threat Model</h6>
+<h3>Threat Model</h3>
 <p>This fork is built to reduce indirect prompt injection risk in the normal Hermes workflow.</p>
 <p>The target attack pattern is:</p>
 <ol>
@@ -146,19 +146,19 @@
 <li>The model attempts to treat that content as control rather than evidence.</li>
 <li>Hermes blocks the side effect unless the trusted operator plan explicitly authorizes that capability.</li>
 </ol>
-<h6>Architecture</h6>
-<h6>1. Trusted operator plan</h6>
+<h3>Architecture</h3>
+<h4>1. Trusted operator plan</h4>
 <p>Hermes derives trusted control from real user turns only. Synthetic system-control turns do not pollute the trusted plan.</p>
-<h6>2. Untrusted data channel</h6>
+<h4>2. Untrusted data channel</h4>
 <p>Tool outputs are treated as untrusted data by default and wrapped with provenance metadata before they re-enter model context.</p>
-<h6>3. Security envelope</h6>
+<h4>3. Security envelope</h4>
 <p>Every turn includes a compact CaMeL security envelope describing the trusted goal, authorized capabilities, and current untrusted source inventory.</p>
-<h6>4. Capability gating</h6>
+<h4>4. Capability gating</h4>
 <p>Side-effecting tools are checked against the trusted operator plan before execution.</p>
-<h6>5. Provider hygiene</h6>
+<h4>5. Provider hygiene</h4>
 <p>Internal CaMeL metadata is removed before messages are sent to the configured model provider.</p>
-<h6>Validation</h6>
-<h6>Hermes runtime compatibility</h6>
+<h3>Validation</h3>
+<h4>Hermes runtime compatibility</h4>
 <p>Validated against the Hermes runtime suite:</p>
 <pre><code class="language-bash">pytest -q tests/agent/test_camel_guard.py tests/test_run_agent.py
 </code></pre>
@@ -166,7 +166,7 @@
 <ul>
 <li><code>205 passed</code></li>
 </ul>
-<h6>Paper-aligned indirect injection benchmark</h6>
+<h4>Paper-aligned indirect injection benchmark</h4>
 <p>A Hermes-specific micro-benchmark aligned to the CaMeL paper/repo <code>important_instructions</code> attack shape was also run.</p>
 <p>Observed outcomes:</p>
 <ul>
@@ -181,17 +181,17 @@
 <ul>
 <li><a href="https://github.com/nativ3ai/hermes-agent-camel/blob/main/docs/camel-benchmark.md"><code>docs/camel-benchmark.md</code></a></li>
 </ul>
-<h6>Install</h6>
-<h6>Fresh install from this fork</h6>
+<h3>Install</h3>
+<h4>Fresh install from this fork</h4>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/nativ3ai/hermes-agent-camel/main/scripts/install.sh | bash
 </code></pre>
 <p>Then reload your shell and start Hermes:</p>
 <pre><code class="language-bash">source ~/.zshrc
 hermes
 </code></pre>
-<h6>Existing upstream Hermes checkout</h6>
+<h4>Existing upstream Hermes checkout</h4>
 <p>Use the <code>camelup</code> installer repo to apply this fork or switch an existing checkout to the CaMeL build.</p>
-<h6>Runtime Modes</h6>
+<h3>Runtime Modes</h3>
 <p>This fork now supports two explicit runtime behaviors from the same checkout:</p>
 <ul>
 <li>guarded runtime: CaMeL trust boundaries enforced</li>
@@ -209,7 +209,7 @@ hermes chat --camel-guard monitor -q &quot;Summarize the report&quot;
 <li><code>off</code> or <code>legacy</code>: disable CaMeL and run the legacy runtime behavior</li>
 </ul>
 <p>This keeps one codebase and one install path while making it easy to compare guarded and legacy behavior side by side.</p>
-<h6>Developer setup</h6>
+<h3>Developer setup</h3>
 <pre><code class="language-bash">git clone https://github.com/nativ3ai/hermes-agent-camel.git
 cd hermes-agent-camel
 git submodule update --init mini-swe-agent
@@ -220,7 +220,7 @@ uv pip install -e &quot;.[all,dev]&quot;
 uv pip install -e &quot;./mini-swe-agent&quot;
 pytest -q tests/agent/test_camel_guard.py tests/test_run_agent.py
 </code></pre>
-<h6>Files Of Interest</h6>
+<h3>Files Of Interest</h3>
 <ul>
 <li><code>agent/camel_guard.py</code></li>
 <li><code>run_agent.py</code></li>
@@ -229,10 +229,10 @@ pytest -q tests/agent/test_camel_guard.py tests/test_run_agent.py
 <li><code>tests/test_run_agent.py</code></li>
 <li><code>docs/camel-benchmark.md</code></li>
 </ul>
-<h6>Scope</h6>
+<h3>Scope</h3>
 <p>This fork follows the trust-boundary principles described in the CaMeL paper, but applies them to Hermes&#39; agent runtime rather than to the paper&#39;s original evaluation stack.</p>
 <p>It is not presented as a full reproduction of the paper&#39;s AgentDojo benchmark matrix or as a claim of matching the paper&#39;s performance characteristics. The validation here is Hermes-specific and focused on runtime trust boundaries plus paper-aligned indirect injection scenarios.</p>
-<h6>Upstream Relation</h6>
+<h3>Upstream Relation</h3>
 <p>This repository tracks Hermes Agent from Nous Research and carries the CaMeL integration as a focused runtime security extension.</p>
 <ul>
 <li>Upstream Hermes: <a href="https://github.com/NousResearch/hermes-agent">https://github.com/NousResearch/hermes-agent</a></li>
@@ -242,7 +242,7 @@ pytest -q tests/agent/test_camel_guard.py tests/test_run_agent.py
 <li>Third-party notices: <a href="https://github.com/nativ3ai/hermes-agent-camel/blob/main/THIRD_PARTY_NOTICES.md"><code>THIRD_PARTY_NOTICES.md</code></a></li>
 </ul>
 <p>For the original general-purpose Hermes README, see <a href="https://github.com/nativ3ai/hermes-agent-camel/blob/main/docs/upstream-readme.md"><code>docs/upstream-readme.md</code></a>.</p>
-<h6>Related Add-On</h6>
+<h3>Related Add-On</h3>
 <p>For payment flows that keep the same operator-intent boundary outside the model loop, see:</p>
 <ul>
 <li>Hermes PayGuard: <a href="https://github.com/nativ3ai/hermes-payguard">https://github.com/nativ3ai/hermes-payguard</a></li>
@@ -255,6 +255,7 @@ pytest -q tests/agent/test_camel_guard.py tests/test_run_agent.py
 <li>x402 paid fetch flows</li>
 </ul>
 <p>That separation is intentional: the payment approval ledger and execution rails belong outside the core CaMeL runtime layer.</p>
+
   </section>
 </details>
 
@@ -266,11 +267,11 @@ pytest -q tests/agent/test_camel_guard.py tests/test_run_agent.py
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/kaminocorp/hermes-alpha">
-        <div class="stars">★ 8</div>
+        <div class="stars">★ 46</div>
         <div class="name"><span class="org">kaminocorp /</span> hermes-alpha</div>
       </a>
       <a class="related-row" href="/projects/beardthelion/hermes-skill-distillation">
-        <div class="stars">★ 1</div>
+        <div class="stars">★ 3</div>
         <div class="name"><span class="org">beardthelion /</span> hermes-skill-distillation</div>
       </a>
     </div>

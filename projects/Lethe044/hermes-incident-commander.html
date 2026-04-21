@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hermes-incident-commander — Hermes Agent Domain Applications | Hermes Atlas</title>
-<meta name="description" content="Autonomous SRE agent — detects, heals, and learns from production incidents">
+<meta name="description" content="Autonomous SRE agent built on Hermes - detects, heals, and learns from production incidents. Uses Memory + Skills + Cron + Gateway + Subagents + Atropos RL.">
 <link rel="canonical" href="https://hermesatlas.com/projects/Lethe044/hermes-incident-commander">
 <meta property="og:title" content="hermes-incident-commander — Hermes Atlas">
-<meta property="og:description" content="Autonomous SRE agent — detects, heals, and learns from production incidents">
+<meta property="og:description" content="Autonomous SRE agent built on Hermes - detects, heals, and learns from production incidents. Uses Memory + Skills + Cron + Gateway + Subagents + Atropos RL.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/Lethe044/hermes-incident-commander">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hermes-incident-commander — Hermes Atlas">
-<meta name="twitter:description" content="Autonomous SRE agent — detects, heals, and learns from production incidents">
+<meta name="twitter:description" content="Autonomous SRE agent built on Hermes - detects, heals, and learns from production incidents. Uses Memory + Skills + Cron + Gateway + Subagents + Atropos RL.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,14 +56,14 @@
   <h1 class="project-name">
     <span class="org">Lethe044</span><span class="slash">/</span>hermes-incident-commander
   </h1>
-  <p class="project-desc">Autonomous SRE agent — detects, heals, and learns from production incidents</p>
+  <p class="project-desc">Autonomous SRE agent built on Hermes - detects, heals, and learns from production incidents. Uses Memory + Skills + Cron + Gateway + Subagents + Atropos RL.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 11</span>
+    <span class="stars">★ 14</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-04-04</span>
   </div>
 
   <div class="actions">
@@ -78,11 +78,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Incident Commander is an autonomous SRE agent designed to automate the detection, diagnosis, and remediation of production infrastructure failures. It utilizes the Hermes Agent framework to monitor system vitals, classify incident severity from P0 to P3, and apply corrective actions across CPU, memory, and service layers. Following resolution, the agent generates structured post-mortem reports and automatically creates new prevention skills to handle similar future incidents more efficiently. The system integrates with Telegram and Discord for real-time alerting and uses cron scheduling for continuous health audits.</p>
+    <p class="summary-text">Hermes Incident Commander is an autonomous SRE agent designed to automate the detection, diagnosis, and remediation of production infrastructure failures. It utilizes the Hermes Agent framework to monitor system vitals, classify incident severity, and execute multi-step diagnostic pipelines to identify root causes. Once a fix is applied and verified, the agent generates structured post-mortem reports and creates new prevention skills to handle similar future incidents more efficiently. The system integrates with Telegram and Discord for real-time alerting and supports cloud-native remediation via MCP servers.</p>
     <ul class="summary-highlights">
-      <li>Automates incident triage, root cause analysis, and remediation actions</li>
-      <li>Generates persistent prevention skills and post-incident reports automatically</li>
-      <li>Supports parallel subagent spawning for multi-layer service investigations</li>
+      <li>Automates incident triage, root cause analysis, and remediation actions.</li>
+      <li>Generates persistent prevention skills and post-incident reports autonomously.</li>
+      <li>Supports parallel subagent spawning for multi-layer service investigations.</li>
     </ul>
   </div>
 </section>
@@ -90,14 +90,14 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h6>⚕ Hermes Incident Commander</h6>
+    <h2>⚕ Hermes Incident Commander</h2>
 <blockquote>
 <p><strong>An autonomous SRE agent that detects, diagnoses, and heals production infrastructure - then learns from every incident it resolves.</strong></p>
 </blockquote>
 <p>Built on <a href="https://hermes-agent.nousresearch.com">Hermes Agent</a> by NousResearch.
 Submitted for the <em>&quot;Show us what Hermes Agent can do&quot;</em> challenge.</p>
 <hr>
-<h6>The Problem</h6>
+<h3>The Problem</h3>
 <p>When a production server goes down at 3 AM, an on-call engineer has to:</p>
 <ol>
 <li>Wake up, check alerts</li>
@@ -110,7 +110,7 @@ Submitted for the <em>&quot;Show us what Hermes Agent can do&quot;</em> challeng
 <p><strong>Mean time to resolve (MTTR) for P0 incidents averages 45–60 minutes.</strong> Much of that is humans doing things a sufficiently capable agent could do faster and better.</p>
 <p>Hermes Incident Commander does all of it - autonomously, in minutes, getting smarter with each incident it handles.</p>
 <hr>
-<h6>Demo</h6>
+<h3>Demo</h3>
 <pre><code class="language-bash"># Install dependencies
 pip install anthropic rich
 
@@ -135,7 +135,7 @@ python demo/demo_incident.py --scenario cpu-runaway-process
 <li>Creates a <strong>new prevention skill</strong> in <code>~/.hermes/skills/</code> so it handles this faster next time</li>
 </ul>
 <hr>
-<h6>How It Uses Every Hermes Feature</h6>
+<h3>How It Uses Every Hermes Feature</h3>
 <p>This project was designed to push every capability of Hermes Agent:</p>
 <table>
 <thead>
@@ -178,7 +178,7 @@ python demo/demo_incident.py --scenario cpu-runaway-process
 </tr>
 </tbody></table>
 <hr>
-<h6>Architecture</h6>
+<h3>Architecture</h3>
 <pre><code class="language-mermaid">flowchart TD
     ALERT([🚨 Incident Alert]) --&gt; DETECT
 
@@ -212,7 +212,7 @@ python demo/demo_incident.py --scenario cpu-runaway-process
     style ALERT fill:#7b2d00,color:#fff
 </code></pre>
 <hr>
-<h6>Project Structure</h6>
+<h3>Project Structure</h3>
 <pre><code class="language-mermaid">graph LR
     ROOT[&quot;📁 hermes-incident-commander&quot;]
 
@@ -242,16 +242,16 @@ python demo/demo_incident.py --scenario cpu-runaway-process
     style TEST_PY fill:#2d2d2d,color:#fff
 </code></pre>
 <hr>
-<h6>Installation (Full Hermes Setup)</h6>
-<h6>1. Install Hermes Agent</h6>
+<h3>Installation (Full Hermes Setup)</h3>
+<h4>1. Install Hermes Agent</h4>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
 </code></pre>
-<h6>2. Configure Hermes</h6>
+<h4>2. Configure Hermes</h4>
 <pre><code class="language-bash">hermes setup        # Interactive setup wizard
 hermes model        # Choose your model (Nous Portal recommended)
 hermes gateway setup  # Connect Telegram/Discord for alerts
 </code></pre>
-<h6>3. Install the Incident Commander Skill</h6>
+<h4>3. Install the Incident Commander Skill</h4>
 <pre><code class="language-bash"># Copy the skill to Hermes&#39;s skills directory
 cp -r skills/incident-commander ~/.hermes/skills/
 
@@ -259,13 +259,13 @@ cp -r skills/incident-commander ~/.hermes/skills/
 hermes
 &gt; /skills
 </code></pre>
-<h6>4. Set Up Monitoring Cron Jobs</h6>
+<h4>4. Set Up Monitoring Cron Jobs</h4>
 <p>In your Hermes conversation:</p>
 <pre><code>Set up incident monitoring: run a health check every 5 minutes and alert me
 on Telegram if anything is P0 or P1. Send me a daily briefing at 08:00.
 </code></pre>
 <p>Hermes will install the cron jobs automatically.</p>
-<h6>5. Run the RL Training Environment (Optional)</h6>
+<h4>5. Run the RL Training Environment (Optional)</h4>
 <pre><code class="language-bash"># Install Atropos
 pip install atroposlib
 
@@ -276,7 +276,7 @@ python environments/incident_env.py process --config environments/incident_confi
 python environments/incident_env.py serve --config environments/incident_config.yaml
 </code></pre>
 <hr>
-<h6>Reward Function (for RL Training)</h6>
+<h3>Reward Function (for RL Training)</h3>
 <p>The training environment uses a multi-component reward that captures real SRE quality:</p>
 <pre><code class="language-mermaid">pie title Reward Components
     &quot;Resolution — Did the incident get fixed?&quot; : 50
@@ -287,7 +287,7 @@ python environments/incident_env.py serve --config environments/incident_config.
     &quot;Tool Efficiency — Minimal tool calls?&quot; : 5
 </code></pre>
 <hr>
-<h6>Incident Scenarios (Training Scenarios)</h6>
+<h3>Incident Scenarios (Training Scenarios)</h3>
 <table>
 <thead>
 <tr>
@@ -329,7 +329,7 @@ python environments/incident_env.py serve --config environments/incident_config.
 </tr>
 </tbody></table>
 <hr>
-<h6>Running Tests</h6>
+<h3>Running Tests</h3>
 <pre><code class="language-bash"># Install test dependencies
 pip install pytest pytest-asyncio
 
@@ -342,7 +342,7 @@ pytest tests/test_incident_env.py::TestRewardFunction -v
 pytest tests/test_incident_env.py::TestSkillFile -v
 </code></pre>
 <hr>
-<h6>Why This Wins</h6>
+<h3>Why This Wins</h3>
 <ol>
 <li><p><strong>Real problem, real impact.</strong> P0 incidents cost companies thousands of dollars per minute. Shaving 30 minutes off MTTR with an autonomous agent is immediately valuable.</p>
 </li>
@@ -356,10 +356,11 @@ pytest tests/test_incident_env.py::TestSkillFile -v
 </li>
 </ol>
 <hr>
-<h6>License</h6>
+<h3>License</h3>
 <p>MIT</p>
 <hr>
 <p><em>Built with <a href="https://hermes-agent.nousresearch.com">Hermes Agent</a> - the agent that grows with you.</em></p>
+
   </section>
 </details>
 
@@ -371,31 +372,31 @@ pytest tests/test_incident_env.py::TestSkillFile -v
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/ucsandman/DashClaw">
-        <div class="stars">★ 204</div>
+        <div class="stars">★ 236</div>
         <div class="name"><span class="org">ucsandman /</span> DashClaw</div>
       </a>
       <a class="related-row" href="/projects/Christabel337/job-scout-agent">
-        <div class="stars">★ 11</div>
+        <div class="stars">★ 18</div>
         <div class="name"><span class="org">Christabel337 /</span> job-scout-agent</div>
       </a>
       <a class="related-row" href="/projects/rodmarkun/anihermes">
-        <div class="stars">★ 9</div>
+        <div class="stars">★ 11</div>
         <div class="name"><span class="org">rodmarkun /</span> anihermes</div>
       </a>
       <a class="related-row" href="/projects/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit">
-        <div class="stars">★ 9</div>
+        <div class="stars">★ 11</div>
         <div class="name"><span class="org">JackTheGit /</span> hermes-ai-infrastructure-monitoring-toolkit</div>
       </a>
       <a class="related-row" href="/projects/bigph00t/hermescraft">
-        <div class="stars">★ 8</div>
+        <div class="stars">★ 11</div>
         <div class="name"><span class="org">bigph00t /</span> hermescraft</div>
       </a>
       <a class="related-row" href="/projects/hxsteric/mercury">
-        <div class="stars">★ 5</div>
+        <div class="stars">★ 6</div>
         <div class="name"><span class="org">hxsteric /</span> mercury</div>
       </a>
       <a class="related-row" href="/projects/bryercowan/hermes-embodied">
-        <div class="stars">★ 2</div>
+        <div class="stars">★ 5</div>
         <div class="name"><span class="org">bryercowan /</span> hermes-embodied</div>
       </a>
     </div>

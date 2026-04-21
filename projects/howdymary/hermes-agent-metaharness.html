@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hermes-agent-metaharness — Hermes Agent Multi-Agent &amp; Orchestration | Hermes Atlas</title>
-<meta name="description" content="Meta-harness for Hermes Agent — meta-optimization with arxiv paper reference">
+<meta name="description" content="An implementation of a Meta Harness for Hermes.">
 <link rel="canonical" href="https://hermesatlas.com/projects/howdymary/hermes-agent-metaharness">
 <meta property="og:title" content="hermes-agent-metaharness — Hermes Atlas">
-<meta property="og:description" content="Meta-harness for Hermes Agent — meta-optimization with arxiv paper reference">
+<meta property="og:description" content="An implementation of a Meta Harness for Hermes.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/howdymary/hermes-agent-metaharness">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hermes-agent-metaharness — Hermes Atlas">
-<meta name="twitter:description" content="Meta-harness for Hermes Agent — meta-optimization with arxiv paper reference">
+<meta name="twitter:description" content="An implementation of a Meta Harness for Hermes.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,14 +56,14 @@
   <h1 class="project-name">
     <span class="org">howdymary</span><span class="slash">/</span>hermes-agent-metaharness
   </h1>
-  <p class="project-desc">Meta-harness for Hermes Agent — meta-optimization with arxiv paper reference</p>
+  <p class="project-desc">An implementation of a Meta Harness for Hermes.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 46</span>
+    <span class="stars">★ 75</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-04-07</span>
   </div>
 
   <div class="actions">
@@ -90,7 +90,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h6>Hermes Agent Meta-Harness</h6>
+    <h2>Hermes Agent Meta-Harness</h2>
 <p><code>hermes-agent-metaharness</code> is the standalone outer-loop Meta-Harness repo for Hermes.</p>
 <p>It treats <code>hermes-agent</code> as the execution backend for benchmark harness candidates and focuses on:</p>
 <ul>
@@ -102,10 +102,10 @@
 <li>frontier tracking</li>
 <li>structured candidate mutation and search</li>
 </ul>
-<h6>Origin</h6>
+<h3>Origin</h3>
 <p>This project is directly inspired by the paper <a href="https://arxiv.org/abs/2603.28052">Meta-Harness: End-to-End Optimization of Model Harnesses</a> and the companion <a href="https://yoonholee.com/meta-harness/">project page</a>.</p>
 <p>The paper’s core argument is that LLM system quality depends not only on model weights, but also on the harness: the surrounding code that decides what context to collect, store, retrieve, and show to the model. Instead of hand-tuning that harness, Meta-Harness proposes an outer-loop optimizer that searches over harness code. Its proposer has access to the source code, scores, and execution traces of prior candidates through a filesystem, which gives it much richer diagnostic context than methods that only optimize from scores or short summaries. The paper reports gains on online text classification, retrieval-augmented math reasoning, and agentic coding, including improved TerminalBench-2 harnesses.</p>
-<h6>How Hermes Adapts Meta-Harness</h6>
+<h3>How Hermes Adapts Meta-Harness</h3>
 <p>Hermes uses the same high-level idea, but adapts it to a research-safe benchmark workflow:</p>
 <ul>
 <li><code>hermes-agent</code> owns the inner runtime: candidate protocol, benchmark integration, loop hooks, and archive writing.</li>
@@ -114,7 +114,7 @@
 <li>Candidate search is intentionally conservative today: this repo generates deterministic wrapper candidates around a seed candidate instead of rewriting Hermes core.</li>
 </ul>
 <p>In other words, the project applies Meta-Harness to Hermes by optimizing how Hermes is run on benchmarks, not by changing model weights and not by letting the production runtime self-modify.</p>
-<h6>Boundary</h6>
+<h3>Boundary</h3>
 <p><code>hermes-agent</code> owns the inner Meta-Harness runtime:</p>
 <ul>
 <li>candidate protocol</li>
@@ -130,7 +130,7 @@
 <li>frontier management</li>
 <li>mutation and search</li>
 </ul>
-<h6>Current Scope</h6>
+<h3>Current Scope</h3>
 <p>The current release provides:</p>
 <ul>
 <li>candidate resolution by explicit path or Hermes built-in candidate name</li>
@@ -142,7 +142,7 @@
 <li>a simple JSON-backed frontier with cross-platform locking</li>
 <li>deterministic wrapper-mutation search over generated candidate variants</li>
 </ul>
-<h6>Quick Start</h6>
+<h3>Quick Start</h3>
 <pre><code class="language-bash">git clone https://github.com/howdymary/hermes-agent-metaharness.git
 cd hermes-agent-metaharness
 pip install -e &quot;.[dev]&quot;
@@ -159,7 +159,7 @@ through a shell-style prefix such as:</p>
 <li><code>--launcher-prefix &quot;uv run --python 3.12 --extra rl&quot;</code></li>
 <li><code>--python-executable /path/to/hermes-agent/.mh-venv/bin/python</code></li>
 </ul>
-<h6>Choosing a Backend</h6>
+<h3>Choosing a Backend</h3>
 <p>Users should choose the strongest coding backend available in their Hermes
 benchmark config. Meta-Harness does not hardcode a model provider; it delegates
 backend choice to Hermes through <code>--hermes-config-path</code>.</p>
@@ -219,7 +219,7 @@ defines a stronger coding model:</p>
   --frontier-path output/frontier.json \
   --benchmark tblite
 </code></pre>
-<h6>Repo Layout</h6>
+<h3>Repo Layout</h3>
 <pre><code class="language-text">meta_harness/
 ├── archive_reader.py
 ├── baseline.py
@@ -237,7 +237,7 @@ defines a stronger coding model:</p>
 <p>Candidate files can live in <code>candidates/</code>, with an example in <code>candidates/template_candidate.py</code>.</p>
 <p>Two local benchmark configs are also included in <code>configs/</code> for smoke-testing
 against an Ollama OpenAI-compatible endpoint on <code>http://localhost:11434/v1</code>.</p>
-<h6>Release Notes</h6>
+<h3>Release Notes</h3>
 <p>This repo is intentionally research-oriented:</p>
 <ul>
 <li>it optimizes harness procedure, not model weights</li>
@@ -245,7 +245,7 @@ against an Ollama OpenAI-compatible endpoint on <code>http://localhost:11434/v1<
 <li>it keeps Hermes core stable by treating Hermes as the execution backend</li>
 <li>reused baselines are validated against the same task-selection hash before comparison</li>
 </ul>
-<h6>Near-Term Roadmap</h6>
+<h3>Near-Term Roadmap</h3>
 <ol>
 <li>Better ranking/reporting and frontier-backed baseline policies</li>
 <li>More expressive mutation spaces and composition</li>
@@ -253,6 +253,7 @@ against an Ollama OpenAI-compatible endpoint on <code>http://localhost:11434/v1<
 <li>Frontier-aware search strategies</li>
 <li>Stronger benchmark-aware candidate generation</li>
 </ol>
+
   </section>
 </details>
 
@@ -264,27 +265,27 @@ against an Ollama OpenAI-compatible endpoint on <code>http://localhost:11434/v1<
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/builderz-labs/mission-control">
-        <div class="stars">★ 3.9K</div>
+        <div class="stars">★ 4.2K</div>
         <div class="name"><span class="org">builderz-labs /</span> mission-control</div>
       </a>
       <a class="related-row" href="/projects/swarmclawai/swarmclaw">
-        <div class="stars">★ 285</div>
+        <div class="stars">★ 377</div>
         <div class="name"><span class="org">swarmclawai /</span> swarmclaw</div>
       </a>
       <a class="related-row" href="/projects/runtimenoteslabs/gladiator">
-        <div class="stars">★ 29</div>
+        <div class="stars">★ 36</div>
         <div class="name"><span class="org">runtimenoteslabs /</span> gladiator</div>
       </a>
       <a class="related-row" href="/projects/1ilkhamov/opencode-hermes-multiagent">
-        <div class="stars">★ 28</div>
+        <div class="stars">★ 48</div>
         <div class="name"><span class="org">1ilkhamov /</span> opencode-hermes-multiagent</div>
       </a>
       <a class="related-row" href="/projects/supermodeltools/bigiron">
-        <div class="stars">★ 7</div>
+        <div class="stars">★ 9</div>
         <div class="name"><span class="org">supermodeltools /</span> bigiron</div>
       </a>
       <a class="related-row" href="/projects/Rainhoole/hermes-agent-acp-skill">
-        <div class="stars">★ 4</div>
+        <div class="stars">★ 8</div>
         <div class="name"><span class="org">Rainhoole /</span> hermes-agent-acp-skill</div>
       </a>
     </div>
