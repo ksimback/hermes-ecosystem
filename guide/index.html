@@ -214,12 +214,14 @@
     <span>apr·2026</span>
     <span>93·repos</span>
     <span>hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
     <a href="/">map</a>
     <a href="/#curated-lists">lists</a>
     <a href="/guide/" class="active">handbook</a>
     <a href="/reports/state-of-hermes-april-2026">reports</a>
+    <a href="/#newsletter">newsletter</a>
     <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
   </nav>
   <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
@@ -241,6 +243,15 @@
 </header>
 
 <blockquote>Based on 93 ecosystem projects reviewed, 33 research sources, and the live GitHub repo. Updated monthly.</blockquote>
+
+<aside class="email-cta email-cta--compact" id="newsletter" aria-label="Newsletter signup">
+  <div class="email-cta-kicker">newsletter · free · 1–2× / month</div>
+  <form class="email-cta-form" data-email-form novalidate>
+    <input type="email" name="email" class="email-cta-input" placeholder="you@domain.com" required autocomplete="email" aria-label="Email address">
+    <button type="submit" class="email-cta-button">subscribe</button>
+  </form>
+  <p class="email-cta-status" role="status" aria-live="polite"></p>
+</aside>
 
 <h2>Table of contents</h2>
 
@@ -658,13 +669,28 @@ hermes skills info &lt;name&gt;      # inspect before installing</code></pre>
     <li>643 skills in the community Hub (as of 2026-04-19)</li>
   </ul>
   <p><strong>Corrections and feedback:</strong> <a href="https://github.com/ksimback/hermes-ecosystem/issues/new">open an issue</a> or message <a href="https://x.com/ksimback">@ksimback</a> on X.</p>
+  <p class="star-cta">if this was useful, drop a ★ on the <a href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener">atlas repo</a> →</p>
   <a class="cta" href="/">explore the ecosystem map →</a>
 </div>
 
 </article>
 
+<!-- Email capture -->
+<aside class="email-cta" aria-label="Newsletter signup">
+  <div class="email-cta-kicker">newsletter · free</div>
+  <h2 class="email-cta-title">stay in the loop</h2>
+  <p class="email-cta-lede">new research, reports, and project drops from across the Hermes ecosystem — 1–2× per month. no spam.</p>
+  <form class="email-cta-form" data-email-form novalidate>
+    <input type="email" name="email" class="email-cta-input" placeholder="you@domain.com" required autocomplete="email" aria-label="Email address">
+    <button type="submit" class="email-cta-button">subscribe</button>
+  </form>
+  <p class="email-cta-status" role="status" aria-live="polite"></p>
+  <p class="email-cta-foot">handled by beehiiv · <a href="/privacy">privacy</a></p>
+</aside>
+<script src="/assets/js/email-capture.js" defer></script>
+
 <footer class="page-footer">
-  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
   <div>v2 · 2026.04</div>
 </footer>
 
@@ -685,6 +711,15 @@ hermes skills info &lt;name&gt;      # inspect before installing</code></pre>
       try { localStorage.setItem('theme', n); } catch (e) {}
       render();
     });
+  })();
+</script>
+
+<script>
+  (function(){
+    fetch('/api/stars').then(function(r){ return r.ok && r.json(); }).then(function(d){
+      var el = document.getElementById('meta-atlas');
+      if (el && d && d.atlas && d.atlas.stars) el.textContent = '★ ' + d.atlas.stars + ' · star this repo';
+    }).catch(function(){});
   })();
 </script>
 

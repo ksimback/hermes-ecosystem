@@ -169,6 +169,7 @@ function renderMasthead(activeNav) {
     { href: "/#curated-lists", label: "lists", id: "lists" },
     { href: "/guide/", label: "handbook", id: "handbook" },
     { href: "/reports/state-of-hermes-april-2026", label: "reports", id: "reports" },
+    { href: "/#newsletter", label: "newsletter", id: "newsletter" },
     { href: "https://github.com/ksimback/hermes-ecosystem", label: "source", id: "source" },
   ];
   const navHtml = nav
@@ -180,6 +181,7 @@ function renderMasthead(activeNav) {
     <span>apr·2026</span>
     <span>93·repos</span>
     <span>hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
     ${navHtml}
@@ -192,7 +194,7 @@ function renderMasthead(activeNav) {
 
 // ── Shared footer ──
 const PAGE_FOOTER = `<footer class="page-footer">
-  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
   <div>v2 · 2026.04</div>
 </footer>`;
 
@@ -328,6 +330,7 @@ ${summary ? `
 ${PAGE_FOOTER}
 
 <script>${THEME_TOGGLE_SCRIPT}</script>
+<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){var el=document.getElementById('meta-atlas');if(el&&d&&d.atlas&&d.atlas.stars)el.textContent='★ '+d.atlas.stars+' · star this repo'}).catch(function(){});})();</script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
@@ -437,6 +440,7 @@ ${listicleHtml}
 ${PAGE_FOOTER}
 
 <script>${THEME_TOGGLE_SCRIPT}</script>
+<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){var el=document.getElementById('meta-atlas');if(el&&d&&d.atlas&&d.atlas.stars)el.textContent='★ '+d.atlas.stars+' · star this repo'}).catch(function(){});})();</script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
@@ -453,6 +457,7 @@ function generateSitemap(projectPages, listPages) {
   urls += `  <url><loc>${SITE_URL}/guide/</loc><changefreq>monthly</changefreq><priority>0.9</priority><lastmod>${today}</lastmod></url>\n`;
   urls += `  <url><loc>${SITE_URL}/guide/vs-claude-code/</loc><changefreq>monthly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;
   urls += `  <url><loc>${SITE_URL}/reports/state-of-hermes-april-2026</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>\n`;
+  urls += `  <url><loc>${SITE_URL}/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>\n`;
 
   for (const page of projectPages) {
     urls += `  <url><loc>${SITE_URL}/projects/${page.owner}/${page.repo}</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;

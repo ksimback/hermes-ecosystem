@@ -49,12 +49,14 @@
     <span>apr·2026</span>
     <span>93·repos</span>
     <span>hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
     <a href="/">map</a>
     <a href="/#curated-lists">lists</a>
     <a href="/guide/">handbook</a>
     <a href="/reports/state-of-hermes-april-2026" class="active">reports</a>
+    <a href="/#newsletter">newsletter</a>
     <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
   </nav>
   <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
@@ -94,6 +96,15 @@
 </ul>
 
 <p>This report unpacks how a model-research lab from upstate New York turned an open-source release into a movement, what Hermes does differently from OpenClaw and Claude Code, and what to watch for in Q2.</p>
+
+<aside class="email-cta email-cta--compact" id="newsletter" aria-label="Newsletter signup">
+  <div class="email-cta-kicker">newsletter · free · 1–2× / month</div>
+  <form class="email-cta-form" data-email-form novalidate>
+    <input type="email" name="email" class="email-cta-input" placeholder="you@domain.com" required autocomplete="email" aria-label="Email address">
+    <button type="submit" class="email-cta-button">subscribe</button>
+  </form>
+  <p class="email-cta-status" role="status" aria-live="polite"></p>
+</aside>
 
 <hr>
 
@@ -277,13 +288,28 @@
   <p><strong>Methodology:</strong> Synthesized from 27 research files including official documentation, GitHub release notes, press coverage, X/Twitter analysis, Reddit discussion, and the awesome-hermes-agent curated list. All 80+ ecosystem repos are independently security-reviewed and live-tracked.</p>
   <p>Not affiliated with Nous Research. Hermes Atlas is an independent community project.</p>
   <p>Corrections welcome: <a href="https://github.com/ksimback/hermes-ecosystem/issues">open an issue</a></p>
+  <p class="star-cta">if this was useful, drop a ★ on the <a href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener">atlas repo</a> →</p>
   <a class="cta" href="https://hermesatlas.com">explore the ecosystem map →</a>
 </div>
 
 </article>
 
+<!-- Email capture -->
+<aside class="email-cta" aria-label="Newsletter signup">
+  <div class="email-cta-kicker">newsletter · free</div>
+  <h2 class="email-cta-title">stay in the loop</h2>
+  <p class="email-cta-lede">new research, reports, and project drops from across the Hermes ecosystem — 1–2× per month. no spam.</p>
+  <form class="email-cta-form" data-email-form novalidate>
+    <input type="email" name="email" class="email-cta-input" placeholder="you@domain.com" required autocomplete="email" aria-label="Email address">
+    <button type="submit" class="email-cta-button">subscribe</button>
+  </form>
+  <p class="email-cta-status" role="status" aria-live="polite"></p>
+  <p class="email-cta-foot">handled by beehiiv · <a href="/privacy">privacy</a></p>
+</aside>
+<script src="/assets/js/email-capture.js" defer></script>
+
 <footer class="page-footer">
-  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a></div>
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
   <div>v2 · 2026.04</div>
 </footer>
 
@@ -304,6 +330,15 @@
       try { localStorage.setItem('theme', n); } catch (e) {}
       render();
     });
+  })();
+</script>
+
+<script>
+  (function(){
+    fetch('/api/stars').then(function(r){ return r.ok && r.json(); }).then(function(d){
+      var el = document.getElementById('meta-atlas');
+      if (el && d && d.atlas && d.atlas.stars) el.textContent = '★ ' + d.atlas.stars + ' · star this repo';
+    }).catch(function(){});
   })();
 </script>
 

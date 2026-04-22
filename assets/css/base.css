@@ -113,3 +113,166 @@ body::after {
     scroll-behavior: auto !important;
   }
 }
+
+/* Star-the-repo CTA — shared across all page types */
+.mast-star {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--ink-mute);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.mast-star:hover { color: var(--accent); }
+@media (max-width: 900px) {
+  .mast-star { font-size: 10px; }
+}
+
+.star-cta {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink-dim, var(--ink-mute));
+  margin: 24px 0 16px;
+  line-height: 1.6;
+}
+.star-cta a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+.star-cta a:hover { color: var(--accent); }
+
+/* Email capture CTA — brutalist wrapper around Beehiiv iframe.
+   Used on homepage, handbook hub, vs-claude-code satellite, April report. */
+.email-cta {
+  margin: var(--s-10) 0 var(--s-6);
+  padding: var(--s-6);
+  border: 1px solid var(--rule);
+  background: var(--bg-elev);
+  max-width: 640px;
+}
+.email-cta-kicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 var(--s-3);
+}
+.email-cta-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0 0 var(--s-2);
+}
+.email-cta-lede {
+  font-family: var(--font-display);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-dim);
+  margin: 0 0 var(--s-4);
+}
+.email-cta-form {
+  display: flex;
+  gap: 0;
+  margin: 0;
+}
+.email-cta-input {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  padding: 10px var(--s-4);
+  border: 1px solid var(--rule-strong);
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.4;
+  transition: border-color 0.15s;
+}
+.email-cta-input::placeholder { color: var(--ink-mute); }
+.email-cta-input:hover { border-color: var(--ink-soft); }
+.email-cta-input:focus-visible {
+  outline: 0;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.email-cta-button {
+  height: 44px;
+  margin-left: -1px;
+  padding: 0 var(--s-5);
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+.email-cta-button:hover {
+  background: transparent;
+  color: var(--accent);
+}
+.email-cta-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.email-cta-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.email-cta-status {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-dim);
+  min-height: 18px;
+  margin: var(--s-3) 0 0;
+  letter-spacing: 0.02em;
+}
+.email-cta-status[data-status="success"] { color: var(--positive); }
+.email-cta-status[data-status="error"] { color: var(--negative); }
+@media (max-width: 480px) {
+  .email-cta-form { flex-direction: column; }
+  .email-cta-button { margin-left: 0; margin-top: -1px; }
+}
+.email-cta-foot {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: var(--s-3) 0 0;
+}
+.email-cta-foot a {
+  color: var(--ink-mute);
+  border-bottom: 1px solid var(--rule-strong);
+  padding-bottom: 1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.email-cta-foot a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+@media (max-width: 600px) {
+  .email-cta { padding: var(--s-5); }
+  .email-cta-title { font-size: 19px; }
+}
+
+/* Compact variant — inline newsletter capture above-the-fold.
+   Just kicker + form + status; no big title/lede. */
+.email-cta--compact {
+  padding: var(--s-4) var(--s-5);
+  margin: var(--s-8) 0;
+  max-width: 560px;
+}
+.email-cta--compact .email-cta-kicker { margin-bottom: var(--s-3); }

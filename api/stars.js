@@ -62,7 +62,12 @@ export default async function handler(req, res) {
       }`;
     }).join("\n");
 
-    const query = `query { ${repoQueries} }`;
+    // Also fetch the Hermes Atlas repo's own star count for the masthead CTA
+    const query = `query { ${repoQueries}
+      atlas: repository(owner: "ksimback", name: "hermes-ecosystem") {
+        stargazerCount
+      }
+    }`;
 
     const ghRes = await fetch("https://api.github.com/graphql", {
       method: "POST",
@@ -108,7 +113,8 @@ export default async function handler(req, res) {
       };
     });
 
-    const response = buildResponse(starData, hermesRelease);
+    const atlasStars = ghData.data?.atlas?.stargazerCount ?? null;
+    const response = buildResponse(starData, hermesRelease, atlasStars);
 
     // Cache the result
     await kvSet(CACHE_KEY, response, { ex: CACHE_TTL });
@@ -136,7 +142,7 @@ export default async function handler(req, res) {
   }
 }
 
-function buildResponse(starData, hermesRelease = null) {
+function buildResponse(starData, hermesRelease = null, atlasStars = null) {
   const totalStars = starData.reduce((sum, r) => sum + r.stars, 0);
 
   // Build a lookup map
@@ -155,6 +161,7 @@ function buildResponse(starData, hermesRelease = null) {
       count: starData.length,
       updated: new Date().toISOString()
     },
-    hermes: hermesRelease
+    hermes: hermesRelease,
+    atlas: { stars: atlasStars }
   };
 }
