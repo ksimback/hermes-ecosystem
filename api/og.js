@@ -11,7 +11,7 @@ let jbmFont = null;
 
 function loadFonts() {
   if (!sgFont) {
-    sgFont = fs.readFileSync(path.join(process.cwd(), "api/fonts/SpaceGrotesk-Variable.ttf"));
+    sgFont = fs.readFileSync(path.join(process.cwd(), "api/fonts/SpaceGrotesk-Bold.ttf"));
   }
   if (!jbmFont) {
     jbmFont = fs.readFileSync(path.join(process.cwd(), "api/fonts/JetBrainsMono-Regular.ttf"));
