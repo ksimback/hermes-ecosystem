@@ -11,9 +11,13 @@
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/ReinaMacCredy/maestro">
 <meta property="og:site_name" content="Hermes Atlas">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=maestro&amp;subtitle=Conductor+for+cross-agent+coding+workflows%3A+structured+memory%2C+handoffs%2C+plan-approve-execute+coordination+across+external+CLIs+%28Codex%2C+Claude+Code%2C+Gemini%29.&amp;kind=project+%C2%B7+skills">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="maestro — Hermes Atlas">
 <meta name="twitter:description" content="Conductor for cross-agent coding workflows: structured memory, handoffs, plan-approve-execute coordination across external CLIs (Codex, Claude Code, Gemini).">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=maestro&amp;subtitle=Conductor+for+cross-agent+coding+workflows%3A+structured+memory%2C+handoffs%2C+plan-approve-execute+coordination+across+external+CLIs+%28Codex%2C+Claude+Code%2C+Gemini%29.&amp;kind=project+%C2%B7+skills">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,7 +65,7 @@
   <p class="project-desc">Conductor for cross-agent coding workflows: structured memory, handoffs, plan-approve-execute coordination across external CLIs (Codex, Claude Code, Gemini).</p>
 
   <div class="meta-row">
-    <span class="stars">★ 87</span>
+    <span class="stars">★ 89</span>
     <span><span class="meta-label">lang</span>TypeScript</span>
     
     
@@ -80,9 +84,9 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Maestro is a local-first conductor for multi-agent software engineering that enables persistent state management across separate agent sessions. It operates by storing missions, features, and memory as on-disk state in a .maestro/ directory, removing the need for servers, databases, or background daemons. This approach allows human operators to coordinate multiple terminal-based agents like Claude Code or Codex while maintaining a disciplined, inspectable record of progress and learnings. The system facilitates structured handoffs and cross-feature learning through a CLI-driven workflow and a read-only TUI dashboard.</p>
+    <p class="summary-text">Maestro is a local-first conductor for multi-agent software engineering that enables persistent state management across separate agent sessions. It uses a CLI to store missions, features, and memory in a local .maestro directory, removing the need for external databases or servers. The tool allows human operators to coordinate multiple terminals by providing structured handoff briefs and cross-feature learning. This approach ensures that project context and agent progress remain disciplined and inspectable through a dedicated Mission Control TUI.</p>
     <ul class="summary-highlights">
-      <li>Local-first state management using on-disk .maestro directory files</li>
+      <li>Local-first state management using on-disk .maestro directory and JSON snapshots</li>
       <li>Structured mission planning with milestones, features, and validation assertions</li>
       <li>Native handoff launches that generate markdown briefs for fresh agent runs</li>
     </ul>
@@ -307,7 +311,7 @@ maestro feature prompt &lt;feature-id&gt; --mission &lt;mission-id&gt; --out age
   &quot;Implement auth-impl for mission &lt;mission-id&gt; and run the listed verification steps before stopping&quot; \
   --agent codex
 </code></pre>
-<p>Launches are detached by default. Maestro persists the handoff under <code>.maestro/launches/&lt;id&gt;/</code> and returns the launch record with the prompt path, log path, target directory, linked task id, and agent details.</p>
+<p>Launches are detached by default. Maestro persists the handoff under <code>~/.maestro/handoff/&lt;id&gt;/</code> (a single global store) and returns the launch record with the prompt path, log path, target directory, linked task id, and agent details.</p>
 <p>Useful variants:</p>
 <pre><code class="language-bash">maestro handoff &quot;Review auth-impl before merge&quot; --agent claude --worktree auth-review
 maestro handoff &quot;Finish auth-impl and wait for the result&quot; --agent codex --wait --json
@@ -322,7 +326,7 @@ maestro checkpoint save --mission &lt;mission-id&gt;
 maestro milestone seal implement --mission &lt;mission-id&gt;
 </code></pre>
 <h3>Handoffs</h3>
-<p><code>maestro handoff &quot;&lt;task&gt;&quot;</code> builds a self-contained markdown brief from the current repo state plus the linked task continuation, then launches a fresh Codex or Claude run. Every launch is persisted under <code>.maestro/launches/&lt;id&gt;/</code> so the operator can inspect exactly what was sent and what the child process printed. <code>maestro handoff pickup</code> consumes one open packet and immediately takes over the linked task.</p>
+<p><code>maestro handoff &quot;&lt;task&gt;&quot;</code> builds a self-contained markdown brief from the current repo state plus the linked task continuation, then launches a fresh Codex or Claude run. Every launch is persisted under <code>~/.maestro/handoff/&lt;id&gt;/</code> (a single global store) so the operator can inspect exactly what was sent and what the child process printed. Handoffs created in one working directory are visible from any other. Prompt-only packets can be picked up from any working directory, but task-linked packets must be picked up from their source project unless you explicitly pass <code>maestro handoff pickup --standalone</code>.</p>
 <h4>What a launch contains</h4>
 <p>A launch record always includes:</p>
 <ul>
@@ -358,7 +362,7 @@ maestro milestone seal implement --mission &lt;mission-id&gt;
 <li>Default mode returns as soon as the child process is started and records status <code>launched</code>.</li>
 <li><code>--wait</code> blocks until the agent exits and records <code>completed</code> or <code>failed</code>.</li>
 <li><code>--json</code> prints the persisted launch record for automation or debugging.</li>
-<li><code>handoff pickup</code> atomically consumes a packet on first pickup and records the new active agent on the linked task continuation.</li>
+<li><code>handoff pickup</code> atomically consumes a packet on first pickup. Prompt-only packets can be consumed anywhere; task-linked packets resume their linked task only when pickup happens from the source project, unless <code>--standalone</code> is passed.</li>
 </ul>
 <h4>Typical commands</h4>
 <p>Default Codex launch:</p>
@@ -379,7 +383,7 @@ maestro milestone seal implement --mission &lt;mission-id&gt;
   --wait \
   --json
 </code></pre>
-<p>Use <code>--model</code> to override the agent default (<code>gpt-5.4</code> for Codex, <code>opus</code> for Claude), <code>--name</code> to label the launch, and <code>--base</code> when you need a specific base branch for a worktree handoff. Use <code>maestro handoff pickup</code> to consume a packet and immediately take over its linked task.</p>
+<p>Use <code>--model</code> to override the agent default (<code>gpt-5.4</code> for Codex, <code>opus</code> for Claude), <code>--name</code> to label the launch, and <code>--base</code> when you need a specific base branch for a worktree handoff. Use <code>maestro handoff pickup</code> to consume a packet, and pass <code>--standalone</code> when you intentionally want only the prompt without resuming a linked task.</p>
 <h3>Task System</h3>
 <p>Tasks are Maestro&#39;s lightweight, mutable issue graph for the daily queue. A task answers &quot;what do I do next?&quot;; a mission answers &quot;what are we building?&quot; Tasks live in <code>.maestro/tasks/tasks.jsonl</code>, are repo-tracked, and review like regular diffs.</p>
 <h4>Lifecycle</h4>
@@ -491,7 +495,7 @@ maestro task plan --file plan.json --dry-run           # validate without writin
 </ul>
 <p>These are plain chat intents, not Maestro CLI commands.</p>
 </li>
-<li><p><strong>Different agent, handoff pickup.</strong> <code>maestro handoff pickup [--id &lt;handoffId&gt;]</code> consumes one open packet atomically, force-claims the linked task for the current session, moves it to <code>in_progress</code>, transfers any contract ownership, rewrites the continuation summary with a <code>Resumed from handoff ...</code> prefix, and records <code>agent_takeover</code> + <code>handoff_picked_up</code> events. The new agent inherits the prior <code>nextAction</code> and <code>keyDecisions</code> without a separate chat intent.</p>
+<li><p><strong>Different agent, handoff pickup.</strong> <code>maestro handoff pickup [--id &lt;handoffId&gt;]</code> consumes one open packet atomically. Prompt-only packets can be picked up from any working directory. Task-linked packets are project-anchored: from the source project, pickup force-claims the linked task for the current session, moves it to <code>in_progress</code>, transfers any contract ownership, rewrites the continuation summary with a <code>Resumed from handoff ...</code> prefix, and records <code>agent_takeover</code> + <code>handoff_picked_up</code> events. From another project, Maestro errors with the source path and a concrete <code>cd ... &amp;&amp; maestro handoff pickup ...</code> command. Pass <code>--standalone</code> to intentionally consume the packet without resuming the linked task.</p>
 </li>
 <li><p><strong>Manual inspection.</strong> <code>maestro task show &lt;id&gt;</code> prints the raw task and continuation state for offline review.</p>
 </li>
@@ -604,8 +608,8 @@ maestro task prune --all                 # purge both piles
 <td>Build a markdown brief from current repo or mission context and launch a fresh agent run.</td>
 </tr>
 <tr>
-<td><code>maestro handoff pickup [--id &lt;handoff-id&gt;]</code></td>
-<td>Consume one open handoff packet and immediately take over its linked task.</td>
+<td><code>maestro handoff pickup [--id &lt;handoff-id&gt;] [--standalone]</code></td>
+<td>Consume one open handoff packet. Prompt-only packets work anywhere; task-linked packets resume only from their source project unless <code>--standalone</code> is passed.</td>
 </tr>
 <tr>
 <td><code>maestro handoff &quot;&lt;task&gt;&quot; --worktree [slug] --wait --json</code></td>
@@ -715,12 +719,12 @@ maestro task prune --all                 # purge both piles
 <tbody><tr>
 <td>Project workflow state</td>
 <td><code>.maestro/</code></td>
-<td>Missions, launches, tasks, notes, and local memory artifacts</td>
+<td>Missions, tasks, notes, and local memory artifacts</td>
 </tr>
 <tr>
 <td>User-level defaults</td>
 <td><code>~/.maestro/</code></td>
-<td>Global config and graph metadata</td>
+<td>Global config, graph metadata, and the global handoff store</td>
 </tr>
 <tr>
 <td>Read-only projections</td>
@@ -730,7 +734,6 @@ maestro task prune --all                 # purge both piles
 </tbody></table>
 <pre><code class="language-text">.maestro/
 ├── config.yaml
-├── launches/
 ├── memory/
 │   ├── corrections/
 │   ├── learnings/
@@ -755,10 +758,15 @@ maestro task prune --all                 # purge both piles
 
 ~/.maestro/
 ├── config.yaml
-└── graph/
-    └── projects.json
+├── graph/
+│   └── projects.json
+└── handoff/
+    └── &lt;id&gt;/
+        ├── handoff.json
+        ├── prompt.md
+        └── output.log
 </code></pre>
-<p>The design is intentionally transparent: state is inspectable, diffable, and easy to back up. <code>.maestro/tasks/**</code> and <code>.maestro/principles.jsonl</code> are intentionally repo-tracked so the daily queue and behavioral rules are reviewed like any other code change; <code>.maestro/missions/**</code> and <code>.maestro/launches/**</code> stay ignored as local orchestration artifacts. Legacy <code>.maestro/handoffs/**</code> folders can remain on disk, but Maestro no longer reads them and <code>status</code> or <code>doctor</code> will warn when they are present.</p>
+<p>The design is intentionally transparent: state is inspectable, diffable, and easy to back up. <code>.maestro/tasks/**</code> and <code>.maestro/principles.jsonl</code> are intentionally repo-tracked so the daily queue and behavioral rules are reviewed like any other code change; <code>.maestro/missions/**</code> stays ignored as local orchestration artifacts. Handoff packets live in the global <code>~/.maestro/handoff/</code> store (outside the repo) so they are visible across every working directory. Legacy <code>.maestro/handoffs/**</code>, <code>.maestro/launches/**</code>, and <code>~/.maestro/launches/**</code> folders can remain on disk from earlier versions, but Maestro no longer reads them; <code>status</code> or <code>doctor</code> will warn when they are present.</p>
 <h3>Codebase Layout</h3>
 <p>Maestro is organized as a feature-first hexagonal codebase:</p>
 <ul>
@@ -820,7 +828,7 @@ maestro mission-control --render-check --size 120x40
         <div class="name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
       </a>
       <a class="related-row" href="/projects/wondelai/skills">
-        <div class="stars">★ 702</div>
+        <div class="stars">★ 703</div>
         <div class="name"><span class="org">wondelai /</span> skills</div>
       </a>
       <a class="related-row" href="/projects/DougTrajano/pydantic-ai-skills">
@@ -828,7 +836,7 @@ maestro mission-control --render-check --size 120x40
         <div class="name"><span class="org">DougTrajano /</span> pydantic-ai-skills</div>
       </a>
       <a class="related-row" href="/projects/Agents365-ai/drawio-skill">
-        <div class="stars">★ 418</div>
+        <div class="stars">★ 430</div>
         <div class="name"><span class="org">Agents365-ai /</span> drawio-skill</div>
       </a>
       <a class="related-row" href="/projects/smartcontractkit/chainlink-agent-skills">
@@ -836,7 +844,7 @@ maestro mission-control --render-check --size 120x40
         <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
       </a>
       <a class="related-row" href="/projects/tlehman/litprog-skill">
-        <div class="stars">★ 105</div>
+        <div class="stars">★ 104</div>
         <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
       </a>
       <a class="related-row" href="/projects/esaradev/icarus-plugin">

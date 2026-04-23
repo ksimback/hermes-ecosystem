@@ -11,9 +11,13 @@
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/greyhaven-ai/autocontext">
 <meta property="og:site_name" content="Hermes Atlas">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=autocontext&amp;subtitle=a+recursive+self-improving+harness+designed+to+help+your+agents+%28and+future+iterations+of+those+agents%29+succeed+on+any+task&amp;kind=project+%C2%B7+memory">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="autocontext — Hermes Atlas">
 <meta name="twitter:description" content="a recursive self-improving harness designed to help your agents (and future iterations of those agents) succeed on any task">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=autocontext&amp;subtitle=a+recursive+self-improving+harness+designed+to+help+your+agents+%28and+future+iterations+of+those+agents%29+succeed+on+any+task&amp;kind=project+%C2%B7+memory">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,7 +65,7 @@
   <p class="project-desc">a recursive self-improving harness designed to help your agents (and future iterations of those agents) succeed on any task</p>
 
   <div class="meta-row">
-    <span class="stars">★ 907</span>
+    <span class="stars">★ 908</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
@@ -80,11 +84,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">autocontext is a recursive self-improving harness designed to prevent LLM agents from starting every task without prior context. It functions through a structured multi-agent loop—comprising competitors, analysts, coaches, architects, and curators—that evaluates execution traces and persists validated knowledge. This process allows agents to accumulate playbooks and artifacts over repeated runs, eventually distilling stable behaviors into cheaper local runtimes. The system supports diverse execution environments including simulations, evidence-driven investigations, and verifier-driven missions.</p>
+    <p class="summary-text">autocontext is a recursive context harness designed to prevent AI agents from starting every task without prior knowledge. It uses a structured multi-agent loop—consisting of competitors, analysts, coaches, architects, and curators—to evaluate agent outputs and persist validated lessons into reusable knowledge. This system allows agents to improve over repeated runs by accumulating playbooks, artifacts, and datasets rather than just changing prompts. Users can also distill stable agent behaviors into cheaper local runtimes or coordinate long-running goals through verifier-driven missions.</p>
     <ul class="summary-highlights">
-      <li>Multi-agent loop for strategy proposal, analysis, and knowledge curation</li>
-      <li>Recursive improvement of agent behavior across repeated scenario runs</li>
-      <li>Distills validated execution data into optimized local model runtimes</li>
+      <li>Accumulates validated knowledge and artifacts across repeated agent runs</li>
+      <li>Multi-agent loop evaluates strategies and gates knowledge persistence</li>
+      <li>Supports verifier-driven missions and complex multi-mission campaigns</li>
     </ul>
   </div>
 </section>
@@ -200,7 +204,7 @@
 </tr>
 <tr>
 <td><code>investigate</code></td>
-<td>Evidence-driven diagnosis with hypotheses and confidence scoring</td>
+<td>Evidence-driven diagnosis with hypotheses, confidence scoring, and optional browser context</td>
 </tr>
 <tr>
 <td><code>analyze</code></td>
@@ -387,6 +391,7 @@ uv run autoctx serve --host 127.0.0.1 --port 8000
 <li><code>autocontext</code> on npm is a different package.</li>
 </ul>
 <p>The Python package exposes the full <code>autoctx</code> control-plane CLI for scenario execution, API serving, exports, training, and operator workflows. The TypeScript package exposes the <code>autoctx</code> CLI and library surface for simulations, investigations, analysis, mission control, MCP serving, and Node integrations.</p>
+<p>Both packages share an optional, disabled-by-default browser exploration contract for thin browser control without bundling a heavyweight browser framework. The TypeScript CLI can attach a policy-gated browser snapshot to investigations and queued tasks with <code>--browser-url</code>. See <a href="https://github.com/greyhaven-ai/autocontext/blob/main/docs/browser-exploration-contract.md">docs/browser-exploration-contract.md</a>.</p>
 <h3>Which Package Should You Use?</h3>
 <table>
 <thead>
@@ -433,7 +438,9 @@ uv run autoctx serve --host 127.0.0.1 --port 8000
 <li>Run and improve a saved scenario: <code>uv run autoctx run --scenario support_triage --gens 3</code></li>
 <li>Inspect or replay outputs: <code>uv run autoctx list</code>, <code>uv run autoctx status &lt;run_id&gt;</code></li>
 <li>Run an investigation from Python: <code>uv run autoctx investigate -d &quot;why did conversion drop after Tuesday&#39;s release&quot;</code></li>
+<li>Add a policy-checked browser snapshot to an investigation: <code>uv run autoctx investigate -d &quot;checkout is failing in prod&quot; --browser-url https://status.example.com</code></li>
 <li>Enqueue an ad hoc queued task from Python: <code>uv run autoctx queue add --task-prompt &quot;Write a 1-line fact about primes&quot; --rubric &quot;correct&quot; --threshold 0.8 --rounds 2</code></li>
+<li>Enqueue a browser-enriched queued task when browser exploration is configured: <code>uv run autoctx queue --spec support_triage --browser-url https://status.example.com</code></li>
 <li>Override the simulation provider per call: <code>uv run autoctx simulate -d &quot;simulate deploying a web service with rollback&quot; --provider claude-cli</code></li>
 <li>Scaffold a custom scenario: <code>uv run autoctx new-scenario --template prompt-optimization --name my-task</code></li>
 <li>Export training data: <code>uv run autoctx export-training-data --scenario support_triage --all-runs --output training/support_triage.jsonl</code></li>
@@ -513,11 +520,11 @@ uv run autoctx serve --host 127.0.0.1 --port 8000
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
       <a class="related-row" href="/projects/garrytan/gbrain">
-        <div class="stars">★ 10.7K</div>
+        <div class="stars">★ 10.8K</div>
         <div class="name"><span class="org">garrytan /</span> gbrain</div>
       </a>
       <a class="related-row" href="/projects/stephenschoettler/hermes-lcm">
-        <div class="stars">★ 276</div>
+        <div class="stars">★ 281</div>
         <div class="name"><span class="org">stephenschoettler /</span> hermes-lcm</div>
       </a>
     </div>
