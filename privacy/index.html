@@ -47,7 +47,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span>apr·2026</span>
-    <span>93·repos</span>
+    <span id="meta-count">95·repos</span>
     <span>hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -136,8 +136,11 @@
 <script>
   (function(){
     fetch('/api/stars').then(function(r){ return r.ok && r.json(); }).then(function(d){
+      if (!d) return;
       var el = document.getElementById('meta-atlas');
-      if (el && d && d.atlas && d.atlas.stars) el.textContent = '★ ' + d.atlas.stars + ' · star this repo';
+      if (el && d.atlas && d.atlas.stars) el.textContent = '★ ' + d.atlas.stars + ' · star this repo';
+      var c = document.getElementById('meta-count');
+      if (c && d.totals && d.totals.count) c.textContent = d.totals.count + '·repos';
     }).catch(function(){});
   })();
 </script>

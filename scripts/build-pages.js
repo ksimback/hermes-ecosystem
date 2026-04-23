@@ -188,7 +188,7 @@ function renderMasthead(activeNav) {
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span>apr·2026</span>
-    <span>93·repos</span>
+    <span id="meta-count">${repos.length}·repos</span>
     <span>hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -343,7 +343,7 @@ ${summary ? `
 ${PAGE_FOOTER}
 
 <script>${THEME_TOGGLE_SCRIPT}</script>
-<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){var el=document.getElementById('meta-atlas');if(el&&d&&d.atlas&&d.atlas.stars)el.textContent='★ '+d.atlas.stars+' · star this repo'}).catch(function(){});})();</script>
+<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){if(!d)return;var a=document.getElementById('meta-atlas');if(a&&d.atlas&&d.atlas.stars)a.textContent='★ '+d.atlas.stars+' · star this repo';var c=document.getElementById('meta-count');if(c&&d.totals&&d.totals.count)c.textContent=d.totals.count+'·repos'}).catch(function(){});})();</script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
@@ -457,7 +457,7 @@ ${listicleHtml}
 ${PAGE_FOOTER}
 
 <script>${THEME_TOGGLE_SCRIPT}</script>
-<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){var el=document.getElementById('meta-atlas');if(el&&d&&d.atlas&&d.atlas.stars)el.textContent='★ '+d.atlas.stars+' · star this repo'}).catch(function(){});})();</script>
+<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){if(!d)return;var a=document.getElementById('meta-atlas');if(a&&d.atlas&&d.atlas.stars)a.textContent='★ '+d.atlas.stars+' · star this repo';var c=document.getElementById('meta-count');if(c&&d.totals&&d.totals.count)c.textContent=d.totals.count+'·repos'}).catch(function(){});})();</script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
