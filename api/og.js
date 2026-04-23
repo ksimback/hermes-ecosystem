@@ -139,6 +139,7 @@ export default async function handler(req, res) {
           background: "#0e0d0b",
           display: "flex",
           flexDirection: "column",
+          justifyContent: "center",
           padding: "80px",
           fontFamily: "Space Grotesk",
           color: "#e8e3d6",
