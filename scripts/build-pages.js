@@ -146,6 +146,15 @@ function escapeHtml(s) {
     .replace(/"/g, "&quot;");
 }
 
+// ── Build a /api/og image URL (HTML-escape the & separators via escapeHtml on use) ──
+function ogImageUrl({ title, subtitle, kind }) {
+  const u = new URLSearchParams();
+  if (title) u.set("title", String(title).slice(0, 120));
+  if (subtitle) u.set("subtitle", String(subtitle).slice(0, 180));
+  if (kind) u.set("kind", String(kind).slice(0, 40));
+  return `${SITE_URL}/api/og?${u.toString()}`;
+}
+
 // ── Map category to list slug ──
 const categoryToListSlug = {};
 for (const list of lists) {
@@ -243,9 +252,13 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary, handbo
 <meta property="og:type" content="article">
 <meta property="og:url" content="${canonicalUrl}">
 <meta property="og:site_name" content="Hermes Atlas">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="${escapeHtml(ogImageUrl({ title: repo.name, subtitle: meta.description || repo.description, kind: "project · " + repo.category.toLowerCase().split("&")[0].trim() }))}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${escapeHtml(repo.name)} — Hermes Atlas">
 <meta name="twitter:description" content="${desc}">
+<meta name="twitter:image" content="${escapeHtml(ogImageUrl({ title: repo.name, subtitle: meta.description || repo.description, kind: "project · " + repo.category.toLowerCase().split("&")[0].trim() }))}">
 <link rel="icon" href="${FAVICON}">
 <script>${THEME_INIT}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -395,8 +408,12 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
 <meta property="og:type" content="website">
 <meta property="og:url" content="${canonicalUrl}">
 <meta property="og:site_name" content="Hermes Atlas">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="${escapeHtml(ogImageUrl({ title: list.title, subtitle: list.description, kind: "list" }))}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${escapeHtml(list.title)}">
+<meta name="twitter:image" content="${escapeHtml(ogImageUrl({ title: list.title, subtitle: list.description, kind: "list" }))}">
 <link rel="icon" href="${FAVICON}">
 <script>${THEME_INIT}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
