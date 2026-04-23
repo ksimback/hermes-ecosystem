@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hermes-embodied — Hermes Agent Domain Applications | Hermes Atlas</title>
-<meta name="description" content="Self-improving robotics via Hermes Agent. One skill that provisions cloud GPUs, fine-tunes VLA models, runs sim evaluation, and autonomously improves robot poli">
+<meta name="description" content="Self-improving robotics via VLA model fine-tuning on cloud GPUs">
 <link rel="canonical" href="https://hermesatlas.com/projects/bryercowan/hermes-embodied">
 <meta property="og:title" content="hermes-embodied — Hermes Atlas">
-<meta property="og:description" content="Self-improving robotics via Hermes Agent. One skill that provisions cloud GPUs, fine-tunes VLA models, runs sim evaluation, and autonomously improves robot poli">
+<meta property="og:description" content="Self-improving robotics via VLA model fine-tuning on cloud GPUs">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/bryercowan/hermes-embodied">
 <meta property="og:site_name" content="Hermes Atlas">
-<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-embodied&amp;subtitle=Self-improving+robotics+via+Hermes+Agent.+One+skill+that+provisions+cloud+GPUs%2C+fine-tunes+VLA+models%2C+runs+sim+evaluation%2C+and+autonomously+improves+robot+policies.+Built+for+the+&amp;kind=project+%C2%B7+domain+applications">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-embodied&amp;subtitle=Self-improving+robotics+via+VLA+model+fine-tuning+on+cloud+GPUs&amp;kind=project+%C2%B7+domain+applications">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="hermes-embodied — Hermes Atlas">
-<meta name="twitter:description" content="Self-improving robotics via Hermes Agent. One skill that provisions cloud GPUs, fine-tunes VLA models, runs sim evaluation, and autonomously improves robot poli">
-<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-embodied&amp;subtitle=Self-improving+robotics+via+Hermes+Agent.+One+skill+that+provisions+cloud+GPUs%2C+fine-tunes+VLA+models%2C+runs+sim+evaluation%2C+and+autonomously+improves+robot+policies.+Built+for+the+&amp;kind=project+%C2%B7+domain+applications">
+<meta name="twitter:description" content="Self-improving robotics via VLA model fine-tuning on cloud GPUs">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-embodied&amp;subtitle=Self-improving+robotics+via+VLA+model+fine-tuning+on+cloud+GPUs&amp;kind=project+%C2%B7+domain+applications">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,7 +35,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span>apr·2026</span>
-    <span>93·repos</span>
+    <span id="meta-count">99·repos</span>
     <span>hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -62,14 +62,14 @@
   <h1 class="project-name">
     <span class="org">bryercowan</span><span class="slash">/</span>hermes-embodied
   </h1>
-  <p class="project-desc">Self-improving robotics via Hermes Agent. One skill that provisions cloud GPUs, fine-tunes VLA models, runs sim evaluation, and autonomously improves robot policies. Built for the Nous Research Hermes Agent Hackathon.</p>
+  <p class="project-desc">Self-improving robotics via VLA model fine-tuning on cloud GPUs</p>
 
   <div class="meta-row">
-    <span class="stars">★ 5</span>
-    <span><span class="meta-label">lang</span>Python</span>
+    <span class="stars">★ 2</span>
     
     
-    <span><span class="meta-label">updated</span>2026-03-05</span>
+    
+    
   </div>
 
   <div class="actions">
@@ -96,14 +96,14 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h2>Hermes Embodied: Self-Improving Robotics via Hermes Agent</h2>
+    <h3>Hermes Embodied: Self-Improving Robotics via Hermes Agent</h3>
 <blockquote>
 <p>&quot;Any robot owner can fine-tune a state-of-the-art VLA by talking to their agent. No ML expertise needed.&quot;</p>
 </blockquote>
-<h3>What Is This?</h3>
+<h4>What Is This?</h4>
 <p>Hermes Embodied turns <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> into a <strong>self-improving robotics trainer</strong>. It adds three Hermes skills that close the loop between robot execution, training data collection, and model improvement — all orchestrated through natural language.</p>
 <p>The same self-improvement loop that Hermes uses to get better at coding tasks (via Tinker-Atropos RL) now extends to <strong>physical robot control</strong> via Vision-Language-Action models.</p>
-<h3>Architecture</h3>
+<h4>Architecture</h4>
 <pre><code>┌─────────────────────────────────────────────────────┐
 │                   HERMES AGENT                       │
 │  (Reasoning Layer — plans, monitors, orchestrates)   │
@@ -126,7 +126,7 @@
 │  (Franka Panda sim tasks)          (Physical arm)    │
 └─────────────────────────────────────────────────────┘
 </code></pre>
-<h3>The Self-Improvement Loop</h3>
+<h4>The Self-Improvement Loop</h4>
 <ol>
 <li><strong>Deploy</strong> — Hermes loads a VLA checkpoint and runs it in sim (or on hardware)</li>
 <li><strong>Collect</strong> — Every rollout is recorded as a LeRobot trajectory (state, action, camera, reward)</li>
@@ -136,15 +136,15 @@
 <li><strong>Promote</strong> — If new model is better, it becomes the active policy</li>
 <li><strong>Repeat</strong> — Scheduled via Hermes cron, runs autonomously</li>
 </ol>
-<h3>Skills</h3>
-<h4><code>vast-gpu</code> — Cloud GPU Infrastructure</h4>
+<h4>Skills</h4>
+<h5><code>vast-gpu</code> — Cloud GPU Infrastructure</h5>
 <p>Provision, monitor, and teardown GPU instances on Vast.ai through natural language.</p>
 <ul>
 <li>&quot;Spin up an A100 for training&quot; → finds cheapest A100, creates instance, returns SSH access</li>
 <li>&quot;How&#39;s my training instance?&quot; → checks status, GPU utilization, cost so far</li>
 <li>&quot;Tear down the GPU&quot; → destroys instance, confirms billing stopped</li>
 </ul>
-<h4><code>vla-trainer</code> — VLA Fine-Tuning Pipeline</h4>
+<h5><code>vla-trainer</code> — VLA Fine-Tuning Pipeline</h5>
 <p>End-to-end fine-tuning of Vision-Language-Action models.</p>
 <ul>
 <li>Supports SmolVLA (450M, fast) and GR00T N1.5 (3B, powerful)</li>
@@ -152,7 +152,7 @@
 <li>Runs training on Vast.ai with WandB monitoring</li>
 <li>Open-loop evaluation with trajectory visualization</li>
 </ul>
-<h4><code>robot-loop</code> — Continuous Improvement</h4>
+<h5><code>robot-loop</code> — Continuous Improvement</h5>
 <p>The autonomous improvement cycle.</p>
 <ul>
 <li>Runs VLA inference in MuJoCo simulation</li>
@@ -161,7 +161,7 @@
 <li>A/B tests new checkpoints against current best</li>
 <li>Promotes winners, logs everything</li>
 </ul>
-<h3>Quick Start</h3>
+<h4>Quick Start</h4>
 <pre><code class="language-bash"># Tell Hermes what you want
 &quot;Set up a simulation environment for pick-and-place tasks&quot;
 
@@ -175,7 +175,7 @@
 
 # Hermes runs inference in sim, collects trajectories, schedules retraining
 </code></pre>
-<h3>Hardware Support (Optional)</h3>
+<h4>Hardware Support (Optional)</h4>
 <p>For physical deployment on SO-ARM101:</p>
 <ul>
 <li>Leader arm (teleoperation/demo recording)</li>
@@ -183,7 +183,7 @@
 <li>USB cameras (wrist + global view)</li>
 <li>Any Linux machine with USB ports</li>
 </ul>
-<h3>Models Supported</h3>
+<h4>Models Supported</h4>
 <table>
 <thead>
 <tr>
@@ -216,14 +216,14 @@
 <td>Latest, best performance</td>
 </tr>
 </tbody></table>
-<h3>Cost Estimate</h3>
+<h4>Cost Estimate</h4>
 <ul>
 <li>Vast.ai A100 80GB: ~$1/hr → ~$4 per training run</li>
 <li>Vast.ai A6000 48GB: ~$0.50/hr → ~$2 per training run</li>
 <li>Simulation: Free (local CPU/GPU)</li>
 <li>Physical arm (optional): ~$200-$440</li>
 </ul>
-<h3>Project Structure</h3>
+<h4>Project Structure</h4>
 <pre><code>hermes-embodied/
 ├── README.md
 ├── skills/
@@ -246,7 +246,7 @@
 └── docs/
     └── ARCHITECTURE.md
 </code></pre>
-<h3>Built With</h3>
+<h4>Built With</h4>
 <ul>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — AI agent framework with skills, memory, and RL training</li>
 <li><a href="https://github.com/huggingface/lerobot">LeRobot</a> — Open-source robotics framework by Hugging Face</li>
@@ -255,9 +255,8 @@
 <li><a href="https://mujoco.org/">MuJoCo</a> — Physics simulation for robotics</li>
 <li><a href="https://wandb.ai">WandB</a> — Experiment tracking</li>
 </ul>
-<h3>License</h3>
+<h4>License</h4>
 <p>MIT</p>
-
   </section>
 </details>
 
@@ -269,31 +268,31 @@
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/ucsandman/DashClaw">
-        <div class="stars">★ 242</div>
+        <div class="stars">★ 204</div>
         <div class="name"><span class="org">ucsandman /</span> DashClaw</div>
       </a>
       <a class="related-row" href="/projects/Lethe044/hermes-incident-commander">
-        <div class="stars">★ 17</div>
+        <div class="stars">★ 11</div>
         <div class="name"><span class="org">Lethe044 /</span> hermes-incident-commander</div>
       </a>
       <a class="related-row" href="/projects/Christabel337/job-scout-agent">
-        <div class="stars">★ 19</div>
+        <div class="stars">★ 11</div>
         <div class="name"><span class="org">Christabel337 /</span> job-scout-agent</div>
       </a>
       <a class="related-row" href="/projects/rodmarkun/anihermes">
-        <div class="stars">★ 13</div>
+        <div class="stars">★ 9</div>
         <div class="name"><span class="org">rodmarkun /</span> anihermes</div>
       </a>
       <a class="related-row" href="/projects/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit">
-        <div class="stars">★ 13</div>
+        <div class="stars">★ 9</div>
         <div class="name"><span class="org">JackTheGit /</span> hermes-ai-infrastructure-monitoring-toolkit</div>
       </a>
       <a class="related-row" href="/projects/bigph00t/hermescraft">
-        <div class="stars">★ 13</div>
+        <div class="stars">★ 8</div>
         <div class="name"><span class="org">bigph00t /</span> hermescraft</div>
       </a>
       <a class="related-row" href="/projects/hxsteric/mercury">
-        <div class="stars">★ 8</div>
+        <div class="stars">★ 5</div>
         <div class="name"><span class="org">hxsteric /</span> mercury</div>
       </a>
     </div>
@@ -309,7 +308,7 @@
 </footer>
 
 <script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
-<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){var el=document.getElementById('meta-atlas');if(el&&d&&d.atlas&&d.atlas.stars)el.textContent='★ '+d.atlas.stars+' · star this repo'}).catch(function(){});})();</script>
+<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){if(!d)return;var a=document.getElementById('meta-atlas');if(a&&d.atlas&&d.atlas.stars)a.textContent='★ '+d.atlas.stars+' · star this repo';var c=document.getElementById('meta-count');if(c&&d.totals&&d.totals.count)c.textContent=d.totals.count+'·repos'}).catch(function(){});})();</script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>

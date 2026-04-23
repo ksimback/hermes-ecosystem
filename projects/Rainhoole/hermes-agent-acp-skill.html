@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hermes-agent-acp-skill — Hermes Agent Multi-Agent &amp; Orchestration | Hermes Atlas</title>
-<meta name="description" content="Hermes skill for ACP-style multi-agent delegation (Hermes, Codex, Claude Code).">
+<meta name="description" content="ACP-style multi-agent delegation — routes tasks to Hermes, Codex, or Claude Code">
 <link rel="canonical" href="https://hermesatlas.com/projects/Rainhoole/hermes-agent-acp-skill">
 <meta property="og:title" content="hermes-agent-acp-skill — Hermes Atlas">
-<meta property="og:description" content="Hermes skill for ACP-style multi-agent delegation (Hermes, Codex, Claude Code).">
+<meta property="og:description" content="ACP-style multi-agent delegation — routes tasks to Hermes, Codex, or Claude Code">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/Rainhoole/hermes-agent-acp-skill">
 <meta property="og:site_name" content="Hermes Atlas">
-<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-agent-acp-skill&amp;subtitle=Hermes+skill+for+ACP-style+multi-agent+delegation+%28Hermes%2C+Codex%2C+Claude+Code%29.&amp;kind=project+%C2%B7+multi-agent">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-agent-acp-skill&amp;subtitle=ACP-style+multi-agent+delegation+%E2%80%94+routes+tasks+to+Hermes%2C+Codex%2C+or+Claude+Code&amp;kind=project+%C2%B7+multi-agent">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="hermes-agent-acp-skill — Hermes Atlas">
-<meta name="twitter:description" content="Hermes skill for ACP-style multi-agent delegation (Hermes, Codex, Claude Code).">
-<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-agent-acp-skill&amp;subtitle=Hermes+skill+for+ACP-style+multi-agent+delegation+%28Hermes%2C+Codex%2C+Claude+Code%29.&amp;kind=project+%C2%B7+multi-agent">
+<meta name="twitter:description" content="ACP-style multi-agent delegation — routes tasks to Hermes, Codex, or Claude Code">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-agent-acp-skill&amp;subtitle=ACP-style+multi-agent+delegation+%E2%80%94+routes+tasks+to+Hermes%2C+Codex%2C+or+Claude+Code&amp;kind=project+%C2%B7+multi-agent">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,7 +35,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span>apr·2026</span>
-    <span>93·repos</span>
+    <span id="meta-count">99·repos</span>
     <span>hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -62,14 +62,14 @@
   <h1 class="project-name">
     <span class="org">Rainhoole</span><span class="slash">/</span>hermes-agent-acp-skill
   </h1>
-  <p class="project-desc">Hermes skill for ACP-style multi-agent delegation (Hermes, Codex, Claude Code).</p>
+  <p class="project-desc">ACP-style multi-agent delegation — routes tasks to Hermes, Codex, or Claude Code</p>
 
   <div class="meta-row">
-    <span class="stars">★ 9</span>
+    <span class="stars">★ 4</span>
     
-    <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-03-07</span>
+    
+    
   </div>
 
   <div class="actions">
@@ -96,9 +96,9 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h2>Hermes ACP Orchestrator Skill</h2>
+    <h3>Hermes ACP Orchestrator Skill</h3>
 <p>A production-oriented Hermes skill for ACP-style multi-agent delegation.</p>
-<h3>What it solves</h3>
+<h4>What it solves</h4>
 <p>This skill standardizes how you delegate work across:</p>
 <ul>
 <li>Hermes internal subagents</li>
@@ -111,30 +111,29 @@
 <li>Context isolation (delegated work does not pollute the parent context)</li>
 <li>Safety controls (timeouts + output limits for external agents)</li>
 </ol>
-<h3>Skill Name</h3>
+<h4>Skill Name</h4>
 <p><code>hermes-acp-orchestrator</code></p>
-<h3>Who should use this</h3>
+<h4>Who should use this</h4>
 <p>Use this skill if you are orchestrating engineering workflows where different sub-agents specialize in different tasks (implementation, review, risk analysis, synthesis).</p>
-<h3>Quick example</h3>
+<h4>Quick example</h4>
 <pre><code class="language-python">delegate_task(tasks=[
   {&quot;goal&quot;: &quot;Risk review&quot;, &quot;agent&quot;: &quot;claude-code&quot;},
   {&quot;goal&quot;: &quot;Patch + tests&quot;, &quot;agent&quot;: &quot;codex&quot;},
   {&quot;goal&quot;: &quot;Final integration summary&quot;, &quot;agent&quot;: &quot;hermes&quot;}
 ])
 </code></pre>
-<h3>Recommended Hermes config</h3>
+<h4>Recommended Hermes config</h4>
 <pre><code class="language-yaml">delegation:
   external_timeout_seconds: 900
   external_max_output_chars: 24000
 </code></pre>
-<h3>Files</h3>
+<h4>Files</h4>
 <ul>
 <li><code>SKILL.md</code> — the skill instructions and workflow patterns</li>
 <li><code>README.md</code> — repository overview and usage guidance</li>
 </ul>
-<h3>License</h3>
+<h4>License</h4>
 <p>MIT</p>
-
   </section>
 </details>
 
@@ -146,27 +145,27 @@
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/builderz-labs/mission-control">
-        <div class="stars">★ 4.3K</div>
+        <div class="stars">★ 3.9K</div>
         <div class="name"><span class="org">builderz-labs /</span> mission-control</div>
       </a>
       <a class="related-row" href="/projects/swarmclawai/swarmclaw">
-        <div class="stars">★ 391</div>
+        <div class="stars">★ 285</div>
         <div class="name"><span class="org">swarmclawai /</span> swarmclaw</div>
       </a>
       <a class="related-row" href="/projects/howdymary/hermes-agent-metaharness">
-        <div class="stars">★ 78</div>
+        <div class="stars">★ 46</div>
         <div class="name"><span class="org">howdymary /</span> hermes-agent-metaharness</div>
       </a>
       <a class="related-row" href="/projects/runtimenoteslabs/gladiator">
-        <div class="stars">★ 37</div>
+        <div class="stars">★ 29</div>
         <div class="name"><span class="org">runtimenoteslabs /</span> gladiator</div>
       </a>
       <a class="related-row" href="/projects/1ilkhamov/opencode-hermes-multiagent">
-        <div class="stars">★ 55</div>
+        <div class="stars">★ 28</div>
         <div class="name"><span class="org">1ilkhamov /</span> opencode-hermes-multiagent</div>
       </a>
       <a class="related-row" href="/projects/supermodeltools/bigiron">
-        <div class="stars">★ 10</div>
+        <div class="stars">★ 7</div>
         <div class="name"><span class="org">supermodeltools /</span> bigiron</div>
       </a>
     </div>
@@ -182,7 +181,7 @@
 </footer>
 
 <script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
-<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){var el=document.getElementById('meta-atlas');if(el&&d&&d.atlas&&d.atlas.stars)el.textContent='★ '+d.atlas.stars+' · star this repo'}).catch(function(){});})();</script>
+<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){if(!d)return;var a=document.getElementById('meta-atlas');if(a&&d.atlas&&d.atlas.stars)a.textContent='★ '+d.atlas.stars+' · star this repo';var c=document.getElementById('meta-count');if(c&&d.totals&&d.totals.count)c.textContent=d.totals.count+'·repos'}).catch(function(){});})();</script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
