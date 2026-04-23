@@ -1,27 +1,36 @@
 import { ImageResponse } from "@vercel/og";
-
-export const config = { runtime: "edge" };
-
-const SG = fetch(new URL("./fonts/SpaceGrotesk-Variable.ttf", import.meta.url)).then(r => r.arrayBuffer());
-const JBM = fetch(new URL("./fonts/JetBrainsMono-Regular.ttf", import.meta.url)).then(r => r.arrayBuffer());
+import fs from "node:fs";
+import path from "node:path";
 
 const MAX_TITLE = 120;
 const MAX_SUBTITLE = 180;
 const MAX_KIND = 40;
 
-export default async function handler(req) {
-  try {
-    const { searchParams } = new URL(req.url);
-    const title = (searchParams.get("title") || "Hermes Atlas").slice(0, MAX_TITLE);
-    const subtitle = (searchParams.get("subtitle") || "").slice(0, MAX_SUBTITLE);
-    const kind = (searchParams.get("kind") || "").slice(0, MAX_KIND);
+let sgFont = null;
+let jbmFont = null;
 
-    const [sg, jbm] = await Promise.all([SG, JBM]);
+function loadFonts() {
+  if (!sgFont) {
+    sgFont = fs.readFileSync(path.join(process.cwd(), "api/fonts/SpaceGrotesk-Variable.ttf"));
+  }
+  if (!jbmFont) {
+    jbmFont = fs.readFileSync(path.join(process.cwd(), "api/fonts/JetBrainsMono-Regular.ttf"));
+  }
+  return [sgFont, jbmFont];
+}
+
+export default async function handler(req, res) {
+  try {
+    const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
+    const title = (url.searchParams.get("title") || "Hermes Atlas").slice(0, MAX_TITLE);
+    const subtitle = (url.searchParams.get("subtitle") || "").slice(0, MAX_SUBTITLE);
+    const kind = (url.searchParams.get("kind") || "").slice(0, MAX_KIND);
+
+    const [sg, jbm] = loadFonts();
 
     const kicker = kind ? `HERMES ATLAS · ${kind.toUpperCase()}` : "HERMES ATLAS";
 
     const children = [
-      // H square (top-right brand mark)
       {
         type: "div",
         props: {
@@ -43,7 +52,6 @@ export default async function handler(req) {
           children: "H",
         },
       },
-      // Kicker
       {
         type: "div",
         props: {
@@ -58,7 +66,6 @@ export default async function handler(req) {
           children: kicker,
         },
       },
-      // Amber rule
       {
         type: "div",
         props: {
@@ -72,7 +79,6 @@ export default async function handler(req) {
           children: "",
         },
       },
-      // Title
       {
         type: "div",
         props: {
@@ -107,7 +113,6 @@ export default async function handler(req) {
       });
     }
 
-    // Footer URL
     children.push({
       type: "div",
       props: {
@@ -143,7 +148,7 @@ export default async function handler(req) {
       },
     };
 
-    return new ImageResponse(element, {
+    const imageResponse = new ImageResponse(element, {
       width: 1200,
       height: 630,
       fonts: [
@@ -151,11 +156,15 @@ export default async function handler(req) {
         { name: "JetBrains Mono", data: jbm, weight: 400, style: "normal" },
       ],
     });
+
+    // Convert Web Response → Node response
+    const buffer = Buffer.from(await imageResponse.arrayBuffer());
+    res.setHeader("Content-Type", "image/png");
+    res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    res.status(200).send(buffer);
   } catch (err) {
-    // Return error as plain text so we can see it
-    return new Response(
-      `OG render failed: ${err?.message || err}\n\nStack:\n${err?.stack || "(no stack)"}`,
-      { status: 500, headers: { "Content-Type": "text/plain" } }
-    );
+    console.error("[og] render failed:", err);
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.status(500).send(`OG render failed: ${err?.message || err}\n\nStack:\n${err?.stack || "(no stack)"}`);
   }
 }
