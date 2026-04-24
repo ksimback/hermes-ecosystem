@@ -465,11 +465,47 @@ curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scri
 
 <h2 id="mcp">Get the ecosystem inside your agent</h2>
 
-<p>Install the <a href="https://github.com/ksimback/hermes-atlas-mcp" target="_blank" rel="noopener">hermes-atlas MCP server</a> so Claude Desktop, Cursor, Continue, or any MCP-aware client can search the catalog, fetch project summaries, and answer free-form questions about the Hermes ecosystem mid-chat. Five tools: <code>search_projects</code>, <code>get_project</code>, <code>list_by_category</code>, <code>get_guide</code>, <code>ask_atlas</code>.</p>
+<p>Install the <a href="https://github.com/ksimback/hermes-atlas-mcp" target="_blank" rel="noopener">hermes-atlas MCP server</a> so Claude Desktop, Cursor, Claude Code, or any MCP-aware client can search the catalog, fetch project summaries, and answer free-form questions about the Hermes ecosystem mid-chat. Five tools: <code>search_projects</code>, <code>get_project</code>, <code>list_by_category</code>, <code>get_guide</code>, <code>ask_atlas</code>.</p>
 
-<h3>Claude Desktop</h3>
+<h3>Recommended — one command</h3>
 
-<p>Add to <code>claude_desktop_config.json</code> (macOS: <code>~/Library/Application Support/Claude/</code>, Windows: <code>%APPDATA%\Claude\</code>):</p>
+<p>Run this in a terminal. The installer detects your OS, finds the right config file for your client, and safely merges in the <code>hermes-atlas</code> entry without touching anything else:</p>
+
+<pre><code>npx -y hermes-atlas-mcp install --client claude-desktop</code></pre>
+
+<p>Replace <code>claude-desktop</code> with <code>cursor</code> or <code>claude-code</code> as needed. Add <code>--print</code> first if you want to preview the exact diff without writing anything.</p>
+
+<p>Then <strong>fully quit and reopen the client</strong> — closing the window isn't enough, the whole process has to restart. In a new chat, click the tool icon (usually at the bottom of the message box) and you'll see the five tools listed.</p>
+
+<p>To remove later:</p>
+
+<pre><code>npx -y hermes-atlas-mcp uninstall --client claude-desktop</code></pre>
+
+<h3>Manual install — Claude Desktop</h3>
+
+<p>If you'd rather edit the config yourself, or the installer doesn't work on your setup, here's the full walkthrough.</p>
+
+<h4>Step 1 — open the config file</h4>
+
+<p>The easiest way is through Claude Desktop's built-in button:</p>
+
+<ol>
+<li>Open Claude Desktop.</li>
+<li>Click the <strong>Settings</strong> gear (or <code>Cmd/Ctrl+,</code>).</li>
+<li>Select the <strong>Developer</strong> tab on the left.</li>
+<li>Click the <strong>Edit Config</strong> button. The file opens in your default text editor.</li>
+</ol>
+
+<p>If you'd rather find it by path:</p>
+<ul>
+<li><strong>macOS:</strong> <code>~/Library/Application Support/Claude/claude_desktop_config.json</code></li>
+<li><strong>Windows:</strong> <code>%APPDATA%\Claude\claude_desktop_config.json</code> (usually <code>C:\Users\YOU\AppData\Roaming\Claude\claude_desktop_config.json</code>)</li>
+<li><strong>Linux:</strong> <code>~/.config/Claude/claude_desktop_config.json</code></li>
+</ul>
+
+<h4>Step 2 — add the <code>hermes-atlas</code> entry</h4>
+
+<p><strong>If the file is empty, or doesn't exist,</strong> paste this as the full contents:</p>
 
 <pre><code>{
   "mcpServers": {
@@ -480,14 +516,25 @@ curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scri
   }
 }</code></pre>
 
-<p>Restart Claude Desktop. The five tools appear in the tool picker.</p>
-
-<h3>Cursor</h3>
-
-<p>Add to <code>.cursor/mcp.json</code> (per-project) or the global Cursor config:</p>
+<p><strong>If the file already has content,</strong> merge the new entry into the existing <code>mcpServers</code> block. For example, if your file currently looks like this:</p>
 
 <pre><code>{
   "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path"]
+    }
+  }
+}</code></pre>
+
+<p>...change it to this (add a comma after the <code>filesystem</code> block, then the new <code>hermes-atlas</code> object):</p>
+
+<pre><code>{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path"]
+    },
     "hermes-atlas": {
       "command": "npx",
       "args": ["-y", "hermes-atlas-mcp"]
@@ -495,11 +542,48 @@ curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scri
   }
 }</code></pre>
 
-<h3>Continue, Windsurf, other MCP clients</h3>
+<p>If the file has top-level settings like <code>preferences</code> or anything other than <code>mcpServers</code>, leave those alone — only merge into the <code>mcpServers</code> object (or add it if it doesn't exist yet).</p>
 
-<p>Any MCP-compatible client works the same way. Configure a server named <code>hermes-atlas</code> that runs <code>npx -y hermes-atlas-mcp</code> via stdio.</p>
+<h4>Step 3 — save and fully restart Claude Desktop</h4>
 
-<p>Source: <a href="https://github.com/ksimback/hermes-atlas-mcp" target="_blank" rel="noopener">github.com/ksimback/hermes-atlas-mcp</a>. MIT-licensed, experimental (0.x), batch releases weekly.</p>
+<p>Save the file. Then <strong>fully quit</strong> Claude Desktop — closing the window isn't enough, the background process has to restart.</p>
+<ul>
+<li><strong>macOS:</strong> <code>Cmd+Q</code> with Claude Desktop focused, or right-click the dock icon → Quit.</li>
+<li><strong>Windows:</strong> File → Exit, or right-click the taskbar icon → Close window, or kill it in Task Manager if a Claude process lingers.</li>
+</ul>
+<p>Reopen Claude Desktop normally.</p>
+
+<h4>Step 4 — verify</h4>
+
+<p>Start a new chat. Click the tool / attachment icon at the bottom of the message box. You should see five tools listed under <code>hermes-atlas</code>:</p>
+<ul>
+<li><code>search_projects</code></li>
+<li><code>get_project</code></li>
+<li><code>list_by_category</code></li>
+<li><code>get_guide</code></li>
+<li><code>ask_atlas</code></li>
+</ul>
+
+<p>If they're missing, most-likely causes in order:</p>
+<ol>
+<li>You didn't fully quit Claude Desktop. Quit and reopen again.</li>
+<li>The JSON isn't valid (a missing comma, extra trailing comma, unbalanced brace). Paste the file into any online JSON validator.</li>
+<li>You don't have Node.js installed (the <code>npx</code> command needs it). Install from <a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a> — any LTS version works.</li>
+</ol>
+
+<h3>Manual install — Cursor</h3>
+
+<p>File: <code>~/.cursor/mcp.json</code> (global, applies to every project) or <code>.cursor/mcp.json</code> at your project root (per-project). Use the same JSON shape as Claude Desktop above. Restart Cursor.</p>
+
+<h3>Manual install — Claude Code</h3>
+
+<p>Easiest: inside a Claude Code session, run <code>/mcp</code> — the built-in UI walks you through adding a server without touching any file. Otherwise, edit <code>~/.claude.json</code> using the same shape.</p>
+
+<h3>Continue, Windsurf, Zed, other MCP clients</h3>
+
+<p>Any MCP-compatible client works the same way. Configure a server named <code>hermes-atlas</code> that runs <code>npx -y hermes-atlas-mcp</code> via stdio. The client docs will point you at the right config file.</p>
+
+<p>Source: <a href="https://github.com/ksimback/hermes-atlas-mcp" target="_blank" rel="noopener">github.com/ksimback/hermes-atlas-mcp</a> · <a href="https://www.npmjs.com/package/hermes-atlas-mcp" target="_blank" rel="noopener">npm</a>. MIT-licensed, experimental (0.x), batch releases weekly.</p>
 
 <hr>
 
