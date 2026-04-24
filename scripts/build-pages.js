@@ -259,6 +259,17 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary, handbo
 <meta name="twitter:title" content="${escapeHtml(repo.name)} — Hermes Atlas">
 <meta name="twitter:description" content="${desc}">
 <meta name="twitter:image" content="${escapeHtml(ogImageUrl({ title: repo.name, subtitle: meta.description || repo.description, kind: "project · " + repo.category.toLowerCase().split("&")[0].trim() }))}">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "map", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "${escapeHtml(repo.category.toLowerCase())}", "item": "https://hermesatlas.com${listSlug ? `/lists/${listSlug}` : "/"}" },
+    { "@type": "ListItem", "position": 3, "name": "${escapeHtml(repo.repo.toLowerCase())}" }
+  ]
+}
+</script>
 <link rel="icon" href="${FAVICON}">
 <script>${THEME_INIT}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -414,6 +425,17 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${escapeHtml(list.title)}">
 <meta name="twitter:image" content="${escapeHtml(ogImageUrl({ title: list.title, subtitle: list.description, kind: "list" }))}">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "map", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "lists", "item": "https://hermesatlas.com/#curated-lists" },
+    { "@type": "ListItem", "position": 3, "name": "${escapeHtml(list.slug)}" }
+  ]
+}
+</script>
 <link rel="icon" href="${FAVICON}">
 <script>${THEME_INIT}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
