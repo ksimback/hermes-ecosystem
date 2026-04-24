@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>honcho-self-hosted — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Self-hosted Honcho memory backend for cross-session persistence">
+<meta name="description" content="Self-host Honcho memory layer for Hermes Agent — OpenRouter + Venice, no code changes">
 <link rel="canonical" href="https://hermesatlas.com/projects/elkimek/honcho-self-hosted">
 <meta property="og:title" content="honcho-self-hosted — Hermes Atlas">
-<meta property="og:description" content="Self-hosted Honcho memory backend for cross-session persistence">
+<meta property="og:description" content="Self-host Honcho memory layer for Hermes Agent — OpenRouter + Venice, no code changes">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/elkimek/honcho-self-hosted">
 <meta property="og:site_name" content="Hermes Atlas">
-<meta property="og:image" content="https://hermesatlas.com/api/og?title=honcho-self-hosted&amp;subtitle=Self-hosted+Honcho+memory+backend+for+cross-session+persistence&amp;kind=project+%C2%B7+memory">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=honcho-self-hosted&amp;subtitle=Self-host+Honcho+memory+layer+for+Hermes+Agent+%E2%80%94+OpenRouter+%2B+Venice%2C+no+code+changes&amp;kind=project+%C2%B7+memory">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="honcho-self-hosted — Hermes Atlas">
-<meta name="twitter:description" content="Self-hosted Honcho memory backend for cross-session persistence">
-<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=honcho-self-hosted&amp;subtitle=Self-hosted+Honcho+memory+backend+for+cross-session+persistence&amp;kind=project+%C2%B7+memory">
+<meta name="twitter:description" content="Self-host Honcho memory layer for Hermes Agent — OpenRouter + Venice, no code changes">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=honcho-self-hosted&amp;subtitle=Self-host+Honcho+memory+layer+for+Hermes+Agent+%E2%80%94+OpenRouter+%2B+Venice%2C+no+code+changes&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -40,17 +40,20 @@
   "codeRepository": "https://github.com/elkimek/honcho-self-hosted",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Shell",
+  "license": "https://spdx.org/licenses/GPL-3.0.html",
   "author": {
     "@type": "Organization",
     "name": "elkimek",
     "url": "https://github.com/elkimek"
   },
+  "dateModified": "2026-04-09T04:51:34.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 126
+    "userInteractionCount": 177
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -102,14 +105,14 @@
   <h1 class="project-name">
     <span class="org">elkimek</span><span class="slash">/</span>honcho-self-hosted
   </h1>
-  <p class="project-desc">Self-hosted Honcho memory backend for cross-session persistence</p>
+  <p class="project-desc">Self-host Honcho memory layer for Hermes Agent — OpenRouter + Venice, no code changes</p>
 
   <div class="meta-row">
-    <span class="stars">★ 126</span>
+    <span class="stars">★ 177</span>
+    <span><span class="meta-label">lang</span>Shell</span>
+    <span><span class="meta-label">license</span>GPL-3.0</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-04-09</span>
   </div>
 
   <div class="actions">
@@ -147,7 +150,7 @@
 <h6>Background: Hermes L4 Memory</h6>
 <p>Hermes Agent has a 4-layer memory system. The cross-session memory layer is powered by <a href="https://github.com/plastic-labs/honcho">Honcho</a>, which builds a deepening model of the user across conversations — extracting observations, recalling context, and consolidating memories over time.</p>
 <p>By default, Hermes uses Plastic Labs&#39; managed cloud (<a href="https://honcho.dev">honcho.dev</a>) + their <a href="https://plasticlabs.ai/neuromancer">Neuromancer</a> models. This works out of the box but means your conversation data and user profile live on their servers.</p>
-<h6>What are Neuromancer models?</h6>
+<h4>What are Neuromancer models?</h4>
 <p><a href="https://blog.plasticlabs.ai/research/Introducing-Neuromancer-XR">Neuromancer XR</a> is a specialized 8B model fine-tuned from Qwen3-8B specifically for extracting logical conclusions from conversations. Unlike general-purpose LLMs which are optimized for plausible text generation, Neuromancer is trained on ~10,000 curated social reasoning traces to follow formal logic — extracting both explicit facts (&quot;user said they like Python&quot;) and deductive conclusions (&quot;user is likely a developer&quot;).</p>
 <p>It scores 86.9% on the LoCoMo memory benchmark vs. 69.6% for base Qwen3-8B and 80.0% for Claude 4 Sonnet.</p>
 <p><strong>Tradeoff of not using it:</strong> General-purpose models work well for observation extraction and memory recall — Honcho&#39;s prompts and tool-calling pipeline compensate for much of the gap. You may get slightly less precise deductive reasoning, but capable models (GLM-5, Grok 4.1) with strong function calling largely close the difference. The main advantage of self-hosting is data sovereignty, not matching Neuromancer&#39;s exact reasoning quality.</p>
@@ -235,7 +238,7 @@ sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plug
 sudo usermod -aG docker $USER
 </code></pre>
 <p>Log out and back in for the group change to take effect.</p>
-<h6>2. Clone repos + copy configs</h6>
+<h4>2. Clone repos + copy configs</h4>
 <pre><code class="language-bash"># Clone this config repo
 git clone https://github.com/elkimek/honcho-self-hosted.git ~/honcho-self-hosted
 
@@ -247,7 +250,7 @@ cp ~/honcho-self-hosted/docker-compose.yml ~/honcho/
 cp ~/honcho-self-hosted/config.toml ~/honcho/
 cp ~/honcho-self-hosted/env.example ~/honcho/.env
 </code></pre>
-<h6>3. Set your API keys</h6>
+<h4>3. Set your API keys</h4>
 <p>Edit <code>~/honcho/.env</code>:</p>
 <pre><code class="language-bash">nano ~/honcho/.env
 </code></pre>
@@ -264,7 +267,7 @@ cp ~/honcho-self-hosted/env.example ~/honcho/.env
 <p>Any OpenAI-compatible provider works (OpenRouter, Venice, Routstr, Together, etc.) — just set the key and URL. See <a href="#using-different-providers">Using different providers</a> for details.</p>
 <p><strong>Embedding fallback:</strong> if <code>LLM_EMBEDDING_API_KEY</code> or <code>LLM_EMBEDDING_BASE_URL</code> is left empty, Honcho falls back to the backup provider credentials (<code>LLM_OPENAI_COMPATIBLE_*</code>). This is useful if your backup provider (e.g. Venice) supports embeddings at negligible cost.</p>
 <p><strong>If you don&#39;t want a backup provider:</strong> remove all <code>BACKUP_PROVIDER</code> and <code>BACKUP_MODEL</code> lines from <code>config.toml</code>, and set <code>LLM_OPENAI_COMPATIBLE_API_KEY</code> + <code>OPENAI_COMPATIBLE_BASE_URL</code> to the same values as your primary. The setup script handles this automatically.</p>
-<h6>4. Start Honcho</h6>
+<h4>4. Start Honcho</h4>
 <pre><code class="language-bash">cd ~/honcho
 docker compose up -d
 </code></pre>
@@ -275,7 +278,7 @@ docker compose logs -f api deriver
 <p>Wait ~10 seconds for the API to start, then verify:</p>
 <pre><code class="language-bash">curl -s http://localhost:8000/openapi.json | head -1
 </code></pre>
-<h6>5. Configure Hermes</h6>
+<h4>5. Configure Hermes</h4>
 <pre><code class="language-bash">mkdir -p ~/.honcho
 cp ~/honcho-self-hosted/honcho-config.json ~/.honcho/config.json
 hermes gateway restart
@@ -417,7 +420,7 @@ MODEL = &quot;claude-sonnet-4-6&quot;
 <td>Battle-tested tools, needs ~40GB VRAM</td>
 </tr>
 </tbody></table>
-<h6>Ollama (easiest)</h6>
+<h4>Ollama (easiest)</h4>
 <pre><code class="language-bash"># Install Ollama on this machine or another on your LAN
 curl -fsSL https://ollama.com/install.sh | sh
 
@@ -430,12 +433,12 @@ Model name for light tasks: glm-4.7-flash
 Model name for heavy tasks: glm-4.7-flash
 </code></pre>
 <p>For a separate LAN machine, use its IP: <code>http://192.168.x.x:11434/v1</code></p>
-<h6>vLLM</h6>
+<h4>vLLM</h4>
 <pre><code class="language-bash"># Serve a model with tool calling support
 vllm serve THUDM/GLM-4.7-Flash --port 8001 --enable-auto-tool-choice
 </code></pre>
 <p>Setup: <code>http://localhost:8001/v1</code> with model name <code>THUDM/GLM-4.7-Flash</code></p>
-<h6>Considerations</h6>
+<h4>Considerations</h4>
 <ul>
 <li><strong>Model size matters</strong> — Honcho&#39;s agents need reliable function calling and structured JSON. Models under 14B may miss tool calls or malform output. 32B+ recommended.</li>
 <li><strong>Embeddings need a cloud API</strong> — local servers typically can&#39;t serve embedding models. The setup script asks for a separate cloud API key, URL, and model name for embeddings (e.g. OpenRouter with <code>openai/text-embedding-3-small</code>, or Venice with <code>text-embedding-bge-m3</code>), or lets you disable embeddings entirely (Honcho works but without vector search).</li>
@@ -446,7 +449,7 @@ vllm serve THUDM/GLM-4.7-Flash --port 8001 --enable-auto-tool-choice
 <p>Honcho includes an MCP server that exposes memory tools (search, chat, observations, peer cards) to any MCP-compatible client like Claude Code or Claude Desktop.</p>
 <p>The hosted version at <code>mcp.honcho.dev</code> points at Plastic Labs&#39; cloud. For self-hosted, run the MCP server locally and point it at your Honcho instance.</p>
 <p>The setup script offers to configure MCP automatically. To set it up manually:</p>
-<h6>Setup</h6>
+<h4>Setup</h4>
 <p>Requires Node.js 22+ and Bun on the server:</p>
 <pre><code class="language-bash">cd ~/honcho/mcp
 
@@ -455,7 +458,7 @@ sed -i &#39;s|https://api.honcho.dev|http://localhost:8000|&#39; src/config.ts
 
 bun install
 </code></pre>
-<h6>Run as a service</h6>
+<h4>Run as a service</h4>
 <p>Create <code>/etc/systemd/system/honcho-mcp.service</code>:</p>
 <pre><code class="language-ini">[Unit]
 Description=Honcho MCP Server
@@ -476,7 +479,7 @@ WantedBy=multi-user.target
 <pre><code class="language-bash">sudo systemctl daemon-reload
 sudo systemctl enable --now honcho-mcp
 </code></pre>
-<h6>Connect Claude Code</h6>
+<h4>Connect Claude Code</h4>
 <p>If the MCP server is on a remote machine, tunnel the port over SSH:</p>
 <pre><code class="language-bash">ssh -f -N -L 8787:localhost:8787 user@your-server
 </code></pre>
@@ -486,7 +489,7 @@ sudo systemctl enable --now honcho-mcp
   --header &quot;X-Honcho-User-Name: your-name&quot; \
   --header &quot;X-Honcho-Workspace-ID: hermes&quot;
 </code></pre>
-<h6>Connect Claude Desktop</h6>
+<h4>Connect Claude Desktop</h4>
 <p>Add to your Claude Desktop config (<code>claude_desktop_config.json</code>):</p>
 <pre><code class="language-json">{
   &quot;mcpServers&quot;: {
@@ -569,6 +572,7 @@ sudo systemctl restart honcho-mcp
 <li><a href="https://github.com/plastic-labs/honcho">Honcho</a> by Plastic Labs</li>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</li>
 </ul>
+
   </section>
 </details>
 
@@ -580,31 +584,31 @@ sudo systemctl restart honcho-mcp
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 8.4K</div>
+        <div class="stars">★ 10.6K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
-        <div class="stars">★ 711</div>
+        <div class="stars">★ 917</div>
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
-        <div class="stars">★ 86</div>
+        <div class="stars">★ 133</div>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 31</div>
+        <div class="stars">★ 48</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
-        <div class="stars">★ 5</div>
+        <div class="stars">★ 10</div>
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
       <a class="related-row" href="/projects/garrytan/gbrain">
-        <div class="stars">★ 8.9K</div>
+        <div class="stars">★ 11.1K</div>
         <div class="name"><span class="org">garrytan /</span> gbrain</div>
       </a>
       <a class="related-row" href="/projects/stephenschoettler/hermes-lcm">
-        <div class="stars">★ 178</div>
+        <div class="stars">★ 292</div>
         <div class="name"><span class="org">stephenschoettler /</span> hermes-lcm</div>
       </a>
       <a class="related-row" href="/projects/keepnotes-ai/keep">

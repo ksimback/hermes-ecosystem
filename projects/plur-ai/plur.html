@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>plur — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Shared memory layer with open engram YAML format for multi-agent systems">
+<meta name="description" content="Shared memory for AI agents">
 <link rel="canonical" href="https://hermesatlas.com/projects/plur-ai/plur">
 <meta property="og:title" content="plur — Hermes Atlas">
-<meta property="og:description" content="Shared memory layer with open engram YAML format for multi-agent systems">
+<meta property="og:description" content="Shared memory for AI agents">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/plur-ai/plur">
 <meta property="og:site_name" content="Hermes Atlas">
-<meta property="og:image" content="https://hermesatlas.com/api/og?title=plur&amp;subtitle=Shared+memory+layer+with+open+engram+YAML+format+for+multi-agent+systems&amp;kind=project+%C2%B7+memory">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=plur&amp;subtitle=Shared+memory+for+AI+agents&amp;kind=project+%C2%B7+memory">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="plur — Hermes Atlas">
-<meta name="twitter:description" content="Shared memory layer with open engram YAML format for multi-agent systems">
-<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=plur&amp;subtitle=Shared+memory+layer+with+open+engram+YAML+format+for+multi-agent+systems&amp;kind=project+%C2%B7+memory">
+<meta name="twitter:description" content="Shared memory for AI agents">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=plur&amp;subtitle=Shared+memory+for+AI+agents&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -40,17 +40,20 @@
   "codeRepository": "https://github.com/plur-ai/plur",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Cross-platform",
+  "programmingLanguage": "TypeScript",
+  "license": "https://spdx.org/licenses/Apache-2.0.html",
   "author": {
     "@type": "Organization",
     "name": "plur-ai",
     "url": "https://github.com/plur-ai"
   },
+  "dateModified": "2026-04-24T07:02:49.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 31
+    "userInteractionCount": 48
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -102,14 +105,14 @@
   <h1 class="project-name">
     <span class="org">plur-ai</span><span class="slash">/</span>plur
   </h1>
-  <p class="project-desc">Shared memory layer with open engram YAML format for multi-agent systems</p>
+  <p class="project-desc">Shared memory for AI agents</p>
 
   <div class="meta-row">
-    <span class="stars">★ 31</span>
+    <span class="stars">★ 48</span>
+    <span><span class="meta-label">lang</span>TypeScript</span>
+    <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-04-24</span>
   </div>
 
   <div class="actions">
@@ -146,7 +149,7 @@
 <h6>Install</h6>
 <h6>Tell your agent</h6>
 <p>Go to <a href="https://plur.ai">plur.ai</a> and tell your agent to install memory for your tool — Claude Code, Cursor, Windsurf, or OpenClaw. The site has the right config for your setup.</p>
-<h6>Manual setup (Claude Code)</h6>
+<h4>Manual setup (Claude Code)</h4>
 <p>One command sets up everything — storage, MCP config, and Claude Code hooks:</p>
 <pre><code class="language-bash">npx @plur-ai/mcp init
 </code></pre>
@@ -156,20 +159,20 @@
 npx @plur-ai/cli init --domain myapp --scope project:my-app
 </code></pre>
 <p>This creates a <code>.plur.yaml</code> in the project with defaults that hooks apply automatically. Engrams learned in that project are tagged; recall filters by scope but always includes global knowledge.</p>
-<h6>Global install (faster startup)</h6>
+<h4>Global install (faster startup)</h4>
 <pre><code class="language-bash">npm install -g @plur-ai/mcp
 plur-mcp init
 </code></pre>
-<h6>OpenClaw</h6>
+<h4>OpenClaw</h4>
 <pre><code class="language-bash">openclaw plugins install @plur-ai/claw
 openclaw config set plur.enabled true
 </code></pre>
 <p>That&#39;s it. PLUR works in the background from here. No workflow changes needed — just use your tools as usual. Corrections accumulate automatically.</p>
-<h6>Hermes Agent</h6>
+<h4>Hermes Agent</h4>
 <pre><code class="language-bash">pip install plur-hermes
 </code></pre>
 <p>The plugin registers automatically via Hermes&#39; plugin system. It injects relevant memories before each LLM call, extracts learnings from agent responses, and exposes all PLUR tools to the agent. Requires the PLUR CLI (<code>npm install -g @plur-ai/cli</code>).</p>
-<h6>Verify it works</h6>
+<h4>Verify it works</h4>
 <p>Ask your agent: <em>&quot;What&#39;s my PLUR status?&quot;</em> — it should call <code>plur_status</code> and return your engram count and storage path.</p>
 <h6>How it works</h6>
 <p>PLUR has two storage primitives:</p>
@@ -227,7 +230,7 @@ const incidents = plur.timeline({ agent: &#39;claude-code&#39; })
 // Sync across machines
 plur.sync(&#39;git@github.com:you/plur-memory.git&#39;)
 </code></pre>
-<h6>MCP tools</h6>
+<h4>MCP tools</h4>
 <table>
 <thead>
 <tr>
@@ -402,7 +405,7 @@ plur.sync(&#39;git@github.com:you/plur-memory.git&#39;)
 @plur-ai/claw          OpenClaw ContextEngine hooks (assemble/compact/afterTurn)
 plur-hermes            Python plugin for Hermes Agent (CLI subprocess bridge)
 </code></pre>
-<h6>Storage</h6>
+<h4>Storage</h4>
 <p>Everything is plain YAML. Open it, read it, edit it.</p>
 <pre><code>~/.plur/
 ├── engrams.yaml     # learned knowledge (source of truth)
@@ -434,6 +437,7 @@ pnpm install &amp;&amp; pnpm build &amp;&amp; pnpm test
 <p>Conventions: TypeScript, Zod validation, Vitest, no external APIs in core, YAML storage, zero-cost search by default.</p>
 <h6>License</h6>
 <p>Apache-2.0</p>
+
   </section>
 </details>
 
@@ -445,31 +449,31 @@ pnpm install &amp;&amp; pnpm build &amp;&amp; pnpm test
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 8.4K</div>
+        <div class="stars">★ 10.6K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
-        <div class="stars">★ 711</div>
+        <div class="stars">★ 917</div>
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 126</div>
+        <div class="stars">★ 177</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
-        <div class="stars">★ 86</div>
+        <div class="stars">★ 133</div>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
-        <div class="stars">★ 5</div>
+        <div class="stars">★ 10</div>
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
       <a class="related-row" href="/projects/garrytan/gbrain">
-        <div class="stars">★ 8.9K</div>
+        <div class="stars">★ 11.1K</div>
         <div class="name"><span class="org">garrytan /</span> gbrain</div>
       </a>
       <a class="related-row" href="/projects/stephenschoettler/hermes-lcm">
-        <div class="stars">★ 178</div>
+        <div class="stars">★ 292</div>
         <div class="name"><span class="org">stephenschoettler /</span> hermes-lcm</div>
       </a>
       <a class="related-row" href="/projects/keepnotes-ai/keep">

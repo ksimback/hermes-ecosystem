@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hermes-wsl-ubuntu — Hermes Agent Guides &amp; Docs | Hermes Atlas</title>
-<meta name="description" content="Step-by-step WSL2 Ubuntu setup guide for Windows users">
+<meta name="description" content="Instructions to use Hermes AI agents on WSL2 - Ubuntu">
 <link rel="canonical" href="https://hermesatlas.com/projects/metantonio/hermes-wsl-ubuntu">
 <meta property="og:title" content="hermes-wsl-ubuntu — Hermes Atlas">
-<meta property="og:description" content="Step-by-step WSL2 Ubuntu setup guide for Windows users">
+<meta property="og:description" content="Instructions to use Hermes AI agents on WSL2 - Ubuntu">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/metantonio/hermes-wsl-ubuntu">
 <meta property="og:site_name" content="Hermes Atlas">
-<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-wsl-ubuntu&amp;subtitle=Step-by-step+WSL2+Ubuntu+setup+guide+for+Windows+users&amp;kind=project+%C2%B7+guides">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-wsl-ubuntu&amp;subtitle=Instructions+to+use+Hermes+AI+agents+on+WSL2+-+Ubuntu&amp;kind=project+%C2%B7+guides">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="hermes-wsl-ubuntu — Hermes Atlas">
-<meta name="twitter:description" content="Step-by-step WSL2 Ubuntu setup guide for Windows users">
-<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-wsl-ubuntu&amp;subtitle=Step-by-step+WSL2+Ubuntu+setup+guide+for+Windows+users&amp;kind=project+%C2%B7+guides">
+<meta name="twitter:description" content="Instructions to use Hermes AI agents on WSL2 - Ubuntu">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-wsl-ubuntu&amp;subtitle=Instructions+to+use+Hermes+AI+agents+on+WSL2+-+Ubuntu&amp;kind=project+%C2%B7+guides">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -40,17 +40,19 @@
   "codeRepository": "https://github.com/metantonio/hermes-wsl-ubuntu",
   "applicationCategory": "ReferenceApplication",
   "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Shell",
   "author": {
     "@type": "Organization",
     "name": "metantonio",
     "url": "https://github.com/metantonio"
   },
+  "dateModified": "2026-04-09T19:34:58.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 8
+    "userInteractionCount": 17
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -102,14 +104,14 @@
   <h1 class="project-name">
     <span class="org">metantonio</span><span class="slash">/</span>hermes-wsl-ubuntu
   </h1>
-  <p class="project-desc">Step-by-step WSL2 Ubuntu setup guide for Windows users</p>
+  <p class="project-desc">Instructions to use Hermes AI agents on WSL2 - Ubuntu</p>
 
   <div class="meta-row">
-    <span class="stars">★ 8</span>
+    <span class="stars">★ 17</span>
+    <span><span class="meta-label">lang</span>Shell</span>
     
     
-    
-    
+    <span><span class="meta-label">updated</span>2026-04-09</span>
   </div>
 
   <div class="actions">
@@ -233,7 +235,7 @@
 <pre><code class="language-bash">sudo apt update &amp;&amp; sudo apt upgrade -y
 sudo apt install -y build-essential cmake git curl wget htop
 </code></pre>
-<h6>Verify GPU</h6>
+<h4>Verify GPU</h4>
 <pre><code class="language-bash">nvidia-smi
 </code></pre>
 <pre><code class="language-bash">nvcc --version
@@ -248,7 +250,7 @@ sudo apt install -y build-essential cmake git curl wget htop
 <h5>Hermes Agent Installation</h5>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
 </code></pre>
-<h6>Config</h6>
+<h4>Config</h4>
 <pre><code class="language-bash"># Do the setup to create the necessary files
 hermes setup
 </code></pre>
@@ -267,7 +269,7 @@ sudo chown -R $USER:$USER /opt/llama.cpp
 cd /opt/llama.cpp
 git clone https://github.com/ggerganov/llama.cpp.git
 </code></pre>
-<h6>Acceleration Backend</h6>
+<h4>Acceleration Backend</h4>
 <ul>
 <li><strong>Linux/WSL:</strong> Build with <code>GGML_CUDA=ON</code> (requires NVIDIA GPU).</li>
 <li><strong>macOS:</strong> Build with <code>GGML_METAL=ON</code> (optimized for Apple Silicon).</li>
@@ -293,12 +295,12 @@ cmake --build build --config Release
 <hr>
 <h5>Camofox Browser Server</h5>
 <p>Camofox is a browser-automation server used by the Hermes Agent to perform web-browsing tasks.</p>
-<h6>Interaction</h6>
+<h4>Interaction</h4>
 <ul>
 <li><strong>Port:</strong> <code>9377</code></li>
 <li><strong>URL:</strong> <code>http://localhost:9377</code></li>
 </ul>
-<h6>Manual Management</h6>
+<h4>Manual Management</h4>
 <p>The <code>setup-wsl.sh</code> script automatically starts Camofox in the background. If you need to manage it manually:</p>
 <p><strong>Start:</strong></p>
 <pre><code class="language-bash">cd /opt/camofox
@@ -313,13 +315,13 @@ npm start &gt; camofox.log 2&gt;&amp;1 &amp;
 <hr>
 <h5>Hermes HUDUI (Web UI)</h5>
 <p>Hermes HUDUI is the graphical interface for interacting with the Hermes Agent.</p>
-<h6>Interaction</h6>
+<h4>Interaction</h4>
 <ul>
 <li><strong>Port:</strong> <code>3001</code></li>
 <li><strong>URL:</strong> <code>http://localhost:3001</code></li>
 <li><strong>Environment:</strong> Requires Python 3.11+ and a virtual environment (handled by setup script).</li>
 </ul>
-<h6>Manual Management</h6>
+<h4>Manual Management</h4>
 <p><strong>Start:</strong></p>
 <pre><code class="language-bash">cd ~/hermes-hudui
 source venv/bin/activate
@@ -331,12 +333,12 @@ hermes-hudui &gt; hermes-hudui.log 2&gt;&amp;1 &amp;
 <hr>
 <h5>Hermes API Server</h5>
 <p>The Hermes Agent includes an optional API server for remote integrations.</p>
-<h6>Interaction</h6>
+<h4>Interaction</h4>
 <ul>
 <li><strong>Port:</strong> <code>8642</code></li>
 <li><strong>URL:</strong> <code>http://localhost:8642</code></li>
 </ul>
-<h6>Configuration</h6>
+<h4>Configuration</h4>
 <p>The setup script configures this in <code>~/.hermes/.env</code>:</p>
 <pre><code class="language-bash">API_SERVER_ENABLED=true
 API_SERVER_KEY=change-me-local-dev
@@ -385,7 +387,7 @@ wget https://huggingface.co/unsloth/Qwen3.5-9B-GGUF/resolve/main/Qwen3.5-9B-Q5_K
 <td>12.5GB</td>
 </tr>
 </tbody></table>
-<h6>Model Selection Matrix</h6>
+<h4>Model Selection Matrix</h4>
 <table>
 <thead>
 <tr>
@@ -467,8 +469,8 @@ wget https://huggingface.co/unsloth/Qwen3.5-9B-GGUF/resolve/main/Qwen3.5-9B-Q5_K
   -c 4096 \
   -i
 </code></pre>
-<h6>Recommended Commands (For a 12 GB VRAM)</h6>
-<h6>Qwen3.5 9B - General Purpose (Recommended)</h6>
+<h4>Recommended Commands (For a 12 GB VRAM)</h4>
+<h5>Qwen3.5 9B - General Purpose (Recommended)</h5>
 <pre><code class="language-bash">./llama.cpp/build/bin/llama-server \
     -m /home/antonio/models/Qwen3.5-9B-Instruct-Q5_K_M.gguf \
     -c 8192 -n 4096 -ngl 32 \
@@ -478,7 +480,7 @@ wget https://huggingface.co/unsloth/Qwen3.5-9B-GGUF/resolve/main/Qwen3.5-9B-Q5_K
     --flash-attn 1 \
     --cache-type-k q4_0
 </code></pre>
-<h6>Qwen3.5 14B - Complex Reasoning</h6>
+<h5>Qwen3.5 14B - Complex Reasoning</h5>
 <pre><code class="language-bash">./llama.cpp/build/bin/llama-server \
     -m /home/antonio/models/Qwen3.5-14B-Q4_K_M.gguf \
     -c 131072 -n 4096 -ngl 34 \
@@ -489,7 +491,7 @@ wget https://huggingface.co/unsloth/Qwen3.5-9B-GGUF/resolve/main/Qwen3.5-9B-Q5_K
     --flash-attn 1 \
     --cache-type-k q4_0 
 </code></pre>
-<h6>Qwen3.5 9B - Maximum Speed</h6>
+<h5>Qwen3.5 9B - Maximum Speed</h5>
 <pre><code class="language-bash">./llama.cpp/build/bin/llama-server \
     -m /home/antonio/models/Qwen3.5-9B-Instruct-Q4_K_M.gguf \
     -c 4096 -n 2048 -ngl 32 \
@@ -635,7 +637,7 @@ hermes gateway
 <p>But you will have only 2.5% of the GPU free, is always recommended to have 5%.</p>
 <p>KV cache memory depends on the total active context (-c), not separately on input or output tokens.</p>
 <p>Note: QWEN3.5-14B has 40 Layers.</p>
-<h6>Additional Parameters for llama.cpp</h6>
+<h4>Additional Parameters for llama.cpp</h4>
 <table>
 <thead>
 <tr>
@@ -780,6 +782,7 @@ chmod 755 /opt/llama.cpp/build/bin/llama-server
 <li>Qwen Models  <a href="https://huggingface.co/Qwen">https://huggingface.co/Qwen</a></li>
 </ul>
 <hr>
+
   </section>
 </details>
 
@@ -791,27 +794,27 @@ chmod 755 /opt/llama.cpp/build/bin/llama-server
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/0xNyk/awesome-hermes-agent">
-        <div class="stars">★ 898</div>
+        <div class="stars">★ 1.7K</div>
         <div class="name"><span class="org">0xNyk /</span> awesome-hermes-agent</div>
       </a>
       <a class="related-row" href="/projects/alchaincyf/hermes-agent-orange-book">
-        <div class="stars">★ 315</div>
+        <div class="stars">★ 3.0K</div>
         <div class="name"><span class="org">alchaincyf /</span> hermes-agent-orange-book</div>
       </a>
       <a class="related-row" href="/projects/OnlyTerp/hermes-optimization-guide">
-        <div class="stars">★ 51</div>
+        <div class="stars">★ 189</div>
         <div class="name"><span class="org">OnlyTerp /</span> hermes-optimization-guide</div>
       </a>
       <a class="related-row" href="/projects/mudrii/hermes-agent-docs">
-        <div class="stars">★ 6</div>
+        <div class="stars">★ 14</div>
         <div class="name"><span class="org">mudrii /</span> hermes-agent-docs</div>
       </a>
       <a class="related-row" href="/projects/martymcenroe/HermesWiki">
-        <div class="stars">★ 2</div>
+        <div class="stars">★ 7</div>
         <div class="name"><span class="org">martymcenroe /</span> HermesWiki</div>
       </a>
       <a class="related-row" href="/projects/ksimback/hermes-ecosystem">
-        <div class="stars">★ 263</div>
+        <div class="stars">★ 592</div>
         <div class="name"><span class="org">ksimback /</span> hermes-ecosystem</div>
       </a>
     </div>

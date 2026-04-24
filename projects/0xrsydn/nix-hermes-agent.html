@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>nix-hermes-agent — Hermes Agent Deployment &amp; Infra | Hermes Atlas</title>
-<meta name="description" content="Nix package and NixOS module for reproducible Hermes deployment">
+<meta name="description" content="Nix package and NixOS module for Hermes Agent by Nous Research">
 <link rel="canonical" href="https://hermesatlas.com/projects/0xrsydn/nix-hermes-agent">
 <meta property="og:title" content="nix-hermes-agent — Hermes Atlas">
-<meta property="og:description" content="Nix package and NixOS module for reproducible Hermes deployment">
+<meta property="og:description" content="Nix package and NixOS module for Hermes Agent by Nous Research">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/0xrsydn/nix-hermes-agent">
 <meta property="og:site_name" content="Hermes Atlas">
-<meta property="og:image" content="https://hermesatlas.com/api/og?title=nix-hermes-agent&amp;subtitle=Nix+package+and+NixOS+module+for+reproducible+Hermes+deployment&amp;kind=project+%C2%B7+deployment">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=nix-hermes-agent&amp;subtitle=Nix+package+and+NixOS+module+for+Hermes+Agent+by+Nous+Research&amp;kind=project+%C2%B7+deployment">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="nix-hermes-agent — Hermes Atlas">
-<meta name="twitter:description" content="Nix package and NixOS module for reproducible Hermes deployment">
-<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=nix-hermes-agent&amp;subtitle=Nix+package+and+NixOS+module+for+reproducible+Hermes+deployment&amp;kind=project+%C2%B7+deployment">
+<meta name="twitter:description" content="Nix package and NixOS module for Hermes Agent by Nous Research">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=nix-hermes-agent&amp;subtitle=Nix+package+and+NixOS+module+for+Hermes+Agent+by+Nous+Research&amp;kind=project+%C2%B7+deployment">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -40,17 +40,19 @@
   "codeRepository": "https://github.com/0xrsydn/nix-hermes-agent",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Nix",
   "author": {
     "@type": "Organization",
     "name": "0xrsydn",
     "url": "https://github.com/0xrsydn"
   },
+  "dateModified": "2026-03-30T04:58:57.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 11
+    "userInteractionCount": 14
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -102,14 +104,14 @@
   <h1 class="project-name">
     <span class="org">0xrsydn</span><span class="slash">/</span>nix-hermes-agent
   </h1>
-  <p class="project-desc">Nix package and NixOS module for reproducible Hermes deployment</p>
+  <p class="project-desc">Nix package and NixOS module for Hermes Agent by Nous Research</p>
 
   <div class="meta-row">
-    <span class="stars">★ 11</span>
+    <span class="stars">★ 14</span>
+    <span><span class="meta-label">lang</span>Nix</span>
     
     
-    
-    
+    <span><span class="meta-label">updated</span>2026-03-30</span>
   </div>
 
   <div class="actions">
@@ -154,7 +156,7 @@
   };
 }
 </code></pre>
-<h6>2. Configure declaratively</h6>
+<h4>2. Configure declaratively</h4>
 <pre><code class="language-nix"># hermes.nix
 { ... }:
 {
@@ -245,14 +247,14 @@
   };
 }
 </code></pre>
-<h6>Secrets Management</h6>
-<h6>Plain files approach</h6>
+<h4>Secrets Management</h4>
+<h5>Plain files approach</h5>
 <pre><code class="language-nix">services.hermes-agent = {
   environmentFiles = [ &quot;/run/secrets/hermes-env&quot; ];
   authFile = &quot;/run/secrets/hermes-auth.json&quot;;  # optional, for OAuth tokens
 };
 </code></pre>
-<h6>sops-nix approach</h6>
+<h5>sops-nix approach</h5>
 <pre><code class="language-nix">sops.secrets.&quot;hermes/env&quot; = {
   sopsFile = ./secrets/hermes.yaml;
   owner = &quot;hermes&quot;;
@@ -275,7 +277,7 @@ services.hermes-agent = {
   };
 };
 </code></pre>
-<h6>Example secrets file structure</h6>
+<h5>Example secrets file structure</h5>
 <pre><code class="language-yaml">hermes/env: |
     OPENROUTER_API_KEY=sk-or-...
     ANTHROPIC_API_KEY=sk-ant-...
@@ -284,14 +286,14 @@ services.hermes-agent = {
 hermes/auth: |
     {&quot;nous&quot;: {&quot;token&quot;: &quot;...&quot;, &quot;refresh&quot;: &quot;...&quot;}, &quot;codex&quot;: {&quot;token&quot;: &quot;...&quot;}}
 </code></pre>
-<h6>3. Create secrets file</h6>
+<h4>3. Create secrets file</h4>
 <pre><code class="language-bash"># /run/secrets/hermes-env (or wherever you manage secrets)
 OPENROUTER_API_KEY=sk-or-...
 ANTHROPIC_API_KEY=sk-ant-...
 TELEGRAM_TOKEN=123456:ABC...
 TELEGRAM_ALLOWED_USERS=your_user_id
 </code></pre>
-<h6>4. Deploy</h6>
+<h4>4. Deploy</h4>
 <pre><code class="language-bash">nixos-rebuild switch
 systemctl status hermes-agent
 journalctl -u hermes-agent -f
@@ -299,14 +301,14 @@ journalctl -u hermes-agent -f
 <h6>Architecture</h6>
 <pre><code>You (Telegram/Discord/WhatsApp/Slack) → Gateway → Tools → Machine does things
 </code></pre>
-<h6>How it works</h6>
+<h4>How it works</h4>
 <ol>
 <li><code>services.hermes-agent.config</code> attrset is deep-merged and rendered to <code>cli-config.yaml</code></li>
 <li>Documents are installed into the workspace directory</li>
 <li>Secrets stay outside the Nix store via <code>environmentFiles</code></li>
 <li>systemd service runs <code>hermes gateway</code> with everything wired up</li>
 </ol>
-<h6>Directory layout</h6>
+<h4>Directory layout</h4>
 <pre><code>/var/lib/hermes/              # stateDir
 ├── .hermes/                  # Hermes home (HERMES_HOME)
 │   ├── cli-config.yaml       # Generated from config option
@@ -332,8 +334,8 @@ journalctl -u hermes-agent -f
 <li><strong>declarative skills</strong> from Nix</li>
 <li><strong>interactive/runtime skills</strong> from <code>hermes skills install</code></li>
 </ul>
-<h6>Ownership model</h6>
-<h6>Nix-managed</h6>
+<h4>Ownership model</h4>
+<h5>Nix-managed</h5>
 <p>Skills declared via:</p>
 <ul>
 <li><code>services.hermes-agent.skills.bundled</code></li>
@@ -345,13 +347,13 @@ journalctl -u hermes-agent -f
 <li><code>.nix-managed-skills.json</code></li>
 </ul>
 <p>These paths are considered <strong>owned by Nix</strong>.</p>
-<h6>Hermes-managed</h6>
+<h5>Hermes-managed</h5>
 <p>Skills installed later via Hermes CLI, plus hub metadata under:</p>
 <ul>
 <li><code>.hermes/skills/.hub/</code></li>
 </ul>
 <p>are left alone by the module <strong>unless they collide with a Nix-managed path</strong>.</p>
-<h6>Collision rule</h6>
+<h4>Collision rule</h4>
 <p>If a Hermes CLI install and a declarative Nix skill target the same installed path,
 <strong>the declarative Nix version wins on the next activation/rebuild</strong>.</p>
 <p>Example:</p>
@@ -360,7 +362,7 @@ journalctl -u hermes-agent -f
 <li>user later installs another <code>creative/blender-mcp</code> via Hermes CLI</li>
 </ul>
 <p>On the next rebuild, the Nix-declared version is restored.</p>
-<h6>Recommended workflow</h6>
+<h4>Recommended workflow</h4>
 <p>Use <strong>Hermes CLI</strong> for:</p>
 <ul>
 <li>experimentation</li>
@@ -576,6 +578,7 @@ nixpkgs.overlays = [ nix-hermes.overlays.default ];
 </code></pre>
 <h6>License</h6>
 <p>MIT (same as upstream)</p>
+
   </section>
 </details>
 
@@ -587,27 +590,27 @@ nixpkgs.overlays = [ nix-hermes.overlays.default ];
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/numtide/llm-agents.nix">
-        <div class="stars">★ 967</div>
+        <div class="stars">★ 1.1K</div>
         <div class="name"><span class="org">numtide /</span> llm-agents.nix</div>
       </a>
       <a class="related-row" href="/projects/TheAiSingularity/hermesclaw">
-        <div class="stars">★ 16</div>
+        <div class="stars">★ 33</div>
         <div class="name"><span class="org">TheAiSingularity /</span> hermesclaw</div>
       </a>
       <a class="related-row" href="/projects/rookiemann/portable-hermes-agent">
-        <div class="stars">★ 7</div>
+        <div class="stars">★ 39</div>
         <div class="name"><span class="org">rookiemann /</span> portable-hermes-agent</div>
       </a>
       <a class="related-row" href="/projects/xmbshwll/hermes-agent-docker">
-        <div class="stars">★ 6</div>
+        <div class="stars">★ 15</div>
         <div class="name"><span class="org">xmbshwll /</span> hermes-agent-docker</div>
       </a>
       <a class="related-row" href="/projects/JackTheGit/hermes-autonomous-server">
-        <div class="stars">★ 2</div>
+        <div class="stars">★ 6</div>
         <div class="name"><span class="org">JackTheGit /</span> hermes-autonomous-server</div>
       </a>
       <a class="related-row" href="/projects/ellickjohnson/portainer-stack-hermes">
-        <div class="stars">★ 1</div>
+        <div class="stars">★ 3</div>
         <div class="name"><span class="org">ellickjohnson /</span> portainer-stack-hermes</div>
       </a>
     </div>

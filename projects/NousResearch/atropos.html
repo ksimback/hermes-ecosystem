@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>atropos — Hermes Agent Core &amp; Official | Hermes Atlas</title>
-<meta name="description" content="RL training environments framework for tool-calling models">
+<meta name="description" content="Atropos is a Language Model Reinforcement Learning Environments framework for collecting and evaluating LLM trajectories through diverse environments">
 <link rel="canonical" href="https://hermesatlas.com/projects/NousResearch/atropos">
 <meta property="og:title" content="atropos — Hermes Atlas">
-<meta property="og:description" content="RL training environments framework for tool-calling models">
+<meta property="og:description" content="Atropos is a Language Model Reinforcement Learning Environments framework for collecting and evaluating LLM trajectories through diverse environments">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/NousResearch/atropos">
 <meta property="og:site_name" content="Hermes Atlas">
-<meta property="og:image" content="https://hermesatlas.com/api/og?title=atropos&amp;subtitle=RL+training+environments+framework+for+tool-calling+models&amp;kind=project+%C2%B7+core">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=atropos&amp;subtitle=Atropos+is+a+Language+Model+Reinforcement+Learning+Environments+framework+for+collecting+and+evaluating+LLM+trajectories+through+diverse+environments&amp;kind=project+%C2%B7+core">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="atropos — Hermes Atlas">
-<meta name="twitter:description" content="RL training environments framework for tool-calling models">
-<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=atropos&amp;subtitle=RL+training+environments+framework+for+tool-calling+models&amp;kind=project+%C2%B7+core">
+<meta name="twitter:description" content="Atropos is a Language Model Reinforcement Learning Environments framework for collecting and evaluating LLM trajectories through diverse environments">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=atropos&amp;subtitle=Atropos+is+a+Language+Model+Reinforcement+Learning+Environments+framework+for+collecting+and+evaluating+LLM+trajectories+through+diverse+environments&amp;kind=project+%C2%B7+core">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -40,17 +40,20 @@
   "codeRepository": "https://github.com/NousResearch/atropos",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
   "author": {
     "@type": "Organization",
     "name": "NousResearch",
     "url": "https://github.com/NousResearch"
   },
+  "dateModified": "2026-04-20T16:40:18.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 997
+    "userInteractionCount": 1113
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -102,14 +105,14 @@
   <h1 class="project-name">
     <span class="org">NousResearch</span><span class="slash">/</span>atropos <span class="repo-flag">official</span>
   </h1>
-  <p class="project-desc">RL training environments framework for tool-calling models</p>
+  <p class="project-desc">Atropos is a Language Model Reinforcement Learning Environments framework for collecting and evaluating LLM trajectories through diverse environments</p>
 
   <div class="meta-row">
-    <span class="stars">★ 997</span>
-    
-    
+    <span class="stars">★ 1.1K</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
     <span><span class="meta-label">maintainer</span>Nous Research</span>
-    
+    <span><span class="meta-label">updated</span>2026-04-20</span>
   </div>
 
   <div class="actions">
@@ -349,7 +352,7 @@ pip install -e .[all]           # for everything
 <pre><code class="language-bash">pre-commit install
 </code></pre>
 <hr>
-<h6>Quick Start Guide</h6>
+<h4>Quick Start Guide</h4>
 <ol>
 <li><p><strong>Create Your First Environment</strong></p>
 <ul>
@@ -424,13 +427,13 @@ This allows you to leverage Atropos for reinforcement learning while utilizing A
 <h6>On-Policy Distillation (API + ScoredDataGroup Contract)</h6>
 <p>Atropos now supports OPD at the transport layer by carrying distillation arrays
 through <code>ScoredDataGroup</code> and the API queue/batch endpoints.</p>
-<h6>Scope of this change</h6>
+<h4>Scope of this change</h4>
 <ul>
 <li>No teacher fetching/orchestration in <code>BaseEnv</code>.</li>
 <li>Environments or external pipelines are responsible for populating distillation arrays.</li>
 <li>API stores and returns those arrays unchanged.</li>
 </ul>
-<h6>Distillation payload fields</h6>
+<h4>Distillation payload fields</h4>
 <p>Each scored group may include:</p>
 <ul>
 <li><code>distill_token_ids</code>: shape <code>[sequence][position][top_k]</code></li>
@@ -441,20 +444,20 @@ through <code>ScoredDataGroup</code> and the API queue/batch endpoints.</p>
 <li>environment -&gt; <code>/scored_data</code> or <code>/scored_data_list</code></li>
 <li>API queue -&gt; <code>/batch</code> -&gt; trainer</li>
 </ul>
-<h6>Minimal producer example (environment side)</h6>
+<h4>Minimal producer example (environment side)</h4>
 <pre><code class="language-python">scores[&quot;distill_token_ids&quot;] = distill_token_ids
 scores[&quot;distill_logprobs&quot;] = distill_logprobs
 </code></pre>
-<h6>Minimal consumer check (trainer/debug side)</h6>
+<h4>Minimal consumer check (trainer/debug side)</h4>
 <pre><code class="language-bash">curl -s http://localhost:8002/latest_example | jq &#39;{has_ids:(.distill_token_ids!=null), has_lps:(.distill_logprobs!=null)}&#39;
 </code></pre>
-<h6>Notes</h6>
+<h4>Notes</h4>
 <ul>
 <li>The API does not validate cross-field semantics beyond schema typing.</li>
 <li>Trainers should validate alignment assumptions they require (sequence length, per-position top-k, etc.).</li>
 <li>Teacher-side architecture and prompt/rendering strategy are intentionally out of scope for this PR.</li>
 </ul>
-<h6>TeacherDistillationEnv follow-up</h6>
+<h4>TeacherDistillationEnv follow-up</h4>
 <p>The follow-up teacher environment uses a dedicated teacher server config and
 attaches teacher prompt logprobs before the group is sent to the API.</p>
 <p>Teacher config shape:</p>
@@ -528,7 +531,7 @@ and pass <code>teacher_server_configs=...</code>.</li>
 <li><strong>View Run (<code>view-run</code>):</strong> Launch a Gradio UI to inspect batches of rollouts generated by your environment runs. This is useful for visually debugging the interactions and data flow.</li>
 <li><strong>Offline Data Generation:</strong> Use <code>atropos-sft-gen</code> and <code>atropos-dpo-gen</code> to collect rollouts from environments and convert them into formats suitable for Supervised Fine-Tuning (SFT) or Direct Preference Optimization (DPO).</li>
 </ul>
-<h6>In-depth Local Environment Analysis with <code>process</code></h6>
+<h4>In-depth Local Environment Analysis with <code>process</code></h4>
 <p>For developers looking to inspect and debug a single environment without the overhead of the <code>run-api</code> server or a full training loop, Atropos environments offer a <code>process</code> subcommand. This mode performs inference-only rollouts, meaning it runs your model within the environment to generate interactions, but does not perform any model training or updates.</p>
 <p>The <code>process</code> subcommand executes the environment&#39;s full data pipeline:</p>
 <ol>
@@ -561,14 +564,14 @@ and pass <code>teacher_server_configs=...</code>.</li>
 <p>Always refer to the specific environment script&#39;s help for all available options:</p>
 <pre><code class="language-sh">python environments/your_environment_script.py process --help
 </code></pre>
-<h6>Environment Evaluation with <code>evaluate</code></h6>
+<h4>Environment Evaluation with <code>evaluate</code></h4>
 <p>For running evaluation on environments, Atropos provides an <code>evaluate</code> subcommand that calls the environment&#39;s <code>evaluate</code> method:</p>
 <pre><code class="language-sh">python gsm8k_server.py evaluate \
   --openai.base_url https://openrouter.ai/api/v1 \
   --openai.api_key $OPENROUTER_API_KEY \
   --openai.model_name qwen/qwen3-14b
 </code></pre>
-<h6>Offline Data Generation Quick Start</h6>
+<h4>Offline Data Generation Quick Start</h4>
 <p>Run the following commands in <strong>separate terminals</strong>, in this order:</p>
 <p><strong>Terminal 1</strong> — Start the API server first (must be running before environments connect):</p>
 <pre><code class="language-sh">run-api
@@ -649,6 +652,7 @@ Please follow the <a href="https://github.com/NousResearch/atropos/blob/main/COD
 <hr>
 <h6>License</h6>
 <p>Atropos uses the MIT license, see the <a href="LICENSE">LICENSE</a> file here for more information</p>
+
   </section>
 </details>
 
@@ -660,23 +664,23 @@ Please follow the <a href="https://github.com/NousResearch/atropos/blob/main/COD
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/NousResearch/hermes-agent">
-        <div class="stars">★ 83.3K</div>
+        <div class="stars">★ 114.7K</div>
         <div class="name"><span class="org">NousResearch /</span> hermes-agent</div>
       </a>
       <a class="related-row" href="/projects/NousResearch/Hermes-Function-Calling">
-        <div class="stars">★ 1.2K</div>
+        <div class="stars">★ 1.3K</div>
         <div class="name"><span class="org">NousResearch /</span> Hermes-Function-Calling</div>
       </a>
       <a class="related-row" href="/projects/NousResearch/hermes-agent-self-evolution">
-        <div class="stars">★ 778</div>
+        <div class="stars">★ 2.2K</div>
         <div class="name"><span class="org">NousResearch /</span> hermes-agent-self-evolution</div>
       </a>
       <a class="related-row" href="/projects/NousResearch/hermes-paperclip-adapter">
-        <div class="stars">★ 663</div>
+        <div class="stars">★ 957</div>
         <div class="name"><span class="org">NousResearch /</span> hermes-paperclip-adapter</div>
       </a>
       <a class="related-row" href="/projects/NousResearch/autonovel">
-        <div class="stars">★ 401</div>
+        <div class="stars">★ 736</div>
         <div class="name"><span class="org">NousResearch /</span> autonovel</div>
       </a>
     </div>
