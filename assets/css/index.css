@@ -562,23 +562,49 @@
 }
 #chat-btn:hover { background: var(--accent-dim); }
 
+/* Chat-panel-scoped tokens so the whole widget re-themes in one place.
+   Light (default): white panel on paper background for contrast.
+   Dark: amber panel on black background for contrast + dark ink
+   flipped inside for legibility. */
 #chat-panel {
+  --chat-bg: #ffffff;
+  --chat-ink: var(--ink);
+  --chat-ink-dim: var(--ink-dim);
+  --chat-ink-mute: var(--ink-mute);
+  --chat-rule: var(--rule-strong);
+  --chat-rule-soft: var(--rule);
+  --chat-accent: var(--accent);
+  --chat-accent-bg: var(--bg-offset);
+  --chat-border: var(--ink);
+
   position: fixed;
   right: 24px;
   bottom: 68px;
   width: min(420px, calc(100vw - 48px));
   max-height: min(640px, calc(100vh - 120px));
-  background: var(--bg);
-  border: 2px solid var(--ink);
+  background: var(--chat-bg);
+  color: var(--chat-ink);
+  border: 2px solid var(--chat-border);
   z-index: 900;
   display: none;
   flex-direction: column;
+}
+:root[data-theme="dark"] #chat-panel {
+  --chat-bg: var(--accent);       /* amber panel */
+  --chat-ink: #0e0d0b;             /* dark ink on amber */
+  --chat-ink-dim: #1a1814;
+  --chat-ink-mute: #3d3830;
+  --chat-rule: #0e0d0b;            /* dark rules on amber */
+  --chat-rule-soft: #3d3830;
+  --chat-accent: #0e0d0b;          /* amber bg means accent flips to dark for contrast */
+  --chat-accent-bg: rgba(0, 0, 0, 0.08);
+  --chat-border: #0e0d0b;
 }
 #chat-panel.open { display: flex; }
 
 .chat-header {
   padding: 16px 20px;
-  border-bottom: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--chat-rule);
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -589,14 +615,14 @@
   font-size: 15px;
   font-weight: 600;
   letter-spacing: -0.015em;
-  color: var(--ink);
+  color: var(--chat-ink);
 }
 .chat-header span {
   font-family: var(--font-mono);
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--ink-mute);
+  color: var(--chat-ink-mute);
   display: block;
   margin-top: 4px;
 }
@@ -604,10 +630,10 @@
 .chat-header-actions button {
   font-family: var(--font-mono);
   font-size: 13px;
-  color: var(--ink-dim);
+  color: var(--chat-ink-dim);
   padding: 4px 8px;
 }
-.chat-header-actions button:hover { color: var(--ink); }
+.chat-header-actions button:hover { color: var(--chat-ink); }
 
 #chat-messages {
   flex: 1;
@@ -622,75 +648,86 @@
   font-size: 12.5px;
   line-height: 1.6;
   padding: 10px 12px;
-  border-left: 2px solid var(--rule-strong);
+  border-left: 2px solid var(--chat-rule);
+  color: var(--chat-ink);
 }
 .chat-msg.chat-user {
-  border-left-color: var(--accent);
-  color: var(--ink);
-  background: var(--bg-elev);
+  border-left-color: var(--chat-accent);
+  color: var(--chat-ink);
+  background: var(--chat-accent-bg);
 }
 .chat-msg.chat-assistant {
-  color: var(--ink-dim);
+  color: var(--chat-ink-dim);
 }
-.chat-msg.loading { color: var(--ink-mute); font-style: italic; }
+.chat-msg.loading { color: var(--chat-ink-mute); font-style: italic; }
 .chat-msg.error {
   border-left-color: var(--negative);
-  color: var(--ink-dim);
+  color: var(--chat-ink-dim);
 }
 .chat-msg code {
   font-family: var(--font-mono);
   font-size: 11.5px;
-  background: var(--bg-elev);
+  background: var(--chat-accent-bg);
   padding: 1px 4px;
-  border: 1px solid var(--rule);
+  border: 1px solid var(--chat-rule-soft);
 }
 .chat-msg a {
-  color: var(--accent);
-  border-bottom: 1px solid var(--accent-dim);
+  color: var(--chat-accent);
+  border-bottom: 1px solid var(--chat-accent);
 }
 .chat-msg .citation {
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--ink-mute);
+  color: var(--chat-ink-mute);
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
 .chat-model-badge {
   font-family: var(--font-mono);
   font-size: 9px;
-  color: var(--ink-mute);
+  color: var(--chat-ink-mute);
   text-transform: uppercase;
   letter-spacing: 0.15em;
   margin-top: 8px;
   padding-top: 6px;
-  border-top: 1px solid var(--rule);
+  border-top: 1px solid var(--chat-rule-soft);
 }
 .chat-input-wrap {
   display: flex;
   gap: 0;
   padding: 0 20px;
-  border-top: 1px solid var(--rule-strong);
+  border-top: 1px solid var(--chat-rule);
 }
 #chat-input {
   flex: 1;
   font-family: var(--font-mono);
   font-size: 12.5px;
-  color: var(--ink);
+  color: var(--chat-ink);
+  background: transparent;
   padding: 14px 16px;
-  border-right: 1px solid var(--rule);
+  border-right: 1px solid var(--chat-rule-soft);
 }
-#chat-input::placeholder { color: var(--ink-mute); }
+#chat-input::placeholder { color: var(--chat-ink-mute); }
+/* Inset the focus ring so it doesn't overlap the 2px panel border. */
+#chat-input:focus-visible {
+  outline: 2px solid var(--chat-accent);
+  outline-offset: -2px;
+}
 #chat-send {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--accent);
+  color: var(--chat-accent);
   padding: 0 18px;
   transition: color 0.15s, background 0.15s;
 }
-#chat-send:hover { color: var(--bg); background: var(--accent); }
+#chat-send:hover { color: var(--chat-bg); background: var(--chat-accent); }
+#chat-send:focus-visible {
+  outline: 2px solid var(--chat-accent);
+  outline-offset: -2px;
+}
 #chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* ─── Responsive ───────────────────────────────────────────── */
