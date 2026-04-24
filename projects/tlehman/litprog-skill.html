@@ -29,6 +29,34 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/tlehman/litprog-skill#software",
+  "name": "litprog-skill",
+  "description": "The litprog-skill is a Claude Code extension that implements Donald Knuth's literate programming paradigm by transforming codebases into human-readable narratives. It works by generating a .lit.md file that weaves together prose, Mermaid diagrams, and LaTeX math with the original source code. The tool includes a tangler to extract runnable files and a reverse-sync engine to ensure the documentation stays updated when source files are edited. This approach helps developers document architectural ",
+  "url": "https://hermesatlas.com/projects/tlehman/litprog-skill",
+  "codeRepository": "https://github.com/tlehman/litprog-skill",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Cross-platform",
+  "author": {
+    "@type": "Organization",
+    "name": "tlehman",
+    "url": "https://github.com/tlehman"
+  },
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 81
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -107,9 +135,9 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>Literate Programming Skill for Claude Code</h3>
+    <h4>Literate Programming Skill for Claude Code</h4>
 <p>A Claude Code skill that transforms codebases into literate programs. These are documents written for human comprehension that also generate the original source code.</p>
-<h4>What is Literate Programming?</h4>
+<h5>What is Literate Programming?</h5>
 <p>Literate programming was invented by <strong>Donald Knuth</strong> in 1984. Knuth is the author of <em>The Art of Computer Programming</em>, creator of TeX, and winner of the 1974 Turing Award. He introduced literate programming as a paradigm where programs are written as essays for human readers, with code embedded in a narrative.</p>
 <p>A literate program produces two outputs:</p>
 <ul>
@@ -117,7 +145,7 @@
 <li><strong>Tangle</strong>: Extract runnable source files from the document.</li>
 </ul>
 <p>The key insight: present code in <em>psychological order</em>. That is, the order that makes it easiest to understand, not the order the compiler needs.</p>
-<h4>What This Skill Does</h4>
+<h5>What This Skill Does</h5>
 <ul>
 <li>Installs as a Claude Code skill (via <code>SKILL.md</code>)</li>
 <li>Gives Claude the ability to analyze a codebase and produce a <code>.lit.md</code> file</li>
@@ -128,29 +156,29 @@
 <li>Running <code>/literate-programming</code> on an existing <code>.lit.md</code> just weaves + tangles (idempotent)</li>
 <li>Supports PDF generation via Pandoc</li>
 </ul>
-<h4>Installation</h4>
+<h5>Installation</h5>
 <p>Copy <code>SKILL.md</code> into your project&#39;s <code>.claude/skills/</code> directory:</p>
 <pre><code class="language-bash">git clone https://github.com/tlehman/litprog-skill.git
 mkdir -p your-project/.claude/skills/
 cp litprog-skill/SKILL.md your-project/.claude/skills/literate-programming.md
 </code></pre>
 <p>Claude Code automatically discovers skills from <code>.claude/skills/</code> in your project root. After copying, the <code>/literate-programming</code> slash command will be available in any Claude Code session within that project.</p>
-<h4>Usage</h4>
-<h5>Create a literate program</h5>
+<h5>Usage</h5>
+<h6>Create a literate program</h6>
 <p>Ask Claude to create a literate program from your codebase:</p>
 <blockquote>
 <p>/literate-programming</p>
 </blockquote>
 <p>Claude will analyze your code, determine the best narrative order, and produce a <code>.lit.md</code> file with prose, diagrams, and named code chunks.</p>
 <p>If a <code>.lit.md</code> already exists, running <code>/literate-programming</code> will just tangle and weave the existing file without recreating it.</p>
-<h5>Reverse-sync (automatic)</h5>
+<h6>Reverse-sync (automatic)</h6>
 <p>After creation, a PostToolUse hook is configured so that when you edit a source file directly, the changes are automatically synced back into the <code>.lit.md</code> and re-tangled. This keeps the <code>.lit.md</code> as the single source of truth.</p>
 <p>The hook does NOT regenerate the PDF on every edit. To regenerate the PDF, run <code>/literate-programming</code> again.</p>
-<h5>Tangle (extract source code)</h5>
+<h6>Tangle (extract source code)</h6>
 <pre><code class="language-bash">bun run scripts/tangle.ts project.lit.md --output-dir ./src/
 </code></pre>
 <p>This expands all root chunks and writes the source files. Verify by diffing against the original source.</p>
-<h5>Weave (generate PDF)</h5>
+<h6>Weave (generate PDF)</h6>
 <pre><code class="language-bash">pandoc project.lit.md \
   -o project.pdf \
   --pdf-engine=xelatex \
@@ -160,7 +188,7 @@ cp litprog-skill/SKILL.md your-project/.claude/skills/literate-programming.md
 </code></pre>
 <p><strong>Prerequisites for weave:</strong> pandoc, xelatex, mermaid-filter</p>
 <p>For setup instructions, see <code>references/pandoc-setup.md</code>.</p>
-<h4>Why Use This?</h4>
+<h5>Why Use This?</h5>
 <ul>
 <li><strong>Optimized for reading</strong>: Code is read far more often than it is written. Literate programs optimize for reading.</li>
 <li><strong>Explains the why</strong>: Forces the author to explain <em>why</em>, not just <em>what</em>. Every code block is preceded by prose that motivates its existence.</li>

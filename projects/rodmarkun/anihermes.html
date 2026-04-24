@@ -29,6 +29,34 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/rodmarkun/anihermes#software",
+  "name": "anihermes",
+  "description": "AniHermes is a natural language anime media server and tracker built on the Hermes Agent framework. It leverages LLM orchestration to manage downloads via qBittorrent, track series progress, and organize local libraries through conversational interfaces like Telegram, Discord, or CLI. The system utilizes agentic capabilities such as vision analysis for identifying anime from screenshots and automated CRON jobs for scheduling weekly episode downloads. It integrates directly with Anilist for watch",
+  "url": "https://hermesatlas.com/projects/rodmarkun/anihermes",
+  "codeRepository": "https://github.com/rodmarkun/anihermes",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Cross-platform",
+  "author": {
+    "@type": "Organization",
+    "name": "rodmarkun",
+    "url": "https://github.com/rodmarkun"
+  },
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 9
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -107,14 +135,14 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>AniHermes</h3>
+    <h4>AniHermes</h4>
 <p><strong>Natural Language Anime Media Server</strong> powered by <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>.</p>
 <p>Talk to your anime server like it&#39;s a person — download episodes, track series, sync with Anilist, identify anime from screenshots, and manage your library. All through natural language, from Telegram, Discord, or CLI.</p>
 <!-- TODO: Add demo video/GIF here
 [![Demo](https://raw.githubusercontent.com/rodmarkun/anihermes/main/docs/assets/demo-thumbnail.png)](https://youtube.com/watch?v=YOUR_VIDEO_ID)
 -->
 
-<h4>What It Does</h4>
+<h5>What It Does</h5>
 <table>
 <thead>
 <tr>
@@ -155,7 +183,7 @@
 <td>Anilist-powered recommendations</td>
 </tr>
 </tbody></table>
-<h4>Why Hermes Agent?</h4>
+<h5>Why Hermes Agent?</h5>
 <p>This isn&#39;t a script with a chatbot wrapper. Each feature uses Hermes Agent capabilities that can&#39;t be replicated with simple automation:</p>
 <table>
 <thead>
@@ -193,7 +221,7 @@
 <td>Skills system — workflows improve over time</td>
 </tr>
 </tbody></table>
-<h4>Quick Start</h4>
+<h5>Quick Start</h5>
 <pre><code class="language-bash"># 1. Install Hermes Agent (if you haven&#39;t)
 # See: https://github.com/NousResearch/hermes-agent
 
@@ -206,19 +234,19 @@ cd anihermes
 hermes &quot;What anime is airing this season?&quot;
 hermes &quot;Download the latest episode of Frieren&quot;
 </code></pre>
-<h4>Requirements</h4>
+<h5>Requirements</h5>
 <ul>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a></li>
 <li>Python 3.8+ (stdlib only, no pip packages needed)</li>
 <li><a href="https://www.qbittorrent.org/">qbittorrent</a> with WebUI enabled</li>
 <li>Storage for anime (any directory)</li>
 </ul>
-<h5>Optional</h5>
+<h6>Optional</h6>
 <ul>
 <li>Telegram bot (for mobile access) — <a href="https://github.com/rodmarkun/anihermes/blob/main/docs/TELEGRAM.md">setup guide</a></li>
 <li>Anilist account (for watchlist sync) — <a href="https://github.com/rodmarkun/anihermes/blob/main/docs/ANILIST.md">setup guide</a></li>
 </ul>
-<h4>Configuration</h4>
+<h5>Configuration</h5>
 <p><code>install.sh</code> creates <code>~/.hermes/anihermes/config.yaml</code>:</p>
 <pre><code class="language-yaml">storage:
   anime_path: ~/Anime
@@ -237,7 +265,7 @@ anilist:
 </code></pre>
 <p>Secrets (qbittorrent password, Anilist OAuth token) are stored in <code>~/.hermes/.env</code>, never in config files.</p>
 <p>See <a href="https://github.com/rodmarkun/anihermes/blob/main/docs/SETUP.md">docs/SETUP.md</a> for full configuration reference.</p>
-<h4>Architecture</h4>
+<h5>Architecture</h5>
 <pre><code>User (Telegram/CLI/Discord)
     |
     v
@@ -255,7 +283,7 @@ Hermes Agent (NL understanding + tool orchestration)
     qbittorrent --&gt; Your anime library
     Anilist API --&gt; Watch progress tracking
 </code></pre>
-<h4>Scripts</h4>
+<h5>Scripts</h5>
 <p>All scripts are standalone and can be used independently:</p>
 <pre><code class="language-bash"># Search SubsPlease
 python3 ~/.hermes/scripts/anihermes_subsplease.py search &quot;Frieren&quot;
@@ -275,18 +303,18 @@ python3 ~/.hermes/scripts/anihermes_library_manager.py info &quot;Frieren&quot;
 # Download torrent
 python3 ~/.hermes/scripts/anihermes_add_torrent.py --series &quot;Frieren&quot; --season &quot;S2&quot; --magnet &quot;magnet:...&quot;
 </code></pre>
-<h4>Documentation</h4>
+<h5>Documentation</h5>
 <ul>
 <li><a href="https://github.com/rodmarkun/anihermes/blob/main/docs/SETUP.md">Setup Guide</a> — Detailed installation and configuration</li>
 <li><a href="https://github.com/rodmarkun/anihermes/blob/main/docs/TELEGRAM.md">Telegram Setup</a> — Telegram bot integration</li>
 <li><a href="https://github.com/rodmarkun/anihermes/blob/main/docs/ANILIST.md">Anilist Setup</a> — Anilist OAuth and watchlist sync</li>
 </ul>
-<h4>Disclaimer</h4>
+<h5>Disclaimer</h5>
 <p>AniHermes is provided &quot;as is&quot;, without warranty of any kind. This software is a media management and automation framework intended for use with legally obtained content. The developers do not host, distribute, or provide access to any copyrighted material.</p>
 <p>Users are solely responsible for ensuring that their use of this software complies with all applicable local, state, national, and international laws, including copyright and intellectual property laws. The developers assume no liability for any misuse of this software or for any content downloaded, managed, or distributed by users through this tool.</p>
 <p>By using this software, you agree that the developers shall not be held responsible or liable for any damages, legal actions, or claims arising from your use of the software or the content you obtain through it.</p>
 <p>This project references third-party services and APIs (SubsPlease, Nyaa.si, Anilist, MyAnimeList). These services are independently operated, and the developers of AniHermes have no affiliation with, endorsement from, or responsibility for those services or their content.</p>
-<h4>License</h4>
+<h5>License</h5>
 <p>MIT</p>
   </section>
 </details>

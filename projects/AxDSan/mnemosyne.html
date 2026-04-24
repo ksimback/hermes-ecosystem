@@ -29,6 +29,34 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/AxDSan/mnemosyne#software",
+  "name": "mnemosyne",
+  "description": "Mnemosyne is a local-first memory system designed to provide private, low-latency context for Hermes Agents. It utilizes a SQLite-backed architecture featuring native vector search and FTS5 full-text search to eliminate the need for external databases or API keys. The system implements a three-tier BEAM architecture that manages hot working memory, long-term episodic memory, and a temporary scratchpad. It includes automatic consolidation processes that summarize and move old memories to long-ter",
+  "url": "https://hermesatlas.com/projects/AxDSan/mnemosyne",
+  "codeRepository": "https://github.com/AxDSan/mnemosyne",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Cross-platform",
+  "author": {
+    "@type": "Organization",
+    "name": "AxDSan",
+    "url": "https://github.com/AxDSan"
+  },
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 29
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -107,7 +135,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>Mnemosyne</h3>
+    <h4>Mnemosyne</h4>
 <p><img src="https://raw.githubusercontent.com/AxDSan/mnemosyne/main//assets/mnemosyne.jpg" alt="Mnemosyne"></p>
 <blockquote>
 <p>Native, zero-cloud memory for AI agents. SQLite-backed. Sub-millisecond. Fully private.</p>
@@ -119,8 +147,8 @@
 <a href="https://github.com/AxDSan/mnemosyne/actions/workflows/ci.yml"><img src="https://github.com/AxDSan/mnemosyne/actions/workflows/ci.yml/badge.svg" alt="CI"></a></p>
 <p>Mnemosyne is a local-first memory system for the <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> framework. It stores conversations, preferences, and knowledge in SQLite with native vector search (sqlite-vec) and full-text search (FTS5) — no external databases, no API keys, no network calls.</p>
 <hr>
-<h4>Quick Start</h4>
-<h5>Option A: Install from PyPI (recommended)</h5>
+<h5>Quick Start</h5>
+<h6>Option A: Install from PyPI (recommended)</h6>
 <pre><code class="language-bash">pip install mnemosyne-memory
 </code></pre>
 <blockquote>
@@ -137,17 +165,17 @@ pip install mnemosyne-memory[all]
 </code></pre>
 <p>Make sure to activate the venv every time you run Hermes, or install Hermes itself inside the same venv.</p>
 </blockquote>
-<h5>Option B: Install from source (for development)</h5>
+<h6>Option B: Install from source (for development)</h6>
 <pre><code class="language-bash">git clone https://github.com/AxDSan/mnemosyne.git
 cd mnemosyne
 pip install -e &quot;.[all,dev]&quot;
 </code></pre>
-<h5>Option C: Hermes MemoryProvider only (no pip needed)</h5>
+<h6>Option C: Hermes MemoryProvider only (no pip needed)</h6>
 <p>If you only need Mnemosyne as a Hermes memory backend and want to skip pip entirely:</p>
 <pre><code class="language-bash">curl -sSL https://raw.githubusercontent.com/AxDSan/mnemosyne/main/deploy_hermes_provider.sh | bash
 </code></pre>
 <p>This symlinks the provider into <code>~/.hermes/plugins/mnemosyne</code> and adds the repo to <code>sys.path</code> at runtime. No virtual environment required — works out of the box on Ubuntu 24.04.</p>
-<h5>Register with Hermes</h5>
+<h6>Register with Hermes</h6>
 <pre><code class="language-bash"># 1. Install the plugin
 python -m mnemosyne.install
 
@@ -163,7 +191,7 @@ hermes mnemosyne stats     # Shows working + episodic memory counts
 <p><strong>Note:</strong> The <code>hermes memory setup</code> picker defaults to &quot;Built-in only&quot; every time it opens. This is normal Hermes UI behavior — your previous selection <strong>is</strong> saved. Just select Mnemosyne and press Enter.</p>
 </blockquote>
 <hr>
-<h4>What Makes It Different</h4>
+<h5>What Makes It Different</h5>
 <table>
 <thead>
 <tr>
@@ -209,9 +237,9 @@ hermes mnemosyne stats     # Shows working + episodic memory counts
 <li><strong>Configurable compression</strong> — <code>float32</code> (default), <code>int8</code> (4x smaller), or <code>bit</code> (32x smaller) vectors</li>
 </ul>
 <hr>
-<h4>Benchmarks</h4>
+<h5>Benchmarks</h5>
 <p>All numbers measured on CPU with <code>sqlite-vec</code> + FTS5 enabled.</p>
-<h5>LongMemEval (ICLR 2025)</h5>
+<h6>LongMemEval (ICLR 2025)</h6>
 <table>
 <thead>
 <tr>
@@ -241,7 +269,7 @@ hermes mnemosyne stats     # Shows working + episodic memory counts
 <td>No memory system</td>
 </tr>
 </tbody></table>
-<h5>Latency vs. Cloud Alternatives</h5>
+<h6>Latency vs. Cloud Alternatives</h6>
 <table>
 <thead>
 <tr>
@@ -286,7 +314,7 @@ hermes mnemosyne stats     # Shows working + episodic memory counts
 <td><strong>Instant</strong></td>
 </tr>
 </tbody></table>
-<h5>BEAM Architecture Scaling</h5>
+<h6>BEAM Architecture Scaling</h6>
 <p><strong>Write throughput:</strong></p>
 <table>
 <thead>
@@ -381,19 +409,19 @@ hermes mnemosyne stats     # Shows working + episodic memory counts
 </tr>
 </tbody></table>
 <hr>
-<h4>Installation</h4>
-<h5>Prerequisites</h5>
+<h5>Installation</h5>
+<h6>Prerequisites</h6>
 <ul>
 <li>Python 3.9+</li>
 <li>Hermes Agent (for plugin integration)</li>
 </ul>
-<h5>From PyPI (recommended for users)</h5>
+<h6>From PyPI (recommended for users)</h6>
 <pre><code class="language-bash">pip install mnemosyne-memory
 
 # With all extras (dense retrieval + local LLM consolidation)
 pip install mnemosyne-memory[all]
 </code></pre>
-<h5>From source (recommended for contributors)</h5>
+<h6>From source (recommended for contributors)</h6>
 <pre><code class="language-bash">git clone https://github.com/AxDSan/mnemosyne.git
 cd mnemosyne
 pip install -e &quot;.[all,dev]&quot;
@@ -402,7 +430,7 @@ python -m mnemosyne.install
 <blockquote>
 <p>⚠️ <strong>Ubuntu 24.04 / Debian 12 users:</strong> If <code>pip install</code> fails with <code>externally-managed-environment</code>, see the <a href="#quick-start">Quick Start → Option A</a> note about using a virtual environment.</p>
 </blockquote>
-<h5>Optional dependencies</h5>
+<h6>Optional dependencies</h6>
 <pre><code class="language-bash"># Dense retrieval (required for semantic search and the 98.9% LongMemEval score)
 pip install fastembed&gt;=0.3.0
 
@@ -412,10 +440,10 @@ pip install ctransformers&gt;=0.2.27 huggingface-hub&gt;=0.20
 <blockquote>
 <p><strong>Note:</strong> Without <code>fastembed</code>, Mnemosyne falls back to keyword-only retrieval. It still works, but you won&#39;t get competitive semantic search or the benchmark scores above.</p>
 </blockquote>
-<h5>Uninstall</h5>
+<h6>Uninstall</h6>
 <pre><code class="language-bash">python -m mnemosyne.install --uninstall
 </code></pre>
-<h5>Updating</h5>
+<h6>Updating</h6>
 <p>If you installed from PyPI:</p>
 <pre><code class="language-bash">pip install --upgrade mnemosyne-memory
 </code></pre>
@@ -432,8 +460,8 @@ pip install -e &quot;.[all,dev]&quot;
 </code></pre>
 <p>See <a href="https://github.com/AxDSan/mnemosyne/blob/main/UPDATING.md">UPDATING.md</a> for detailed troubleshooting and rollback instructions.</p>
 <hr>
-<h4>Usage</h4>
-<h5>CLI</h5>
+<h5>Usage</h5>
+<h6>CLI</h6>
 <pre><code class="language-bash"># Show memory statistics (current session only)
 hermes mnemosyne stats
 
@@ -455,7 +483,7 @@ hermes mnemosyne import --input mnemosyne_backup.json
 # Clear scratchpad
 hermes mnemosyne clear
 </code></pre>
-<h5>Python API</h5>
+<h6>Python API</h6>
 <pre><code class="language-python">from mnemosyne import remember, recall
 
 # Store a fact
@@ -490,7 +518,7 @@ kg = TripleStore()
 kg.add(&quot;Maya&quot;, &quot;assigned_to&quot;, &quot;auth-migration&quot;, valid_from=&quot;2026-01-15&quot;)
 kg.query(&quot;Maya&quot;, as_of=&quot;2026-02-01&quot;)
 </code></pre>
-<h5>Advanced: BEAM direct access</h5>
+<h6>Advanced: BEAM direct access</h6>
 <pre><code class="language-python">from mnemosyne.core.beam import BeamMemory
 
 beam = BeamMemory(session_id=&quot;my_session&quot;)
@@ -512,7 +540,7 @@ beam.scratchpad_write(&quot;todo: fix auth bug&quot;)
 results = beam.recall(&quot;editor preferences&quot;, top_k=5)
 </code></pre>
 <hr>
-<h4>Architecture</h4>
+<h5>Architecture</h5>
 <pre><code>┌─────────────────────────────────────────────────────────────┐
 │                    HERMES AGENT                              │
 │                                                              │
@@ -537,7 +565,7 @@ results = beam.recall(&quot;editor preferences&quot;, top_k=5)
 <li><code>scratchpad</code> — Temporary agent reasoning workspace</li>
 </ul>
 <hr>
-<h4>Why SQLite for Hermes?</h4>
+<h5>Why SQLite for Hermes?</h5>
 <p>SQLite is already in your stack. Hermes uses it for session persistence. Mnemosyne extends that same file — no new dependencies, no Docker containers, no connection pooling.</p>
 <table>
 <thead>
@@ -592,7 +620,7 @@ results = beam.recall(&quot;editor preferences&quot;, top_k=5)
 </tr>
 </tbody></table>
 <hr>
-<h4>Backup, Export &amp; Migration</h4>
+<h5>Backup, Export &amp; Migration</h5>
 <p>Mnemosyne stores everything in a single SQLite file at <code>~/.hermes/mnemosyne/data/mnemosyne.db</code>.</p>
 <pre><code class="language-bash"># Simple backup
 cp ~/.hermes/mnemosyne/data/mnemosyne.db ~/backups/mnemosyne_$(date +%Y%m%d).db
@@ -604,7 +632,7 @@ hermes mnemosyne export --output mnemosyne_backup.json
 hermes mnemosyne import --input mnemosyne_backup.json
 </code></pre>
 <hr>
-<h4>Environment Variables</h4>
+<h5>Environment Variables</h5>
 <table>
 <thead>
 <tr>
@@ -640,7 +668,7 @@ hermes mnemosyne import --input mnemosyne_backup.json
 </tr>
 </tbody></table>
 <hr>
-<h4>Testing</h4>
+<h5>Testing</h5>
 <pre><code class="language-bash"># Run tests locally
 python -m pytest tests/test_beam.py -v
 
@@ -649,10 +677,10 @@ python tests/benchmark_beam_working_memory.py
 </code></pre>
 <p>All changes are validated through <a href="https://github.com/AxDSan/mnemosyne/actions/workflows/ci.yml">GitHub Actions CI</a> on Python 3.9–3.12 before merging.</p>
 <hr>
-<h4>Releases</h4>
+<h5>Releases</h5>
 <p>Mnemosyne publishes <a href="https://github.com/AxDSan/mnemosyne/releases">GitHub Releases</a> and <a href="https://pypi.org/project/mnemosyne-memory/">PyPI packages</a> automatically on every <code>v*</code> tag. See <a href="https://github.com/AxDSan/mnemosyne/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> for the release process.</p>
 <hr>
-<h4>Contributing</h4>
+<h5>Contributing</h5>
 <p>Contributions are welcome. Areas of active interest:</p>
 <ul>
 <li><input disabled="" type="checkbox"> Encrypted cloud sync (optional, user-controlled)</li>
@@ -662,11 +690,11 @@ python tests/benchmark_beam_working_memory.py
 </ul>
 <p>See <a href="https://github.com/AxDSan/mnemosyne/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> for guidelines.</p>
 <hr>
-<h4>License</h4>
+<h5>License</h5>
 <p>MIT License — See <a href="LICENSE">LICENSE</a></p>
 <p>Copyright (c) 2026 Abdias J</p>
 <hr>
-<h4>Acknowledgments</h4>
+<h5>Acknowledgments</h5>
 <ul>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent Framework</a> — The ecosystem Mnemosyne was built for</li>
 <li><a href="https://github.com/plasticlabs/honcho">Honcho</a> — For defining the stateful memory space</li>

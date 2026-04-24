@@ -29,6 +29,34 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/armelhbobdad/bmad-module-skill-forge#software",
+  "name": "bmad-module-skill-forge",
+  "description": "Skill Forge is a development tool that converts source code, documentation, and developer discourse into verified instruction files for AI agents to prevent API hallucinations. It uses Abstract Syntax Tree (AST) extraction to map agent instructions directly to specific file paths and line numbers in the source repository. The system generates version-pinned skills compliant with the agentskills.io specification, ensuring agents use correct function signatures and parameter types. It supports aut",
+  "url": "https://hermesatlas.com/projects/armelhbobdad/bmad-module-skill-forge",
+  "codeRepository": "https://github.com/armelhbobdad/bmad-module-skill-forge",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Cross-platform",
+  "author": {
+    "@type": "Organization",
+    "name": "armelhbobdad",
+    "url": "https://github.com/armelhbobdad"
+  },
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 17
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -111,7 +139,7 @@
 
 <img src="https://raw.githubusercontent.com/armelhbobdad/bmad-module-skill-forge/main/website/public/img/skf-logo.svg" alt="Skill Forge Logo" width="120" />
 
-<h3>Skill Forge (SKF)</h3>
+<h4>Skill Forge (SKF)</h4>
 <p><strong>Turn code and docs into instructions AI agents can actually follow.</strong></p>
 <p><a href="https://github.com/armelhbobdad/bmad-module-skill-forge/actions/workflows/quality.yaml"><img src="https://github.com/armelhbobdad/bmad-module-skill-forge/actions/workflows/quality.yaml/badge.svg" alt="Quality &amp; Validation"></a>
 <a href="https://www.npmjs.com/package/bmad-module-skill-forge"><img src="https://img.shields.io/npm/v/bmad-module-skill-forge" alt="npm"></a>
@@ -128,11 +156,11 @@
 </div>
 
 <hr>
-<h4>The Problem</h4>
+<h5>The Problem</h5>
 <p>You ask an AI agent to use a library. It invents function names that don&#39;t exist. It guesses parameter types. You paste documentation into the context — it still gets details wrong. You write instructions by hand — they go stale the moment the code changes.</p>
 <p>This isn&#39;t an edge case. It&#39;s the default experience.</p>
 <p>For the full story behind SKF, read <a href="https://medium.com/@armelhbobdad/hallucination-has-a-line-number-32209b4688de"><em>Hallucination has a line number</em></a> on Medium.</p>
-<h4>Before vs After</h4>
+<h5>Before vs After</h5>
 <p><strong>Without SKF</strong> — your agent guesses:</p>
 <pre><code class="language-python">import cognee
 
@@ -151,12 +179,12 @@ results = await cognee.search(
 )
 </code></pre>
 <p>The skill told the agent the real function name, the real parameters, and that the call is async — all traced to the exact source line. This example is from the real <a href="https://github.com/armelhbobdad/oh-my-skills/blob/main/skills/oms-cognee/1.0.0/oms-cognee/SKILL.md"><code>oms-cognee</code></a> skill in <a href="https://github.com/armelhbobdad/oh-my-skills"><strong>oh-my-skills</strong></a> — SKF&#39;s reference output. The <a href="#verifying-a-skill"><strong>Verifying a Skill</strong></a> section below shows how to walk the citation chain yourself.</p>
-<h4>Install</h4>
+<h5>Install</h5>
 <p>Linux, Windows, and macOS supported (<a href="https://armelhbobdad.github.io/bmad-module-skill-forge/getting-started/#platform-support">platform details</a>). Requires <a href="https://nodejs.org/">Node.js</a> &gt;= 22, <a href="https://www.python.org/">Python</a> &gt;= 3.10, and <a href="https://docs.astral.sh/uv/">uv</a> (Python package runner).</p>
 <pre><code class="language-bash">npx bmad-module-skill-forge install
 </code></pre>
 <p>You&#39;ll be prompted for project name, output folders, and IDE configuration. When the install completes, open your IDE and invoke <code>@Ferris SF</code> to confirm Ferris is reachable. Ferris reports your detected tools and capability tier. See the <a href="https://armelhbobdad.github.io/bmad-module-skill-forge/getting-started/">docs</a> for other install methods.</p>
-<h4>Quick Start</h4>
+<h5>Quick Start</h5>
 <ol>
 <li><strong>Set up your environment:</strong> <code>@Ferris SF</code> <em>(Setup Forge)</em> — detects your tools and sets your capability tier</li>
 <li><strong>Generate your first skill:</strong> <code>@Ferris QS &lt;package-name&gt;</code> <em>(Quick Skill)</em> — creates a verified skill in under a minute</li>
@@ -166,7 +194,7 @@ results = await cognee.search(
 <p><strong>Tip:</strong> Start a fresh conversation before each workflow, or use pipeline mode to chain them automatically. SKF workflows load significant context; clearing between them prevents interference.</p>
 </blockquote>
 <p>See the <a href="https://armelhbobdad.github.io/bmad-module-skill-forge/workflows/">workflows docs</a> for all available workflows, pipeline aliases, and headless mode.</p>
-<h4>Who Is This For?</h4>
+<h5>Who Is This For?</h5>
 <ul>
 <li><strong>You use AI agents to write code</strong> and they keep guessing API calls wrong</li>
 <li><strong>You maintain a library</strong> and want to ship official, verified instruction files so AI agents use your API correctly</li>
@@ -174,7 +202,7 @@ results = await cognee.search(
 <li><strong>You use a SaaS API or closed-source tool</strong> with no public code — SKF can generate skills from documentation alone</li>
 <li><strong>You need different skills for different use cases</strong> from the same target — compile multiple skills with different scopes from one repo or doc set (e.g., a core API skill and a migration guide skill)</li>
 </ul>
-<h4>How SKF Compares</h4>
+<h5>How SKF Compares</h5>
 <p>A skeptical reader is probably already considering one of these alternatives:</p>
 <table>
 <thead>
@@ -230,7 +258,7 @@ results = await cognee.search(
 </tr>
 </tbody></table>
 <p>The others aren&#39;t bad. They solve different problems. <strong>SKF solves exactly one: the claim your agent is reading about a library was true at a specific commit on a specific day, and you can prove it in under a minute.</strong></p>
-<h4>How Skill Forge Fixes This</h4>
+<h5>How Skill Forge Fixes This</h5>
 <p>SKF extracts real function signatures, types, and patterns from code, docs, and developer discourse — every instruction links to the exact file and line it came from. On top of that foundation:</p>
 <ol>
 <li><strong>Version-pinned</strong> — skills are stored per-version, so updating to v2.0 doesn&#39;t replace your v1.x skill. Compatible with <a href="https://skills.sh">skills.sh</a> and <a href="https://www.npmjs.com/package/skills">npx skills</a></li>
@@ -240,7 +268,7 @@ results = await cognee.search(
 <blockquote>
 <p><strong>Every skill ships two files — <code>SKILL.md</code> (the full instruction set, loaded on trigger) and <code>context-snippet.md</code> (an 80–120 token always-on index injected into <code>CLAUDE.md</code> / <code>AGENTS.md</code> / <code>.cursorrules</code>). Why both?</strong> Per Vercel&#39;s agent evals, passive context achieves a <strong>100% pass rate vs. 79% for active skills loaded alone</strong> (see <a href="https://armelhbobdad.github.io/bmad-module-skill-forge/skill-model/#dual-output-strategy">Skill Model → Dual-Output Strategy</a>).</p>
 </blockquote>
-<h4>Verifying a Skill</h4>
+<h5>Verifying a Skill</h5>
 <p>You can falsify any AST citation in an SKF-compiled skill in under a minute:</p>
 <ol>
 <li><strong>Open the skill&#39;s <code>provenance-map.json</code></strong> — find your symbol; read its <code>source_file</code> and <code>source_line</code>.</li>
@@ -249,9 +277,9 @@ results = await cognee.search(
 </ol>
 <p>If it doesn&#39;t, that&#39;s a bug — open an issue and SKF will republish with a new commit SHA and a new provenance map. Falsifiability isn&#39;t a feature; it&#39;s the whole deal.</p>
 <p><strong>Reference output: <a href="https://github.com/armelhbobdad/oh-my-skills">oh-my-skills</a></strong> — four Deep-tier skills compiled by SKF (cocoindex, cognee, Storybook v10, uitripled), each shipping its full audit trail in-repo. Scores range from 99.0% to 99.49%. Every claim walks to an upstream line in under 60 seconds. Serves as both the worked example for this section and ongoing proof that the pipeline does what it says.</p>
-<h4>Help SKF Improve</h4>
+<h5>Help SKF Improve</h5>
 <p>Workflows end with a health check that can file bug or friction reports as GitHub issues (auto-deduped by fingerprint — re-reporting is safe). <strong>Please let workflows run to completion</strong>, or <a href="https://github.com/armelhbobdad/bmad-module-skill-forge/issues/new/choose">open an issue</a> directly. <a href="https://armelhbobdad.github.io/bmad-module-skill-forge/workflows/#terminal-step-health-check">Full details →</a></p>
-<h4>Learn More</h4>
+<h5>Learn More</h5>
 <p>The docs are organized into three buckets — <strong>Why</strong> (start here), <strong>Try</strong> (do stuff), and <strong>Reference</strong> (look things up):</p>
 <p><strong>Why</strong></p>
 <ul>
@@ -274,7 +302,7 @@ results = await cognee.search(
 <li><strong><a href="https://armelhbobdad.github.io/bmad-module-skill-forge/bmad-synergy/">BMAD Synergy</a></strong> — How SKF pairs with BMAD CORE phases and optional modules (TEA, BMB, GDS, CIS)</li>
 <li><strong><a href="https://armelhbobdad.github.io/bmad-module-skill-forge/troubleshooting/">Troubleshooting</a></strong> — Common errors (forge setup, ecosystem checks, tier confidence) and how to resolve them</li>
 </ul>
-<h4>Acknowledgements</h4>
+<h5>Acknowledgements</h5>
 <p>SKF builds on these excellent open-source tools:</p>
 <table>
 <thead>
@@ -324,15 +352,15 @@ results = await cognee.search(
 <td>Agent-workflow framework that SKF extends as a module</td>
 </tr>
 </tbody></table>
-<h4>Contributing</h4>
+<h5>Contributing</h5>
 <p>See <a href="https://github.com/armelhbobdad/bmad-module-skill-forge/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> for guidelines.</p>
-<h4>Changelog</h4>
+<h5>Changelog</h5>
 <p>Past releases are documented in <a href="https://github.com/armelhbobdad/bmad-module-skill-forge/blob/main/CHANGELOG.md">CHANGELOG.md</a>.</p>
-<h4>Versioning &amp; Stability</h4>
+<h5>Versioning &amp; Stability</h5>
 <p>The v1.0.0 public API contract is documented in <a href="https://github.com/armelhbobdad/bmad-module-skill-forge/blob/main/docs/STABILITY.md">docs/STABILITY.md</a>.</p>
-<h4>Release Process</h4>
+<h5>Release Process</h5>
 <p>Maintainers: see <a href="https://github.com/armelhbobdad/bmad-module-skill-forge/blob/main/docs/RELEASING.md">docs/RELEASING.md</a> for branch-protection rules, required status checks, the <a href="https://github.com/armelhbobdad/bmad-module-skill-forge/blob/main/docs/RELEASING.md#release-environment"><code>release</code> environment with required-reviewer gate</a>, the <a href="https://github.com/armelhbobdad/bmad-module-skill-forge/blob/main/docs/RELEASING.md#npm-trusted-publisher">npm Trusted Publisher registration</a> (OIDC-backed publish, auto-provenance), and the <a href="https://github.com/armelhbobdad/bmad-module-skill-forge/blob/main/docs/RELEASING.md#rollback-playbook">rollback playbook</a> covering seven failure scenarios.</p>
-<h4>License</h4>
+<h5>License</h5>
 <p>MIT License — see <a href="LICENSE">LICENSE</a> for details.</p>
 <hr>
 <p><strong>Skill Forge (SKF)</strong> — A standalone <a href="https://github.com/bmad-code-org/BMAD-METHOD">BMAD</a> module for agent skill compilation.</p>

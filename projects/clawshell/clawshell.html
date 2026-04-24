@@ -29,6 +29,34 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/clawshell/clawshell#software",
+  "name": "clawshell",
+  "description": "ClawShell is a security-privileged process that acts as a safety harness for the Hermes Agent ecosystem by protecting sensitive credentials and PII. It functions as a proxy between the agent and upstream LLM providers, swapping virtual keys for real ones stored in a restricted directory to ensure the agent never has direct access to credentials. The system performs Data Loss Prevention (DLP) scanning to redact or block sensitive information in request and response bodies. Additionally, it provid",
+  "url": "https://hermesatlas.com/projects/clawshell/clawshell",
+  "codeRepository": "https://github.com/clawshell/clawshell",
+  "applicationCategory": "BrowserApplication",
+  "operatingSystem": "Cross-platform",
+  "author": {
+    "@type": "Organization",
+    "name": "clawshell",
+    "url": "https://github.com/clawshell"
+  },
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 255
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -107,7 +135,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>ClawShell 🛡️</h3>
+    <h4>ClawShell 🛡️</h4>
 <p><img src="https://raw.githubusercontent.com/clawshell/clawshell/main/docs/images/banner.png" alt="ClawShell Banner"></p>
 <blockquote>
 <p><strong>Powered by Runta. The essential safety harness for OpenClaw/Hermes Agent&#39;s PII &amp; Sensitive Credentials.</strong></p>
@@ -116,38 +144,38 @@
 <a href="https://github.com/clawshell/clawshell/actions"><img src="https://img.shields.io/github/actions/workflow/status/clawshell/clawshell/rust.yml" alt="GitHub Actions Workflow Status"></a>
 <a href="https://www.npmjs.com/package/@clawshell/clawshell"><img src="https://img.shields.io/npm/v/%40clawshell%2Fclawshell" alt="NPM Version"></a>
 <a href="https://crates.io/crates/clawshell"><img src="https://img.shields.io/crates/v/clawshell" alt="Crates.io Version"></a></p>
-<h4>📖 Introduction</h4>
+<h5>📖 Introduction</h5>
 <p><strong>ClawShell</strong> is a security-privileged process for the <strong>OpenClaw/Hermes Agent</strong> ecosystem. It sits between OpenClaw/Hermes Agent and upstream LLM API providers (OpenAI, Anthropic, OpenRouter), performing virtual-to-real API key mapping and DLP (Data Loss Prevention) scanning on request and response bodies. It can also expose an Email read endpoint with sender allowlist/denylist filtering.</p>
 <p>OpenClaw/Hermes Agent never holds real API keys, only virtual keys that ClawShell swaps for real ones before forwarding requests upstream. Real keys are stored in a privileged config directory (<code>/etc/clawshell</code>) protected by Unix file system permissions.</p>
-<h4>Key Features</h4>
-<h5>1. API Token Secure Binding</h5>
+<h5>Key Features</h5>
+<h6>1. API Token Secure Binding</h6>
 <p>ClawShell maps virtual API keys to real provider keys so that OpenClaw/Hermes Agent never has direct access to real credentials.</p>
 <ul>
 <li><strong>Key Isolation</strong>: Real API keys are stored in <code>/etc/clawshell/clawshell.toml</code>, readable only by the <code>clawshell</code> system user. OpenClaw/Hermes Agent holds only virtual keys.</li>
 <li><strong>Multi-Provider Support</strong>: Maps keys to OpenAI or Anthropic, injecting the correct authentication header format (<code>Authorization: Bearer</code> for OpenAI, <code>x-api-key</code> for Anthropic).</li>
 </ul>
-<h5>2. PII Safety Net (DLP)</h5>
+<h6>2. PII Safety Net (DLP)</h6>
 <p>ClawShell scans HTTP request and response bodies for sensitive data using configurable regex patterns.</p>
 <ul>
 <li><strong>Request Scanning</strong>: Detects PII (SSNs, credit card numbers, emails, etc.) in outbound requests. Patterns can be configured to either block the request or redact the matched text before forwarding.</li>
 <li><strong>Response Scanning</strong>: Optionally scans upstream responses and redacts detected PII before returning to OpenClaw/Hermes Agent. Streaming (SSE) responses are passed through without scanning.</li>
 <li><strong>Custom Patterns</strong>: Define sensitive data patterns using regex in the TOML config, each with a <code>block</code> or <code>redact</code> action.</li>
 </ul>
-<h5>3. Sensitive Email Isolation</h5>
+<h6>3. Sensitive Email Isolation</h6>
 <p>ClawShell supports sender-based email filtering so each virtual key only sees mailbox content based on sender rules.</p>
 <ul>
 <li><strong>Sender Filtering</strong>: Filter emails by sender.</li>
 <li><strong>Key Isolation</strong>: IMAP credentials are stored in <code>/etc/clawshell/clawshell.toml</code>, readable only by the <code>clawshell</code> system user. OpenClaw/Hermes Agent holds only virtual keys.</li>
 <li><strong>Provider Support</strong>: Built-in Gmail and Outlook presets, with manual IMAP setup for other providers.</li>
 </ul>
-<h5>4. OAuth Authentication (Codex / ChatGPT)</h5>
+<h6>4. OAuth Authentication (Codex / ChatGPT)</h6>
 <p>ClawShell supports OAuth-based authentication as an alternative to static API keys.</p>
 <ul>
 <li><strong>Device Code Flow</strong>: Log in via a one-time code — no browser required on the server. The onboard wizard prints a URL and code; authorize from any device.</li>
 <li><strong>Automatic Token Refresh</strong>: Access tokens are refreshed transparently before they expire.</li>
 <li><strong>Request Translation</strong>: Automatically translates OpenAI Chat Completions API requests to the ChatGPT Responses API format when using Codex OAuth.</li>
 </ul>
-<h5>5. Runtime Statistics</h5>
+<h6>5. Runtime Statistics</h6>
 <p>ClawShell exposes running counters at <code>GET /admin/stats</code> so operators can audit proxy activity since startup and across restarts.</p>
 <ul>
 <li><strong>What&#39;s Counted</strong>: Total requests protected, total upstream <code>prompt_tokens</code> / <code>completion_tokens</code> / <code>total_tokens</code> (parsed from non-streaming JSON responses — SSE streams are not counted), number of emails hidden by the sender policy, and a per-address breakdown of filtered senders.</li>
@@ -155,17 +183,17 @@
 <li><strong>Persistent</strong>: Counters are flushed to disk every 30 seconds and on graceful shutdown. The location is a required config field — set <code>[stats] persist_path = &quot;...&quot;</code> in <code>clawshell.toml</code> (typically <code>/var/lib/clawshell/stats.json</code> under the hardened systemd unit, since <code>/etc/clawshell</code> is read-only there).</li>
 <li><strong>Bounded</strong>: The filtered-address map is capped at 10,000 unique entries; further unique addresses are aggregated under an <code>&lt;overflow&gt;</code> bucket so memory stays bounded.</li>
 </ul>
-<h5>6. Seamless Integration</h5>
+<h6>6. Seamless Integration</h6>
 <ul>
 <li><strong>Drop-in Sidecar</strong>: The <code>clawshell onboard</code> wizard configures exactly one downstream LLM client per run — either OpenClaw or <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — to route all requests through ClawShell&#39;s proxy. See <a href="#agent-target-pick-one">Agent Target (pick one)</a>.</li>
 <li><strong>No External Dependencies</strong>: Uses Unix file system permissions to protect secrets. No IdP, Vault, or external key management service required.</li>
 </ul>
-<h5>7. Ultra Lightweight and Scalable</h5>
+<h6>7. Ultra Lightweight and Scalable</h6>
 <ul>
 <li>Runs in under 10MB of memory.</li>
 <li>Written in Rust with Tokio.</li>
 </ul>
-<h4>Architecture</h4>
+<h5>Architecture</h5>
 <pre><code>                               ║ security boundary (Unix File System Permissions)
                                ║
                                ║  ┌───────────────────────────┐
@@ -197,20 +225,20 @@
 <p>OpenClaw/Hermes Agent only holds virtual keys and cannot access the real API keys stored in the privileged config.</p>
 <p>ClawShell swaps virtual keys for real ones and scans for PII before forwarding requests upstream.</p>
 <p>ClawShell also enforces sender-based filtering before returning email data.</p>
-<h4>Installation</h4>
-<h5>Cargo</h5>
+<h5>Installation</h5>
+<h6>Cargo</h6>
 <pre><code class="language-bash">cargo install clawshell --locked
 
 # Requires privilege to set up the security boundary
 sudo clawshell onboard
 </code></pre>
-<h5>NPM</h5>
+<h6>NPM</h6>
 <pre><code class="language-bash">npm install -g @clawshell/clawshell
 
 # Requires privilege to set up the security boundary
 sudo clawshell onboard
 </code></pre>
-<h5>Build from Source</h5>
+<h6>Build from Source</h6>
 <pre><code class="language-bash">RUSTFLAGS=&quot;--remap-path-prefix=$(pwd)=. --remap-path-prefix=$HOME=/&quot; cargo build --release
 ls -al target/release/clawshell
 </code></pre>
@@ -221,8 +249,8 @@ CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=&quot;/tmp/x86_64-linux-musl-cross
 RUSTFLAGS=&quot;--remap-path-prefix=$(pwd)=. --remap-path-prefix=$HOME=/&quot; \
 cargo build --release --target x86_64-unknown-linux-musl
 </code></pre>
-<h4>Advanced Usage</h4>
-<h5>Onboarding</h5>
+<h5>Advanced Usage</h5>
+<h6>Onboarding</h6>
 <p>The <code>onboard</code> command is an interactive setup wizard that must be run with <code>sudo</code>. It:</p>
 <ol>
 <li>Asks which downstream agent to wire through ClawShell — <strong>OpenClaw</strong> or <strong>Hermes Agent</strong> (exactly one per run).</li>
@@ -235,7 +263,7 @@ cargo build --release --target x86_64-unknown-linux-musl
 </ol>
 <pre><code class="language-bash">sudo clawshell onboard
 </code></pre>
-<h5>More Commands</h5>
+<h6>More Commands</h6>
 <pre><code class="language-bash"># Start (daemonizes by default)
 sudo clawshell start
 
@@ -264,7 +292,7 @@ sudo clawshell migrate-config
 <p>You can override the bind address at runtime with environment variables:</p>
 <pre><code class="language-bash">CLAWSHELL_SERVER_HOST=0.0.0.0 CLAWSHELL_SERVER_PORT=17890 clawshell start --foreground
 </code></pre>
-<h5>Customized Configuration</h5>
+<h6>Customized Configuration</h6>
 <p>ClawShell reads its config from <code>/etc/clawshell/clawshell.toml</code>. You can view or edit it with:</p>
 <pre><code class="language-bash">sudo clawshell config          # print current config
 sudo clawshell config --edit   # open in $EDITOR
@@ -320,7 +348,7 @@ imap_port = 993
 # Outlook preset example:
 # imap_host = &quot;imap-mail.outlook.com&quot;
 </code></pre>
-<h5>OAuth Authentication (Codex / ChatGPT)</h5>
+<h6>OAuth Authentication (Codex / ChatGPT)</h6>
 <p>Instead of a static API key, you can authenticate via OAuth using your ChatGPT / Codex account.</p>
 <h6>Setup via onboard</h6>
 <p>During <code>sudo clawshell onboard</code>, select <strong>&quot;Codex / ChatGPT (OAuth)&quot;</strong> as the provider. The wizard will start a device code flow:</p>
@@ -352,7 +380,7 @@ provider = &quot;codex&quot;
 <pre><code class="language-bash">sudo clawshell migrate-config --config /etc/clawshell/clawshell.toml
 </code></pre>
 <p>See <a href="https://github.com/clawshell/clawshell/blob/main/clawshell.example.toml"><code>clawshell.example.toml</code></a> for a full example.</p>
-<h5>Agent Target (pick one)</h5>
+<h6>Agent Target (pick one)</h6>
 <p><code>sudo clawshell onboard</code> begins with a single, mandatory choice:</p>
 <pre><code>=== Agent Target ===
 ? Which downstream agent should ClawShell wire through?
@@ -416,10 +444,10 @@ hermes config set model.api_key  &lt;your-clawshell-virtual-key&gt;
 <p>Hermes has no <code>config unset</code> subcommand. To detach Hermes from ClawShell, set the provider back to auto-detect and Hermes will pick another upstream based on the credentials it still has:</p>
 <pre><code class="language-bash">hermes config set model.provider auto
 </code></pre>
-<h5>Uninstall</h5>
+<h6>Uninstall</h6>
 <pre><code class="language-bash">sudo clawshell uninstall
 </code></pre>
-<h4>License</h4>
+<h5>License</h5>
 <p>This project is licensed under the <a href="LICENSE">Apache License 2.0</a>.</p>
   </section>
 </details>

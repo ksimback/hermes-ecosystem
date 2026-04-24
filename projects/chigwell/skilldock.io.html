@@ -29,6 +29,34 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/chigwell/skilldock.io#software",
+  "name": "skilldock.io",
+  "description": "SkillDock is a registry and SDK for managing reusable AI skills based on the AgentSkills specification. It provides a Python client and CLI that interact with an OpenAPI-driven backend to discover, install, and version agent capabilities. The platform supports a commerce layer for buying and selling skills using Stripe or TON blockchain payments. Developers can package local skill folders, manage dependencies, and publish immutable releases with metadata defined in Markdown frontmatter.",
+  "url": "https://hermesatlas.com/projects/chigwell/skilldock.io",
+  "codeRepository": "https://github.com/chigwell/skilldock.io",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Cross-platform",
+  "author": {
+    "@type": "Organization",
+    "name": "chigwell",
+    "url": "https://github.com/chigwell"
+  },
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 50
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -117,17 +145,17 @@
 <a href="https://opensource.org/license/apache-2-0"><img src="https://img.shields.io/badge/License-Apache2.0-green.svg" alt="License: MIT"></a>
 <a href="https://pepy.tech/project/skilldock"><img src="https://static.pepy.tech/badge/skilldock" alt="Downloads"></a>
 <a href="https://www.linkedin.com/in/eugene-evstafev-716669181/"><img src="https://img.shields.io/badge/LinkedIn-blue" alt="LinkedIn"></a></p>
-<h3>SkillDock Python SDK and CLI</h3>
+<h4>SkillDock Python SDK and CLI</h4>
 <p><code>skilldock</code> is an OpenAPI-driven Python client (and a CLI) for the SkillDock API.</p>
 <p>It loads the OpenAPI spec at runtime and exposes:</p>
 <ul>
 <li>A Python <code>SkilldockClient</code> that can call any <code>operationId</code></li>
 <li>A CLI that can list available operations and call them from your terminal</li>
 </ul>
-<h4>Install</h4>
+<h5>Install</h5>
 <pre><code class="language-bash">pip install skilldock
 </code></pre>
-<h4>Quickstart (CLI)</h4>
+<h5>Quickstart (CLI)</h5>
 <p>List operations from the OpenAPI spec:</p>
 <pre><code class="language-bash">skilldock ops
 </code></pre>
@@ -267,7 +295,7 @@ skilldock namespaces list
 <p>Low-level request (method + path, bypassing <code>operationId</code>):</p>
 <pre><code class="language-bash">skilldock request GET /health
 </code></pre>
-<h4>Quickstart (Python)</h4>
+<h5>Quickstart (Python)</h5>
 <pre><code class="language-python">from skilldock import SkilldockClient
 
 client = SkilldockClient(
@@ -290,7 +318,7 @@ print(result)
 
 client.close()
 </code></pre>
-<h4>Description Versioning</h4>
+<h5>Description Versioning</h5>
 <p>The registry now stores <code>description_md</code> per release version.</p>
 <ul>
 <li>Publish flow:<ul>
@@ -314,7 +342,7 @@ client.close()
 </ul>
 </li>
 </ul>
-<h4>Configuration</h4>
+<h5>Configuration</h5>
 <p>The CLI stores config (including token) in a local JSON file:</p>
 <pre><code class="language-bash">skilldock config path
 skilldock config show
@@ -330,7 +358,7 @@ skilldock config set --token &quot;YOUR_TOKEN&quot;
 <li><code>SKILLDOCK_TOKEN</code></li>
 <li><code>SKILLDOCK_TIMEOUT_S</code></li>
 </ul>
-<h4>Authentication Notes (Google)</h4>
+<h5>Authentication Notes (Google)</h5>
 <p>This SDK assumes the API accepts a token in an HTTP header (usually <code>Authorization: Bearer &lt;token&gt;</code>).
 The exact details are derived from the OpenAPI <code>securitySchemes</code> when present.</p>
 <p>The SkillDock API can accept (depending on server configuration):</p>
@@ -353,7 +381,7 @@ The exact details are derived from the OpenAPI <code>securitySchemes</code> when
 <p>To create a personal API token (recommended for longer-lived auth):</p>
 <pre><code class="language-bash">skilldock tokens create --save
 </code></pre>
-<h4>Development</h4>
+<h5>Development</h5>
 <p>Run the small unit test suite:</p>
 <pre><code class="language-bash">python -m unittest discover -s tests
 </code></pre>

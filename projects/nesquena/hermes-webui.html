@@ -29,6 +29,34 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/nesquena/hermes-webui#software",
+  "name": "hermes-webui",
+  "description": "Hermes WebUI provides a lightweight, browser-based interface for the Hermes Agent, offering a visual alternative to the standard command-line environment. Built with Python and vanilla JavaScript, the application maintains full parity with the CLI without requiring complex build steps or frameworks. The interface features a three-panel layout for managing chat sessions, workspace files, and agent controls like model selection and token usage monitoring. It allows users to interact with their age",
+  "url": "https://hermesatlas.com/projects/nesquena/hermes-webui",
+  "codeRepository": "https://github.com/nesquena/hermes-webui",
+  "applicationCategory": "DesktopEnhancementApplication",
+  "operatingSystem": "Cross-platform",
+  "author": {
+    "@type": "Organization",
+    "name": "nesquena",
+    "url": "https://github.com/nesquena"
+  },
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 2479
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -107,7 +135,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>Hermes Web UI</h3>
+    <h4>Hermes Web UI</h4>
 <p><a href="https://hermes-agent.nousresearch.com/">Hermes Agent</a> is a sophisticated autonomous agent that lives on your server, accessed via a terminal or messaging apps, that remembers what it learns and gets more capable the longer it runs.</p>
 <p>Hermes WebUI is a lightweight, dark-themed web app interface in your browser for <a href="https://hermes-agent.nousresearch.com/">Hermes Agent</a>.
 Full parity with the CLI experience - everything you can do from a terminal,
@@ -148,7 +176,7 @@ shows token usage at a glance. All settings and session tools are in the
 
 <p>This gives you nearly <strong>1:1 parity with Hermes CLI from a convenient web UI</strong> which you can access securely through an SSH tunnel from your Hermes setup. Single command to start this up, and a single command to SSH tunnel for access on your computer. Every single part of the web UI uses your existing Hermes agent and existing models, without requiring any additional setup.</p>
 <hr>
-<h4>Why Hermes</h4>
+<h5>Why Hermes</h5>
 <p>Most AI tools reset every session. They don&#39;t know who you are, what you worked on, or what
 conventions your project follows. You re-explain yourself every time.</p>
 <p>Hermes retains context across sessions, runs scheduled jobs while you&#39;re offline, and gets
@@ -253,7 +281,7 @@ Hermes is more stable across updates (OpenClaw has documented release regression
 has had security incidents involving malicious skills); and Hermes runs natively in the Python
 ecosystem. See <a href="https://github.com/nesquena/hermes-webui/blob/main/HERMES.md">HERMES.md</a> for the full side-by-side.</p>
 <hr>
-<h4>Quick start</h4>
+<h5>Quick start</h5>
 <p>Run the repo bootstrap:</p>
 <pre><code class="language-bash">git clone https://github.com/nesquena/hermes-webui.git hermes-webui
 cd hermes-webui
@@ -275,7 +303,7 @@ python3 bootstrap.py
 </blockquote>
 <p>If provider setup is still incomplete after install, the onboarding wizard will point you to finish it with <code>hermes model</code> instead of trying to replicate the full CLI setup in-browser.</p>
 <hr>
-<h4>Docker</h4>
+<h5>Docker</h5>
 <p><strong>Pre-built images</strong> (amd64 + arm64) are published to GHCR on every release:</p>
 <p>Make sure the <code>HERMES_WEBUI_STATE_DIR</code> (by default <code>~/.hermes/webui-mvp</code>, as detailed in the <code>.env.example</code> file) folder exist with the UID/GID of the owner of the <code>.hermes</code> folder. 
 The container will also mount your configured &quot;workspace&quot; (also from the example .env.example) as <code>/workspace</code>. adapt the location as needed.</p>
@@ -311,7 +339,7 @@ docker run -d \
 To expose on a network, change the port to <code>&quot;8787:8787&quot;</code> in <code>docker-compose.yml</code>
 and set <code>HERMES_WEBUI_PASSWORD</code> to enable authentication.</p>
 </blockquote>
-<h5>Two-container setup (Agent + WebUI)</h5>
+<h6>Two-container setup (Agent + WebUI)</h6>
 <p>If you run the Hermes Agent in its own Docker container and want the WebUI
 in a separate container:</p>
 <pre><code class="language-bash">docker compose -f docker-compose.two-container.yml up -d
@@ -340,7 +368,7 @@ the init script runs <code>uv pip install</code> to set up the dependencies. Bot
 containers share the same <code>~/.hermes</code> directory for config and state.</p>
 </blockquote>
 <p>See <code>docker-compose.two-container.yml</code> for the full configuration.</p>
-<h5>Running alongside hermes-dashboard (three-container setup)</h5>
+<h6>Running alongside hermes-dashboard (three-container setup)</h6>
 <p>To run the Hermes Agent, Hermes Dashboard, and the WebUI together on a
 shared volume, use the three-container Compose file:</p>
 <pre><code class="language-bash">docker compose -f docker-compose.three-container.yml up -d
@@ -402,7 +430,7 @@ the one-time ownership fix:</p>
 <code>hermes-home</code> volume in <code>hermes-dashboard</code>&#39;s <code>volumes:</code> entry.</p>
 <p>See <code>docker-compose.three-container.yml</code> for the full reference configuration.</p>
 <hr>
-<h4>What start.sh discovers automatically</h4>
+<h5>What start.sh discovers automatically</h5>
 <table>
 <thead>
 <tr>
@@ -433,7 +461,7 @@ the one-time ownership fix:</p>
 </tbody></table>
 <p>If discovery finds everything, nothing else is required.</p>
 <hr>
-<h4>Overrides (only needed if auto-detection misses)</h4>
+<h5>Overrides (only needed if auto-detection misses)</h5>
 <pre><code class="language-bash">export HERMES_WEBUI_AGENT_DIR=/path/to/hermes-agent
 export HERMES_WEBUI_PYTHON=/path/to/python
 export HERMES_WEBUI_PORT=9000
@@ -504,7 +532,7 @@ export HERMES_WEBUI_AUTO_INSTALL=1  # enable auto-install of agent deps (disable
 </tr>
 </tbody></table>
 <hr>
-<h4>Accessing from a remote machine</h4>
+<h5>Accessing from a remote machine</h5>
 <p>The server binds to <code>127.0.0.1</code> by default (loopback only). If you are running
 Hermes on a VPS or remote server, use an SSH tunnel from your local machine:</p>
 <pre><code class="language-bash">ssh -N -L &lt;local-port&gt;:127.0.0.1:&lt;remote-port&gt; &lt;user&gt;@&lt;server-host&gt;
@@ -516,7 +544,7 @@ Hermes on a VPS or remote server, use an SSH tunnel from your local machine:</p>
 <p><code>start.sh</code> will print this command for you automatically when it detects you
 are running over SSH.</p>
 <hr>
-<h4>Accessing on your phone with Tailscale</h4>
+<h5>Accessing on your phone with Tailscale</h5>
 <p><a href="https://tailscale.com">Tailscale</a> is a zero-config mesh VPN built on
 WireGuard. Install it on your server and your phone, and they join the same
 private network -- no port forwarding, no SSH tunnels, no public exposure.</p>
@@ -545,7 +573,7 @@ for an app-like experience.</p>
 <code>HERMES_WEBUI_PASSWORD</code>.</p>
 </blockquote>
 <hr>
-<h4>Manual launch (without start.sh)</h4>
+<h5>Manual launch (without start.sh)</h5>
 <p>If you prefer to launch the server directly:</p>
 <pre><code class="language-bash">cd /path/to/hermes-agent          # or wherever sys.path can find Hermes modules
 HERMES_WEBUI_PORT=8787 venv/bin/python /path/to/hermes-webui/server.py
@@ -555,7 +583,7 @@ HERMES_WEBUI_PORT=8787 venv/bin/python /path/to/hermes-webui/server.py
 <pre><code class="language-bash">curl http://127.0.0.1:8787/health
 </code></pre>
 <hr>
-<h4>Running tests</h4>
+<h5>Running tests</h5>
 <p>Tests discover the repo and the Hermes agent dynamically -- no hardcoded paths.</p>
 <pre><code class="language-bash">cd hermes-webui
 pytest tests/ -v --timeout=60
@@ -567,8 +595,8 @@ pytest tests/ -v --timeout=60
 Production data and real cron jobs are never touched. Current count: <strong>1898 tests</strong>
 across 53 test files.</p>
 <hr>
-<h4>Features</h4>
-<h5>Chat and agent</h5>
+<h5>Features</h5>
+<h6>Chat and agent</h6>
 <ul>
 <li>Streaming responses via SSE (tokens appear as they are generated)</li>
 <li>Multi-provider model support -- any Hermes API provider (OpenAI, Anthropic, Google, DeepSeek, Nous Portal, OpenRouter, MiniMax, Z.AI); dynamic model dropdown populated from configured keys</li>
@@ -590,7 +618,7 @@ across 53 test files.</p>
 <li>rAF-throttled token streaming for smoother rendering during long responses</li>
 <li>Context usage indicator in composer footer -- token count, cost, and fill bar (model-aware)</li>
 </ul>
-<h5>Sessions</h5>
+<h6>Sessions</h6>
 <ul>
 <li>Create, rename, duplicate, delete, search by title and message content</li>
 <li>Session actions via <code>⋯</code> dropdown per session — pin, move to project, archive, duplicate, delete</li>
@@ -605,7 +633,7 @@ across 53 test files.</p>
 <li>CLI session bridge -- CLI sessions from hermes-agent&#39;s SQLite store appear in the sidebar with a gold &quot;cli&quot; badge; click to import with full history and reply normally</li>
 <li>Token/cost display -- input tokens, output tokens, estimated cost shown per conversation (toggle in Settings or <code>/usage</code> command)</li>
 </ul>
-<h5>Workspace file browser</h5>
+<h6>Workspace file browser</h6>
 <ul>
 <li>Directory tree with expand/collapse (single-click toggles, double-click navigates)</li>
 <li>Breadcrumb navigation with clickable path segments</li>
@@ -617,7 +645,7 @@ across 53 test files.</p>
 <li>Right panel is drag-resizable</li>
 <li>Syntax highlighted code preview (Prism.js)</li>
 </ul>
-<h5>Voice input</h5>
+<h6>Voice input</h6>
 <ul>
 <li>Microphone button in the composer (Web Speech API)</li>
 <li>Tap to record, tap again or send to stop</li>
@@ -626,7 +654,7 @@ across 53 test files.</p>
 <li>Appends to existing textarea content (doesn&#39;t replace)</li>
 <li>Hidden when browser doesn&#39;t support Web Speech API (Chrome, Edge, Safari)</li>
 </ul>
-<h5>Profiles</h5>
+<h6>Profiles</h6>
 <ul>
 <li>Profile chip in the <strong>composer footer</strong> -- dropdown showing all profiles with gateway status and model info</li>
 <li>Gateway status dots (green = running), model info, skill count per profile</li>
@@ -636,7 +664,7 @@ across 53 test files.</p>
 <li>Seamless switching -- no server restart; reloads config, skills, memory, cron, models</li>
 <li>Per-session profile tracking (records which profile was active at creation)</li>
 </ul>
-<h5>Authentication and security</h5>
+<h6>Authentication and security</h6>
 <ul>
 <li>Optional password auth -- off by default, zero friction for localhost</li>
 <li>Enable via <code>HERMES_WEBUI_PASSWORD</code> env var or Settings panel</li>
@@ -646,14 +674,14 @@ across 53 test files.</p>
 <li>20MB POST body size limit</li>
 <li>CDN resources pinned with SRI integrity hashes</li>
 </ul>
-<h5>Themes</h5>
+<h6>Themes</h6>
 <ul>
 <li>7 built-in themes: Dark (default), Light, Slate, Solarized Dark, Monokai, Nord, OLED</li>
 <li>Switch via Settings panel dropdown (instant live preview) or <code>/theme</code> command</li>
 <li>Persists across reloads (server-side in settings.json + localStorage for flicker-free loading)</li>
 <li>Custom themes: define a <code>:root[data-theme=&quot;name&quot;]</code> CSS block and it works — see <a href="https://github.com/nesquena/hermes-webui/blob/main/THEMES.md">THEMES.md</a></li>
 </ul>
-<h5>Settings and configuration</h5>
+<h6>Settings and configuration</h6>
 <ul>
 <li><strong>Hermes Control Center</strong> (sidebar launcher button) -- Conversation tab (export/import/clear), Preferences tab (model, send key, theme, language, all toggles), System tab (version, password)</li>
 <li>Send key: Enter (default) or Ctrl/Cmd+Enter</li>
@@ -664,14 +692,14 @@ across 53 test files.</p>
 <li>Cron completion alerts -- toast notifications and unread badge on Tasks tab</li>
 <li>Background agent error alerts -- banner when a non-active session encounters an error</li>
 </ul>
-<h5>Slash commands</h5>
+<h6>Slash commands</h6>
 <ul>
 <li>Type <code>/</code> in the composer for autocomplete dropdown</li>
 <li>Built-in: <code>/help</code>, <code>/clear</code>, <code>/compress [focus topic]</code>, <code>/compact</code> (alias), <code>/model &lt;name&gt;</code>, <code>/workspace &lt;name&gt;</code>, <code>/new</code>, <code>/usage</code>, <code>/theme</code></li>
 <li>Arrow keys navigate, Tab/Enter select, Escape closes</li>
 <li>Unrecognized commands pass through to the agent</li>
 </ul>
-<h5>Panels</h5>
+<h6>Panels</h6>
 <ul>
 <li><strong>Chat</strong> -- session list, search, pin, archive, projects, new conversation</li>
 <li><strong>Tasks</strong> -- view, create, edit, run, pause/resume, delete cron jobs; run history; completion alerts</li>
@@ -681,7 +709,7 @@ across 53 test files.</p>
 <li><strong>Todos</strong> -- live task list from the current session</li>
 <li><strong>Spaces</strong> -- add, rename, remove workspaces; quick-switch from topbar</li>
 </ul>
-<h5>Mobile responsive</h5>
+<h6>Mobile responsive</h6>
 <ul>
 <li>Hamburger sidebar -- slide-in overlay on mobile (&lt;640px)</li>
 <li>Sidebar top tabs stay available on mobile; no fixed bottom nav stealing chat height</li>
@@ -691,7 +719,7 @@ across 53 test files.</p>
 <li>Desktop layout completely unchanged</li>
 </ul>
 <hr>
-<h4>Architecture</h4>
+<h5>Architecture</h5>
 <pre><code>server.py               HTTP routing shell + auth middleware (~154 lines)
 api/
   auth.py               Optional password authentication, signed cookies (~201 lines)
@@ -726,7 +754,7 @@ docker-compose.yml      Compose with named volume and optional auth
 <p>State lives outside the repo at <code>~/.hermes/webui-mvp/</code> by default
 (sessions, workspaces, settings, projects, last_workspace). Override with <code>HERMES_WEBUI_STATE_DIR</code>.</p>
 <hr>
-<h4>Docs</h4>
+<h5>Docs</h5>
 <ul>
 <li><code>HERMES.md</code> -- why Hermes, mental model, and detailed comparison to Claude Code / Codex / OpenCode / Cursor</li>
 <li><code>ROADMAP.md</code> -- feature roadmap and sprint history</li>
@@ -736,9 +764,9 @@ docker-compose.yml      Compose with named volume and optional auth
 <li><code>SPRINTS.md</code> -- forward sprint plan with CLI + Claude parity targets</li>
 <li><code>THEMES.md</code> -- theme system documentation, custom theme guide</li>
 </ul>
-<h4>Contributors</h4>
+<h5>Contributors</h5>
 <p>Hermes WebUI is built with help from the open-source community. Every PR — whether merged directly or incorporated via rebase — shapes the project, and we&#39;re grateful to everyone who has taken the time to contribute.</p>
-<h5>Major contributions</h5>
+<h6>Major contributions</h6>
 <p><strong><a href="https://github.com/aronprins">@aronprins</a></strong> — v0.50.0 UI overhaul (PR #242)
 The biggest single contribution to the project: a complete UI redesign that moved model/profile/workspace controls into the composer footer, replaced the gear-icon settings panel with the Hermes Control Center (tabbed modal), removed the activity bar in favor of inline composer status, redesigned the session list with a <code>⋯</code> action dropdown, and added the workspace panel state machine. 26 commits, thoroughly designed and iterated through multiple review rounds.</p>
 <p><strong><a href="https://github.com/iRonin">@iRonin</a></strong> — Security hardening sprint (PRs #196–#204)
@@ -747,7 +775,7 @@ Six consecutive security and reliability PRs: session memory leak fix (expired t
 Complete German locale (<code>de</code>) covering all UI strings, settings labels, commands, and system messages — and in doing so, stress-tested the i18n system and exposed several elements that weren&#39;t yet translatable, which got fixed as part of the same PR.</p>
 <p><strong><a href="https://github.com/Jordan-SkyLF">@Jordan-SkyLF</a></strong> — Live streaming, session recovery, workspace fallback (PRs #366, #367)
 Three interlocking improvements: workspace fallback resolution so the server recovers gracefully when the configured workspace is deleted or unavailable; live reasoning cards that upgrade the generic thinking spinner to a real-time reasoning display as the model thinks; and durable session state recovery via <code>localStorage</code> so in-flight tool cards, partial assistant output, and the live SSE stream all survive a full page reload or session switch.</p>
-<h5>Feature contributions</h5>
+<h6>Feature contributions</h6>
 <p><strong><a href="https://github.com/gabogabucho">@gabogabucho</a></strong> — Spanish locale + onboarding wizard (PRs #275, #285)
 Full Spanish (<code>es</code>) locale covering all 175 UI strings, plus the one-shot bootstrap onboarding wizard that guides new users through provider setup on first launch — the feature most responsible for new users actually getting started.</p>
 <p><strong><a href="https://github.com/bergeouss">@bergeouss</a></strong> — Real-time gateway session sync (PR #274)
@@ -768,7 +796,7 @@ Made the assistant display name configurable throughout the UI, added thinking/r
 The original CLI session bridge: reads CLI sessions from the agent&#39;s SQLite state store and surfaces them in the WebUI sidebar. This was the first bridge between the CLI and WebUI session worlds.</p>
 <p><strong><a href="https://github.com/deboste">@deboste</a></strong> — Reverse proxy auth + mobile responsive layout + model routing (PRs #3, #4, #5)
 Three of the very first community PRs: fixed EventSource/fetch to use the URL origin for reverse proxy setups, corrected model provider routing from config, and added mobile responsive layout with dvh viewport fix. Early foundation work.</p>
-<h5>Bug fix and security contributions</h5>
+<h6>Bug fix and security contributions</h6>
 <p><strong><a href="https://github.com/Hinotoi-agent">@Hinotoi-agent</a></strong> — Profile .env secret isolation (PR #351)
 Fixed API key leakage between profiles on switch — switching from a profile with <code>OPENAI_API_KEY</code> to one without it left the key in the process environment for the duration of the session, effectively leaking credentials. A subtle and important security fix.</p>
 <p><strong><a href="https://github.com/lawrencel1ng">@lawrencel1ng</a></strong> — Bandit security fixes B310/B324/B110 + QuietHTTPServer (PR #354)
@@ -809,7 +837,7 @@ A CSS-only redesign of the full UI — proper design tokens (<code>--bg-primary<
 Added a streaming token buffer and post-run message scrub to <code>streaming.py</code> to detect and strip fake tool execution JSON that weaker models write inline instead of calling tools properly. A three-layer approach: ephemeral anti-hallucination prompt, live token filtering, and session history cleanup. The pattern influenced later streaming.py improvements.</p>
 <hr>
 <p>Want to contribute? See <a href="https://github.com/nesquena/hermes-webui/blob/main/ARCHITECTURE.md">ARCHITECTURE.md</a> for the codebase layout and <a href="https://github.com/nesquena/hermes-webui/blob/main/TESTING.md">TESTING.md</a> for how to run the test suite. The best contributions are focused, well-tested, and solve a real problem — exactly what every person on this list did.</p>
-<h4>Repo</h4>
+<h5>Repo</h5>
 <pre><code>git@github.com:nesquena/hermes-webui.git
 </code></pre>
   </section>

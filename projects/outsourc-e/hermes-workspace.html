@@ -29,6 +29,34 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/outsourc-e/hermes-workspace#software",
+  "name": "hermes-workspace",
+  "description": "Hermes Workspace is a native web-based command center designed to provide a unified graphical interface for the Hermes Agent ecosystem. It integrates directly with the Hermes gateway via real-time SSE streaming to manage chat, terminal access, and tool call rendering. Users can browse and edit agent memory, manage over 2,000 skills, and orchestrate complex jobs through a security-hardened dashboard. The project follows a zero-fork architecture, allowing it to run on vanilla installations of the ",
+  "url": "https://hermesatlas.com/projects/outsourc-e/hermes-workspace",
+  "codeRepository": "https://github.com/outsourc-e/hermes-workspace",
+  "applicationCategory": "DesktopEnhancementApplication",
+  "operatingSystem": "Cross-platform",
+  "author": {
+    "@type": "Organization",
+    "name": "outsourc-e",
+    "url": "https://github.com/outsourc-e"
+  },
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 830
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -111,7 +139,7 @@
 
 <img src="https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/public/hermes-avatar.webp" alt="Hermes Workspace" width="80" style="border-radius: 16px" />
 
-<h3>Hermes Workspace</h3>
+<h4>Hermes Workspace</h4>
 <p><strong>Your AI agent&#39;s command center — chat, files, memory, skills, and terminal in one place.</strong></p>
 <p><a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.0.0-2557b7.svg" alt="Version"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
@@ -127,7 +155,7 @@
 </div>
 
 <hr>
-<h4>✨ Features</h4>
+<h5>✨ Features</h5>
 <ul>
 <li>🤖 <strong>Hermes Agent Integration</strong> — Direct gateway connection with real-time SSE streaming</li>
 <li>🎨 <strong>8-Theme System</strong> — Official, Classic, Slate, Mono — each with light and dark variants</li>
@@ -137,7 +165,7 @@
 <li>🧠 <strong>Memory &amp; Skills</strong> — Browse, search, and edit agent memory; explore 2,000+ skills</li>
 </ul>
 <hr>
-<h4>📸 Screenshots</h4>
+<h5>📸 Screenshots</h5>
 <table>
 <thead>
 <tr>
@@ -187,8 +215,8 @@
 </tr>
 </tbody></table>
 <hr>
-<h4>🚀 Quick Start</h4>
-<h5>One-line install (recommended)</h5>
+<h5>🚀 Quick Start</h5>
+<h6>One-line install (recommended)</h6>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/outsourc-e/hermes-workspace/main/install.sh | bash
 </code></pre>
 <p>This installs <code>hermes-agent</code> from PyPI, clones this repo, sets up <code>.env</code>, and installs deps. Then:</p>
@@ -197,7 +225,7 @@ cd ~/hermes-workspace &amp;&amp; pnpm dev   # terminal 2
 </code></pre>
 <p>Open <a href="http://localhost:3000">http://localhost:3000</a>. That&#39;s it.</p>
 <hr>
-<h5>Already running <code>hermes-agent</code>? Attach the workspace to it</h5>
+<h6>Already running <code>hermes-agent</code>? Attach the workspace to it</h6>
 <p>If you already have <code>hermes-agent</code> installed (via Nous&#39;s installer, <code>pip install</code>, systemd, Docker, etc.) and it&#39;s serving the gateway at <code>http://&lt;host&gt;:8642</code>, you don&#39;t need to reinstall anything — just point the workspace at it.</p>
 <pre><code class="language-bash">git clone https://github.com/outsourc-e/hermes-workspace.git
 cd hermes-workspace
@@ -240,7 +268,7 @@ echo &#39;API_SERVER_HOST=0.0.0.0&#39; &gt;&gt; ~/.hermes/.env
 <p>Then restart the gateway, dashboard, and workspace. Hit the workspace from the remote device and the connection probe will use the Tailscale IP instead of localhost. Both <code>HERMES_API_URL</code> and <code>HERMES_DASHBOARD_URL</code> must be set to Tailscale/LAN-reachable URLs — setting only one will leave the other probing <code>127.0.0.1</code> and failing.</p>
 <p><strong>If you&#39;ve already started the workspace</strong>, you can update both URLs from <code>Settings → Connection</code> without restarting. The values are persisted to <code>~/.hermes/workspace-overrides.json</code> and take effect immediately (gateway capabilities are reprobed on save). Editing <code>.env</code> still works for pre-start config and for CI/containers.</p>
 <hr>
-<h5>Manual install</h5>
+<h6>Manual install</h6>
 <p>Hermes Workspace works with any OpenAI-compatible backend. If your backend also exposes Hermes gateway APIs, enhanced features like sessions, memory, skills, and jobs unlock automatically.</p>
 <h6>Prerequisites</h6>
 <ul>
@@ -263,7 +291,7 @@ hermes setup
 hermes gateway run
 </code></pre>
 <p>Our one-liner installer (below) does both steps automatically. If you&#39;re using another OpenAI-compatible server, just note its base URL.</p>
-<h5>Step 2: Install &amp; Run Hermes Workspace</h5>
+<h6>Step 2: Install &amp; Run Hermes Workspace</h6>
 <pre><code class="language-bash"># In a new terminal
 git clone https://github.com/outsourc-e/hermes-workspace.git
 cd hermes-workspace
@@ -275,7 +303,7 @@ pnpm dev                   # Starts on http://localhost:3000
 <blockquote>
 <p><strong>Verify:</strong> Open <code>http://localhost:3000</code> and complete the onboarding flow. First connect the backend, then verify chat works. If your gateway exposes Hermes APIs, advanced features appear automatically.</p>
 </blockquote>
-<h5>Agent W Managed Companion</h5>
+<h6>Agent W Managed Companion</h6>
 <p>When Hermes Workspace is running behind Agent W&#39;s local HTTPS proxy, the
 managed companion entrypoint is:</p>
 <pre><code class="language-bash">https://localhost:4445/chat/new
@@ -305,16 +333,16 @@ HERMES_API_URL=http://127.0.0.1:8642
 # HERMES_PASSWORD=your_password
 </code></pre>
 <hr>
-<h4>🧠 Local Models (Ollama, Atomic Chat, LM Studio, vLLM)</h4>
+<h5>🧠 Local Models (Ollama, Atomic Chat, LM Studio, vLLM)</h5>
 <p>Hermes Workspace supports two modes with local models:</p>
-<h5>Portable Mode (Easiest)</h5>
+<h6>Portable Mode (Easiest)</h6>
 <p>Point the workspace directly at your local server — no Hermes gateway needed.</p>
-<h5>Atomic Chat</h5>
+<h6>Atomic Chat</h6>
 <pre><code class="language-bash"># Start workspace pointed at Atomic Chat
 HERMES_API_URL=http://127.0.0.1:1337/v1 pnpm dev
 </code></pre>
 <p>Download <a href="https://atomic.chat/">Atomic Chat</a>, launch the desktop app, and make sure a model is loaded before starting Hermes Workspace.</p>
-<h5>Ollama</h5>
+<h6>Ollama</h6>
 <pre><code class="language-bash"># Start Ollama
 OLLAMA_ORIGINS=* ollama serve
 
@@ -322,7 +350,7 @@ OLLAMA_ORIGINS=* ollama serve
 HERMES_API_URL=http://127.0.0.1:11434 pnpm dev
 </code></pre>
 <p>Chat works immediately. Sessions, memory, and skills show &quot;Not Available&quot; — that&#39;s expected in portable mode.</p>
-<h5>Enhanced Mode (Full Features)</h5>
+<h6>Enhanced Mode (Full Features)</h6>
 <p>Route through the Hermes gateway for sessions, memory, skills, jobs, and tools.</p>
 <p>Here are two explicit <code>~/.hermes/config.yaml</code> examples for the local providers we support directly in the workspace:</p>
 <p><strong>Atomic Chat</strong></p>
@@ -360,16 +388,16 @@ pnpm dev
 <p><strong>Works with any OpenAI-compatible server</strong> — Atomic Chat, Ollama, LM Studio, vLLM, llama.cpp, LocalAI, etc. Just change the <code>base_url</code> and <code>model</code> in the config above.</p>
 </blockquote>
 <hr>
-<h4>🐳 Docker Quickstart</h4>
+<h5>🐳 Docker Quickstart</h5>
 <p><a href="https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=outsourc-e/hermes-workspace"><img src="https://img.shields.io/badge/GitHub%20Codespaces-Open-181717?logo=github" alt="Open in GitHub Codespaces"></a></p>
 <p>The Docker setup runs both the <strong>Hermes Agent gateway</strong> and <strong>Hermes Workspace</strong> together.</p>
-<h5>Prerequisites</h5>
+<h6>Prerequisites</h6>
 <ul>
 <li><strong>Docker</strong></li>
 <li><strong>Docker Compose</strong></li>
 <li><strong>Anthropic API Key</strong> — <a href="https://console.anthropic.com/settings/keys">Get one here</a> (required for the agent gateway)</li>
 </ul>
-<h5>Step 1: Configure Environment</h5>
+<h6>Step 1: Configure Environment</h6>
 <pre><code class="language-bash">git clone https://github.com/outsourc-e/hermes-workspace.git
 cd hermes-workspace
 cp .env.example .env
@@ -385,7 +413,7 @@ ANTHROPIC_API_KEY=sk-ant-...           # Claude
 <blockquote>
 <p><strong>Heads up:</strong> <code>hermes-agent</code> needs to be able to reach <em>some</em> model. If you don&#39;t configure any provider (API key or local server), chat will fail on first message.</p>
 </blockquote>
-<h5>Step 2: Start the Services</h5>
+<h6>Step 2: Start the Services</h6>
 <pre><code class="language-bash">docker compose up
 </code></pre>
 <p>This pulls two pre-built images and starts them:</p>
@@ -396,18 +424,18 @@ ANTHROPIC_API_KEY=sk-ant-...           # Claude
 <p>No local build. First run takes a minute to pull; subsequent starts are instant.
 Agent state (config, sessions, skills, memory, credentials) persists in the
 <code>hermes-data</code> named volume, so containers can be recreated without data loss.</p>
-<h5>Step 3: Access the Workspace</h5>
+<h6>Step 3: Access the Workspace</h6>
 <p>Open <code>http://localhost:3000</code> and complete the onboarding.</p>
 <blockquote>
 <p><strong>Verify:</strong> Check the Docker logs for <code>[gateway] Connected to Hermes</code> — this confirms the workspace successfully connected to the agent.</p>
 </blockquote>
-<h5>Building from source</h5>
+<h6>Building from source</h6>
 <p>Want to hack on the workspace or the bundled agent Dockerfile? Use the dev overlay:</p>
 <pre><code class="language-bash">docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 </code></pre>
 <p>The base <code>docker-compose.yml</code> stays untouched — the overlay adds <code>build:</code> blocks
 that take priority over <code>image:</code>, so both services compile from local source.</p>
-<h5>Using a Pre-Built Image (Coolify / Easypanel / Dokploy / Unraid)</h5>
+<h6>Using a Pre-Built Image (Coolify / Easypanel / Dokploy / Unraid)</h6>
 <p>Deploying Project Workspace to a PaaS or home-lab stack? Pull the image
 directly from GitHub Container Registry:</p>
 <pre><code>ghcr.io/outsourc-e/hermes-workspace:latest
@@ -445,9 +473,9 @@ env:
 a <code>nousresearch/hermes-agent:latest</code> container (what our <code>docker-compose.yml</code>
 does by default) or an existing gateway on another host.</p>
 <hr>
-<h4>📱 Install as App (Recommended)</h4>
+<h5>📱 Install as App (Recommended)</h5>
 <p>Hermes Workspace is a <strong>Progressive Web App (PWA)</strong> — install it for the full native app experience with no browser chrome, keyboard shortcuts, and offline support.</p>
-<h5>🖥️ Desktop (macOS / Windows / Linux)</h5>
+<h6>🖥️ Desktop (macOS / Windows / Linux)</h6>
 <ol>
 <li>Open Hermes Workspace in <strong>Chrome</strong> or <strong>Edge</strong> at <code>http://localhost:3000</code></li>
 <li>Click the <strong>install icon</strong> (⊕) in the address bar</li>
@@ -457,7 +485,7 @@ does by default) or an existing gateway on another host.</p>
 <blockquote>
 <p><strong>macOS users:</strong> After installing, you can also add it to your Launchpad.</p>
 </blockquote>
-<h5>📱 iPhone / iPad (iOS Safari)</h5>
+<h6>📱 iPhone / iPad (iOS Safari)</h6>
 <ol>
 <li>Open Hermes Workspace in <strong>Safari</strong> on your iPhone</li>
 <li>Tap the <strong>Share</strong> button (□↑)</li>
@@ -465,16 +493,16 @@ does by default) or an existing gateway on another host.</p>
 <li>Tap <strong>Add</strong> — the Hermes Workspace icon appears on your home screen</li>
 <li>Launch from home screen for the full native app experience</li>
 </ol>
-<h5>🤖 Android</h5>
+<h6>🤖 Android</h6>
 <ol>
 <li>Open Hermes Workspace in <strong>Chrome</strong> on your Android device</li>
 <li>Tap the <strong>three-dot menu</strong> (⋮) → <strong>&quot;Add to Home screen&quot;</strong></li>
 <li>Tap <strong>Add</strong> — Hermes Workspace is now a native-feeling app on your device</li>
 </ol>
 <hr>
-<h4>📡 Mobile Access via Tailscale</h4>
+<h5>📡 Mobile Access via Tailscale</h5>
 <p>Access Hermes Workspace from anywhere on your devices — no port forwarding, no VPN complexity.</p>
-<h5>Setup</h5>
+<h6>Setup</h6>
 <ol>
 <li><p><strong>Install Tailscale</strong> on your Mac and mobile device:</p>
 <ul>
@@ -500,7 +528,7 @@ does by default) or an existing gateway on another host.</p>
 <p>💡 Tailscale works over any network — home wifi, mobile data, even across countries. Your traffic stays end-to-end encrypted.</p>
 </blockquote>
 <hr>
-<h4>🖥️ Native Desktop App</h4>
+<h5>🖥️ Native Desktop App</h5>
 <blockquote>
 <p><strong>Status: In Development</strong> — A native Electron-based desktop app is in active development.</p>
 </blockquote>
@@ -513,7 +541,7 @@ does by default) or an existing gateway on another host.</p>
 </ul>
 <p><strong>In the meantime:</strong> Install Hermes Workspace as a PWA (see above) for a near-native desktop experience — it works great.</p>
 <hr>
-<h4>☁️ Cloud &amp; Hosted Setup</h4>
+<h5>☁️ Cloud &amp; Hosted Setup</h5>
 <blockquote>
 <p><strong>Status: Coming Soon</strong></p>
 </blockquote>
@@ -532,8 +560,8 @@ does by default) or an existing gateway on another host.</p>
 <li>Webhook integrations and external triggers</li>
 </ul>
 <hr>
-<h4>✨ Features</h4>
-<h5>💬 Chat</h5>
+<h5>✨ Features</h5>
+<h6>💬 Chat</h6>
 <ul>
 <li>Real-time SSE streaming with tool call rendering</li>
 <li>Agent-authored artifact events surfaced in the inspector</li>
@@ -542,37 +570,37 @@ does by default) or an existing gateway on another host.</p>
 <li>Chronological message ordering with merge dedup</li>
 <li>Inspector panel for session activity, memory, and skills</li>
 </ul>
-<h5>🧠 Memory</h5>
+<h6>🧠 Memory</h6>
 <ul>
 <li>Browse and edit agent memory files</li>
 <li>Search across memory entries</li>
 <li>Markdown preview with live editing</li>
 </ul>
-<h5>🧩 Skills</h5>
+<h6>🧩 Skills</h6>
 <ul>
 <li>Browse 2,000+ skills from the registry</li>
 <li>View skill details, categories, and documentation</li>
 <li>Skill management per session</li>
 </ul>
-<h5>📁 Files</h5>
+<h6>📁 Files</h6>
 <ul>
 <li>Full workspace file browser</li>
 <li>Navigate directories, preview and edit files</li>
 <li>Monaco editor integration</li>
 </ul>
-<h5>💻 Terminal</h5>
+<h6>💻 Terminal</h6>
 <ul>
 <li>Full PTY terminal with cross-platform support</li>
 <li>Persistent shell sessions</li>
 <li>Direct workspace access</li>
 </ul>
-<h5>🎨 Themes</h5>
+<h6>🎨 Themes</h6>
 <ul>
 <li>8 themes: Official, Classic, Slate, Mono — each with light and dark variants</li>
 <li>Theme persists across sessions</li>
 <li>Full mobile dark mode support</li>
 </ul>
-<h5>🔒 Security</h5>
+<h6>🔒 Security</h6>
 <ul>
 <li>Auth middleware on all API routes</li>
 <li>CSP headers via meta tags</li>
@@ -592,8 +620,8 @@ does by default) or an existing gateway on another host.</p>
 </ul>
 <p>See <code>.env.example</code> for the full list. Credits to <a href="https://github.com/kiosvantra">@kiosvantra</a> for the security audit surfacing #121–#125.</p>
 <hr>
-<h4>🔧 Troubleshooting</h4>
-<h5>&quot;Workspace loads but chat doesn&#39;t work&quot;</h5>
+<h5>🔧 Troubleshooting</h5>
+<h6>&quot;Workspace loads but chat doesn&#39;t work&quot;</h6>
 <p>The workspace auto-detects your gateway&#39;s capabilities on startup. Check your terminal for a line like:</p>
 <pre><code>[gateway] http://127.0.0.1:8642 available: health, models; missing: sessions, skills, memory, config, jobs
 [gateway] Missing Hermes APIs detected. Update hermes-agent to the latest version.
@@ -603,22 +631,22 @@ does by default) or an existing gateway on another host.</p>
 hermes gateway run
 </code></pre>
 <p>(If you installed via a different path, follow your Nous installer&#39;s upgrade instructions.) If you were on the old <code>outsourc-e/hermes-agent</code> fork, it&#39;s no longer needed as of v2 — uninstall it and use upstream instead.</p>
-<h5>&quot;Connection refused&quot; or workspace hangs on load</h5>
+<h6>&quot;Connection refused&quot; or workspace hangs on load</h6>
 <p>Your Hermes gateway isn&#39;t running. Start it:</p>
 <pre><code class="language-bash">hermes gateway run
 </code></pre>
 <p>First-time run? Do <code>hermes setup</code> first to pick a provider and model.</p>
-<h5>Ollama: chat returns empty or model shows &quot;Offline&quot;</h5>
+<h6>Ollama: chat returns empty or model shows &quot;Offline&quot;</h6>
 <p>Make sure your <code>~/.hermes/config.yaml</code> has the <code>custom_providers</code> section and <code>API_SERVER_ENABLED=true</code> in <code>~/.hermes/.env</code>. See <a href="#-local-models-ollama-lm-studio-vllm">Local Models</a> above.</p>
 <p>Also ensure Ollama is running with CORS enabled:</p>
 <pre><code class="language-bash">OLLAMA_ORIGINS=* ollama serve
 </code></pre>
 <p>Use <code>http://127.0.0.1:11434/v1</code> (not <code>localhost</code>) as the base URL.</p>
 <p>Verify: <code>curl http://localhost:8642/health</code> should return <code>{&quot;status&quot;: &quot;ok&quot;}</code>.</p>
-<h5>&quot;Using upstream NousResearch/hermes-agent&quot;</h5>
+<h6>&quot;Using upstream NousResearch/hermes-agent&quot;</h6>
 <p>v2+ runs on vanilla <code>hermes-agent</code> with full feature parity. The upstream ships all extended endpoints (sessions, memory, skills, config). <strong>No fork required, ever.</strong></p>
 <p>If you&#39;re pinned to an older <code>hermes-agent</code> version and missing endpoints, the workspace will degrade gracefully to <strong>portable mode</strong> with basic chat — upgrade upstream to restore full features.</p>
-<h5>Docker: &quot;Unauthorized&quot; or &quot;Connection refused&quot; to hermes-agent</h5>
+<h6>Docker: &quot;Unauthorized&quot; or &quot;Connection refused&quot; to hermes-agent</h6>
 <p>If using Docker Compose and getting auth errors:</p>
 <ol>
 <li><p><strong>Check at least one provider key is set:</strong></p>
@@ -648,13 +676,13 @@ docker compose up --build
 <p>Look for: <code>[gateway] http://hermes-agent:8642 mode=...</code> — if it shows <code>mode=disconnected</code>, the agent isn&#39;t running correctly.</p>
 </li>
 </ol>
-<h5>Docker: &quot;hermes webapi command not found&quot;</h5>
+<h6>Docker: &quot;hermes webapi command not found&quot;</h6>
 <p>The <code>hermes webapi</code> command referenced in older docs doesn&#39;t exist. The correct command is:</p>
 <pre><code class="language-bash">hermes --gateway   # Starts the FastAPI gateway server
 </code></pre>
 <p>The Docker setup uses <code>hermes --gateway</code> automatically — no action needed if using <code>docker compose up</code>.</p>
 <hr>
-<h4>🗺️ Roadmap</h4>
+<h5>🗺️ Roadmap</h5>
 <table>
 <thead>
 <tr>
@@ -708,15 +736,15 @@ docker compose up --build
 </tr>
 </tbody></table>
 <hr>
-<h4>⭐ Star History</h4>
-<h4><a href="https://www.star-history.com/#outsourc-e/hermes-workspace&type=date&logscale&legend=top-left"><img src="https://api.star-history.com/svg?repos=outsourc-e/hermes-workspace&amp;type=date&amp;logscale&amp;legend=top-left" alt="Star History Chart"></a></h4>
-<h4>💛 Support the Project</h4>
+<h5>⭐ Star History</h5>
+<h5><a href="https://www.star-history.com/#outsourc-e/hermes-workspace&type=date&logscale&legend=top-left"><img src="https://api.star-history.com/svg?repos=outsourc-e/hermes-workspace&amp;type=date&amp;logscale&amp;legend=top-left" alt="Star History Chart"></a></h5>
+<h5>💛 Support the Project</h5>
 <p>Hermes Workspace is free and open source. If it&#39;s saving you time and powering your workflow, consider supporting development:</p>
 <p><strong>ETH:</strong> <code>0xB332D4C60f6FBd94913e3Fd40d77e3FE901FAe22</code></p>
 <p><a href="https://github.com/sponsors/outsourc-e"><img src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-pink?logo=github" alt="GitHub Sponsors"></a></p>
 <p>Every contribution helps keep this project moving. Thank you 🙏</p>
 <hr>
-<h4>🤝 Contributing</h4>
+<h5>🤝 Contributing</h5>
 <p>PRs are welcome! See <a href="https://github.com/outsourc-e/hermes-workspace/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> for guidelines.</p>
 <ul>
 <li>Bug fixes → open a PR directly</li>
@@ -724,7 +752,7 @@ docker compose up --build
 <li>Security issues → see <a href="https://github.com/outsourc-e/hermes-workspace/blob/main/SECURITY.md">SECURITY.md</a> for responsible disclosure</li>
 </ul>
 <hr>
-<h4>📄 License</h4>
+<h5>📄 License</h5>
 <p>MIT — see <a href="LICENSE">LICENSE</a> for details.</p>
 <hr>
 <div align="center">

@@ -215,6 +215,269 @@ function splitName(full) {
   return { org: "", name: full };
 }
 
+// ── GEO: category → schema.org applicationCategory ──
+const CATEGORY_TO_SCHEMA_APP = {
+  "Core & Official": "DeveloperApplication",
+  "Workspaces & GUIs": "DesktopEnhancementApplication",
+  "Memory & Context": "UtilitiesApplication",
+  "Skills & Skill Registries": "DeveloperApplication",
+  "Plugins & Extensions": "BrowserApplication",
+  "Integrations & Bridges": "CommunicationApplication",
+  "Multi-Agent & Orchestration": "DeveloperApplication",
+  "Developer Tools": "DeveloperApplication",
+  "Deployment & Infra": "DeveloperApplication",
+  "Domain Applications": "BusinessApplication",
+  "Guides & Docs": "ReferenceApplication",
+  "Forks & Derivatives": "DeveloperApplication",
+};
+
+// ── GEO: SoftwareApplication JSON-LD for a project page ──
+function renderSoftwareApplicationLD(repo, meta, summary) {
+  const canonicalUrl = `${SITE_URL}/projects/${repo.owner}/${repo.repo}`;
+  const stars = meta.stars || repo.stars || 0;
+  const description = String(summary?.summary || meta.description || repo.description || "").slice(0, 500);
+  const appCategory = CATEGORY_TO_SCHEMA_APP[repo.category] || "DeveloperApplication";
+  const license = meta.license && meta.license !== "NOASSERTION" && /^[A-Za-z0-9][\w\-.+]*$/.test(meta.license)
+    ? `https://spdx.org/licenses/${meta.license}.html`
+    : null;
+
+  const node = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "@id": canonicalUrl + "#software",
+    name: repo.name || repo.repo,
+    description,
+    url: canonicalUrl,
+    codeRepository: repo.url,
+    applicationCategory: appCategory,
+    operatingSystem: "Cross-platform",
+    ...(meta.language ? { programmingLanguage: meta.language } : {}),
+    ...(license ? { license } : {}),
+    author: {
+      "@type": "Organization",
+      name: repo.owner,
+      url: `https://github.com/${repo.owner}`,
+    },
+    ...(meta.pushedAt ? { dateModified: new Date(meta.pushedAt).toISOString() } : {}),
+    ...(stars > 0 ? {
+      interactionStatistic: {
+        "@type": "InteractionCounter",
+        interactionType: { "@type": "LikeAction" },
+        userInteractionCount: stars,
+      },
+    } : {}),
+    isPartOf: { "@id": "https://hermesatlas.com/#website" },
+  };
+
+  return `<script type="application/ld+json">\n${JSON.stringify(node, null, 2)}\n</script>`;
+}
+
+// ── GEO: CollectionPage + ItemList JSON-LD for a list page ──
+function renderCollectionPageLD(list, matchedRepos) {
+  const canonicalUrl = `${SITE_URL}/lists/${list.slug}`;
+  const sorted = matchedRepos.slice().sort((a, b) => (b.meta?.stars || b.stars) - (a.meta?.stars || a.stars));
+
+  const node = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": canonicalUrl,
+    name: list.title,
+    description: list.description,
+    url: canonicalUrl,
+    isPartOf: { "@id": "https://hermesatlas.com/#website" },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: sorted.length,
+      itemListOrder: "https://schema.org/ItemListOrderDescending",
+      itemListElement: sorted.map((r, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${SITE_URL}/projects/${r.owner}/${r.repo}`,
+        name: `${r.owner}/${r.repo}`,
+      })),
+    },
+  };
+
+  return `<script type="application/ld+json">\n${JSON.stringify(node, null, 2)}\n</script>`;
+}
+
+// ── GEO: FAQPage JSON-LD (consumed by reports/other hand-authored pages) ──
+function renderFAQPageLD(faqs) {
+  const node = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+  return `<script type="application/ld+json">\n${JSON.stringify(node, null, 2)}\n</script>`;
+}
+
+// ── GEO: explicit multi-bot robots.txt with wildcard default closer ──
+function buildRobotsTxt() {
+  const aiBots = [
+    "GPTBot", "ChatGPT-User", "OAI-SearchBot",
+    "ClaudeBot", "anthropic-ai", "Claude-User", "Claude-SearchBot", "Claude-Web",
+    "Google-Extended", "Googlebot", "Googlebot-News", "Googlebot-Image",
+    "PerplexityBot", "Perplexity-User",
+    "Applebot", "Applebot-Extended",
+    "Bingbot",
+    "Meta-ExternalAgent", "Meta-ExternalFetcher", "FacebookBot",
+    "Amazonbot",
+    "cohere-ai", "cohere-training-data-crawler",
+    "MistralAI-User",
+    "Bytespider",
+    "DuckAssistBot", "DuckDuckBot",
+    "YouBot",
+  ];
+  const stanzas = aiBots.map((bot) => `User-agent: ${bot}\nAllow: /`).join("\n\n");
+  return `# Hermes Atlas — robots.txt
+# Explicit welcome to AI crawlers and search-engine bots.
+# The wildcard default below covers every other agent.
+
+${stanzas}
+
+User-agent: *
+Allow: /
+
+Sitemap: ${SITE_URL}/sitemap.xml
+`;
+}
+
+// ── GEO: strip HTML to readable plain-text for llms-full.txt ingestion ──
+function stripHtmlToText(html) {
+  return html
+    .replace(/<head[\s\S]*?<\/head>/gi, "")
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/[ \t]+/g, " ")
+    .replace(/\n\s*\n\s*\n+/g, "\n\n")
+    .trim();
+}
+
+// ── GEO: write llms.txt (concise index) + llms-full.txt (full bundle) ──
+function writeLlmsFiles(repos, lists, summaries) {
+  const today = new Date().toISOString().slice(0, 10);
+  const sorted = repos.slice().sort((a, b) => (b.stars || 0) - (a.stars || 0));
+  const topProjects = sorted.slice(0, 15);
+  const categoryCount = new Set(repos.map((r) => r.category)).size;
+
+  // ── llms.txt ──
+  const llmsTxt = `# Hermes Atlas
+
+> The community-curated ecosystem map for Hermes Agent by Nous Research — ${repos.length}+ tools, skills, plugins, and integrations with live GitHub data and AI-generated summaries. Updated daily. As of ${today}.
+
+Hermes Atlas tracks every open-source project in the Hermes Agent ecosystem across ${categoryCount} categories. Each project has a dedicated page with a prose summary, live star count, README, and category metadata. The full catalog is also available as JSON at ${SITE_URL}/data/repos.json for programmatic access.
+
+## Guide
+- [Beginner's Guide to Hermes Agent](${SITE_URL}/guide/): Install, pick a model, ship your first workflow, with the best community tool for every step.
+- [Install Hermes Agent](${SITE_URL}/guide/install/): Step-by-step install for macOS, Linux, Windows, and WSL, with troubleshooting.
+- [Hermes Agent vs. Claude Code](${SITE_URL}/guide/vs-claude-code/): Feature-by-feature comparison for choosing between the two.
+
+## Top Projects
+${topProjects.map((r) => `- [${r.owner}/${r.repo}](${SITE_URL}/projects/${r.owner}/${r.repo}): ${r.description} (${(r.stars || 0).toLocaleString()} stars${r.official ? ", official" : ""})`).join("\n")}
+
+## Curated Lists
+${lists.map((l) => `- [${l.title}](${SITE_URL}/lists/${l.slug}): ${l.description.slice(0, 180)}`).join("\n")}
+
+## Data
+- [Full catalog JSON](${SITE_URL}/data/repos.json): Machine-readable catalog of every tracked project.
+- [AI-generated summaries](${SITE_URL}/data/summaries.json): Prose summary + highlights for each project.
+- [Per-list summaries](${SITE_URL}/data/list-summaries.json): Curated prose for each list-page project.
+- [Full context bundle](${SITE_URL}/llms-full.txt): Concatenated content of every guide, report, and summary for direct LLM ingestion.
+- [Sitemap](${SITE_URL}/sitemap.xml): All URLs with last-modified dates.
+
+## Optional
+- [State of Hermes — April 2026 report](${SITE_URL}/reports/state-of-hermes-april-2026): Quarterly ecosystem snapshot.
+- [Privacy policy](${SITE_URL}/privacy): How the site handles visitor data.
+- [GitHub source](https://github.com/ksimback/hermes-ecosystem): The repo backing this site.
+`;
+
+  fs.writeFileSync(path.join(ROOT, "llms.txt"), llmsTxt, "utf-8");
+  console.log(`  llms.txt (${Buffer.byteLength(llmsTxt, "utf-8")} bytes)`);
+
+  // ── llms-full.txt ──
+  const sections = [];
+
+  sections.push(`# Hermes Atlas — Full Context Bundle
+
+> Complete content of hermesatlas.com as of ${today}. Concatenated from guide pages, ecosystem overview, the quarterly report, and project summaries. Canonical URLs preserved throughout.
+
+This file is the companion to ${SITE_URL}/llms.txt (the concise index).`);
+
+  try {
+    const ecosystem = fs.readFileSync(path.join(ROOT, "ECOSYSTEM.md"), "utf-8");
+    sections.push(`# ECOSYSTEM\n\n${ecosystem}`);
+  } catch {}
+
+  try {
+    const hubDraft = fs.readFileSync(path.join(ROOT, "drafts", "handbook-hub.md"), "utf-8");
+    sections.push(`# The Hermes Handbook (/guide/)\n\nCanonical URL: ${SITE_URL}/guide/\n\n${hubDraft}`);
+  } catch {}
+
+  try {
+    const vsDraft = fs.readFileSync(path.join(ROOT, "drafts", "handbook-vs-claude-code.md"), "utf-8");
+    sections.push(`# Hermes vs Claude Code (/guide/vs-claude-code/)\n\nCanonical URL: ${SITE_URL}/guide/vs-claude-code/\n\n${vsDraft}`);
+  } catch {}
+
+  try {
+    const installHtml = fs.readFileSync(path.join(ROOT, "guide", "install", "index.html"), "utf-8");
+    const stripped = stripHtmlToText(installHtml);
+    if (stripped) sections.push(`# Install Hermes Agent (/guide/install/)\n\nCanonical URL: ${SITE_URL}/guide/install/\n\n${stripped}`);
+  } catch {}
+
+  try {
+    const reportHtml = fs.readFileSync(path.join(ROOT, "reports", "state-of-hermes-april-2026.html"), "utf-8");
+    const stripped = stripHtmlToText(reportHtml);
+    if (stripped) sections.push(`# State of Hermes — April 2026\n\nCanonical URL: ${SITE_URL}/reports/state-of-hermes-april-2026\n\n${stripped}`);
+  } catch {}
+
+  sections.push(`# Project Catalog (${repos.length} projects)`);
+  for (const repo of sorted) {
+    const key = `${repo.owner}/${repo.repo}`;
+    const sum = summaries[key];
+    const body = [
+      `URL: ${SITE_URL}/projects/${repo.owner}/${repo.repo}`,
+      `GitHub: ${repo.url}`,
+      `Category: ${repo.category}`,
+      `Stars: ${(repo.stars || 0).toLocaleString()}`,
+      repo.official ? `Official: Yes (maintained by Nous Research)` : null,
+      "",
+      repo.description,
+    ].filter(Boolean).join("\n");
+
+    let summarySection = "";
+    if (sum?.summary) {
+      summarySection = `\n\n${sum.summary}`;
+      if (sum.highlights?.length) {
+        summarySection += `\n\nHighlights:\n${sum.highlights.map((h) => `- ${h}`).join("\n")}`;
+      }
+    }
+
+    sections.push(`## ${key}\n\n${body}${summarySection}`);
+  }
+
+  const llmsFull = sections.join("\n\n---\n\n") + "\n";
+  const fullBytes = Buffer.byteLength(llmsFull, "utf-8");
+
+  if (fullBytes > 1_000_000) {
+    throw new Error(`llms-full.txt exceeded 1 MB limit (${fullBytes} bytes). Prune content or raise the cap after auditing impact.`);
+  }
+
+  fs.writeFileSync(path.join(ROOT, "llms-full.txt"), llmsFull, "utf-8");
+  console.log(`  llms-full.txt (${fullBytes} bytes)`);
+}
+
 // ── Project page template ──
 function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary, handbookMention) {
   const title = `${repo.name} — Hermes Agent ${repo.category} | Hermes Atlas`;
@@ -270,6 +533,7 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary, handbo
   ]
 }
 </script>
+${renderSoftwareApplicationLD(repo, meta, summary)}
 <link rel="icon" href="${FAVICON}">
 <script>${THEME_INIT}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -436,6 +700,7 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
   ]
 }
 </script>
+${renderCollectionPageLD(list, matchedRepos)}
 <link rel="icon" href="${FAVICON}">
 <script>${THEME_INIT}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -650,9 +915,12 @@ async function main() {
   fs.writeFileSync(path.join(ROOT, "sitemap.xml"), sitemap, "utf-8");
   console.log(`  ${repos.length + lists.length + 2} URLs`);
 
-  // Generate robots.txt
-  const robotsTxt = `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`;
-  fs.writeFileSync(path.join(ROOT, "robots.txt"), robotsTxt, "utf-8");
+  // Generate robots.txt (explicit multi-bot allowlist + wildcard default)
+  fs.writeFileSync(path.join(ROOT, "robots.txt"), buildRobotsTxt(), "utf-8");
+
+  // Generate llms.txt + llms-full.txt for LLM / agent ingestion (llmstxt.org)
+  console.log("\nGenerating llms.txt + llms-full.txt...");
+  writeLlmsFiles(repos, lists, summaries);
 
   console.log("\nDone!");
 }

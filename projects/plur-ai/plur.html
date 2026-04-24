@@ -29,6 +29,34 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/plur-ai/plur#software",
+  "name": "plur",
+  "description": "PLUR is a persistent, local-first memory layer designed to synchronize agent corrections, preferences, and conventions across different AI tools and sessions. It stores knowledge as plain YAML files called engrams, using an activation model that strengthens frequently used facts while allowing stale information to naturally decay. The system employs a hybrid search approach combining BM25 and embeddings to inject relevant context into agent prompts without cloud API calls. It integrates directly",
+  "url": "https://hermesatlas.com/projects/plur-ai/plur",
+  "codeRepository": "https://github.com/plur-ai/plur",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Cross-platform",
+  "author": {
+    "@type": "Organization",
+    "name": "plur-ai",
+    "url": "https://github.com/plur-ai"
+  },
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 31
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -107,17 +135,17 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>PLUR — Your agents share the same memory</h3>
+    <h4>PLUR — Your agents share the same memory</h4>
 <p>Persistent memory for AI agents. Local-first, zero-cost, works across MCP tools.</p>
 <p><a href="https://plur.ai">plur.ai</a> · <a href="https://plur.ai/benchmark.html">Benchmark</a> · <a href="https://plur.ai/spec.html">Engram Spec</a> · <a href="https://www.npmjs.com/org/plur-ai">npm</a></p>
-<h4>The idea</h4>
+<h5>The idea</h5>
 <p>You correct your agent&#39;s coding style on Monday. On Tuesday, it makes the same mistake. You explain your architecture in Cursor. That night, Claude Code has no idea.</p>
 <p>PLUR fixes this. Install it once, and corrections, preferences, and conventions persist — across sessions, tools, and machines. Your memory is stored as plain YAML on your disk. No cloud, no API calls, no black box.</p>
 <p>The interesting part: <strong>Haiku with PLUR memory outperforms Opus without it</strong> — 2.6x better on tool routing, at roughly 10x less cost. Turns out the bottleneck isn&#39;t model intelligence. It&#39;s context.</p>
-<h4>Install</h4>
-<h5>Tell your agent</h5>
+<h5>Install</h5>
+<h6>Tell your agent</h6>
 <p>Go to <a href="https://plur.ai">plur.ai</a> and tell your agent to install memory for your tool — Claude Code, Cursor, Windsurf, or OpenClaw. The site has the right config for your setup.</p>
-<h5>Manual setup (Claude Code)</h5>
+<h6>Manual setup (Claude Code)</h6>
 <p>One command sets up everything — storage, MCP config, and Claude Code hooks:</p>
 <pre><code class="language-bash">npx @plur-ai/mcp init
 </code></pre>
@@ -127,22 +155,22 @@
 npx @plur-ai/cli init --domain myapp --scope project:my-app
 </code></pre>
 <p>This creates a <code>.plur.yaml</code> in the project with defaults that hooks apply automatically. Engrams learned in that project are tagged; recall filters by scope but always includes global knowledge.</p>
-<h5>Global install (faster startup)</h5>
+<h6>Global install (faster startup)</h6>
 <pre><code class="language-bash">npm install -g @plur-ai/mcp
 plur-mcp init
 </code></pre>
-<h5>OpenClaw</h5>
+<h6>OpenClaw</h6>
 <pre><code class="language-bash">openclaw plugins install @plur-ai/claw
 openclaw config set plur.enabled true
 </code></pre>
 <p>That&#39;s it. PLUR works in the background from here. No workflow changes needed — just use your tools as usual. Corrections accumulate automatically.</p>
-<h5>Hermes Agent</h5>
+<h6>Hermes Agent</h6>
 <pre><code class="language-bash">pip install plur-hermes
 </code></pre>
 <p>The plugin registers automatically via Hermes&#39; plugin system. It injects relevant memories before each LLM call, extracts learnings from agent responses, and exposes all PLUR tools to the agent. Requires the PLUR CLI (<code>npm install -g @plur-ai/cli</code>).</p>
-<h5>Verify it works</h5>
+<h6>Verify it works</h6>
 <p>Ask your agent: <em>&quot;What&#39;s my PLUR status?&quot;</em> — it should call <code>plur_status</code> and return your engram count and storage path.</p>
-<h4>How it works</h4>
+<h5>How it works</h5>
 <p>PLUR has two storage primitives:</p>
 <p><strong><a href="https://plur.ai/spec.html">Engrams</a></strong> — learned knowledge that persists across sessions. Each engram is a typed assertion (&quot;always use blue-green deploys&quot;, &quot;never force-push to main&quot;) with:</p>
 <ul>
@@ -162,7 +190,7 @@ Unused engrams          →  activation decays  →  naturally fade from injecti
 <p>Search is fully local: BM25 (with IDF weighting, TF saturation, length normalization) + BGE embeddings + Reciprocal Rank Fusion. Zero API calls, zero per-query cost. <a href="https://plur.ai/benchmark.html">Benchmark methodology →</a></p>
 <p>Plugins (OpenClaw, Hermes) automatically capture learnings from agent conversations — no manual saving needed. The agent&#39;s corrections become engrams without you doing anything.</p>
 <p>See the <a href="https://plur.ai/spec.html">full engram spec</a> for schema details, activation model, and injection algorithm.</p>
-<h4>Usage</h4>
+<h5>Usage</h5>
 <pre><code class="language-typescript">import { Plur } from &#39;@plur-ai/core&#39;
 
 const plur = new Plur()
@@ -198,7 +226,7 @@ const incidents = plur.timeline({ agent: &#39;claude-code&#39; })
 // Sync across machines
 plur.sync(&#39;git@github.com:you/plur-memory.git&#39;)
 </code></pre>
-<h5>MCP tools</h5>
+<h6>MCP tools</h6>
 <table>
 <thead>
 <tr>
@@ -247,7 +275,7 @@ plur.sync(&#39;git@github.com:you/plur-memory.git&#39;)
 <td>Check system health and engram counts</td>
 </tr>
 </tbody></table>
-<h4>Benchmark</h4>
+<h5>Benchmark</h5>
 <p>We ran 19 decisive contests across three Claude models (Haiku, Sonnet, Opus). Same task, same prompt — one agent with PLUR, one without. Ties removed.</p>
 <table>
 <thead>
@@ -281,7 +309,7 @@ plur.sync(&#39;git@github.com:you/plur-memory.git&#39;)
 <p><strong>31 wins, 4 losses (89% win rate).</strong> Without memory, agents got house rules right 10–38% of the time depending on model — with PLUR, 12–0 across every model. Memory isn&#39;t a reasoning crutch — it&#39;s information the model literally cannot infer.</p>
 <p>The cost insight was unexpected: Haiku + PLUR scored 0.80 on discoverability. Opus alone scored 0.31. A $0.25/MTok model with memory beat a $15/MTok model without it.</p>
 <p><a href="https://plur.ai/benchmark.html">Full methodology →</a></p>
-<h4>What PLUR is — and isn&#39;t</h4>
+<h5>What PLUR is — and isn&#39;t</h5>
 <p>PLUR is <strong>agent memory</strong> — it stores corrections, preferences, conventions, and architectural decisions that an AI agent learns during work sessions, and injects them back when they&#39;re relevant.</p>
 <p>PLUR is <strong>not</strong> a general-purpose search engine, a codebase indexer, or a replacement for code intelligence tools. It doesn&#39;t parse ASTs, navigate class hierarchies, or search your source files. If you need code-aware search (tree-sitter, language server features, symbol lookup), tools like <a href="https://github.com/skydeckai/claude-mem">claude-mem</a> or your IDE&#39;s built-in search are the right choice.</p>
 <p>The two are complementary:</p>
@@ -330,7 +358,7 @@ plur.sync(&#39;git@github.com:you/plur-memory.git&#39;)
 </tr>
 </tbody></table>
 <p>While search is a core part of PLUR (finding the right engram to inject), the search targets are always engrams — not files, not code, not documents. PLUR&#39;s hybrid search (BM25 + embeddings + RRF) is optimized for short natural-language assertions, not source code.</p>
-<h4>Packages</h4>
+<h5>Packages</h5>
 <table>
 <thead>
 <tr>
@@ -355,7 +383,7 @@ plur.sync(&#39;git@github.com:you/plur-memory.git&#39;)
 <td>Hermes Agent plugin (Python, via CLI bridge)</td>
 </tr>
 </tbody></table>
-<h4>Architecture</h4>
+<h5>Architecture</h5>
 <pre><code>@plur-ai/core
 ├── engrams.ts           Engram CRUD + YAML persistence
 ├── episodes.ts          Episode capture + timeline queries
@@ -373,7 +401,7 @@ plur.sync(&#39;git@github.com:you/plur-memory.git&#39;)
 @plur-ai/claw          OpenClaw ContextEngine hooks (assemble/compact/afterTurn)
 plur-hermes            Python plugin for Hermes Agent (CLI subprocess bridge)
 </code></pre>
-<h5>Storage</h5>
+<h6>Storage</h6>
 <p>Everything is plain YAML. Open it, read it, edit it.</p>
 <pre><code>~/.plur/
 ├── engrams.yaml     # learned knowledge (source of truth)
@@ -383,18 +411,18 @@ plur-hermes            Python plugin for Hermes Agent (CLI subprocess bridge)
 </code></pre>
 <p><code>PLUR_PATH</code> overrides the default location.</p>
 <p>For large stores (&gt;1k engrams), enable the SQLite read index for faster filtered queries. Add <code>index: true</code> to <code>config.yaml</code>. The YAML file stays the source of truth — the <code>.db</code> is a cache that rebuilds automatically. Delete it anytime.</p>
-<h4>Requirements</h4>
+<h5>Requirements</h5>
 <ul>
 <li><strong>Node.js 18+</strong></li>
 <li><strong>2GB RAM minimum</strong> — the embedding model (ONNX runtime) needs ~1GB for installation. On servers with less RAM, embeddings are skipped and search falls back to BM25 keyword matching.</li>
 </ul>
-<h4>Development</h4>
+<h5>Development</h5>
 <pre><code class="language-bash">git clone https://github.com/plur-ai/plur.git
 cd plur
 pnpm install &amp;&amp; pnpm build &amp;&amp; pnpm test
 </code></pre>
 <p>~340 tests across 27 files. <code>pnpm test:watch</code> for development.</p>
-<h4>Contributing</h4>
+<h5>Contributing</h5>
 <ul>
 <li><strong>Bug reports</strong> — issue with reproduction steps</li>
 <li><strong>Feature requests</strong> — issue describing the use case</li>
@@ -403,7 +431,7 @@ pnpm install &amp;&amp; pnpm build &amp;&amp; pnpm test
 </ul>
 <p>Before submitting: <code>pnpm test</code> passes, <code>pnpm build</code> succeeds, no new external deps in core without discussion.</p>
 <p>Conventions: TypeScript, Zod validation, Vitest, no external APIs in core, YAML storage, zero-cost search by default.</p>
-<h4>License</h4>
+<h5>License</h5>
 <p>Apache-2.0</p>
   </section>
 </details>

@@ -29,6 +29,34 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/0xrsydn/nix-hermes-agent#software",
+  "name": "nix-hermes-agent",
+  "description": "nix-hermes-agent provides a Nix package and NixOS module for the declarative deployment of Hermes Agent. It allows users to manage the entire agent lifecycle—including configuration, workspace documents, and systemd services—through a single Nix configuration file. The module ensures reproducibility by rendering settings into a structured CLI configuration while keeping sensitive API keys secure via external environment files. It supports both Nix-managed declarative skills and native Hermes CLI",
+  "url": "https://hermesatlas.com/projects/0xrsydn/nix-hermes-agent",
+  "codeRepository": "https://github.com/0xrsydn/nix-hermes-agent",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Cross-platform",
+  "author": {
+    "@type": "Organization",
+    "name": "0xrsydn",
+    "url": "https://github.com/0xrsydn"
+  },
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 11
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -107,11 +135,11 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>nix-hermes-agent</h3>
+    <h4>nix-hermes-agent</h4>
 <p>Declarative Nix package and NixOS module for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research.</p>
 <p>Everything is configured in Nix. Config, documents, secrets, service — one <code>nixos-rebuild switch</code> and it&#39;s live.</p>
-<h4>Quick Start</h4>
-<h5>1. Add to your flake</h5>
+<h5>Quick Start</h5>
+<h6>1. Add to your flake</h6>
 <pre><code class="language-nix">{
   inputs.nix-hermes.url = &quot;github:0xrsydn/nix-hermes-agent&quot;;
 
@@ -125,7 +153,7 @@
   };
 }
 </code></pre>
-<h5>2. Configure declaratively</h5>
+<h6>2. Configure declaratively</h6>
 <pre><code class="language-nix"># hermes.nix
 { ... }:
 {
@@ -216,7 +244,7 @@
   };
 }
 </code></pre>
-<h5>Secrets Management</h5>
+<h6>Secrets Management</h6>
 <h6>Plain files approach</h6>
 <pre><code class="language-nix">services.hermes-agent = {
   environmentFiles = [ &quot;/run/secrets/hermes-env&quot; ];
@@ -255,29 +283,29 @@ services.hermes-agent = {
 hermes/auth: |
     {&quot;nous&quot;: {&quot;token&quot;: &quot;...&quot;, &quot;refresh&quot;: &quot;...&quot;}, &quot;codex&quot;: {&quot;token&quot;: &quot;...&quot;}}
 </code></pre>
-<h5>3. Create secrets file</h5>
+<h6>3. Create secrets file</h6>
 <pre><code class="language-bash"># /run/secrets/hermes-env (or wherever you manage secrets)
 OPENROUTER_API_KEY=sk-or-...
 ANTHROPIC_API_KEY=sk-ant-...
 TELEGRAM_TOKEN=123456:ABC...
 TELEGRAM_ALLOWED_USERS=your_user_id
 </code></pre>
-<h5>4. Deploy</h5>
+<h6>4. Deploy</h6>
 <pre><code class="language-bash">nixos-rebuild switch
 systemctl status hermes-agent
 journalctl -u hermes-agent -f
 </code></pre>
-<h4>Architecture</h4>
+<h5>Architecture</h5>
 <pre><code>You (Telegram/Discord/WhatsApp/Slack) → Gateway → Tools → Machine does things
 </code></pre>
-<h5>How it works</h5>
+<h6>How it works</h6>
 <ol>
 <li><code>services.hermes-agent.config</code> attrset is deep-merged and rendered to <code>cli-config.yaml</code></li>
 <li>Documents are installed into the workspace directory</li>
 <li>Secrets stay outside the Nix store via <code>environmentFiles</code></li>
 <li>systemd service runs <code>hermes gateway</code> with everything wired up</li>
 </ol>
-<h5>Directory layout</h5>
+<h6>Directory layout</h6>
 <pre><code>/var/lib/hermes/              # stateDir
 ├── .hermes/                  # Hermes home (HERMES_HOME)
 │   ├── cli-config.yaml       # Generated from config option
@@ -292,7 +320,7 @@ journalctl -u hermes-agent -f
 └── logs/
     └── gateway.log           # Service log
 </code></pre>
-<h4>Declarative Skills vs Native Hermes Skills</h4>
+<h5>Declarative Skills vs Native Hermes Skills</h5>
 <p>The <code>skills</code> option is designed to <strong>augment Hermes</strong>, not replace Hermes&#39; native skill workflow.</p>
 <p>Both approaches compose into the same runtime directory:</p>
 <ul>
@@ -303,7 +331,7 @@ journalctl -u hermes-agent -f
 <li><strong>declarative skills</strong> from Nix</li>
 <li><strong>interactive/runtime skills</strong> from <code>hermes skills install</code></li>
 </ul>
-<h5>Ownership model</h5>
+<h6>Ownership model</h6>
 <h6>Nix-managed</h6>
 <p>Skills declared via:</p>
 <ul>
@@ -322,7 +350,7 @@ journalctl -u hermes-agent -f
 <li><code>.hermes/skills/.hub/</code></li>
 </ul>
 <p>are left alone by the module <strong>unless they collide with a Nix-managed path</strong>.</p>
-<h5>Collision rule</h5>
+<h6>Collision rule</h6>
 <p>If a Hermes CLI install and a declarative Nix skill target the same installed path,
 <strong>the declarative Nix version wins on the next activation/rebuild</strong>.</p>
 <p>Example:</p>
@@ -331,7 +359,7 @@ journalctl -u hermes-agent -f
 <li>user later installs another <code>creative/blender-mcp</code> via Hermes CLI</li>
 </ul>
 <p>On the next rebuild, the Nix-declared version is restored.</p>
-<h5>Recommended workflow</h5>
+<h6>Recommended workflow</h6>
 <p>Use <strong>Hermes CLI</strong> for:</p>
 <ul>
 <li>experimentation</li>
@@ -353,7 +381,7 @@ journalctl -u hermes-agent -f
 <li>promote it into Nix config if you want it reproducible.</li>
 </ol>
 <p>This keeps <code>nix-hermes-agent</code> useful without interfering with the native Hermes experience.</p>
-<h4>Module Options</h4>
+<h5>Module Options</h5>
 <table>
 <thead>
 <tr>
@@ -472,7 +500,7 @@ journalctl -u hermes-agent -f
 <td>Restart delay</td>
 </tr>
 </tbody></table>
-<h4>Config Reference</h4>
+<h5>Config Reference</h5>
 <p>The <code>config</code> attrset maps directly to Hermes&#39; <code>cli-config.yaml</code>. Key sections:</p>
 <table>
 <thead>
@@ -535,7 +563,7 @@ journalctl -u hermes-agent -f
 </tr>
 </tbody></table>
 <p>See the <a href="https://raw.githubusercontent.com/NousResearch/hermes-agent/main/cli-config.yaml.example">full config reference</a>.</p>
-<h4>Just the Package</h4>
+<h5>Just the Package</h5>
 <pre><code class="language-bash"># Run directly
 nix run github:0xrsydn/nix-hermes-agent -- --help
 
@@ -545,7 +573,7 @@ nix develop github:0xrsydn/nix-hermes-agent
 # Use the overlay
 nixpkgs.overlays = [ nix-hermes.overlays.default ];
 </code></pre>
-<h4>License</h4>
+<h5>License</h5>
 <p>MIT (same as upstream)</p>
   </section>
 </details>

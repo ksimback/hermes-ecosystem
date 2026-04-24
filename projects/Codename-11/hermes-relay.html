@@ -29,6 +29,34 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/Codename-11/hermes-relay#software",
+  "name": "hermes-relay",
+  "description": "Hermes-Relay is a native Android companion application designed to provide a mobile interface for the Hermes agent platform. It establishes a connection between a mobile device and a Hermes server using a Python-based plugin and WebSockets (WSS) for real-time communication. Users can engage in chat, access a terminal, and manage device controls directly from their phone. The system simplifies setup through a QR-code pairing process that configures both the chat API and the relay server simultane",
+  "url": "https://hermesatlas.com/projects/Codename-11/hermes-relay",
+  "codeRepository": "https://github.com/Codename-11/hermes-relay",
+  "applicationCategory": "CommunicationApplication",
+  "operatingSystem": "Cross-platform",
+  "author": {
+    "@type": "Organization",
+    "name": "Codename-11",
+    "url": "https://github.com/Codename-11"
+  },
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 10
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -111,7 +139,7 @@
   <img src="https://raw.githubusercontent.com/Codename-11/hermes-relay/main/assets/logo.svg" alt="Hermes-Relay" width="120">
 </p>
 
-<h2 align="center">Hermes-Relay</h2>
+<h3 align="center">Hermes-Relay</h3>
 
 <p align="center">
   Native Android client for the Hermes agent platform.<br>
@@ -137,9 +165,9 @@
 </p>
 
 <hr>
-<h4>Quick Start</h4>
+<h5>Quick Start</h5>
 <p>Two steps: install the Android app on your phone, then install the plugin on your Hermes server.</p>
-<h5>1. Install the Android app</h5>
+<h6>1. Install the Android app</h6>
 <!-- TODO: Uncomment when Play Store listing is live
 <a href="https://play.google.com/store/apps/details?id=com.axiomlabs.hermesrelay"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80"></a>
 -->
@@ -158,7 +186,7 @@
 </ol>
 <p>Full walkthrough, including signing-certificate fingerprint: <a href="https://codename-11.github.io/hermes-relay/guide/getting-started.html#sideload-apk">Sideload guide</a>.</p>
 <p><strong>Staying up to date (sideload):</strong> the app checks GitHub for a newer release on cold start (at most once every 6 hours) and shows a dismissable banner when you&#39;re behind. Tapping <strong>Update</strong> opens the next APK in your browser so Android&#39;s Downloads notification hands it to the system installer — no second app required. You can also trigger a check manually under <strong>Settings → About → Updates</strong>. Google Play installs get auto-updates through the Play Store and don&#39;t show this banner.</p>
-<h5>2. Install the server plugin (one-liner)</h5>
+<h6>2. Install the server plugin (one-liner)</h6>
 <p>On the machine running your Hermes agent:</p>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/Codename-11/hermes-relay/main/install.sh | bash
 </code></pre>
@@ -173,7 +201,7 @@
 <p><strong>Updating:</strong> <code>hermes-relay-update</code> (shortest path — installed as part of the one-liner) or re-run the same <code>curl … | bash</code> from above. Both are equivalent and fully idempotent: pulls latest main, refreshes the editable install, recreates all three shims, restarts <code>hermes-relay</code>, and prompts before restarting <code>hermes-gateway</code>. Set <code>HERMES_RELAY_RESTART_GATEWAY=1</code> to opt into the gateway restart non-interactively. For routine plugin/skill updates without restarting anything, a plain <code>cd ~/.hermes/hermes-relay &amp;&amp; git pull</code> is enough — the editable install picks up the new code on next process start.</p>
 <p><strong>Uninstalling:</strong> <code>bash ~/.hermes/hermes-relay/uninstall.sh</code> reverses every install step in the opposite order. Idempotent, never touches state shared with other Hermes tools (<code>.env</code>, sessions DB, hermes-agent venv core). Flags: <code>--dry-run</code>, <code>--keep-clone</code>, <code>--remove-secret</code>. Or pull the script via curl if you&#39;ve already removed the clone.</p>
 <p><strong>Requirements:</strong> Android 8.0+ (SDK 26), <a href="https://github.com/NousResearch/hermes-agent">hermes-agent</a> v0.8.0+, Python 3.11+.</p>
-<h5>For AI Agents</h5>
+<h6>For AI Agents</h6>
 <p>If you have an AI assistant (Claude, GPT, etc.) and want it to install or maintain Hermes-Relay for you, paste the block below into the chat. The agent will fetch the canonical setup recipe from this repo and walk you through it — verification, pairing, troubleshooting included.</p>
 <pre><code class="language-text">You are helping me install and maintain Hermes-Relay (https://github.com/Codename-11/hermes-relay), a native Android client + Python plugin for the Hermes AI agent platform.
 
@@ -189,7 +217,7 @@ Then guide me through:
 Always confirm before running shell commands. Never restart hermes-gateway without asking. If any step fails, consult the Troubleshooting section in the SKILL.md and ask me for the exact error.
 </code></pre>
 <p>Already have Hermes-Relay installed? The same recipe is auto-loaded as a Hermes skill — invoke it from any chat with <code>/hermes-relay-self-setup</code> for re-setup, troubleshooting, or &quot;is everything wired correctly?&quot; checks. Single source, two delivery modes (raw URL pre-install + Hermes skill post-install), no drift.</p>
-<h4>What It Does</h4>
+<h5>What It Does</h5>
 <p>Talk to your Hermes agent from anywhere. Direct API streaming, session history, tool visualization — all native on Android, now also on the desktop command line.</p>
 <table>
 <thead>
@@ -231,7 +259,7 @@ Always confirm before running shell commands. Never restart hermes-gateway witho
 <td><strong>Experimental</strong> (see <a href="desktop/"><code>desktop/</code></a>)</td>
 </tr>
 </tbody></table>
-<h4>Experimental: Desktop CLI</h4>
+<h5>Experimental: Desktop CLI</h5>
 <p>Early-preview command-line client for remote Hermes sessions. Pipes the full Hermes TUI over a PTY, or streams structured chat events for scripting, AND — uniquely — lets the remote agent execute tools (<code>desktop_read_file</code>, <code>desktop_write_file</code>, <code>desktop_terminal</code>, <code>desktop_search_files</code>, <code>desktop_patch</code>) <strong>on your local machine</strong>, routed over the same WSS relay the Android client uses. One pair, three modes, no <code>ssh</code>.</p>
 <p><strong>Install</strong> (Windows PowerShell):</p>
 <pre><code class="language-powershell">irm https://raw.githubusercontent.com/Codename-11/hermes-relay/main/desktop/scripts/install.ps1 | iex
@@ -250,7 +278,7 @@ hermes-relay --json &quot;...&quot; | jq                 # structured events for
 <li><strong>Release track</strong>: tagged <code>desktop-v*</code>, <a href="https://github.com/Codename-11/hermes-relay/releases">separate from Android</a></li>
 <li><strong>AI-agent setup recipe</strong>: <code>/hermes-relay-desktop-setup</code> (the agent can run <code>desktop_terminal</code> on your machine to diagnose install/pair issues live)</li>
 </ul>
-<h4>What&#39;s new in v0.6.0</h4>
+<h5>What&#39;s new in v0.6.0</h5>
 <ul>
 <li><strong>Connect from anywhere</strong> — multi-endpoint pairing with first-class Tailscale support; plug in any VPN or reverse proxy mode. See <a href="https://github.com/Codename-11/hermes-relay/blob/main/docs/remote-access.md"><code>docs/remote-access.md</code></a>.</li>
 <li><strong>Multi-Connection support</strong> — pair with multiple Hermes servers (home + work, dev + prod, etc.) and switch in one tap from the Chat top bar. Each Connection keeps its own sessions, personalities, profiles, and relay state; theme and safety preferences stay global. Existing installs migrate transparently.</li>
@@ -258,7 +286,7 @@ hermes-relay --json &quot;...&quot; | jq                 # structured events for
 <li><strong>Consolidated agent sheet</strong> — Profile + Personality selection and per-session analytics now live in one scrollable bottom sheet opened from the Chat top-bar agent name.</li>
 </ul>
 <p>See the <a href="https://github.com/Codename-11/hermes-relay/blob/main/CHANGELOG.md">changelog</a> for the full list.</p>
-<h4>Features</h4>
+<h5>Features</h5>
 <ul>
 <li><strong>Streaming chat</strong> — Direct SSE to the Hermes API Server with real-time markdown rendering, session history, tool-call visualization, personality picker, searchable command palette (29+ gateway commands), file attachments, and send-while-streaming message queuing</li>
 <li><strong>Multi-Connection + agent profiles</strong> — Pair with multiple Hermes servers and switch targets from the top bar; select an upstream-discovered agent profile to overlay model + <code>SOUL.md</code> on chat turns. Three-layer model: Connection (server) → Profile (agent directory) → Personality (prompt preset)</li>
@@ -274,19 +302,19 @@ hermes-relay --json &quot;...&quot; | jq                 # structured events for
 <blockquote>
 <p>Sideload builds add direct SMS, contact search, one-tap dialing, and location awareness — handy for fully hands-free voice intents like &quot;text Sam I&#39;ll be 10 minutes late&quot;. See <a href="https://codename-11.github.io/hermes-relay/guide/release-tracks">Release tracks</a> for the full sideload capability matrix.</p>
 </blockquote>
-<h4>Getting Started</h4>
+<h5>Getting Started</h5>
 <ol>
 <li><strong>Install the app</strong> from the link above</li>
 <li><strong>Enter your Hermes server URL</strong> (e.g. <code>http://192.168.1.100:8642</code>) during onboarding</li>
 <li><strong>Start chatting</strong> — the app connects directly to the Hermes API Server</li>
 </ol>
 <p>For detailed setup, server configuration, and feature guides, see the <strong><a href="https://codename-11.github.io/hermes-relay/">full documentation</a></strong>.</p>
-<h4>How It Works</h4>
+<h5>How It Works</h5>
 <pre><code>Phone (HTTP/SSE) --&gt; Hermes API Server (:8642)   [chat — direct]
 Phone (WSS)      --&gt; Relay Server (:8767)         [terminal, bridge — future]
 </code></pre>
 <p>Chat connects directly to the Hermes API Server — same pattern used by Open WebUI and other Hermes frontends. The relay server is a separate lightweight Python service for terminal and bridge channels (coming in Phase 2/3).</p>
-<h4>Documentation</h4>
+<h5>Documentation</h5>
 <table>
 <thead>
 <tr>
@@ -320,14 +348,14 @@ Phone (WSS)      --&gt; Relay Server (:8767)         [terminal, bridge — futur
 </tr>
 </tbody></table>
 <hr>
-<h4>Development</h4>
-<h5>Quick Start</h5>
+<h5>Development</h5>
+<h6>Quick Start</h6>
 <ol>
 <li><strong>File &gt; Open</strong> the repo root in Android Studio</li>
 <li>Wait for Gradle sync</li>
 <li><strong>Run</strong> (Shift+F10) to deploy to emulator or device</li>
 </ol>
-<h5>Dev Scripts</h5>
+<h6>Dev Scripts</h6>
 <pre><code class="language-bash">scripts/dev.bat build      # Build debug APK
 scripts/dev.bat release    # Build signed release APK
 scripts/dev.bat bundle     # Build release AAB for Google Play
@@ -336,7 +364,7 @@ scripts/dev.bat test       # Run unit tests
 scripts/dev.bat version    # Show current version
 scripts/dev.bat relay      # Start relay server (dev, no TLS)
 </code></pre>
-<h5>Repository Structure</h5>
+<h6>Repository Structure</h6>
 <pre><code>hermes-relay/
 ├── app/                       # Android app (Kotlin + Jetpack Compose)
 ├── desktop/                   # Node thin-client CLI (@hermes-relay/cli)
@@ -351,7 +379,7 @@ scripts/dev.bat relay      # Start relay server (dev, no TLS)
 ├── .github/workflows/         # CI + release pipelines
 └── gradle/                    # Wrapper (8.13) + version catalog
 </code></pre>
-<h5>Tech Stack</h5>
+<h6>Tech Stack</h6>
 <table>
 <thead>
 <tr>
@@ -384,7 +412,7 @@ scripts/dev.bat relay      # Start relay server (dev, no TLS)
 <td>26 (Android 8.0) / Target SDK 35</td>
 </tr>
 </tbody></table>
-<h5>Relay Server (optional — terminal/bridge only)</h5>
+<h6>Relay Server (optional — terminal/bridge only)</h6>
 <pre><code class="language-bash">hermes relay start --no-ssl          # if you installed the plugin
 # or from a repo checkout:
 python -m plugin.relay --no-ssl
@@ -393,18 +421,18 @@ python -m plugin.relay --no-ssl
 <pre><code class="language-bash">docker build -t hermes-relay relay_server/ &amp;&amp; docker run -d --network host --name hermes-relay hermes-relay
 </code></pre>
 <p>See <a href="https://github.com/Codename-11/hermes-relay/blob/main/docs/relay-server.md">docs/relay-server.md</a> for TLS, systemd, and full setup.</p>
-<h5>Hermes Plugin (for contributors)</h5>
+<h6>Hermes Plugin (for contributors)</h6>
 <p>End users should install via the <a href="#2-install-the-server-plugin-one-liner">one-liner</a> at the top. For local development from a clone:</p>
 <pre><code class="language-bash">cp -r plugin ~/.hermes/plugins/hermes-relay
 # Or symlink for live edits:
 ln -s &quot;$PWD/plugin&quot; ~/.hermes/plugins/hermes-relay
 </code></pre>
 <p>Then restart hermes and run <code>hermes-pair</code> (dashed shell shim) or type <code>/hermes-relay-pair</code> in any Hermes chat surface to verify pairing. The 14 <code>android_*</code> tools register regardless of hermes-agent version. <strong>Note:</strong> a top-level <code>hermes pair</code> CLI sub-command is <em>not</em> currently exposed — hermes-agent v0.8.0&#39;s top-level argparser doesn&#39;t yet forward to third-party plugins&#39; <code>register_cli_command()</code> dict. Use the slash command or the dashed shim instead.</p>
-<h4>Hermes Agent</h4>
+<h5>Hermes Agent</h5>
 <p>Hermes-Relay is built for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — an open-source AI agent platform by <a href="https://nousresearch.com">Nous Research</a>. See the <a href="https://hermes-agent.nousresearch.com">Hermes Agent docs</a> for server setup, gateway configuration, and plugin development.</p>
-<h4>Found a bug? Let us know!</h4>
+<h5>Found a bug? Let us know!</h5>
 <p>This is an indie project and every report helps shape where it goes next. If something feels off, broken, or just weird — <a href="https://github.com/Codename-11/hermes-relay/issues/new">open an issue</a>. We read every one, and even a one-line &quot;this didn&#39;t work on my Pixel 7&quot; is genuinely useful.</p>
-<h4>Star History</h4>
+<h5>Star History</h5>
 <a href="https://www.star-history.com/?repos=Codename-11%2Fhermes-relay&type=date&legend=top-left">
  <picture>
    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=Codename-11/hermes-relay&type=date&theme=dark&legend=top-left" />
@@ -413,7 +441,7 @@ ln -s &quot;$PWD/plugin&quot; ~/.hermes/plugins/hermes-relay
  </picture>
 </a>
 
-<h4>License</h4>
+<h5>License</h5>
 <p><a href="LICENSE">MIT</a> — Copyright (c) 2026 <a href="https://codename-11.dev">Axiom-Labs</a></p>
 <hr>
 <p align="center">

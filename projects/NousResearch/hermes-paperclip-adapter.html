@@ -29,6 +29,34 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/NousResearch/hermes-paperclip-adapter#software",
+  "name": "hermes-paperclip-adapter",
+  "description": "The hermes-paperclip-adapter is a bridge that integrates Hermes Agent into the Paperclip company management system as a managed employee. It functions by wrapping the Hermes CLI, parsing raw terminal output into structured transcript entries and GFM markdown for clean rendering in the Paperclip UI. The adapter enables agents to respond to task assignments or issue comments while maintaining persistent memory and session continuity across heartbeats. It also synchronizes local and managed skills,",
+  "url": "https://hermesatlas.com/projects/NousResearch/hermes-paperclip-adapter",
+  "codeRepository": "https://github.com/NousResearch/hermes-paperclip-adapter",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Cross-platform",
+  "author": {
+    "@type": "Organization",
+    "name": "NousResearch",
+    "url": "https://github.com/NousResearch"
+  },
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 663
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -107,10 +135,10 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>Paperclip Adapter for Hermes Agent</h3>
+    <h4>Paperclip Adapter for Hermes Agent</h4>
 <p>A <a href="https://paperclip.ing">Paperclip</a> adapter that lets you run <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> as a managed employee in a Paperclip company.</p>
 <p>Hermes Agent is a full-featured AI agent by <a href="https://nousresearch.com">Nous Research</a> with 30+ native tools, persistent memory, session persistence, 80+ skills, MCP support, and multi-provider model access.</p>
-<h4>Key Features</h4>
+<h5>Key Features</h5>
 <p>This adapter provides:</p>
 <ul>
 <li><strong>8 inference providers</strong> — Anthropic, OpenRouter, OpenAI, Nous, OpenAI Codex, ZAI, Kimi Coding, MiniMax</li>
@@ -125,7 +153,7 @@
 <li><strong>Filesystem checkpoints</strong> — Optional <code>--checkpoints</code> for rollback safety</li>
 <li><strong>Thinking effort control</strong> — Passes <code>--reasoning-effort</code> for thinking/reasoning models</li>
 </ul>
-<h5>Hermes Agent Capabilities</h5>
+<h6>Hermes Agent Capabilities</h6>
 <table>
 <thead>
 <tr>
@@ -184,17 +212,17 @@
 <td>✅ 8 providers out of the box</td>
 </tr>
 </tbody></table>
-<h4>Installation</h4>
+<h5>Installation</h5>
 <pre><code class="language-bash">npm install hermes-paperclip-adapter
 </code></pre>
-<h5>Prerequisites</h5>
+<h6>Prerequisites</h6>
 <ul>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> installed (<code>pip install hermes-agent</code>)</li>
 <li>Python 3.10+</li>
 <li>At least one LLM API key (Anthropic, OpenRouter, or OpenAI)</li>
 </ul>
-<h4>Quick Start</h4>
-<h5>1. Register the adapter in your Paperclip server</h5>
+<h5>Quick Start</h5>
+<h6>1. Register the adapter in your Paperclip server</h6>
 <p>Add to your Paperclip server&#39;s adapter registry (<code>server/src/adapters/registry.ts</code>):</p>
 <pre><code class="language-typescript">import * as hermesLocal from &quot;hermes-paperclip-adapter&quot;;
 import {
@@ -216,7 +244,7 @@ registry.set(&quot;hermes_local&quot;, {
   sessionCodec,
 });
 </code></pre>
-<h5>2. Create a Hermes agent in Paperclip</h5>
+<h6>2. Create a Hermes agent in Paperclip</h6>
 <p>In the Paperclip UI or via API, create an agent with adapter type <code>hermes_local</code>:</p>
 <pre><code class="language-json">{
   &quot;name&quot;: &quot;Hermes Engineer&quot;,
@@ -230,7 +258,7 @@ registry.set(&quot;hermes_local&quot;, {
   }
 }
 </code></pre>
-<h5>3. Assign work</h5>
+<h6>3. Assign work</h6>
 <p>Create issues in Paperclip and assign them to your Hermes agent. On each heartbeat, Hermes will:</p>
 <ol>
 <li>Receive the task instructions</li>
@@ -238,8 +266,8 @@ registry.set(&quot;hermes_local&quot;, {
 <li>Report results back to Paperclip</li>
 <li>Persist session state for continuity</li>
 </ol>
-<h4>Configuration Reference</h4>
-<h5>Core</h5>
+<h5>Configuration Reference</h5>
+<h6>Core</h6>
 <table>
 <thead>
 <tr>
@@ -274,7 +302,7 @@ registry.set(&quot;hermes_local&quot;, {
 <td>Grace period before SIGKILL</td>
 </tr>
 </tbody></table>
-<h5>Tools</h5>
+<h6>Tools</h6>
 <table>
 <thead>
 <tr>
@@ -292,7 +320,7 @@ registry.set(&quot;hermes_local&quot;, {
 </tr>
 </tbody></table>
 <p>Available toolsets: <code>terminal</code>, <code>file</code>, <code>web</code>, <code>browser</code>, <code>code_execution</code>, <code>vision</code>, <code>mcp</code>, <code>creative</code>, <code>productivity</code></p>
-<h5>Session &amp; Workspace</h5>
+<h6>Session &amp; Workspace</h6>
 <table>
 <thead>
 <tr>
@@ -321,7 +349,7 @@ registry.set(&quot;hermes_local&quot;, {
 <td>Enable filesystem checkpoints for rollback</td>
 </tr>
 </tbody></table>
-<h5>Advanced</h5>
+<h6>Advanced</h6>
 <table>
 <thead>
 <tr>
@@ -374,7 +402,7 @@ registry.set(&quot;hermes_local&quot;, {
 <td>Paperclip API base URL</td>
 </tr>
 </tbody></table>
-<h5>Prompt Template Variables</h5>
+<h6>Prompt Template Variables</h6>
 <p>Use <code>{{variable}}</code> syntax in <code>promptTemplate</code>:</p>
 <table>
 <thead>
@@ -438,7 +466,7 @@ registry.set(&quot;hermes_local&quot;, {
 <li><code>{{#noTask}}...{{/noTask}}</code> — included only when no task (heartbeat check)</li>
 <li><code>{{#commentId}}...{{/commentId}}</code> — included only when woken by a comment</li>
 </ul>
-<h4>Architecture</h4>
+<h5>Architecture</h5>
 <pre><code>Paperclip                          Hermes Agent
 ┌──────────────────┐               ┌──────────────────┐
 │  Heartbeat       │               │                  │
@@ -467,7 +495,7 @@ processes the task using its full tool suite, then exits. The adapter:</p>
 up where the last one left off, maintaining conversation context,
 memories, and tool state across heartbeats. The <code>sessionCodec</code> validates
 and migrates session state between runs.</p>
-<h5>Skills Integration</h5>
+<h6>Skills Integration</h6>
 <p>The adapter scans two skill sources and merges them:</p>
 <ul>
 <li><strong>Paperclip-managed skills</strong> — bundled with the adapter, togglable from the UI</li>
@@ -475,15 +503,15 @@ and migrates session state between runs.</p>
 </ul>
 <p>The <code>listSkills</code> / <code>syncSkills</code> APIs expose a unified snapshot so the
 Paperclip UI can display both managed and native skills in one view.</p>
-<h4>Development</h4>
+<h5>Development</h5>
 <pre><code class="language-bash">git clone https://github.com/NousResearch/hermes-paperclip-adapter
 cd hermes-paperclip-adapter
 npm install
 npm run build
 </code></pre>
-<h4>License</h4>
+<h5>License</h5>
 <p>MIT — see <a href="LICENSE">LICENSE</a></p>
-<h4>Links</h4>
+<h5>Links</h5>
 <ul>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — The AI agent this adapter runs</li>
 <li><a href="https://github.com/paperclipai/paperclip">Paperclip</a> — The orchestration platform</li>

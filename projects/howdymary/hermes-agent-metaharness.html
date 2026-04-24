@@ -29,6 +29,34 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/howdymary/hermes-agent-metaharness#software",
+  "name": "hermes-agent-metaharness",
+  "description": "Hermes Agent Meta-Harness is a standalone outer-loop optimization framework designed to improve the performance of Hermes agents on verifiable coding benchmarks. It treats the agent as an execution backend and searches for optimal harness configurations—the code governing context collection and retrieval—rather than modifying model weights. The system automates benchmark orchestration, archive analysis, and frontier tracking to identify high-performing harness candidates. It currently supports T",
+  "url": "https://hermesatlas.com/projects/howdymary/hermes-agent-metaharness",
+  "codeRepository": "https://github.com/howdymary/hermes-agent-metaharness",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Cross-platform",
+  "author": {
+    "@type": "Organization",
+    "name": "howdymary",
+    "url": "https://github.com/howdymary"
+  },
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 46
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -107,7 +135,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h3>Hermes Agent Meta-Harness</h3>
+    <h4>Hermes Agent Meta-Harness</h4>
 <p><code>hermes-agent-metaharness</code> is the standalone outer-loop Meta-Harness repo for Hermes.</p>
 <p>It treats <code>hermes-agent</code> as the execution backend for benchmark harness candidates and focuses on:</p>
 <ul>
@@ -119,10 +147,10 @@
 <li>frontier tracking</li>
 <li>structured candidate mutation and search</li>
 </ul>
-<h4>Origin</h4>
+<h5>Origin</h5>
 <p>This project is directly inspired by the paper <a href="https://arxiv.org/abs/2603.28052">Meta-Harness: End-to-End Optimization of Model Harnesses</a> and the companion <a href="https://yoonholee.com/meta-harness/">project page</a>.</p>
 <p>The paper’s core argument is that LLM system quality depends not only on model weights, but also on the harness: the surrounding code that decides what context to collect, store, retrieve, and show to the model. Instead of hand-tuning that harness, Meta-Harness proposes an outer-loop optimizer that searches over harness code. Its proposer has access to the source code, scores, and execution traces of prior candidates through a filesystem, which gives it much richer diagnostic context than methods that only optimize from scores or short summaries. The paper reports gains on online text classification, retrieval-augmented math reasoning, and agentic coding, including improved TerminalBench-2 harnesses.</p>
-<h4>How Hermes Adapts Meta-Harness</h4>
+<h5>How Hermes Adapts Meta-Harness</h5>
 <p>Hermes uses the same high-level idea, but adapts it to a research-safe benchmark workflow:</p>
 <ul>
 <li><code>hermes-agent</code> owns the inner runtime: candidate protocol, benchmark integration, loop hooks, and archive writing.</li>
@@ -131,7 +159,7 @@
 <li>Candidate search is intentionally conservative today: this repo generates deterministic wrapper candidates around a seed candidate instead of rewriting Hermes core.</li>
 </ul>
 <p>In other words, the project applies Meta-Harness to Hermes by optimizing how Hermes is run on benchmarks, not by changing model weights and not by letting the production runtime self-modify.</p>
-<h4>Boundary</h4>
+<h5>Boundary</h5>
 <p><code>hermes-agent</code> owns the inner Meta-Harness runtime:</p>
 <ul>
 <li>candidate protocol</li>
@@ -147,7 +175,7 @@
 <li>frontier management</li>
 <li>mutation and search</li>
 </ul>
-<h4>Current Scope</h4>
+<h5>Current Scope</h5>
 <p>The current release provides:</p>
 <ul>
 <li>candidate resolution by explicit path or Hermes built-in candidate name</li>
@@ -159,7 +187,7 @@
 <li>a simple JSON-backed frontier with cross-platform locking</li>
 <li>deterministic wrapper-mutation search over generated candidate variants</li>
 </ul>
-<h4>Quick Start</h4>
+<h5>Quick Start</h5>
 <pre><code class="language-bash">git clone https://github.com/howdymary/hermes-agent-metaharness.git
 cd hermes-agent-metaharness
 pip install -e &quot;.[dev]&quot;
@@ -176,7 +204,7 @@ through a shell-style prefix such as:</p>
 <li><code>--launcher-prefix &quot;uv run --python 3.12 --extra rl&quot;</code></li>
 <li><code>--python-executable /path/to/hermes-agent/.mh-venv/bin/python</code></li>
 </ul>
-<h4>Choosing a Backend</h4>
+<h5>Choosing a Backend</h5>
 <p>Users should choose the strongest coding backend available in their Hermes
 benchmark config. Meta-Harness does not hardcode a model provider; it delegates
 backend choice to Hermes through <code>--hermes-config-path</code>.</p>
@@ -236,7 +264,7 @@ defines a stronger coding model:</p>
   --frontier-path output/frontier.json \
   --benchmark tblite
 </code></pre>
-<h4>Repo Layout</h4>
+<h5>Repo Layout</h5>
 <pre><code class="language-text">meta_harness/
 ├── archive_reader.py
 ├── baseline.py
@@ -254,7 +282,7 @@ defines a stronger coding model:</p>
 <p>Candidate files can live in <code>candidates/</code>, with an example in <code>candidates/template_candidate.py</code>.</p>
 <p>Two local benchmark configs are also included in <code>configs/</code> for smoke-testing
 against an Ollama OpenAI-compatible endpoint on <code>http://localhost:11434/v1</code>.</p>
-<h4>Release Notes</h4>
+<h5>Release Notes</h5>
 <p>This repo is intentionally research-oriented:</p>
 <ul>
 <li>it optimizes harness procedure, not model weights</li>
@@ -262,7 +290,7 @@ against an Ollama OpenAI-compatible endpoint on <code>http://localhost:11434/v1<
 <li>it keeps Hermes core stable by treating Hermes as the execution backend</li>
 <li>reused baselines are validated against the same task-selection hash before comparison</li>
 </ul>
-<h4>Near-Term Roadmap</h4>
+<h5>Near-Term Roadmap</h5>
 <ol>
 <li>Better ranking/reporting and frontier-backed baseline policies</li>
 <li>More expressive mutation spaces and composition</li>
