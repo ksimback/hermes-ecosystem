@@ -18,6 +18,17 @@
 <meta name="twitter:title" content="Hermes-Function-Calling — Hermes Atlas">
 <meta name="twitter:description" content="Function calling examples and training data for Hermes LLM models">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=Hermes-Function-Calling&amp;subtitle=Function+calling+examples+and+training+data+for+Hermes+LLM+models&amp;kind=project+%C2%B7+core">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "map", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "core &amp; official", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 3, "name": "hermes-function-calling" }
+  ]
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,7 +46,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span>apr·2026</span>
-    <span id="meta-count">99·repos</span>
+    <span id="meta-count">100·repos</span>
     <span>hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -65,11 +76,11 @@
   <p class="project-desc">Function calling examples and training data for Hermes LLM models</p>
 
   <div class="meta-row">
-    <span class="stars">★ 1.3K</span>
-    <span><span class="meta-label">lang</span>Jupyter Notebook</span>
-    <span><span class="meta-label">license</span>MIT</span>
+    <span class="stars">★ 1.2K</span>
+    
+    
     <span><span class="meta-label">maintainer</span>Nous Research</span>
-    <span><span class="meta-label">updated</span>2025-12-22</span>
+    
   </div>
 
   <div class="actions">
@@ -96,22 +107,22 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h2>Hermes-Function-Calling</h2>
+    <h3>Hermes-Function-Calling</h3>
 <p>This repository contains code for the Hermes Pro Large Language Model to perform function calling based on the provided schema. It allows users to query the model and retrieve information related to stock prices, company fundamentals, financial statements, and more.</p>
-<h3>Installation</h3>
+<h4>Installation</h4>
 <p>To install the required packages, run the following command:</p>
 <pre><code class="language-bash">pip install -r requirements.txt
 </code></pre>
-<h3>Usage</h3>
-<h4>Function calling</h4>
+<h4>Usage</h4>
+<h5>Function calling</h5>
 <p>To run the function call inference with a query, use the following command:</p>
 <pre><code class="language-bash">python functioncall.py --query &quot;I need the current stock price of Tesla (TSLA)&quot;
 </code></pre>
-<h4>Json mode</h4>
+<h5>Json mode</h5>
 <p>To run the json mode inference with a query, use the following command:</p>
 <pre><code class="language-bash">python jsonmode.py --query &quot;Please return a json object to represent Goku from the anime Dragon Ball Z?&quot;
 </code></pre>
-<h5>Command Line Arguments</h5>
+<h6>Command Line Arguments</h6>
 <ul>
 <li><code>--model_path</code>: Path to the model folder (default: &quot;NousResearch/Hermes-2-Pro-Llama-3-8B&quot;).</li>
 <li><code>--chat_template</code>: Chat template for prompt formatting (default: &quot;chatml&quot;).</li>
@@ -120,7 +131,7 @@
 <li><code>--query</code>: Query to be used for function call inference (default: &quot;I need the current stock price of Tesla (TSLA)&quot;).</li>
 <li><code>--max_depth</code>: Maximum number of recursive iterations (default: 5).</li>
 </ul>
-<h3>Adding Custom Functions</h3>
+<h4>Adding Custom Functions</h4>
 <p>To add your own functions for the model to use, you can modify the <code>functions.py</code> script. This script contains various functions that retrieve stock-related information using the <code>yfinance</code> library.</p>
 <p>Here&#39;s an example of how to add a new function:</p>
 <pre><code class="language-python">@tool
@@ -154,7 +165,7 @@ def get_new_function(symbol: str) -&gt; dict:
     return tools
 </code></pre>
 <p>This will ensure that your new function is included in the list of available tools for the model to use.</p>
-<h3>Adding Custom Pydantic Model</h3>
+<h4>Adding Custom Pydantic Model</h4>
 <p>To add your own pydantic models to create json schema for the model to use, you can replace the pydantic models in the <code>jsonmode.py</code> script. </p>
 <p>Here&#39;s an example of how to add a new pydantic model:</p>
 <pre><code class="language-python">from typing import List, Optional
@@ -175,7 +186,7 @@ class Character(BaseModel):
 <p>You need to serialize the pydantic model into json schema as follows:</p>
 <pre><code class="language-python">pydantic_schema = Character.schema_json()
 </code></pre>
-<h3>Key Scripts</h3>
+<h4>Key Scripts</h4>
 <p>The repository contains several key scripts that work together to enable function calling with the Hermes Pro Large Language Model:</p>
 <ul>
 <li><p><code>functions.py</code>: This script is where all the functions/tools you want the model to have access to are made available.</p>
@@ -189,7 +200,7 @@ class Character(BaseModel):
 <li><p><code>schema.py</code>: This script defines the Pydantic models used for representing function calls and function definitions. It provides a structured way to define and validate the function call schema.</p>
 </li>
 </ul>
-<h3>Inference Example Output</h3>
+<h4>Inference Example Output</h4>
 <p>Here&#39;s an example of the inference output:</p>
 <pre><code>&lt;|im_start|&gt;user
 Fetch the stock fundamentals data for Tesla (TSLA)&lt;|im_end|&gt;
@@ -218,7 +229,7 @@ The stock fundamentals data for Tesla (TSLA) are as follows:
 - **52-Week Low Price of the Stock**: $152.37
 This information provides a snapshot of Tesla&#39;s financial position and performance based on the fundamental data obtained from the yfinance API. It shows that Tesla has a substantial market capitalization and a relatively high P/E and P/B ratio compared to other stocks in its industry. The company does not pay a dividend at the moment, which is reflected by a &#39;Dividend Yield&#39; of &#39;None&#39;. The Beta value indicates that Tesla&#39;s stock has a moderate level of volatility relative to the market. The 52-week high and low prices give an idea of the stock&#39;s range over the past year. This data can be useful when assessing investment opportunities and making investment decisions.
 </code></pre>
-<h3>Prompt Format</h3>
+<h4>Prompt Format</h4>
 <p>Hermes 2 Pro uses ChatML as the prompt format, opening up a much more structured system for engaging the LLM in multi-turn chat dialogue.</p>
 <p>System prompts allow steerability and interesting new ways to interact with an LLM, guiding rules, roles, and stylistic choices of the model.</p>
 <p>This is a more complex format than alpaca or sharegpt, where special tokens were added to denote the beginning and end of any turn, along with roles for the turns.</p>
@@ -242,7 +253,7 @@ model.generate(**gen_input)
 </code></pre>
 <p>When tokenizing messages for generation, set add_generation_prompt=True when calling apply_chat_template(). This will append &lt;|im_start|&gt;assistant\n to your prompt, to ensure that the model continues with an assistant response.</p>
 <p>To utilize the prompt format without a system prompt, simply leave the line out.</p>
-<h3>Prompt Format for Function Calling</h3>
+<h4>Prompt Format for Function Calling</h4>
 <p>Our model was trained on specific system prompts and structures for Function Calling.</p>
 <p>You should use the system role with this message, followed by a function signature json as this example shows here.</p>
 <pre><code>&lt;|im_start|&gt;system
@@ -316,14 +327,13 @@ The stock fundamentals data for Tesla (TSLA) are as follows:
 
 This information provides a snapshot of Tesla&#39;s financial position and performance based on the fundamental data obtained from the yfinance API. It shows that Tesla has a substantial market capitalization and a relatively high P/E and P/B ratio compared to other stocks in its industry. The company does not pay a dividend at the moment, which is reflected by a &#39;Dividend Yield&#39; of &#39;None&#39;. The Beta value indicates that Tesla&#39;s stock has a moderate level of volatility relative to the market. The 52-week high and low prices give an idea of the stock&#39;s range over the past year. This data can be useful when assessing investment opportunities and making investment decisions.&lt;|im_end|&gt;
 </code></pre>
-<h3>Prompt Format for JSON Mode / Structured Outputs</h3>
+<h4>Prompt Format for JSON Mode / Structured Outputs</h4>
 <p>Our model was also trained on a specific system prompt for Structured Outputs, which should respond with only a json object response, in a specific json schema.</p>
 <p>Your schema can be made from a pydantic object using our codebase, with the standalone script jsonmode.py available here: <a href="https://github.com/NousResearch/Hermes-Function-Calling/tree/main">https://github.com/NousResearch/Hermes-Function-Calling/tree/main</a></p>
 <pre><code>&lt;|im_start|&gt;system
 You are a helpful assistant that answers in JSON. Here&#39;s the json schema you must adhere to:\n&lt;schema&gt;\n{schema}\n&lt;/schema&gt;&lt;|im_end|&gt;
 </code></pre>
 <p>Given the {schema} that you provide, it should follow the format of that json to create it&#39;s response, all you have to do is give a typical user prompt, and it will respond in JSON.</p>
-
   </section>
 </details>
 
@@ -335,23 +345,23 @@ You are a helpful assistant that answers in JSON. Here&#39;s the json schema you
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/NousResearch/hermes-agent">
-        <div class="stars">★ 113.9K</div>
+        <div class="stars">★ 83.3K</div>
         <div class="name"><span class="org">NousResearch /</span> hermes-agent</div>
       </a>
       <a class="related-row" href="/projects/NousResearch/atropos">
-        <div class="stars">★ 1.1K</div>
+        <div class="stars">★ 997</div>
         <div class="name"><span class="org">NousResearch /</span> atropos</div>
       </a>
       <a class="related-row" href="/projects/NousResearch/hermes-agent-self-evolution">
-        <div class="stars">★ 2.2K</div>
+        <div class="stars">★ 778</div>
         <div class="name"><span class="org">NousResearch /</span> hermes-agent-self-evolution</div>
       </a>
       <a class="related-row" href="/projects/NousResearch/hermes-paperclip-adapter">
-        <div class="stars">★ 955</div>
+        <div class="stars">★ 663</div>
         <div class="name"><span class="org">NousResearch /</span> hermes-paperclip-adapter</div>
       </a>
       <a class="related-row" href="/projects/NousResearch/autonovel">
-        <div class="stars">★ 734</div>
+        <div class="stars">★ 401</div>
         <div class="name"><span class="org">NousResearch /</span> autonovel</div>
       </a>
     </div>

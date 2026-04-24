@@ -4,20 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hermesclaw — Hermes Agent Deployment &amp; Infra | Hermes Atlas</title>
-<meta name="description" content="Hermes Agent (NousResearch) sandboxed by NVIDIA OpenShell — hardware-enforced network/filesystem/syscall policy, full memory + gateway stack">
+<meta name="description" content="Hermes Agent sandboxed with hardware-level enforcement">
 <link rel="canonical" href="https://hermesatlas.com/projects/TheAiSingularity/hermesclaw">
 <meta property="og:title" content="hermesclaw — Hermes Atlas">
-<meta property="og:description" content="Hermes Agent (NousResearch) sandboxed by NVIDIA OpenShell — hardware-enforced network/filesystem/syscall policy, full memory + gateway stack">
+<meta property="og:description" content="Hermes Agent sandboxed with hardware-level enforcement">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/TheAiSingularity/hermesclaw">
 <meta property="og:site_name" content="Hermes Atlas">
-<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermesclaw&amp;subtitle=Hermes+Agent+%28NousResearch%29+sandboxed+by+NVIDIA+OpenShell+%E2%80%94+hardware-enforced+network%2Ffilesystem%2Fsyscall+policy%2C+full+memory+%2B+gateway+stack&amp;kind=project+%C2%B7+deployment">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermesclaw&amp;subtitle=Hermes+Agent+sandboxed+with+hardware-level+enforcement&amp;kind=project+%C2%B7+deployment">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="hermesclaw — Hermes Atlas">
-<meta name="twitter:description" content="Hermes Agent (NousResearch) sandboxed by NVIDIA OpenShell — hardware-enforced network/filesystem/syscall policy, full memory + gateway stack">
-<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermesclaw&amp;subtitle=Hermes+Agent+%28NousResearch%29+sandboxed+by+NVIDIA+OpenShell+%E2%80%94+hardware-enforced+network%2Ffilesystem%2Fsyscall+policy%2C+full+memory+%2B+gateway+stack&amp;kind=project+%C2%B7+deployment">
+<meta name="twitter:description" content="Hermes Agent sandboxed with hardware-level enforcement">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermesclaw&amp;subtitle=Hermes+Agent+sandboxed+with+hardware-level+enforcement&amp;kind=project+%C2%B7+deployment">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "map", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "deployment &amp; infra", "item": "https://hermesatlas.com/lists/deployment-options" },
+    { "@type": "ListItem", "position": 3, "name": "hermesclaw" }
+  ]
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,7 +46,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span>apr·2026</span>
-    <span id="meta-count">99·repos</span>
+    <span id="meta-count">100·repos</span>
     <span>hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -62,14 +73,14 @@
   <h1 class="project-name">
     <span class="org">TheAiSingularity</span><span class="slash">/</span>hermesclaw
   </h1>
-  <p class="project-desc">Hermes Agent (NousResearch) sandboxed by NVIDIA OpenShell — hardware-enforced network/filesystem/syscall policy, full memory + gateway stack</p>
+  <p class="project-desc">Hermes Agent sandboxed with hardware-level enforcement</p>
 
   <div class="meta-row">
-    <span class="stars">★ 31</span>
-    <span><span class="meta-label">lang</span>Shell</span>
-    <span><span class="meta-label">license</span>MIT</span>
+    <span class="stars">★ 16</span>
     
-    <span><span class="meta-label">updated</span>2026-04-22</span>
+    
+    
+    
   </div>
 
   <div class="actions">
@@ -110,7 +121,7 @@
 <p><strong>Hermes Agent (NousResearch) running inside NVIDIA OpenShell.</strong></p>
 <p>NVIDIA built OpenShell to hardware-enforce AI agent behavior — blocking network egress, filesystem writes, and dangerous syscalls at the kernel level. HermesClaw is a community implementation that puts Hermes Agent inside the same sandbox. The agent gets its full capability stack while the OS enforces hard limits. If a skill goes rogue, the kernel stops it.</p>
 <hr>
-<h3>Table of Contents</h3>
+<h4>Table of Contents</h4>
 <ul>
 <li><a href="#architecture">Architecture</a></li>
 <li><a href="#quick-start">Quick Start</a><ul>
@@ -133,15 +144,15 @@
 <li><a href="#related">Related Projects</a></li>
 </ul>
 <hr>
-<h3>Architecture</h3>
+<h4>Architecture</h4>
 <p align="center">
   <img src="https://raw.githubusercontent.com/TheAiSingularity/hermesclaw/main/assets/architecture.png" alt="HermesClaw Architecture" width="780">
 </p>
 
 <p>OpenShell intercepts every call to <code>inference.local</code> inside the sandbox and routes it to the configured backend. Hermes never knows it&#39;s sandboxed.</p>
 <hr>
-<h3>Quick Start</h3>
-<h4>Recommended — one-command install</h4>
+<h4>Quick Start</h4>
+<h5>Recommended — one-command install</h5>
 <p>Installs the prebuilt image (multi-arch, <code>linux/amd64</code> + <code>linux/arm64</code>) from GitHub Container Registry, clones the repo to <code>~/.hermesclaw</code>, symlinks the <code>hermesclaw</code> CLI to <code>/usr/local/bin</code>, and prints your next steps:</p>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/TheAiSingularity/hermesclaw/main/scripts/install.sh | bash
 </code></pre>
@@ -163,7 +174,7 @@ hermesclaw chat &quot;hello&quot;
 <p><strong>Why <code>--ctx-size 32768</code>?</strong> Hermes&#39;s system prompt alone is ~11k tokens; lower context windows cause overflow on every query.</p>
 </blockquote>
 <hr>
-<h4>Build from source (if you want to modify HermesClaw itself)</h4>
+<h5>Build from source (if you want to modify HermesClaw itself)</h5>
 <pre><code class="language-bash">git clone https://github.com/TheAiSingularity/hermesclaw
 cd hermesclaw
 cp .env.example .env                 # edit MODEL_FILE and any messaging tokens
@@ -171,7 +182,7 @@ cp .env.example .env                 # edit MODEL_FILE and any messaging tokens
 # ... then steps 2 and 3 above
 </code></pre>
 <hr>
-<h4>OpenShell sandbox (full hardware enforcement)</h4>
+<h5>OpenShell sandbox (full hardware enforcement)</h5>
 <p>Requires Linux + NVIDIA GPU + OpenShell installed.</p>
 <pre><code class="language-bash"># Install OpenShell (requires NVIDIA account)
 curl -fsSL https://www.nvidia.com/openshell.sh | bash
@@ -185,7 +196,7 @@ hermesclaw chat &quot;hello&quot;
 </code></pre>
 <p>Full CLI reference: <a href="#hermesclaw-cli">hermesclaw CLI</a>. Diagnostics: <code>hermesclaw doctor</code>.</p>
 <hr>
-<h3>What OpenShell Enforces</h3>
+<h4>What OpenShell Enforces</h4>
 <table>
 <thead>
 <tr>
@@ -217,7 +228,7 @@ hermesclaw chat &quot;hello&quot;
 </tbody></table>
 <p>All four layers are enforced <strong>out-of-process</strong> — even a fully compromised Hermes instance cannot override them.</p>
 <hr>
-<h3>Policy Presets</h3>
+<h4>Policy Presets</h4>
 <p>Switch security posture <strong>without restarting</strong> the sandbox:</p>
 <pre><code class="language-bash">./scripts/hermesclaw policy-set strict      # inference only (default)
 ./scripts/hermesclaw policy-set gateway     # + Telegram + Discord
@@ -256,7 +267,7 @@ hermesclaw chat &quot;hello&quot;
 </tr>
 </tbody></table>
 <hr>
-<h3>Hermes Features Inside the Sandbox</h3>
+<h4>Hermes Features Inside the Sandbox</h4>
 <table>
 <thead>
 <tr>
@@ -332,7 +343,7 @@ hermesclaw chat &quot;hello&quot;
 </tr>
 </tbody></table>
 <hr>
-<h3>Skills Library</h3>
+<h4>Skills Library</h4>
 <p>Pre-built skills that encode recurring workflows. Install with one command, invoke via chat:</p>
 <pre><code class="language-bash">./skills/install.sh research-digest     # weekly arXiv digest → Telegram
 ./skills/install.sh code-review         # local code review (CLI or VS Code ACP)
@@ -348,7 +359,7 @@ hermesclaw chat &quot;hello&quot;
 </code></pre>
 <p>Full index: <a href="skills/">skills/README.md</a></p>
 <hr>
-<h3>Use Cases</h3>
+<h4>Use Cases</h4>
 <p>Seven end-to-end guides covering real deployment scenarios — each with prerequisites, setup steps, automated tests, and a NemoClaw comparison:</p>
 <table>
 <thead>
@@ -396,7 +407,7 @@ hermesclaw chat &quot;hello&quot;
 </tbody></table>
 <p>Full index and NemoClaw compatibility table: <a href="docs/use-cases/">docs/use-cases/</a></p>
 <hr>
-<h3>HermesClaw vs NemoClaw</h3>
+<h4>HermesClaw vs NemoClaw</h4>
 <p>Full comparison and test results: <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/docs/test-results.md">docs/test-results.md</a> · <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/docs/test-results-uc.md">docs/test-results-uc.md</a></p>
 <table>
 <thead>
@@ -468,7 +479,7 @@ hermesclaw chat &quot;hello&quot;
 </tr>
 </tbody></table>
 <hr>
-<h3>hermesclaw CLI</h3>
+<h4>hermesclaw CLI</h4>
 <pre><code>hermesclaw onboard                    First-time setup and prerequisite check
 hermesclaw start [--gpu] [--policy]   Start sandbox (OpenShell) or docker compose
 hermesclaw stop                       Stop sandbox (memories + skills preserved)
@@ -483,12 +494,12 @@ hermesclaw version                    Print version
 hermesclaw uninstall                  Remove Docker image (data preserved)
 </code></pre>
 <hr>
-<h3>Personalise Hermes</h3>
+<h4>Personalise Hermes</h4>
 <pre><code class="language-bash">cp configs/persona.yaml.example configs/persona.yaml
 </code></pre>
 <p>Edit <code>configs/persona.yaml</code> — set your name, role, expertise, ticker watchlist, and response style. Hermes loads this into every session. For deeper personalisation, edit <code>~/.hermes/SOUL.md</code> — this goes directly into the system prompt.</p>
 <hr>
-<h3>Project Structure</h3>
+<h4>Project Structure</h4>
 <pre><code>hermesclaw/
 ├── Dockerfile                          # Hermes Agent on debian:bookworm-slim
 ├── docker-compose.yml                  # Hermes container (llama-server runs on host)
@@ -527,7 +538,7 @@ hermesclaw uninstall                  Remove Docker image (data preserved)
 └── models/                            # Drop .gguf model weights here
 </code></pre>
 <hr>
-<h3>Diagnostics &amp; Testing</h3>
+<h4>Diagnostics &amp; Testing</h4>
 <pre><code class="language-bash"># Check your environment
 ./scripts/doctor.sh           # full diagnostic
 ./scripts/doctor.sh --quick   # skip slow checks
@@ -543,7 +554,7 @@ bash scripts/test-uc-04.sh          # data analyst (Postgres + anomaly detection
 bash scripts/test-uc-07.sh          # trader (latency measurement)
 </code></pre>
 <hr>
-<h3>Contributing</h3>
+<h4>Contributing</h4>
 <p>HermesClaw welcomes contributions — especially:</p>
 <ul>
 <li><strong>OpenShell policy corrections</strong> — if you have access to a real OpenShell environment, correctness fixes are the highest-value contribution</li>
@@ -560,14 +571,13 @@ shellcheck scripts/hermesclaw  # lint before submitting
 </code></pre>
 <p>Full guide: <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> · <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/CODE_OF_CONDUCT.md">Code of Conduct</a> · <a href="https://github.com/TheAiSingularity/hermesclaw/blob/main/CHANGELOG.md">Changelog</a></p>
 <hr>
-<h3>Related</h3>
+<h4>Related</h4>
 <ul>
 <li><a href="https://github.com/TheAiSingularity/hermes-agent-nemoclaw-openclaw">hermes-agent-nemoclaw-openclaw</a> — The parent repo: Hermes + NemoClaw + lightweight bots in one stack</li>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — NousResearch&#39;s agent (18k ⭐)</li>
 <li><a href="https://github.com/NVIDIA/NemoClaw">NemoClaw</a> — NVIDIA&#39;s OpenClaw + OpenShell reference implementation</li>
 <li><a href="https://docs.nvidia.com/openshell/latest/">OpenShell</a> — NVIDIA&#39;s hardware-enforced AI sandbox</li>
 </ul>
-
   </section>
 </details>
 
@@ -579,27 +589,27 @@ shellcheck scripts/hermesclaw  # lint before submitting
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/numtide/llm-agents.nix">
-        <div class="stars">★ 1.1K</div>
+        <div class="stars">★ 967</div>
         <div class="name"><span class="org">numtide /</span> llm-agents.nix</div>
       </a>
       <a class="related-row" href="/projects/0xrsydn/nix-hermes-agent">
-        <div class="stars">★ 14</div>
+        <div class="stars">★ 11</div>
         <div class="name"><span class="org">0xrsydn /</span> nix-hermes-agent</div>
       </a>
       <a class="related-row" href="/projects/rookiemann/portable-hermes-agent">
-        <div class="stars">★ 39</div>
+        <div class="stars">★ 7</div>
         <div class="name"><span class="org">rookiemann /</span> portable-hermes-agent</div>
       </a>
       <a class="related-row" href="/projects/xmbshwll/hermes-agent-docker">
-        <div class="stars">★ 15</div>
+        <div class="stars">★ 6</div>
         <div class="name"><span class="org">xmbshwll /</span> hermes-agent-docker</div>
       </a>
       <a class="related-row" href="/projects/JackTheGit/hermes-autonomous-server">
-        <div class="stars">★ 6</div>
+        <div class="stars">★ 2</div>
         <div class="name"><span class="org">JackTheGit /</span> hermes-autonomous-server</div>
       </a>
       <a class="related-row" href="/projects/ellickjohnson/portainer-stack-hermes">
-        <div class="stars">★ 3</div>
+        <div class="stars">★ 1</div>
         <div class="name"><span class="org">ellickjohnson /</span> portainer-stack-hermes</div>
       </a>
     </div>
