@@ -40,19 +40,17 @@
   "codeRepository": "https://github.com/stephenschoettler/hermes-lcm",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Cross-platform",
-  "programmingLanguage": "Python",
   "author": {
     "@type": "Organization",
     "name": "stephenschoettler",
     "url": "https://github.com/stephenschoettler"
   },
-  "dateModified": "2026-04-24T07:32:25.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 292
+    "userInteractionCount": 178
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -107,11 +105,11 @@
   <p class="project-desc">Lossless Context Management plugin for Hermes Agent — DAG-based context engine that never loses a message</p>
 
   <div class="meta-row">
-    <span class="stars">★ 292</span>
-    <span><span class="meta-label">lang</span>Python</span>
+    <span class="stars">★ 178</span>
     
     
-    <span><span class="meta-label">updated</span>2026-04-24</span>
+    
+    
   </div>
 
   <div class="actions">
@@ -286,7 +284,7 @@ Provider Plugins:
 <p>then LCM itself is loaded.</p>
 <p>In that situation, a <code>Context Engine: lcm (not found)</code> line in <code>hermes plugins</code> is a <strong>Hermes host discovery/UI issue</strong>, not proof that <code>hermes-lcm</code> failed to load.</p>
 <p>Treat it as a host-side mismatch between the picker/status surface and the live runtime. The fix belongs in Hermes host discovery/UI, not in LCM storage or compaction logic.</p>
-<h4><code>/lcm status</code> shows unbound / zero-looking session details right after restart</h4>
+<h5><code>/lcm status</code> shows unbound / zero-looking session details right after restart</h5>
 <p>Right after a fresh Hermes restart, <code>/lcm status</code> may show things like:</p>
 <ul>
 <li><code>session_id: (unbound)</code></li>
@@ -431,7 +429,7 @@ context:
 </tr>
 </tbody></table>
 <p>The point-8 compaction knobs are intentionally opt-in. <code>cache_friendly_*</code> is a plugin-local prompt-stability heuristic, not a claim that Hermes currently passes true prompt-cache metrics into <code>hermes-lcm</code>.</p>
-<h4>Threshold ownership when <code>context.engine: lcm</code> is active</h4>
+<h5>Threshold ownership when <code>context.engine: lcm</code> is active</h5>
 <p>This is the easy place to get crossed wires.</p>
 <p>When Hermes is configured with:</p>
 <pre><code class="language-yaml">context:
@@ -452,7 +450,7 @@ context:
 <p>Important operator note:</p>
 <p>Some Hermes host builds still print the host-side compression percentage in startup/status surfaces even when LCM is the active engine. If that printed percentage disagrees with LCM, trust live LCM runtime status (<code>lcm_status</code> or <code>/lcm status</code>) after a normal message has initialized the session, not the startup banner text.</p>
 <p>If raising Hermes <code>compression.threshold</code> seems to change LCM behavior materially, that usually points to host-version confusion, a misleading host status surface, or another Hermes-side integration issue — not to the intended LCM threshold contract.</p>
-<h4>Large tool-output handling</h4>
+<h5>Large tool-output handling</h5>
 <p><code>hermes-lcm</code> now has a three-step opt-in path for oversized tool results:</p>
 <ol>
 <li><strong>9B externalization</strong> — large tool results are written to plugin-managed JSON files instead of being kept inline for compaction prompts</li>
@@ -513,7 +511,7 @@ context:
 <td>Run diagnostics — database integrity, FTS index sync, orphaned nodes, config validation, context pressure.</td>
 </tr>
 </tbody></table>
-<h4>Retrieval contract: <code>session_scope</code> × <code>source</code></h4>
+<h5>Retrieval contract: <code>session_scope</code> × <code>source</code></h5>
 <p><code>hermes-lcm</code> treats <code>session_scope</code> and <code>source</code> as independent filters:</p>
 <ul>
 <li><strong><code>session_scope</code></strong> decides which sessions are eligible</li>
@@ -526,14 +524,14 @@ context:
 <li>merged outputs like <code>lcm_grep</code></li>
 <li>carry-over/reassigned summary nodes after <code>/new</code></li>
 </ul>
-<h5>Raw messages</h5>
+<h6>Raw messages</h6>
 <ul>
 <li><code>current</code> + no <code>source</code> → all raw rows in the current session</li>
 <li><code>current</code> + <code>source=&#39;discord&#39;</code> → only current-session raw rows with source <code>discord</code></li>
 <li><code>all</code> + no <code>source</code> → all raw rows across sessions</li>
 <li><code>all</code> + <code>source=&#39;discord&#39;</code> → all raw rows across sessions with source <code>discord</code></li>
 </ul>
-<h5>DAG summaries</h5>
+<h6>DAG summaries</h6>
 <ul>
 <li><code>current</code> + no <code>source</code> → all summaries eligible in the current session</li>
 <li><code>current</code> + <code>source=&#39;discord&#39;</code> → only current-session summaries whose descendant raw-message lineage includes <code>discord</code></li>
@@ -541,21 +539,21 @@ context:
 <li><code>all</code> + <code>source=&#39;discord&#39;</code> → only summaries across sessions whose descendant raw-message lineage includes <code>discord</code></li>
 </ul>
 <p>Mixed-source nodes may match more than one <code>source</code> filter if their descendant lineage is mixed. Filtering is based on actual descendant lineage, not on whether the surrounding session happens to contain some message from that source.</p>
-<h5><code>unknown</code> source</h5>
+<h6><code>unknown</code> source</h6>
 <p><code>unknown</code> is treated as a real source value, not as a wildcard.</p>
 <ul>
 <li>omitting <code>source</code> means <strong>no source filtering</strong></li>
 <li><code>source=&#39;unknown&#39;</code> means only content whose stored source is <code>unknown</code></li>
 <li>legacy blank-source rows are treated as <code>unknown</code> for backward compatibility</li>
 </ul>
-<h5>Carry-over semantics</h5>
+<h6>Carry-over semantics</h6>
 <p><code>carry_over_new_session_context()</code> may reassign retained summary nodes into a new session, but that does <strong>not</strong> erase source lineage.</p>
 <ul>
 <li>session eligibility may change because the node now belongs to the new session</li>
 <li>source eligibility still comes from the node&#39;s descendant raw-message lineage</li>
 </ul>
 <p>So a carried-over node can be current-session content in the new session while still matching <code>source=&#39;discord&#39;</code> only if its descendant raw messages include <code>discord</code>.</p>
-<h4>Tool choice guidance: LCM tools vs <code>session_search</code></h4>
+<h5>Tool choice guidance: LCM tools vs <code>session_search</code></h5>
 <p>When both recall paths are available to the model:</p>
 <ul>
 <li>prefer <strong>LCM tools</strong> for recall inside the active/current conversation, especially when the relevant turns were compacted into summary nodes</li>
@@ -632,7 +630,6 @@ slot + <code>lossless-claw</code>.</p>
 See the <a href="https://github.com/stephenschoettler/hermes-lcm/releases">releases page</a> for changelogs.</p>
 <h6>License</h6>
 <p>MIT</p>
-
   </section>
 </details>
 
@@ -644,31 +641,31 @@ See the <a href="https://github.com/stephenschoettler/hermes-lcm/releases">relea
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 10.6K</div>
+        <div class="stars">★ 8.4K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
-        <div class="stars">★ 917</div>
+        <div class="stars">★ 711</div>
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 177</div>
+        <div class="stars">★ 126</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
-        <div class="stars">★ 133</div>
+        <div class="stars">★ 86</div>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 48</div>
+        <div class="stars">★ 31</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
-        <div class="stars">★ 10</div>
+        <div class="stars">★ 5</div>
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
       <a class="related-row" href="/projects/garrytan/gbrain">
-        <div class="stars">★ 11.1K</div>
+        <div class="stars">★ 8.9K</div>
         <div class="name"><span class="org">garrytan /</span> gbrain</div>
       </a>
       <a class="related-row" href="/projects/keepnotes-ai/keep">
