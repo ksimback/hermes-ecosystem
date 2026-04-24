@@ -463,6 +463,46 @@ curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scri
 
 <hr>
 
+<h2 id="mcp">Get the ecosystem inside your agent</h2>
+
+<p>Install the <a href="https://github.com/ksimback/hermes-atlas-mcp" target="_blank" rel="noopener">hermes-atlas MCP server</a> so Claude Desktop, Cursor, Continue, or any MCP-aware client can search the catalog, fetch project summaries, and answer free-form questions about the Hermes ecosystem mid-chat. Five tools: <code>search_projects</code>, <code>get_project</code>, <code>list_by_category</code>, <code>get_guide</code>, <code>ask_atlas</code>.</p>
+
+<h3>Claude Desktop</h3>
+
+<p>Add to <code>claude_desktop_config.json</code> (macOS: <code>~/Library/Application Support/Claude/</code>, Windows: <code>%APPDATA%\Claude\</code>):</p>
+
+<pre><code>{
+  "mcpServers": {
+    "hermes-atlas": {
+      "command": "npx",
+      "args": ["-y", "hermes-atlas-mcp"]
+    }
+  }
+}</code></pre>
+
+<p>Restart Claude Desktop. The five tools appear in the tool picker.</p>
+
+<h3>Cursor</h3>
+
+<p>Add to <code>.cursor/mcp.json</code> (per-project) or the global Cursor config:</p>
+
+<pre><code>{
+  "mcpServers": {
+    "hermes-atlas": {
+      "command": "npx",
+      "args": ["-y", "hermes-atlas-mcp"]
+    }
+  }
+}</code></pre>
+
+<h3>Continue, Windsurf, other MCP clients</h3>
+
+<p>Any MCP-compatible client works the same way. Configure a server named <code>hermes-atlas</code> that runs <code>npx -y hermes-atlas-mcp</code> via stdio.</p>
+
+<p>Source: <a href="https://github.com/ksimback/hermes-atlas-mcp" target="_blank" rel="noopener">github.com/ksimback/hermes-atlas-mcp</a>. MIT-licensed, experimental (0.x), batch releases weekly.</p>
+
+<hr>
+
 <h2 id="next">What to do next</h2>
 
 <p>You're installed. The next three handbook chapters walk you through the mistakes most people make on day one:</p>
