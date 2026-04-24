@@ -57,6 +57,7 @@
   }
 }
 </script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -140,17 +141,17 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>Self-Hosted Honcho for Hermes Agent</h4>
+    <h5>Self-Hosted Honcho for Hermes Agent</h5>
 <p>Self-host <a href="https://github.com/plastic-labs/honcho">Honcho</a> (Plastic Labs&#39; memory layer) on your own server instead of using their cloud. Works with <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> out of the box.</p>
 <p><strong>No fork required</strong> — just 3 config files on top of upstream Honcho.</p>
-<h5>Background: Hermes L4 Memory</h5>
+<h6>Background: Hermes L4 Memory</h6>
 <p>Hermes Agent has a 4-layer memory system. The cross-session memory layer is powered by <a href="https://github.com/plastic-labs/honcho">Honcho</a>, which builds a deepening model of the user across conversations — extracting observations, recalling context, and consolidating memories over time.</p>
 <p>By default, Hermes uses Plastic Labs&#39; managed cloud (<a href="https://honcho.dev">honcho.dev</a>) + their <a href="https://plasticlabs.ai/neuromancer">Neuromancer</a> models. This works out of the box but means your conversation data and user profile live on their servers.</p>
 <h6>What are Neuromancer models?</h6>
 <p><a href="https://blog.plasticlabs.ai/research/Introducing-Neuromancer-XR">Neuromancer XR</a> is a specialized 8B model fine-tuned from Qwen3-8B specifically for extracting logical conclusions from conversations. Unlike general-purpose LLMs which are optimized for plausible text generation, Neuromancer is trained on ~10,000 curated social reasoning traces to follow formal logic — extracting both explicit facts (&quot;user said they like Python&quot;) and deductive conclusions (&quot;user is likely a developer&quot;).</p>
 <p>It scores 86.9% on the LoCoMo memory benchmark vs. 69.6% for base Qwen3-8B and 80.0% for Claude 4 Sonnet.</p>
 <p><strong>Tradeoff of not using it:</strong> General-purpose models work well for observation extraction and memory recall — Honcho&#39;s prompts and tool-calling pipeline compensate for much of the gap. You may get slightly less precise deductive reasoning, but capable models (GLM-5, Grok 4.1) with strong function calling largely close the difference. The main advantage of self-hosting is data sovereignty, not matching Neuromancer&#39;s exact reasoning quality.</p>
-<h5>Deployment Options</h5>
+<h6>Deployment Options</h6>
 <table>
 <thead>
 <tr>
@@ -190,14 +191,14 @@
 <p><strong>Managed cloud</strong> — Zero setup. Best for getting started. Your data is on Plastic Labs&#39; infrastructure.</p>
 <p><strong>Self-hosted + API</strong> — This repo. Your data stays on your machine. LLM calls go to a cloud API for inference only — the provider sees request content but doesn&#39;t store your memory data. Best balance of privacy and capability.</p>
 <p><strong>Self-hosted + local model</strong> — Maximum privacy. No data leaves your network. Requires a GPU or capable CPU on your LAN running an inference server (Ollama, vLLM, llama.cpp). Set <code>LLM_VLLM_BASE_URL</code> to your local server. Trade-off: smaller models may produce lower quality observations and reasoning than cloud APIs.</p>
-<h5>What this does</h5>
+<h6>What this does</h6>
 <ul>
 <li>Runs Honcho&#39;s full memory stack (API, Deriver, PostgreSQL, Redis) on your machine</li>
 <li>Routes LLM calls through any OpenAI-compatible provider (primary + backup)</li>
 <li>All your data stays on your machine — no third-party cloud storage</li>
 <li>Works with OpenRouter, Venice, Routstr, Together, Ollama, or any other provider</li>
 </ul>
-<h5>Architecture</h5>
+<h6>Architecture</h6>
 <pre><code>Hermes Agent ──► localhost:8000 (self-hosted Honcho API)
                       │
                       ├── PostgreSQL + pgvector (your machine)
@@ -208,19 +209,19 @@
                               ├── Primary LLM provider (any OpenAI-compatible API)
                               └── Backup LLM provider (optional)
 </code></pre>
-<h5>Prerequisites</h5>
+<h6>Prerequisites</h6>
 <ul>
 <li>Ubuntu 22.04+ (VM, VPS, bare metal, or any Linux server — tested on 22.04, 6GB RAM, 80GB disk)</li>
 <li>Docker Engine + Compose plugin</li>
 <li>API key from any OpenAI-compatible provider (<a href="https://openrouter.ai">openrouter.ai</a>, <a href="https://venice.ai">venice.ai</a>, <a href="https://together.ai">together.ai</a>, etc.)</li>
 <li>Second API key for backup (optional)</li>
 </ul>
-<h5>Quick Start</h5>
+<h6>Quick Start</h6>
 <pre><code class="language-bash">curl -sL https://raw.githubusercontent.com/elkimek/honcho-self-hosted/main/setup.sh -o /tmp/setup.sh
 bash /tmp/setup.sh
 </code></pre>
 <p>This installs Docker (if needed), clones Honcho, copies configs, prompts for API keys, starts everything, configures Hermes, and optionally sets up the MCP server. ~3 minutes.</p>
-<h5>Manual Setup</h5>
+<h6>Manual Setup</h6>
 <h6>1. Install Docker</h6>
 <pre><code class="language-bash">sudo apt-get update &amp;&amp; sudo apt-get install -y ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
@@ -280,7 +281,7 @@ cp ~/honcho-self-hosted/honcho-config.json ~/.honcho/config.json
 hermes gateway restart
 </code></pre>
 <p>Hermes will now use your local Honcho instead of <code>api.honcho.dev</code>.</p>
-<h5>Model Configuration</h5>
+<h6>Model Configuration</h6>
 <p>Honcho has 4 background components that use LLM calls:</p>
 <ul>
 <li><strong>Deriver</strong> — Reads every message and extracts observations about the user (&quot;prefers Python&quot;, &quot;privacy-focused&quot;). Memory formation.</li>
@@ -340,7 +341,7 @@ hermes gateway restart
 <pre><code class="language-bash">cd ~/honcho
 docker compose up -d --build
 </code></pre>
-<h5>Using different providers</h5>
+<h6>Using different providers</h6>
 <p>Honcho supports these provider slots natively:</p>
 <table>
 <thead>
@@ -390,7 +391,7 @@ MODEL = &quot;llama-3.3-70b&quot;
 PROVIDER = &quot;anthropic&quot;     # best reasoning for rare tasks
 MODEL = &quot;claude-sonnet-4-6&quot;
 </code></pre>
-<h5>Local / LAN Inference</h5>
+<h6>Local / LAN Inference</h6>
 <p>For maximum privacy, run a local model instead of a cloud API. Any server with an OpenAI-compatible endpoint works.</p>
 <p>Local servers have different model catalogs than cloud APIs, so model names will differ. The setup script asks you for the model name your server provides.</p>
 <p>Recommended local models for reliable function calling:</p>
@@ -441,7 +442,7 @@ vllm serve THUDM/GLM-4.7-Flash --port 8001 --enable-auto-tool-choice
 <li><strong>Same model for all tiers</strong> — locally you&#39;ll typically run one model. The script sets it for all components. You can differentiate later in <code>config.toml</code> if you serve multiple models.</li>
 <li><strong>No backup provider</strong> — local mode uses a single server. If it goes down, Honcho&#39;s deriver queues work until it&#39;s back.</li>
 </ul>
-<h5>MCP Server (optional)</h5>
+<h6>MCP Server (optional)</h6>
 <p>Honcho includes an MCP server that exposes memory tools (search, chat, observations, peer cards) to any MCP-compatible client like Claude Code or Claude Desktop.</p>
 <p>The hosted version at <code>mcp.honcho.dev</code> points at Plastic Labs&#39; cloud. For self-hosted, run the MCP server locally and point it at your Honcho instance.</p>
 <p>The setup script offers to configure MCP automatically. To set it up manually:</p>
@@ -505,7 +506,7 @@ sudo systemctl enable --now honcho-mcp
   }
 }
 </code></pre>
-<h5>Maintenance</h5>
+<h6>Maintenance</h6>
 <p><strong>Update Honcho:</strong></p>
 <pre><code class="language-bash">cd ~/honcho
 docker compose down
@@ -526,13 +527,13 @@ sudo systemctl restart honcho-mcp
 <p><strong>Backup data:</strong></p>
 <pre><code class="language-bash">docker compose exec database pg_dump -U honcho honcho &gt; backup.sql
 </code></pre>
-<h5>Known Limitations</h5>
+<h6>Known Limitations</h6>
 <ul>
 <li><strong>Embedding fallback shares backup config</strong> — if <code>LLM_EMBEDDING_API_KEY</code> / <code>LLM_EMBEDDING_BASE_URL</code> are empty, Honcho falls back to <code>LLM_OPENAI_COMPATIBLE_*</code> (backup provider). This is intentional and works well when your backup supports embeddings (e.g. Venice with <code>text-embedding-bge-m3</code>). Set the embedding env vars explicitly if you want embeddings routed separately.</li>
 <li><strong>One backup per component</strong> — Honcho supports primary + one backup provider, not a full failover chain. Using a multi-provider router (e.g. OpenRouter) as primary mitigates this.</li>
 <li><strong>No E2EE</strong> — Honcho&#39;s agents use function calling, which isn&#39;t compatible with end-to-end encryption. LLM request content is visible to the provider, but your stored data (sessions, observations, embeddings) stays on your machine.</li>
 </ul>
-<h5>Files</h5>
+<h6>Files</h6>
 <table>
 <thead>
 <tr>
@@ -561,9 +562,9 @@ sudo systemctl restart honcho-mcp
 <td>One-command installer — handles everything</td>
 </tr>
 </tbody></table>
-<h5>License</h5>
+<h6>License</h6>
 <p>GPL-3.0</p>
-<h5>Credits</h5>
+<h6>Credits</h6>
 <ul>
 <li><a href="https://github.com/plastic-labs/honcho">Honcho</a> by Plastic Labs</li>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research</li>

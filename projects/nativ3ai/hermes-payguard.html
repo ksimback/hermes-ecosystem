@@ -57,6 +57,7 @@
   }
 }
 </script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,7 +136,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>Hermes PayGuard</h4>
+    <h5>Hermes PayGuard</h5>
 <p>Hermes PayGuard is a standalone Hermes plugin for safe-by-design USDC and x402 payments.</p>
 <p>It does not patch Hermes core. It installs as an add-on and gives Hermes payment tools with an explicit operator boundary:</p>
 <ul>
@@ -146,14 +147,14 @@
 <li>Tiny x402 micropayments can auto-run below a configured threshold.</li>
 <li>Mainnet is the default profile; testnet is an explicit override.</li>
 </ul>
-<h5>Documentation</h5>
+<h6>Documentation</h6>
 <ul>
 <li>Install: <a href="https://github.com/nativ3ai/hermes-payguard/blob/main/docs/installation.md"><code>docs/installation.md</code></a></li>
 <li>Operator flow: <a href="https://github.com/nativ3ai/hermes-payguard/blob/main/docs/operator-guide.md"><code>docs/operator-guide.md</code></a></li>
 <li>CCTP executor boundary: <a href="https://github.com/nativ3ai/hermes-payguard/blob/main/docs/cctp-executor.md"><code>docs/cctp-executor.md</code></a></li>
 <li>Architecture: <a href="https://github.com/nativ3ai/hermes-payguard/blob/main/docs/architecture.md"><code>docs/architecture.md</code></a></li>
 </ul>
-<h5>What it supports</h5>
+<h6>What it supports</h6>
 <ul>
 <li>Circle developer-controlled USDC transfers</li>
 <li>Circle user-controlled transfer challenges</li>
@@ -161,7 +162,7 @@
 <li>x402 paid HTTP fetches, including micropayments and nanopayments</li>
 <li>Local audit ledger and replayable intent state</li>
 </ul>
-<h5>Security model</h5>
+<h6>Security model</h6>
 <p>PayGuard follows the same trust-boundary philosophy as CaMeL Guard, but adapted to payments.</p>
 <ul>
 <li>Trusted control: operator-approved payment intent, local policy, explicit approval stamps</li>
@@ -172,7 +173,7 @@
 <pre><code class="language-bash">payguard approve &lt;intent-id&gt;
 </code></pre>
 <p>That avoids the weakest version of “agent-approved its own payment.”</p>
-<h5>Install</h5>
+<h6>Install</h6>
 <h6>Repo plugin mode</h6>
 <p>Clone the repo and symlink it into Hermes&#39; plugin directory:</p>
 <pre><code class="language-bash">git clone https://github.com/nativ3ai/hermes-payguard.git
@@ -191,7 +192,7 @@ payguard install-plugin
 payguard init-policy
 payguard doctor
 </code></pre>
-<h5>Configure</h5>
+<h6>Configure</h6>
 <p>Create <code>~/.hermes/payguard/policy.yaml</code>:</p>
 <pre><code class="language-yaml">mode: enforce
 network_profile: mainnet
@@ -245,7 +246,7 @@ export CIRCLE_X_USER_TOKEN=&quot;...&quot;
 <pre><code class="language-bash">export PAYGUARD_EVM_PRIVATE_KEY=&quot;0x...&quot;
 export PAYGUARD_X402_NETWORK=&quot;eip155:8453&quot;
 </code></pre>
-<h5>Operator flow</h5>
+<h6>Operator flow</h6>
 <ol>
 <li>Hermes prepares a transfer with <code>payguard_prepare_usdc_transfer</code>.</li>
 <li>The tool writes a pending intent into the local ledger.</li>
@@ -257,7 +258,7 @@ export PAYGUARD_X402_NETWORK=&quot;eip155:8453&quot;
 <li>Hermes then calls <code>payguard_execute_payment_intent</code>.</li>
 </ol>
 <p>For tiny x402 payments below the configured threshold, <code>payguard_fetch_paid_url</code> can auto-pay without a separate approval stamp.</p>
-<h5>Hermes examples</h5>
+<h6>Hermes examples</h6>
 <p>Natural prompts Hermes can handle once the plugin is installed:</p>
 <pre><code class="language-text">Prepare a 12.5 USDC transfer to 0xabc... on Circle developer-controlled wallets for vendor invoice March-20.
 </code></pre>
@@ -265,7 +266,7 @@ export PAYGUARD_X402_NETWORK=&quot;eip155:8453&quot;
 </code></pre>
 <pre><code class="language-text">Fetch the paid x402 URL https://example.com/premium if the micropayment is below policy limits.
 </code></pre>
-<h5>Test coverage</h5>
+<h6>Test coverage</h6>
 <p>Verified locally:</p>
 <ul>
 <li>mainnet profile defaults</li>
@@ -283,7 +284,7 @@ export PAYGUARD_X402_NETWORK=&quot;eip155:8453&quot;
 <li><a href="https://github.com/nativ3ai/hermes-payguard/blob/main/docs/operator-guide.md"><code>docs/operator-guide.md</code></a></li>
 <li><a href="https://github.com/nativ3ai/hermes-payguard/blob/main/docs/cctp-executor.md"><code>docs/cctp-executor.md</code></a></li>
 </ul>
-<h5>Tool summary</h5>
+<h6>Tool summary</h6>
 <ul>
 <li><code>payguard_prepare_usdc_transfer</code></li>
 <li><code>payguard_prepare_cctp_transfer</code></li>
@@ -292,7 +293,7 @@ export PAYGUARD_X402_NETWORK=&quot;eip155:8453&quot;
 <li><code>payguard_list_payment_intents</code></li>
 <li><code>payguard_fetch_paid_url</code></li>
 </ul>
-<h5>Tests</h5>
+<h6>Tests</h6>
 <pre><code class="language-bash">pip install -e .[test]
 pytest -q
 </code></pre>

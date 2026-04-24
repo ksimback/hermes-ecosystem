@@ -57,6 +57,7 @@
   }
 }
 </script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,13 +136,13 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>web-search-plus — Hermes Plugin</h4>
+    <h5>web-search-plus — Hermes Plugin</h5>
 <p>Multi-provider web search with intelligent auto-routing for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>.</p>
 <blockquote>
 <p>Ported from <a href="https://github.com/robbyczgw-cla/web-search-plus-plugin">web-search-plus-plugin</a> (OpenClaw) to the Hermes Plugin API.</p>
 </blockquote>
 <hr>
-<h5>Quick Start</h5>
+<h6>Quick Start</h6>
 <pre><code class="language-bash">git clone https://github.com/robbyczgw-cla/hermes-web-search-plus.git ~/.hermes/plugins/web-search-plus
 cd ~/.hermes/hermes-agent
 source venv/bin/activate
@@ -169,7 +170,7 @@ cp .env.template .env          # fill in at least one provider key
 </code></pre>
 <p>Finally restart Hermes (or <code>/restart</code> + <code>/reset</code> in gateway chats) and use <code>web_search_plus</code>.</p>
 <hr>
-<h5>Features</h5>
+<h6>Features</h6>
 <ul>
 <li><strong>Intelligent auto-routing</strong> — picks the best provider based on query intent</li>
 <li><strong>8 providers</strong> — Serper, Brave, Tavily, Exa, Querit, Perplexity, You.com, SearXNG</li>
@@ -180,7 +181,7 @@ cp .env.template .env          # fill in at least one provider key
 <li><strong>Local caching</strong> — avoids duplicate API calls (1h TTL)</li>
 </ul>
 <hr>
-<h5>Provider Routing</h5>
+<h6>Provider Routing</h6>
 <table>
 <thead>
 <tr>
@@ -232,7 +233,7 @@ cp .env.template .env          # fill in at least one provider key
 </tbody></table>
 <p>Auto-routing scores providers based on query signals (keywords, intent, linguistic patterns). Brave and Serper share generic web-search intents; when they tie, the router uses deterministic per-query tie-breaking so the same query stays reproducible while ties are distributed across both providers. Override anytime with <code>provider=&quot;serper&quot;</code>, <code>provider=&quot;brave&quot;</code>, etc.</p>
 <hr>
-<h5>Installation</h5>
+<h6>Installation</h6>
 <h6>API Keys</h6>
 <pre><code class="language-bash"># Required (at least one)
 SERPER_API_KEY=***        # https://serper.dev — 2,500 free/mo
@@ -251,7 +252,7 @@ SEARXNG_INSTANCE_URL=https://your-instance.example.com
 <p>Python 3.8+ required. For Exa deep research: <code>pip install httpx</code> (optional).</p>
 </blockquote>
 <hr>
-<h5>Usage</h5>
+<h6>Usage</h6>
 <h6>Parameters</h6>
 <table>
 <thead>
@@ -331,7 +332,7 @@ python ~/.hermes/plugins/web-search-plus/search.py \
   --query &quot;test query&quot; --provider auto --max-results 5 --compact
 </code></pre>
 <hr>
-<h5>Architecture</h5>
+<h6>Architecture</h6>
 <pre><code>__init__.py      — Hermes plugin entry, tool schema, handler
 search.py        — Core engine: providers, routing, caching, fallback
 plugin.yaml      — Plugin manifest
@@ -340,7 +341,7 @@ CHANGELOG.md     — Version history
 </code></pre>
 <p>The plugin runs <code>search.py</code> as a subprocess with a 75s timeout (for Exa deep-reasoning queries).</p>
 <hr>
-<h5>Related</h5>
+<h6>Related</h6>
 <ul>
 <li><a href="https://github.com/robbyczgw-cla/web-search-plus-plugin">web-search-plus-plugin</a> — TypeScript version for OpenClaw</li>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — the agent this plugin runs on</li>

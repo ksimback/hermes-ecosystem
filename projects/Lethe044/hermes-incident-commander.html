@@ -57,6 +57,7 @@
   }
 }
 </script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,14 +136,14 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>⚕ Hermes Incident Commander</h4>
+    <h5>⚕ Hermes Incident Commander</h5>
 <blockquote>
 <p><strong>An autonomous SRE agent that detects, diagnoses, and heals production infrastructure - then learns from every incident it resolves.</strong></p>
 </blockquote>
 <p>Built on <a href="https://hermes-agent.nousresearch.com">Hermes Agent</a> by NousResearch.
 Submitted for the <em>&quot;Show us what Hermes Agent can do&quot;</em> challenge.</p>
 <hr>
-<h5>The Problem</h5>
+<h6>The Problem</h6>
 <p>When a production server goes down at 3 AM, an on-call engineer has to:</p>
 <ol>
 <li>Wake up, check alerts</li>
@@ -155,7 +156,7 @@ Submitted for the <em>&quot;Show us what Hermes Agent can do&quot;</em> challeng
 <p><strong>Mean time to resolve (MTTR) for P0 incidents averages 45–60 minutes.</strong> Much of that is humans doing things a sufficiently capable agent could do faster and better.</p>
 <p>Hermes Incident Commander does all of it - autonomously, in minutes, getting smarter with each incident it handles.</p>
 <hr>
-<h5>Demo</h5>
+<h6>Demo</h6>
 <pre><code class="language-bash"># Install dependencies
 pip install anthropic rich
 
@@ -180,7 +181,7 @@ python demo/demo_incident.py --scenario cpu-runaway-process
 <li>Creates a <strong>new prevention skill</strong> in <code>~/.hermes/skills/</code> so it handles this faster next time</li>
 </ul>
 <hr>
-<h5>How It Uses Every Hermes Feature</h5>
+<h6>How It Uses Every Hermes Feature</h6>
 <p>This project was designed to push every capability of Hermes Agent:</p>
 <table>
 <thead>
@@ -223,7 +224,7 @@ python demo/demo_incident.py --scenario cpu-runaway-process
 </tr>
 </tbody></table>
 <hr>
-<h5>Architecture</h5>
+<h6>Architecture</h6>
 <pre><code class="language-mermaid">flowchart TD
     ALERT([🚨 Incident Alert]) --&gt; DETECT
 
@@ -257,7 +258,7 @@ python demo/demo_incident.py --scenario cpu-runaway-process
     style ALERT fill:#7b2d00,color:#fff
 </code></pre>
 <hr>
-<h5>Project Structure</h5>
+<h6>Project Structure</h6>
 <pre><code class="language-mermaid">graph LR
     ROOT[&quot;📁 hermes-incident-commander&quot;]
 
@@ -287,7 +288,7 @@ python demo/demo_incident.py --scenario cpu-runaway-process
     style TEST_PY fill:#2d2d2d,color:#fff
 </code></pre>
 <hr>
-<h5>Installation (Full Hermes Setup)</h5>
+<h6>Installation (Full Hermes Setup)</h6>
 <h6>1. Install Hermes Agent</h6>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
 </code></pre>
@@ -321,7 +322,7 @@ python environments/incident_env.py process --config environments/incident_confi
 python environments/incident_env.py serve --config environments/incident_config.yaml
 </code></pre>
 <hr>
-<h5>Reward Function (for RL Training)</h5>
+<h6>Reward Function (for RL Training)</h6>
 <p>The training environment uses a multi-component reward that captures real SRE quality:</p>
 <pre><code class="language-mermaid">pie title Reward Components
     &quot;Resolution — Did the incident get fixed?&quot; : 50
@@ -332,7 +333,7 @@ python environments/incident_env.py serve --config environments/incident_config.
     &quot;Tool Efficiency — Minimal tool calls?&quot; : 5
 </code></pre>
 <hr>
-<h5>Incident Scenarios (Training Scenarios)</h5>
+<h6>Incident Scenarios (Training Scenarios)</h6>
 <table>
 <thead>
 <tr>
@@ -374,7 +375,7 @@ python environments/incident_env.py serve --config environments/incident_config.
 </tr>
 </tbody></table>
 <hr>
-<h5>Running Tests</h5>
+<h6>Running Tests</h6>
 <pre><code class="language-bash"># Install test dependencies
 pip install pytest pytest-asyncio
 
@@ -387,7 +388,7 @@ pytest tests/test_incident_env.py::TestRewardFunction -v
 pytest tests/test_incident_env.py::TestSkillFile -v
 </code></pre>
 <hr>
-<h5>Why This Wins</h5>
+<h6>Why This Wins</h6>
 <ol>
 <li><p><strong>Real problem, real impact.</strong> P0 incidents cost companies thousands of dollars per minute. Shaving 30 minutes off MTTR with an autonomous agent is immediately valuable.</p>
 </li>
@@ -401,7 +402,7 @@ pytest tests/test_incident_env.py::TestSkillFile -v
 </li>
 </ol>
 <hr>
-<h5>License</h5>
+<h6>License</h6>
 <p>MIT</p>
 <hr>
 <p><em>Built with <a href="https://hermes-agent.nousresearch.com">Hermes Agent</a> - the agent that grows with you.</em></p>

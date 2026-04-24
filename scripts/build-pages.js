@@ -12,6 +12,7 @@
 
 import fs from "fs";
 import path from "path";
+import { execSync } from "child_process";
 import { fileURLToPath } from "url";
 import { marked } from "marked";
 import { githubHeaders, fetchReadme, fetchAllMetadata } from "../lib/github.js";
@@ -365,6 +366,98 @@ function stripHtmlToText(html) {
     .trim();
 }
 
+// ── GEO: derive addedAt (first-seen commit date) for each repo via git log ──
+// Walks history of data/repos.json (small — ~20 commits), records the earliest
+// commit that contained each {owner, repo} pair.
+function computeAddedDates() {
+  const dates = {};
+  try {
+    const log = execSync('git log --reverse --format="%H %cI" -- data/repos.json', {
+      cwd: ROOT,
+      encoding: "utf-8",
+    }).trim();
+    if (!log) return dates;
+
+    for (const line of log.split("\n")) {
+      const spaceIdx = line.indexOf(" ");
+      if (spaceIdx === -1) continue;
+      const hash = line.slice(0, spaceIdx);
+      const date = line.slice(spaceIdx + 1);
+      let snapshot;
+      try {
+        const raw = execSync(`git show ${hash}:data/repos.json`, { cwd: ROOT, encoding: "utf-8" });
+        snapshot = JSON.parse(raw);
+      } catch {
+        continue;
+      }
+      if (!Array.isArray(snapshot)) continue;
+      for (const r of snapshot) {
+        const key = `${r.owner}/${r.repo}`;
+        if (!dates[key]) dates[key] = date;
+      }
+    }
+  } catch (e) {
+    console.warn("  computeAddedDates failed (non-fatal):", e.message);
+  }
+  return dates;
+}
+
+// ── GEO: RSS 2.0 feed of the 30 most recently added repos ──
+function generateRssFeed(repos, addedDates, summaries) {
+  const now = new Date().toUTCString();
+  const withDates = repos
+    .map((r) => {
+      const key = `${r.owner}/${r.repo}`;
+      return {
+        ...r,
+        key,
+        addedAt: addedDates[key] || null,
+      };
+    })
+    .filter((r) => r.addedAt)
+    .sort((a, b) => (a.addedAt < b.addedAt ? 1 : -1))
+    .slice(0, 30);
+
+  const xmlEscape = (s) =>
+    String(s || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+
+  const items = withDates
+    .map((r) => {
+      const summary = summaries[r.key]?.summary;
+      const blurb = summary || r.description || "";
+      const url = `${SITE_URL}/projects/${r.owner}/${r.repo}`;
+      const pubDate = new Date(r.addedAt).toUTCString();
+      return `    <item>
+      <title>${xmlEscape(r.name || r.repo)} (${xmlEscape(r.category)})</title>
+      <link>${url}</link>
+      <guid isPermaLink="true">${url}</guid>
+      <pubDate>${pubDate}</pubDate>
+      <category>${xmlEscape(r.category)}</category>
+      <description>${xmlEscape(blurb.slice(0, 500))}</description>
+    </item>`;
+    })
+    .join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hermes Atlas — new projects</title>
+    <link>${SITE_URL}/</link>
+    <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml" />
+    <description>Newly added community-built tools, skills, plugins, and integrations for Nous Research's Hermes Agent. Updated daily.</description>
+    <language>en</language>
+    <lastBuildDate>${now}</lastBuildDate>
+    <generator>hermesatlas.com/scripts/build-pages.js</generator>
+${items}
+  </channel>
+</rss>
+`;
+}
+
 // ── GEO: write llms.txt (concise index) + llms-full.txt (full bundle) ──
 function writeLlmsFiles(repos, lists, summaries) {
   const today = new Date().toISOString().slice(0, 10);
@@ -534,6 +627,7 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary, handbo
 }
 </script>
 ${renderSoftwareApplicationLD(repo, meta, summary)}
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="${FAVICON}">
 <script>${THEME_INIT}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -701,6 +795,7 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
 }
 </script>
 ${renderCollectionPageLD(list, matchedRepos)}
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="${FAVICON}">
 <script>${THEME_INIT}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -921,6 +1016,14 @@ async function main() {
   // Generate llms.txt + llms-full.txt for LLM / agent ingestion (llmstxt.org)
   console.log("\nGenerating llms.txt + llms-full.txt...");
   writeLlmsFiles(repos, lists, summaries);
+
+  // Generate rss.xml — last-30 new repo additions (addedAt derived from git log)
+  console.log("\nGenerating rss.xml...");
+  const addedDates = computeAddedDates();
+  const rss = generateRssFeed(repos, addedDates, summaries);
+  fs.writeFileSync(path.join(ROOT, "rss.xml"), rss, "utf-8");
+  const rssItemCount = (rss.match(/<item>/g) || []).length;
+  console.log(`  rss.xml (${rssItemCount} items, ${Buffer.byteLength(rss, "utf-8")} bytes)`);
 
   console.log("\nDone!");
 }

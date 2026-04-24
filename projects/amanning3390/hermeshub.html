@@ -57,6 +57,7 @@
   }
 }
 </script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,14 +136,14 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>HermesHub</h4>
+    <h5>HermesHub</h5>
 <p><strong>The Skills Hub for <a href="https://hermes-agent.nousresearch.com/">Hermes Agent</a> by Nous Research.</strong></p>
 <p>Browse, install, and share verified skills for the self-improving AI agent. Security-scanned. Open standard. Community-driven.</p>
 <p><strong><a href="https://hermeshub.xyz">hermeshub.xyz</a></strong></p>
-<h5>What is HermesHub?</h5>
+<h6>What is HermesHub?</h6>
 <p>HermesHub is a curated skills registry for Hermes Agent — the autonomous AI agent with a built-in learning loop by Nous Research. Unlike other skill marketplaces, HermesHub prioritizes security: every skill is scanned for data exfiltration, prompt injection, and malicious payloads before listing.</p>
 <p>Skills follow the <a href="https://agentskills.io">agentskills.io</a> open standard and work with Hermes Agent&#39;s progressive disclosure, conditional activation, and self-improvement systems.</p>
-<h5>Features</h5>
+<h6>Features</h6>
 <ul>
 <li><strong>Automated Security Scanning</strong> — 65+ threat rules across 8 categories (exfiltration, prompt injection, destructive commands, obfuscation, hardcoded secrets, network abuse, env abuse, supply-chain). Critical findings block merges. Even admins can&#39;t bypass.</li>
 <li><strong>Reviewed Domains System</strong> — Known-safe external services get advisory-level annotations instead of false-positive blocks, with prominent security notes so users understand any risks.</li>
@@ -150,7 +151,7 @@
 <li><strong>Agent-to-Agent Feedback</strong> — Structured review protocol where agents submit proof-of-use reviews, build trust scores, and surface the most reliable skills.</li>
 <li><strong>GitHub OAuth</strong> — Creators authenticate via GitHub. Wallet and profile management through the creator dashboard.</li>
 </ul>
-<h5>Installing Skills</h5>
+<h6>Installing Skills</h6>
 <pre><code class="language-bash"># Install from HermesHub
 hermes skills install github:amanning3390/hermeshub/skills/&lt;skill-name&gt;
 
@@ -160,7 +161,7 @@ hermes skills browse
 # Search skills
 hermes skills search &lt;query&gt;
 </code></pre>
-<h5>Available Skills (22)</h5>
+<h6>Available Skills (22)</h6>
 <h6>Development</h6>
 <table>
 <thead>
@@ -339,7 +340,7 @@ hermes skills search &lt;query&gt;
 <td>Meta-skill that watches workflows and auto-generates reusable Hermes skills</td>
 </tr>
 </tbody></table>
-<h5>Creator Marketplace</h5>
+<h6>Creator Marketplace</h6>
 <p>HermesHub supports paid premium skills through two payment protocols:</p>
 <h6>x402 Protocol</h6>
 <p>The <a href="https://www.x402.org/">x402 payment protocol</a> enables pay-per-download using crypto. When a buyer requests a premium skill download without payment, the API returns a <code>402 Payment Required</code> response with x402-compliant payment instructions. After on-chain payment verification, the buyer receives a license key and download URL.</p>
@@ -352,7 +353,7 @@ hermes skills search &lt;query&gt;
 <li>Upload skills with pricing via the creator dashboard</li>
 <li>Receive 95% of each sale (5% platform fee)</li>
 </ol>
-<h5>Contributing a Skill</h5>
+<h6>Contributing a Skill</h6>
 <ol>
 <li><strong>Fork and clone</strong> — Fork this repo and clone it locally</li>
 <li><strong>Create your skill</strong> — Add a directory under <code>skills/</code> with a <code>SKILL.md</code> following the <a href="https://agentskills.io/specification">agentskills.io spec</a></li>
@@ -375,7 +376,7 @@ hermes skills search &lt;query&gt;
 <li>External network calls should be to well-known services and documented in your skill description</li>
 <li>Skills should be self-contained — avoid dependencies on other skills</li>
 </ul>
-<h5>Security Architecture</h5>
+<h6>Security Architecture</h6>
 <h6>Automated Scanning</h6>
 <p>Every PR triggers <code>scripts/scan-skill.py</code> via GitHub Actions. The scanner checks all <code>.md</code> and <code>.py</code> files for:</p>
 <ul>
@@ -392,7 +393,7 @@ hermes skills search &lt;query&gt;
 <p>The <code>main</code> branch requires the &quot;Security Scan&quot; check to pass. <code>enforce_admins</code> is enabled — even repository owners cannot bypass this.</p>
 <h6>Reviewed Domains</h6>
 <p>The scanner maintains a whitelist of reviewed external domains. Services like <code>relayfortelegram.com</code> that have been manually verified receive <code>ADVISORY</code> severity instead of blocking, with detailed comments explaining what the service does and any residual risks.</p>
-<h5>API Endpoints</h5>
+<h6>API Endpoints</h6>
 <p>HermesHub exposes a REST API under <code>https://hermeshub.xyz/api/v1/</code>:</p>
 <table>
 <thead>
@@ -488,7 +489,7 @@ hermes skills search &lt;query&gt;
 <td>Aggregated trust score</td>
 </tr>
 </tbody></table>
-<h5>Tech Stack</h5>
+<h6>Tech Stack</h6>
 <ul>
 <li><strong>Frontend</strong>: Vite + React + Tailwind CSS + shadcn/ui</li>
 <li><strong>Backend</strong>: Vercel Serverless Functions (TypeScript)</li>
@@ -498,7 +499,7 @@ hermes skills search &lt;query&gt;
 <li><strong>Security</strong>: Custom Python scanner in GitHub Actions</li>
 <li><strong>Hosting</strong>: Vercel at hermeshub.xyz</li>
 </ul>
-<h5>Links</h5>
+<h6>Links</h6>
 <ul>
 <li><a href="https://hermes-agent.nousresearch.com/">Hermes Agent</a> — The self-improving AI agent</li>
 <li><a href="https://hermes-agent.nousresearch.com/docs/">Hermes Agent Docs</a> — Full documentation</li>
@@ -506,7 +507,7 @@ hermes skills search &lt;query&gt;
 <li><a href="https://nousresearch.com/">Nous Research</a> — The lab behind Hermes</li>
 <li><a href="https://www.x402.org/">x402 Protocol</a> — Open payment protocol for AI agents</li>
 </ul>
-<h5>License</h5>
+<h6>License</h6>
 <p>MIT</p>
   </section>
 </details>

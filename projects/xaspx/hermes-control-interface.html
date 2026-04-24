@@ -57,6 +57,7 @@
   }
 }
 </script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,12 +136,12 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>Hermes Control Interface</h4>
+    <h5>Hermes Control Interface</h5>
 <p>A self-hosted web dashboard for the <a href="https://github.com/NousResearch/hermes-agent">Hermes AI agent</a> stack. Manage terminals, files, sessions, cron jobs, token analytics, multi-agent gateways, and team access — all behind a password gate.</p>
 <p><strong>Stack:</strong> Vanilla JS + Vite · Node.js · Express · WebSocket · xterm.js
 <strong>Version:</strong> 3.4.0</p>
 <hr>
-<h5>Highlights</h5>
+<h6>Highlights</h6>
 <blockquote>
 <p><strong>Chat via Gateway API</strong> — Real-time streaming, tool call cards with JSON viewer, session resume, stop button, multi-profile support. Auto-fallback to CLI.</p>
 </blockquote>
@@ -157,7 +158,7 @@
 <p><strong>Security Hardened</strong> — Command injection fixes, CSRF on 21 endpoints, dynamic CORS, security audit report (18 findings addressed).</p>
 </blockquote>
 <hr>
-<h5>Screenshots</h5>
+<h6>Screenshots</h6>
 <h6>Navigation — 8 Pages</h6>
 <p><strong>Home · Agents · Usage · Skills · Chat · Logs · Maintenance · Files</strong></p>
 <h6>Dark Mode</h6>
@@ -273,7 +274,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h5>Features</h5>
+<h6>Features</h6>
 <h6>🔐 Authentication</h6>
 <ul>
 <li>Single password login (configurable via <code>HERMES_CONTROL_PASSWORD</code>)</li>
@@ -477,7 +478,7 @@
 </ul>
 <p>See full security audit: <a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/SECURITY_AUDIT.md">docs/SECURITY_AUDIT.md</a></p>
 <hr>
-<h5>Where HCI Can Be Installed</h5>
+<h6>Where HCI Can Be Installed</h6>
 <p>HCI runs as a single Node.js process — any server environment that supports Node.js works.</p>
 <table>
 <thead>
@@ -529,7 +530,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h5>Requirements</h5>
+<h6>Requirements</h6>
 <table>
 <thead>
 <tr>
@@ -579,7 +580,7 @@
 <li><code>cookie-parser</code>, <code>dotenv</code>, <code>js-yaml</code>, etc.</li>
 </ul>
 <hr>
-<h5>Installation Methods</h5>
+<h6>Installation Methods</h6>
 <h6>Manual (Recommended)</h6>
 <pre><code class="language-bash"># 1. Clone
 git clone https://github.com/xaspx/hermes-control-interface.git
@@ -625,7 +626,7 @@ WantedBy=multi-user.target
 sudo systemctl start hermes-control
 </code></pre>
 <hr>
-<h5>Environment Variables</h5>
+<h6>Environment Variables</h6>
 <table>
 <thead>
 <tr>
@@ -666,7 +667,7 @@ sudo systemctl start hermes-control
 </tr>
 </tbody></table>
 <hr>
-<h5>Reset Password Without Dashboard Access</h5>
+<h6>Reset Password Without Dashboard Access</h6>
 <p>If you can&#39;t log in to the dashboard, reset the password via CLI:</p>
 <p><strong>Option 1 — Edit .env directly</strong></p>
 <pre><code class="language-bash"># SSH into your server
@@ -683,7 +684,7 @@ sudo systemctl restart hermes-control
 </code></pre>
 <p><strong>Key point:</strong> <code>.env</code> is the source of truth. Dashboard access = server access. If you lose access to both, you must have server/SSH access to reset.</p>
 <hr>
-<h5>Architecture</h5>
+<h6>Architecture</h6>
 <pre><code>src/                    # Vite source (ES modules)
 ├── index.html          # Entry point
 ├── js/main.js          # App logic (~4800 lines, modular sections)
@@ -700,7 +701,7 @@ server.js               # Express + WebSocket + PTY + API (~2300 lines)
 auth.js                 # Multi-user auth + RBAC (bcrypt, sessions, permissions)
 </code></pre>
 <hr>
-<h5>Development</h5>
+<h6>Development</h6>
 <pre><code class="language-bash"># Edit source in src/
 npx vite build
 
@@ -709,7 +710,7 @@ kill $(lsof -t -i:10272) 2&gt;/dev/null
 nohup node server.js &amp;&gt;/dev/null &amp; disown
 </code></pre>
 <hr>
-<h5>API</h5>
+<h6>API</h6>
 <p>100+ endpoints covering:</p>
 <ul>
 <li><strong>Auth</strong>: login, logout, session management, setup</li>
@@ -730,7 +731,7 @@ nohup node server.js &amp;&gt;/dev/null &amp; disown
 </ul>
 <p>See <code>docs/API.md</code> for full reference.</p>
 <hr>
-<h5>Security Audit</h5>
+<h6>Security Audit</h6>
 <p>Full audit report: <a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/SECURITY_AUDIT.md">docs/SECURITY_AUDIT.md</a>
 <strong>Score: 7.0/10</strong> — Production-ready.</p>
 <p>Issues found and fixed in v3.3.0:</p>
@@ -741,7 +742,7 @@ nohup node server.js &amp;&gt;/dev/null &amp; disown
 <li>Token cleanup interval — now runs every 15 minutes</li>
 </ul>
 <hr>
-<h5>Updating HCI</h5>
+<h6>Updating HCI</h6>
 <pre><code class="language-bash"># 1. Pull latest code
 cd /root/projects/hermes-control-interface
 git pull origin main
@@ -760,7 +761,7 @@ nohup node server.js &amp;&gt;/dev/null &amp; disown
 <p><strong>Non-root users:</strong> Replace <code>/root/projects</code> with your user&#39;s project directory.
 If running via systemd, use <code>sudo systemctl restart hermes-control</code>.</p>
 <hr>
-<h5>Changelog</h5>
+<h6>Changelog</h6>
 <h6>v3.4.0 (2026-04-19)</h6>
 <p><strong>⚡ Chat Revamp (CLI → Gateway API):</strong></p>
 <ul>
@@ -909,9 +910,9 @@ If running via systemd, use <code>sudo systemctl restart hermes-control</code>.<
 <li>Maintenance UI: Backup &amp; Import, HCI Restart buttons</li>
 </ul>
 <hr>
-<h5>License</h5>
+<h6>License</h6>
 <p>MIT</p>
-<h5>Credits</h5>
+<h6>Credits</h6>
 <p>Built for the <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> ecosystem.</p>
 <p><a href="https://x.com/bayendor">@bayendor</a> — GitHub: <a href="https://github.com/xaspx">xaspx</a></p>
   </section>

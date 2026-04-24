@@ -57,6 +57,7 @@
   }
 }
 </script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,7 +136,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>openclaw-to-hermes</h4>
+    <h5>openclaw-to-hermes</h5>
 <p>Migrate from <a href="https://github.com/openclaw/openclaw">OpenClaw</a> to <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — a complete, battle-tested migration tool.</p>
 <p>Built from a real production migration. Fixes every issue we found in the existing <code>hermes-migrate</code> tool.</p>
 <blockquote>
@@ -145,7 +146,7 @@ hermes claw migrate --preset full --overwrite  # Full migration
 </code></pre>
 <p>This tool remains useful as a reference implementation and for users on older Hermes versions (pre-v0.3.0) where the native migration had known issues.</p>
 </blockquote>
-<h5>What It Does</h5>
+<h6>What It Does</h6>
 <ul>
 <li>Discovers all OpenClaw agents, workspaces, channels, and credentials</li>
 <li>Migrates SOUL.md, MEMORY.md, workspace files, skills, and memory archives</li>
@@ -157,7 +158,7 @@ hermes claw migrate --preset full --overwrite  # Full migration
 <li>Creates backup archive before any destructive operations</li>
 <li>Supports dry-run mode for safe preview</li>
 </ul>
-<h5>Quick Start</h5>
+<h6>Quick Start</h6>
 <pre><code class="language-bash"># Install
 pip install openclaw-to-hermes
 # or
@@ -175,7 +176,7 @@ oc2hermes --agent quant
 # Skip auto-start of hermes gateway
 oc2hermes --no-start
 </code></pre>
-<h5>What Gets Migrated</h5>
+<h6>What Gets Migrated</h6>
 <table>
 <thead>
 <tr>
@@ -240,13 +241,13 @@ oc2hermes --no-start
 <td>TTL, keep settings</td>
 </tr>
 </tbody></table>
-<h5>Prerequisites</h5>
+<h6>Prerequisites</h6>
 <ul>
 <li>OpenClaw installed and configured (<code>~/.openclaw/openclaw.json</code> exists)</li>
 <li>Hermes Agent installed (<code>hermes</code> CLI available or auto-installed)</li>
 <li>Python 3.10+</li>
 </ul>
-<h5>Architecture</h5>
+<h6>Architecture</h6>
 <pre><code>~/.openclaw/
 ├── openclaw.json              # Main config (agents, models, channels, tools)
 ├── state/
@@ -284,7 +285,7 @@ oc2hermes --no-start
 └── cron/
     └── jobs.json              # Scheduled tasks
 </code></pre>
-<h5>Known Issues with <code>hermes-migrate</code></h5>
+<h6>Known Issues with <code>hermes-migrate</code></h6>
 <p>This tool exists because the official <code>hermes-migrate</code> (v1.2.1) has several bugs:</p>
 <ol>
 <li><strong>Crashes on dict model configs</strong> — <code>agents.list[].model</code> can be <code>{&quot;primary&quot;: &quot;...&quot;, &quot;fallbacks&quot;: [...]}</code>, not just a string</li>
@@ -295,7 +296,7 @@ oc2hermes --no-start
 <li><strong>Missing croniter dependency</strong> — hermes-agent venv lacks croniter for cron job creation</li>
 <li><strong>Gateway restart hangs</strong> — <code>hermes gateway restart</code> can block indefinitely</li>
 </ol>
-<h5>Post-Migration Steps</h5>
+<h6>Post-Migration Steps</h6>
 <p>After running <code>oc2hermes</code>:</p>
 <ol>
 <li><strong>Verify credentials</strong>: <code>hermes status</code> — check API keys and auth providers</li>
@@ -304,7 +305,7 @@ oc2hermes --no-start
 <li><strong>Set home channel</strong>: Type <code>/sethome</code> in your Telegram chat with the bot</li>
 <li><strong>Verify cron jobs</strong>: <code>hermes cron list</code></li>
 </ol>
-<h5>Configuration</h5>
+<h6>Configuration</h6>
 <p>Create <code>~/.oc2hermes.yaml</code> to customize behavior:</p>
 <pre><code class="language-yaml"># Override workspace detection
 workspace: /home/user/clawd
@@ -326,7 +327,7 @@ openrouter_model: &quot;openrouter/auto&quot;
 # System env file path (for bot tokens)
 tenant_env: /etc/openclaw-tenants/{user}.env
 </code></pre>
-<h5>Development</h5>
+<h6>Development</h6>
 <pre><code class="language-bash">git clone https://github.com/0xNyk/openclaw-to-hermes.git
 cd openclaw-to-hermes
 uv venv &amp;&amp; source .venv/bin/activate
@@ -338,7 +339,7 @@ pytest
 # Lint
 ruff check .
 </code></pre>
-<h5>License</h5>
+<h6>License</h6>
 <p>MIT</p>
   </section>
 </details>

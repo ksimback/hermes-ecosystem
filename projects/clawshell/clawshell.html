@@ -57,6 +57,7 @@
   }
 }
 </script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,7 +136,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>ClawShell 🛡️</h4>
+    <h5>ClawShell 🛡️</h5>
 <p><img src="https://raw.githubusercontent.com/clawshell/clawshell/main/docs/images/banner.png" alt="ClawShell Banner"></p>
 <blockquote>
 <p><strong>Powered by Runta. The essential safety harness for OpenClaw/Hermes Agent&#39;s PII &amp; Sensitive Credentials.</strong></p>
@@ -144,10 +145,10 @@
 <a href="https://github.com/clawshell/clawshell/actions"><img src="https://img.shields.io/github/actions/workflow/status/clawshell/clawshell/rust.yml" alt="GitHub Actions Workflow Status"></a>
 <a href="https://www.npmjs.com/package/@clawshell/clawshell"><img src="https://img.shields.io/npm/v/%40clawshell%2Fclawshell" alt="NPM Version"></a>
 <a href="https://crates.io/crates/clawshell"><img src="https://img.shields.io/crates/v/clawshell" alt="Crates.io Version"></a></p>
-<h5>📖 Introduction</h5>
+<h6>📖 Introduction</h6>
 <p><strong>ClawShell</strong> is a security-privileged process for the <strong>OpenClaw/Hermes Agent</strong> ecosystem. It sits between OpenClaw/Hermes Agent and upstream LLM API providers (OpenAI, Anthropic, OpenRouter), performing virtual-to-real API key mapping and DLP (Data Loss Prevention) scanning on request and response bodies. It can also expose an Email read endpoint with sender allowlist/denylist filtering.</p>
 <p>OpenClaw/Hermes Agent never holds real API keys, only virtual keys that ClawShell swaps for real ones before forwarding requests upstream. Real keys are stored in a privileged config directory (<code>/etc/clawshell</code>) protected by Unix file system permissions.</p>
-<h5>Key Features</h5>
+<h6>Key Features</h6>
 <h6>1. API Token Secure Binding</h6>
 <p>ClawShell maps virtual API keys to real provider keys so that OpenClaw/Hermes Agent never has direct access to real credentials.</p>
 <ul>
@@ -193,7 +194,7 @@
 <li>Runs in under 10MB of memory.</li>
 <li>Written in Rust with Tokio.</li>
 </ul>
-<h5>Architecture</h5>
+<h6>Architecture</h6>
 <pre><code>                               ║ security boundary (Unix File System Permissions)
                                ║
                                ║  ┌───────────────────────────┐
@@ -225,7 +226,7 @@
 <p>OpenClaw/Hermes Agent only holds virtual keys and cannot access the real API keys stored in the privileged config.</p>
 <p>ClawShell swaps virtual keys for real ones and scans for PII before forwarding requests upstream.</p>
 <p>ClawShell also enforces sender-based filtering before returning email data.</p>
-<h5>Installation</h5>
+<h6>Installation</h6>
 <h6>Cargo</h6>
 <pre><code class="language-bash">cargo install clawshell --locked
 
@@ -249,7 +250,7 @@ CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=&quot;/tmp/x86_64-linux-musl-cross
 RUSTFLAGS=&quot;--remap-path-prefix=$(pwd)=. --remap-path-prefix=$HOME=/&quot; \
 cargo build --release --target x86_64-unknown-linux-musl
 </code></pre>
-<h5>Advanced Usage</h5>
+<h6>Advanced Usage</h6>
 <h6>Onboarding</h6>
 <p>The <code>onboard</code> command is an interactive setup wizard that must be run with <code>sudo</code>. It:</p>
 <ol>
@@ -447,7 +448,7 @@ hermes config set model.api_key  &lt;your-clawshell-virtual-key&gt;
 <h6>Uninstall</h6>
 <pre><code class="language-bash">sudo clawshell uninstall
 </code></pre>
-<h5>License</h5>
+<h6>License</h6>
 <p>This project is licensed under the <a href="LICENSE">Apache License 2.0</a>.</p>
   </section>
 </details>

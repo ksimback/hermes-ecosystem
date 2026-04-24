@@ -57,6 +57,7 @@
   }
 }
 </script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,10 +136,10 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>Hermes WebUI</h4>
+    <h5>Hermes WebUI</h5>
 <p>Process monitoring and configuration dashboard for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>.</p>
 <p><img src="https://raw.githubusercontent.com/sanchomuzax/hermes-webui/main/docs/screenshot-dashboard-home-v1.png" alt="Dashboard"></p>
-<h5>Features</h5>
+<h6>Features</h6>
 <ul>
 <li><strong>Dashboard</strong> — Real-time activity feed with session list, gateway status, platform/service health, cost tracking, and model distribution</li>
 <li><strong>Sessions</strong> — Browse, search (FTS5), and inspect full conversation histories with message-level detail</li>
@@ -149,7 +150,7 @@
 <li><strong>Dark/Light theme</strong> — Toggle between themes</li>
 <li><strong>Real-time updates</strong> — WebSocket-based polling bridge, no agent code modification needed</li>
 </ul>
-<h5>Screenshots</h5>
+<h6>Screenshots</h6>
 <table>
 <thead>
 <tr>
@@ -184,13 +185,13 @@
 <td><img src="https://raw.githubusercontent.com/sanchomuzax/hermes-webui/main/docs/screenshot-dashboard-skills-v1.png" alt="Skills"></td>
 </tr>
 </tbody></table>
-<h5>Requirements</h5>
+<h6>Requirements</h6>
 <ul>
 <li>Python 3.11+</li>
 <li>Node.js 18+ (for frontend build only)</li>
 <li>A running <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> installation at <code>~/.hermes/</code></li>
 </ul>
-<h5>Installation</h5>
+<h6>Installation</h6>
 <h6>1. Clone the repository</h6>
 <pre><code class="language-bash">git clone https://github.com/sanchomuzax/hermes-webui.git
 cd hermes-webui
@@ -221,7 +222,7 @@ Auth token: &lt;your-auth-token&gt;
 <p>The token is generated once and stored in <code>~/.hermes/auth.json</code>. To retrieve it later:</p>
 <pre><code class="language-bash">python3 -c &quot;import json; print(json.load(open(&#39;$HOME/.hermes/auth.json&#39;))[&#39;webui_token&#39;])&quot;
 </code></pre>
-<h5>Configuration</h5>
+<h6>Configuration</h6>
 <table>
 <thead>
 <tr>
@@ -263,7 +264,7 @@ Auth token: &lt;your-auth-token&gt;
 <td>Override the default port</td>
 </tr>
 </tbody></table>
-<h5>Running as a systemd service</h5>
+<h6>Running as a systemd service</h6>
 <p>Create <code>/etc/systemd/system/hermes-webui.service</code>:</p>
 <pre><code class="language-ini">[Unit]
 Description=Hermes WebUI
@@ -293,7 +294,7 @@ journalctl -u hermes-webui -f
 <blockquote>
 <p><strong>Note:</strong> When running as a service, the auth token is not printed to your terminal. Retrieve it from <code>~/.hermes/auth.json</code> as shown above.</p>
 </blockquote>
-<h5>Architecture</h5>
+<h6>Architecture</h6>
 <pre><code>┌─────────────────────────────────────────┐
 │  React Frontend (Vite + TailwindCSS)    │
 │  SPA with TanStack Query + WebSocket    │
@@ -312,13 +313,13 @@ journalctl -u hermes-webui -f
 └─────────────────────────────────────────┘
 </code></pre>
 <p>Hermes WebUI reads from the agent&#39;s data files without modifying the agent&#39;s core code.</p>
-<h5>Tech Stack</h5>
+<h6>Tech Stack</h6>
 <ul>
 <li><strong>Backend</strong>: Python 3.11+, FastAPI, Uvicorn, Pydantic, PyYAML</li>
 <li><strong>Frontend</strong>: React 19, TypeScript, Vite, TailwindCSS 4, TanStack Query</li>
 <li><strong>Data</strong>: SQLite (read-only from Hermes Agent&#39;s <code>state.db</code>)</li>
 </ul>
-<h5>Pages</h5>
+<h6>Pages</h6>
 <table>
 <thead>
 <tr>
@@ -347,7 +348,7 @@ journalctl -u hermes-webui -f
 <td>Grid of built-in and custom skills with description, click to view full source</td>
 </tr>
 </tbody></table>
-<h5>Troubleshooting</h5>
+<h6>Troubleshooting</h6>
 <h6>&quot;Cannot connect to server&quot; on login</h6>
 <ul>
 <li>Make sure the WebUI server is running</li>
@@ -363,14 +364,14 @@ journalctl -u hermes-webui -f
 <li>The polling bridge checks <code>state.db</code> every 3 seconds</li>
 <li>Ensure the WebSocket connection shows &quot;Connected&quot; (green dot in the header)</li>
 </ul>
-<h5>Related</h5>
+<h6>Related</h6>
 <ul>
 <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> — The AI agent this UI monitors</li>
 <li><a href="https://docs.openclaw.ai/web">OpenClaw Web UI</a> — Inspiration for the dashboard design</li>
 </ul>
-<h5>Built With</h5>
+<h6>Built With</h6>
 <p>This project was vibe-coded with <a href="https://claude.ai/claude-code">Claude Code</a> (Claude Opus 4.6).</p>
-<h5>License</h5>
+<h6>License</h6>
 <p>MIT</p>
   </section>
 </details>

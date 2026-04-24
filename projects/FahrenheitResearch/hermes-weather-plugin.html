@@ -57,6 +57,7 @@
   }
 }
 </script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,16 +136,16 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>Hermes Weather Plugin</h4>
+    <h5>Hermes Weather Plugin</h5>
 <p>Weather plugin for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>.</p>
 <p>It provides 13 tools for observations, forecasts, alerts, model imagery, radar, soundings, calculations, and ECAPE. The plugin is packaged for Hermes plugin autodiscovery and bootstraps its Rust backends on first use instead of requiring users to clone and build multiple repos by hand.</p>
-<h5>Install</h5>
+<h6>Install</h6>
 <p><code>bash`r`npip install git+https://github.com/FahrenheitResearch/hermes-weather-plugin.git`r`n</code></p>
 <p>Then start Hermes normally:</p>
 <pre><code class="language-bash">hermes
 </code></pre>
 <p>Hermes should auto-discover the plugin through the Python entry point.</p>
-<h5>Runtime model</h5>
+<h6>Runtime model</h6>
 <p>The plugin is Python-first, but several heavy paths use Rust binaries or Rust-backed Python packages.</p>
 <ul>
 <li>Data tools call NWS, SPC, METAR, and Open-Meteo directly from Python.</li>
@@ -161,7 +162,7 @@
 <ul>
 <li><code>~/.hermes/weather/src</code></li>
 </ul>
-<h5>First-use bootstrap</h5>
+<h6>First-use bootstrap</h6>
 <p>The plugin can bootstrap these binaries automatically:</p>
 <ul>
 <li><code>radar-render</code> from <code>rustdar</code></li>
@@ -181,7 +182,7 @@ $env:RADAR_RENDER_PATH = &#39;C:\path\to\radar-render.exe&#39;
 $env:NEXRAD_RENDER_PATH = &#39;C:\path\to\nexrad-render-cli.exe&#39;
 $env:ECAPE_RS_RUNNER = &#39;C:\path\to\run_case.exe&#39;
 </code></pre>
-<h5>Tools</h5>
+<h6>Tools</h6>
 <h6>Data</h6>
 <table>
 <thead>
@@ -261,7 +262,7 @@ $env:ECAPE_RS_RUNNER = &#39;C:\path\to\run_case.exe&#39;
 <td>ECAPE, NCAPE, CAPE, CIN, LFC, EL, storm motion, optional parcel path</td>
 </tr>
 </tbody></table>
-<h5>Model support</h5>
+<h6>Model support</h6>
 <p>Verified model subsets currently exposed in Hermes:</p>
 <ul>
 <li><code>wx_model_image</code><ul>
@@ -278,7 +279,7 @@ $env:ECAPE_RS_RUNNER = &#39;C:\path\to\run_case.exe&#39;
 </li>
 </ul>
 <p>Models outside those sets may exist lower in the backend stack, but they are not exposed until their Hermes extraction path is verified.</p>
-<h5>Radar</h5>
+<h6>Radar</h6>
 <p>Hermes keeps a stable radar tool contract and routes it through the configured radar backend.</p>
 <p>Current backends:</p>
 <ul>
@@ -290,7 +291,7 @@ $env:ECAPE_RS_RUNNER = &#39;C:\path\to\run_case.exe&#39;
 <li>both backends: <code>ref</code>, <code>vel</code>, <code>sw</code>, <code>zdr</code>, <code>rho</code>, <code>phi</code></li>
 <li><code>rustdar</code> only: <code>srv</code>, <code>vil</code></li>
 </ul>
-<h5>Soundings and ECAPE</h5>
+<h6>Soundings and ECAPE</h6>
 <p><code>wx_sounding</code> downloads a verified model pressure-level profile and computes:</p>
 <ul>
 <li>CAPE/CIN: surface-based, mixed-layer, most-unstable</li>
@@ -315,17 +316,17 @@ $env:ECAPE_RS_RUNNER = &#39;C:\path\to\run_case.exe&#39;
 <li><code>user_defined</code></li>
 </ul>
 <p>Set <code>include_parcel_profile=true</code> to return the aligned parcel path arrays.</p>
-<h5>Packaging notes</h5>
+<h6>Packaging notes</h6>
 <p>This package is intended to be installed with <code>pip</code> from GitHub, not copied manually into <code>~/.hermes/plugins</code>.</p>
 <p>The package exposes the Hermes plugin entry point directly, ships <code>plugin.yaml</code>, ships the bundled <code>nexrad-render-cli</code> source, installs the bundled skill on first load, and bootstraps Rust binaries on demand.</p>
-<h5>Stack</h5>
+<h6>Stack</h6>
 <pre><code class="language-text">Plugin (Python)
   |- Data: requests -&gt; NWS / SPC / METAR / Open-Meteo APIs
   |- Model images: rusbie -&gt; wrf-rust
   |- Radar: rustdar or bundled nexrad-render-cli
   `- Calculations: metrust + ecape-rs
 </code></pre>
-<h5>Dependencies</h5>
+<h6>Dependencies</h6>
 <p>Python package dependencies:</p>
 <ul>
 <li><code>requests</code></li>
@@ -339,7 +340,7 @@ $env:ECAPE_RS_RUNNER = &#39;C:\path\to\run_case.exe&#39;
 <ul>
 <li>Rust toolchain (<code>cargo</code>, <code>rustc</code>)</li>
 </ul>
-<h5>Credits</h5>
+<h6>Credits</h6>
 <ul>
 <li><a href="https://github.com/Solarpower07">Solarpower07</a> for model imagery color tables and product styling</li>
 <li><code>metrust</code> for Rust-backed meteorological calculations</li>

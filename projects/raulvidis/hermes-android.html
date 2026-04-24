@@ -57,6 +57,7 @@
   }
 }
 </script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,14 +136,14 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>hermes-android</h4>
+    <h5>hermes-android</h5>
 <p>Give your AI agent hands. Remote Android device control for <a href="https://github.com/NousResearch/hermes-agent">hermes-agent</a>.</p>
-<h5>How it works</h5>
+<h6>How it works</h6>
 <pre><code>Phone (home WiFi)  ──WebSocket──&gt;  Hermes Server (cloud)  &lt;──HTTP──  AI Agent
                                    relay on port 8766
 </code></pre>
 <p>The phone connects <strong>out</strong> to your Hermes server — works behind any NAT, no port forwarding, no VPN, no USB. Just a 6-character pairing code.</p>
-<h5>Repository Structure</h5>
+<h6>Repository Structure</h6>
 <p>This repo contains <strong>two components</strong>:</p>
 <table>
 <thead>
@@ -169,7 +170,7 @@
 <blockquote>
 <p><strong>Note:</strong> The Python code exists here for standalone development and testing (<code>pip install -e .</code>, <code>pytest</code>). The production copy is in the hermes-agent repo. The Android app does not use or depend on the Python files.</p>
 </blockquote>
-<h5>Install as hermes-agent plugin (v0.3.0+)</h5>
+<h6>Install as hermes-agent plugin (v0.3.0+)</h6>
 <pre><code class="language-bash">curl -sSL https://raw.githubusercontent.com/raulvidis/hermes-android/main/install.sh | bash
 </code></pre>
 <p>Or manually:</p>
@@ -177,7 +178,7 @@
 cp -r hermes-android-plugin ~/.hermes/plugins/hermes-android
 </code></pre>
 <p>Restart hermes — run <code>/plugins</code> to verify. Should show: <code>✓ hermes-android v0.3.0 (36 tools)</code></p>
-<h5>Quick Start</h5>
+<h6>Quick Start</h6>
 <h6>1. Install the bridge app on your phone</h6>
 <p>Build with Android Studio or from command line:</p>
 <pre><code class="language-bash">cd hermes-android-bridge
@@ -207,7 +208,7 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 <p>Hermes will reply with the server address. Enter it in the app and tap <strong>Connect</strong>.</p>
 <h6>4. Done</h6>
 <p>The agent can now control your phone. Try: &quot;open Instagram&quot;, &quot;take a screenshot&quot;, &quot;what apps do I have?&quot;</p>
-<h5>Tools (36)</h5>
+<h6>Tools (36)</h6>
 <table>
 <thead>
 <tr>
@@ -364,7 +365,7 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 <td>Stop text-to-speech</td>
 </tr>
 </tbody></table>
-<h5>Permissions</h5>
+<h6>Permissions</h6>
 <table>
 <thead>
 <tr>
@@ -414,7 +415,7 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 <td><code>android_notifications</code>, <code>android_events</code></td>
 </tr>
 </tbody></table>
-<h5>Architecture</h5>
+<h6>Architecture</h6>
 <p><strong>Android app (Kotlin):</strong></p>
 <ul>
 <li>AccessibilityService reads the UI tree and performs taps/types/swipes</li>
@@ -431,7 +432,7 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 <li>Rate-limited authentication (5 attempts / 60s, then 5min block)</li>
 <li>Auto-detects server public IP for setup instructions</li>
 </ul>
-<h5>Security</h5>
+<h6>Security</h6>
 <p>See <a href="https://github.com/raulvidis/hermes-android/blob/main/SECURITY.md">SECURITY.md</a> for details. Key points:</p>
 <ul>
 <li>Pairing code authentication with rate limiting</li>
@@ -439,7 +440,7 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 <li>Currently unencrypted (<code>ws://</code>) — use TLS proxy for production</li>
 <li>Full device access once paired — only connect to trusted servers</li>
 </ul>
-<h5>Development</h5>
+<h6>Development</h6>
 <pre><code class="language-bash"># Python tests
 pip install -e &quot;.[dev]&quot;
 python -m pytest tests/
@@ -448,7 +449,7 @@ python -m pytest tests/
 cd hermes-android-bridge
 ./gradlew assembleDebug
 </code></pre>
-<h5>Roadmap</h5>
+<h6>Roadmap</h6>
 <p>This is a working prototype. The vision: <strong>give Hermes its own phone</strong> — a fully autonomous mobile presence.</p>
 <h6>v0.2 — Polish &amp; Reliability</h6>
 <ul>
@@ -493,7 +494,7 @@ cd hermes-android-bridge
 <li><input disabled="" type="checkbox"> Cross-app workflows (&quot;find a restaurant on Maps, share on WhatsApp, book an Uber there&quot;)</li>
 <li><input disabled="" type="checkbox"> Dedicated &quot;Hermes Phone&quot; — a phone that boots straight into agent mode</li>
 </ul>
-<h5>Links</h5>
+<h6>Links</h6>
 <ul>
 <li><strong>hermes-agent</strong>: <a href="https://github.com/NousResearch/hermes-agent">github.com/NousResearch/hermes-agent</a></li>
 </ul>

@@ -57,6 +57,7 @@
   }
 }
 </script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,7 +136,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>Hermes Optimization Guide</h4>
+    <h5>Hermes Optimization Guide</h5>
 <p><a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
 <a href="https://github.com/NousResearch/hermes-agent"><img src="https://img.shields.io/badge/Hermes-v0.10.0%20%28main%29-9146FF" alt="Hermes"></a>
 <a href="./CHANGELOG.md"><img src="https://img.shields.io/badge/Last%20updated-2026--04--17-brightgreen" alt="Last updated"></a>
@@ -153,14 +154,14 @@
 <p>Unlike most guides, the prescriptions come with <strong>working files</strong>: <a href="./skills"><code>skills/</code></a> you can <code>ln -s</code> into <code>~/.hermes/skills/</code>, <a href="./templates/config"><code>templates/config/</code></a> you <code>cp</code> to <code>~/.hermes/config.yaml</code>, <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/scripts/vps-bootstrap.sh"><code>scripts/vps-bootstrap.sh</code></a> that takes a fresh VPS to production in one command.</p>
 <p><em>By Terp — <a href="https://x.com/OnlyTerp">Terp AI Labs</a></em> · Last updated <strong>April 17, 2026</strong> · <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/CHANGELOG.md">CHANGELOG</a> · <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/ROADMAP.md">ROADMAP</a> · <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/ECOSYSTEM.md">ECOSYSTEM</a></p>
 <hr>
-<h5>Install Everything (one command)</h5>
+<h6>Install Everything (one command)</h6>
 <p>On a fresh Debian 12 / Ubuntu 24.04 box (Hetzner CX22 works great for ~$5/mo):</p>
 <pre><code class="language-bash">curl -sSL https://raw.githubusercontent.com/OnlyTerp/hermes-optimization-guide/main/scripts/vps-bootstrap.sh | sudo bash
 </code></pre>
 <p>This installs Hermes, Node.js, Caddy (auto-TLS reverse proxy), UFW, fail2ban, creates a non-root <code>hermes</code> user, drops in hardened systemd units, and symlinks every skill from this repo into <code>~hermes/.hermes/skills/</code>. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/scripts/vps-bootstrap.sh"><code>scripts/vps-bootstrap.sh</code></a> for what it does line by line — it&#39;s non-destructive and re-runnable.</p>
 <p>Prefer a 5-minute local-only setup? → <strong><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/docs/quickstart.md">docs/quickstart.md</a></strong> (zero to Telegram bot in 5 min).</p>
 <hr>
-<h5>Repo Map</h5>
+<h6>Repo Map</h6>
 <table>
 <thead>
 <tr>
@@ -234,7 +235,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h5>Architecture at a glance</h5>
+<h6>Architecture at a glance</h6>
 <pre><code class="language-mermaid">flowchart LR
   Inputs[16 platforms&lt;br/&gt;Telegram · Discord · Slack&lt;br/&gt;iMessage · WeChat · Email&lt;br/&gt;SMS · Webhooks · Cron · Voice · CLI] --&gt; Gateway
   Gateway --&gt; Router[Model Router&lt;br/&gt;cost + context + capability]
@@ -246,7 +247,7 @@
 </code></pre>
 <p>Full set of diagrams: <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/diagrams/architecture.md"><code>diagrams/architecture.md</code></a>.</p>
 <hr>
-<h5>Pick Your Path</h5>
+<h6>Pick Your Path</h6>
 <p>This guide grew to 21 parts because <em>Hermes grew</em>. You don&#39;t have to read them all. Pick the shortest path to what you need:</p>
 <h6>🎯 &quot;I just want it working in 10 minutes&quot;</h6>
 <p><a href="#part-1-setup-stop-fumbling-with-installation">Part 1: Setup</a> → <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part12-web-dashboard.md">Part 12: Web Dashboard</a> → done. Use the dashboard to point-and-click the rest.</p>
@@ -263,7 +264,7 @@
 <h6>🛡️ &quot;I&#39;m worried about prompt injection (you should be)&quot;</h6>
 <p><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part19-security-playbook.md">Part 19: Security Playbook</a> — read this first if your agent reads any untrusted input (email, webhooks, Discord, public Telegram groups).</p>
 <hr>
-<h5>What&#39;s New (April 10–17, 2026)</h5>
+<h6>What&#39;s New (April 10–17, 2026)</h6>
 <p>Two major Hermes releases dropped this week, <strong>plus a stream of landmark PRs on <code>main</code></strong> that are targeted for v0.11. This guide is current as of both releases <em>and</em> the most impactful post-v0.10 merges.</p>
 <h6><a href="https://github.com/NousResearch/hermes-agent/releases/tag/v2026.4.13">v0.9.0 — 2026.4.13 — &quot;Everywhere&quot;</a></h6>
 <ul>
@@ -317,7 +318,7 @@
 <li><strong>GLM 5.1</strong> (z.ai) — the strongest open-weights tool-use model as of this week.</li>
 </ul>
 <hr>
-<h5>Table of Contents</h5>
+<h6>Table of Contents</h6>
 <ol>
 <li><a href="#part-1-setup-stop-fumbling-with-installation">Setup</a> — Install Hermes, configure your provider, first-run walkthrough (with Android/Termux)</li>
 <li><a href="#soulmd--give-your-agent-a-personality">SOUL.md Personality</a> — The Molty prompt, what good personality rules look like, how to fix a bland agent</li>
@@ -343,7 +344,7 @@
 <li><a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part21-remote-sandboxes.md">Remote Sandboxes &amp; Bulk File Sync</a> — <strong>NEW (April 17).</strong> SSH, Modal, Daytona, Fly Machines, E2B. &quot;Phone drives, beefy remote does the work.&quot; Diff-based sync-back on teardown</li>
 </ol>
 <hr>
-<h5>The Problem</h5>
+<h6>The Problem</h6>
 <p>If you&#39;re running a stock Hermes setup (or migrating from OpenClaw), you&#39;re probably dealing with:</p>
 <ul>
 <li><strong>Installation confusion.</strong> The docs cover the basics but don&#39;t tell you what to configure first or what matters.</li>
@@ -352,7 +353,7 @@
 <li><strong>No mobile access.</strong> Sitting at a terminal is fine until you need to check something from your phone.</li>
 <li><strong>Repetitive prompting.</strong> You keep asking the agent to do the same multi-step task the same way, every time.</li>
 </ul>
-<h5>What This Fixes</h5>
+<h6>What This Fixes</h6>
 <p>After this guide:</p>
 <table>
 <thead>
@@ -389,7 +390,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h5>Prerequisites</h5>
+<h6>Prerequisites</h6>
 <ul>
 <li>A Linux/macOS machine (or WSL2 on Windows, or <strong>Android via Termux</strong> — see <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part15-new-platforms.md#android--termux-running-hermes-on-your-phone">Part 15</a>)</li>
 <li>Python 3.11+ and Git</li>
@@ -398,7 +399,7 @@
 <li>Optional: A paid <a href="https://portal.nousresearch.com">Nous Portal</a> subscription to use the <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part13-tool-gateway.md">Tool Gateway</a> — web search, image gen, TTS, and browser automation with no extra keys</li>
 </ul>
 <hr>
-<h5>How the Pieces Fit Together</h5>
+<h6>How the Pieces Fit Together</h6>
 <pre><code>You (any device)
     ↓
 Hermes Agent (lean context, ~5KB injected per message)
@@ -414,7 +415,7 @@ LLM Provider (Claude, GPT, local models)
 </code></pre>
 <p><strong>The key insight:</strong> Everything is modular. Install what you need, skip what you don&#39;t. The agent adapts.</p>
 <hr>
-<h5>Quick Start</h5>
+<h6>Quick Start</h6>
 <pre><code class="language-bash"># 1. Install Hermes (Linux/macOS/WSL2/Android)
 curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
 
@@ -430,8 +431,8 @@ hermes dashboard
 <p>The dashboard is the fastest way to configure everything without touching YAML. See <a href="https://github.com/OnlyTerp/hermes-optimization-guide/blob/main/part12-web-dashboard.md">Part 12</a> for the full tour.</p>
 <p>For the full walkthrough including optimization, read each part in order.</p>
 <hr>
-<h5>Part 1: Setup (Stop Fumbling With Installation)</h5>
-<h5>The Install</h5>
+<h6>Part 1: Setup (Stop Fumbling With Installation)</h6>
+<h6>The Install</h6>
 <p>One command. That&#39;s it.</p>
 <h6>Linux / macOS / WSL2</h6>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
@@ -467,7 +468,7 @@ bash install.sh
 hermes             # Start chatting!
 </code></pre>
 <hr>
-<h5>First-Run Configuration</h5>
+<h6>First-Run Configuration</h6>
 <p>The setup wizard (<code>hermes setup</code>) walks you through:</p>
 <h6>1. Choose Your LLM Provider</h6>
 <pre><code class="language-bash">hermes model
@@ -641,7 +642,7 @@ chmod 600 ~/.hermes/.env   # Restrict access to your user only
 <p><strong>Recommendation:</strong> Enable <code>core</code>, <code>web</code>, <code>skills</code>, and <code>memory</code> at minimum. Add <code>browser</code> and <code>code</code> if you need automation or sandboxed execution.</p>
 </blockquote>
 <hr>
-<h5>Key Config Options</h5>
+<h6>Key Config Options</h6>
 <p>After initial setup, fine-tune with <code>hermes config set</code>:</p>
 <h6>Model Settings</h6>
 <pre><code class="language-bash"># Set primary model
@@ -668,7 +669,7 @@ hermes config set prompt_caching.enabled true
 hermes config set context_compression.enabled true
 </code></pre>
 <hr>
-<h5>SOUL.md — Give Your Agent a Personality</h5>
+<h6>SOUL.md — Give Your Agent a Personality</h6>
 <p><code>SOUL.md</code> is injected into <strong>every single message</strong>. It&#39;s the highest-impact file in your setup. A bad SOUL.md makes your agent sound like a corporate chatbot. A good one makes it actually useful to talk to.</p>
 <h6>What Belongs in SOUL.md</h6>
 <p>Put the stuff that changes how the agent <strong>feels</strong> to talk to:</p>
@@ -730,7 +731,7 @@ hermes config set context_compression.enabled true
 <p><strong>Keep it under 1 KB.</strong> Every byte in SOUL.md costs tokens on every message. The most effective SOUL.md files are 500-800 bytes of dense, high-signal personality instructions.</p>
 </blockquote>
 <hr>
-<h5>File Locations</h5>
+<h6>File Locations</h6>
 <p>Everything lives under <code>~/.hermes/</code>:</p>
 <pre><code>~/.hermes/
 ├── config.yaml          # Main configuration
@@ -747,7 +748,7 @@ hermes config set context_compression.enabled true
 <p><strong>Important:</strong> <code>SOUL.md</code> is injected into every message. Keep it under 1 KB. Every byte costs latency and tokens.</p>
 </blockquote>
 <hr>
-<h5>Verify Your Setup</h5>
+<h6>Verify Your Setup</h6>
 <pre><code class="language-bash"># Check everything is working
 hermes status
 
@@ -756,12 +757,12 @@ hermes chat -q &quot;Say hello and confirm you&#39;re working&quot;
 </code></pre>
 <p>Expected output: Hermes responds with a greeting, confirming the model connection, tool availability, and session initialization.</p>
 <hr>
-<h5>Updating</h5>
+<h6>Updating</h6>
 <pre><code class="language-bash">hermes update
 </code></pre>
 <p>This pulls the latest code, updates dependencies, migrates config, and restarts the gateway. Run it regularly — Hermes ships frequent improvements.</p>
 <hr>
-<h5>What&#39;s Next</h5>
+<h6>What&#39;s Next</h6>
 <ul>
 <li><strong>Coming from OpenClaw?</strong> → <a href="#part-2-openclaw-migration-dont-leave-your-knowledge-behind">Part 2: OpenClaw Migration</a></li>
 <li><strong>Want smarter memory?</strong> → <a href="#part-3-lightrag--graph-rag-that-actually-works">Part 3: LightRAG Setup</a></li>
@@ -769,8 +770,8 @@ hermes chat -q &quot;Say hello and confirm you&#39;re working&quot;
 <li><strong>Want the agent to self-improve?</strong> → <a href="#part-5-on-the-fly-skills-let-hermes-build-its-own-playbook">Part 5: On-the-Fly Skills</a></li>
 </ul>
 <hr>
-<h5>Part 2: OpenClaw Migration (Don&#39;t Leave Your Knowledge Behind)</h5>
-<h5>Why Migrate</h5>
+<h6>Part 2: OpenClaw Migration (Don&#39;t Leave Your Knowledge Behind)</h6>
+<h6>Why Migrate</h6>
 <p>If you&#39;ve been using OpenClaw and want to give Hermes a spin, you don&#39;t have to start from scratch. The migration tool copies your skills, memory files, and configuration over automatically so you can try Hermes with all your existing data intact.</p>
 <p><strong>What transfers:</strong></p>
 <table>
@@ -831,7 +832,7 @@ hermes chat -q &quot;Say hello and confirm you&#39;re working&quot;
 <p><strong>Note:</strong> Session transcripts, cron job definitions, and plugin-specific data do not transfer. Those are OpenClaw-specific and have different formats in Hermes.</p>
 </blockquote>
 <hr>
-<h5>Quick Migration</h5>
+<h6>Quick Migration</h6>
 <pre><code class="language-bash"># Preview what would happen (no files changed)
 hermes claw migrate --dry-run
 
@@ -843,7 +844,7 @@ hermes claw migrate --preset user-data
 </code></pre>
 <p>The migration reads from <code>~/.openclaw/</code> by default. If you have legacy <code>~/.clawdbot/</code> or <code>~/.moldbot/</code> directories, those are detected automatically.</p>
 <hr>
-<h5>Migration Options</h5>
+<h6>Migration Options</h6>
 <table>
 <thead>
 <tr>
@@ -899,7 +900,7 @@ hermes claw migrate --preset user-data
 </tr>
 </tbody></table>
 <hr>
-<h5>Step-by-Step Walkthrough</h5>
+<h6>Step-by-Step Walkthrough</h6>
 <h6>1. Dry Run First</h6>
 <p>Always preview before committing:</p>
 <pre><code class="language-bash">hermes claw migrate --dry-run
@@ -941,7 +942,7 @@ ls ~/.hermes/skills/openclaw-imports/
 hermes chat -q &quot;What do you remember about me?&quot;
 </code></pre>
 <hr>
-<h5>What Doesn&#39;t Transfer</h5>
+<h6>What Doesn&#39;t Transfer</h6>
 <table>
 <thead>
 <tr>
@@ -972,7 +973,7 @@ hermes chat -q &quot;What do you remember about me?&quot;
 </tr>
 </tbody></table>
 <hr>
-<h5>Config Key Mapping</h5>
+<h6>Config Key Mapping</h6>
 <p>For reference, here&#39;s how OpenClaw config maps to Hermes:</p>
 <table>
 <thead>
@@ -1014,7 +1015,7 @@ hermes chat -q &quot;What do you remember about me?&quot;
 </tr>
 </tbody></table>
 <hr>
-<h5>Troubleshooting</h5>
+<h6>Troubleshooting</h6>
 <h6>&quot;No OpenClaw installation found&quot;</h6>
 <p>Make sure your OpenClaw data is at <code>~/.openclaw/</code>. If it&#39;s elsewhere:</p>
 <pre><code class="language-bash">hermes claw migrate --source /path/to/your/openclaw
@@ -1030,15 +1031,15 @@ nano ~/.hermes/memories/MEMORY.md
 </code></pre>
 <p>Most skills work as-is since they&#39;re markdown-based instructions. Skills with code that imports OpenClaw-specific modules need manual updating.</p>
 <hr>
-<h5>What&#39;s Next</h5>
+<h6>What&#39;s Next</h6>
 <ul>
 <li><strong>Want smarter memory?</strong> → <a href="#part-3-lightrag--graph-rag-that-actually-works">Part 3: LightRAG Setup</a></li>
 <li><strong>Need mobile access?</strong> → <a href="#part-4-telegram-setup-chat-from-anywhere">Part 4: Telegram Setup</a></li>
 <li><strong>Want the agent to self-improve?</strong> → <a href="#part-5-on-the-fly-skills-let-hermes-build-its-own-playbook">Part 5: On-the-Fly Skills</a></li>
 </ul>
 <hr>
-<h5>Part 3: LightRAG — Graph RAG That Actually Works</h5>
-<h5>The Problem With Basic Memory</h5>
+<h6>Part 3: LightRAG — Graph RAG That Actually Works</h6>
+<h6>The Problem With Basic Memory</h6>
 <p>Hermes ships with vector-based memory search. It finds documents that are textually similar to your query. That works for simple lookups, but it has a fundamental ceiling: <strong>it finds what&#39;s similar, not what&#39;s connected.</strong></p>
 <p>Ask &quot;what hardware decisions were made and why?&quot; and vector search returns files that all mention GPUs. It can&#39;t traverse from a decision → the person who made it → the project it affected → the lesson learned afterward.</p>
 <p><strong>Graph RAG fixes this.</strong> It builds a knowledge graph (entities + relationships) alongside your vector database, then searches both simultaneously.</p>
@@ -1078,7 +1079,7 @@ nano ~/.hermes/memories/MEMORY.md
 </tr>
 </tbody></table>
 <hr>
-<h5>LightRAG: The Best Graph RAG For Personal Use</h5>
+<h6>LightRAG: The Best Graph RAG For Personal Use</h6>
 <p><a href="https://github.com/HKUDS/LightRAG">LightRAG</a> is an open-source graph RAG framework from HKU (EMNLP 2025 paper). It competes with Microsoft&#39;s GraphRAG at a fraction of the cost.</p>
 <p><strong>Why LightRAG over alternatives:</strong></p>
 <table>
@@ -1132,7 +1133,7 @@ nano ~/.hermes/memories/MEMORY.md
 </tbody></table>
 <p>LightRAG does vector DB + knowledge graph <strong>in parallel</strong> during ingestion. One system, both capabilities.</p>
 <hr>
-<h5>Installation</h5>
+<h6>Installation</h6>
 <h6>Prerequisites</h6>
 <ul>
 <li>Python 3.11+</li>
@@ -1225,7 +1226,7 @@ EMBEDDING_API_KEY=&lt;your-fireworks-api-key&gt;
 <p><strong>Embedding quality matters.</strong> If you have a GPU with 8GB+ VRAM, run <code>nomic-embed-text</code> locally via Ollama for free. If you want the best quality, use Fireworks&#39; Qwen3-Embedding-8B (4096 dimensions) — the search accuracy difference is dramatic.</p>
 </blockquote>
 <hr>
-<h5>Running the Server</h5>
+<h6>Running the Server</h6>
 <h6>Start the REST API</h6>
 <pre><code class="language-bash">cd ~/.hermes/lightrag/LightRAG
 
@@ -1249,7 +1250,7 @@ nohup lightrag-server --port 9623 &gt; ~/.hermes/lightrag/server.log 2&gt;&amp;1
 hermes background &quot;cd ~/.hermes/lightrag/LightRAG &amp;&amp; lightrag-server --port 9623&quot;
 </code></pre>
 <hr>
-<h5>Ingesting Your Knowledge</h5>
+<h6>Ingesting Your Knowledge</h6>
 <h6>How Ingestion Works</h6>
 <pre><code>Document (markdown, text, PDF, etc.)
     ↓
@@ -1298,7 +1299,7 @@ done
 <p><strong>Start with your memory files and project docs.</strong> These give the graph the most value — decisions, people, projects, and their relationships.</p>
 </blockquote>
 <hr>
-<h5>Querying the Graph</h5>
+<h6>Querying the Graph</h6>
 <h6>Query Modes</h6>
 <p>LightRAG has four query modes:</p>
 <table>
@@ -1367,7 +1368,7 @@ curl -X POST http://localhost:9623/query \
 </code></pre>
 <p>This returns the raw context chunks without generating an answer — useful for feeding into your own pipeline or Hermes&#39; LLM.</p>
 <hr>
-<h5>Integrating With Hermes</h5>
+<h6>Integrating With Hermes</h6>
 <h6>Create a LightRAG Skill</h6>
 <p>Create <code>~/.hermes/skills/research/lightrag/SKILL.md</code>:</p>
 <pre><code class="language-markdown">---
@@ -1391,14 +1392,14 @@ curl -s -X POST http://localhost:9623/query \
   -H &quot;Content-Type: application/json&quot; \
   -d &#39;{&quot;query&quot;: &quot;YOUR QUERY&quot;, &quot;mode&quot;: &quot;hybrid&quot;, &quot;only_need_context&quot;: true}&#39;
 </code></pre>
-<h5>Search Modes</h5>
+<h6>Search Modes</h6>
 <ul>
 <li><code>hybrid</code> (default): Combined vector + graph search</li>
 <li><code>local</code>: Entity-focused (specific facts)</li>
 <li><code>global</code>: Relationship-focused (how things connect)</li>
 <li><code>naive</code>: Vector-only (simple lookups)</li>
 </ul>
-<h5>Important</h5>
+<h6>Important</h6>
 <ul>
 <li>ALWAYS search this before saying &quot;I don&#39;t remember&quot;</li>
 <li>Results supersede general knowledge about the setup</li>

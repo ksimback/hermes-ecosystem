@@ -57,6 +57,7 @@
   }
 }
 </script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,9 +136,9 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>hermes-otel</h4>
+    <h5>hermes-otel</h5>
 <p>OpenTelemetry plugin for <a href="https://github.com/nousresearch/hermes-agent">Hermes Agent</a>. Automatically exports LLM tool calls, model invocations, and API requests as OTel spans to any OTLP-compatible backend.</p>
-<h5>Backends</h5>
+<h6>Backends</h6>
 <p>Tested with:</p>
 <ul>
 <li><strong><a href="https://github.com/Arize-ai/phoenix">Phoenix</a></strong> (local or cloud) — traces + metrics</li>
@@ -160,7 +161,7 @@
 <li>For Uptrace see <a href="https://github.com/briancaffey/hermes-otel/blob/main/docker-compose/uptrace.yaml">docker-compose/uptrace.yaml</a> and <a href="https://github.com/briancaffey/hermes-otel/blob/main/docker-compose/uptrace/README.md">docker-compose/uptrace/README.md</a></li>
 <li>For OpenObserve see <a href="https://github.com/briancaffey/hermes-otel/blob/main/docker-compose/openobserve.yaml">docker-compose/openobserve.yaml</a> and <a href="https://github.com/briancaffey/hermes-otel/blob/main/docker-compose/openobserve/README.md">docker-compose/openobserve/README.md</a></li>
 </ul>
-<h5>Installation</h5>
+<h6>Installation</h6>
 <pre><code>hermes plugins install briancaffey/hermes-otel
 </code></pre>
 <p>The plugin lives in <code>~/.hermes/plugins/hermes_otel/</code> and Hermes auto-discovers it via <code>plugin.yaml</code>. However, the OTel dependencies must be installed into the <strong>hermes-agent virtual environment</strong> (where <code>hermes</code> itself runs):</p>
@@ -290,7 +291,7 @@ Then start the gateway:<pre><code class="language-bash">hermes gateway
 <li><strong>Langfuse</strong> running with credentials configured in <code>~/.hermes/.env</code> (<code>OTEL_LANGFUSE_*</code> variables)</li>
 </ol>
 <p>Tests skip automatically with a helpful message if either service is not reachable. The smoke tests poll the Langfuse observations API (up to 60-90s) to account for async trace ingestion.</p>
-<h5>Configuration</h5>
+<h6>Configuration</h6>
 <p>You can either pick <strong>one</strong> backend via environment variables (legacy mode,
 shown below), or fan <strong>multiple</strong> backends out in parallel via
 <code>config.yaml</code>. The two are mutually exclusive — when <code>backends:</code> is set in
@@ -581,7 +582,7 @@ headers:                        # merged onto outgoing OTLP requests
 </ul>
 <p><strong>Backpressure:</strong> the queue is bounded by <code>span_batch_max_queue_size</code> (default 2048). If the agent outruns the exporter, the oldest enqueued spans are dropped — hermes keeps running rather than stalling.</p>
 <p><strong>Crash vs. graceful exit:</strong> up to <code>schedule_delay_millis</code> worth of spans may be lost on a hard crash (SIGKILL, OOM). This is the standard OTel trade-off and mirrors every production tracing stack. Graceful shutdown (<code>hermes gateway stop</code>, SIGTERM) triggers the atexit flush.</p>
-<h5>How it works</h5>
+<h6>How it works</h6>
 <p>Hermes fires lifecycle hooks. This plugin maps them to OTel spans:</p>
 <pre><code>Turn 1:
   session.{platform} / cron (root, when session hooks are available)
@@ -657,7 +658,7 @@ headers:                        # merged onto outgoing OTLP requests
 </tr>
 </tbody></table>
 <p>Langfuse uses <code>gen_ai.content.prompt</code> and <code>gen_ai.content.completion</code> for text. Phoenix uses <code>input.value</code> and <code>output.value</code>. Both are set on LLM spans.</p>
-<h5>File structure</h5>
+<h6>File structure</h6>
 <table>
 <thead>
 <tr>
@@ -706,7 +707,7 @@ headers:                        # merged onto outgoing OTLP requests
 <td>Smoke tests — full pipeline through hermes API server to Langfuse</td>
 </tr>
 </tbody></table>
-<h5>Roadmap: additional backends</h5>
+<h6>Roadmap: additional backends</h6>
 <p>This plugin speaks plain OTLP/HTTP, so any OTLP-compatible backend should work today with no code changes — just point <code>OTEL_EXPORTER_OTLP_ENDPOINT</code> at it. The list below tracks backends I plan to formally test, add a <code>docker-compose/</code> file for, and (where applicable) cover with a smoke test.</p>
 <p><strong>Status legend:</strong> ✅ supported &amp; tested · 🟡 should work, not yet tested/documented · 🔲 planned</p>
 <table>
@@ -822,7 +823,7 @@ headers:                        # merged onto outgoing OTLP requests
 </blockquote>
 <h6>Signals note</h6>
 <p>Jaeger and Tempo are both <strong>traces only</strong>. If you want both spans and the token/tool/cost metrics this plugin emits (via <code>PeriodicExportingMetricReader</code>), pair them with Prometheus, or pick one of the traces+metrics backends above.</p>
-<h5>Current limitations</h5>
+<h6>Current limitations</h6>
 <ul>
 <li><strong>No full prompt capture</strong> — Hermes hooks don&#39;t expose the fully-formed prompt (system message + conversation history + tool results) to plugins. API spans only receive metadata (token counts, model, duration). The raw user message and assistant response appear on the parent LLM span.</li>
 <li><strong>Langfuse auth</strong> — Requires both public and secret keys; Basic Auth is constructed automatically. If only one key is set, Langfuse mode won&#39;t activate.</li>

@@ -57,6 +57,7 @@
   }
 }
 </script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,10 +136,10 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>hermes-claude-code-rc</h4>
+    <h5>hermes-claude-code-rc</h5>
 <p>A <a href="https://github.com/hermes-agent/hermes-agent">Hermes Agent</a> plugin that lets you remotely control <a href="https://claude.ai/code">Claude Code</a> sessions from Telegram (or any Hermes-connected platform).</p>
 <p>Start a Claude Code remote session from your phone, run headless commands, execute shell commands on your machine, and manage everything through simple <code>/cc</code> slash commands.</p>
-<h5>Where This Fits</h5>
+<h6>Where This Fits</h6>
 <p>As of April 2026, Claude Code offers several ways to work remotely:</p>
 <table>
 <thead>
@@ -189,7 +190,7 @@
 <li><strong>Local session from phone</strong> — <code>/cc start my-feature</code> via Telegram, open the URL in Claude app. Full local access. <strong>(This is what this plugin enables.)</strong></li>
 <li><strong>Automated/scheduled</strong> — Routines (cloud) for recurring tasks, or <code>/cc run</code> (local) for one-shot commands on your machine.</li>
 </ol>
-<h5>Commands</h5>
+<h6>Commands</h6>
 <table>
 <thead>
 <tr>
@@ -222,13 +223,13 @@
 <td>List all available subcommands</td>
 </tr>
 </tbody></table>
-<h5>Prerequisites</h5>
+<h6>Prerequisites</h6>
 <ul>
 <li><a href="https://github.com/hermes-agent/hermes-agent">Hermes Agent</a> with Telegram configured</li>
 <li><a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code CLI</a> installed and authenticated (<code>claude auth login</code>)</li>
 <li>Claude Pro/Max/Team/Enterprise subscription (required for Remote Control)</li>
 </ul>
-<h5>Installation</h5>
+<h6>Installation</h6>
 <h6>1. Apply the Hermes patch</h6>
 <p>This plugin uses <code>register_command()</code> which requires a small patch to <code>hermes_cli/plugins.py</code>. This patch adds gateway slash command support to the Hermes plugin system.</p>
 <pre><code class="language-bash">cd ~/.hermes/hermes-agent
@@ -256,7 +257,7 @@ hermes gateway restart
 </code></pre>
 <h6>4. Verify</h6>
 <p>Send <code>/cc help</code> to your Hermes Telegram bot. You should see the command listing.</p>
-<h5>Configuration</h5>
+<h6>Configuration</h6>
 <p>All configuration is via environment variables (set in <code>~/.hermes/.env</code> or your launchd plist):</p>
 <table>
 <thead>
@@ -292,7 +293,7 @@ hermes gateway restart
 <td>Timeout waiting for session URL (seconds)</td>
 </tr>
 </tbody></table>
-<h5>Usage</h5>
+<h6>Usage</h6>
 <h6>Start a remote session</h6>
 <pre><code>/cc start my-feature
 </code></pre>
@@ -313,7 +314,7 @@ hermes gateway restart
 <pre><code>/cc status
 </code></pre>
 <p>Shows active sessions, system uptime, disk usage, and any orphaned Claude processes.</p>
-<h5>Adding New Commands</h5>
+<h6>Adding New Commands</h6>
 <p>Adding a subcommand is two steps:</p>
 <h6>1. Write the handler function</h6>
 <pre><code class="language-python">def _handle_ping(args):
@@ -332,7 +333,7 @@ hermes gateway restart
 }
 </code></pre>
 <p>Restart Hermes and <code>/cc ping</code> is live.</p>
-<h5>Safety</h5>
+<h6>Safety</h6>
 <ul>
 <li><strong>Auth</strong>: Hermes enforces <code>TELEGRAM_ALLOWED_USERS</code> at the gateway level — only authorized users can invoke <code>/cc</code> commands</li>
 <li><strong>Shell safety</strong>: Dangerous patterns (rm -rf, mkfs, fork bombs, sudo, etc.) are blocked by default with a force-bypass option</li>
@@ -340,7 +341,7 @@ hermes gateway restart
 <li><strong>Timeouts</strong>: All commands have configurable timeouts to prevent hangs</li>
 <li><strong>No secrets in code</strong>: Configuration is via environment variables only</li>
 </ul>
-<h5>Architecture</h5>
+<h6>Architecture</h6>
 <pre><code>Phone (Telegram) --&gt; Hermes Gateway --&gt; /cc plugin --&gt; claude remote-control
                                                           |
                                                           v
@@ -354,7 +355,7 @@ Phone (Claude app) &lt;-- claude.ai session URL &lt;-- stdout scan
 <li>A background thread scans stdout for the session URL</li>
 <li>The URL is sent back to the user via Telegram</li>
 </ol>
-<h5>How Remote Control Works</h5>
+<h6>How Remote Control Works</h6>
 <p>Claude Code&#39;s Remote Control feature (<code>claude remote-control</code>) starts a local server that:</p>
 <ul>
 <li>Keeps your machine as the execution environment (nothing moves to the cloud)</li>
@@ -362,7 +363,7 @@ Phone (Claude app) &lt;-- claude.ai session URL &lt;-- stdout scan
 <li>Supports full bidirectional control (send prompts, see results, approve tool use)</li>
 <li>Uses TLS over the Anthropic API (no inbound ports needed)</li>
 </ul>
-<h5>License</h5>
+<h6>License</h6>
 <p>MIT</p>
   </section>
 </details>

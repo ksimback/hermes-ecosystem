@@ -57,6 +57,7 @@
   }
 }
 </script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23d49a4f'/><text x='16' y='23' font-family='Space Grotesk,sans-serif' font-size='22' font-weight='700' fill='%230e0d0b' text-anchor='middle'>H</text></svg>">
 <script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,9 +136,9 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>Hermes Telegram Mini App</h4>
+    <h5>Hermes Telegram Mini App</h5>
 <p>A sleek, terminal-style web interface for your Hermes agent that runs inside Telegram as a Mini App. Chat with your agent, manage cron jobs, and monitor system health — all from a dark-mode TUI that feels like home.</p>
-<h5>What you get</h5>
+<h6>What you get</h6>
 <ul>
 <li><strong>Terminal chat</strong> — streaming responses, slash commands, file attachments (images, PDFs, text)</li>
 <li><strong>Context bar</strong> — live model name, token usage bar, session duration (like the Hermes CLI)</li>
@@ -149,7 +150,7 @@
 <li><strong>Rock-solid auth</strong> — dual HMAC-SHA256 + Ed25519 validation (Telegram&#39;s recommended method + third-party fallback)</li>
 <li><strong>Security hardened</strong> — CSP headers, XSS sanitization, auth rate limiting, SRI, CSPRNG session IDs (see <a href="#security">Security</a>)</li>
 </ul>
-<h5>Prerequisites</h5>
+<h6>Prerequisites</h6>
 <p>Before you start, you&#39;ll need:</p>
 <ol>
 <li><strong>Hermes Agent</strong> installed and working (<code>hermes</code> CLI runs successfully)<ul>
@@ -164,7 +165,7 @@
 </code></pre>
 </li>
 </ol>
-<h5>Setup</h5>
+<h6>Setup</h6>
 <h6>Step 1: Create a Telegram bot</h6>
 <ol>
 <li>Open <a href="https://t.me/BotFather">@BotFather</a> in Telegram</li>
@@ -262,7 +263,7 @@ curl -s http://localhost:9119/api/status
 <li>The mini app opens — you should see &quot;Hermes Agent&quot; with the context bar</li>
 </ol>
 <p>If it asks for an API key, that means Telegram initData isn&#39;t reaching the server. See troubleshooting below.</p>
-<h5>How auth works</h5>
+<h6>How auth works</h6>
 <p>The mini app uses <strong>dual validation</strong>: HMAC-SHA256 (primary) + Ed25519 (fallback). Here&#39;s the flow:</p>
 <pre><code>Telegram Client                    Your Server
      │                                │
@@ -289,7 +290,7 @@ curl -s http://localhost:9119/api/status
 <p><strong>HMAC-SHA256</strong> (primary) uses the bot token to derive a secret key. Per <a href="https://core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app">Telegram docs</a>: <code>secret_key = HMAC_SHA256(key=&quot;WebAppData&quot;, msg=bot_token)</code>.</p>
 <p><strong>Ed25519</strong> (fallback) uses Telegram&#39;s published public key — no bot token needed for verification. Useful for third-party validation.</p>
 <p>If initData isn&#39;t available (e.g. you&#39;re testing in a regular browser), the server falls back to Bearer token auth using <code>API_SERVER_KEY</code>.</p>
-<h5>API endpoints used by the mini app</h5>
+<h6>API endpoints used by the mini app</h6>
 <table>
 <thead>
 <tr>
@@ -404,7 +405,7 @@ curl -s http://localhost:9119/api/status
 <td>Send message to agent&#39;s tmux session</td>
 </tr>
 </tbody></table>
-<h5>Troubleshooting</h5>
+<h6>Troubleshooting</h6>
 <h6>&quot;Error 401&quot; when sending a message</h6>
 <p>This means Telegram initData validation is failing. Check:</p>
 <ol>
@@ -441,7 +442,7 @@ curl -s http://localhost:9119/api/status
 <li>Reinstall the hook: <code>./deploy.sh --install-hook</code></li>
 <li>Restart the server after redeploying</li>
 </ol>
-<h5>Architecture</h5>
+<h6>Architecture</h6>
 <blockquote>
 <p><strong><a href="https://github.com/clawvader-tech/hermes-telegram-miniapp/blob/main/docs/miniapp-v2-architecture.html">View the interactive architecture diagram →</a></strong></p>
 </blockquote>
@@ -478,7 +479,7 @@ Optional Local Models (CPU)
     ├─ LFM2-VL-450M (port 8080) — image description &amp; analysis
     └─ GLM-OCR (port 8081) — OCR, tables, formulas, structured extraction
 </code></pre>
-<h5>Security</h5>
+<h6>Security</h6>
 <p>v2.0.4 replaces tmux-based chat polling with direct Gateway API SSE streaming for instant responses and true abort support. v2.0.3 fixes a critical deploy issue where <code>hermes update</code> overwrites <code>web/src/</code> files (removing Telegram initData injection and Chat/Agents tabs). The deploy script now builds from the standalone repo source and syncs all <code>web/src/</code> files. v2.0.1 addressed a critical HMAC validation bug. v2.0.0/v1.0.3 addressed 11 vulnerabilities from a full security audit. Here&#39;s what&#39;s protected:</p>
 <table>
 <thead>
@@ -526,7 +527,7 @@ Optional Local Models (CPU)
 </tbody></table>
 <h6>Reporting</h6>
 <p>Found a vulnerability? Please disclose responsibly by opening a private issue or contacting the maintainer directly.</p>
-<h5>Contributing</h5>
+<h6>Contributing</h6>
 <p>Found a bug? Have an idea? Contributions are welcome.</p>
 <ol>
 <li>Fork the repo</li>
@@ -534,7 +535,7 @@ Optional Local Models (CPU)
 <li>Build the frontend: <code>cd web &amp;&amp; npm run build</code></li>
 <li>Open a PR</li>
 </ol>
-<h5>License</h5>
+<h6>License</h6>
 <p>MIT — see <a href="LICENSE">LICENSE</a>.</p>
   </section>
 </details>
