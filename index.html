@@ -1263,9 +1263,14 @@
       const deltas = {};
       const growthPct = {};
       for (const [key, series] of Object.entries(timeSeries)) {
-        if (series.length < 2) continue;
+        // Require 8 snapshots (= 7 full days, since cron runs daily) before
+        // showing weekly growth. Previously fell back to series[0] when
+        // history was sparse, which mislabeled "since first snapshot" as
+        // "weekly" — inflating trending badges during the first week of
+        // tracking or after data gaps.
+        if (series.length < 8) continue;
         const current = series[series.length - 1];
-        const weekAgo = series[Math.max(0, series.length - 8)] || series[0];
+        const weekAgo = series[series.length - 8];
         const delta = current - weekAgo;
         deltas[key] = delta;
         if (weekAgo > 0) growthPct[key] = (delta / weekAgo) * 100;
