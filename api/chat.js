@@ -1,4 +1,4 @@
-import { kvIncr, kvExpire } from "../lib/redis.js";
+import { kvIncr, kvExpireNx } from "../lib/redis.js";
 import { readFileSync } from "fs";
 import { join } from "path";
 
@@ -229,36 +229,68 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Chat not configured — missing API key" });
   }
 
+  // Reject oversized bodies before parsing further. Vercel's default body
+  // limit is generous (~4.5MB); 256KB is more than enough for a chat turn
+  // plus 20 history messages and stops obvious memory-exhaustion attempts.
+  const contentLength = parseInt(req.headers["content-length"] || "0", 10);
+  if (contentLength > 256 * 1024) {
+    return res.status(413).json({ error: "Request too large" });
+  }
+
   const { message, history = [] } = req.body || {};
   if (!message || typeof message !== "string" || message.length > 2000) {
     return res.status(400).json({ error: "Invalid message" });
   }
 
-  // Rate limiting — per-IP (hour + day) and global (hour + day)
-  const ip = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || "unknown";
+  // Cap history to bound prompt size (and OpenRouter cost). 20 messages
+  // = 10 turns, plenty of context. Each message must also be a sane string.
+  if (!Array.isArray(history) || history.length > 20) {
+    return res.status(400).json({ error: "Invalid history" });
+  }
+  for (const m of history) {
+    if (!m || typeof m.content !== "string" || m.content.length > 2000) {
+      return res.status(400).json({ error: "Invalid history message" });
+    }
+  }
+
+  // Rate limiting — per-IP (hour + day) and global (hour + day).
+  // Use x-real-ip (set by Vercel's edge, not client-spoofable). Fall back
+  // to x-forwarded-for only if missing (local dev). Avoid trusting raw
+  // x-forwarded-for in production: clients can set it to anything and
+  // bypass per-IP limits.
+  const ip =
+    req.headers["x-real-ip"]?.trim() ||
+    req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+    "unknown";
   const today = new Date().toISOString().slice(0, 10);
 
-  try {
-    const limits = [
-      { key: `chat:ip:hour:${ip}`, max: RATE_LIMIT_HOUR, ttl: 3600, label: "per-hour", scope: "you" },
-      { key: `chat:ip:day:${ip}:${today}`, max: RATE_LIMIT_DAY, ttl: 86400, label: "per-day", scope: "you" },
-      { key: `chat:global:hour`, max: GLOBAL_LIMIT_HOUR, ttl: 3600, label: "per-hour", scope: "the site" },
-      { key: `chat:global:day:${today}`, max: GLOBAL_LIMIT_DAY, ttl: 86400, label: "per-day", scope: "the site" },
-    ];
+  const limits = [
+    { key: `chat:ip:hour:${ip}`, max: RATE_LIMIT_HOUR, ttl: 3600, label: "per-hour", scope: "you" },
+    { key: `chat:ip:day:${ip}:${today}`, max: RATE_LIMIT_DAY, ttl: 86400, label: "per-day", scope: "you" },
+    { key: `chat:global:hour`, max: GLOBAL_LIMIT_HOUR, ttl: 3600, label: "per-hour", scope: "the site" },
+    { key: `chat:global:day:${today}`, max: GLOBAL_LIMIT_DAY, ttl: 86400, label: "per-day", scope: "the site" },
+  ];
 
-    for (const { key, max, ttl, label, scope } of limits) {
-      const count = await kvIncr(key);
-      if (count === null) continue; // Redis unavailable, skip this limit
-      if (count === 1) await kvExpire(key, ttl);
-      if (count > max) {
-        return res.status(429).json({
-          error: `Rate limit reached (${max} ${label} for ${scope}). Try again later.`,
-        });
-      }
+  for (const { key, max, ttl, label, scope } of limits) {
+    const count = await kvIncr(key);
+    if (count === null) {
+      // Redis unavailable — fail closed. Without a working counter we
+      // cannot bound OpenRouter spend, and silently allowing requests
+      // through is how a billing-bomb happens. Brief outages of chat
+      // beat permanent overspend.
+      return res.status(503).json({
+        error: "Service temporarily unavailable. Please try again in a moment.",
+      });
     }
-  } catch (e) {
-    // KV unavailable — allow request to avoid blocking users due to infra issues
-    console.error("Rate limit check failed:", e.message);
+    // EXPIRE NX is idempotent: sets TTL only if the key has none. This
+    // prevents the prior race where if the first request's EXPIRE call
+    // failed, the counter would persist forever without expiration.
+    await kvExpireNx(key, ttl);
+    if (count > max) {
+      return res.status(429).json({
+        error: `Rate limit reached (${max} ${label} for ${scope}). Try again later.`,
+      });
+    }
   }
 
   // Set streaming headers EARLY so client gets response immediately
