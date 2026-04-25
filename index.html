@@ -1639,7 +1639,12 @@
   }
 
   function escapeHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return s
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#39;');
   }
 
   function formatModelName(id) {
@@ -1659,11 +1664,22 @@
   }
 
   function renderMarkdown(text) {
-    return text
+    // Escape HTML before applying any markdown regex. Without this, an
+    // LLM that emits <script> or <img onerror=...> — whether through
+    // prompt injection, RAG-poisoned context, or just an unlucky
+    // generation — would execute in the user's browser via .innerHTML.
+    // After escaping, only the wrappers we add below become real HTML.
+    return escapeHtml(text)
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/`([^`]+)`/g, '<code>$1</code>')
       .replace(/\[Source: ([^\]]+)\]/g, '<span class="citation">$1</span>')
-      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, label, url) => {
+        // Whitelist URL schemes — block javascript:, data:, vbscript:.
+        // The URL was already escapeHtml'd above (so quotes are safe in
+        // the href attribute), but scheme validation is still required.
+        if (!/^(https?:|mailto:)/i.test(url)) return match;
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+      })
       .replace(/\n/g, '<br>');
   }
 })();
