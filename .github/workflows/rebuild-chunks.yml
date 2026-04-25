@@ -57,4 +57,18 @@ jobs:
           git config user.email "bot@hermesatlas.com"
           git add data/chunks.json
           git commit -m "Rebuild knowledge base chunks (${{ steps.diff.outputs.count }} chunks)"
-          git push
+
+          # main can move during a multi-minute build (PR merge, another
+          # bot workflow committing) — vanilla `git push` then fails with
+          # `! [rejected] main -> main (fetch first)`. Retry up to 3 times,
+          # rebasing onto the new remote tip between attempts.
+          for attempt in 1 2 3; do
+            if git push; then
+              echo "Pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt) — pulling --rebase and retrying"
+            git pull --rebase origin main || { echo "Rebase failed — aborting"; exit 1; }
+          done
+          echo "Push failed after 3 attempts"
+          exit 1
