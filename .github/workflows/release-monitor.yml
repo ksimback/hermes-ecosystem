@@ -227,12 +227,18 @@ jobs:
 
       - name: Bust stars API cache so site shows new version immediately
         if: steps.check.outputs.new_release == 'true'
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
           # The /api/stars endpoint caches GitHub results in Redis with a 1hr
           # TTL. Passing ?cron=1 bypasses the cache read and writes a fresh
           # snapshot — so the masthead "Latest" stat picks up the new version
           # on the next site visit rather than waiting up to an hour.
-          code=$(curl -s -o /dev/null -w "%{http_code}" "https://hermesatlas.com/api/stars?cron=1")
+          # Cache-bypass is now auth-gated; we send the same Bearer token
+          # that Vercel Cron sends on its scheduled invocations.
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            "https://hermesatlas.com/api/stars?cron=1")
           echo "Cache refresh returned HTTP $code"
           if [ "$code" != "200" ]; then
             echo "::warning::Cache bust returned non-200; site may briefly show stale version"
