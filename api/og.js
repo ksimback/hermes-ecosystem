@@ -166,6 +166,6 @@ export default async function handler(req, res) {
   } catch (err) {
     console.error("[og] render failed:", err);
     res.setHeader("Content-Type", "text/plain; charset=utf-8");
-    res.status(500).send(`OG render failed: ${err?.message || err}\n\nStack:\n${err?.stack || "(no stack)"}`);
+    res.status(500).send("OG render failed");
   }
 }
