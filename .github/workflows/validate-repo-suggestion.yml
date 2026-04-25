@@ -252,7 +252,6 @@ jobs:
           INFERRED_CATEGORY: ${{ steps.metadata.outputs.inferred_category }}
         with:
           script: |
-            const fs = require('fs');
             const owner = process.env.REPO_OWNER;
             const repo = process.env.REPO_NAME;
             const stars = parseInt(process.env.REPO_STARS) || 0;
@@ -264,8 +263,24 @@ jobs:
               category = process.env.INFERRED_CATEGORY || 'Developer Tools';
             }
 
-            // Read current repos.json
-            const repos = JSON.parse(fs.readFileSync('data/repos.json', 'utf-8'));
+            // Always source repos.json from the LATEST main via API, not from
+            // the workflow's local checkout. The checkout happens at the start
+            // of the run; if any other PR merges to main during this run
+            // (auto-PRs from concurrent issue submissions, manual merges,
+            // etc.) the local copy is stale. Committing stale content on a
+            // branch based on latest main means the squash-merge later
+            // silently drops everything that landed in the gap. PR #89 hit
+            // exactly this and lost AxDSan/mnemosyne; PR #79 (mem0) is still
+            // DIRTY for the same reason.
+            const { data: file } = await github.rest.repos.getContent({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path: 'data/repos.json',
+              ref: 'main'
+            });
+            const repos = JSON.parse(
+              Buffer.from(file.content, 'base64').toString('utf-8')
+            );
 
             // Add new repo
             const newRepo = {
@@ -310,15 +325,10 @@ jobs:
               sha: ref.object.sha
             });
 
-            // Get current file
-            const { data: file } = await github.rest.repos.getContent({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              path: 'data/repos.json',
-              ref: 'main'
-            });
-
-            // Update file on new branch
+            // Update file on new branch. createOrUpdateFileContents requires
+            // the file's current SHA on `ref: branch` — same as on main since
+            // the branch was just created from main and we haven't committed
+            // anything to it yet.
             await github.rest.repos.createOrUpdateFileContents({
               owner: context.repo.owner,
               repo: context.repo.repo,
