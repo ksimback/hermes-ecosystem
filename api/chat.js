@@ -641,5 +641,10 @@ function cosineSimilarity(a, b) {
     normA += a[i] * a[i];
     normB += b[i] * b[i];
   }
-  return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+  const denom = Math.sqrt(normA) * Math.sqrt(normB);
+  if (denom === 0) {
+    console.warn("[chat] cosine: zero-vector encountered, returning 0 (degrading to BM25-only ranking for this comparison)");
+    return 0;
+  }
+  return dot / denom;
 }
