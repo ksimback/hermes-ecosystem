@@ -26,9 +26,23 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Repo list unavailable" });
     }
 
+    // Cache-bypass is reserved for Vercel Cron. Vercel attaches
+    // Authorization: Bearer ${CRON_SECRET} automatically when CRON_SECRET
+    // is set as an env var. Without this check, anyone could call
+    // /api/stars?cron=true to bypass the cache and burn GitHub API quota.
+    const wantsBypass = req.query.cron === "true" || req.query.cron === "1";
+    if (wantsBypass) {
+      const expected = process.env.CRON_SECRET
+        ? `Bearer ${process.env.CRON_SECRET}`
+        : null;
+      if (!expected || req.headers.authorization !== expected) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+    }
+
     // Check cache first
     const cached = await kvGet(CACHE_KEY);
-    if (cached && !req.query.cron) {
+    if (cached && !wantsBypass) {
       return res.status(200).json(cached);
     }
 
