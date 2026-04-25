@@ -28,10 +28,21 @@ jobs:
         run: npm install
 
       - name: Run summary audit
+        id: audit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-        run: node scripts/audit-summaries.js
+        run: |
+          node scripts/audit-summaries.js
+          # Capture whether anything was flagged so the next step can decide
+          # whether to trigger immediate regeneration. The audit clears
+          # readmeHash on flagged entries, so a non-empty diff in
+          # data/summaries.json means something was flagged.
+          if git diff --quiet data/summaries.json; then
+            echo "flagged=false" >> $GITHUB_OUTPUT
+          else
+            echo "flagged=true" >> $GITHUB_OUTPUT
+          fi
 
       - name: Commit if flagged
         run: |
@@ -51,10 +62,25 @@ jobs:
           for attempt in 1 2 3; do
             if git push; then
               echo "Pushed on attempt $attempt"
-              exit 0
+              break
             fi
             echo "Push rejected (attempt $attempt) — pulling --rebase and retrying"
             git pull --rebase origin main || { echo "Rebase failed — aborting"; exit 1; }
+            if [ "$attempt" = "3" ]; then
+              echo "Push failed after 3 attempts"
+              exit 1
+            fi
           done
-          echo "Push failed after 3 attempts"
-          exit 1
+
+      - name: Trigger build-pages to regenerate flagged summaries
+        if: steps.audit.outputs.flagged == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Without this dispatch, flagged-as-hallucinated summaries stay
+          # live until the next daily build-pages cron — up to ~22 hours
+          # of stale content for what the audit just identified as wrong.
+          # Triggering build-pages immediately closes that window to the
+          # length of one build run (~3 minutes).
+          gh workflow run build-pages.yml
+          echo "Dispatched build-pages.yml to regenerate flagged summaries"

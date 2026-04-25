@@ -1471,7 +1471,15 @@
     try {
       const trimmed = chatHistory.slice(-CHAT_MAX_SAVED);
       localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(trimmed));
-    } catch {}
+    } catch (e) {
+      // Previously `catch {}` swallowed everything — including
+      // QuotaExceededError on full-storage devices, where the user's
+      // chat history would silently vanish on reload. Logging gives at
+      // least a console signal so this isn't invisible if it ever fires.
+      if (e?.name === 'QuotaExceededError') {
+        console.warn('[chat] localStorage quota exceeded — chat history will not persist this session');
+      }
+    }
   }
 
   function clearChatHistory() {
