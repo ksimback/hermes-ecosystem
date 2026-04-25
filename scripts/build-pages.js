@@ -647,7 +647,7 @@ ${renderMasthead("map")}
   <a href="/">map</a><span class="sep">/</span><a href="${listSlug ? `/lists/${listSlug}` : "/"}">${escapeHtml(repo.category.toLowerCase())}</a><span class="sep">/</span>${escapeHtml(repo.repo.toLowerCase())}
 </div>
 
-<article id="main">
+<main id="main">
 
 <section class="project">
   <h1 class="project-name">
@@ -707,7 +707,7 @@ ${summary ? `
   </div>
 </aside>
 
-</article>
+</main>
 
 ${PAGE_FOOTER}
 
@@ -815,7 +815,7 @@ ${renderMasthead("lists")}
   <a href="/">map</a><span class="sep">/</span><a href="/#curated-lists">lists</a><span class="sep">/</span>${escapeHtml(list.slug)}
 </div>
 
-<article id="main">
+<main id="main">
 
 <section class="list-page">
   <h1 class="list-title">${escapeHtml(list.title)}</h1>
@@ -834,7 +834,7 @@ ${listicleHtml}
 
 <div class="back-link"><a href="/">← back to the map</a></div>
 
-</article>
+</main>
 
 ${PAGE_FOOTER}
 
