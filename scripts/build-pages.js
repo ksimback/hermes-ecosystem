@@ -130,6 +130,14 @@ if (fs.existsSync(listsPath)) {
   lists = JSON.parse(fs.readFileSync(listsPath, "utf-8"));
 }
 
+let reports = [];
+const reportsPath = path.join(ROOT, "data", "reports.json");
+if (fs.existsSync(reportsPath)) {
+  reports = JSON.parse(fs.readFileSync(reportsPath, "utf-8"));
+  // Newest first by date (ISO YYYY-MM-DD sorts lexicographically)
+  reports.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+}
+
 // fetchAllMetadata and fetchReadme imported from lib/github.js
 
 // ── Format star count ──
@@ -178,7 +186,7 @@ function renderMasthead(activeNav) {
     { href: "/", label: "map", id: "map" },
     { href: "/#curated-lists", label: "lists", id: "lists" },
     { href: "/guide/", label: "handbook", id: "handbook" },
-    { href: "/reports/state-of-hermes-april-2026", label: "reports", id: "reports" },
+    { href: "/reports/", label: "reports", id: "reports" },
     { href: "/#newsletter", label: "newsletter", id: "newsletter" },
     { href: "https://github.com/ksimback/hermes-ecosystem", label: "source", id: "source" },
   ];
@@ -459,7 +467,7 @@ ${items}
 }
 
 // ── GEO: write llms.txt (concise index) + llms-full.txt (full bundle) ──
-function writeLlmsFiles(repos, lists, summaries) {
+function writeLlmsFiles(repos, lists, summaries, reports = []) {
   const today = new Date().toISOString().slice(0, 10);
   const sorted = repos.slice().sort((a, b) => (b.stars || 0) - (a.stars || 0));
   const topProjects = sorted.slice(0, 15);
@@ -490,8 +498,11 @@ ${lists.map((l) => `- [${l.title}](${SITE_URL}/lists/${l.slug}): ${l.description
 - [Full context bundle](${SITE_URL}/llms-full.txt): Concatenated content of every guide, report, and summary for direct LLM ingestion.
 - [Sitemap](${SITE_URL}/sitemap.xml): All URLs with last-modified dates.
 
+## Reports
+- [Reports index](${SITE_URL}/reports/): Quarterly community reports on the Hermes Agent ecosystem.
+${reports.map((r) => `- [${r.title}](${SITE_URL}/reports/${r.slug}): ${r.summary}`).join("\n")}
+
 ## Optional
-- [State of Hermes — April 2026 report](${SITE_URL}/reports/state-of-hermes-april-2026): Quarterly ecosystem snapshot.
 - [Privacy policy](${SITE_URL}/privacy): How the site handles visitor data.
 - [GitHub source](https://github.com/ksimback/hermes-ecosystem): The repo backing this site.
 `;
@@ -848,15 +859,157 @@ ${PAGE_FOOTER}
 </html>`;
 }
 
+// ── Reports index (/reports/) ──
+function formatReportDate(iso) {
+  if (!iso) return "";
+  const d = new Date(iso + "T00:00:00Z");
+  if (Number.isNaN(d.getTime())) return iso;
+  const months = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
+  return `${months[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
+}
+
+function renderReportsIndex(reports) {
+  const title = "Reports | Hermes Atlas";
+  const desc = "Quarterly community reports on the Hermes Agent ecosystem — growth, releases, what's been built, and what to watch for next.";
+  const canonicalUrl = `${SITE_URL}/reports/`;
+  const ogTitle = "Reports — Hermes Atlas";
+  const ogSubtitle = "Quarterly community reports on the Hermes Agent ecosystem.";
+
+  const itemListLD = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": canonicalUrl,
+    name: "Hermes Atlas Reports",
+    description: desc,
+    url: canonicalUrl,
+    isPartOf: { "@id": "https://hermesatlas.com/#website" },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: reports.length,
+      itemListOrder: "https://schema.org/ItemListOrderDescending",
+      itemListElement: reports.map((r, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${SITE_URL}/reports/${r.slug}`,
+        name: r.title,
+      })),
+    },
+  };
+
+  const breadcrumbLD = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "map", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 2, name: "reports" },
+    ],
+  };
+
+  const reportRows = reports.map((r, i) => {
+    const rank = String(i + 1).padStart(2, "0");
+    const dateStr = escapeHtml(formatReportDate(r.date));
+    const readTime = r.readTime ? ` · ${escapeHtml(r.readTime)} read` : "";
+    const kicker = r.kicker ? `<div class="list-cell-kicker">${escapeHtml(r.kicker)}</div>` : "";
+    return `<a class="list-row" href="/reports/${escapeHtml(r.slug)}">
+    <div class="list-rank">${rank}</div>
+    <div class="list-cell-body">
+      ${kicker}
+      <div class="list-cell-name">${escapeHtml(r.title)}</div>
+      <div class="list-cell-desc">${escapeHtml(r.summary || "")}</div>
+    </div>
+    <div class="list-cell-stars">${dateStr}${readTime}</div>
+  </a>`;
+  }).join("\n  ");
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtml(title)}</title>
+<meta name="description" content="${escapeHtml(desc)}">
+<link rel="canonical" href="${canonicalUrl}">
+<meta property="og:title" content="${escapeHtml(ogTitle)}">
+<meta property="og:description" content="${escapeHtml(desc)}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="${canonicalUrl}">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="${escapeHtml(ogImageUrl({ title: ogTitle, subtitle: ogSubtitle, kind: "reports" }))}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${escapeHtml(ogTitle)}">
+<meta name="twitter:image" content="${escapeHtml(ogImageUrl({ title: ogTitle, subtitle: ogSubtitle, kind: "reports" }))}">
+<script type="application/ld+json">
+${JSON.stringify(breadcrumbLD, null, 2)}
+</script>
+<script type="application/ld+json">
+${JSON.stringify(itemListLD, null, 2)}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="${FAVICON}">
+<script>${THEME_INIT}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+${renderMasthead("reports")}
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span>reports
+</div>
+
+<main id="main">
+
+<section class="list-page">
+  <h1 class="list-title">Reports</h1>
+  <p class="list-intro">Quarterly community reports on the Hermes Agent ecosystem — growth, releases, what's been built, and what to watch for next.</p>
+</section>
+
+<div class="list-table" aria-label="Report list">
+  <div class="list-table-head">
+    <div>#</div>
+    <div>report</div>
+    <div style="text-align:right">published</div>
+  </div>
+  ${reportRows}
+</div>
+
+<div class="back-link"><a href="/">← back to the map</a></div>
+
+</main>
+
+${PAGE_FOOTER}
+
+<script>${THEME_TOGGLE_SCRIPT}</script>
+<script>(function(){fetch('/api/stars').then(function(r){return r.ok&&r.json()}).then(function(d){if(!d)return;var a=document.getElementById('meta-atlas');if(a&&d.atlas&&d.atlas.stars)a.textContent='★ '+d.atlas.stars+' · star this repo';var c=document.getElementById('meta-count');if(c&&d.totals&&d.totals.count)c.textContent=d.totals.count+'·repos'}).catch(function(){});})();</script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>`;
+}
+
 // ── Generate sitemap.xml ──
-function generateSitemap(projectPages, listPages) {
+function generateSitemap(projectPages, listPages, reportPages = []) {
   const today = new Date().toISOString().slice(0, 10);
 
   let urls = `  <url><loc>${SITE_URL}/</loc><changefreq>daily</changefreq><priority>1.0</priority><lastmod>${today}</lastmod></url>\n`;
   urls += `  <url><loc>${SITE_URL}/guide/</loc><changefreq>monthly</changefreq><priority>0.9</priority><lastmod>${today}</lastmod></url>\n`;
   urls += `  <url><loc>${SITE_URL}/guide/vs-claude-code/</loc><changefreq>monthly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;
   urls += `  <url><loc>${SITE_URL}/guide/install/</loc><changefreq>monthly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;
-  urls += `  <url><loc>${SITE_URL}/reports/state-of-hermes-april-2026</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>\n`;
+  urls += `  <url><loc>${SITE_URL}/reports/</loc><changefreq>monthly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;
+  for (const r of reportPages) {
+    urls += `  <url><loc>${SITE_URL}/reports/${r.slug}</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>\n`;
+  }
   urls += `  <url><loc>${SITE_URL}/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>\n`;
 
   for (const page of projectPages) {
@@ -1033,18 +1186,27 @@ async function main() {
     console.log(`  ${list.slug} (${matchedRepos.length} repos)`);
   }
 
+  // Generate reports index page
+  if (reports.length > 0) {
+    console.log("\nGenerating reports index...");
+    const reportsDir = path.join(ROOT, "reports");
+    fs.mkdirSync(reportsDir, { recursive: true });
+    fs.writeFileSync(path.join(reportsDir, "index.html"), renderReportsIndex(reports), "utf-8");
+    console.log(`  reports/index.html (${reports.length} reports)`);
+  }
+
   // Generate sitemap
   console.log("\nGenerating sitemap.xml...");
-  const sitemap = generateSitemap(repos, lists);
+  const sitemap = generateSitemap(repos, lists, reports);
   fs.writeFileSync(path.join(ROOT, "sitemap.xml"), sitemap, "utf-8");
-  console.log(`  ${repos.length + lists.length + 2} URLs`);
+  console.log(`  ${repos.length + lists.length + reports.length + 3} URLs`);
 
   // Generate robots.txt (explicit multi-bot allowlist + wildcard default)
   fs.writeFileSync(path.join(ROOT, "robots.txt"), buildRobotsTxt(), "utf-8");
 
   // Generate llms.txt + llms-full.txt for LLM / agent ingestion (llmstxt.org)
   console.log("\nGenerating llms.txt + llms-full.txt...");
-  writeLlmsFiles(repos, lists, summaries);
+  writeLlmsFiles(repos, lists, summaries, reports);
 
   // Generate rss.xml — last-30 new repo additions (addedAt derived from git log)
   console.log("\nGenerating rss.xml...");
