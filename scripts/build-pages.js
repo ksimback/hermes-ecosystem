@@ -1028,6 +1028,114 @@ function generateSitemap(projectPages, listPages, reportPages = []) {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}</urlset>\n`;
 }
 
+// ── Render a single homepage repo-row block ──
+function renderHomepageRepoRow(r) {
+  const stars = (r.stars || 0).toLocaleString("en-US");
+  const flag = r.official ? ' <span class="repo-flag">official</span>' : "";
+  const desc = (r.description || "").trim();
+  const descPunctuated = desc.endsWith(".") ? desc : desc + ".";
+  return `    <a class="repo-row" href="/projects/${r.owner}/${r.repo}" data-github="https://github.com/${r.owner}/${r.repo}" data-desc="${escapeHtml(desc)}">
+      <div class="repo-stars">★ ${stars}</div>
+      <div class="repo-body">
+        <div class="repo-name"><span class="org">${escapeHtml(r.owner)} /</span> ${escapeHtml(r.repo)}${flag}</div>
+        <div class="repo-desc">${escapeHtml(descPunctuated)}</div>
+      </div>
+      <div class="repo-delta">— / wk</div>
+    </a>
+`;
+}
+
+// ── Sync homepage repo-rows from data/repos.json (append-only) ──
+//
+// The homepage (index.html) is statically rendered HTML. Auto-discovered
+// repos that get merged via validate-repo-suggestion.yml only update
+// data/repos.json — they don't touch index.html, so the homepage drifts
+// behind the data file. This function detects every repo in repos.json
+// missing from index.html and appends a new <a class="repo-row"> block
+// into the matching <section class="cat" data-category="...">. Existing
+// rows are never modified, preserving hand-curated descriptions and
+// ordering. Each section's <span class="cat-count-n"> is also rewritten
+// from the live count.
+function syncHomepageRepos(repos) {
+  console.log("\nSyncing homepage repo-rows from repos.json...");
+  const indexPath = path.join(ROOT, "index.html");
+  let html = fs.readFileSync(indexPath, "utf-8");
+  const NL = html.includes("\r\n") ? "\r\n" : "\n";
+
+  const onPage = new Set(
+    [...html.matchAll(/href="\/projects\/([^"]+)"/g)].map((m) => m[1])
+  );
+
+  const missingByCategory = {};
+  for (const r of repos) {
+    if (!onPage.has(`${r.owner}/${r.repo}`)) {
+      (missingByCategory[r.category] = missingByCategory[r.category] || []).push(r);
+    }
+  }
+  const missingCount = Object.values(missingByCategory).reduce((a, b) => a + b.length, 0);
+
+  if (missingCount === 0) {
+    console.log("  Already in sync (0 entries to add)");
+  } else {
+    const closeNeedle = `${NL}  </div>${NL}`;
+    for (const [category, missing] of Object.entries(missingByCategory)) {
+      missing.sort((a, b) => (b.stars || 0) - (a.stars || 0));
+      let newRowsHtml = missing.map(renderHomepageRepoRow).join("");
+      if (NL === "\r\n") newRowsHtml = newRowsHtml.replace(/\n/g, "\r\n");
+
+      const sectionStartTag = `<section class="cat" data-category="${category}">`;
+      const sectionStart = html.indexOf(sectionStartTag);
+      if (sectionStart === -1) {
+        console.warn(`  ⚠ Section not found: ${category} — skipping ${missing.length} repos`);
+        continue;
+      }
+      const sectionEnd = html.indexOf("</section>", sectionStart);
+      const insertBefore = html.lastIndexOf(closeNeedle, sectionEnd);
+      if (insertBefore === -1 || insertBefore < sectionStart) {
+        console.warn(`  ⚠ Could not locate cat-list end in section: ${category}`);
+        continue;
+      }
+
+      html =
+        html.slice(0, insertBefore) +
+        NL +
+        newRowsHtml.trimEnd() +
+        html.slice(insertBefore);
+      console.log(`  ${category}: +${missing.length}`);
+    }
+  }
+
+  // Refresh per-category counts. Use ACTUAL rendered repo-rows in each
+  // section, not repos.json category totals — the homepage convention is
+  // that featured repos (NousResearch/hermes-agent) appear in the hero
+  // section, not as a category row, so counting repos.json would over-count.
+  const sectionRe = /<section class="cat" data-category="([^"]+)">([\s\S]*?)<\/section>/g;
+  let sm;
+  while ((sm = sectionRe.exec(html)) !== null) {
+    const category = sm[1];
+    const sectionContent = sm[2];
+    const renderedCount = (sectionContent.match(/<a class="repo-row"/g) || []).length;
+    const countMatch = sectionContent.match(/<span class="cat-count-n">(\d+)<\/span>/);
+    if (countMatch && parseInt(countMatch[1], 10) !== renderedCount) {
+      const absoluteIdx = sm.index + sm[0].indexOf(countMatch[0]);
+      html =
+        html.slice(0, absoluteIdx) +
+        `<span class="cat-count-n">${renderedCount}</span>` +
+        html.slice(absoluteIdx + countMatch[0].length);
+      // Re-prime the regex to re-scan from current position since string length changed
+      sectionRe.lastIndex = absoluteIdx;
+    }
+  }
+
+  if (missingCount > 0) {
+    fs.writeFileSync(indexPath, html, "utf-8");
+    console.log(`  ✓ Wrote index.html (+${missingCount} new rows)`);
+  } else {
+    // Still write back if counts changed
+    fs.writeFileSync(indexPath, html, "utf-8");
+  }
+}
+
 // ── Main ──
 async function main() {
   console.log(`Building pages for ${repos.length} repos + ${lists.length} lists...\n`);
@@ -1172,6 +1280,10 @@ async function main() {
   if (orphansRemoved > 0) {
     console.log(`  Cleaned up ${orphansRemoved} orphan project page(s)\n`);
   }
+
+  // Sync homepage repo-rows from repos.json (auto-discovered repos only update
+  // data/repos.json; index.html drifts unless this catches missing entries)
+  syncHomepageRepos(repos);
 
   // Generate list pages
   console.log("Generating list pages...");
