@@ -1,5 +1,8 @@
 name: Daily Release Monitor
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 on:
   schedule:
     # Run daily at 06:00 UTC (checks releases + docs changes)
@@ -230,23 +233,44 @@ jobs:
             // GitHub release body) — not LLM-generated — so the human review
             // checkpoint here was guarding against zero hallucination risk.
             // With no required checks today this merges immediately; if a CI
-            // gate is ever added, auto-merge waits for it. Falls back to a
-            // manual-merge PR if the mutation fails for any reason.
-            try {
-              await github.graphql(
-                `mutation($pullRequestId: ID!) {
-                  enablePullRequestAutoMerge(input: {
-                    pullRequestId: $pullRequestId,
-                    mergeMethod: MERGE
-                  }) {
-                    pullRequest { autoMergeRequest { enabledAt } }
-                  }
-                }`,
-                { pullRequestId: pr.node_id }
-              );
-              console.log(`Auto-merge enabled on PR #${pr.number}`);
-            } catch (e) {
-              core.warning(`Could not enable auto-merge on PR #${pr.number}: ${e.message}. PR remains open for manual merge.`);
+            // gate is ever added, auto-merge waits for it.
+            //
+            // Retry once on failure; if still failing, open a tracking issue
+            // so the orphaned PR is visible. The old try/catch with just
+            // `core.warning` left PR #173 (v0.13.0 release notes) orphan for
+            // 14 hours — warnings only surface in workflow run logs nobody
+            // routinely checks.
+            let autoMergeEnabled = false;
+            for (let attempt = 1; attempt <= 2; attempt++) {
+              try {
+                await github.graphql(
+                  `mutation($pullRequestId: ID!) {
+                    enablePullRequestAutoMerge(input: {
+                      pullRequestId: $pullRequestId,
+                      mergeMethod: MERGE
+                    }) {
+                      pullRequest { autoMergeRequest { enabledAt } }
+                    }
+                  }`,
+                  { pullRequestId: pr.node_id }
+                );
+                autoMergeEnabled = true;
+                console.log(`Auto-merge enabled on PR #${pr.number} (attempt ${attempt})`);
+                break;
+              } catch (e) {
+                if (attempt === 2) {
+                  await github.rest.issues.create({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    title: `[Workflow] Auto-merge failed on release PR #${pr.number}`,
+                    body: `Could not enable auto-merge on release-notes PR #${pr.number} for ${tag}.\n\nError: \`${e.message}\`\n\n**Action:** review and merge the PR manually.`,
+                    labels: ['workflow-issue']
+                  });
+                  core.warning(`Auto-merge failed after 2 attempts on PR #${pr.number}; tracking issue opened.`);
+                } else {
+                  await new Promise(r => setTimeout(r, 5000));
+                }
+              }
             }
 
       - name: Bust stars API cache so site shows new version immediately
