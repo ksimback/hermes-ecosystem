@@ -1,12 +1,25 @@
 name: Validate Repo Suggestion
 
+# Single workflow handles labeling AND validation in one job. The old
+# `auto-label-submissions.yml` design (add label, expect labeled event to
+# cascade) silently failed because workflows triggered by GITHUB_TOKEN don't
+# fire other workflows — issues #188 and #198 sat un-validated for 4d and 14h
+# until manually re-labeled.
+
 on:
   issues:
     types: [opened, edited, labeled]
 
+# Serialize validation runs. Without this, two concurrent submissions create
+# PRs that both branch from the same main SHA; merging the first leaves the
+# second in conflict (no auto-rebase). PRs #193/#196 hit this on 2026-05-15
+# and required manual close + re-label to recover.
+concurrency:
+  group: validate-repo-suggestion
+  cancel-in-progress: false
+
 jobs:
   validate:
-    if: contains(github.event.issue.labels.*.name, 'repo-suggestion')
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -14,15 +27,46 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Decide whether this issue is a repo submission
+        id: gate
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = context.payload.issue.title || '';
+            const labels = (context.payload.issue.labels || []).map(l => l.name);
+            const titleMatches = title.startsWith('[Repo]') || title.startsWith('[Submission]');
+            const labelMatches = labels.includes('repo-suggestion');
+            const shouldRun = titleMatches || labelMatches;
+
+            core.setOutput('should_run', shouldRun ? 'true' : 'false');
+            core.setOutput('has_label', labelMatches ? 'true' : 'false');
+            console.log(`title=${title}, titleMatches=${titleMatches}, labelMatches=${labelMatches}, shouldRun=${shouldRun}`);
+
+      - name: Ensure repo-suggestion label is present
+        if: steps.gate.outputs.should_run == 'true' && steps.gate.outputs.has_label != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              labels: ['repo-suggestion']
+            });
+            console.log(`Labeled #${context.payload.issue.number} as repo-suggestion`);
+
       - name: Checkout
+        if: steps.gate.outputs.should_run == 'true'
         uses: actions/checkout@v4
 
       - name: Setup Node
+        if: steps.gate.outputs.should_run == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
       - name: Extract repo URL from issue body
+        if: steps.gate.outputs.should_run == 'true'
         id: extract
         uses: actions/github-script@v7
         with:
@@ -51,6 +95,7 @@ jobs:
             console.log(`Extracted: ${owner}/${repo}, category: ${category}`);
 
       - name: Fetch repo metadata from GitHub API
+        if: steps.gate.outputs.should_run == 'true'
         id: metadata
         uses: actions/github-script@v7
         with:
@@ -136,6 +181,7 @@ jobs:
             }
 
       - name: Run validation checks
+        if: steps.gate.outputs.should_run == 'true'
         id: validate
         uses: actions/github-script@v7
         env:
@@ -240,6 +286,7 @@ jobs:
             core.setOutput('report', report);
 
       - name: Comment validation report on issue
+        if: steps.gate.outputs.should_run == 'true'
         uses: actions/github-script@v7
         env:
           REPORT: ${{ steps.validate.outputs.report }}
@@ -382,10 +429,54 @@ jobs:
               base: 'main'
             });
 
+            // Enable auto-merge so the PR lands once Vercel preview is green.
+            // Combined with the workflow's `concurrency: validate-repo-suggestion`
+            // group, this serializes validation runs so each PR auto-merges
+            // before the next one's create-PR step fetches main — preventing
+            // the conflict pattern PRs #193/#196 hit on 2026-05-15.
+            // Retry once on failure; if still failing, surface a visible
+            // tracking issue rather than silently warning to logs (which is
+            // how release-monitor PR #173 sat orphan 14h).
+            let autoMergeEnabled = false;
+            for (let attempt = 1; attempt <= 2; attempt++) {
+              try {
+                await github.graphql(
+                  `mutation($pullRequestId: ID!) {
+                    enablePullRequestAutoMerge(input: {
+                      pullRequestId: $pullRequestId,
+                      mergeMethod: SQUASH
+                    }) {
+                      pullRequest { autoMergeRequest { enabledAt } }
+                    }
+                  }`,
+                  { pullRequestId: pr.node_id }
+                );
+                autoMergeEnabled = true;
+                console.log(`Auto-merge enabled on PR #${pr.number} (attempt ${attempt})`);
+                break;
+              } catch (e) {
+                if (attempt === 2) {
+                  await github.rest.issues.create({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    title: `[Workflow] Auto-merge failed on validator PR #${pr.number}`,
+                    body: `Could not enable auto-merge on \`add-repo\` PR #${pr.number} for ${owner}/${repo}.\n\nError: \`${e.message}\`\n\n**Action:** review and merge the PR manually, or close it if invalid.`,
+                    labels: ['workflow-issue']
+                  });
+                  core.warning(`Auto-merge failed after 2 attempts on PR #${pr.number}; tracking issue opened.`);
+                } else {
+                  await new Promise(r => setTimeout(r, 5000));
+                }
+              }
+            }
+
             // Comment on the issue with the PR link
+            const autoMergeNote = autoMergeEnabled
+              ? '\n\nAuto-merge is enabled — the PR will land once preview checks pass.'
+              : '\n\n(Auto-merge could not be enabled; a maintainer will review and merge manually.)';
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: `PR created: #${pr.number}\n\nOnce merged, this repo will appear in the ecosystem map.`
+              body: `PR created: #${pr.number}\n\nOnce merged, this repo will appear in the ecosystem map.${autoMergeNote}`
             });
