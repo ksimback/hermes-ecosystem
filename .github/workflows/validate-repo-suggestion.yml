@@ -72,6 +72,21 @@ jobs:
               core.setOutput('topics', (data.topics || []).join(','));
               core.setOutput('exists', 'true');
 
+              // Fetch README to widen relevance detection. The hermes/nous
+              // mention check used to look only at description, which gave
+              // false-positive warnings on legit plugins whose description
+              // leads with the product pitch (e.g. klodi-plugin). Cap the
+              // surfaced content so step outputs stay small.
+              let readmeSnippet = '';
+              try {
+                const { data: readme } = await github.rest.repos.getReadme({ owner, repo });
+                const decoded = Buffer.from(readme.content, 'base64').toString('utf-8');
+                readmeSnippet = decoded.slice(0, 4000);
+              } catch (e) {
+                // No README is fine — just leave snippet empty.
+              }
+              core.setOutput('readme_snippet', readmeSnippet);
+
               // Infer category from description, name, and topics
               const text = [
                 data.description || '',
@@ -134,6 +149,8 @@ jobs:
           REPO_LANGUAGE: ${{ steps.metadata.outputs.language }}
           REPO_LICENSE: ${{ steps.metadata.outputs.license }}
           REPO_HTML_URL: ${{ steps.metadata.outputs.html_url }}
+          REPO_TOPICS: ${{ steps.metadata.outputs.topics }}
+          REPO_README: ${{ steps.metadata.outputs.readme_snippet }}
         with:
           script: |
             const owner = process.env.REPO_OWNER;
@@ -142,6 +159,8 @@ jobs:
             const createdAt = new Date(process.env.REPO_CREATED);
             const isFork = process.env.REPO_IS_FORK === 'true';
             const description = process.env.REPO_DESC;
+            const topics = (process.env.REPO_TOPICS || '').toLowerCase();
+            const readmeSnippet = (process.env.REPO_README || '').toLowerCase();
             const hermesLaunch = new Date('2025-07-22');
 
             const issues = [];
@@ -169,11 +188,19 @@ jobs:
               warnings.push(`Created before Hermes Agent launch (${createdAt.toISOString().slice(0,10)})`);
             }
 
-            // Check if description/readme mentions hermes
-            const descLower = (description || '').toLowerCase();
-            const mentionsHermes = descLower.includes('hermes') || descLower.includes('nous');
+            // Check description, topics, and README snippet for hermes/nous
+            // mention. Description-only check produced false-positive warnings
+            // on legit plugins (e.g. klodi-plugin) whose description leads with
+            // a product pitch but whose topics/README make the relationship
+            // obvious.
+            const haystack = [
+              (description || '').toLowerCase(),
+              topics,
+              readmeSnippet,
+            ].join(' ');
+            const mentionsHermes = haystack.includes('hermes') || haystack.includes('nous');
             if (!mentionsHermes) {
-              warnings.push(`Description doesn't mention "hermes" or "nous" — may not be related`);
+              warnings.push(`Description, topics, and README don't mention "hermes" or "nous" — may not be related`);
             }
 
             const passed = issues.length === 0;
