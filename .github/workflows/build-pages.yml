@@ -47,7 +47,9 @@ jobs:
       - name: Check for changes
         id: diff
         run: |
-          git add projects/ lists/ sitemap.xml robots.txt llms.txt llms-full.txt rss.xml data/summaries.json data/list-summaries.json
+          # index.html is mutated by syncHomepageRepos() in build-pages.js
+          # — must be staged or homepage drifts silently (bug pre-2026-05-17).
+          git add index.html projects/ lists/ sitemap.xml robots.txt llms.txt llms-full.txt rss.xml data/summaries.json data/list-summaries.json
           if git diff --cached --quiet; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
@@ -69,13 +71,25 @@ jobs:
           # bot workflow committing) — vanilla `git push` then fails with
           # `! [rejected] main -> main (fetch first)`. Retry up to 3 times,
           # rebasing onto the new remote tip between attempts.
+          #
+          # Stash any unstaged working-tree changes before the rebase. Without
+          # this, the rebase aborts with "cannot pull with rebase: You have
+          # unstaged changes" if any build step writes a file outside the
+          # staged set — and the entire build's work gets thrown away silently
+          # (this is what cancelled all 5 burst-merge builds on 2026-05-15).
           for attempt in 1 2 3; do
             if git push; then
               echo "Pushed on attempt $attempt"
               exit 0
             fi
-            echo "Push rejected (attempt $attempt) — pulling --rebase and retrying"
-            git pull --rebase origin main || { echo "Rebase failed — aborting"; exit 1; }
+            echo "Push rejected (attempt $attempt) — rebasing onto new remote tip"
+            git stash --include-untracked --quiet || true
+            if ! git pull --rebase origin main; then
+              echo "Rebase failed — aborting"
+              git stash pop --quiet 2>/dev/null || true
+              exit 1
+            fi
+            git stash pop --quiet 2>/dev/null || true
           done
           echo "Push failed after 3 attempts"
           exit 1
