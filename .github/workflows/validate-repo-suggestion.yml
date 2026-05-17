@@ -437,40 +437,55 @@ jobs:
             // group, this serializes validation runs so each PR auto-merges
             // before the next one's create-PR step fetches main — preventing
             // the conflict pattern PRs #193/#196 hit on 2026-05-15.
-            // Retry once on failure; if still failing, surface a visible
-            // tracking issue rather than silently warning to logs (which is
-            // how release-monitor PR #173 sat orphan 14h).
+            //
+            // GitHub returns "Pull request is in unstable status" when
+            // enablePullRequestAutoMerge is called immediately after PR
+            // creation because mergeStateStatus is still UNKNOWN (merge state
+            // hasn't computed yet). This is what kept tripping the workflow
+            // through 2026-05-17. Fix: poll for a non-UNKNOWN merge state
+            // before enabling, with a short max wait so we don't burn time.
+            // Tracking issue only opens if the state never settles OR the
+            // mutation still fails for a reason other than the race.
             let autoMergeEnabled = false;
-            for (let attempt = 1; attempt <= 2; attempt++) {
-              try {
-                await github.graphql(
-                  `mutation($pullRequestId: ID!) {
-                    enablePullRequestAutoMerge(input: {
-                      pullRequestId: $pullRequestId,
-                      mergeMethod: SQUASH
-                    }) {
-                      pullRequest { autoMergeRequest { enabledAt } }
-                    }
-                  }`,
-                  { pullRequestId: pr.node_id }
-                );
-                autoMergeEnabled = true;
-                console.log(`Auto-merge enabled on PR #${pr.number} (attempt ${attempt})`);
-                break;
-              } catch (e) {
-                if (attempt === 2) {
-                  await github.rest.issues.create({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    title: `[Workflow] Auto-merge failed on validator PR #${pr.number}`,
-                    body: `Could not enable auto-merge on \`add-repo\` PR #${pr.number} for ${owner}/${repo}.\n\nError: \`${e.message}\`\n\n**Action:** review and merge the PR manually, or close it if invalid.`,
-                    labels: ['workflow-issue']
-                  });
-                  core.warning(`Auto-merge failed after 2 attempts on PR #${pr.number}; tracking issue opened.`);
-                } else {
-                  await new Promise(r => setTimeout(r, 5000));
-                }
-              }
+            let mergeState = 'UNKNOWN';
+            for (let i = 0; i < 12; i++) {
+              const { repository } = await github.graphql(
+                `query($owner: String!, $repo: String!, $num: Int!) {
+                  repository(owner: $owner, name: $repo) {
+                    pullRequest(number: $num) { mergeStateStatus }
+                  }
+                }`,
+                { owner: context.repo.owner, repo: context.repo.repo, num: pr.number }
+              );
+              mergeState = repository.pullRequest.mergeStateStatus;
+              if (mergeState && mergeState !== 'UNKNOWN') break;
+              await new Promise(r => setTimeout(r, 5000));
+            }
+            console.log(`PR #${pr.number} mergeStateStatus settled to ${mergeState}`);
+
+            try {
+              await github.graphql(
+                `mutation($pullRequestId: ID!) {
+                  enablePullRequestAutoMerge(input: {
+                    pullRequestId: $pullRequestId,
+                    mergeMethod: SQUASH
+                  }) {
+                    pullRequest { autoMergeRequest { enabledAt } }
+                  }
+                }`,
+                { pullRequestId: pr.node_id }
+              );
+              autoMergeEnabled = true;
+              console.log(`Auto-merge enabled on PR #${pr.number}`);
+            } catch (e) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `[Workflow] Auto-merge failed on validator PR #${pr.number}`,
+                body: `Could not enable auto-merge on \`add-repo\` PR #${pr.number} for ${owner}/${repo}.\n\n**Merge state at attempt:** \`${mergeState}\`\n**Error:** \`${e.message}\`\n\n**Action:** review and merge the PR manually, or close it if invalid.`,
+                labels: ['workflow-issue']
+              });
+              core.warning(`Auto-merge failed on PR #${pr.number} (mergeState=${mergeState}); tracking issue opened.`);
             }
 
             // Comment on the issue with the PR link

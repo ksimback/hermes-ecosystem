@@ -232,45 +232,56 @@ jobs:
             // Content is copied verbatim from upstream RELEASE_v*.md (or the
             // GitHub release body) — not LLM-generated — so the human review
             // checkpoint here was guarding against zero hallucination risk.
-            // With no required checks today this merges immediately; if a CI
-            // gate is ever added, auto-merge waits for it.
             //
-            // Retry once on failure; if still failing, open a tracking issue
-            // so the orphaned PR is visible. The old try/catch with just
-            // `core.warning` left PR #173 (v0.13.0 release notes) orphan for
-            // 14 hours — warnings only surface in workflow run logs nobody
-            // routinely checks.
+            // GitHub returns "Pull request is in unstable status" when
+            // enablePullRequestAutoMerge is called immediately after PR
+            // creation because mergeStateStatus is still UNKNOWN (merge
+            // state hasn't computed yet). This is exactly what kept PR #173
+            // (v0.13.0) and the 2026-05-17 burst orphan for hours behind a
+            // silent warning. Fix: poll for a non-UNKNOWN merge state
+            // before enabling, with a short max wait so we don't burn time.
+            // Tracking issue only opens if the state never settles OR the
+            // mutation still fails for a reason other than the race.
             let autoMergeEnabled = false;
-            for (let attempt = 1; attempt <= 2; attempt++) {
-              try {
-                await github.graphql(
-                  `mutation($pullRequestId: ID!) {
-                    enablePullRequestAutoMerge(input: {
-                      pullRequestId: $pullRequestId,
-                      mergeMethod: MERGE
-                    }) {
-                      pullRequest { autoMergeRequest { enabledAt } }
-                    }
-                  }`,
-                  { pullRequestId: pr.node_id }
-                );
-                autoMergeEnabled = true;
-                console.log(`Auto-merge enabled on PR #${pr.number} (attempt ${attempt})`);
-                break;
-              } catch (e) {
-                if (attempt === 2) {
-                  await github.rest.issues.create({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    title: `[Workflow] Auto-merge failed on release PR #${pr.number}`,
-                    body: `Could not enable auto-merge on release-notes PR #${pr.number} for ${tag}.\n\nError: \`${e.message}\`\n\n**Action:** review and merge the PR manually.`,
-                    labels: ['workflow-issue']
-                  });
-                  core.warning(`Auto-merge failed after 2 attempts on PR #${pr.number}; tracking issue opened.`);
-                } else {
-                  await new Promise(r => setTimeout(r, 5000));
-                }
-              }
+            let mergeState = 'UNKNOWN';
+            for (let i = 0; i < 12; i++) {
+              const { repository } = await github.graphql(
+                `query($owner: String!, $repo: String!, $num: Int!) {
+                  repository(owner: $owner, name: $repo) {
+                    pullRequest(number: $num) { mergeStateStatus }
+                  }
+                }`,
+                { owner: context.repo.owner, repo: context.repo.repo, num: pr.number }
+              );
+              mergeState = repository.pullRequest.mergeStateStatus;
+              if (mergeState && mergeState !== 'UNKNOWN') break;
+              await new Promise(r => setTimeout(r, 5000));
+            }
+            console.log(`PR #${pr.number} mergeStateStatus settled to ${mergeState}`);
+
+            try {
+              await github.graphql(
+                `mutation($pullRequestId: ID!) {
+                  enablePullRequestAutoMerge(input: {
+                    pullRequestId: $pullRequestId,
+                    mergeMethod: MERGE
+                  }) {
+                    pullRequest { autoMergeRequest { enabledAt } }
+                  }
+                }`,
+                { pullRequestId: pr.node_id }
+              );
+              autoMergeEnabled = true;
+              console.log(`Auto-merge enabled on PR #${pr.number}`);
+            } catch (e) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `[Workflow] Auto-merge failed on release PR #${pr.number}`,
+                body: `Could not enable auto-merge on release-notes PR #${pr.number} for ${tag}.\n\n**Merge state at attempt:** \`${mergeState}\`\n**Error:** \`${e.message}\`\n\n**Action:** review and merge the PR manually.`,
+                labels: ['workflow-issue']
+              });
+              core.warning(`Auto-merge failed on PR #${pr.number} (mergeState=${mergeState}); tracking issue opened.`);
             }
 
       - name: Bust stars API cache so site shows new version immediately
