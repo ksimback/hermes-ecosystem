@@ -101,6 +101,15 @@ If you'd rather open a PR instead of an issue:
 | Guides & Docs | Curated lists, tutorials, optimization guides |
 | Forks & Derivatives | Meaningful forks with added functionality |
 
+## Testing
+
+We run a production smoke test after every deploy. See [`TESTING.md`](./TESTING.md)
+for what gets checked, how to run it locally against a Vercel preview, and how
+to acknowledge known-broken-but-deferred issues without blocking CI.
+
+If you're adding a new build step, data file, or page layout, consider whether
+it warrants a new smoke check — `TESTING.md` walks through the pattern.
+
 ## Questions?
 
 - Try the [Ask the Atlas](https://hermesatlas.com) chatbot
