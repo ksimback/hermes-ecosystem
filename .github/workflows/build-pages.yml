@@ -55,7 +55,10 @@ jobs:
           # data/repos.json is mutated by the GraphQL stars-refresh step in
           # build-pages.js — must be staged or per-repo stars in the public
           # dataset stay frozen at submitter time (bug pre-2026-05-24).
-          git add index.html projects/ lists/ sitemap.xml robots.txt llms.txt llms-full.txt rss.xml data/repos.json data/summaries.json data/list-summaries.json
+          # reports/index.html is rendered from data/reports.json on every
+          # build but was never staged — meant /reports/ silently missed
+          # new entries until the workflow was edited (bug pre-2026-05-25).
+          git add index.html projects/ lists/ reports/ sitemap.xml robots.txt llms.txt llms-full.txt rss.xml data/repos.json data/summaries.json data/list-summaries.json
           if git diff --cached --quiet; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
