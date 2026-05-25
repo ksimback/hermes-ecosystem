@@ -304,7 +304,7 @@ FAL\_KEY
 
 ## `kanban` toolset
 
-Registered only when the agent is spawned by the kanban dispatcher (`HERMES_KANBAN_TASK` env set). Lets workers mark tasks done with structured handoffs, block for human input, heartbeat during long ops, comment on threads, and (for orchestrators) fan out into child tasks. See [Kanban Multi-Agent](/docs/user-guide/features/kanban) for the full workflow.
+Registered when the agent is either (a) spawned by the kanban dispatcher (`HERMES_KANBAN_TASK` env set) or (b) running in a profile that explicitly enables the `kanban` toolset. Task-scoped workers use lifecycle tools for their assigned task; orchestrator profiles additionally get board-routing tools like `kanban_list` and `kanban_unblock`. See [Kanban Multi-Agent](/docs/user-guide/features/kanban) for the full workflow.
 
 Tool
 
@@ -316,43 +316,55 @@ Requires environment
 
 Show the active kanban task assigned to this worker (title, description, comments, dependencies).
 
-`HERMES_KANBAN_TASK`
+`HERMES_KANBAN_TASK` or `kanban` toolset
+
+`kanban_list`
+
+List board tasks with filters. Orchestrator-only; hidden from dispatcher-spawned task workers.
+
+profile with `kanban` toolset
 
 `kanban_complete`
 
 Mark the current task done with a structured handoff payload (results, artifacts, follow-ups).
 
-`HERMES_KANBAN_TASK`
+`HERMES_KANBAN_TASK` or `kanban` toolset
 
 `kanban_block`
 
 Block the current task on a question for the user — the dispatcher pauses, surfaces the question, and resumes once a human replies.
 
-`HERMES_KANBAN_TASK`
+`HERMES_KANBAN_TASK` or `kanban` toolset
 
 `kanban_heartbeat`
 
 Send a progress heartbeat during a long-running operation so the dispatcher knows the worker is still alive.
 
-`HERMES_KANBAN_TASK`
+`HERMES_KANBAN_TASK` or `kanban` toolset
 
 `kanban_comment`
 
 Add a comment to the task thread without changing its state — useful for surfacing intermediate findings.
 
-`HERMES_KANBAN_TASK`
+`HERMES_KANBAN_TASK` or `kanban` toolset
 
 `kanban_create`
 
-(Orchestrator only) Fan out child tasks from the current task.
+Fan out child tasks from the current task. Used by orchestrators and follow-up-spawning workers.
 
-`HERMES_KANBAN_TASK` + orchestrator role
+`HERMES_KANBAN_TASK` or `kanban` toolset
 
 `kanban_link`
 
-(Orchestrator only) Link related tasks together (blocks/blocked-by/related).
+Link tasks with a parent → child dependency edge.
 
-`HERMES_KANBAN_TASK` + orchestrator role
+`HERMES_KANBAN_TASK` or `kanban` toolset
+
+`kanban_unblock`
+
+Return a blocked task to `ready`. Orchestrator-only; hidden from dispatcher-spawned task workers.
+
+profile with `kanban` toolset
 
 ## `memory` toolset
 
@@ -406,7 +418,7 @@ Requires environment
 
 `session_search`
 
-Search your long-term memory of past conversations. This is your recall -- every past session is searchable, and this tool summarizes what happened. USE THIS PROACTIVELY when: - The user says 'we did this before', 'remember when', 'last ti…
+Search past sessions stored in the local session DB, or scroll inside one. FTS5-backed retrieval; returns actual messages from the DB (no LLM calls). Three shapes: discovery (pass `query`), scroll (pass `session_id` + `around_message_id`), browse (no args).
 
 —
 
@@ -480,7 +492,7 @@ Requires environment
 
 `vision_analyze`
 
-Analyze images using AI vision. Provides a comprehensive description and answers a specific question about the image content.
+Analyze images using AI vision. On vision-capable main models, returns the raw image pixels as a multimodal tool result so the model sees them natively on its next turn. On text-only main models, falls back to an auxiliary vision model that describes the image and returns the description as text. Tool signature is identical either way.
 
 —
 
@@ -555,7 +567,7 @@ Requires environment
 
 Search X (Twitter) posts, profiles, and threads using xAI's built-in `x_search` Responses tool. Use this for current discussion, reactions, or claims on X rather than general web pages. Off by default — opt in via `hermes tools` → 🐦 X (Twitter) Search. Schema is only registered when xAI credentials are configured (check\_fn-gated).
 
-XAI\_API\_KEY **or** xAI Grok OAuth (SuperGrok Subscription) login
+XAI\_API\_KEY **or** xAI Grok OAuth (SuperGrok / Premium+) login
 
 ## `tts` toolset
 

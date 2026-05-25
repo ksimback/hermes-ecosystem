@@ -371,7 +371,8 @@ Type these during an interactive chat session. New commands land fairly often; i
 ~/.hermes/config.yaml       Main configuration
 ~/.hermes/.env              API keys and secrets
 $HERMES_HOME/skills/        Installed skills
-~/.hermes/sessions/         Session transcripts
+~/.hermes/sessions/         Gateway routing index, request dumps, *.jsonl transcripts (and optional per-session JSON snapshots when sessions.write_json_snapshots: true)
+~/.hermes/state.db          Canonical session store (SQLite + FTS5)
 ~/.hermes/logs/             Gateway and error logs
 ~/.hermes/auth.json         OAuth tokens and credential pools
 ~/.hermes/hermes-agent/     Source code (if git-installed)
@@ -986,11 +987,11 @@ Config: `curator.*` (`enabled`, `interval_hours`, `min_idle_hours`, `stale_after
 
 ### Kanban (multi-agent work queue)
 
-Durable SQLite board for multi-profile / multi-worker collaboration. Users drive it via `hermes kanban <verb>`; dispatcher-spawned workers see a focused `kanban_*` toolset gated by `HERMES_KANBAN_TASK` so the schema footprint is zero outside worker processes.
+Durable SQLite board for multi-profile / multi-worker collaboration. Users drive it via `hermes kanban <verb>`; dispatcher-spawned workers see a focused `kanban_*` toolset gated by `HERMES_KANBAN_TASK`, and orchestrator profiles can opt into the broader `kanban` toolset. Normal sessions still have zero `kanban_*` schema footprint unless configured.
 
 -   **CLI verbs (common):** `init`, `create`, `list` (alias `ls`), `show`, `assign`, `link`, `unlink`, `comment`, `complete`, `block`, `unblock`, `archive`, `tail`. Less common: `watch`, `stats`, `runs`, `log`, `dispatch`, `daemon`, `gc`.
--   **Worker toolset:** `kanban_show`, `kanban_complete`, `kanban_block`, `kanban_heartbeat`, `kanban_comment`, `kanban_create`, `kanban_link`.
--   **Dispatcher** runs inside the gateway by default (`kanban.dispatch_in_gateway: true`) — reclaims stale claims, promotes ready tasks, atomically claims, spawns assigned profiles. Auto-blocks a task after ~5 consecutive spawn failures.
+-   **Worker/orchestrator toolset:** `kanban_show`, `kanban_complete`, `kanban_block`, `kanban_heartbeat`, `kanban_comment`, `kanban_create`, `kanban_link`; profiles that explicitly enable the `kanban` toolset outside a dispatcher-spawned task also get `kanban_list` and `kanban_unblock` for board routing.
+-   **Dispatcher** runs inside the gateway by default (`kanban.dispatch_in_gateway: true`) — reclaims stale claims, promotes ready tasks, atomically claims, spawns assigned profiles. Auto-blocks a task after `failure_limit` consecutive spawn failures (default 2; configurable via `kanban.failure_limit` or per-task `max_retries`).
 -   **Isolation:** board is the hard boundary (workers get `HERMES_KANBAN_BOARD` pinned in env); tenant is a soft namespace within a board for workspace-path + memory-key isolation.
 
 User docs: [https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban](https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban)
@@ -1170,7 +1171,7 @@ Gateway logs
 
 Session files
 
-`~/.hermes/sessions/` or `hermes sessions browse`
+`hermes sessions browse` (reads state.db)
 
 Source code
 

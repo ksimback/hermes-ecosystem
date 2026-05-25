@@ -72,6 +72,12 @@ Configure, extend, or contribute to Hermes Agent.
 
 `autonomous-ai-agents/hermes-agent`
 
+[`kanban-codex-lane`](/docs/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-kanban-codex-lane)
+
+Use when a Hermes Kanban worker wants to run Codex CLI as an isolated implementation lane while Hermes keeps ownership of task lifecycle, reconciliation, testing, and handoff.
+
+`autonomous-ai-agents/kanban-codex-lane`
+
 [`opencode`](/docs/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-opencode)
 
 Delegate coding to OpenCode CLI (features, PR review).
@@ -103,6 +109,12 @@ ASCII art: pyfiglet, cowsay, boxes, image-to-ascii.
 ASCII video: convert video/audio to colored ASCII MP4/GIF.
 
 `creative/ascii-video`
+
+[`baoyu-article-illustrator`](/docs/user-guide/skills/bundled/creative/creative-baoyu-article-illustrator)
+
+Article illustrations: type × style × palette consistency.
+
+`creative/baoyu-article-illustrator`
 
 [`baoyu-comic`](/docs/user-guide/skills/bundled/creative/creative-baoyu-comic)
 
@@ -621,6 +633,12 @@ Debug Hermes TUI slash commands: Python, gateway, Ink UI.
 Author in-repo SKILL.md: frontmatter, validator, structure.
 
 `software-development/hermes-agent-skill-authoring`
+
+[`hermes-s6-container-supervision`](/docs/user-guide/skills/bundled/software-development/software-development-hermes-s6-container-supervision)
+
+Modify, debug, or extend the s6-overlay supervision tree inside the Hermes Agent Docker image — adding new services, debugging profile gateways, understanding the Architecture B main-program pattern.
+
+`software-development/hermes-s6-container-supervision`
 
 [`node-inspect-debugger`](/docs/user-guide/skills/bundled/software-development/software-development-node-inspect-debugger)
 

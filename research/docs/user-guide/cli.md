@@ -79,11 +79,23 @@ Cost
 
 Estimated session cost (or `n/a` for unknown/zero-priced models)
 
+🗜️ N
+
+**Context compression count** — how many times the running session has been auto-compressed. Appears once the first compression fires.
+
+▶ N
+
+**Active background tasks** — how many `/background` prompts are still running in the current session. Appears whenever at least one task is in flight.
+
 Duration
 
 Elapsed session time
 
-The bar adapts to terminal width — full layout at ≥ 76 columns, compact at 52–75, minimal (model + duration only) below 52.
+⚠ YOLO
+
+**YOLO mode warning** — shown whenever `HERMES_YOLO_MODE` is on (either `hermes --yolo` at launch or `/yolo` toggled mid-session). Mirrors the banner-line warning so you can't forget you're in auto-approve mode.
+
+The bar adapts to terminal width — full layout at ≥ 76 columns, compact at 52–75, minimal (model + duration, plus the YOLO badge when active) below 52.
 
 **Context color coding:**
 
@@ -226,6 +238,14 @@ Increase reasoning effort
 `/title My Session`
 
 Name the current session
+
+`/status`
+
+Show session info — model/profile/tokens/duration — followed by a local **Session recap** block (recent turn counts, top tools used, files touched, latest user prompt + assistant reply). Pure local compute; no LLM call.
+
+`/sessions`
+
+Open an interactive session picker right inside the classic CLI (same surface the TUI uses). Type to filter, arrow keys to navigate, Enter to resume.
 
 For the full built-in CLI and messaging lists, see [Slash Commands Reference](/docs/reference/slash-commands).
 

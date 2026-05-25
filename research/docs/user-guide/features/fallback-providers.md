@@ -62,7 +62,7 @@ Nous Portal
 
 `nous`
 
-`hermes auth` (OAuth)
+`hermes setup --portal` (fresh) or `hermes auth add nous` (OAuth)
 
 OpenAI Codex
 
@@ -250,7 +250,7 @@ Tencent TokenHub
 
 `TOKENHUB_API_KEY`
 
-Azure AI Foundry
+Microsoft Foundry
 
 `azure-foundry`
 
@@ -415,12 +415,6 @@ Context compression summaries
 
 `auxiliary.compression`
 
-Session Search
-
-Past session summarization
-
-`auxiliary.session_search`
-
 Skills Hub
 
 Skill search and discovery
@@ -491,13 +485,6 @@ auxiliary:
     provider: "auto"
     model: ""
 
-  session_search:
-    provider: "auto"
-    model: ""
-    timeout: 30
-    max_concurrency: 3
-    extra_body: {}
-
   skills_hub:
     provider: "auto"
     model: ""
@@ -525,25 +512,6 @@ fallback_model:
   model: anthropic/claude-sonnet-4
   # base_url: http://localhost:8000/v1               # Optional custom endpoint
 ```
-
-For `auxiliary.session_search`, Hermes also supports:
-
--   `max_concurrency` to limit how many session summaries run at once
--   `extra_body` to pass provider-specific OpenAI-compatible request fields through on the summarization calls
-
-Example:
-
-```
-auxiliary:
-  session_search:
-    provider: main
-    model: glm-4.5-air
-    max_concurrency: 2
-    extra_body:
-      enable_thinking: false
-```
-
-If your provider does not support a native OpenAI-compatible reasoning-control field, `extra_body` will not help for that part; in that case `max_concurrency` is still useful for reducing request-burst 429s.
 
 All three — auxiliary, compression, fallback — work the same way: set `provider` to pick who handles the request, `model` to pick which model, and `base_url` to point at a custom endpoint (overrides provider).
 
@@ -754,12 +722,6 @@ Context compression
 Layered (see above); degrades to no-summary if all layers unavailable
 
 `auxiliary.compression`
-
-Session search
-
-Layered (see above)
-
-`auxiliary.session_search`
 
 Skills hub
 

@@ -136,6 +136,10 @@ Inspect, approve, or remove shell-script hooks declared in `config.yaml`.
 
 Diagnose config and dependency issues.
 
+`hermes security audit`
+
+On-demand supply-chain audit (OSV.dev) for the venv, plugin requirements, and pinned MCP servers.
+
 `hermes dump`
 
 Copy-pasteable setup summary for support/debugging.
@@ -172,6 +176,10 @@ Approve or revoke messaging pairing codes.
 
 Browse, install, publish, audit, and configure skills.
 
+`hermes bundles`
+
+Group several skills under a single `/<name>` slash command. See [Skill Bundles](/docs/user-guide/features/skills#skill-bundles).
+
 `hermes curator`
 
 Background skill maintenance — status, run, pause, pin. See [Curator](/docs/user-guide/features/curator).
@@ -191,6 +199,10 @@ Manage MCP server configurations and run Hermes as an MCP server.
 `hermes plugins`
 
 Manage Hermes Agent plugins (install, enable, disable, remove).
+
+`hermes portal`
+
+Nous Portal status, subscription link, and Tool Gateway routing. See [Tool Gateway](/docs/user-guide/features/tool-gateway).
 
 `hermes tools`
 
@@ -356,7 +368,7 @@ Override the model for this run
 
 `--provider <provider>`
 
-`HERMES_INFERENCE_PROVIDER`
+_(none)_
 
 Override the provider for this run
 
@@ -451,6 +463,10 @@ Restart the service.
 
 Show service status.
 
+`list`
+
+List **all profiles** and whether each profile's gateway is currently running (with PID where available). Handy when you run multiple profiles side-by-side and want a single overview.
+
 `install`
 
 Install as a systemd (Linux) or launchd (macOS) background service.
@@ -520,7 +536,7 @@ See [LSP — Semantic Diagnostics](/docs/user-guide/features/lsp) for the full g
 ## `hermes setup`
 
 ```
-hermes setup [model|tts|terminal|gateway|tools|agent] [--non-interactive] [--reset] [--quick] [--reconfigure]
+hermes setup [model|tts|terminal|gateway|tools|agent] [--non-interactive] [--reset] [--quick] [--reconfigure] [--portal]
 ```
 
 **First run:** launches the first-time wizard.
@@ -574,6 +590,36 @@ Reset configuration to defaults before setup.
 `--reconfigure`
 
 Backwards-compat alias — bare `hermes setup` on an existing install now does this by default.
+
+`--portal`
+
+One-shot Nous Portal setup: log in via OAuth, set Nous as the inference provider, and opt into the [Tool Gateway](/docs/user-guide/features/tool-gateway). Skips the rest of the wizard.
+
+## `hermes portal`
+
+```
+hermes portal [status|open|tools]
+```
+
+Inspect Nous Portal auth, Tool Gateway routing, and reach the subscription page. Subcommand-less invocation runs `status`.
+
+Subcommand
+
+Description
+
+`status` (default)
+
+Portal auth state + per-tool Tool Gateway routing summary. Also shown when no subcommand is given.
+
+`open`
+
+Open `portal.nousresearch.com/manage-subscription` in your default browser.
+
+`tools`
+
+List every Tool Gateway partner (Firecrawl, FAL, OpenAI TTS, Browser Use, Modal) and which are routed via Nous.
+
+For configuration of the gateway itself, see [Tool Gateway](/docs/user-guide/features/tool-gateway). For the one-shot setup path, see `hermes setup --portal` above.
 
 ## `hermes whatsapp`
 
@@ -732,7 +778,7 @@ Purpose
 
 Operate on a specific board. Defaults to the current board (set via `hermes kanban boards switch`, the `HERMES_KANBAN_BOARD` env var, or `default`).
 
-**This is the human / scripting surface.** Agent workers spawned by the dispatcher drive the board through a dedicated `kanban_*` [toolset](/docs/user-guide/features/kanban#how-workers-interact-with-the-board) (`kanban_show`, `kanban_complete`, `kanban_block`, `kanban_create`, `kanban_link`, `kanban_comment`, `kanban_heartbeat`) instead of shelling to `hermes kanban`. Workers have `HERMES_KANBAN_BOARD` pinned in their env so they physically cannot see other boards.
+**This is the human / scripting surface.** Agent workers spawned by the dispatcher drive the board through a dedicated `kanban_*` [toolset](/docs/user-guide/features/kanban#how-workers-interact-with-the-board) (`kanban_show`, `kanban_complete`, `kanban_block`, `kanban_create`, `kanban_link`, `kanban_comment`, `kanban_heartbeat`; orchestrator profiles also get `kanban_list` and `kanban_unblock`) instead of shelling to `hermes kanban`. Workers have `HERMES_KANBAN_BOARD` pinned in their env so they physically cannot see other boards.
 
 Action
 
@@ -768,7 +814,7 @@ Archive (default) or hard-delete a board. `--delete` skips the archive step. Arc
 
 `create "<title>"`
 
-Create a new task on the active board. Flags: `--body`, `--assignee`, `--parent` (repeatable), `--workspace scratch|worktree|dir:<path>`, `--tenant`, `--priority`, `--triage`, `--idempotency-key`, `--max-runtime`, `--skill` (repeatable).
+Create a new task on the active board. Flags: `--body`, `--assignee`, `--parent` (repeatable), `--workspace scratch|worktree|dir:<path>`, `--tenant`, `--priority`, `--triage`, `--idempotency-key`, `--max-runtime`, `--max-retries`, `--skill` (repeatable).
 
 `list` / `ls`
 
@@ -804,11 +850,15 @@ Mark task done. Flags: `--result`, `--summary`, `--metadata`.
 
 `block <id> "<reason>"`
 
-Mark task blocked. Also appends the reason as a comment.
+Mark task blocked for human input. Also appends the reason as a comment.
+
+`schedule <id> "<reason>"`
+
+Park time-delay/follow-up work in `scheduled` so it is not shown as a human blocker.
 
 `unblock <id>`
 
-Return a blocked task to ready.
+Return a blocked or scheduled task to ready (or `todo` if dependencies are still open).
 
 `archive <id>`
 
@@ -820,7 +870,7 @@ Follow a task's event stream.
 
 `dispatch`
 
-One dispatcher pass on the active board. Flags: `--dry-run`, `--max N`, `--json`.
+One dispatcher pass on the active board. Flags: `--dry-run`, `--max N`, `--failure-limit N`, `--json`.
 
 `context <id>`
 
@@ -1512,7 +1562,58 @@ Notes:
 -   `--force` does not override a `dangerous` scan verdict.
 -   `--source skills-sh` searches the public `skills.sh` directory.
 -   `--source well-known` lets you point Hermes at a site exposing `/.well-known/skills/index.json`.
+-   `--source browse-sh` searches [browse.sh](https://browse.sh)'s catalog of 200+ site-specific browser-automation skills. Identifiers look like `browse-sh/airbnb.com/search-listings-ddgioa`.
 -   Passing an `http(s)://…/*.md` URL installs a single-file SKILL.md directly. When frontmatter has no `name:` and the URL slug isn't a valid identifier, an interactive terminal prompts for a name; non-interactive surfaces (`/skills install` inside the TUI, gateway platforms) require `--name <x>` instead.
+
+## `hermes bundles`
+
+```
+hermes bundles <subcommand>
+```
+
+Skill bundles group several skills under one `/<bundle-name>` slash command. Invoking the bundle loads every referenced skill into a single combined user message. Storage: `~/.hermes/skill-bundles/<slug>.yaml`. See [Skill Bundles](/docs/user-guide/features/skills#skill-bundles) for the YAML schema and behavior.
+
+Subcommands:
+
+Subcommand
+
+Description
+
+`list`
+
+List installed bundles (default when no subcommand given)
+
+`show <name>`
+
+Show one bundle's name, description, skills, and file path
+
+`create <name>`
+
+Create a new bundle. Pass `--skill <id>` (repeat) or omit for interactive entry. `--description`, `--instruction`, `--force` available.
+
+`delete <name>`
+
+Remove a bundle file
+
+`reload`
+
+Re-scan `~/.hermes/skill-bundles/` and report added/removed bundles
+
+Examples:
+
+```
+hermes bundles create backend-dev \
+  --skill github-code-review \
+  --skill test-driven-development \
+  --skill github-pr-workflow \
+  -d "Backend feature work"
+
+hermes bundles list
+hermes bundles show backend-dev
+hermes bundles delete backend-dev
+```
+
+In a chat session, `/bundles` lists installed bundles and `/<bundle-name>` loads one.
 
 ## `hermes curator`
 

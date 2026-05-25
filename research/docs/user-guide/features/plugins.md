@@ -486,9 +486,9 @@ Backend plugin — `ctx.register_video_gen_provider()`
 
 A **TTS backend** (any CLI — Piper, VoxCPM, Kokoro, xtts, voice-cloning scripts, …)
 
-Config-driven — declare under `tts.providers.<name>` with `type: command` in `config.yaml`
+Config-driven (recommended) — declare under `tts.providers.<name>` with `type: command` in `config.yaml`. OR Python backend plugin — `ctx.register_tts_provider()` for Python-SDK / streaming engines that need more than a shell template.
 
-[TTS setup](/docs/user-guide/features/tts#custom-command-providers)
+[TTS Setup](/docs/user-guide/features/tts#custom-command-providers) · [Python plugin guide](/docs/user-guide/features/tts#python-plugin-providers)
 
 An **STT backend** (custom whisper binary, local ASR CLI)
 

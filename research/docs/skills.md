@@ -84,6 +84,16 @@ AI Agents🐧 Linux macOSwindows
 
 🤖
 
+### kanban-codex-lane
+
+✓ Built-in
+
+Use when a Hermes Kanban worker wants to run Codex CLI as an isolated implementation lane while Hermes keeps ownership of task lifecycle, reconciliation, testing, and handoff.
+
+AI Agents
+
+🤖
+
 ### opencode
 
 ✓ Built-in
@@ -119,6 +129,16 @@ Creative🐧 Linux macOSwindows
 ✓ Built-in
 
 ASCII video: convert video/audio to colored ASCII MP4/GIF.
+
+Creative🐧 Linux macOSwindows
+
+🎨
+
+### baoyu-article-illustrator
+
+✓ Built-in
+
+Article illustrations: type × style × palette consistency.
 
 Creative🐧 Linux macOSwindows
 
@@ -582,24 +602,4 @@ Edit PDF text/typos/titles via nano-pdf CLI (NL prompts).
 
 Productivity🐧 Linux macOSwindows
 
-✅
-
-### notion
-
-✓ Built-in
-
-Notion API + ntn CLI: pages, databases, markdown, Workers.
-
-Productivity🐧 Linux macOSwindows
-
-✅
-
-### ocr-and-documents
-
-✓ Built-in
-
-Extract text from PDFs/scans (pymupdf, marker-pdf).
-
-Productivity🐧 Linux macOSwindows
-
-Show more (629 remaining)
+Show more (632 remaining)

@@ -9,6 +9,21 @@ Hermes has two slash-command surfaces, both driven by a central `COMMAND_REGISTR
 
 Installed skills are also exposed as dynamic slash commands on both surfaces. That includes bundled skills like `/plan`, which opens plan mode and saves markdown plans under `.hermes/plans/` relative to the active workspace/backend working directory.
 
+## Permissions and admin/user split
+
+Every messaging platform that supports a per-user allowlist (Telegram, Discord, Slack, Matrix, Mattermost, Signal, …) also supports a two-tier slash command split: **admins** get every registered command, **regular users** only get the names you list in `user_allowed_commands` (plus the always-allowed floor `/help` and `/whoami`). Configure `allow_admin_from` and `user_allowed_commands` (and the per-group equivalents `group_allow_admin_from` / `group_user_allowed_commands`) inside the platform's `extra:` block in `~/.hermes/gateway-config.yaml`.
+
+See the per-platform docs for examples — the structure is identical across platforms:
+
+-   [Telegram](/docs/user-guide/messaging/telegram#slash-command-access-control)
+-   [Discord](/docs/user-guide/messaging/discord)
+-   [Slack](/docs/user-guide/messaging/slack)
+-   [Matrix](/docs/user-guide/messaging/matrix)
+-   [Mattermost](/docs/user-guide/messaging/mattermost)
+-   [Signal](/docs/user-guide/messaging/signal)
+
+If `allow_admin_from` is unset for a scope, that scope stays in unrestricted backward-compat mode — every allowed user can run every command.
+
 ## Interactive CLI slash commands
 
 Type `/` in the CLI to open the autocomplete menu. Built-in commands are case-insensitive.
@@ -19,9 +34,9 @@ Command
 
 Description
 
-`/new` (alias: `/reset`)
+`/new [name]` (alias: `/reset`)
 
-Start a new session (fresh session ID + history)
+Start a new session (fresh session ID + history). Optional `[name]` sets the initial session title — e.g. `/new my-experiment` opens a fresh session already titled `my-experiment` so it's easy to find later with `/resume` or `/sessions`. Append `now`, `--yes`, or `-y` to skip the confirmation modal — e.g. `/reset now`, `/new --yes my-experiment`.
 
 `/clear`
 
@@ -75,6 +90,10 @@ Inject a mid-run note that arrives at the agent **after the next tool call** —
 
 Set a standing goal Hermes works toward across turns — our take on the Ralph loop. After each turn an auxiliary judge model decides whether the goal is done; if not, Hermes auto-continues. Subcommands: `/goal status`, `/goal pause`, `/goal resume`, `/goal clear`. Budget defaults to 20 turns (`goals.max_turns`); any real user message preempts the continuation loop, and state survives `/resume`. See [Persistent Goals](/docs/user-guide/features/goals) for the full walkthrough.
 
+`/subgoal <text>`
+
+Append a user-supplied criterion to the active goal mid-loop. The continuation prompt surfaces all subgoals to the agent verbatim, and the judge factors them into its DONE/CONTINUE verdict — so the goal isn't marked done until the original goal **and** every subgoal are met. Subcommands: `/subgoal` (list), `/subgoal remove <N>`, `/subgoal clear`. Requires an active `/goal`.
+
 `/resume [name]`
 
 Resume a previously-named session
@@ -89,7 +108,7 @@ Force a full UI repaint (recovers from terminal drift after tmux resize, mouse s
 
 `/status`
 
-Show session info
+Show session info — model, provider, profile, session ID, working directory, title, created/updated timestamps, token totals, agent-running state — followed by a local **Session recap** block (recent user/assistant turn counts, tool result count, top tools used, last few files touched, the latest user prompt, and the latest assistant reply). The recap is computed locally from the in-memory conversation; no LLM call, no prompt-cache impact.
 
 `/agents` (alias: `/tasks`)
 
@@ -185,7 +204,7 @@ List available toolsets
 
 `/browser [connect|disconnect|status]`
 
-Manage local Chrome CDP connection. `connect` attaches browser tools to a running Chrome instance (default: `ws://localhost:9222`). `disconnect` detaches. `status` shows current connection. Auto-launches Chrome if no debugger is detected.
+Manage a local Chromium-family CDP connection. `connect` attaches browser tools to a running Chrome, Brave, Chromium, or Edge instance (default: `http://127.0.0.1:9222`). `disconnect` detaches. `status` shows current connection. Auto-launches a supported Chromium-family browser if no debugger is detected.
 
 `/skills`
 
@@ -239,7 +258,11 @@ Show usage insights and analytics (last 30 days)
 
 `/platforms` (alias: `/gateway`)
 
-Show gateway/messaging platform status
+Show gateway/messaging platform status (CLI-only summary view).
+
+`/platform <list|pause|resume> [name]`
+
+Operate a running gateway platform. `/platform list` lists every adapter and its state (running, paused-by-breaker, manually-paused); `/platform pause <name>` stops dispatching new messages to that adapter without unloading it; `/platform resume <name>` re-enables it. The gateway also auto-pauses an adapter when its circuit breaker trips on repeated retryable failures (network / rate-limit / 5xx) — use `/platform resume <name>` to clear the breaker once the upstream is healthy. Available wherever the gateway is reachable (CLI session, Telegram, Discord, …).
 
 `/paste`
 
@@ -370,7 +393,7 @@ Reset conversation history.
 
 `/status`
 
-Show session info.
+Show session info, followed by a local **Session recap** block (recent turn counts, top tools used, files touched, latest prompt + reply).
 
 `/stop`
 
@@ -515,3 +538,33 @@ Invoke any installed skill by name.
 -   `/sethome`, `/update`, `/restart`, `/approve`, `/deny`, `/topic`, and `/commands` are **messaging-only** commands.
 -   `/status`, `/background`, `/queue`, `/steer`, `/voice`, `/reload-mcp`, `/reload-skills`, `/rollback`, `/debug`, `/fast`, `/footer`, `/curator`, `/kanban`, `/sessions`, and `/yolo` work in **both** the CLI and the messaging gateway.
 -   `/voice join`, `/voice channel`, and `/voice leave` are only meaningful on Discord.
+
+## Confirmation prompts for destructive commands
+
+The CLI prompts before running slash commands that throw away unsaved session state. The current destructive set is:
+
+Command
+
+What it destroys
+
+`/clear`
+
+Clears the screen and starts a fresh session — current session ID and in-memory history are gone.
+
+`/new` / `/reset`
+
+Starts a fresh session (new session ID + empty history).
+
+`/undo`
+
+Removes the last user/assistant exchange from history.
+
+`/exit --delete` / `/quit --delete`
+
+Exits **and** permanently deletes the current session's SQLite history and on-disk transcripts.
+
+For each of these the CLI opens a three-choice modal: **Approve Once** (proceed this time), **Always Approve** (proceed and persist `approvals.destructive_slash_confirm: false` so future destructive commands run without prompting), or **Cancel**.
+
+**Inline skip:** append `now`, `--yes`, or `-y` to bypass the modal for a single invocation — e.g. `/reset now`, `/new --yes my-session`, `/clear -y`, `/undo -y`. Useful when the modal doesn't render correctly on your terminal (see [issue #30768](https://github.com/NousResearch/hermes-agent/issues/30768) for native Windows PowerShell) or when scripting against the CLI.
+
+Set `approvals.destructive_slash_confirm: false` in `~/.hermes/config.yaml` to disable the prompts globally; set it back to `true` to re-enable. See [Security — Destructive slash command confirmation](/docs/user-guide/security#dangerous-command-approval) for context.

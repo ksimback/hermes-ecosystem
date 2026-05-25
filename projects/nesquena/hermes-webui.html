@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/nesquena/hermes-webui#software",
   "name": "hermes-webui",
-  "description": "Hermes WebUI is a lightweight, browser-based interface for the Hermes Agent that provides a graphical alternative to the standard command-line environment. Built using Python and vanilla JavaScript without heavy frameworks, it maintains 1:1 parity with the CLI while offering a three-panel layout for chat, session management, and workspace file browsing. The interface includes a circular context ring for real-time token monitoring and a dedicated control center for managing agent settings and pro",
+  "description": "Hermes WebUI provides a lightweight, browser-based interface for the Hermes Agent, offering a graphical alternative to the standard command-line environment. Built with Python and vanilla JavaScript, the application requires no build steps or frameworks and maintains full feature parity with the CLI. The interface features a three-panel layout for session management, chat, and workspace file browsing, including a visual context ring for monitoring token usage. It allows users to manage persisten",
   "url": "https://hermesatlas.com/projects/nesquena/hermes-webui",
   "codeRepository": "https://github.com/nesquena/hermes-webui",
   "applicationCategory": "DesktopEnhancementApplication",
@@ -47,13 +47,13 @@
     "name": "nesquena",
     "url": "https://github.com/nesquena"
   },
-  "dateModified": "2026-05-24T04:53:53.000Z",
+  "dateModified": "2026-05-25T02:08:02.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 8466
+    "userInteractionCount": 8603
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -82,7 +82,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span>apr·2026</span>
-    <span id="meta-count">123·repos</span>
+    <span id="meta-count">124·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -112,11 +112,11 @@
   <p class="project-desc">Hermes WebUI: The best way to use Hermes Agent from the web or from your phone!</p>
 
   <div class="meta-row">
-    <span class="stars">★ 8.5K</span>
+    <span class="stars">★ 8.6K</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-05-24</span>
+    <span><span class="meta-label">updated</span>2026-05-25</span>
   </div>
 
   <div class="actions">
@@ -131,11 +131,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes WebUI is a lightweight, browser-based interface for the Hermes Agent that provides a graphical alternative to the standard command-line environment. Built using Python and vanilla JavaScript without heavy frameworks, it maintains 1:1 parity with the CLI while offering a three-panel layout for chat, session management, and workspace file browsing. The interface includes a circular context ring for real-time token monitoring and a dedicated control center for managing agent settings and profiles. It allows users to access their self-hosted agent's persistent memory and automated skills through a secure web or mobile-friendly portal.</p>
+    <p class="summary-text">Hermes WebUI provides a lightweight, browser-based interface for the Hermes Agent, offering a graphical alternative to the standard command-line environment. Built with Python and vanilla JavaScript, the application requires no build steps or frameworks and maintains full feature parity with the CLI. The interface features a three-panel layout for session management, chat, and workspace file browsing, including a visual context ring for monitoring token usage. It allows users to manage persistent memory, scheduled cron jobs, and self-improving skills through a secure web portal accessible via mobile or desktop.</p>
     <ul class="summary-highlights">
       <li>Three-panel layout for chat, sessions, and workspace file browsing</li>
-      <li>Zero-build architecture using only Python and vanilla JavaScript</li>
-      <li>Visual token usage tracking via a circular context ring</li>
+      <li>Full feature parity with Hermes CLI using vanilla JavaScript</li>
+      <li>Visual context ring for real-time token usage monitoring</li>
     </ul>
   </div>
 </section>
@@ -437,7 +437,7 @@ and set <code>HERMES_WEBUI_PASSWORD</code> to enable authentication.</p>
 </thead>
 <tbody><tr>
 <td>Hermes agent dir</td>
-<td><code>HERMES_WEBUI_AGENT_DIR</code> env, then <code>~/.hermes/hermes-agent</code>, then sibling <code>../hermes-agent</code></td>
+<td><code>HERMES_WEBUI_AGENT_DIR</code> env, then <code>$HERMES_HOME/hermes-agent</code> (Windows default <code>%LOCALAPPDATA%\hermes\hermes-agent</code>, POSIX default <code>~/.hermes/hermes-agent</code>), then sibling <code>../hermes-agent</code></td>
 </tr>
 <tr>
 <td>Python executable</td>
@@ -445,7 +445,7 @@ and set <code>HERMES_WEBUI_PASSWORD</code> to enable authentication.</p>
 </tr>
 <tr>
 <td>State directory</td>
-<td><code>HERMES_WEBUI_STATE_DIR</code> env, then <code>~/.hermes/webui</code></td>
+<td><code>HERMES_WEBUI_STATE_DIR</code> env, then <code>$HERMES_HOME/webui</code> (Windows default <code>%LOCALAPPDATA%\hermes\webui</code>, POSIX default <code>~/.hermes/webui</code>)</td>
 </tr>
 <tr>
 <td>Default workspace</td>
@@ -499,7 +499,7 @@ export HERMES_WEBUI_AUTO_INSTALL=1  # enable auto-install of agent deps (disable
 </tr>
 <tr>
 <td><code>HERMES_WEBUI_STATE_DIR</code></td>
-<td><code>~/.hermes/webui</code></td>
+<td><code>$HERMES_HOME/webui</code> (Windows default <code>%LOCALAPPDATA%\hermes\webui</code>, POSIX default <code>~/.hermes/webui</code>)</td>
 <td>Where sessions and state are stored</td>
 </tr>
 <tr>
@@ -534,12 +534,12 @@ export HERMES_WEBUI_AUTO_INSTALL=1  # enable auto-install of agent deps (disable
 </tr>
 <tr>
 <td><code>HERMES_HOME</code></td>
-<td><code>~/.hermes</code></td>
+<td>Windows: <code>%LOCALAPPDATA%\hermes</code>; POSIX: <code>~/.hermes</code></td>
 <td>Base directory for Hermes state (affects all paths)</td>
 </tr>
 <tr>
 <td><code>HERMES_CONFIG_PATH</code></td>
-<td><code>~/.hermes/config.yaml</code></td>
+<td><code>$HERMES_HOME/config.yaml</code></td>
 <td>Path to Hermes config file</td>
 </tr>
 </tbody></table>
@@ -693,6 +693,8 @@ Production data and real cron jobs are never touched. Current snapshot:
 <ul>
 <li>Optional password auth -- off by default, zero friction for localhost</li>
 <li>Enable via <code>HERMES_WEBUI_PASSWORD</code> env var or Settings panel</li>
+<li>Optional passkeys/WebAuthn -- register from Settings -&gt; System after signing in with a password; the login page only shows passkey sign-in after at least one passkey exists</li>
+<li>After registering at least one passkey, Settings -&gt; System can remove the password and keep passkey-only sign-in enabled. Password auth remains the bootstrap/recovery path until you choose to go passwordless; passkeys are same-origin and stored locally in the WebUI state directory</li>
 <li>Signed HMAC HTTP-only cookie with 24h TTL</li>
 <li>Minimal dark-themed login page at <code>/login</code></li>
 <li>Security headers on all responses (X-Content-Type-Options, X-Frame-Options, Referrer-Policy)</li>
@@ -961,31 +963,31 @@ Configurable assistant display name, thinking/reasoning block display, and a log
         <div class="name"><span class="org">outsourc-e /</span> hermes-workspace</div>
       </a>
       <a class="related-row" href="/projects/fathah/hermes-desktop">
-        <div class="stars">★ 6.7K</div>
+        <div class="stars">★ 6.9K</div>
         <div class="name"><span class="org">fathah /</span> hermes-desktop</div>
       </a>
       <a class="related-row" href="/projects/sanchomuzax/hermes-webui">
-        <div class="stars">★ 97</div>
+        <div class="stars">★ 98</div>
         <div class="name"><span class="org">sanchomuzax /</span> hermes-webui</div>
       </a>
       <a class="related-row" href="/projects/Euraika-Labs/pan-ui">
-        <div class="stars">★ 69</div>
+        <div class="stars">★ 68</div>
         <div class="name"><span class="org">Euraika-Labs /</span> pan-ui</div>
       </a>
       <a class="related-row" href="/projects/xaspx/hermes-control-interface">
-        <div class="stars">★ 692</div>
+        <div class="stars">★ 698</div>
         <div class="name"><span class="org">xaspx /</span> hermes-control-interface</div>
       </a>
       <a class="related-row" href="/projects/dodo-reach/hermes-desktop">
-        <div class="stars">★ 1.5K</div>
+        <div class="stars">★ 1.6K</div>
         <div class="name"><span class="org">dodo-reach /</span> hermes-desktop</div>
       </a>
       <a class="related-row" href="/projects/pyrate-llama/hermes-ui">
-        <div class="stars">★ 139</div>
+        <div class="stars">★ 142</div>
         <div class="name"><span class="org">pyrate-llama /</span> hermes-ui</div>
       </a>
       <a class="related-row" href="/projects/clawvader-tech/hermes-telegram-miniapp">
-        <div class="stars">★ 224</div>
+        <div class="stars">★ 225</div>
         <div class="name"><span class="org">clawvader-tech /</span> hermes-telegram-miniapp</div>
       </a>
     </div>

@@ -146,7 +146,6 @@ Auxiliary tasks such as:
 -   vision
 -   web extraction summarization
 -   context compression summaries
--   session search summarization
 -   skills hub operations
 -   MCP helper operations
 -   memory flushes

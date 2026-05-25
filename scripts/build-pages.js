@@ -1066,6 +1066,29 @@ function syncHomepageRepos(repos) {
     [...html.matchAll(/href="\/projects\/([^"]+)"/g)].map((m) => m[1])
   );
 
+  // Refresh stale star counts on existing rendered rows. The append-only
+  // policy preserves hand-curated descriptions, but star counts are pure
+  // live data — without this pass they stay frozen at the value the row
+  // had when first added, even after data/repos.json gets refreshed by
+  // the GraphQL pass in main(). Touches only the ★ NNNN text inside each
+  // <div class="repo-stars">; everything else is left as-is.
+  const repoByKey = new Map(repos.map((r) => [`${r.owner}/${r.repo}`, r]));
+  let rowsRefreshed = 0;
+  html = html.replace(
+    /(data-github="https:\/\/github\.com\/([^"]+)"[^>]*>\s*<div class="repo-stars">★ )([0-9,]+)(<\/div>)/g,
+    (full, prefix, key, oldStars, suffix) => {
+      const r = repoByKey.get(key);
+      if (!r || typeof r.stars !== "number") return full;
+      const newStars = r.stars.toLocaleString("en-US");
+      if (newStars === oldStars) return full;
+      rowsRefreshed++;
+      return prefix + newStars + suffix;
+    }
+  );
+  if (rowsRefreshed > 0) {
+    console.log(`  Refreshed star counts on ${rowsRefreshed} existing rows`);
+  }
+
   const missingByCategory = {};
   for (const r of repos) {
     if (!onPage.has(`${r.owner}/${r.repo}`)) {
@@ -1146,6 +1169,29 @@ async function main() {
     console.log("Fetching metadata via GraphQL...");
     metadata = await fetchAllMetadata(repos, GITHUB_HEADERS);
     console.log(`  Got metadata for ${Object.keys(metadata).length} repos\n`);
+
+    // Persist refreshed stars back into repos.json. Project HTML pages render
+    // from `meta.stars`, but the homepage repo-rows and any external consumer
+    // of /data/repos.json (e.g. the MCP server) read `r.stars` — so without
+    // this writeback the public dataset silently drifts (entries added months
+    // ago kept their submitter-time star count). Scope is stars-only; every
+    // other field on the repo entry is curator-managed.
+    let starsRefreshed = 0;
+    for (const r of repos) {
+      const liveStars = metadata[`${r.owner}/${r.repo}`]?.stars;
+      if (typeof liveStars === "number" && liveStars !== r.stars) {
+        r.stars = liveStars;
+        starsRefreshed++;
+      }
+    }
+    if (starsRefreshed > 0) {
+      const reposPath = path.join(ROOT, "data", "repos.json");
+      // Preserve CRLF + trailing newline so the diff is stars-only and
+      // doesn't churn the whole file on every build.
+      const body = JSON.stringify(repos, null, 2).replace(/\n/g, "\r\n") + "\r\n";
+      fs.writeFileSync(reposPath, body);
+      console.log(`  Refreshed stars on ${starsRefreshed} repos in data/repos.json\n`);
+    }
   } else {
     console.log("Skipping GitHub metadata fetch (no token).\n");
   }

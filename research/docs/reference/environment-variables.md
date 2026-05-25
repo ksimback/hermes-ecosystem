@@ -164,15 +164,43 @@ Override Tencent TokenHub base URL (default: `https://tokenhub.tencentmaas.com/v
 
 `AZURE_FOUNDRY_API_KEY`
 
-Azure AI Foundry / Azure OpenAI API key ([ai.azure.com](https://ai.azure.com/))
+Microsoft Foundry / Azure OpenAI API key ([ai.azure.com](https://ai.azure.com/)). Not needed when `model.auth_mode: entra_id`
 
 `AZURE_FOUNDRY_BASE_URL`
 
-Azure AI Foundry endpoint URL (e.g. `https://<resource>.openai.azure.com/openai/v1` for OpenAI-style, or `https://<resource>.services.ai.azure.com/anthropic` for Anthropic-style)
+Microsoft Foundry endpoint URL (e.g. `https://<resource>.openai.azure.com/openai/v1` for OpenAI-style, or `https://<resource>.services.ai.azure.com/anthropic` for Anthropic-style)
 
 `AZURE_ANTHROPIC_KEY`
 
-Azure Anthropic API key for `provider: anthropic` + `base_url` pointing at an Azure Foundry Claude deployment (alternative to `ANTHROPIC_API_KEY` when both Anthropic and Azure Anthropic are configured)
+Azure Anthropic API key for `provider: anthropic` + `base_url` pointing at a Microsoft Foundry Claude deployment (alternative to `ANTHROPIC_API_KEY` when both Anthropic and Azure Anthropic are configured)
+
+`AZURE_TENANT_ID`
+
+Entra ID tenant ID (service-principal flows; honored by `azure-identity` when `model.auth_mode: entra_id`)
+
+`AZURE_CLIENT_ID`
+
+Entra ID client ID (service principal, workload identity, or user-assigned managed identity)
+
+`AZURE_CLIENT_SECRET`
+
+Service principal secret used by `EnvironmentCredential`
+
+`AZURE_CLIENT_CERTIFICATE_PATH`
+
+Service principal certificate (alternative to `AZURE_CLIENT_SECRET`)
+
+`AZURE_FEDERATED_TOKEN_FILE`
+
+Federated token file path for AKS Workload Identity / OIDC flows
+
+`AZURE_AUTHORITY_HOST`
+
+Sovereign-cloud authority override (e.g. `https://login.microsoftonline.us` for Azure Government). See [Azure Foundry guide](/docs/guides/azure-foundry#sovereign-clouds-government-china)
+
+`IDENTITY_ENDPOINT` / `MSI_ENDPOINT`
+
+Managed Identity endpoint for App Service, Functions, and Container Apps; VMs usually use IMDS instead and do not set these
 
 `HF_TOKEN`
 
@@ -216,7 +244,7 @@ Manual or legacy Anthropic OAuth/setup-token override
 
 `DASHSCOPE_API_KEY`
 
-Alibaba Cloud DashScope API key for Qwen models ([modelstudio.console.alibabacloud.com](https://modelstudio.console.alibabacloud.com/))
+Qwen Cloud (Alibaba DashScope) API key for Qwen models ([modelstudio.console.alibabacloud.com](https://modelstudio.console.alibabacloud.com/))
 
 `DASHSCOPE_BASE_URL`
 
@@ -264,7 +292,7 @@ Override Ollama Cloud base URL (default: `https://ollama.com/v1`)
 
 `XAI_API_KEY`
 
-xAI (Grok) API key for chat + TTS ([console.x.ai](https://console.x.ai/))
+xAI (Grok) API key for chat + TTS + web search ([console.x.ai](https://console.x.ai/))
 
 `XAI_BASE_URL`
 
@@ -354,6 +382,10 @@ Pin the kanban database file path directly (highest precedence; beats `HERMES_KA
 
 Pin the kanban workspaces root directly (highest precedence for workspaces; beats `HERMES_KANBAN_HOME`). The dispatcher injects this into worker subprocess env
 
+`HERMES_KANBAN_DISPATCH_IN_GATEWAY`
+
+Runtime override for `kanban.dispatch_in_gateway`. Set to `0`, `false`, `no`, or `off` to keep the gateway from starting the embedded Kanban dispatcher; any other non-empty value enables it. Useful when a separate dispatcher process owns the board.
+
 ## Provider Auth (OAuth)
 
 For native Anthropic auth, Hermes prefers Claude Code's own credential files when they exist because those credentials can refresh automatically. **OAuth against Anthropic requires a Claude Max plan with purchased extra usage credits** — Hermes routes as Claude Code, which only draws from the Max plan's extra/overage credits, not the base Max allowance, and does not work on Claude Pro. Without Max + extra credits, use an API key instead. Environment variables such as `ANTHROPIC_TOKEN` remain useful as manual overrides, but they are no longer the preferred path for Claude Max login.
@@ -361,10 +393,6 @@ For native Anthropic auth, Hermes prefers Claude Code's own credential files whe
 Variable
 
 Description
-
-`HERMES_INFERENCE_PROVIDER`
-
-Override provider selection: `auto`, `custom`, `openrouter`, `nous`, `openai-codex`, `copilot`, `copilot-acp`, `anthropic`, `huggingface`, `novita`, `gemini`, `zai`, `kimi-coding`, `kimi-coding-cn`, `minimax`, `minimax-cn`, `minimax-oauth` (browser OAuth login — no API key required; see [MiniMax OAuth guide](/docs/guides/minimax-oauth)), `kilocode`, `xiaomi`, `arcee`, `gmi`, `stepfun`, `alibaba`, `alibaba-coding-plan` (alias `alibaba_coding`), `deepseek`, `nvidia`, `ollama-cloud`, `xai` (alias `grok`), `xai-oauth` (browser OAuth login for SuperGrok subscribers — no API key required; see [xAI Grok OAuth guide](/docs/guides/xai-grok-oauth)), `google-gemini-cli`, `qwen-oauth`, `bedrock`, `opencode-zen`, `opencode-go`, `ai-gateway`, `tencent-tokenhub` (default: `auto`)
 
 `HERMES_PORTAL_BASE_URL`
 
@@ -772,6 +800,10 @@ Default Telegram chat/channel for cron delivery
 
 Display name for the Telegram home channel
 
+`TELEGRAM_CRON_THREAD_ID`
+
+Forum topic ID to receive cron deliveries; overrides `TELEGRAM_HOME_CHANNEL_THREAD_ID` for cron only. Use in topic mode so replies to cron messages open a new session instead of hitting the system lobby (#24409).
+
 `TELEGRAM_WEBHOOK_URL`
 
 Public HTTPS URL for webhook mode (enables webhook instead of polling)
@@ -787,6 +819,18 @@ Secret token Telegram echoes back in each update for verification. **Required wh
 `TELEGRAM_REACTIONS`
 
 Enable emoji reactions on messages during processing (default: `false`)
+
+`TELEGRAM_REQUIRE_MENTION`
+
+Require an explicit trigger before responding in Telegram groups. Equivalent to `telegram.require_mention` in `config.yaml`.
+
+`TELEGRAM_MENTION_PATTERNS`
+
+JSON array, newline-separated list, or comma-separated list of regex wake-word patterns accepted when Telegram group mention gating is enabled. Equivalent to `telegram.mention_patterns`.
+
+`TELEGRAM_EXCLUSIVE_BOT_MENTIONS`
+
+When enabled, explicit `@...bot` mentions in Telegram groups route only to the mentioned bot usernames before reply or wake-word fallbacks run. Default: `true`. Equivalent to `telegram.exclusive_bot_mentions`.
 
 `TELEGRAM_REPLY_TO_MODE`
 
@@ -1612,6 +1656,52 @@ Reply when an already-delivered postback is tapped again (default: `Already repl
 
 Reply when a `/stop`\-orphaned postback button is tapped (default: `Run was interrupted before completion.`).
 
+### ntfy (push notifications)
+
+[ntfy](https://ntfy.sh/) is a lightweight HTTP-based push notification service. Subscribe to a topic from the [ntfy mobile app](https://ntfy.sh/docs/subscribe/phone/), publish to that topic to talk to the agent.
+
+Variable
+
+Description
+
+`NTFY_TOPIC`
+
+Topic to subscribe to (incoming messages). Required.
+
+`NTFY_SERVER_URL`
+
+Server URL (default: `https://ntfy.sh`). Point at a self-hosted ntfy for privacy.
+
+`NTFY_TOKEN`
+
+Optional auth token. Bearer token (e.g. `tk_xyz`) or `user:pass` for Basic auth.
+
+`NTFY_PUBLISH_TOPIC`
+
+Topic for outgoing replies (defaults to `NTFY_TOPIC`).
+
+`NTFY_MARKDOWN`
+
+Set `true` to send replies with `X-Markdown: true` header. Default: `false`.
+
+`NTFY_ALLOWED_USERS`
+
+Allowlist (treated as user IDs; on ntfy these are topic names). Typically set to the same value as `NTFY_TOPIC`.
+
+`NTFY_ALLOW_ALL_USERS`
+
+Dev-only escape hatch — only safe on access-controlled private topics. Default: `false`.
+
+`NTFY_HOME_CHANNEL`
+
+Default delivery target for cron jobs with `deliver: ntfy`.
+
+`NTFY_HOME_CHANNEL_NAME`
+
+Human label for the home channel (defaults to the topic name).
+
+See [the ntfy messaging guide](/docs/user-guide/messaging/ntfy) — particularly the **identity model** section — before deploying with untrusted topics.
+
 ### Advanced Messaging Tuning
 
 Advanced per-platform knobs for throttling the outbound message batcher. Most users never need to touch these; defaults are set to respect each platform's rate limits without feeling sluggish.
@@ -1820,7 +1910,7 @@ Enable execution approval prompts in gateway mode (`true`/`false`)
 
 `HERMES_ENABLE_PROJECT_PLUGINS`
 
-Enable auto-discovery of repo-local plugins from `./.hermes/plugins/` (`true`/`false`, default: `false`)
+Enable auto-discovery of repo-local plugins from `./.hermes/plugins/` for both the agent loader and the dashboard web server. Accepts the standard truthy set: `1` / `true` / `yes` / `on` (case-insensitive). Everything else — including `0`, `false`, `no`, `off`, and the empty string — is treated as **disabled** (default). Note: as of GHSA-5qr3-c538-wm9j (#29156) the dashboard web server refuses to auto-import a project plugin's Python `api` file even when this var is enabled — project plugins may extend the UI via static JS/CSS but their backend routes are only loaded when moved under `~/.hermes/plugins/`.
 
 `HERMES_PLUGINS_DEBUG`
 
@@ -1922,7 +2012,7 @@ Force the TUI color theme: `light`, `dark`, or a raw 6-character background hex 
 
 `HERMES_INFERENCE_MODEL`
 
-Force the model for `hermes -z` / `hermes chat` without mutating `config.yaml`. Pairs with `HERMES_INFERENCE_PROVIDER`. Useful for scripted callers (sweeper, CI, batch runners) that need to override the default model per run.
+Force the model for `hermes -z` / `hermes chat` without mutating `config.yaml`. Pairs with the `--provider` flag. Useful for scripted callers (sweeper, CI, batch runners) that need to override the default model per run.
 
 ## Session Settings
 
@@ -1937,6 +2027,10 @@ Reset sessions after N minutes of inactivity (default: 1440)
 `SESSION_RESET_HOUR`
 
 Daily reset hour in 24h format (default: 4 = 4am)
+
+`HERMES_SESSION_ID`
+
+**Exported automatically into every tool subprocess** Hermes spawns (`terminal`, `execute_code`, persistent shell, Docker/Singularity backends, delegated subagent runs). Set by the agent to the current session ID; user scripts called from tools can read it to correlate their output, telemetry, or side effects with the originating Hermes session. **You should not set this manually** — overriding it from a parent shell only takes effect outside an agent run, and is overwritten the moment the agent starts a session.
 
 ## Context Compression (config.yaml only)
 

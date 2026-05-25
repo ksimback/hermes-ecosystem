@@ -141,7 +141,7 @@ Purpose
 
 str
 
-Canonical id — matches `--provider` choices and `HERMES_INFERENCE_PROVIDER`
+Canonical id — matches `model.provider` in `config.yaml` and the `--provider` flag
 
 `aliases`
 
