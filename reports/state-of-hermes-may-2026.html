@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The State of Hermes Agent — May 2026 | Hermes Atlas</title>
+<meta name="description" content="Six weeks after the April report: Hermes Agent at 165K stars, 22 messaging platforms, the Curator → Tenacity → Foundation release trilogy, a memory category that grew 15x, and the OAuth-proxy play turning Hermes into the subscription bus for the AI stack.">
+<link rel="canonical" href="https://hermesatlas.com/reports/state-of-hermes-may-2026">
+<meta property="og:title" content="The State of Hermes Agent — May 2026">
+<meta property="og:description" content="Six weeks after the April report: Hermes Agent at 165K stars, 22 messaging platforms, the Curator → Tenacity → Foundation release trilogy, and the memory category that grew 15x.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/reports/state-of-hermes-may-2026">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="article:published_time" content="2026-05-24T00:00:00Z">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=The+State+of+Hermes+Agent+%E2%80%94+May+2026&amp;subtitle=Six+weeks+later%3A+what+changed+since+the+April+report.&amp;kind=report">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The State of Hermes Agent — May 2026">
+<meta name="twitter:description" content="165K stars. 22 messaging platforms. A memory category that grew 15x. The Curator → Tenacity → Foundation release trilogy. The OAuth-proxy play.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=The+State+of+Hermes+Agent+%E2%80%94+May+2026&amp;subtitle=Six+weeks+later%3A+what+changed+since+the+April+report.&amp;kind=report">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": "https://hermesatlas.com/reports/state-of-hermes-may-2026#article",
+      "headline": "The State of Hermes Agent — May 2026",
+      "description": "Six weeks after the April report: Hermes Agent at 165K stars, 22 messaging platforms, the Curator → Tenacity → Foundation release trilogy, and the memory category that grew 15x.",
+      "url": "https://hermesatlas.com/reports/state-of-hermes-may-2026",
+      "datePublished": "2026-05-24T00:00:00Z",
+      "dateModified": "2026-05-24T00:00:00Z",
+      "author": { "@type": "Person", "name": "Kevin Simback", "url": "https://x.com/ksimback" },
+      "publisher": { "@id": "https://hermesatlas.com/#organization" },
+      "isPartOf": { "@id": "https://hermesatlas.com/#website" },
+      "image": "https://hermesatlas.com/api/og?title=The+State+of+Hermes+Agent+%E2%80%94+May+2026&kind=report"
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://hermesatlas.com/reports/state-of-hermes-may-2026#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What changed in Hermes Agent between April and May 2026?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "In the six weeks between the April and May reports, Hermes Agent shipped six releases (v0.9 through v0.14), grew from 57,200 to 165,033 GitHub stars (~2.9x), added eight messaging platforms for a total of 22, and saw its tracked ecosystem grow from 80 to 123 projects with combined stars going from 90,750 to 389,920 (~4.3x). The headline arc is the Curator → Tenacity → Foundation release trilogy."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the Hermes Curator (v0.12)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Curator is an autonomous background agent shipped in Hermes v0.12 (April 30, 2026). It runs on the gateway's cron ticker on a 7-day cycle by default, grades the agent's skill library by usage, consolidates related skills, prunes dead ones, and writes a per-run report to logs/curator/REPORT.md. Curator manages the skill library at ~/.hermes/skills/ — it does NOT manage MEMORY.md or USER.md, which are still curated by the agent itself with an 80%-fill prompt instruction. The release also rewrote the background review fork with class-first rubric grading, active-update bias, and parent runtime inheritance."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What ships in Hermes v0.14 'Foundation'?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hermes v0.14 (May 16, 2026) is the 'Foundation' release. Headlines: pip install hermes-agent on PyPI; native Windows support in early beta (cmd.exe and PowerShell, no WSL); ~19 seconds shaved off cold start; 180x faster browser_console evaluations via persistent CDP WebSocket; a debloating wave where heavy backends lazy-install on first use; cross-session 1-hour Claude prompt caching; xAI Grok via SuperGrok OAuth with grok-4.3 bumped to a 1M context window; an OpenAI-compatible local proxy for OAuth providers; Microsoft Teams end-to-end; LINE + SimpleX Chat platforms (22 total); 9 new optional skills. 808 commits, 633 merged PRs, 215 contributors."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the Hermes OAuth proxy and how does it unify AI subscriptions?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Run 'hermes proxy' and you get a local http://localhost:port endpoint that speaks the OpenAI API but is backed by whichever OAuth provider you're signed into — Claude Pro, ChatGPT Pro, SuperGrok. Tools that expect an OpenAI-compatible endpoint (Codex CLI, Aider, Cline, Continue) then work against your existing subscription, no API key required. Combined with the Nous Tool Gateway (v0.10, web search / image gen / TTS / browser through a Nous Portal subscription) and the new Grok OAuth provider, Hermes becomes the routing layer that turns your AI subscriptions into one bus."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is memory the breakout category in the Hermes ecosystem?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Memory & Context went from 6 tracked providers and roughly 10,000 combined stars in April to 21 providers and 148,450 combined stars in May — by star count, larger than every other ecosystem category combined. Two drivers: (1) Hermes treats memory as first-class plug-in infrastructure via the MemoryProvider ABC, so anyone with an opinion about agent memory can ship a provider that drops in cleanly; (2) memory is where real agent differentiation is heading — tool calling is solved, context windows keep growing, but cross-session recall, user modeling, and not re-asking the same questions are unsolved problems. Mem0 raised $24M and Letta raised $10M during the window."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How fast is the Hermes Agent ecosystem growing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Between April 11 and May 24, 2026: core repo went from 57,200 to 165,033 stars (~2.9x in 43 days); forks went from 7,572 to 27,160 (~3.6x); tracked ecosystem projects went from 80 to 123 with combined stars going from 90,750 to 389,920 (~4.3x). The ecosystem outgrew the core repo — people aren't just starring Hermes, they're building things other people star. Memory & Context (21 providers / 148K stars) and Workspaces & GUIs (11 entries / 28.7K stars) are the two breakout categories."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "map", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "reports", "item": "https://hermesatlas.com/reports/" },
+    { "@type": "ListItem", "position": 3, "name": "state-of-hermes-may-2026" }
+  ]
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>
+  (function() {
+    try {
+      var stored = localStorage.getItem('theme');
+      var osLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      var theme = stored || (osLight ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>may·2026</span>
+    <span id="meta-count">123·repos</span>
+    <span id="meta-version">hermes·v0.14.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/guide/">handbook</a>
+    <a href="/reports/" class="active">reports</a>
+    <a href="/#newsletter">newsletter</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/reports/">reports</a><span class="sep">/</span>state of hermes — may 2026
+</div>
+
+<main class="article" id="main">
+
+<!-- Header -->
+<header class="article-header">
+  <div class="article-badge">community report · may 2026</div>
+  <h1>The state of Hermes Agent — May 2026</h1>
+  <p class="subtitle">Six weeks later: what changed since the April report.</p>
+  <p class="meta">Published may 24, 2026 · 10 min read · <a href="https://hermesatlas.com">hermesatlas.com</a></p>
+</header>
+
+<h2>TL;DR</h2>
+
+<p>Six weeks ago we published <a href="https://hermesatlas.com/reports/state-of-hermes-april-2026">the first State of Hermes report</a>. At the time, Hermes Agent had just hit <strong>57,200 GitHub stars</strong> in its first six weeks — already the fastest-growing open-source agent of 2026 — and we ended that report with five "watch for Q2" calls.</p>
+
+<p>Six weeks later, here's where things stand:</p>
+
+<ul>
+<li><strong>165,033 stars</strong> on the core repo (+108K, ~2.9x in 43 days)</li>
+<li><strong>27,160 forks</strong> (+19.6K, ~3.6x)</li>
+<li><strong>Six new releases</strong> — v0.9 through v0.14 — averaging a major drop every 7 days</li>
+<li><strong>22 messaging platforms</strong> (was 14): iMessage, WeChat, QQBot, Yuanbao, Teams, Google Chat, LINE, SimpleX all landed</li>
+<li><strong>123 quality-filtered ecosystem projects</strong> (was 80) with <strong>389,920 combined stars</strong> (was 90,750, <strong>~4.3x</strong>) — the ecosystem outgrew the core repo</li>
+<li><strong>Memory &amp; Context</strong> is the breakout category — 6 &rarr; <strong>21 providers tracked, ~148,000 combined stars</strong> — with mem0 raising $24M and Letta raising $10M during the window</li>
+</ul>
+
+<p>If the April report was about <em>what Hermes is</em>, this one is about <em>what Hermes became.</em> The shorthand: it grew up. The "Curator &rarr; Tenacity &rarr; Foundation" release trilogy in late April / mid May turned Hermes from a fast-moving hobbyist favorite into something you can actually deploy, install, and trust to finish a job.</p>
+
+<p>This is a companion to the April report — we won't re-explain Hermes from scratch. If you're new, <a href="https://hermesatlas.com/reports/state-of-hermes-april-2026">start there</a>, then come back.</p>
+
+<aside class="email-cta email-cta--compact" id="newsletter" aria-label="Newsletter signup">
+  <div class="email-cta-kicker">newsletter · free · 1–2× / month</div>
+  <form class="email-cta-form" data-email-form novalidate>
+    <input type="email" name="email" class="email-cta-input" placeholder="you@domain.com" required autocomplete="email" aria-label="Email address">
+    <button type="submit" class="email-cta-button">subscribe</button>
+  </form>
+  <p class="email-cta-status" role="status" aria-live="polite"></p>
+</aside>
+
+<hr>
+
+<h2>1. Six weeks of delta</h2>
+
+<table>
+<thead><tr><th>Metric</th><th>Apr 11</th><th>May 24</th><th>&Delta;</th></tr></thead>
+<tbody>
+<tr><td>GitHub stars (core repo)</td><td>57,200</td><td><strong>165,033</strong></td><td>+107,833 (2.9x)</td></tr>
+<tr><td>Forks (core repo)</td><td>7,572</td><td><strong>27,160</strong></td><td>+19,588 (3.6x)</td></tr>
+<tr><td>Releases shipped</td><td>8 (v0.1 &rarr; v0.8)</td><td><strong>14 (v0.1 &rarr; v0.14)</strong></td><td>+6 in window</td></tr>
+<tr><td>Messaging platforms</td><td>14</td><td><strong>22</strong></td><td>+8</td></tr>
+<tr><td>Atlas-tracked ecosystem repos</td><td>80</td><td><strong>123</strong></td><td>+43</td></tr>
+<tr><td>Total ecosystem stars</td><td>90,750</td><td><strong>389,920</strong></td><td>+299,170 (4.3x)</td></tr>
+<tr><td>Memory &amp; Context (repos / stars)</td><td>6 / ~10k</td><td><strong>21 / 148,450</strong></td><td>~15x in stars</td></tr>
+<tr><td>Workspaces &amp; GUIs (repos / stars)</td><td>4</td><td><strong>11 / 28,727</strong></td><td>+7 repos</td></tr>
+<tr><td>Skills &amp; Registries</td><td>17</td><td><strong>20</strong></td><td>+3</td></tr>
+<tr><td>Newsletter subscribers</td><td>0</td><td><strong>185</strong></td><td>new channel</td></tr>
+</tbody>
+</table>
+
+<p><em>Apr 11 numbers are as published in the April report; May 24 numbers were polled live from the GitHub API on publication day.</em></p>
+
+<p>Two things jump off that table. <strong>First: the ecosystem outgrew the core repo.</strong> Total ecosystem stars went 4.3x while the core went 2.9x — people aren't just starring Hermes, they're building things other people star. <strong>Second: Memory &amp; Context went from a ~10K-star category to 148K stars in 43 days.</strong> That single category is now bigger than the entire tracked ecosystem was in April. We come back to that in §4.</p>
+
+<hr>
+
+<h2>2. The release trilogy: Curator → Tenacity → Foundation</h2>
+
+<p>Six releases shipped in the window. Three of them define the arc, and the other three (v0.9 "Everywhere," v0.10 "Tool Gateway," v0.11 "Interface") were necessary setup. The trilogy:</p>
+
+<h3>v0.12 "Curator" (April 30) — when the self-improvement loop got real</h3>
+
+<p>The headline claim of Hermes Agent has always been "the agent that grows with you." Until v0.12, that growth was <em>agentic but reactive</em> — when a session produced something worth keeping, the agent would save a skill, and the library would slowly accumulate.</p>
+
+<p>v0.12 shipped <strong><code>hermes curator</code></strong>: a background agent that runs on the gateway's cron ticker (7-day cycle by default), grades your skill library by usage, consolidates related skills, prunes dead ones, and writes a per-run report to <code>logs/curator/REPORT.md</code>. The defense-in-depth gates protect bundled and hub-installed skills from mutation. Pinning blocks curator writes. Archived skills get classified as consolidated vs. pruned by a model + heuristic combination so you can audit later. You can pick the curator's own model in <code>hermes model</code> under <code>auxiliary.curator</code>.</p>
+
+<p>At the same time, the <strong>background review fork</strong> (the core of Hermes' self-improvement: after each turn it decides what to save or update) got rewritten:</p>
+
+<ul>
+<li><strong>Class-first grading</strong> — rubric-based, not free-form "should we save this"</li>
+<li><strong>Active-update bias</strong> — prefers updating the skill the agent just loaded over creating new ones</li>
+<li><strong>Parent runtime inheritance</strong> — the fork now actually uses the live provider, model, and credentials of the parent session (previously aggregator users were silently routed to a cheap provider default)</li>
+<li><strong>Toolset restriction</strong> — locked to memory + skills so it can't sprawl into doing real work in the background</li>
+</ul>
+
+<p>This is the release where "the agent that grows with you" stopped being a tagline and became a deterministic property of the system. Compounding becomes the default, not the result of careful prompting.</p>
+
+<h3>v0.13 "Tenacity" (May 7) — the agent finishes what it starts</h3>
+
+<p>If v0.12 was about self-maintenance, v0.13 was about durability. Headlines:</p>
+
+<ul>
+<li><strong>Durable multi-agent Kanban</strong> — spin up a board, drop tasks on it, multiple Hermes workers pick them up, hand off, and close them out. Heartbeats, reclaim, zombie detection, retry budgets, hallucination gate. One install, many kanbans.</li>
+<li><strong><code>/goal</code></strong> — lock the agent onto a target and it stays on task across turns. The Ralph loop as a first-class primitive. The next release (v0.14) added <code>/subgoal</code> for layering criteria on mid-run.</li>
+<li><strong>Checkpoints v2</strong> — state persistence rewritten with real pruning, disk guardrails, no more orphan shadow repos.</li>
+<li><strong>Sessions survive restarts</strong> — gateway bounces mid-agent, <code>/update</code> restarts, source-file reloads — conversations auto-resume when the gateway comes back.</li>
+<li><strong>8 P0 security closures</strong> in one release. Secret redaction is <strong>on by default</strong> now. Discord role-allowlists became guild-scoped (closing a CVSS 8.1 cross-guild DM bypass). WhatsApp rejects strangers by default. TOCTOU windows closed across <code>auth.json</code> and MCP OAuth.</li>
+<li><strong>Providers are now plugins.</strong> <code>ProviderProfile</code> ABC + <code>plugins/model-providers/</code>. Drop in a third-party provider without touching core.</li>
+<li><strong>7 i18n locales</strong> (Chinese, Japanese, German, Spanish, French, Ukrainian, Turkish) plus a Chinese docs site.</li>
+<li><strong>Google Chat</strong> became platform #20.</li>
+</ul>
+
+<p>Tenacity is the release where Hermes stopped being a single-session companion and became <em>infrastructure</em>. You can leave it running over a long-horizon project, walk away, restart the box, and pick up where it was.</p>
+
+<h3>v0.14 "Foundation" (May 16) — Hermes installs anywhere</h3>
+
+<p>The biggest release of the window. 808 commits, 633 merged PRs, 215 contributors, 545 issues closed (12 P0, 50 P1). The headlines:</p>
+
+<ul>
+<li><strong><code>pip install hermes-agent &amp;&amp; hermes</code></strong> — Hermes is now a real PyPI package. No more cloning the repo or running shell installers.</li>
+<li><strong>Native Windows support (early beta)</strong> — first-class native Windows path across CLI / gateway / TUI / tools. PowerShell installer handles MinGit auto-install, Microsoft Store python stub detection, and the foreground Ctrl+C dance. ~40 Windows-specific fixes already landed in-window alongside the beta stamp.</li>
+<li><strong>Cold-start performance wave</strong> — ~19 seconds shaved off <code>hermes</code> launch. The <code>hermes tools</code> All-Platforms screen alone dropped from 14s to under 1.5s.</li>
+<li><strong>180x faster <code>browser_console</code> evaluations</strong> — routed through a persistent CDP WebSocket instead of spinning up a new DevTools session per call.</li>
+<li><strong>Debloating wave</strong> — heavy backends (Slack, Matrix, Feishu, DingTalk adapters, image-gen SDKs, voice/TTS providers) now lazy-install on first use. The <code>[all]</code> extras drop everything covered by lazy-deps. A supply-chain advisory checker scans every install for unsafe versions. Smaller disk footprint, fewer transitive vulnerabilities.</li>
+<li><strong>Cross-session 1h Claude prompt cache</strong> — when you use Claude through Anthropic, OpenRouter, or Nous Portal, the prompt prefix (system prompt, skills, memory) now caches for an hour across sessions. Start a <code>/new</code> session and the first response comes back faster and cheaper.</li>
+<li><strong>xAI Grok via SuperGrok OAuth — and <code>grok-4.3</code> jumps to a 1M context window.</strong> No API key, no separate billing. If you pay for SuperGrok, you can use Grok inside Hermes by signing in. Drop a whole codebase into a single prompt.</li>
+<li><strong><code>x_search</code></strong> — first-class X (Twitter) search tool with OAuth-or-API-key auth.</li>
+<li><strong>Microsoft Teams end-to-end</strong> — Graph auth + webhook listener + pipeline runtime + outbound delivery. Wire up the bot once, then chat to your agent from any Teams channel, DM, or group.</li>
+<li><strong>LINE + SimpleX Chat</strong> — two more messaging platforms. Total: 22.</li>
+<li><strong>9 new optional skills</strong> including Hyperliquid (perp/spot trading), Yahoo Finance, OSINT investigation, unified EVM multi-chain, watchers (RSS/HTTP/GitHub polling), pinggy-tunnel, and a full Notion overhaul.</li>
+</ul>
+
+<p>Foundation is the release where Hermes stopped being a project you clone and started being software you install. The boring stuff — packaging, cold start, lazy deps, real Windows support — is what turns critical mass into a default.</p>
+
+<hr>
+
+<h2>3. The subscription unification play</h2>
+
+<p>The biggest unwritten story in the ecosystem right now is what happened between v0.10 and v0.14 if you connect the dots.</p>
+
+<ul>
+<li><strong>April 16, v0.10:</strong> the Nous Tool Gateway. Paid <a href="https://portal.nousresearch.com">Nous Portal</a> subscribers get automatic access to web search (Firecrawl), image generation (FAL / FLUX 2 Pro), TTS (OpenAI), and browser automation (Browser Use) through their existing subscription. No separate API keys.</li>
+<li><strong>May 16, v0.14:</strong> the <strong>OpenAI-compatible local proxy</strong>. Run <code>hermes proxy</code> and you get a <code>http://localhost:&lt;port&gt;</code> endpoint that speaks the OpenAI API but is backed by whichever OAuth provider you're signed into — Claude Pro, ChatGPT Pro, SuperGrok. Now any tool that expects an OpenAI-compatible endpoint (Codex CLI, Aider, Cline, Continue) just works with your existing subscription, no API key required.</li>
+<li><strong>Same release:</strong> xAI Grok lands as a SuperGrok OAuth provider. <code>grok-4.3</code> bumps to a 1M context window inside Hermes.</li>
+</ul>
+
+<p>Connect those: Hermes is quietly becoming the <strong>subscription bus</strong> for the AI stack. You sign in to your Anthropic, OpenAI, xAI, and Nous subscriptions once. Hermes handles the auth, the model routing, the format translation. Anything OpenAI-compatible — your IDE assistant, your CLI tool, your custom script — gets to use your existing seats.</p>
+
+<p>This is a more important strategic move than any single feature in this window. It changes what Hermes <em>is</em>. It's not just an agent harness anymore — it's the multiplexer between you and the closed-model providers you're already paying.</p>
+
+<p>OpenRouter does the API-key version of this and charges a margin. Hermes does the OAuth version and doesn't. For developers running their own stack — especially the long tail who pay for Claude Pro plus ChatGPT Pro and want to use both from one CLI — this is the killer-app feature, and it's mostly being slept on by the broader AI press.</p>
+
+<hr>
+
+<h2>4. Memory, six weeks later</h2>
+
+<p>The Memory &amp; Context category went from <strong>6 entries to 21</strong> in six weeks — and from roughly 10K combined stars to <strong>148,450</strong>. By star-count, it's the biggest standalone category on the atlas now, larger than every other ecosystem category combined. mem0 raised $24M (currently 56,567 stars). Letta raised $10M. Honcho, ByteRover, Supermemory, OpenViking, RetainDB, GBrain, Mnemosyne, yantrikdb, Ladybug, PLUR, FlowState-QMD, and several others all shipped meaningful versions or first releases in the window.</p>
+
+<p>Why memory specifically? Two reasons.</p>
+
+<p><strong>First:</strong> Hermes treats memory as <strong>first-class plug-in infrastructure</strong>, not a feature. The <code>MemoryProvider</code> ABC means anyone with an opinion about how agent memory should work can ship a provider that drops into Hermes cleanly, exposes its own tools to the agent, and competes head-to-head with the official 8. Eight providers ship in the box; community provides another wave on top.</p>
+
+<p><strong>Second:</strong> memory is where the actual differentiation between agent harnesses is going to be. Tool calling is solved. Context windows keep growing. What's not solved is "the agent should know what happened last Tuesday, surface my preferences without being asked, and not re-ask the same questions for the rest of my life." That's a memory problem, and the architectural choices matter — flat fact extraction vs. dialectic user modeling vs. four-network retrieval vs. tiered cognitive architectures all make different bets about what memory should actually do.</p>
+
+<p>If you want the full breakdown of the 8 official providers, the strongest community plug-ins (GBrain and Mnemosyne stand out), and how to actually choose, I wrote a deep-dive: <strong><a href="https://x.com/KSimback/status/2058262328496554021" target="_blank" rel="noopener">"The Hermes Agent Memory Guidebook"</a></strong>.</p>
+
+<p>The short version: most users don't need to change anything — Layer 1 (the bundled <code>MEMORY.md</code> + <code>USER.md</code> + SQLite session DB with FTS5) is enough for the median case. When you outgrow it, Honcho models how you think (the Discord favorite), Mem0 is the 30-second-setup default, Hindsight is the benchmark king (first memory system to cross 90 on LongMemEval), Holographic runs fully air-gapped, and Supermemory is the latency leader at scale. The new Mem0 v3 algorithm (94.8 LongMemEval / 91.6 LoCoMo) leapfrogged the previous benchmark holder in April.</p>
+
+<p>The one thing to clear up, because every other write-up gets it wrong: the <strong>v0.12 Curator does not manage memory.</strong> It manages the skill library at <code>~/.hermes/skills/</code>. MEMORY.md and USER.md are still managed by the agent itself, with a hard cap and an 80%-fill prompt-instruction (not code). If that distinction matters to you, the <a href="https://x.com/KSimback/status/2058262328496554021" target="_blank" rel="noopener">memory guidebook</a> walks through the actual code paths.</p>
+
+<hr>
+
+<h2>5. The ecosystem at 123 projects</h2>
+
+<p>Updated category breakdown as of today:</p>
+
+<table>
+<thead><tr><th>Category</th><th>Apr 11</th><th>May 24</th><th>Category stars</th><th>Top project (live stars)</th></tr></thead>
+<tbody>
+<tr><td>Core &amp; Official</td><td>6</td><td>6</td><td>173,476</td><td>hermes-agent (165,033)</td></tr>
+<tr><td>Memory &amp; Context</td><td>6</td><td><strong>21</strong></td><td><strong>148,450</strong></td><td>mem0 (56,567)</td></tr>
+<tr><td>Workspaces &amp; GUIs</td><td>4</td><td><strong>11</strong></td><td>28,727</td><td>hermes-webui (8,467)</td></tr>
+<tr><td>Skills &amp; Skill Registries</td><td>17</td><td><strong>20</strong></td><td>15,609</td><td>Anthropic-Cybersecurity-Skills (7,829)</td></tr>
+<tr><td>Guides &amp; Docs</td><td>5</td><td><strong>9</strong></td><td>8,869</td><td>awesome-hermes-agent (3,343)</td></tr>
+<tr><td>Multi-Agent &amp; Orchestration</td><td>9</td><td>7</td><td>5,759</td><td>mission-control (4,951)</td></tr>
+<tr><td>Developer Tools</td><td>9</td><td>8</td><td>3,854</td><td>tokscale (3,157)</td></tr>
+<tr><td>Plugins &amp; Extensions</td><td>6</td><td><strong>12</strong></td><td>2,105</td><td>&mdash;</td></tr>
+<tr><td>Deployment &amp; Infra</td><td>7</td><td>8</td><td>1,409</td><td>llm-agents.nix (1,291)</td></tr>
+<tr><td>Integrations &amp; Bridges</td><td>5</td><td><strong>10</strong></td><td>844</td><td>&mdash;</td></tr>
+<tr><td>Domain Applications</td><td>8</td><td>8</td><td>421</td><td>&mdash;</td></tr>
+<tr><td>Forks &amp; Derivatives</td><td>3</td><td>3</td><td>397</td><td>&mdash;</td></tr>
+</tbody>
+</table>
+
+<p>The Memory &amp; Context explosion is the headline. But <strong>Workspaces &amp; GUIs nearly tripling</strong> (4 &rarr; 11 entries, 28,727 combined stars) is the quieter signal: it means the next layer of the stack — the one most non-developer users will interact with — is starting to fill in. <code>nesquena/hermes-webui</code> leads the pack at 8.5K stars. <code>outsourc-e/hermes-workspace</code> (4.8K, our current "featured this week" pick) is the cleanest of the new entries: a zero-fork browser command center that talks to a vanilla Hermes install via its existing API. No fork to maintain.</p>
+
+<p>Other notable arrivals (or breakouts) in the window:</p>
+
+<ul>
+<li><strong>mem0 (56,567 stars)</strong> — finally landed on the atlas after a long contributor revision arc</li>
+<li><strong>garrytan/gbrain (18,604)</strong> — Garry Tan's 8-layer knowledge engine, MIT-licensed, ships as a skillpack + MCP server rather than a MemoryProvider</li>
+<li><strong>vectorize-io/hindsight (14,369)</strong> — the benchmark king (first memory system to publicly cross 90 on LongMemEval)</li>
+<li><strong>plastic-labs/honcho (4,140)</strong> — the dialectic user-modeling memory provider, named most often in the Hermes Discord</li>
+<li><strong>AMAP-ML/SkillClaw (1,452)</strong> — high-star community skill registry</li>
+<li><strong>EfficientContext/ContextPilot</strong> — context engineering toolkit</li>
+<li><strong>aivrar/portable-hermes-agent</strong> — pre-baked workspace runtime</li>
+</ul>
+
+<p>The full live, security-reviewed, sortable map is at <strong><a href="https://hermesatlas.com">hermesatlas.com</a></strong>.</p>
+
+<hr>
+
+<h2>6. Atlas itself — what shipped on the meta layer</h2>
+
+<p>In the spirit of disclosure: Hermes Atlas (this site, this report) shipped meaningful infrastructure in the same window.</p>
+
+<ul>
+<li><strong>Newsletter went live (April 24) and has 1300+ subscribers</strong> as of today after its first two releases.</li>
+<li><strong><code>hermes-atlas-mcp</code> (npm + MCP Registry)</strong> — five tools, four resources, installer subcommand. Anyone running Hermes can query the atlas live (<code>npm install -g hermes-atlas-mcp</code> &rarr; register the MCP server &rarr; ask your agent about Hermes-compatible projects in chat).</li>
+<li><strong>"Featured this week"</strong> — rotating community-pick module on the homepage to highlight one standout project.</li>
+<li><strong>GEO arc</strong> — three PRs landed April 24 targeting LLM citation surface: <code>/guide/install/</code>, <code>/guide/vs-claude-code/</code>, <code>/guide/</code>. Early indexation looks positive.</li>
+<li><strong>Auto-merging release-notes pipeline</strong> — the daily release-monitor workflow watches for new Hermes releases, opens a PR with structured notes, auto-merges, and rebuilds the RAG chunks. Most of the release content powering this report flowed through that pipeline.</li>
+<li><strong>Repo coverage went from 80 &rarr; 123</strong> with weekly dead-repo auditing now running automatically to catch archived/deleted upstream projects before they break the build.</li>
+</ul>
+
+<p>If you find this useful, the easiest way to keep the lights on is the same call to action as before, slightly evolved — see the close.</p>
+
+<hr>
+
+<h2>7. Q1 predictions — scored honestly</h2>
+
+<p>The April report ended with five things to watch in Q2. We're nearly two-thirds through the quarter; here's how those calls held up:</p>
+
+<p><strong>1. The skill marketplace network effect.</strong> <em>Predicted: Hermes could pass OpenClaw on curated skill quality (if not volume) by mid-Q2.</em><br>
+<strong>Verdict: trending right, jury still out.</strong> Skills &amp; Registries grew slowly (17 &rarr; 20 atlas entries), but <code>huggingface/skills</code> became a trusted default tap in v0.14, and the v0.12 Curator changes the dynamics — it consolidates skill drift instead of accumulating it. Watch for whether the Curator's effects show up as visible quality improvements in user-shared skill libraries over the next 6 weeks.</p>
+
+<p><strong>2. The multi-instance enterprise story.</strong> <em>Predicted: per-tenant memory isolation and audit logging in v0.9 or v0.10.</em><br>
+<strong>Verdict: partially shipped, faster than expected.</strong> v0.13 added <code>X-Hermes-Session-Key</code> for stable session identifiers on the API server (the substrate for memory isolation). v0.13 also closed 8 P0s including the cross-guild DM bypass and TOCTOU windows on <code>auth.json</code> and MCP OAuth — exactly the audit/isolation hardening enterprise needs. The dashboard plugin/profile management pages landed in v0.13. Full per-tenant audit logging isn't in yet, but the building blocks all are.</p>
+
+<p><strong>3. Self-improvement becoming measurable.</strong> <em>Predicted: real numbers showing measurable improvement on repeated task families.</em><br>
+<strong>Verdict: foundation laid, no benchmarks yet.</strong> The v0.12 Curator's per-run <code>REPORT.md</code> is the substrate for this — it logs exactly which skills got consolidated, pruned, or archived. The class-first rubric in the background review fork is the substrate too. No public benchmark suite yet. This is the slowest of the five predictions, and the most important one.</p>
+
+<p><strong>4. The Nous Portal subscription economics.</strong> <em>Predicted: free-tier promotions had to convert to a sustainable model.</em><br>
+<strong>Verdict: pivoting — different shape than expected.</strong> Instead of pushing harder on standalone Portal subscriptions, Nous shipped the <strong>Tool Gateway</strong> (v0.10) and the <strong>OAuth proxy</strong> (v0.14). The bet appears to be: make Hermes the routing layer for <em>all</em> your AI subscriptions, and Nous Portal becomes the most natural place to add tools that other providers don't bundle (managed search, image-gen, browser, etc.). It's a smarter long-term play than convincing users to migrate their primary model spend.</p>
+
+<p><strong>5. The "first deletion" moment.</strong> <em>Predicted: at some point, things had to move out of core into optional plugins.</em><br>
+<strong>Verdict: this happened. It was the v0.14 debloating wave.</strong> Heavyweight messaging adapters, image-gen SDKs, voice/TTS providers all moved to lazy-install on first use. The <code>[all]</code> extras dropped everything covered by lazy-deps. The bundled disk-cleanup plugin is opt-in by default as a reference for the new pattern. Plus providers themselves became plugins in v0.13. Nous handled the transition cleanly — the community didn't revolt — and the resulting installs are smaller and safer.</p>
+
+<p>Three out of five clearly directionally right. One (benchmarks) is the slow one. One (subscription economics) was more wrong than right, but the alternative move was a better strategic bet than the one we predicted.</p>
+
+<hr>
+
+<h2>8. What to watch through end of Q2</h2>
+
+<p>Three fresh calls for the rest of the quarter:</p>
+
+<p><strong>1. The Foundation release tail.</strong> v0.14 was big. Big releases produce long tails of cleanup PRs. The first follow-up release will tell us whether the debloating wave held (no broken installs from lazy-deps), whether native Windows actually works in the wild (the "early beta" stamp was real — ~40 Windows-only fixes already landed in-window), and whether the OAuth proxy survives contact with edge cases.</p>
+
+<p><strong>2. Multi-agent durability getting tested.</strong> The v0.13 durable Kanban is the most ambitious multi-agent system in any open-source agent harness. Until people run real long-horizon work on it, we don't know whether heartbeat / reclaim / zombie detection / hallucination gates hold up. Expect either a stunning case study or a long bug list — both are interesting.</p>
+
+<p><strong>3. The first credible "I replaced X with Hermes" piece from a recognizable company.</strong> Right now Hermes adoption is dominated by individual developers. The infrastructure (durable Kanban, per-session API keys, dashboard plugin/profile management, OAuth providers, native Windows) is now sufficient for the first small-team or single-department case study. Whoever ships that piece publicly gets a lot of attention — both for being credible adopters and for legitimizing Hermes as enterprise-shippable.</p>
+
+<hr>
+
+<h2>About this report</h2>
+
+<p><strong>Methodology:</strong> Synthesized from the v0.9 – v0.14 release notes (six releases, ~5,200 commits, ~2,800 merged PRs, ~800 closed issues, ~600 unique contributors across the window), 45+ research files including the Hermes Agent docs site, contemporaneous X/Twitter coverage, the Hermes Agent Discord, the <a href="https://x.com/KSimback/status/2058262328496554021" target="_blank" rel="noopener">Hermes Agent Memory Guidebook</a>, and the live atlas at hermesatlas.com.</p>
+
+<p><strong>Data freshness:</strong> Every star count, fork count, and ecosystem total in this report — including category aggregates and individual repo numbers — was polled live from the GitHub GraphQL API on publication day (2026-05-24). April figures are quoted as published in the prior report. The 123 tracked repos are independently security-reviewed and refreshed automatically on a daily schedule.</p>
+
+<p><strong>Companion to:</strong> <a href="https://hermesatlas.com/reports/state-of-hermes-april-2026">The State of Hermes Agent — April 2026</a>. This report assumes you read that one and skips re-explaining what Hermes is or how it compares to Claude Code / OpenClaw.</p>
+
+<p><strong>Not affiliated with:</strong> Nous Research. Hermes Atlas is an independent community project celebrating their work.</p>
+
+<p><strong>Corrections welcome:</strong> <a href="https://github.com/ksimback/hermes-ecosystem/issues">Open an issue</a>.</p>
+
+<hr>
+
+<div class="report-cta">
+  <h2>Stay current</h2>
+  <p>The next State of Hermes report will land late June or early July. In between, we ship a roughly monthly newsletter — release deep-dives, community spotlights, the projects we're tracking, the ones we're not, and the patterns we're seeing.</p>
+  <p>The newsletter is the primary way we share ecosystem signal between reports. It's also how we hear back from you about what to feature next. If this report was useful, that's the call to action.</p>
+  <p>— Kevin · <a href="https://x.com/ksimback" target="_blank" rel="noopener">x.com/ksimback</a></p>
+</div>
+
+</main>
+
+<!-- Email capture -->
+<aside class="email-cta" aria-label="Newsletter signup">
+  <div class="email-cta-kicker">newsletter · free</div>
+  <h2 class="email-cta-title">subscribe to the hermes atlas newsletter</h2>
+  <p class="email-cta-lede">release deep-dives, community spotlights, and the patterns we're seeing across the Hermes ecosystem — 1–2× per month. you can leave any time.</p>
+  <form class="email-cta-form" data-email-form novalidate>
+    <input type="email" name="email" class="email-cta-input" placeholder="you@domain.com" required autocomplete="email" aria-label="Email address">
+    <button type="submit" class="email-cta-button">subscribe</button>
+  </form>
+  <p class="email-cta-status" role="status" aria-live="polite"></p>
+  <p class="email-cta-foot">handled by beehiiv · <a href="/privacy">privacy</a></p>
+</aside>
+<script src="/assets/js/email-capture.js" defer></script>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.05</div>
+</footer>
+
+<script>
+  (function(){
+    var t = document.getElementById('theme-toggle');
+    if (!t) return;
+    function render() {
+      var c = document.documentElement.getAttribute('data-theme');
+      t.querySelector('.tt-light').classList.toggle('tt-active', c === 'light');
+      t.querySelector('.tt-dark').classList.toggle('tt-active', c !== 'light');
+    }
+    render();
+    t.addEventListener('click', function() {
+      var c = document.documentElement.getAttribute('data-theme');
+      var n = c === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', n);
+      try { localStorage.setItem('theme', n); } catch (e) {}
+      render();
+    });
+  })();
+</script>
+
+<script>
+  (function(){
+    fetch('/api/stars').then(function(r){ return r.ok && r.json(); }).then(function(d){
+      if (!d) return;
+      var el = document.getElementById('meta-atlas');
+      if (el && d.atlas && d.atlas.stars) el.textContent = '★ ' + d.atlas.stars + ' · star this repo';
+      var c = document.getElementById('meta-count');
+      if (c && d.totals && d.totals.count) c.textContent = d.totals.count + '·repos';
+    }).catch(function(){});
+  })();
+</script>
+
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
