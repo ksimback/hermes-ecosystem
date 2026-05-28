@@ -1,0 +1,36 @@
+name: Validate repos.json
+
+on:
+  pull_request:
+    paths:
+      - 'data/repos.json'
+      - 'scripts/validate-repos-json.js'
+      - 'tests/validate-repos-json.test.js'
+      - '.github/workflows/validate-repos-json.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/repos.json'
+      - 'scripts/validate-repos-json.js'
+      - 'tests/validate-repos-json.test.js'
+      - '.github/workflows/validate-repos-json.yml'
+  workflow_dispatch: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run validation tests
+        run: node --test tests/validate-repos-json.test.js
+
+      - name: Validate data/repos.json
+        run: node scripts/validate-repos-json.js
