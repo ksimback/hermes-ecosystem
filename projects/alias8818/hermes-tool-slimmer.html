@@ -40,14 +40,11 @@
   "codeRepository": "https://github.com/alias8818/hermes-tool-slimmer",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Cross-platform",
-  "programmingLanguage": "Python",
-  "license": "https://spdx.org/licenses/MIT.html",
   "author": {
     "@type": "Organization",
     "name": "alias8818",
     "url": "https://github.com/alias8818"
   },
-  "dateModified": "2026-05-28T11:31:54.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -82,7 +79,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span>apr·2026</span>
-    <span id="meta-count">155·repos</span>
+    <span id="meta-count">153·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -113,10 +110,10 @@
 
   <div class="meta-row">
     <span class="stars">★ 15</span>
-    <span><span class="meta-label">lang</span>Python</span>
-    <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-05-28</span>
+    
+    
+    
   </div>
 
   <div class="actions">
@@ -143,7 +140,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h2>Hermes Tool Slimmer</h2>
+    <h3>Hermes Tool Slimmer</h3>
 <p><a href="https://github.com/alias8818/hermes-tool-slimmer/actions/workflows/tests.yml"><img src="https://github.com/alias8818/hermes-tool-slimmer/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
 <img src="https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-3776ab" alt="Python">
 <img src="https://img.shields.io/badge/lint-ruff-46a2f1" alt="Ruff">
@@ -151,14 +148,14 @@
 <img src="https://img.shields.io/badge/Hermes-dashboard%20plugin-111827" alt="Hermes"></p>
 <p><img src="https://raw.githubusercontent.com/alias8818/hermes-tool-slimmer/main/docs/assets/tool-slimmer-dashboard.png" alt="Hermes Tool Slimmer dashboard"></p>
 <p>Hermes Tool Slimmer reduces repeated tool-schema overhead by selecting the smallest useful tool set for a turn. It builds an indexable corpus from Hermes tool schemas, ranks candidate tools with local BM25 plus explicit boosts, and fails open to the original schema list when anything goes wrong.</p>
-<h3>Why</h3>
+<h4>Why</h4>
 <p>Large Hermes installations can expose dozens of native and MCP tools. A 57-tool schema catalog can serialize to roughly 73 KB, or about 18K approximate prompt tokens using the documented <code>bytes / 4</code> estimate. Selecting 8-12 relevant tools for a repository-search turn can reduce that to about 15 KB / 3.7K approximate tokens while keeping configured safety tools hot.</p>
 <p>Tool slimming is only a schema-selection optimization. It must not bypass Hermes approval prompts, tool execution controls, provider auth, disabled toolsets, or any runtime safety policy.</p>
-<h3>What The Numbers Mean</h3>
+<h4>What The Numbers Mean</h4>
 <p>The dashboard reports <strong>estimated schema tokens saved</strong>, not guaranteed billable-token savings. The estimate is computed from serialized tool-schema JSON bytes divided by 4 before and after selection. Provider tokenizers, prompt formatting, cache behavior, system prompts, conversation history, and model-specific tool serialization can make actual input-token and billing deltas differ.</p>
 <p>The metric is still useful because it measures the repeated tool-catalog payload that Tool Slimmer removes from each request. Treat it as a consistent operational estimate for schema overhead, not as an invoice-grade accounting number.</p>
 <p>Dashboard headline totals count real Hermes session events by default. Probe events without a <code>session_id</code> are excluded from headline savings and remain available through the dashboard API&#39;s <code>all_summary</code> field for audits.</p>
-<h3>Install</h3>
+<h4>Install</h4>
 <p>Hermes Tool Slimmer v0.4.0+ is the supported line for Hermes Agent v0.14.0. Older Tool Slimmer releases can load as dashboard/diagnostic plugins on v0.14.0, but they do not provide active schema slimming because Hermes moved the request construction path.</p>
 <p>On Hermes builds with dashboard plugin repair support, you can install from the dashboard <strong>Plugins</strong> page by pasting:</p>
 <pre><code class="language-text">alias8818/hermes-tool-slimmer
@@ -201,13 +198,13 @@ $HOME/.hermes/hermes-agent/venv/bin/hermes tool-slimmer doctor
 <pre><code class="language-bash">pip install -e &quot;.[dev]&quot;
 pytest
 </code></pre>
-<h3>Quality Gates</h3>
+<h4>Quality Gates</h4>
 <p>The repository ships focused unit and integration tests for selector behavior, config validation, metrics accounting, dashboard API routes, and provider fallback behavior. Run the same checks used by CI locally:</p>
 <pre><code class="language-bash">ruff check .
 python -m compileall -q src tests dashboard-plugin/tool-slimmer
 pytest -q
 </code></pre>
-<h3>Configure</h3>
+<h4>Configure</h4>
 <pre><code class="language-yaml">plugins:
   enabled:
     - tool-slimmer
@@ -241,7 +238,7 @@ tool_slimmer:
   fail_open: true      # selector errors preserve the original full schema list
   dry_run: false       # true logs/injects diagnostics but does not alter schemas
 </code></pre>
-<h3>Commands</h3>
+<h4>Commands</h4>
 <pre><code class="language-bash">hermes tool-slimmer status
 hermes tool-slimmer doctor
 hermes tool-slimmer index rebuild --schemas examples/tools.yaml
@@ -263,7 +260,7 @@ hermes tool-slimmer recommend-config
 /tool-slimmer dry-run on
 /tool-slimmer dry-run off
 </code></pre>
-<h3>Provider behavior</h3>
+<h4>Provider behavior</h4>
 <table>
 <thead>
 <tr>
@@ -284,7 +281,7 @@ hermes tool-slimmer recommend-config
 <td>Fall back to deterministic keyword selection, hybrid when implemented, or eager mode according to config; do not send Anthropic-only Tool Search definitions.</td>
 </tr>
 </tbody></table>
-<h3>Integration status</h3>
+<h4>Integration status</h4>
 <p>The standalone plugin registers diagnostics tools, the full-tool fallback tool, slash commands, CLI commands, a short <code>pre_llm_call</code> fallback instruction, and a <code>select_tool_schemas</code> callback when Hermes core supports it.</p>
 <p>Supported/target core surfaces:</p>
 <ul>
@@ -293,7 +290,7 @@ hermes tool-slimmer recommend-config
 <li><code>ctx.register_hook(&quot;select_tool_schemas&quot;, callback)</code></li>
 </ul>
 <p>If none exists, active schema slimming requires the installer/core patch to add <code>select_tool_schemas</code> before provider request construction. Without that core hook, the plugin remains useful for dashboard visibility, dry-run diagnostics, benchmarking, and configuration recommendations, but it cannot reduce provider request schemas. See <code>docs/hermes-core-selector-hook.patch</code> for a minimal upstreamable Hermes core patch artifact based on current v0.14.0 source inspection.</p>
-<h3>Safety model</h3>
+<h4>Safety model</h4>
 <ul>
 <li><code>always_include</code> tools are selected first when present and not already disabled by Hermes.</li>
 <li><code>always_exclude</code> is a user-facing alias for <code>disabled_tools</code>. Use it when a tool is too noisy for a deployment and should only appear through Hermes outside Tool Slimmer&#39;s ranked set.</li>
@@ -316,7 +313,7 @@ hermes tool-slimmer recommend-config
 <li><code>dry_run: true</code> logs decisions and returns <code>None</code> to preserve original behavior.</li>
 <li>Anthropic Tool Search helpers never defer every tool.</li>
 </ul>
-<h3>Public release contents</h3>
+<h4>Public release contents</h4>
 <ul>
 <li><a href="https://github.com/alias8818/hermes-tool-slimmer/blob/main/docs/quickstart.md"><code>docs/quickstart.md</code></a>: install, dry-run, and activation walkthrough.</li>
 <li><a href="https://github.com/alias8818/hermes-tool-slimmer/blob/main/docs/hermes-core-integration.md"><code>docs/hermes-core-integration.md</code></a>: required Hermes core selector hook contract.</li>
@@ -327,7 +324,7 @@ hermes tool-slimmer recommend-config
 <li><a href="https://github.com/alias8818/hermes-tool-slimmer/blob/main/docs/troubleshooting.md"><code>docs/troubleshooting.md</code></a>: common operational issues.</li>
 <li><a href="examples/"><code>examples/</code></a>: sample config, prompts, schemas, and expected output.</li>
 </ul>
-<h3>Release validation</h3>
+<h4>Release validation</h4>
 <p>This repository is release-ready only when these checks pass:</p>
 <pre><code class="language-bash">ruff check .
 mypy src tests
@@ -336,7 +333,6 @@ pytest -q
 python -m build
 </code></pre>
 <p>When changing the Hermes core patch, also run the validation steps in <a href="https://github.com/alias8818/hermes-tool-slimmer/blob/main/docs/release-checklist.md"><code>docs/release-checklist.md</code></a>.</p>
-
   </section>
 </details>
 

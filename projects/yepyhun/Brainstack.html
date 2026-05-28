@@ -40,13 +40,11 @@
   "codeRepository": "https://github.com/yepyhun/Brainstack",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Cross-platform",
-  "programmingLanguage": "Python",
   "author": {
     "@type": "Organization",
     "name": "yepyhun",
     "url": "https://github.com/yepyhun"
   },
-  "dateModified": "2026-05-20T22:42:43.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -81,7 +79,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span>apr·2026</span>
-    <span id="meta-count">155·repos</span>
+    <span id="meta-count">153·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -112,10 +110,10 @@
 
   <div class="meta-row">
     <span class="stars">★ 36</span>
-    <span><span class="meta-label">lang</span>Python</span>
     
     
-    <span><span class="meta-label">updated</span>2026-05-20</span>
+    
+    
   </div>
 
   <div class="actions">
@@ -144,7 +142,7 @@
   <section class="readme" data-nosnippet>
     <img width="1024" height="1536" alt="image" src="https://github.com/user-attachments/assets/c10a4ea1-76b7-45f5-93db-9f5eae98d9b3" />
 
-<h2>Brainstack</h2>
+<h3>Brainstack</h3>
 <p><code>Hermes-native</code> <code>local-first</code> <code>donor-grounded</code></p>
 <p>Brainstack gives Hermes a memory model instead of a memory blob.</p>
 <p>It is a composite <code>MemoryProvider</code> for persistent agents: profile memory, session continuity, temporal graph truth, and corpus retrieval under one memory owner inside Hermes.</p>
@@ -165,7 +163,7 @@
 <li>one wizard path from fresh Hermes clone to memory-aware, Gateway-ready runtime</li>
 </ul>
 <p>This repo is for people building serious Hermes-based second-brain systems. It is not trying to pretend that transcript search, vector recall, and profile tables are the same job.</p>
-<h3>Core foundation</h3>
+<h4>Core foundation</h4>
 <p>Brainstack&#39;s foundation stays donor-grounded:</p>
 <table>
 <thead>
@@ -195,7 +193,7 @@
 <ul>
 <li><strong>Hermes-LCM</strong> for bounded transcript evidence fallback</li>
 </ul>
-<h3>How a query flows through Brainstack</h3>
+<h4>How a query flows through Brainstack</h4>
 <pre><code class="language-text">User query
    |
    v
@@ -223,7 +221,7 @@ After-turn learning updates the right shelf, not one giant memory blob
 <li>Hermes gets a small, purpose-built evidence packet.</li>
 <li>After the answer, the new information is written back to the right place.</li>
 </ul>
-<h3>Why Brainstack exists</h3>
+<h4>Why Brainstack exists</h4>
 <p>Most agent memory stacks fail in predictable ways:</p>
 <ul>
 <li>they flatten profile, transcript, graph, and corpus into one blob</li>
@@ -239,14 +237,14 @@ After-turn learning updates the right shelf, not one giant memory blob
 <li>temporal truth handled explicitly, not as an afterthought</li>
 </ul>
 <p>Transcript is evidence. Graph is truth. Corpus is corpus. Profile is profile. That sounds obvious, but most agent memory systems blur those lines. Brainstack keeps them separate so Hermes can answer with less noise and less accidental false confidence.</p>
-<h3>What Brainstack is trying to do</h3>
+<h4>What Brainstack is trying to do</h4>
 <ul>
 <li>be one of the strongest practical local-first memory stacks for always-on Hermes agents</li>
 <li>combine temporal continuity, graph truth, and corpus retrieval in one system</li>
 <li>keep memory ownership inside Brainstack instead of letting three half-systems fight each other</li>
 <li>stay useful in real deployed runs, not just in architecture diagrams</li>
 </ul>
-<h3>Current status</h3>
+<h4>Current status</h4>
 <ul>
 <li>runs inside Hermes-Agent as a direct <code>MemoryProvider</code> plugin</li>
 <li>augments Hermes through the native explicit-memory seam instead of replacing builtin user/profile writes</li>
@@ -259,7 +257,7 @@ After-turn learning updates the right shelf, not one giant memory blob
 <li>emits evidence traces showing what entered the packet, what was dropped, and why</li>
 <li>keeps runtime handoff read-only from Brainstack&#39;s side; scheduling, execution, approval, and provider behavior remain Hermes/runtime responsibilities</li>
 </ul>
-<h3>Quickstart</h3>
+<h4>Quickstart</h4>
 <p>Dry-run compatibility check:</p>
 <pre><code class="language-bash">python install_into_hermes.py /path/to/hermes-agent --enable --doctor --dry-run --runtime docker
 </code></pre>
@@ -273,7 +271,7 @@ After-turn learning updates the right shelf, not one giant memory blob
 <p>For profile isolation, supported config shapes, and the optional proactive
 extension state paths, see
 <a href="https://github.com/yepyhun/Brainstack/blob/main/docs/INSTALL_AND_PROFILE_ISOLATION.md">Install And Profile Isolation</a>.</p>
-<h3>Donor boundaries</h3>
+<h4>Donor boundaries</h4>
 <p>The donor base is important, but the product value is the integration boundary: Hermes sees one memory kernel, while Brainstack keeps the underlying jobs separate.</p>
 <p>That boundary matters:</p>
 <ul>
@@ -282,7 +280,7 @@ extension state paths, see
 <li>Hermes remains the runtime owner for scheduling, tools, approval, and provider behavior</li>
 <li>transcript fallback stays bounded raw evidence, not a second memory engine</li>
 </ul>
-<h3>What Brainstack adds on top</h3>
+<h4>What Brainstack adds on top</h4>
 <p>Using the donors directly would still leave a lot of hard integration work in the host.</p>
 <p>Brainstack adds the parts that make the system usable in a real Hermes agent instead of only looking good in a diagram:</p>
 <ul>
@@ -293,7 +291,7 @@ extension state paths, see
 <li>host-aware install, doctor, and boundary tooling so the memory layer can actually survive real runtime drift</li>
 <li>public proof fixtures and evidence traces so regressions can be checked without private data</li>
 </ul>
-<h3>Current runtime architecture</h3>
+<h4>Current runtime architecture</h4>
 <p>Brainstack routes memory into five shelves instead of a flat memory blob:</p>
 <table>
 <thead>
@@ -352,7 +350,7 @@ extension state paths, see
 <li>transcript recall stays bounded and session-scoped</li>
 <li>graph recall keeps current truth, historical truth, inferred links, and conflicts separate instead of flattening them together</li>
 </ul>
-<h3>What is already working</h3>
+<h4>What is already working</h4>
 <p>This repo is no longer just an architecture sketch.</p>
 <p>What is currently true:</p>
 <ul>
@@ -384,7 +382,7 @@ extension state paths, see
 <li>benchmark artifacts are treated as supporting evidence, not runtime authority</li>
 <li>public payloads exclude private runtime state, local auth, sessions, and planning files</li>
 </ul>
-<h3>Repo scope</h3>
+<h4>Repo scope</h4>
 <p>This repository is a focused Brainstack slice containing:</p>
 <ul>
 <li>the Hermes-native Brainstack plugin code under <code>brainstack/</code></li>
@@ -402,7 +400,7 @@ extension state paths, see
 <li>local planning/workflow state such as <code>.planning/</code></li>
 </ul>
 <p>If a live defect is rooted in explicit-truth capture, transport metadata precedence, or user-surface greeting behavior, the fix belongs on the Hermes host seam unless it can be shown to be a true Brainstack provider defect.</p>
-<h3>Repo layout</h3>
+<h4>Repo layout</h4>
 <pre><code class="language-text">brainstack/
 docs/
 host_payload/agent/
@@ -411,7 +409,7 @@ brainstack_doctor.py
 install_into_hermes.py
 update_hermes_with_brainstack.py
 </code></pre>
-<h3>Included operational tooling</h3>
+<h4>Included operational tooling</h4>
 <table>
 <thead>
 <tr>
@@ -444,7 +442,7 @@ update_hermes_with_brainstack.py
 <td align="left">Report donor state and run bounded refresh workflow</td>
 </tr>
 </tbody></table>
-<h3>Reproducible quality gates</h3>
+<h4>Reproducible quality gates</h4>
 <p>Use these gates before publishing a release or changing memory-kernel behavior:</p>
 <pre><code class="language-bash">python -m pip install -r requirements-dev.txt
 python -m pytest -q
@@ -457,7 +455,7 @@ python install_into_hermes.py --help
 python brainstack_doctor.py --help
 </code></pre>
 <p>The tracked test suite is paired with install and doctor smoke checks because Brainstack is a Hermes plugin: release readiness means the code passes locally and the target Hermes seam still verifies.</p>
-<h3>Installation into Hermes</h3>
+<h4>Installation into Hermes</h4>
 <p>Brainstack is meant to be installed into a fresh Hermes checkout, not copied around by hand.</p>
 <p>Dry-run compatibility check:</p>
 <pre><code class="language-bash">python install_into_hermes.py /path/to/hermes-agent --enable --doctor --dry-run --runtime docker
@@ -514,7 +512,7 @@ python brainstack_doctor.py --help
 <li>donor refreshes stay explicit and inspectable</li>
 <li>API-first deployment remains separate from the Hermes-native plugin path</li>
 </ul>
-<h3>Upstream Hermes refresh workflow</h3>
+<h4>Upstream Hermes refresh workflow</h4>
 <p>When Hermes upstream changes, the intended flow is:</p>
 <pre><code class="language-bash">python update_hermes_with_brainstack.py /path/to/hermes-agent --pull --reinstall --doctor --runtime local
 </code></pre>
@@ -533,7 +531,7 @@ python brainstack_doctor.py --help
 <p>Use <code>--no-preserve-runtime-overrides</code> only when you intentionally want the
 target Hermes config to accept upstream or installer defaults for those blocks.</p>
 <p>That keeps donor drift inspectable without turning updates into silent rewrites.</p>
-<h3>Docker helper after install</h3>
+<h4>Docker helper after install</h4>
 <pre><code class="language-bash">cd /path/to/hermes-agent
 ./scripts/hermes-brainstack-start.sh start
 ./scripts/hermes-brainstack-start.sh rebuild
@@ -555,11 +553,11 @@ target Hermes config to accept upstream or installer defaults for those blocks.<
 <li><code>logs</code> tails live logs</li>
 </ul>
 <p><code>start</code>, <code>rebuild</code>, and <code>full</code> wait for readiness instead of claiming success as soon as the container exists. <code>purge</code> and <code>reset</code> ask for an explicit <code>DELETE</code> confirmation before wiping memory and session state.</p>
-<h3>Doctor checks</h3>
+<h4>Doctor checks</h4>
 <p><code>brainstack_doctor.py</code> is designed to fail closed.</p>
 <p>It validates that the target checkout still looks like Hermes, that the provider/plugin loader surfaces exist, that Brainstack is present and importable, that Hermes native explicit-memory surfaces remain enabled, and that config selects Brainstack without replacing the host&#39;s builtin profile write path. It also probes configured <code>Kuzu</code> and <code>Chroma</code> backend openability, checks read-only runtime handoff surfaces, and treats missing requested capabilities as explicit degraded states. In <code>docker</code> mode it checks readiness-aware health wiring and recognizes upstream-style runtime ownership normalization. In <code>local</code> mode it skips the Docker-specific assumptions.</p>
 <p>If Hermes upstream removes a required provider surface, the correct outcome is an explicit incompatibility report, not a silent partial install.</p>
-<h3>Current direction</h3>
+<h4>Current direction</h4>
 <p>The current corrective direction is narrow and concrete:</p>
 <ul>
 <li>keep Brainstack on the memory/state/policy side of the Hermes boundary</li>
@@ -568,9 +566,8 @@ target Hermes config to accept upstream or installer defaults for those blocks.<
 <li>keep exact-fact, recent-work, and stale-residue handling universal rather than live-case-specific</li>
 <li>keep recent-work authority scoped by workstream instead of promoting unscoped idle summaries as canonical truth</li>
 </ul>
-<h3>Legal Terms</h3>
+<h4>Legal Terms</h4>
 <p>Brainstack is proprietary source-available software: only personal, non-commercial, local use is permitted by default; all commercial, company/internal, hosted, redistribution, integration, derivative-product, model-training, and sublicensing use requires prior written permission. See <a href="https://github.com/yepyhun/Brainstack/blob/main/LEGAL.md">LEGAL.md</a>.</p>
-
   </section>
 </details>
 

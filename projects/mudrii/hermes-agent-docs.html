@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hermes-agent-docs — Hermes Agent Guides &amp; Docs | Hermes Atlas</title>
-<meta name="description" content="Comprehensive documentation for Hermes Agent by NousResearch — the self-improving AI agent (v0.2.0)">
+<meta name="description" content="Community documentation covering deployment patterns and v0.2.0+ workflows">
 <link rel="canonical" href="https://hermesatlas.com/projects/mudrii/hermes-agent-docs">
 <meta property="og:title" content="hermes-agent-docs — Hermes Atlas">
-<meta property="og:description" content="Comprehensive documentation for Hermes Agent by NousResearch — the self-improving AI agent (v0.2.0)">
+<meta property="og:description" content="Community documentation covering deployment patterns and v0.2.0+ workflows">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/mudrii/hermes-agent-docs">
 <meta property="og:site_name" content="Hermes Atlas">
-<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-agent-docs&amp;subtitle=Comprehensive+documentation+for+Hermes+Agent+by+NousResearch+%E2%80%94+the+self-improving+AI+agent+%28v0.2.0%29&amp;kind=project+%C2%B7+guides">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-agent-docs&amp;subtitle=Community+documentation+covering+deployment+patterns+and+v0.2.0%2B+workflows&amp;kind=project+%C2%B7+guides">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="hermes-agent-docs — Hermes Atlas">
-<meta name="twitter:description" content="Comprehensive documentation for Hermes Agent by NousResearch — the self-improving AI agent (v0.2.0)">
-<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-agent-docs&amp;subtitle=Comprehensive+documentation+for+Hermes+Agent+by+NousResearch+%E2%80%94+the+self-improving+AI+agent+%28v0.2.0%29&amp;kind=project+%C2%B7+guides">
+<meta name="twitter:description" content="Community documentation covering deployment patterns and v0.2.0+ workflows">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-agent-docs&amp;subtitle=Community+documentation+covering+deployment+patterns+and+v0.2.0%2B+workflows&amp;kind=project+%C2%B7+guides">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -40,13 +40,11 @@
   "codeRepository": "https://github.com/mudrii/hermes-agent-docs",
   "applicationCategory": "ReferenceApplication",
   "operatingSystem": "Cross-platform",
-  "programmingLanguage": "MDX",
   "author": {
     "@type": "Organization",
     "name": "mudrii",
     "url": "https://github.com/mudrii"
   },
-  "dateModified": "2026-05-18T09:37:47.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -81,7 +79,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span>apr·2026</span>
-    <span id="meta-count">155·repos</span>
+    <span id="meta-count">153·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -108,14 +106,14 @@
   <h1 class="project-name">
     <span class="org">mudrii</span><span class="slash">/</span>hermes-agent-docs
   </h1>
-  <p class="project-desc">Comprehensive documentation for Hermes Agent by NousResearch — the self-improving AI agent (v0.2.0)</p>
+  <p class="project-desc">Community documentation covering deployment patterns and v0.2.0+ workflows</p>
 
   <div class="meta-row">
     <span class="stars">★ 49</span>
-    <span><span class="meta-label">lang</span>MDX</span>
     
     
-    <span><span class="meta-label">updated</span>2026-05-18</span>
+    
+    
   </div>
 
   <div class="actions">
@@ -142,12 +140,12 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h2>Hermes Agent</h2>
+    <h3>Hermes Agent</h3>
 <p><strong>The self-improving AI agent built by <a href="https://nousresearch.com">Nous Research</a>.</strong></p>
 <p>Hermes Agent is an autonomous AI agent with a built-in learning loop. It creates skills from experience, improves them during use, searches its own past conversations for context, and builds a deepening model of who you are across sessions. It runs on a $5 VPS, a GPU cluster, or serverless infrastructure -- not tied to your laptop.</p>
 <p>Current version: <strong>v0.14.0 (v2026.5.16)</strong> -- released May 16, 2026.</p>
 <hr>
-<h3>What Hermes Agent Is</h3>
+<h4>What Hermes Agent Is</h4>
 <p>Hermes Agent is not a coding copilot or a chatbot wrapper. It is a multi-platform, multi-provider autonomous agent that:</p>
 <ul>
 <li>Executes tool calls sequentially or concurrently via <code>ThreadPoolExecutor</code> (up to 8 parallel workers)</li>
@@ -161,10 +159,10 @@
 </ul>
 <p>The agent core is <code>AIAgent</code> in <code>run_agent.py</code>. All other subsystems -- gateway, CLI, ACP server, cron scheduler -- use this single agent core, so behavior is consistent across all platforms.</p>
 <hr>
-<h3>Key Features</h3>
-<h4>Unified Streaming (v0.3.0)</h4>
+<h4>Key Features</h4>
+<h5>Unified Streaming (v0.3.0)</h5>
 <p>Real-time token-by-token delivery in the CLI and all gateway platforms. Responses stream as they are generated instead of arriving as a single block. Supported on Telegram, Discord, Slack, and the interactive CLI. WhatsApp, Signal, Email, and Home Assistant fall back to non-streaming automatically (no message-edit API). Implemented in <code>_interruptible_streaming_api_call()</code> with graceful fallback to non-streaming on any error.</p>
-<h4>Closed Learning Loop</h4>
+<h5>Closed Learning Loop</h5>
 <ul>
 <li><strong>Persistent memory</strong> -- agent-curated facts written to <code>MEMORY.md</code> with periodic nudges to persist durable knowledge</li>
 <li><strong>Pluggable memory providers</strong> -- the built-in memory layer can now be extended with released memory-provider plugins such as Honcho and other provider backends (v0.7.0)</li>
@@ -174,15 +172,15 @@
 <li><strong>FTS5 session search</strong> -- full-text search across all past sessions with LLM summarization for cross-session recall</li>
 <li><strong>Honcho integration</strong> -- dialectic user modeling that builds a persistent model of who you are across sessions</li>
 </ul>
-<h4>Multi-Platform Messaging Gateway</h4>
+<h5>Multi-Platform Messaging Gateway</h5>
 <p>Telegram, Discord, Slack, WhatsApp, Signal, DingTalk, SMS (Twilio), Mattermost, Matrix, Webhook, Email (IMAP/SMTP), Home Assistant, Feishu/Lark, WeCom, Weixin, BlueBubbles (iMessage), QQBot, Yuanbao, IRC, Microsoft Teams, Google Chat, LINE, and SimpleX Chat run from one gateway process. Unified session management, media attachments, voice transcription, cron delivery, and per-platform tool configuration are shared across adapters. v0.14.0 adds LINE and SimpleX Chat, plus Microsoft Graph webhook and Teams pipeline foundations.</p>
-<h4>Plugin Architecture (v0.3.0, expanded in v0.11.0-v0.14.0)</h4>
+<h5>Plugin Architecture (v0.3.0, expanded in v0.11.0-v0.14.0)</h5>
 <p>Drop Python files into <code>~/.hermes/plugins/</code> to extend Hermes with custom tools, commands, hooks, dashboard tabs, gateway platforms, provider backends, image-generation backends, and video-generation backends. No forking required. v0.14.0 adds plugin-side <code>ctx.llm</code> calls through the active provider/credentials and a <code>tool_override</code> flag for replacing built-in tools.</p>
-<h4>Ink-based TUI (v0.11.0)</h4>
+<h5>Ink-based TUI (v0.11.0)</h5>
 <p>Run <code>hermes --tui</code> (or set <code>HERMES_TUI=1</code>) to launch the new React/Ink interactive CLI backed by a Python JSON-RPC <code>tui_gateway</code> process. Sticky composer, live token streaming with OSC-52 clipboard, status bar with per-turn stopwatch and git branch, <code>/clear</code> confirm, light-theme preset, and a subagent spawn observability overlay.</p>
-<h4>Pluggable Transport Layer (v0.11.0)</h4>
+<h5>Pluggable Transport Layer (v0.11.0)</h5>
 <p>Format conversion and HTTP transport are abstracted into <code>agent/transports/</code> behind a <code>ProviderTransport</code> ABC. Concrete transports -- <code>AnthropicTransport</code>, <code>ChatCompletionsTransport</code>, <code>ResponsesApiTransport</code>, <code>BedrockTransport</code> -- own message conversion, tool conversion, kwargs assembly, and response normalization. Streaming, retries, prompt cache, and credential refresh remain on <code>AIAgent</code>.</p>
-<h4>Provider Flexibility</h4>
+<h5>Provider Flexibility</h5>
 <p>Use any model without code changes. Supported providers:</p>
 <ul>
 <li><strong>Nous Portal</strong> -- first-class provider; 400+ models via Nous inference (<code>https://inference-api.nousresearch.com/v1</code>)</li>
@@ -212,68 +210,68 @@
 <li><strong>Custom endpoints</strong> -- any OpenAI-compatible API</li>
 </ul>
 <p>Switch with <code>hermes model</code> -- no code changes, no lock-in.</p>
-<h4>Native Integrations (v0.12.0)</h4>
+<h5>Native Integrations (v0.12.0)</h5>
 <ul>
 <li><strong>Spotify</strong> -- seven OAuth-backed tools for playback, devices, queue, search, playlists, albums, and library operations, plus a bundled skill and setup wizard</li>
 <li><strong>Google Meet</strong> -- bundled plugin for joining calls, transcribing, speaking, and follow-up workflows</li>
 <li><strong>Piper TTS</strong> -- native local TTS provider through the new <code>tts.providers.&lt;name&gt;</code> registry</li>
 <li><strong>ComfyUI and TouchDesigner-MCP</strong> -- promoted to bundled skills by default</li>
 </ul>
-<h4>v0.14.0 Foundation Release</h4>
+<h5>v0.14.0 Foundation Release</h5>
 <ul>
 <li><strong>Native Windows early beta</strong> -- PowerShell installer, native subprocess paths, taskkill-based process management, portable Git Bash bootstrap, and Windows-specific terminal/tooling fixes.</li>
 <li><strong>Python package status</strong> -- the source release is versioned as <code>hermes-agent</code> 0.14.0, but PyPI currently serves 0.13.0 (verified May 18, 2026). Use the git installer for v0.14.0 until PyPI publishes 0.14.0.</li>
 <li><strong>Subscription proxy</strong> -- <code>hermes proxy</code> exposes OAuth-backed providers through an OpenAI-compatible local endpoint for tools such as Codex, Aider, Cline, and VS Code Continue.</li>
 <li><strong>New tools and diagnostics</strong> -- <code>x_search</code>, <code>computer_use</code>, write-time LSP diagnostics, pixel-preserving <code>vision_analyze</code>, pluggable <code>video_generate</code>, and a per-turn file-mutation verifier.</li>
 </ul>
-<h4>OpenAI-Compatible API Server (v0.4.0)</h4>
+<h5>OpenAI-Compatible API Server (v0.4.0)</h5>
 <p>Expose Hermes as an <code>/v1/chat/completions</code> and <code>/v1/responses</code> endpoint with a <code>/api/jobs</code> REST API for cron job management. Hardened with input limits, field whitelists, SQLite-backed response persistence across restarts, CORS origin protection, and <code>Idempotency-Key</code> support (v0.5.0). In v0.7.0 the API server added real-time tool progress streaming plus optional session continuity for chat-completions clients via the <code>X-Hermes-Session-Id</code> header. The API server exposes its own <code>hermes-api-server</code> toolset.</p>
-<h4>Credential Pools (v0.7.0)</h4>
+<h5>Credential Pools (v0.7.0)</h5>
 <p>Register multiple credentials for the same provider and let Hermes rotate within that provider before falling back elsewhere. Released v0.7.0 adds <code>least_used</code> pool selection, 401 refresh-and-rotate behavior, and smarter recovery that preserves pool state through fallback routing and restores the primary runtime on later turns.</p>
-<h4>Camofox Browser Backend (v0.7.0)</h4>
+<h5>Camofox Browser Backend (v0.7.0)</h5>
 <p>Hermes can route browser tools through a local Camofox anti-detection backend by setting <code>CAMOFOX_URL</code>. This adds persistent local browser sessions, VNC URL discovery for visual debugging, and local-backend browsing without the normal remote-backend private-URL restrictions.</p>
-<h4>@ Context References (v0.4.0)</h4>
+<h5>@ Context References (v0.4.0)</h5>
 <p>Claude Code-style <code>@file</code> and <code>@url</code> context injection with tab completions in the CLI. Files and web pages are inserted directly into the conversation. Access is restricted to the workspace -- reading secrets outside the workspace is blocked.</p>
-<h4>MCP Server Management CLI (v0.4.0)</h4>
+<h5>MCP Server Management CLI (v0.4.0)</h5>
 <p><code>hermes mcp</code> commands for installing, configuring, and authenticating MCP servers, with a full OAuth 2.1 PKCE flow for remote MCP servers. MCP servers are exposed as standalone toolsets and are configurable interactively in <code>hermes tools</code>.</p>
-<h4>Plugin Lifecycle Hooks (v0.5.0)</h4>
+<h5>Plugin Lifecycle Hooks (v0.5.0)</h5>
 <p><code>pre_llm_call</code>, <code>post_llm_call</code>, <code>on_session_start</code>, and <code>on_session_end</code> hooks now fire in the agent loop and CLI/gateway, completing the plugin hook system. Plugins can also register slash commands and extend the TUI.</p>
-<h4>Nix Flake (v0.5.0)</h4>
+<h5>Nix Flake (v0.5.0)</h5>
 <p>Full uv2nix build, NixOS module with persistent container mode, auto-generated config keys from Python source, and suffix PATHs for agent-friendliness. See <a href="https://github.com/mudrii/hermes-agent-docs/blob/main/getting-started/installation.md">Installation</a> for Nix installation details. Contributed by @alt-glitch.</p>
-<h4>Profiles — Multi-Instance Hermes (v0.6.0)</h4>
+<h5>Profiles — Multi-Instance Hermes (v0.6.0)</h5>
 <p>Run multiple isolated Hermes instances from the same installation. Each profile gets its own config, memory, sessions, skills, and gateway service. Create with <code>hermes profile create</code>, target a single command with <code>hermes -p &lt;name&gt; ...</code>, or set the sticky default with <code>hermes profile use &lt;name&gt;</code>. Token locks prevent credential collisions between profiles. See <a href="https://github.com/mudrii/hermes-agent-docs/blob/main/user-guide/configuration.md">Configuration</a> for details.</p>
-<h4>MCP Server Mode (v0.6.0)</h4>
+<h5>MCP Server Mode (v0.6.0)</h5>
 <p>Expose Hermes sessions to MCP-compatible clients (Claude Desktop, Cursor, VS Code, etc.) via <code>hermes mcp serve</code>. In the released v0.6.0 surface, Hermes serves MCP over stdio; Streamable HTTP is part of Hermes&#39; MCP client support, not the <code>serve</code> command.</p>
-<h4>Docker Container (v0.6.0)</h4>
+<h5>Docker Container (v0.6.0)</h5>
 <p>Official Dockerfile for running Hermes Agent in a container. Supports both CLI and gateway modes with volume-mounted config.</p>
-<h4>Fallback Provider Chain (v0.6.0)</h4>
+<h5>Fallback Provider Chain (v0.6.0)</h5>
 <p>Configure multiple inference providers with automatic failover via <code>fallback_providers</code> in config.yaml. When the primary provider returns errors or is unreachable, Hermes automatically tries the next provider in the chain.</p>
-<h4>Concurrent Tool Execution (v0.3.0)</h4>
+<h5>Concurrent Tool Execution (v0.3.0)</h5>
 <p>Multiple independent tool calls run in parallel via <code>ThreadPoolExecutor</code> (max 8 workers), significantly reducing latency for multi-tool turns. Interactive tools (e.g. <code>clarify</code>) force sequential execution. Path-scoped tools (<code>read_file</code>, <code>write_file</code>, <code>patch</code>) run concurrently only when targeting independent paths. Message and result ordering is preserved when reinserting tool responses into conversation history.</p>
-<h4>Context Compression</h4>
+<h5>Context Compression</h5>
 <p><code>ContextCompressor</code> monitors token usage and compresses context when approaching the model&#39;s context limit (default threshold: 50% of the context window). The released v0.14.0 implementation exposes configurable first-turn protection and <code>compression.protect_last_n</code> (default: 20) for the recent-message floor. It summarizes the middle section via an auxiliary model call (<code>call_llm(task=&quot;compression&quot;)</code>) and sanitizes orphaned tool-call/result pairs. Session lineage is preserved via <code>parent_session_id</code> chains in the SQLite state store.</p>
-<h4>Six Terminal Backends</h4>
+<h5>Six Terminal Backends</h5>
 <p>Local, Docker, SSH, Daytona, Singularity, and Modal. Daytona and Modal offer serverless persistence -- the environment hibernates when idle and wakes on demand, costing nearly nothing between sessions.</p>
-<h4>Persistent Shell Mode (v0.3.0)</h4>
+<h5>Persistent Shell Mode (v0.3.0)</h5>
 <p>Local and SSH terminal backends maintain shell state across tool calls -- <code>cd</code>, environment variables, and aliases persist within a session.</p>
-<h4>Smart Approvals (v0.3.0)</h4>
+<h5>Smart Approvals (v0.3.0)</h5>
 <p>Codex-inspired approval system that learns which commands are safe and remembers your preferences. <code>/stop</code> kills the current agent run immediately.</p>
-<h4>Voice Mode (v0.3.0)</h4>
+<h5>Voice Mode (v0.3.0)</h5>
 <p>Push-to-talk in the CLI, voice notes in Telegram and Discord, Discord voice channel support, and local Whisper transcription via <code>faster-whisper</code> when the <code>voice</code> extra is installed. Configurable STT backends use the <code>stt.enabled</code> config flag.</p>
-<h4>MCP Integration</h4>
+<h5>MCP Integration</h5>
 <p>Native MCP client with stdio and HTTP transports, selective tool loading with utility policies, sampling (server-initiated LLM requests), and auto-reload when <code>mcp_servers</code> config changes. Tools are prefixed as <code>mcp_&lt;server&gt;_&lt;tool_name&gt;</code>.</p>
-<h4>ACP Integration (v0.3.0)</h4>
+<h5>ACP Integration (v0.3.0)</h5>
 <p>VS Code, Zed, and JetBrains connect to Hermes as an agent backend over stdio/JSON-RPC. Full slash command support. The <code>hermes-acp</code> entry point runs the ACP server.</p>
-<h4>PII Redaction (v0.3.0)</h4>
+<h5>PII Redaction (v0.3.0)</h5>
 <p>When <code>privacy.redact_pii</code> is enabled, personally identifiable information is automatically scrubbed before sending context to LLM providers.</p>
-<h4>Secret Redaction</h4>
+<h5>Secret Redaction</h5>
 <p><code>agent/redact.py</code> provides regex-based secret redaction for logs and tool output. It masks API keys (OpenAI, GitHub, Slack, Google, AWS, Stripe, SendGrid, HuggingFace, and others), env variable assignments containing secret names, JSON secret fields, Authorization headers, Telegram bot tokens, private key blocks, database connection string passwords, and E.164 phone numbers. Short tokens (&lt; 18 chars) are fully masked; longer tokens preserve the first 6 and last 4 characters. Controlled via <code>security.redact_secrets</code> in config.yaml or <code>HERMES_REDACT_SECRETS</code> env var. A <code>RedactingFormatter</code> log handler applies redaction to all log output.</p>
-<h4>Research-Ready</h4>
+<h5>Research-Ready</h5>
 <p>Batch trajectory generation and trajectory compression for training datasets (<code>batch_runner.py</code>, <code>agent/trajectory.py</code>, and <code>trajectory_compressor.py</code>). Hermes can export ShareGPT-format traces for SFT data generation, evaluation, and debugging; model-training frameworks live in optional skills rather than a bundled Atropos runtime.</p>
-<h4>Skills Ecosystem</h4>
+<h5>Skills Ecosystem</h5>
 <p>166 tracked skills (87 bundled + 79 optional) across 26+ categories in the current source tree. Compatible with the <a href="https://agentskills.io">agentskills.io</a> open standard. Skills support per-platform enable/disable, conditional activation based on tool availability, and prerequisite validation. The Skills Hub integrates with both ClawHub and skills.sh (v0.3.0).</p>
 <hr>
-<h3>Requirements</h3>
+<h4>Requirements</h4>
 <ul>
 <li><strong>Python</strong>: 3.11 or newer (<code>requires-python = &quot;&gt;=3.11&quot;</code> in <code>pyproject.toml</code>)</li>
 <li><strong>Operating Systems</strong>: Linux, macOS, WSL2, Android via Termux, and native Windows early beta. The browser dashboard&#39;s embedded <code>/chat</code> terminal pane remains WSL2-only because it depends on a POSIX PTY.</li>
@@ -406,7 +404,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h3>Quick Install</h3>
+<h4>Quick Install</h4>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
 </code></pre>
 <p>Works on Linux, macOS, WSL2, and Android via Termux. For native Windows early beta, run the PowerShell installer from the <a href="https://github.com/mudrii/hermes-agent-docs/blob/main/getting-started/installation.md">installation guide</a>. The installers handle Python, Node.js, dependencies, and the <code>hermes</code> command.</p>
@@ -415,7 +413,7 @@
 hermes              # start chatting
 </code></pre>
 <hr>
-<h3>Getting Started</h3>
+<h4>Getting Started</h4>
 <pre><code class="language-bash">hermes              # Interactive CLI -- start a conversation
 hermes model        # Choose your LLM provider and model
 hermes tools        # Configure which tools are enabled (curses UI)
@@ -428,7 +426,7 @@ hermes doctor       # Diagnose configuration issues across all providers
 hermes update       # Update to the latest version (with auto-restart for gateway)
 </code></pre>
 <hr>
-<h3>CLI vs Messaging Quick Reference</h3>
+<h4>CLI vs Messaging Quick Reference</h4>
 <p>Hermes has two entry points: start the terminal UI with <code>hermes</code>, or run the gateway and talk to it from Telegram, Discord, Slack, WhatsApp, Signal, or other platforms. Once you are in a conversation, many slash commands are shared across both interfaces.</p>
 <table>
 <thead>
@@ -525,8 +523,8 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 </tr>
 </tbody></table>
 <hr>
-<h3>Documentation Index</h3>
-<h4>Core</h4>
+<h4>Documentation Index</h4>
+<h5>Core</h5>
 <table>
 <thead>
 <tr>
@@ -547,7 +545,7 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 <td>CLI streaming behavior, keybindings, sessions, and interface usage</td>
 </tr>
 </tbody></table>
-<h4>Setup &amp; Configuration</h4>
+<h5>Setup &amp; Configuration</h5>
 <table>
 <thead>
 <tr>
@@ -584,7 +582,7 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 <td>Multi-instance profiles, creation, switching, gateway per-profile (v0.6.0)</td>
 </tr>
 </tbody></table>
-<h4>Features</h4>
+<h5>Features</h5>
 <table>
 <thead>
 <tr>
@@ -681,7 +679,7 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 <td>CLI themes, custom skins, banner configuration</td>
 </tr>
 </tbody></table>
-<h4>Skills &amp; Tools</h4>
+<h5>Skills &amp; Tools</h5>
 <table>
 <thead>
 <tr>
@@ -706,7 +704,7 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 <td>MCP client integration, stdio/HTTP/SSE transports, sampling, tool filtering</td>
 </tr>
 </tbody></table>
-<h4>Security &amp; Memory</h4>
+<h5>Security &amp; Memory</h5>
 <table>
 <thead>
 <tr>
@@ -731,7 +729,7 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 <td>Provider-local key pools and recovery behavior</td>
 </tr>
 </tbody></table>
-<h4>Gateway &amp; Messaging</h4>
+<h5>Gateway &amp; Messaging</h5>
 <table>
 <thead>
 <tr>
@@ -808,7 +806,7 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 <td>SMS via Twilio</td>
 </tr>
 </tbody></table>
-<h4>Getting Started &amp; Operations</h4>
+<h5>Getting Started &amp; Operations</h5>
 <table>
 <thead>
 <tr>
@@ -829,7 +827,7 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 <td>Safe upgrade flow, <code>hermes update</code>, and rollback guidance</td>
 </tr>
 </tbody></table>
-<h4>Developer Guide</h4>
+<h5>Developer Guide</h5>
 <table>
 <thead>
 <tr>
@@ -898,7 +896,7 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 <td>Released memory-provider plugin framework (v0.7.0)</td>
 </tr>
 </tbody></table>
-<h4>Reference</h4>
+<h5>Reference</h5>
 <table>
 <thead>
 <tr>
@@ -947,7 +945,7 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 <td>Common operational questions and troubleshooting</td>
 </tr>
 </tbody></table>
-<h4>Contributing</h4>
+<h5>Contributing</h5>
 <table>
 <thead>
 <tr>
@@ -962,7 +960,7 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 </tbody></table>
 <p>Official documentation: <strong><a href="https://hermes-agent.nousresearch.com/docs/">hermes-agent.nousresearch.com/docs</a></strong></p>
 <hr>
-<h3>Community</h3>
+<h4>Community</h4>
 <ul>
 <li>Discord: <a href="https://discord.gg/NousResearch">discord.gg/NousResearch</a></li>
 <li>Skills Hub: <a href="https://agentskills.io">agentskills.io</a></li>
@@ -970,10 +968,9 @@ hermes update       # Update to the latest version (with auto-restart for gatewa
 <li>Discussions: <a href="https://github.com/NousResearch/hermes-agent/discussions">github.com/NousResearch/hermes-agent/discussions</a></li>
 </ul>
 <hr>
-<h3>License</h3>
+<h4>License</h4>
 <p>MIT -- see <a href="https://github.com/NousResearch/hermes-agent/blob/main/LICENSE">LICENSE</a>.</p>
 <p>Built by <a href="https://nousresearch.com">Nous Research</a>.</p>
-
   </section>
 </details>
 
