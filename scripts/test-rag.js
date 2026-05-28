@@ -11,6 +11,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { combinedRetrievalScore, enrichChunkMetadata } from "../lib/rag-scoring.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -271,7 +272,7 @@ function hybridRetrieve(query, queryEmbedding, chunks, bm25Index, topK = 8) {
   return chunks
     .map((chunk, i) => ({
       ...chunk,
-      score: 0.7 * normCosine[i] + 0.3 * normBM25[i],
+      score: combinedRetrievalScore({ query, chunk, normCosine: normCosine[i], normBM25: normBM25[i] }),
       _cosine: cosineScores[i],
       _bm25: bm25Scores[i],
     }))
@@ -326,7 +327,7 @@ function hybridMmrRetrieve(query, queryEmbedding, chunks, bm25Index, topK = 8) {
   const candidates = chunks
     .map((chunk, i) => ({
       ...chunk,
-      score: 0.7 * normCosine[i] + 0.3 * normBM25[i],
+      score: combinedRetrievalScore({ query, chunk, normCosine: normCosine[i], normBM25: normBM25[i] }),
     }))
     .sort((a, b) => b.score - a.score)
     .slice(0, 20);
@@ -347,7 +348,7 @@ async function runRetrievalTests() {
   }
 
   console.log("Loading chunks...");
-  const chunks = JSON.parse(fs.readFileSync(chunksPath, "utf-8"));
+  const chunks = JSON.parse(fs.readFileSync(chunksPath, "utf-8")).map(enrichChunkMetadata);
   console.log(`  Loaded ${chunks.length} chunks`);
 
   console.log("Building BM25 index...");
@@ -534,7 +535,7 @@ async function runMmrTests() {
   console.log();
 
   const chunksPath = path.join(ROOT, "data", "chunks.json");
-  const chunks = JSON.parse(fs.readFileSync(chunksPath, "utf-8"));
+  const chunks = JSON.parse(fs.readFileSync(chunksPath, "utf-8")).map(enrichChunkMetadata);
   const bm25Index = buildBM25Index(chunks);
 
   // Queries known to retrieve near-duplicate chunks (community sentiment, broad topics)

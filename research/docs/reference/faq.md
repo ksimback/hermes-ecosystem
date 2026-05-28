@@ -15,7 +15,7 @@ Hermes Agent works with any OpenAI-compatible API. Supported providers include:
 -   **[OpenRouter](https://openrouter.ai/)** — access hundreds of models through one API key (recommended for flexibility)
 -   **Nous Portal** — Nous Research's own inference endpoint
 -   **OpenAI** — GPT-5.4, GPT-5-codex, GPT-4.1, GPT-4o, etc.
--   **Anthropic** — Claude models (direct API, OAuth via `hermes login anthropic`, OpenRouter, or any compatible proxy)
+-   **Anthropic** — Claude models (direct API, OAuth via `hermes auth add anthropic`, OpenRouter, or any compatible proxy)
 -   **Google** — Gemini models (direct API via `gemini` provider, the `google-gemini-cli` OAuth provider, OpenRouter, or compatible proxy)
 -   **z.ai / ZhipuAI** — GLM models
 -   **Kimi / Moonshot AI** — Kimi models
@@ -78,7 +78,7 @@ hermes model
 # API base URL: http://localhost:11434/v1
 # API key: ollama
 # Model name: qwen3.5:27b
-# Context length: 32768   ← set this to match your server's actual context window
+# Context length: 64000   ← Hermes minimum; set this to match your server's actual context window
 ```
 
 Or configure it directly in `config.yaml`:
@@ -96,7 +96,7 @@ This works with Ollama, vLLM, llama.cpp server, SGLang, LocalAI, and others. See
 
 Ollama users
 
-If you set a custom `num_ctx` in Ollama (e.g., `ollama run --num_ctx 16384`), make sure to set the matching context length in Hermes — Ollama's `/api/show` reports the model's _maximum_ context, not the effective `num_ctx` you configured.
+If you set a custom `num_ctx` in Ollama (e.g., `ollama run --num_ctx 64000`), make sure to set the matching context length in Hermes — Ollama's `/api/show` reports the model's _maximum_ context, not the effective `num_ctx` you configured.
 
 Timeouts with local models
 
@@ -358,7 +358,7 @@ custom_providers:
     base_url: "http://localhost:11434/v1"
     models:
       qwen3.5:27b:
-        context_length: 32768
+        context_length: 64000
 ```
 
 See [Context Length Detection](/docs/integrations/providers#context-length-detection) for how auto-detection works and all override options.

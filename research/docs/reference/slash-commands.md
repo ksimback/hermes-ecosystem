@@ -98,9 +98,9 @@ Append a user-supplied criterion to the active goal mid-loop. The continuation p
 
 Resume a previously-named session
 
-`/sessions`
+`/sessions` (TUI alias: `/switch`)
 
-Browse and resume previous sessions in an interactive picker
+Classic CLI: browse and resume previous sessions in an interactive picker. TUI: open the live session switcher for currently open TUI sessions. Use `/sessions new` in the TUI to start another live session immediately.
 
 `/redraw`
 
@@ -538,6 +538,7 @@ Invoke any installed skill by name.
 -   `/sethome`, `/update`, `/restart`, `/approve`, `/deny`, `/topic`, and `/commands` are **messaging-only** commands.
 -   `/status`, `/background`, `/queue`, `/steer`, `/voice`, `/reload-mcp`, `/reload-skills`, `/rollback`, `/debug`, `/fast`, `/footer`, `/curator`, `/kanban`, `/sessions`, and `/yolo` work in **both** the CLI and the messaging gateway.
 -   `/voice join`, `/voice channel`, and `/voice leave` are only meaningful on Discord.
+-   In the TUI, `/sessions` shows live sessions in the current TUI process. Use `/resume [name]` or `hermes --tui --resume <id-or-title>` for saved or closed transcripts.
 
 ## Confirmation prompts for destructive commands
 

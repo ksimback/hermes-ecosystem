@@ -12,6 +12,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { enrichChunkMetadata } from "../lib/rag-scoring.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -137,12 +138,12 @@ function pushChunk(chunks, source, heading, text) {
   // Hard-split anything still oversized after paragraph splitting (mega
   // paragraphs with no blank lines, e.g. wall-of-links pages).
   for (const piece of hardSplitByLines(trimmed, MAX_CHUNK_CHARS)) {
-    chunks.push({
+    chunks.push(enrichChunkMetadata({
       id: `${source}:${chunks.length}`,
       text: piece.trim(),
       source,
       section: heading,
-    });
+    }));
   }
 }
 

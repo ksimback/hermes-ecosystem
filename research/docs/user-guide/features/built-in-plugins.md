@@ -60,6 +60,12 @@ hooks + slash command
 
 Auto-track ephemeral files and clean them on session end
 
+`security-guidance`
+
+hooks
+
+Pattern-match dangerous code on `write_file`/`patch` and append a security warning (or block) — 25 rules (Apache-2.0 fork of Anthropic's `claude-plugins-official` patterns)
+
 `observability/langfuse`
 
 hooks
@@ -212,6 +218,38 @@ Append-only audit trail of every track / skip / reject / delete
 **Enabling:** `hermes plugins enable disk-cleanup` (or check the box in `hermes plugins`).
 
 **Disabling again:** `hermes plugins disable disk-cleanup`.
+
+### security-guidance
+
+Fast pattern-matched security warnings on file writes. When the agent's `write_file` / `patch` / `skill_manage` calls carry content matching a known-dangerous code pattern — `pickle.load`, `yaml.load` without `SafeLoader`, `eval(`, `os.system`, `subprocess(..., shell=True)`, JS `child_process.exec`, React `dangerouslySetInnerHTML`, raw `.innerHTML =` / `.outerHTML =` / `document.write`, Node `crypto.createCipher`, AES ECB mode, TLS verification disabled, XXE-prone `xml.etree` / `minidom` parsers, `<script src="//..." >` without SRI, `torch.load` without `weights_only=True`, GitHub Actions `${{ github.event.* }}` injection — the plugin appends a `⚠️ Security guidance` block to the tool's result.
+
+The file is still written. The model reads the warning in the next turn's tool message and can either fix the code or document why the construct is safe in this context. Pattern matching has a non-trivial false-positive rate, which is why warn (not block) is the default.
+
+**Coverage:** 25 rules total, covering unsafe deserialization, command injection, XSS sinks, crypto footguns, XXE, supply-chain (SRI), and CI/CD workflow injection. The pattern data is a verbatim Apache-2.0 fork of [Anthropic's `claude-plugins-official`](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/security-guidance/hooks) — see the plugin's `LICENSE` and `NOTICE` files for attribution.
+
+**Modes:**
+
+Env var
+
+Effect
+
+(unset)
+
+**warn mode** (default) — file is written, warning appended to result
+
+`SECURITY_GUIDANCE_BLOCK=1`
+
+**block mode** — write refused, warning returned as the block reason
+
+`SECURITY_GUIDANCE_DISABLE=1`
+
+kill switch — plugin loads but does nothing
+
+**Enabling:** `hermes plugins enable security-guidance` (or check the box in `hermes plugins`).
+
+**Disabling again:** `hermes plugins disable security-guidance`.
+
+**What it does not do (yet):** the upstream Anthropic plugin has two more layers — an LLM diff review on each agent turn that touched files, and an agentic commit-time review that traces data flow across files. Neither is ported. The agent can already run those reviews on demand via `delegate_task`.
 
 ### observability/langfuse
 

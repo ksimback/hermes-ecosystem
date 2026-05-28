@@ -40,10 +40,6 @@ Setup
 
 `NOVITA_API_KEY` in `~/.hermes/.env` (provider: `novita`, 200+ models, Model API, Agent Sandbox, GPU Cloud)
 
-**AI Gateway**
-
-`AI_GATEWAY_API_KEY` in `~/.hermes/.env` (provider: `ai-gateway`)
-
 **z.ai / GLM**
 
 `GLM_API_KEY` in `~/.hermes/.env` (provider: `zai`)
@@ -392,7 +388,7 @@ When using the Z.AI / GLM provider, Hermes automatically probes multiple endpoin
 
 ### xAI (Grok) — Responses API + Prompt Caching
 
-xAI is wired through the Responses API (`codex_responses` transport) for automatic reasoning support on Grok 4 models — no `reasoning_effort` parameter needed, the server reasons by default. Set `XAI_API_KEY` in `~/.hermes/.env` and pick xAI in `hermes model`, or drop `grok` as a shortcut into `/model grok-4-1-fast-reasoning`.
+xAI is wired through the Responses API (`codex_responses` transport) for automatic reasoning support on Grok 4 models — no `reasoning_effort` parameter needed, the server reasons by default. Set `XAI_API_KEY` in `~/.hermes/.env` and pick xAI in `hermes model`, or drop `grok` as a shortcut into `/model grok-4-fast-reasoning`.
 
 SuperGrok and X Premium+ subscribers can sign in with browser OAuth instead of using an API key — pick **xAI Grok OAuth (SuperGrok / Premium+)** in `hermes model`, or run `hermes auth add xai-oauth`. The same OAuth bearer token is automatically reused by direct-to-xAI tools (TTS, image gen, video gen, transcription). See the [xAI Grok OAuth guide](/docs/guides/xai-grok-oauth) for the full flow — and if Hermes runs on a remote host, also see [OAuth over SSH / Remote Hosts](/docs/guides/oauth-over-ssh) for the required `ssh -L` tunnel.
 
@@ -828,7 +824,7 @@ model:
   default: qwen2.5-coder:32b
   provider: custom
   base_url: http://localhost:11434/v1
-  context_length: 32768   # See warning below
+  context_length: 64000   # See warning below
 ```
 
 Ollama defaults to very low context lengths
@@ -851,22 +847,22 @@ Less than 24 GB
 
 256,000 tokens
 
-For agent use with tools, **you need at least 16k–32k context**. At 4k, the system prompt + tool schemas alone can fill the window, leaving no room for conversation.
+Hermes Agent requires at least **64,000 tokens** of context for agent use with tools. Smaller windows are rejected at startup because the system prompt, tool schemas, and working conversation state need enough room for reliable multi-step workflows.
 
 **How to increase it** (pick one):
 
 ```
 # Option 1: Set server-wide via environment variable (recommended)
-OLLAMA_CONTEXT_LENGTH=32768 ollama serve
+OLLAMA_CONTEXT_LENGTH=64000 ollama serve
 
 # Option 2: For systemd-managed Ollama
 sudo systemctl edit ollama.service
-# Add: Environment="OLLAMA_CONTEXT_LENGTH=32768"
+# Add: Environment="OLLAMA_CONTEXT_LENGTH=64000"
 # Then: sudo systemctl daemon-reload && sudo systemctl restart ollama
 
 # Option 3: Bake it into a custom model (persistent per-model)
-echo -e "FROM qwen2.5-coder:32b\nPARAMETER num_ctx 32768" > Modelfile
-ollama create qwen2.5-coder-32k -f Modelfile
+echo -e "FROM qwen2.5-coder:32b\nPARAMETER num_ctx 64000" > Modelfile
+ollama create qwen2.5-coder-64k -f Modelfile
 ```
 
 **You cannot set context length through the OpenAI-compatible API** (`/v1/chat/completions`). It must be configured server-side or via a Modelfile. This is the #1 source of confusion when integrating Ollama with tools like Hermes.
@@ -974,13 +970,13 @@ If responses seem truncated, add `max_tokens` to your requests or set `--default
 cmake -B build && cmake --build build --config Release
 ./build/bin/llama-server \
   --jinja -fa \
-  -c 32768 \
+  -c 64000 \
   -ngl 99 \
   -m models/qwen2.5-coder-32b-instruct-Q4_K_M.gguf \
   --port 8080 --host 0.0.0.0
 ```
 
-**Context length (`-c`):** Recent builds default to `0` which reads the model's training context from the GGUF metadata. For models with 128k+ training context, this can OOM trying to allocate the full KV cache. Set `-c` explicitly to what you need (32k–64k is a good range for agent use). If using parallel slots (`-np`), the total context is divided among slots — with `-c 32768 -np 4`, each slot only gets 8k.
+**Context length (`-c`):** Recent builds default to `0` which reads the model's training context from the GGUF metadata. For models with 128k+ training context, this can OOM trying to allocate the full KV cache. Set `-c` explicitly to at least 64,000 tokens for Hermes. If using parallel slots (`-np`), the total context is divided among slots — with `-c 64000 -np 4`, each slot only gets 16k, which is below Hermes' minimum per active session.
 
 Then configure Hermes to point at it:
 
@@ -1016,7 +1012,7 @@ Start the server from the LM Studio app (Developer tab → Start Server), or use
 
 ```
 lms server start                        # Starts on port 1234
-lms load qwen2.5-coder --context-length 32768
+lms load qwen2.5-coder --context-length 64000
 ```
 
 Then configure Hermes:
@@ -1249,7 +1245,7 @@ Update to 0.3.6+ and use a model with native tool support
 # vLLM: check --max-model-len in startup args
 ```
 
-**Fix:** Set context to at least **32,768 tokens** for agent use. See each server's section above for the specific flag.
+**Fix:** Set context to at least **64,000 tokens** for agent use. See each server's section above for the specific flag.
 
 #### "Context limit: 2048 tokens" at startup
 
@@ -1262,7 +1258,7 @@ model:
   default: your-model
   provider: custom
   base_url: http://localhost:11434/v1
-  context_length: 32768
+  context_length: 64000
 ```
 
 #### Responses get cut off mid-sentence
@@ -1491,7 +1487,7 @@ custom_providers:
     base_url: "http://localhost:11434/v1"
     models:
       qwen3.5:27b:
-        context_length: 32768
+        context_length: 64000
       deepseek-r1:70b:
         context_length: 65536
 ```
@@ -1857,7 +1853,7 @@ fallback_model:
 
 When activated, the fallback swaps the model and provider mid-session without losing your conversation. The chain is tried entry-by-entry; activation is one-shot per session.
 
-Supported providers: `openrouter`, `nous`, `openai-codex`, `copilot`, `copilot-acp`, `anthropic`, `gemini`, `google-gemini-cli`, `qwen-oauth`, `huggingface`, `zai`, `kimi-coding`, `kimi-coding-cn`, `minimax`, `minimax-cn`, `minimax-oauth`, `deepseek`, `nvidia`, `xai`, `xai-oauth`, `ollama-cloud`, `bedrock`, `ai-gateway`, `azure-foundry`, `opencode-zen`, `opencode-go`, `kilocode`, `xiaomi`, `arcee`, `gmi`, `stepfun`, `lmstudio`, `alibaba`, `alibaba-coding-plan`, `tencent-tokenhub`, `custom`.
+Supported providers: `openrouter`, `nous`, `openai-codex`, `copilot`, `copilot-acp`, `anthropic`, `gemini`, `google-gemini-cli`, `qwen-oauth`, `huggingface`, `zai`, `kimi-coding`, `kimi-coding-cn`, `minimax`, `minimax-cn`, `minimax-oauth`, `deepseek`, `nvidia`, `xai`, `xai-oauth`, `ollama-cloud`, `bedrock`, `azure-foundry`, `opencode-zen`, `opencode-go`, `kilocode`, `xiaomi`, `arcee`, `gmi`, `stepfun`, `lmstudio`, `alibaba`, `alibaba-coding-plan`, `tencent-tokenhub`, `custom`.
 
 tip
 

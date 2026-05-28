@@ -558,8 +558,6 @@ Default taps (browsable without any setup):
     
 -   [huggingface/skills](https://github.com/huggingface/skills)
     
--   [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills)
-    
 -   [garrytan/gstack](https://github.com/garrytan/gstack)
     
 -   Example:

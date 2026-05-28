@@ -1,4 +1,5 @@
 import { kvIncr, kvExpireNx } from "../lib/redis.js";
+import { combinedRetrievalScore, enrichChunkMetadata } from "../lib/rag-scoring.js";
 import { readFileSync } from "fs";
 import { join } from "path";
 
@@ -11,7 +12,7 @@ function loadChunks() {
   if (chunks) return chunks;
   try {
     const raw = readFileSync(join(process.cwd(), "data", "chunks.json"), "utf-8");
-    chunks = JSON.parse(raw);
+    chunks = JSON.parse(raw).map(enrichChunkMetadata);
     bm25Index = buildBM25Index(chunks);
     return chunks;
   } catch (e) {
@@ -324,9 +325,10 @@ export default async function handler(req, res) {
     // 3. Embed the rewritten query
     const queryEmbedding = await getEmbedding(searchQuery);
 
-    // 4. Hybrid search: combine BM25 (keyword) and cosine (semantic) scores
-    // Normalize both to 0-1 then weighted sum: 0.7 vector + 0.3 keyword
-    // Vector dominates for semantic understanding; BM25 boosts exact term matches.
+    // 4. Hybrid search: combine BM25 (keyword), cosine (semantic), and
+    // source-aware Atlas policy. Official docs are favored, catalog/generated
+    // pages are suppressed for broad questions, and query-specific boosts keep
+    // Skills Hub and TUI session docs available when explicitly relevant.
     const cosineScores = allChunks.map(c => cosineSimilarity(queryEmbedding, c.embedding));
     const bm25Scores = bm25Index ? bm25Score(searchQuery, bm25Index) : cosineScores.map(() => 0);
 
@@ -337,9 +339,16 @@ export default async function handler(req, res) {
     const candidates = allChunks
       .map((chunk, i) => ({
         ...chunk,
-        score: 0.7 * normCosine[i] + 0.3 * normBM25[i],
+        score: combinedRetrievalScore({
+          query: searchQuery,
+          chunk,
+          normCosine: normCosine[i],
+          normBM25: normBM25[i],
+        }),
         _cosine: cosineScores[i],
         _bm25: bm25Scores[i],
+        _authority: chunk.metadata?.authority,
+        _contentKind: chunk.metadata?.contentKind,
       }))
       .sort((a, b) => b.score - a.score)
       .slice(0, 20);
@@ -348,7 +357,7 @@ export default async function handler(req, res) {
     // Prevents returning 8 near-duplicate paragraphs from the same section
     const scored = mmrSelect(candidates, queryEmbedding, 8, 0.6);
 
-    console.log(`[RAG] Top result: ${scored[0]?.source} (cos=${scored[0]?._cosine.toFixed(3)}, bm25=${scored[0]?._bm25.toFixed(3)}); ${new Set(scored.map(s => s.source)).size} unique sources`);
+    console.log(`[RAG] Top result: ${scored[0]?.source} (${scored[0]?._authority}/${scored[0]?._contentKind}, cos=${scored[0]?._cosine.toFixed(3)}, bm25=${scored[0]?._bm25.toFixed(3)}); ${new Set(scored.map(s => s.source)).size} unique sources`);
 
     // 6. Detect ranking/comparison queries and inject repo metadata
     // This gives the LLM live star counts to actually rank/compare repos
@@ -387,7 +396,7 @@ Then run \`hermes\` to start. Only Git is required as a prerequisite — the ins
 **Links:** https://github.com/NousResearch/hermes-agent | https://hermes-agent.nousresearch.com/docs`;
 
     const retrievedContext = scored
-      .map(c => `[Source: ${c.source}${c.section ? `, Section: "${c.section}"` : ""}]\n${c.text}`)
+      .map(c => `[Source: ${c.source}${c.section ? `, Section: "${c.section}"` : ""}${c.metadata?.authority ? `, Authority: ${c.metadata.authority}` : ""}${c.metadata?.contentKind ? `, Kind: ${c.metadata.contentKind}` : ""}]\n${c.text}`)
       .join("\n\n---\n\n");
 
     // 5. Build messages for LLM
@@ -398,6 +407,7 @@ ANSWER RULES:
 - Don't hedge with "based on the context" or "based on the available records."
 - Use the CORE FACTS section as your baseline — those are always true. The "Latest release" line in CORE FACTS contains headline features that you MUST use when asked about the latest or newest release.
 - Use the RETRIEVED CONTEXT section for specific details, recent updates, and tool recommendations.
+- Prefer official_docs and curated_atlas sources when context conflicts. Treat catalog/generated pages as lookup sources, not broad product overviews, unless the user is asking about skills/catalogs.
 - For ranking/comparison/recommendation questions, use the REPO METADATA section for accurate star counts.
 - Cite sources from RETRIEVED CONTEXT using [Source: filename.md] format in brackets.
 - For "what is" questions, give a proper 2-3 sentence overview first, THEN details.

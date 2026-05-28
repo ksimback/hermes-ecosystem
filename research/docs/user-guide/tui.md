@@ -98,7 +98,7 @@ Keybindings match the [Classic CLI](/docs/user-guide/cli#keybindings) exactly. T
 -   **`Cmd+V` / `Ctrl+V`** first tries normal text paste, then falls back to OSC52/native clipboard reads, and finally image attach when the clipboard or pasted payload resolves to an image.
 -   **`/terminal-setup`** installs local VS Code / Cursor / Windsurf terminal bindings for better `Cmd+Enter` and undo/redo parity on macOS.
 -   **Slash autocompletion** opens as a floating panel with descriptions, not an inline dropdown.
--   **`Ctrl+X`** — when a queued message is highlighted (sent while the agent was still running), delete it from the queue. **`Esc`** cancels editing and unhighlights without deleting.
+-   **`Ctrl+X`** opens the live session switcher. When a queued message is highlighted (sent while the agent was still running), it still deletes that queued message instead. **`Esc`** cancels editing and unhighlights without deleting.
 -   **`Ctrl+G` / `Ctrl+X Ctrl+E`** — open the current input buffer in `$EDITOR` for multi-line / long-prompt composition; save-and-exit sends the contents back as the prompt.
 
 ## Slash commands
@@ -113,9 +113,9 @@ TUI behavior
 
 Overlay with categorized commands, arrow-key navigable
 
-`/sessions`
+`/sessions` (alias `/switch`)
 
-Modal session picker — preview, title, token totals, resume inline
+Live session switcher — list open TUI sessions, switch between them, close them, or start another one
 
 `/model`
 
@@ -146,6 +146,29 @@ Re-reads `~/.hermes/.env` into the running TUI process so newly added API keys t
 Pick a mouse tracking preset at runtime (also persists to `display.mouse_tracking` in `config.yaml`). `wheel` (1000+1006) keeps scroll-wheel scrolling without the hover events that make tmux spam "No image in clipboard" over the prompt row; `buttons` adds drag-to-select; `all` is the default with hover-driven UI.
 
 Every other slash command (including installed skills, quick commands, and personality toggles) works identically to the classic CLI. See [Slash Commands Reference](/docs/reference/slash-commands).
+
+## Live session switcher
+
+Use the live session switcher when you want one terminal to act as a dispatcher for several TUI sessions. It lists only sessions that are currently live in this TUI process; closed sessions remain saved transcripts and can still be reopened with `/resume` or `hermes --tui --resume <id-or-title>`.
+
+Open it with any of these:
+
+-   `Ctrl+X` from the TUI.
+-   `/sessions` or `/switch`.
+-   `/sessions new` to create a fresh live session immediately.
+-   Click the `N live sessions` count in the status line.
+
+![Hermes TUI Session Orchestrator with one live session and a +new row](/img/docs/tui-session-orchestrator/session-orchestrator.png)
+
+Inside the switcher:
+
+-   `↑` / `↓` move the selection; mouse clicks select rows too.
+-   `Enter` switches to the selected live session.
+-   `Ctrl+D` closes the selected live session.
+-   `Ctrl+N` starts a blank live session.
+-   `Ctrl+R` refreshes the live-session list.
+-   `Esc` closes the switcher.
+-   Select `+new`, type a prompt, and press `Enter` to dispatch a new live session. Press `Tab` first if you want to choose a model just for that new session.
 
 ## LaTeX math rendering
 

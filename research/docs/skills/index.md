@@ -412,6 +412,16 @@ Clone/create/fork repos; manage remotes, releases.
 
 GitHub🐧 Linux macOSwindows
 
+🔌
+
+### native-mcp
+
+✓ Built-in
+
+MCP client: connect servers, register tools (stdio/HTTP).
+
+MCP🐧 Linux macOSwindows
+
 🎵
 
 ### gif-search
@@ -592,14 +602,4 @@ Geocode, POIs, routes, timezones via OpenStreetMap/OSRM.
 
 Productivity🐧 Linux macOSwindows
 
-✅
-
-### nano-pdf
-
-✓ Built-in
-
-Edit PDF text/typos/titles via nano-pdf CLI (NL prompts).
-
-Productivity🐧 Linux macOSwindows
-
-Show more (632 remaining)
+Show more (2136 remaining)

@@ -34,14 +34,6 @@ Override Nous Portal base URL (rarely needed; development/testing only)
 
 Override Nous inference endpoint directly
 
-`AI_GATEWAY_API_KEY`
-
-Vercel AI Gateway API key ([ai-gateway.vercel.sh](https://ai-gateway.vercel.sh))
-
-`AI_GATEWAY_BASE_URL`
-
-Override AI Gateway base URL (default: `https://ai-gateway.vercel.sh/v1`)
-
 `OPENAI_API_KEY`
 
 API key for custom OpenAI-compatible endpoints (used with `OPENAI_BASE_URL`)
@@ -552,22 +544,6 @@ Semantic long-term memory with profile recall and session ingest ([supermemory.a
 
 Daytona cloud sandboxes ([daytona.io](https://daytona.io/))
 
-`VERCEL_TOKEN`
-
-Vercel Sandbox access token ([vercel.com](https://vercel.com/))
-
-`VERCEL_PROJECT_ID`
-
-Vercel project ID (required with `VERCEL_TOKEN`)
-
-`VERCEL_TEAM_ID`
-
-Vercel team ID (required with `VERCEL_TOKEN`)
-
-`VERCEL_OIDC_TOKEN`
-
-Vercel short-lived OIDC token (development-only alternative)
-
 ### Langfuse Observability
 
 Environment variables for the bundled [`observability/langfuse`](/docs/user-guide/features/built-in-plugins#observabilitylangfuse) plugin. Set these in `~/.hermes/.env`. The plugin must also be enabled (`hermes plugins enable observability/langfuse`, or check the box in `hermes plugins`) before any of these take effect.
@@ -644,7 +620,7 @@ Description
 
 `TERMINAL_ENV`
 
-Backend: `local`, `docker`, `ssh`, `singularity`, `modal`, `daytona`, `vercel_sandbox`
+Backend: `local`, `docker`, `ssh`, `singularity`, `modal`, `daytona`
 
 `HERMES_DOCKER_BINARY`
 
@@ -677,10 +653,6 @@ Modal container image
 `TERMINAL_DAYTONA_IMAGE`
 
 Daytona sandbox image
-
-`TERMINAL_VERCEL_RUNTIME`
-
-Vercel Sandbox runtime (`node24`, `node22`, `python3.13`)
 
 `TERMINAL_TIMEOUT`
 
@@ -1462,7 +1434,7 @@ Enable the OpenAI-compatible API server (`true`/`false`). Runs alongside other p
 
 `API_SERVER_KEY`
 
-Bearer token for API server authentication. Enforced for non-loopback binding.
+Bearer token for API server authentication. Required whenever the API server is enabled.
 
 `API_SERVER_CORS_ORIGINS`
 
@@ -1474,7 +1446,7 @@ Port for the API server (default: `8642`)
 
 `API_SERVER_HOST`
 
-Host/bind address for the API server (default: `127.0.0.1`). Use `0.0.0.0` for network access — requires `API_SERVER_KEY` and a narrow `API_SERVER_CORS_ORIGINS` allowlist.
+Host/bind address for the API server (default: `127.0.0.1`). `API_SERVER_KEY` is still required on loopback; use a narrow `API_SERVER_CORS_ORIGINS` allowlist for browser access.
 
 `API_SERVER_MODEL_NAME`
 

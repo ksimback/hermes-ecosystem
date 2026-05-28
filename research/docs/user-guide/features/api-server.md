@@ -330,9 +330,7 @@ Configure the key via `API_SERVER_KEY` env var. If you need a browser to call He
 
 Security
 
-The API server gives full access to hermes-agent's toolset, **including terminal commands**. When binding to a non-loopback address like `0.0.0.0`, `API_SERVER_KEY` is **required**. Also keep `API_SERVER_CORS_ORIGINS` narrow to control browser access.
-
-The default bind address (`127.0.0.1`) is for local-only use. Browser access is disabled by default; enable it only for explicit trusted origins.
+The API server gives full access to hermes-agent's toolset, **including terminal commands**. `API_SERVER_KEY` is **required for every deployment**, including the default loopback bind on `127.0.0.1`. Keep `API_SERVER_CORS_ORIGINS` narrow to control browser access when you explicitly allow browser callers.
 
 ## Configuration
 
@@ -364,7 +362,7 @@ Bind address (localhost only by default)
 
 `API_SERVER_KEY`
 
-_(none)_
+_(required)_
 
 Bearer token for auth
 

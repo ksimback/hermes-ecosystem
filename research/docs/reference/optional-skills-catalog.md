@@ -37,6 +37,10 @@ Delegate coding tasks to Blackbox AI CLI agent. Multi-model agent with built-in 
 
 Configure and use Honcho memory with Hermes -- cross-session user modeling, multi-profile peer isolation, observation config, dialectic reasoning, session summaries, and context budget enforcement. Use when setting up Honcho, troubleshoo...
 
+[**openhands**](/docs/user-guide/skills/optional/autonomous-ai-agents/autonomous-ai-agents-openhands)
+
+Delegate coding to OpenHands CLI (model-agnostic, LiteLLM).
+
 ## blockchain
 
 Skill
@@ -429,11 +433,19 @@ Supply chain investigation, evidence recovery, and forensic analysis for GitHub 
 
 OSINT username search across 400+ social networks. Hunt down social media accounts by username.
 
+[**web-pentest**](/docs/user-guide/skills/optional/security/security-web-pentest)
+
+Authorized web application penetration testing — reconnaissance, vulnerability analysis, proof-based exploitation, and professional reporting. Adapts Shannon's "No Exploit, No Report" methodology with hard guardrails for scope, authoriza...
+
 ## software-development
 
 Skill
 
 Description
+
+[**code-wiki**](/docs/user-guide/skills/optional/software-development/software-development-code-wiki)
+
+Generate wiki docs + Mermaid diagrams for any codebase.
 
 [**rest-graphql-debug**](/docs/user-guide/skills/optional/software-development/software-development-rest-graphql-debug)
 

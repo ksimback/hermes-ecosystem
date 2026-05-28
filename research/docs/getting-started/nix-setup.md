@@ -60,6 +60,22 @@ hermes chat
 
 After `nix profile install`, `hermes`, `hermes-agent`, and `hermes-acp` are on your PATH. From here, the workflow is identical to the [standard installation](/docs/getting-started/installation) — `hermes setup` walks you through provider selection, `hermes gateway install` sets up a launchd (macOS) or systemd user service, and config lives in `~/.hermes/`.
 
+Messaging platforms (Discord, Telegram, Slack)
+
+The default package doesn't include messaging platform libraries — they were moved to on-demand installation, which can't work in Nix's read-only environment. If you plan to connect the agent to Discord, Telegram, or Slack, install the `messaging` variant:
+
+```
+nix profile install github:NousResearch/hermes-agent#messaging
+```
+
+For all optional extras (voice, all providers, all platforms):
+
+```
+nix profile install github:NousResearch/hermes-agent#full
+```
+
+The `full` variant adds ~700 MB to the closure. If you only need messaging platforms, `#messaging` adds just ~33 MB.
+
 **Building from a local clone**
 
 ```
@@ -381,6 +397,12 @@ Add MCP tool servers
 `mcpServers.<name>`
 
 See [MCP Servers](#mcp-servers)
+
+Enable Discord/Telegram/Slack
+
+`extraDependencyGroups`
+
+`[ "messaging" ]`
 
 Mount host directories into container
 
@@ -837,16 +859,96 @@ The package's `site-packages` is added to PYTHONPATH in the hermes wrapper. `imp
 
 ### Optional Dependency Groups (`extraDependencyGroups`)
 
-For optional extras already declared in hermes-agent's `pyproject.toml` (e.g., memory providers like `hindsight` or `honcho`), use `extraDependencyGroups` to include them in the sealed venv at build time:
+For optional extras declared in hermes-agent's `pyproject.toml`, use `extraDependencyGroups` to include them in the sealed venv at build time. This is required for any extra not in the default `[all]` set — on Nix, runtime installation into the read-only store is not possible.
 
 ```
+# Enable Discord, Telegram, Slack
+services.hermes-agent.extraDependencyGroups = [ "messaging" ];
+```
+
+```
+# Enable a memory provider
 services.hermes-agent = {
   extraDependencyGroups = [ "hindsight" ];
   settings.memory.provider = "hindsight";
 };
 ```
 
-This is resolved by uv alongside core dependencies in a single pass — no PYTHONPATH patching, no collision risk. Available groups match the `[project.optional-dependencies]` keys in `pyproject.toml` (e.g., `"hindsight"`, `"honcho"`, `"voice"`, `"matrix"`, `"mistral"`, `"bedrock"`).
+This is resolved by uv alongside core dependencies — no PYTHONPATH patching, no collision risk. Available groups:
+
+Group
+
+What it enables
+
+`messaging`
+
+Discord, Telegram, Slack
+
+`matrix`
+
+Matrix/Element (mautrix with encryption; Linux only)
+
+`dingtalk`
+
+DingTalk
+
+`feishu`
+
+Feishu/Lark
+
+`voice`
+
+Local speech-to-text (faster-whisper)
+
+`edge-tts`
+
+Edge TTS provider
+
+`tts-premium`
+
+ElevenLabs TTS
+
+`anthropic`
+
+Native Anthropic SDK (not needed via OpenRouter)
+
+`bedrock`
+
+AWS Bedrock (boto3)
+
+`azure-identity`
+
+Azure Entra ID auth
+
+`honcho`
+
+Honcho memory provider
+
+`hindsight`
+
+Hindsight memory provider
+
+`modal`
+
+Modal terminal backend
+
+`daytona`
+
+Daytona terminal backend
+
+`exa`
+
+Exa web search
+
+`firecrawl`
+
+Firecrawl web search
+
+`fal`
+
+FAL image generation
+
+Or use the pre-built `#messaging` or `#full` flake packages instead of per-extra configuration (see [Quick Start](#quick-start-any-nix-user)).
 
 **When to use which:**
 
@@ -1541,6 +1643,12 @@ Fix
 CLI guards active
 
 Edit `configuration.nix` and `nixos-rebuild switch`
+
+`No adapter available for discord` (or telegram/slack)
+
+Messaging deps missing from the sealed Nix venv
+
+Install `#messaging` variant: `nix profile install ...#messaging`. For NixOS module: `extraDependencyGroups = [ "messaging" ]`. Check `journalctl -u hermes-agent` for `FeatureUnavailable` or `requirements not met` for the underlying error.
 
 Container recreated unexpectedly
 

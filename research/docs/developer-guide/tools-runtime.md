@@ -213,7 +213,6 @@ The terminal system supports multiple backends:
 -   singularity
 -   modal
 -   daytona
--   vercel\_sandbox
 
 It also supports:
 

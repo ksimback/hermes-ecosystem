@@ -274,7 +274,7 @@ Enable a comma-separated set of toolsets.
 
 `--provider <provider>`
 
-Force a provider: `auto`, `openrouter`, `nous`, `openai-codex`, `copilot-acp`, `copilot`, `anthropic`, `gemini`, `google-gemini-cli`, `huggingface`, `novita`, `zai`, `kimi-coding`, `kimi-coding-cn`, `minimax`, `minimax-cn`, `minimax-oauth`, `kilocode`, `xiaomi`, `arcee`, `gmi`, `alibaba`, `alibaba-coding-plan` (alias `alibaba_coding`), `deepseek`, `nvidia`, `ollama-cloud`, `xai` (alias `grok`), `xai-oauth` (alias `grok-oauth`), `qwen-oauth`, `bedrock`, `opencode-zen`, `opencode-go`, `ai-gateway`, `azure-foundry`, `lmstudio`, `stepfun`, `tencent-tokenhub` (alias `tencent`, `tokenhub`).
+Force a provider: `auto`, `openrouter`, `nous`, `openai-codex`, `copilot-acp`, `copilot`, `anthropic`, `gemini`, `google-gemini-cli`, `huggingface`, `novita`, `zai`, `kimi-coding`, `kimi-coding-cn`, `minimax`, `minimax-cn`, `minimax-oauth`, `kilocode`, `xiaomi`, `arcee`, `gmi`, `alibaba`, `alibaba-coding-plan` (alias `alibaba_coding`), `deepseek`, `nvidia`, `ollama-cloud`, `xai` (alias `grok`), `xai-oauth` (alias `grok-oauth`), `qwen-oauth`, `bedrock`, `opencode-zen`, `opencode-go`, `azure-foundry`, `lmstudio`, `stepfun`, `tencent-tokenhub` (alias `tencent`, `tokenhub`).
 
 `-s`, `--skills <name>`
 
@@ -1824,13 +1824,25 @@ Subcommand
 
 Description
 
+_(none)_ or `picker`
+
+Interactive catalog picker — browse Nous-approved MCPs and install/enable/disable.
+
+`catalog`
+
+List Nous-approved MCPs (plain text, scriptable).
+
+`install <name>`
+
+Install a catalog entry (e.g. `hermes mcp install n8n`).
+
 `serve [-v|--verbose]`
 
 Run Hermes as an MCP server — expose conversations to other agents.
 
 `add <name> [--url URL] [--command CMD] [--args ...] [--auth oauth|header]`
 
-Add an MCP server with automatic tool discovery.
+Add a custom MCP server with automatic tool discovery.
 
 `remove <name>` (alias: `rm`)
 

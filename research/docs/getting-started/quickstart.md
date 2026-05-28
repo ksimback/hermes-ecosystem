@@ -251,12 +251,6 @@ Copilot ACP agent backend (spawns local `copilot` CLI)
 
 `hermes model` (requires `copilot` CLI + `copilot login`)
 
-**Vercel AI Gateway**
-
-Vercel AI Gateway routing
-
-Set `AI_GATEWAY_API_KEY`
-
 **Custom Endpoint**
 
 VLLM, SGLang, Ollama, or any OpenAI-compatible API

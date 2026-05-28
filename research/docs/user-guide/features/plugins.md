@@ -490,11 +490,11 @@ Config-driven (recommended) — declare under `tts.providers.<name>` with `type:
 
 [TTS Setup](/docs/user-guide/features/tts#custom-command-providers) · [Python plugin guide](/docs/user-guide/features/tts#python-plugin-providers)
 
-An **STT backend** (custom whisper binary, local ASR CLI)
+An **STT backend** (any CLI — whisper.cpp, custom whisper binary, local ASR CLI)
 
-Config-driven — set `HERMES_LOCAL_STT_COMMAND` env var to a shell template
+Config-driven (recommended) — declare under `stt.providers.<name>` with `type: command` in `config.yaml`, or set `HERMES_LOCAL_STT_COMMAND` for the legacy single-command escape hatch. OR Python backend plugin — `ctx.register_transcription_provider()` for Python-SDK engines (OpenRouter, SenseAudio, Gemini-STT, etc.).
 
-[Voice Message Transcription (STT)](/docs/user-guide/features/tts#voice-message-transcription-stt)
+[STT Setup](/docs/user-guide/features/tts#stt-custom-command-providers) · [Python plugin guide](/docs/user-guide/features/tts#python-plugin-providers-stt)
 
 **External tools via MCP** (filesystem, GitHub, Linear, Notion, any MCP server)
 
