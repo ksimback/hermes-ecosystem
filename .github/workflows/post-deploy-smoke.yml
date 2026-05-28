@@ -1,9 +1,10 @@
 name: Post-Deploy Smoke Test
 
 # Runs the production smoke test after a Vercel deploy completes for any push
-# to main that touched site-affecting files. Posts a commit status so the
-# result is visible right next to the Vercel deploy in the GitHub UI, and
-# opens (or updates) a tracking issue if anything fails.
+# to main that touched site-affecting files, plus once daily to catch external
+# drift between pushes. Push-triggered runs post a commit status next to the
+# Vercel deploy; push and scheduled runs both open (or update) a tracking issue
+# if anything fails.
 #
 # Trigger paths are intentionally broad - it's cheaper to run smoke unnecessarily
 # than to miss a real regression. Add new paths here if you introduce a new
@@ -16,6 +17,9 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 on:
+  schedule:
+    # Daily at 07:00 UTC, roughly 30 minutes after build-pages.yml finishes.
+    - cron: '0 7 * * *'
   push:
     branches: [main]
     paths:
@@ -141,7 +145,7 @@ jobs:
             });
 
       - name: Post commit status (failure) and open / update tracking issue
-        if: failure() && github.event_name == 'push'
+        if: failure() && github.event_name != 'workflow_dispatch'
         uses: actions/github-script@v7
         with:
           script: |
@@ -153,16 +157,18 @@ jobs:
               smokeOutput = '(smoke-output.txt not produced - check the job log)';
             }
 
-            // Commit status
-            await github.rest.repos.createCommitStatus({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              sha: context.sha,
-              state: 'failure',
-              context: 'Smoke Test (production)',
-              description: 'Production smoke test failed - see Actions log',
-              target_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-            });
+            // Commit status only makes sense for push-triggered deploy checks.
+            if (context.eventName === 'push') {
+              await github.rest.repos.createCommitStatus({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                sha: context.sha,
+                state: 'failure',
+                context: 'Smoke Test (production)',
+                description: 'Production smoke test failed - see Actions log',
+                target_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              });
+            }
 
             // Find or open the tracking issue. We keep one issue open at a time
             // so successive failures comment on the same thread instead of
@@ -174,7 +180,9 @@ jobs:
               labels: 'smoke-test-failure',
             });
             const body = [
-              `Production smoke test failed on commit ${context.sha.slice(0,7)}.`,
+              context.eventName === 'schedule'
+                ? 'Daily production smoke test failed.'
+                : `Production smoke test failed on commit ${context.sha.slice(0,7)}.`,
               '',
               `**Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               '',
