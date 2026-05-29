@@ -1,5 +1,6 @@
 import { kvIncr, kvExpireNx } from "../lib/redis.js";
 import { combinedRetrievalScore, enrichChunkMetadata } from "../lib/rag-scoring.js";
+import { buildLatestReleaseBlock, detectLatestReleaseQuery } from "../lib/latest-release.js";
 import { readFileSync } from "fs";
 import { join } from "path";
 
@@ -7,6 +8,7 @@ import { join } from "path";
 let chunks = null;
 let bm25Index = null;
 let reposData = null;
+let latestReleaseData = null;
 
 function loadChunks() {
   if (chunks) return chunks;
@@ -30,6 +32,18 @@ function loadRepos() {
   } catch (e) {
     console.error("Failed to load repos.json:", e.message);
     return [];
+  }
+}
+
+function loadLatestRelease() {
+  if (latestReleaseData) return latestReleaseData;
+  try {
+    const raw = readFileSync(join(process.cwd(), "data", "latest-release.json"), "utf-8");
+    latestReleaseData = JSON.parse(raw);
+    return latestReleaseData;
+  } catch (e) {
+    console.error("Failed to load latest-release.json:", e.message);
+    return null;
   }
 }
 
@@ -371,11 +385,18 @@ export default async function handler(req, res) {
       }
     }
 
+    const needsLatestRelease = detectLatestReleaseQuery(`${message}\n${searchQuery}`);
+    const latestRelease = needsLatestRelease ? loadLatestRelease() : null;
+    const latestReleaseBlock = latestRelease ? `\n\n${buildLatestReleaseBlock(latestRelease)}\n` : "";
+    if (latestReleaseBlock) {
+      console.log(`[RAG] Injected latest release metadata (${latestRelease.version}/${latestRelease.tag || "no tag"})`);
+    }
+
     // 4. Build context: ALWAYS include baseline + retrieved chunks
     // This prevents vague queries from getting weak answers due to bad retrieval
     const baselineContext = `## CORE FACTS (always true)
 
-Hermes Agent is an open-source autonomous AI agent developed by Nous Research, released in February 2026 under MIT license. It currently has 83,000+ stars on GitHub (v0.9.0 released April 13, 2026).
+Hermes Agent is an open-source autonomous AI agent developed by Nous Research, released in February 2026 under MIT license.
 
 **What makes it unique:** Unlike stateless chatbots, Hermes has a built-in learning loop — it creates reusable skills from experience, remembers what it learns across sessions via persistent memory (MEMORY.md + USER.md + SQLite FTS5), and gets more capable the longer you use it. It's "the agent that grows with you."
 
@@ -386,8 +407,6 @@ Hermes Agent is an open-source autonomous AI agent developed by Nous Research, r
 - 6 execution backends (local, Docker, SSH, Singularity, Modal, Daytona)
 - Autonomous skill creation following agentskills.io standard
 - Persistent cross-session memory with 8 pluggable memory providers
-
-**Latest release (v0.9.0, April 13 2026):** Local web dashboard, Fast Mode (/fast) for GPT-5.4/Codex/Claude, iMessage via BlueBubbles, WeChat + WeCom native support, Termux/Android native, background process monitoring (watch_patterns), pluggable context engine, xAI (Grok) + Xiaomi MiMo + Qwen native providers, unified proxy support, 16 security fixes. 487 commits, 269 PRs, 24 contributors.
 
 **Installation:** One-line install on Linux/macOS/WSL2:
 \`curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash\`
@@ -405,7 +424,8 @@ Then run \`hermes\` to start. Only Git is required as a prerequisite — the ins
 ANSWER RULES:
 - Start with a direct, complete answer. NEVER say "I don't have details" or "specific details are not in the context" when the CORE FACTS or RETRIEVED CONTEXT sections contain relevant information. Always synthesize what you DO have.
 - Don't hedge with "based on the context" or "based on the available records."
-- Use the CORE FACTS section as your baseline — those are always true. The "Latest release" line in CORE FACTS contains headline features that you MUST use when asked about the latest or newest release.
+- Use the CORE FACTS section as your baseline — those are always true.
+- If a LATEST RELEASE section is present, treat it as authoritative for latest/newest/current release questions and prefer it over older retrieved release notes.
 - Use the RETRIEVED CONTEXT section for specific details, recent updates, and tool recommendations.
 - Prefer official_docs and curated_atlas sources when context conflicts. Treat catalog/generated pages as lookup sources, not broad product overviews, unless the user is asking about skills/catalogs.
 - For ranking/comparison/recommendation questions, use the REPO METADATA section for accurate star counts.
@@ -417,7 +437,7 @@ ANSWER RULES:
 - ALWAYS mention exact star counts from REPO METADATA when comparing or recommending repos.
 - If a question truly isn't covered by any of your sources, say so — but ONLY after checking CORE FACTS, RETRIEVED CONTEXT, and REPO METADATA. Do not give up prematurely.
 
-${baselineContext}
+${baselineContext}${latestReleaseBlock}
 
 ## RETRIEVED CONTEXT (relevant to this specific question)
 
