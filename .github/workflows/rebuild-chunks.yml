@@ -43,11 +43,11 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: node scripts/build-chunks.js
 
-      - name: Check if chunks changed
+      - name: Check if generated knowledge data changed
         id: diff
         run: |
-          git diff --stat data/chunks.json
-          if git diff --quiet data/chunks.json; then
+          git diff --stat data/chunks.json data/latest-release.json
+          if git diff --quiet data/chunks.json data/latest-release.json; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -55,12 +55,12 @@ jobs:
             echo "count=$CHUNKS" >> $GITHUB_OUTPUT
           fi
 
-      - name: Commit updated chunks
+      - name: Commit updated knowledge data
         if: steps.diff.outputs.changed == 'true'
         run: |
           git config user.name "Hermes Atlas Bot"
           git config user.email "bot@hermesatlas.com"
-          git add data/chunks.json
+          git add data/chunks.json data/latest-release.json
           git commit -m "Rebuild knowledge base chunks (${{ steps.diff.outputs.count }} chunks)"
 
           # main can move during a multi-minute build (PR merge, another
