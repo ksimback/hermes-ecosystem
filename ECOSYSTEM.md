@@ -86,6 +86,11 @@ Skills are on-demand knowledge documents following the [agentskills.io](https://
 | [cablate/Agentic-MCP-Skill](https://github.com/cablate/Agentic-MCP-Skill) | MCP client with skills validation layer | — | Beta |
 | [PederHP/skillsdotnet](https://github.com/PederHP/skillsdotnet) | C# / .NET implementation of the agentskills.io standard | — | Experimental |
 
+| [indigokarasu/scout](https://github.com/indigokarasu/scout) | Structured OSINT research — lawful people, company, and organization research with full provenance | 1 | Beta |
+| [indigokarasu/sift](https://github.com/indigokarasu/sift) | Research synthesis — retrieves, verifies, and synthesizes information with source reliability scoring | — | Beta |
+| [indigokarasu/forge](https://github.com/indigokarasu/forge) | Skill architect and builder — six-phase pipeline for designing, scoping, building, and validating agent skills | — | Beta |
+| [indigokarasu/critique](https://github.com/indigokarasu/critique) | Structured skill quality evaluation, scoring, and iterative improvement engine | — | Beta |
+
 ### Skill Registries & Discovery
 
 | Repository | Description | Stars | Maturity |
@@ -122,6 +127,10 @@ Extensions to Hermes's built-in memory system — external providers, context en
 | [yoloshii/ClawMem](https://github.com/yoloshii/ClawMem) | On-device memory and context engine for agents | 86 | Beta |
 | [plur-ai/plur](https://github.com/plur-ai/plur) | Shared memory layer with open engram YAML format for multi-agent systems | 31 | Beta |
 | [amanning3390/flowstate-qmd](https://github.com/amanning3390/flowstate-qmd) | Anticipatory memory with RAG and vector search | — | Experimental |
+| [indigokarasu/elephas](https://github.com/indigokarasu/elephas) | Long-term memory — sole writer to Chronicle, the authoritative knowledge graph for confirmed facts | — | Beta |
+| [indigokarasu/corvus](https://github.com/indigokarasu/corvus) | Pattern analysis engine — scans knowledge graph and journals to surface behavioral patterns and opportunities | — | Beta |
+| [indigokarasu/lucid](https://github.com/indigokarasu/lucid) | Nightly journal curator — batch-processes skill journals into MemPalace's verifiable memory store | — | Beta |
+| [indigokarasu/praxis](https://github.com/indigokarasu/praxis) | Behavioral refinement loop — measures skill outcomes against baselines and promotes improvements | — | Beta |
 | [greyhaven-ai/autocontext](https://github.com/greyhaven-ai/autocontext) | Recursive self-improving context harness — helps agents succeed on complex tasks | 711 | Beta |
 
 ---
@@ -139,6 +148,10 @@ Frameworks for running multiple Hermes agents or coordinating agent swarms.
 | [Rainhoole/hermes-agent-acp-skill](https://github.com/Rainhoole/hermes-agent-acp-skill) | Multi-agent delegation routing via ACP | — | Beta |
 | [Abruptive/Ankh.md](https://github.com/Abruptive/Ankh.md) | TAW Agent × Hermes swarm framework for multi-agent collaboration | 25 | Experimental |
 | [runtimenoteslabs/gladiator](https://github.com/runtimenoteslabs/gladiator) | Autonomous AI companies competing for GitHub stars — agent-vs-agent arena | 29 | Experimental |
+| [indigokarasu/mentor](https://github.com/indigokarasu/mentor) | Multi-skill orchestration and self-improvement engine — decomposes goals, supervises execution, analyzes outcomes | — | Beta |
+| [indigokarasu/fellow](https://github.com/indigokarasu/fellow) | Experimentation engine — runs controlled benchmark experiments to validate skill improvements | — | Beta |
+| [indigokarasu/finch](https://github.com/indigokarasu/finch) | Self-improvement orchestrator — mines session history to detect corrections, breakthroughs, and behavioral patterns | — | Beta |
+| [indigokarasu/multipass](https://github.com/indigokarasu/multipass) | Accomplish tasks that need tools the agent doesn't have — autonomous, isolated, fire-and-forget execution | — | Beta |
 
 ---
 
@@ -170,6 +183,9 @@ Connect Hermes to external platforms, services, and ecosystems.
 | [Ridwannurudeen/hermes-council](https://github.com/Ridwannurudeen/hermes-council) | Adversarial multi-perspective MCP server for decision-making | — | Experimental |
 | [Hmbown/NemoHermes](https://github.com/Hmbown/NemoHermes) | NVIDIA capability registry and GPU routing for Hermes | — | Experimental |
 | [marlandoj/zouroboros-swarm-executors](https://github.com/marlandoj/zouroboros-swarm-executors) | Claude Code ↔ Hermes task handoff and swarm execution | — | Experimental |
+| [indigokarasu/reach](https://github.com/indigokarasu/reach) | Real-time world-data query engine — stock prices, weather, news, and live data on demand | — | Beta |
+| [indigokarasu/vesper](https://github.com/indigokarasu/vesper) | Daily briefing generator — aggregates signals from all skills into concise morning and evening briefings | — | Beta |
+| [indigokarasu/mcp-plu-upc](https://github.com/indigokarasu/mcp-plu-upc) | MCP server for UPC/barcode and PLU produce code lookups via Open Food Facts — KV-cached for speed | — | Beta |
 
 ---
 
@@ -207,6 +223,18 @@ Purpose-built agents and workflows powered by Hermes for specific use cases.
 | [bryercowan/hermes-embodied](https://github.com/bryercowan/hermes-embodied) | Self-improving robotics via VLA model fine-tuning | — | Experimental |
 | [Lethe044/hermes-legal](https://github.com/Lethe044/hermes-legal) | Contract risk analysis and legal document review | — | Experimental |
 | [Snehal707/Hermes-mars-rover](https://github.com/Snehal707/Hermes-mars-rover) | Mars rover simulator with ROS2 and Gazebo integration | — | Experimental |
+| [indigokarasu/rally](https://github.com/indigokarasu/rally) | Governed portfolio research and trade planning — scores public-market candidates with risk-bounded allocation | — | Beta |
+| [indigokarasu/weave](https://github.com/indigokarasu/weave) | Private social graph — provenance-backed contacts, relationships, preferences, and shared experiences | — | Beta |
+| [indigokarasu/voyage](https://github.com/indigokarasu/voyage) | Travel planning and itinerary construction — books flights, hotels, and manages trip logistics | — | Beta |
+| [indigokarasu/taste](https://github.com/indigokarasu/taste) | Personalized recommendation engine — builds taste models from real consumption signals for food, travel, and shopping | — | Beta |
+| [indigokarasu/styx](https://github.com/indigokarasu/styx) | Personal transaction data store with merchant enrichment — categorizes and stores purchase history | — | Beta |
+| [indigokarasu/spot](https://github.com/indigokarasu/spot) | Appointment booking automation — handles SevenRooms, Resy, Tock, and OpenTable reservations via browser automation | — | Beta |
+| [indigokarasu/sands](https://github.com/indigokarasu/sands) | Natural-language calendar management — create, query, modify, and delete events across multiple calendars | — | Beta |
+| [indigokarasu/look](https://github.com/indigokarasu/look) | Image-to-action — takes a photo and produces a validated action draft for calendar, shopping, receipts, and more | — | Beta |
+| [indigokarasu/imagine](https://github.com/indigokarasu/imagine) | Art-direction engine for text-to-image generation — applies narrative style creation and transfer methodology | — | Beta |
+| [indigokarasu/custodian](https://github.com/indigokarasu/custodian) | Autonomous operations monitor — detects, classifies, and repairs agent platform failures during quiet hours | — | Beta |
+| [indigokarasu/bower](https://github.com/indigokarasu/bower) | Automatic Google Drive organizer — scans, categorizes, and reorganizes Drive files using personalized preferences | — | Beta |
+| [indigokarasu/genie](https://github.com/indigokarasu/genie) | VPS disk space monitor and safe cleanup — identifies bloat and removes it without breaking services | — | Beta |
 
 ---
 
