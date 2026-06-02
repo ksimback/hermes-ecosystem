@@ -432,69 +432,134 @@ jobs:
               base: 'main'
             });
 
-            // Enable auto-merge so the PR lands once Vercel preview is green.
-            // Combined with the workflow's `concurrency: validate-repo-suggestion`
-            // group, this serializes validation runs so each PR auto-merges
-            // before the next one's create-PR step fetches main — preventing
-            // the conflict pattern PRs #193/#196 hit on 2026-05-15.
-            //
-            // GitHub returns "Pull request is in unstable status" when
-            // enablePullRequestAutoMerge is called immediately after PR
-            // creation because mergeStateStatus is still UNKNOWN (merge state
-            // hasn't computed yet). This is what kept tripping the workflow
-            // through 2026-05-17. Fix: poll for a non-UNKNOWN merge state
-            // before enabling, with a short max wait so we don't burn time.
-            // Tracking issue only opens if the state never settles OR the
-            // mutation still fails for a reason other than the race.
-            let autoMergeEnabled = false;
+            // Merge the validator PR inside this serialized workflow instead
+            // of delegating to native auto-merge immediately after PR creation.
+            // Native auto-merge has repeatedly rejected fresh validator PRs as
+            // "unstable" while preview/check contexts are still materializing;
+            // the job then exits, the next queued submission branches from the
+            // same main, and the open PR stack becomes DIRTY once any earlier
+            // add-repo PR lands. Keeping this workflow alive until checks are
+            // successful preserves the serialization invariant: the next repo
+            // submission only reads main after this one has either merged or
+            // produced a single deduped blocker issue.
+            let mergedByWorkflow = false;
             let mergeState = 'UNKNOWN';
-            for (let i = 0; i < 12; i++) {
+            let checkSummary = 'pending';
+            let blockerReason = '';
+
+            for (let i = 0; i < 60; i++) {
               const { repository } = await github.graphql(
                 `query($owner: String!, $repo: String!, $num: Int!) {
                   repository(owner: $owner, name: $repo) {
-                    pullRequest(number: $num) { mergeStateStatus }
+                    pullRequest(number: $num) {
+                      mergeStateStatus
+                      mergeable
+                      isDraft
+                      commits(last: 1) {
+                        nodes {
+                          commit {
+                            statusCheckRollup {
+                              contexts(first: 50) {
+                                nodes {
+                                  __typename
+                                  ... on CheckRun { name status conclusion }
+                                  ... on StatusContext { context state }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }`,
                 { owner: context.repo.owner, repo: context.repo.repo, num: pr.number }
               );
-              mergeState = repository.pullRequest.mergeStateStatus;
-              if (mergeState && mergeState !== 'UNKNOWN') break;
-              await new Promise(r => setTimeout(r, 5000));
-            }
-            console.log(`PR #${pr.number} mergeStateStatus settled to ${mergeState}`);
 
-            try {
-              await github.graphql(
-                `mutation($pullRequestId: ID!) {
-                  enablePullRequestAutoMerge(input: {
-                    pullRequestId: $pullRequestId,
-                    mergeMethod: SQUASH
-                  }) {
-                    pullRequest { autoMergeRequest { enabledAt } }
-                  }
-                }`,
-                { pullRequestId: pr.node_id }
-              );
-              autoMergeEnabled = true;
-              console.log(`Auto-merge enabled on PR #${pr.number}`);
-            } catch (e) {
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: `[Workflow] Auto-merge failed on validator PR #${pr.number}`,
-                body: `Could not enable auto-merge on \`add-repo\` PR #${pr.number} for ${owner}/${repo}.\n\n**Merge state at attempt:** \`${mergeState}\`\n**Error:** \`${e.message}\`\n\n**Action:** review and merge the PR manually, or close it if invalid.`,
-                labels: ['workflow-issue']
+              const pull = repository.pullRequest;
+              mergeState = pull.mergeStateStatus || 'UNKNOWN';
+              const contexts = pull.commits.nodes[0]?.commit?.statusCheckRollup?.contexts?.nodes || [];
+              const blocking = contexts.filter(c => {
+                if (c.__typename === 'CheckRun') {
+                  return c.status !== 'COMPLETED' || !['SUCCESS', 'SKIPPED', 'NEUTRAL'].includes(c.conclusion);
+                }
+                if (c.__typename === 'StatusContext') {
+                  return c.state !== 'SUCCESS';
+                }
+                return false;
               });
-              core.warning(`Auto-merge failed on PR #${pr.number} (mergeState=${mergeState}); tracking issue opened.`);
+              checkSummary = contexts.length
+                ? `${contexts.length - blocking.length}/${contexts.length} passing`
+                : 'no check contexts yet';
+
+              console.log(`PR #${pr.number}: mergeState=${mergeState}, mergeable=${pull.mergeable}, checks=${checkSummary}`);
+
+              if (pull.isDraft) {
+                blockerReason = 'PR is draft';
+                break;
+              }
+              if (mergeState === 'DIRTY') {
+                blockerReason = 'PR is dirty/conflicted';
+                break;
+              }
+              if (contexts.length > 0 && blocking.length === 0 && ['CLEAN', 'HAS_HOOKS', 'UNSTABLE'].includes(mergeState)) {
+                try {
+                  await github.rest.pulls.merge({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    pull_number: pr.number,
+                    merge_method: 'squash',
+                    commit_title: `Add ${owner}/${repo} to Atlas ecosystem (#${pr.number})`
+                  });
+                  mergedByWorkflow = true;
+                  console.log(`Merged PR #${pr.number} after checks passed.`);
+                  break;
+                } catch (e) {
+                  blockerReason = `Merge API failed: ${e.message}`;
+                  console.log(blockerReason);
+                }
+              }
+
+              await new Promise(r => setTimeout(r, 30000));
             }
 
-            // Comment on the issue with the PR link
-            const autoMergeNote = autoMergeEnabled
-              ? '\n\nAuto-merge is enabled — the PR will land once preview checks pass.'
-              : '\n\n(Auto-merge could not be enabled; a maintainer will review and merge manually.)';
+            if (!mergedByWorkflow) {
+              if (!blockerReason) {
+                blockerReason = `Timed out waiting for mergeable green PR; mergeState=${mergeState}, checks=${checkSummary}`;
+              }
+
+              const issueTitle = `[Workflow] Validator PR #${pr.number} needs manual review`;
+              const existing = await github.rest.search.issuesAndPullRequests({
+                q: `repo:${context.repo.owner}/${context.repo.repo} is:issue is:open in:title "${issueTitle}"`
+              });
+              const body = `Validator PR #${pr.number} for ${owner}/${repo} did not auto-merge.\n\n**Merge state at attempt:** \`${mergeState}\`\n**Checks:** \`${checkSummary}\`\n**Reason:** \`${blockerReason}\`\n\n**Action:** review and merge the PR manually, or close it if invalid.`;
+
+              if (existing.data.items.length === 0) {
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: issueTitle,
+                  body,
+                  labels: ['workflow-issue']
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: existing.data.items[0].number,
+                  body: `Still blocked.\n\n${body}`
+                });
+              }
+              core.warning(`PR #${pr.number} did not auto-merge: ${blockerReason}`);
+            }
+
+            // Comment on the source issue with the PR link and outcome.
+            const mergeNote = mergedByWorkflow
+              ? '\n\nThe validator workflow merged the PR after checks passed.'
+              : '\n\nThe PR was created, but did not auto-merge; a deduped workflow issue tracks manual review.';
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: `PR created: #${pr.number}\n\nOnce merged, this repo will appear in the ecosystem map.${autoMergeNote}`
+              body: `PR created: #${pr.number}\n\nOnce merged, this repo will appear in the ecosystem map.${mergeNote}`
             });
