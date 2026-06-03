@@ -47,13 +47,13 @@
     "name": "ucsandman",
     "url": "https://github.com/ucsandman"
   },
-  "dateModified": "2026-05-31T11:42:22.000Z",
+  "dateModified": "2026-06-03T05:43:42.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 269
+    "userInteractionCount": 273
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -82,7 +82,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span>apr·2026</span>
-    <span id="meta-count">153·repos</span>
+    <span id="meta-count">160·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -112,11 +112,11 @@
   <p class="project-desc">🛡️Decision infrastructure for AI agents. Intercept actions, enforce guard policies, require approvals, and produce audit-ready decision trails.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 269</span>
+    <span class="stars">★ 273</span>
     <span><span class="meta-label">lang</span>JavaScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-05-31</span>
+    <span><span class="meta-label">updated</span>2026-06-03</span>
   </div>
 
   <div class="actions">
@@ -306,9 +306,12 @@ node cli/bin/dashclaw.js install codex --project /path/to/your/project
 bash scripts/install-hermes-plugin.sh        # macOS / Linux
 powershell -File scripts/install-hermes-plugin.ps1   # Windows
 </code></pre>
-<p>For Claude Code specifically, the hook installer alone (without the plugin) governs 40+ tool types (Bash, Edit, Write, MultiEdit, …) with semantic classification, risk scoring, and per-turn token capture — no SDK calls in your agent code. Set <code>DASHCLAW_BASE_URL</code>, <code>DASHCLAW_API_KEY</code>, and optionally <code>DASHCLAW_HOOK_MODE=enforce</code>. Full details in <a href="https://github.com/ucsandman/DashClaw/blob/main/hooks/README.md"><code>hooks/README.md</code></a>.</p>
+<p>For Claude Code specifically, the hook installer alone (without the plugin) governs Bash, Edit, Write, MultiEdit, sub-agent spawns, and every <code>mcp__*</code> tool call with semantic classification, risk scoring, and per-turn token capture — no SDK calls in your agent code. Set <code>DASHCLAW_BASE_URL</code>, <code>DASHCLAW_API_KEY</code>, and optionally <code>DASHCLAW_HOOK_MODE=enforce</code>. Full details in <a href="https://github.com/ucsandman/DashClaw/blob/main/hooks/README.md"><code>hooks/README.md</code></a>.</p>
+<p><strong>Verify it fires:</strong> pipe a fake tool call through the hook — a clean exit (and a guard evaluation when DashClaw is reachable) confirms the wiring. Use <code>python3</code> if your system has no <code>python</code> on PATH; the installer picks the right one automatically.</p>
+<pre><code class="language-bash">echo &#39;{&quot;tool_name&quot;:&quot;Bash&quot;,&quot;tool_input&quot;:{&quot;command&quot;:&quot;echo hello&quot;},&quot;tool_use_id&quot;:&quot;test_001&quot;,&quot;session_id&quot;:&quot;smoke&quot;}&#39; | python .claude/hooks/dashclaw_pretool.py
+</code></pre>
 <h4>2. MCP server (zero code, any MCP host)</h4>
-<p><a href="./mcp-server"><code>@dashclaw/mcp-server</code></a> exposes <strong>23 governance MCP tools</strong> across 7 groups — core governance, optimal files, session continuity, credential hygiene, skill safety, open loops, learning + retrospection — plus 6 read-only resources (<code>dashclaw://policies</code>, <code>dashclaw://capabilities</code>, <code>dashclaw://agent/{agent_id}/history</code>, <code>dashclaw://status</code>, <code>dashclaw://code-sessions/projects</code>, <code>dashclaw://code-sessions/sessions/{session_id}</code>).</p>
+<p><a href="./mcp-server"><code>@dashclaw/mcp-server</code></a> exposes <strong>26 governance MCP tools</strong> across 9 groups — core governance, optimal files, session continuity, credential hygiene, skill safety, open loops, learning + retrospection, agent inbox, behavior learning — plus 6 read-only resources (<code>dashclaw://policies</code>, <code>dashclaw://capabilities</code>, <code>dashclaw://agent/{agent_id}/history</code>, <code>dashclaw://status</code>, <code>dashclaw://code-sessions/projects</code>, <code>dashclaw://code-sessions/sessions/{session_id}</code>).</p>
 <p><strong>Stdio (Claude Code, Claude Desktop, any stdio MCP client):</strong></p>
 <pre><code class="language-json">{
   &quot;mcpServers&quot;: {
@@ -341,7 +344,7 @@ powershell -File scripts/install-hermes-plugin.ps1   # Windows
 <pre><code class="language-bash">npm install dashclaw     # Node 18+
 pip install dashclaw     # Python 3.7+
 </code></pre>
-<p>87-method canonical Node surface: core governance, durable execution finality, scoring profiles, learning analytics, messaging, handoffs, security scanning, threads, sessions, and the execution-studio domains (workflow templates, model strategies, knowledge collections, capability runtime). The Python SDK exposes 227 methods including ready-made framework integrations:</p>
+<p>107-method canonical Node surface: core governance, durable execution finality, scoring profiles, learning analytics, messaging, handoffs, security scanning, threads, sessions, and the execution-studio domains (workflow templates, model strategies, knowledge collections, capability runtime). The Python SDK exposes 211 methods including ready-made framework integrations:</p>
 <pre><code class="language-python"># LangChain — auto-log LLM calls, tool use, and costs
 from dashclaw.integrations.langchain import DashClawCallbackHandler
 agent.run(&quot;Hello world&quot;, callbacks=[DashClawCallbackHandler(claw)])
@@ -362,7 +365,7 @@ DashClawAutoGenIntegration(claw).instrument_agent(assistant)
 </code></pre>
 <p>It intercepts every tool-use call (<code>before_tool_call</code>, <code>llm_output</code>, <code>after_tool_call</code>, <code>agent_end</code>), calls guard / record / waitForApproval automatically, and ships a <code>HOOK.md</code> the <code>openclaw</code> CLI installs. Tool-classification vocabulary aligns with DashClaw guard action types so policies behave consistently across plugin, hook, and SDK paths.</p>
 <h4>5. Direct REST API and webhooks</h4>
-<p>Every governance primitive is reachable as HTTP. The stable contract is pinned in <a href="https://github.com/ucsandman/DashClaw/blob/main/docs/openapi/critical-stable.openapi.json"><code>docs/openapi/critical-stable.openapi.json</code></a>; the full inventory (<strong>259 routes</strong>: 46 stable, 24 beta, 189 experimental) is at <a href="https://github.com/ucsandman/DashClaw/blob/main/docs/api-inventory.md"><code>docs/api-inventory.md</code></a>. Webhook events include <code>signal.detected</code>, <code>decision.created</code>, <code>action.created</code>, <code>lost_confirmation</code>, and the rest of the catalog — configurable per org.</p>
+<p>Every governance primitive is reachable as HTTP. The stable contract is pinned in <a href="https://github.com/ucsandman/DashClaw/blob/main/docs/openapi/critical-stable.openapi.json"><code>docs/openapi/critical-stable.openapi.json</code></a>; the full inventory (<strong>270 routes</strong>: 46 stable, 24 beta, 200 experimental) is at <a href="https://github.com/ucsandman/DashClaw/blob/main/docs/api-inventory.md"><code>docs/api-inventory.md</code></a>. Webhook events include <code>signal.detected</code>, <code>decision.created</code>, <code>action.created</code>, <code>lost_confirmation</code>, and the rest of the catalog — configurable per org.</p>
 <h4>6. Skills — governance protocol + live platform reference</h4>
 <p>Two drop-in skills, both available as zip bundles or source directories in <a href="./public/downloads/"><code>public/downloads/</code></a> and auto-bundled into the coding-agent plugins:</p>
 <ul>
@@ -627,11 +630,11 @@ await claw.createAction({ /* ... */, idempotency_key: key });
         <div class="name"><span class="org">rodmarkun /</span> anihermes</div>
       </a>
       <a class="related-row" href="/projects/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit">
-        <div class="stars">★ 18</div>
+        <div class="stars">★ 19</div>
         <div class="name"><span class="org">JackTheGit /</span> hermes-ai-infrastructure-monitoring-toolkit</div>
       </a>
       <a class="related-row" href="/projects/bigph00t/hermescraft">
-        <div class="stars">★ 35</div>
+        <div class="stars">★ 36</div>
         <div class="name"><span class="org">bigph00t /</span> hermescraft</div>
       </a>
       <a class="related-row" href="/projects/hxsteric/mercury">
@@ -641,6 +644,10 @@ await claw.createAction({ /* ... */, idempotency_key: key });
       <a class="related-row" href="/projects/bryercowan/hermes-embodied">
         <div class="stars">★ 8</div>
         <div class="name"><span class="org">bryercowan /</span> hermes-embodied</div>
+      </a>
+      <a class="related-row" href="/projects/Sahil-SS9/MrHermagi-tutorbot">
+        <div class="stars">★ 2</div>
+        <div class="name"><span class="org">Sahil-SS9 /</span> MrHermagi-tutorbot</div>
       </a>
     </div>
     

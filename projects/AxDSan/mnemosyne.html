@@ -47,13 +47,13 @@
     "name": "AxDSan",
     "url": "https://github.com/AxDSan"
   },
-  "dateModified": "2026-06-01T07:03:33.000Z",
+  "dateModified": "2026-06-02T22:45:14.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 812
+    "userInteractionCount": 881
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -82,7 +82,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span>apr·2026</span>
-    <span id="meta-count">153·repos</span>
+    <span id="meta-count">160·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -112,11 +112,11 @@
   <p class="project-desc">The Zero-Dependency, Sub-Millisecond AI Memory System for Hermes Agents and Everyone Else!</p>
 
   <div class="meta-row">
-    <span class="stars">★ 812</span>
+    <span class="stars">★ 881</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-06-01</span>
+    <span><span class="meta-label">updated</span>2026-06-02</span>
   </div>
 
   <div class="actions">
@@ -150,7 +150,7 @@
 <h2>Mnemosyne</h2>
 <p><em>Zero-dependency AI memory that works everywhere. SQLite-backed. Sub-millisecond.</em></p>
 <p><a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.9+-blue.svg" alt="Python"></a>
-<a href="https://pypi.org/project/mnemosyne-memory/"><img src="https://img.shields.io/pypi/v/mnemosyne-memory.svg?v=3.3.0" alt="PyPI"></a>
+<a href="https://pypi.org/project/mnemosyne-memory/"><img src="https://img.shields.io/pypi/v/mnemosyne-memory.svg?v=3.4.0" alt="PyPI"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License"></a>
 <a href="https://github.com/AxDSan/mnemosyne/actions/workflows/ci.yml"><img src="https://github.com/AxDSan/mnemosyne/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 <a href="https://beam-benchmark.github.io/"><img src="https://img.shields.io/badge/BEAM-ICLR%202026-purple.svg" alt="BEAM"></a>
@@ -248,6 +248,9 @@
 
 # With all features (vector search + MCP server)
 pip install &quot;mnemosyne-memory[all]&quot;
+
+# Upgrade
+pip install --upgrade mnemosyne-memory
 </code></pre>
 <h4>Add to your agent</h4>
 <p><strong>MCP-based</strong> (Cursor, Claude Code, Codex, Windsurf):</p>
@@ -643,14 +646,17 @@ results = beam.recall(&quot;editor preferences&quot;, top_k=5)
 </tbody></table>
 <p>| <code>MNEMOSYNE_EMBEDDING_API_URL</code> | <code>${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}</code> | Preferred name for custom embedding API endpoint (OpenAI-compatible). Falls back to <code>OPENROUTER_BASE_URL</code>. |
 | <code>MNEMOSYNE_EMBEDDING_API_KEY</code> | <code>${OPENROUTER_API_KEY:-${OPENAI_API_KEY:-}}</code> | Preferred name for embedding API key. Falls back to <code>OPENROUTER_API_KEY</code>, then <code>OPENAI_API_KEY</code>. |
-| <code>MNEMOSYNE_EMBEDDING_MODEL</code> | <code>BAAI/bge-small-en-v1.5</code> | Embedding model. Swap for multilingual: <code>BAAI/bge-m3</code>, <code>intfloat/multilingual-e5-base</code>, etc. |</p>
+| <code>MNEMOSYNE_EMBEDDING_MODEL</code> | <code>BAAI/bge-small-en-v1.5</code> | Embedding model. Low-resource multilingual: <code>sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2</code>; larger options: <code>intfloat/multilingual-e5-base</code>, <code>BAAI/bge-m3</code>. |</p>
 <p>Full reference: <a href="https://github.com/AxDSan/mnemosyne/blob/main/docs/configuration.md">docs/configuration.md</a></p>
 <h4>Language Support</h4>
 <p>Default embeddings are English-optimized (<code>bge-small-en-v1.5</code>). For <strong>non-English or multilingual</strong> recall, swap the model:</p>
-<pre><code class="language-bash"># Multilingual (100+ languages)
-export MNEMOSYNE_EMBEDDING_MODEL=BAAI/bge-m3
+<pre><code class="language-bash"># Low-resource local multilingual embeddings
+export MNEMOSYNE_EMBEDDING_MODEL=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
 
-# Or Chinese, German, etc.
+# Larger multilingual embeddings
+export MNEMOSYNE_EMBEDDING_MODEL=intfloat/multilingual-e5-base
+
+# Or Chinese-specific embeddings
 export MNEMOSYNE_EMBEDDING_MODEL=BAAI/bge-small-zh-v1.5
 </code></pre>
 <p>See <a href="https://github.com/AxDSan/mnemosyne/blob/main/docs/configuration.md#custom-embedding-models">docs/configuration.md#custom-embedding-models</a> for tradeoffs (RAM, speed, dimension changes).</p>
@@ -731,11 +737,11 @@ hermes memory setup
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 57.3K</div>
+        <div class="stars">★ 57.6K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 15.4K</div>
+        <div class="stars">★ 15.6K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -743,23 +749,23 @@ hermes memory setup
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 277</div>
+        <div class="stars">★ 285</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
-        <div class="stars">★ 179</div>
+        <div class="stars">★ 180</div>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/Signet-AI/signetai">
-        <div class="stars">★ 179</div>
+        <div class="stars">★ 182</div>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 148</div>
+        <div class="stars">★ 153</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
-        <div class="stars">★ 29</div>
+        <div class="stars">★ 30</div>
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
     </div>

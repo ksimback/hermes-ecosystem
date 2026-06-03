@@ -47,13 +47,13 @@
     "name": "xaspx",
     "url": "https://github.com/xaspx"
   },
-  "dateModified": "2026-06-01T04:34:42.000Z",
+  "dateModified": "2026-06-03T09:06:39.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 727
+    "userInteractionCount": 738
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -82,7 +82,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span>apr·2026</span>
-    <span id="meta-count">153·repos</span>
+    <span id="meta-count">160·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -112,11 +112,11 @@
   <p class="project-desc">A self-hosted web dashboard for the Hermes AI agent stack. Provides a browser-based terminal, file explorer, session overview, cron management, system metrics, and an agent status panel — all behind a single password gate.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 727</span>
+    <span class="stars">★ 738</span>
     <span><span class="meta-label">lang</span>JavaScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-06-01</span>
+    <span><span class="meta-label">updated</span>2026-06-03</span>
   </div>
 
   <div class="actions">
@@ -144,802 +144,322 @@
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
     <h2>Hermes Control Interface</h2>
-<p>A self-hosted web dashboard for the <a href="https://github.com/NousResearch/hermes-agent">Hermes AI agent</a> stack. Manage terminals, files, sessions, cron jobs, token analytics, multi-agent gateways, and team access — all behind a password gate.</p>
-<p><strong>Stack:</strong> Vanilla JS + Vite · Node.js · Express · WebSocket · xterm.js
-<strong>Version:</strong> 3.5.0</p>
+<p>A self-hosted web dashboard for the <a href="https://github.com/NousResearch/hermes-agent">Hermes AI agent</a> stack. Manage agents, chat, terminals, files, cron, token analytics, MCP servers, and swarm pipelines — behind a password gate.</p>
+<p><strong>Stack:</strong> Vanilla JS + Vite · Node.js · Express · WebSocket · xterm.js · Chart.js · better-sqlite3<br><strong>Version:</strong> 3.6.0 · <strong>License:</strong> MIT</p>
 <hr>
-<h3>Highlights</h3>
-<blockquote>
-<p><strong>Chat via Gateway API</strong> — Real-time streaming, tool call cards with JSON viewer, session resume, stop button, multi-profile support. Auto-fallback to CLI.</p>
-</blockquote>
-<blockquote>
-<p><strong>RBAC v2</strong> — 20 permissions across 3 roles. Admin, viewer, or custom roles per user.</p>
-</blockquote>
-<blockquote>
-<p><strong>Multi-Agent Gateway</strong> — Start/stop/configure multiple Hermes profiles. Real-time logs. Systemd service management.</p>
-</blockquote>
-<blockquote>
-<p><strong>Token Analytics</strong> — Track sessions, messages, tokens, cost by model, platform, and time range.</p>
-</blockquote>
-<blockquote>
-<p><strong>Security Hardened</strong> — Command injection fixes, CSRF on 21 endpoints, dynamic CORS, comprehensive XSS protection (escapeHtml on all error handlers), 18 findings addressed.</p>
-</blockquote>
+<h3>Quick Start</h3>
+<pre><code class="language-bash">git clone https://github.com/xaspx/hermes-control-interface.git
+cd hermes-control-interface
+cp .env.example .env     # set HERMES_CONTROL_PASSWORD + HERMES_CONTROL_SECRET
+npm install &amp;&amp; npm run build
+node server.js            # → http://localhost:10274
+</code></pre>
+<p>See <a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/INSTALL.md">docs/INSTALL.md</a> for production setup, nginx, and systemd.</p>
 <hr>
-<h3>Screenshots</h3>
-<h4>Navigation — 8 Pages</h4>
-<p><strong>Home · Agents · Usage · Skills · Chat · Logs · Maintenance · Files</strong></p>
-<h4>Dark Mode</h4>
+<h3>Overview</h3>
 <table>
 <thead>
 <tr>
-<th>Home</th>
-<th>Agents</th>
+<th>Page</th>
+<th>What</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/01-home.png" alt="Home"></td>
-<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/02-agents.png" alt="Agents"></td>
+<td><strong>Home</strong></td>
+<td>System health, agent overview, gateway status, token usage</td>
+</tr>
+<tr>
+<td><strong>Chat</strong></td>
+<td>Real-time streaming via gateway API, tool call cards, multi-profile</td>
+</tr>
+<tr>
+<td><strong>Agents</strong></td>
+<td>Profile CRUD, gateway lifecycle, per-agent dashboard/sessions/cron</td>
+</tr>
+<tr>
+<td><strong>Office</strong></td>
+<td>3-panel swarm monitor — agent health, kanban pipeline, live feed</td>
+</tr>
+<tr>
+<td><strong>Monitor</strong></td>
+<td>Gateway logs, CPU/RAM metrics, live process view</td>
+</tr>
+<tr>
+<td><strong>Usage</strong></td>
+<td>Token analytics, daily trends, cost projections, budget alerts</td>
+</tr>
+<tr>
+<td><strong>Logs</strong></td>
+<td>Agent, error, and gateway logs with level filter</td>
+</tr>
+<tr>
+<td><strong>Skills</strong></td>
+<td>Browse, install, and remove Hermes skills</td>
+</tr>
+<tr>
+<td><strong>Files</strong></td>
+<td>Browse and edit files on the server</td>
+</tr>
+<tr>
+<td><strong>MCP</strong></td>
+<td>MCP server control plane — start, stop, restart, log tail, config editor</td>
+</tr>
+<tr>
+<td><strong>Maintenance</strong></td>
+<td>Backup, restore, HCI update, system doctor</td>
 </tr>
 </tbody></table>
+<hr>
+<h3>Screenshots</h3>
+<h4>Core Pages · Dark Mode</h4>
 <table>
 <thead>
 <tr>
-<th>Chat</th>
-<th>Usage &amp; Analytics</th>
+<th></th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody><tr>
+<td>Home</td>
+<td>Chat</td>
+<td>Office</td>
+</tr>
+<tr>
+<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/01-home.png" alt="Home"></td>
 <td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/chat.png" alt="Chat"></td>
+<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/office.png" alt="Office"></td>
+</tr>
+<tr>
+<td>Agents</td>
+<td>MCP Manager</td>
+<td>Usage</td>
+</tr>
+<tr>
+<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/02-agents.png" alt="Agents"></td>
+<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/mcp.png" alt="MCP"></td>
 <td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/03-usage.png" alt="Usage"></td>
 </tr>
 </tbody></table>
+<h4>Agent Detail Pages</h4>
 <table>
 <thead>
 <tr>
-<th>Skills Hub</th>
-<th>Maintenance</th>
+<th></th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody><tr>
-<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/04-skills.png" alt="Skills"></td>
-<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/05-maintenance.png" alt="Maintenance"></td>
+<td>Dashboard</td>
+<td>Sessions</td>
+<td>Gateway</td>
 </tr>
-</tbody></table>
-<table>
-<thead>
 <tr>
-<th>File Explorer</th>
-<th>Agent Dashboard</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/06-files.png" alt="Files"></td>
 <td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/07-agent-dashboard.png" alt="Dashboard"></td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th>Agent Gateway</th>
-<th>Agent Sessions</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/09-agent-gateway.png" alt="Gateway"></td>
 <td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/08-agent-sessions.png" alt="Sessions"></td>
+<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/09-agent-gateway.png" alt="Gateway"></td>
 </tr>
-</tbody></table>
-<table>
-<thead>
 <tr>
-<th>Agent Config</th>
-<th>Agent Memory</th>
+<td>Config</td>
+<td>Memory</td>
+<td>Skills</td>
 </tr>
-</thead>
-<tbody><tr>
+<tr>
 <td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/10-agent-config.png" alt="Config"></td>
 <td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/11-agent-memory.png" alt="Memory"></td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th>Agent Skills</th>
-<th>Agent Cron</th>
-</tr>
-</thead>
-<tbody><tr>
 <td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/12-agent-skills.png" alt="Skills"></td>
-<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/dark/13-agent-cron.png" alt="Cron"></td>
-</tr>
-</tbody></table>
-<h4>Light Mode</h4>
-<table>
-<thead>
-<tr>
-<th>Home</th>
-<th>Agents</th>
-<th>Skills Hub</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/light/01-home.png" alt="Home"></td>
-<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/light/02-agents.png" alt="Agents"></td>
-<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/light/04-skills.png" alt="Skills"></td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th>Gateway</th>
-<th>Memory</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/light/09-agent-gateway.png" alt="Gateway"></td>
-<td><img src="https://raw.githubusercontent.com/xaspx/hermes-control-interface/main/docs/screenshots/light/11-agent-memory.png" alt="Memory"></td>
 </tr>
 </tbody></table>
 <hr>
 <h3>Features</h3>
-<h4>🔐 Authentication</h4>
+<h4>Office v3 — ZOO Swarm Monitor</h4>
+<p>Three-panel dashboard with zero-subprocess agent states (~100ms vs 3000ms):</p>
 <ul>
-<li>Single password login (configurable via <code>HERMES_CONTROL_PASSWORD</code>)</li>
-<li>bcrypt password hashing (cost factor 10)</li>
-<li>CSRF tokens on all mutating requests</li>
-<li>Conditional Secure cookie flag (auto-detects HTTPS)</li>
-<li>Rate limiting: 5 failed logins per 15 minutes per IP</li>
-<li>Multi-user support with role-based access control (RBAC)</li>
+<li><strong>Agents Panel</strong> — health grid via config.yaml + kanban.db</li>
+<li><strong>Kanban Panel</strong> — 8 status lanes (triage→done), dependency arrows, board switcher</li>
+<li><strong>Live Feed</strong> — 50 events from gateway logs, agent filter dropdown, keyword search</li>
+<li><strong>Task Popup</strong> — expandable run history, workspace file browser, event enrichment, timeline, load-more</li>
 </ul>
+<h4>Chat</h4>
+<ul>
+<li>Real-time streaming via WebSocket gateway API</li>
+<li>Multi-profile support with profile switcher</li>
+<li>Tool call cards with collapsible JSON viewer</li>
+<li>Stop button, session resume, fork from message</li>
+</ul>
+<h4>MCP Manager</h4>
+<p>Full operational control plane — list, start, stop, restart MCP servers. Live log tail and config editor from the browser. 11 REST API routes.</p>
+<h4>Security</h4>
+<ul>
+<li>CSP without <code>unsafe-eval</code>, CSRF on all mutating endpoints</li>
+<li>Rate limiting (global + chat), WebSocket RBAC</li>
+<li>Path traversal prevention, XSS protection</li>
+<li>20 permissions across 3 roles (admin, viewer, custom)</li>
+</ul>
+<h4>PWA</h4>
+<p>Installable to homescreen. Service worker with offline caching. Auto-update on new version.</p>
 <hr>
-<h4>🏠 Home Dashboard</h4>
-<p>System overview at a glance:</p>
-<ul>
-<li><strong>System Health</strong>: CPU usage, RAM usage, Disk usage, Uptime</li>
-<li><strong>Agent Overview</strong>: active model, provider, gateway status, configured API keys, active platforms</li>
-<li><strong>Gateway Status</strong>: per-profile running/stopped indicators</li>
-<li><strong>Token Usage (7d)</strong>: sessions count, messages, total tokens, estimated cost, models used, platforms breakdown, top tools</li>
-</ul>
+<h3>Architecture</h3>
+<pre><code>Browser (11 pages, SPA)
+       │
+   HTTPS :10274
+       │
+   Express Server (server.js — 6.4K lines)
+       ├── Auth (bcrypt, sessions, CSRF)
+       ├── RBAC (20 permissions, 3 roles)
+       ├── REST API (30+ routes)
+       ├── WebSocket (real-time)
+       │
+       ├── Hermes CLI (agent states, gateway control)
+       ├── SQLite (kanban.db — task pipeline)
+       ├── Filesystem (config.yaml, logs, skills)
+       └── External (MCP servers, token pricing)
+</code></pre>
+<p>Full architecture: <a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/ARCHITECTURE.md">docs/ARCHITECTURE.md</a></p>
 <hr>
-<h4>🤖 Agents — Multi-Agent Management</h4>
-<p>Manage all Hermes profiles from one place:</p>
-<ul>
-<li>List all profiles with status badge (running/stopped) and active model</li>
-<li>Create new profile</li>
-<li>Clone existing profile</li>
-<li>Delete profile</li>
-<li>Set default profile</li>
-<li>Start/Stop/Restart gateway per profile</li>
-<li>Quick gateway log viewer</li>
-</ul>
-<hr>
-<h4>💬 Chat — Revamped Interface</h4>
-<p>The chat interface got a full overhaul in v3.3.0:</p>
-<p><strong>Tool Call Cards</strong></p>
-<ul>
-<li>Each tool call displayed as a collapsible card</li>
-<li>Shows tool name, status (running/success/error), and execution time</li>
-<li>Expand to see full JSON input/output</li>
-<li>Collapsed by default for clean output</li>
-</ul>
-<p><strong>Session Sidebar</strong></p>
-<ul>
-<li>List of past chat sessions with timestamps</li>
-<li>Resume any session with one click</li>
-<li>New chat button for fresh session</li>
-<li>Shows active model tag</li>
-</ul>
-<p><strong>Clean Output</strong></p>
-<ul>
-<li>Banner suppression (<code>-Q</code> flag) for noise-free responses</li>
-<li>Auto-detects both new (<code>session_id:</code>) and legacy (<code>Session:</code>) session ID formats</li>
-<li><code>--continue &quot;&quot;</code> (empty) creates new session</li>
-<li>Bare <code>--continue</code> resumes last session</li>
-</ul>
-<p><strong>Session Management</strong></p>
-<ul>
-<li>Rename sessions</li>
-<li>Delete sessions</li>
-<li>Export session transcript</li>
-</ul>
-<hr>
-<h4>📊 Usage &amp; Analytics — Token Insights</h4>
-<p>Full breakdown of LLM usage:</p>
-<ul>
-<li><strong>Time Range</strong>: Today, 7d, 30d, 90d filters</li>
-<li><strong>Agent Filter</strong>: per-profile or all combined</li>
-<li><strong>Overview Cards</strong>: total sessions, messages, tokens, cost, active hours</li>
-<li><strong>Models Table</strong>: per-model breakdown — sessions count, total tokens, avg tokens/session</li>
-<li><strong>Platforms Table</strong>: per-platform breakdown (CLI, Telegram, WhatsApp, etc.)</li>
-<li><strong>Top Tools</strong>: most called tools with call counts and success rates</li>
-</ul>
-<hr>
-<h4>🛠️ Agent Detail — Per-Agent Management</h4>
-<p>Six-tab interface for deep agent configuration:</p>
-<h5>Dashboard Tab</h5>
-<ul>
-<li>Agent identity: name, model, provider</li>
-<li>Gateway service status</li>
-<li>Quick token usage summary</li>
-<li>Active platforms</li>
-</ul>
-<h5>Sessions Tab</h5>
-<ul>
-<li>List all sessions for this profile</li>
-<li>Search by keyword</li>
-<li>Rename session</li>
-<li>Delete session</li>
-<li>Export session (JSON format)</li>
-<li>Resume session in CLI (one click)</li>
-</ul>
-<h5>Gateway Tab</h5>
-<ul>
-<li>Start/Stop/Restart gateway service</li>
-<li>Real-time log stream (WebSocket)</li>
-<li>Systemd service management (for non-root users: <code>hermes-gateway-&lt;profile&gt;</code>)</li>
-<li>Gateway configuration panel</li>
-</ul>
-<h5>Config Tab</h5>
-<ul>
-<li>13 categories, 80+ settings</li>
-<li>Structured form editor with labeled fields</li>
-<li>Raw YAML editor toggle</li>
-<li>Reset to defaults per category</li>
-<li>Apply changes with validation</li>
-</ul>
-<h5>Memory Tab</h5>
-<ul>
-<li>Dynamic memory provider panel</li>
-<li>Provider options: Built-in MEMORY.md, Honcho (self-hosted), External providers</li>
-<li>Honcho status: connected/disconnected</li>
-<li>Memory usage stats</li>
-</ul>
-<h5>Cron Tab</h5>
-<ul>
-<li>List all scheduled jobs for this profile</li>
-<li>Create new cron job with schedule presets (hourly, daily, weekly, custom cron expression)</li>
-<li>Pause/Resume scheduled jobs</li>
-<li>Run job immediately (on-demand)</li>
-<li>Edit/Delete cron jobs</li>
-<li>Next run time display</li>
-</ul>
-<hr>
-<h4>📦 Skills Marketplace</h4>
-<p>Browse and manage installed Hermes skills:</p>
-<ul>
-<li>Grouped by category (devops, mlops, creative, etc.)</li>
-<li>Shows skill name, description snippet, source (builtin/local), trust level</li>
-<li>Search and filter skills</li>
-<li>Install new skills from the Hermes skills registry</li>
-<li>Check for updates</li>
-<li>Uninstall skills</li>
-</ul>
-<hr>
-<h4>🔧 Maintenance — System Administration</h4>
-<p>Full admin panel:</p>
-<ul>
-<li><strong>Doctor</strong>: Run diagnostics — detects common issues, auto-fix where possible</li>
-<li><strong>Dump</strong>: Generate debug summary (system info, config, recent logs)</li>
-<li><strong>Update</strong>: Update Hermes agent to latest version</li>
-<li><strong>Backup</strong>: Download all Hermes data as a zip file</li>
-<li><strong>Import</strong>: Restore from backup zip</li>
-<li><strong>HCI Restart</strong>: Restart the Control Interface web server from UI (no SSH needed)</li>
-<li><strong>Users</strong> (NEW in v3.3.0): Create/edit/delete users, assign roles, manage permissions</li>
-<li><strong>Auth</strong>: View provider status (OpenRouter, Nous Portal, etc.), add/remove API keys</li>
-<li><strong>Audit</strong>: Timestampped activity log — who did what and when</li>
-</ul>
-<hr>
-<h4>📁 File Explorer</h4>
-<p>Split-view file editor:</p>
-<ul>
-<li><strong>Left panel</strong>: Directory tree browser</li>
-<li><strong>Right panel</strong>: Text editor with syntax highlighting</li>
-<li><strong>Save</strong>: Write changes back to disk</li>
-<li><strong>Secure</strong>: Paths scoped to <code>~/.hermes</code>, traversal attacks prevented</li>
-<li><strong>Multiple roots</strong>: Configurable via <code>HERMES_CONTROL_ROOTS</code></li>
-</ul>
-<hr>
-<h4>💻 Terminal</h4>
-<p>Real browser-based terminal:</p>
-<ul>
-<li>Full PTY via node-pty + xterm.js over WebSocket</li>
-<li>Touch-friendly controls (↑↓␣↵) for mobile</li>
-<li>Fullscreen toggle</li>
-<li>Auto-cleanup flow: Ctrl+C → clear → ready for next command</li>
-<li>Rate limited: 30 commands/minute per IP</li>
-</ul>
-<hr>
-<h4>🔔 Notifications</h4>
-<ul>
-<li>Bell icon with unread count badge (top-right)</li>
-<li>Dropdown panel with notification list</li>
-<li>Dismiss individual or clear all</li>
-<li>Sources: system alerts (disk/RAM/CPU), gateway events, session CRUD, user management</li>
-<li>Persistent: stored in <code>~/.hermes/hci-notifications.json</code></li>
-</ul>
-<hr>
-<h4>🎨 Theme</h4>
-<ul>
-<li><strong>Dark mode</strong> (default): <code>#0b201f</code> background, <code>#dccbb5</code> foreground, <code>#7c945c</code> accent</li>
-<li><strong>Light mode</strong>: <code>#e4ebdf</code> background, <code>#0b201f</code> foreground, <code>#2e6fb0</code> accent</li>
-<li>Toggle via header button</li>
-<li>Preference persisted in localStorage</li>
-<li>Login page: themed background image with overlay</li>
-</ul>
-<hr>
-<h4>🔒 Security</h4>
-<ul>
-<li><strong>Multi-user RBAC</strong>: 20 permissions across 3 roles</li>
-<li><strong>Roles</strong>: <code>admin</code> (full access), <code>viewer</code> (read-only), <code>custom</code> (your choice)</li>
-<li><strong>bcrypt</strong> password hashing (cost factor 10)</li>
-<li><strong>CSRF tokens</strong> on all mutating requests</li>
-<li><strong>Secure cookie</strong> flag (auto-detects HTTPS)</li>
-<li><strong>WebSocket origin</strong> verification (exact match)</li>
-<li><strong>Input sanitization</strong>: strict regex on all user inputs (profiles, sessions, titles, filenames)</li>
-<li><strong>Path traversal prevention</strong> in file explorer</li>
-<li><strong>Rate limiting</strong>: login (5 failed/15min), terminal exec (30/min)</li>
-<li><strong>XSS protection</strong>: all dynamic values escaped via escapeHtml() — code blocks extracted before render, error messages sanitized in all 15+ catch blocks</li>
-<li><strong>Admin gate</strong>: critical endpoints (<code>/api/plugins</code>, etc.) require admin role</li>
-<li><strong>Token cleanup</strong>: automatic session token cleanup every 15 minutes</li>
-<li><strong>Unhandled exception handlers</strong>: <code>unhandledRejection</code> + <code>uncaughtException</code> caught and logged</li>
-</ul>
-<p>See full security audit: <a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/SECURITY_AUDIT.md">docs/SECURITY_AUDIT.md</a></p>
-<hr>
-<h3>Where HCI Can Be Installed</h3>
-<p>HCI runs as a single Node.js process — any server environment that supports Node.js works.</p>
+<h3>API</h3>
 <table>
 <thead>
 <tr>
-<th>Environment</th>
-<th>Status</th>
-<th>Notes</th>
+<th>Endpoint</th>
+<th>Auth</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>Local Linux server</td>
-<td>✅</td>
-<td>Full support</td>
+<td><code>GET /api/office/kanban?board=</code></td>
+<td>Login</td>
+<td>Kanban board with tasks + links</td>
 </tr>
 <tr>
-<td>VPS (DigitalOcean, Hetzner, AWS EC2, Linode, etc.)</td>
-<td>✅</td>
-<td>Recommended for production</td>
+<td><code>GET /api/office/kanban/:id?board=</code></td>
+<td>Login</td>
+<td>Task detail with runs, events, comments</td>
 </tr>
 <tr>
-<td>macOS</td>
-<td>✅</td>
-<td>Works</td>
+<td><code>GET /api/office/kanban/:id/workspace-file?board=&amp;path=</code></td>
+<td>Login</td>
+<td>Read workspace files (code, logs)</td>
 </tr>
 <tr>
-<td>WSL2 (Windows Subsystem for Linux)</td>
-<td>✅</td>
-<td>Full support</td>
+<td><code>POST /api/office/kanban/:id/action?board=</code></td>
+<td>Login+CSRF</td>
+<td>Quick actions (done, start, reopen, etc.)</td>
 </tr>
 <tr>
-<td>Raspberry Pi (arm64)</td>
-<td>✅</td>
-<td>Works</td>
+<td><code>GET /api/office/agent-states</code></td>
+<td>Login</td>
+<td>Agent health grid</td>
 </tr>
 <tr>
-<td>Docker / Podman</td>
-<td>⚠️</td>
-<td>Works but not officially supported</td>
+<td><code>GET /api/office/events</code></td>
+<td>Admin</td>
+<td>Live feed from gateway logs</td>
 </tr>
 <tr>
-<td>Shared hosting</td>
-<td>❌</td>
-<td>Requires Node.js + WebSocket + PTY support</td>
-</tr>
-<tr>
-<td>Browser-only (no server)</td>
-<td>❌</td>
-<td>Requires Node.js backend</td>
+<td><code>GET /api/office/summary?board=</code></td>
+<td>Login</td>
+<td>Board stats + recommendations</td>
 </tr>
 </tbody></table>
+<p>Full API: <a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/API.md">docs/API.md</a></p>
 <hr>
-<h3>Requirements</h3>
-<table>
-<thead>
-<tr>
-<th>Requirement</th>
-<th>Minimum</th>
-<th>Recommended</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Node.js</td>
-<td>v18+</td>
-<td>v20 LTS</td>
-</tr>
-<tr>
-<td>RAM</td>
-<td>512 MB</td>
-<td>1 GB+</td>
-</tr>
-<tr>
-<td>Disk</td>
-<td>200 MB</td>
-<td>500 MB+</td>
-</tr>
-<tr>
-<td>OS</td>
-<td>Linux / macOS / WSL2</td>
-<td>Ubuntu 22.04 LTS</td>
-</tr>
-<tr>
-<td>Hermes Agent</td>
-<td>v0.3.x</td>
-<td>Latest</td>
-</tr>
-<tr>
-<td>Build tools</td>
-<td>python3, make, g++</td>
-<td>For node-pty native module</td>
-</tr>
-</tbody></table>
-<p><strong>Dependencies</strong> (installed via <code>npm install</code>):</p>
-<ul>
-<li><code>express</code> — HTTP server</li>
-<li><code>ws</code> — WebSocket</li>
-<li><code>node-pty</code> — PTY support (requires build tools)</li>
-<li><code>xterm.js</code> — Terminal emulator in browser</li>
-<li><code>bcrypt</code> — Password hashing</li>
-<li><code>cookie-parser</code>, <code>dotenv</code>, <code>js-yaml</code>, etc.</li>
-</ul>
-<hr>
-<h3>Installation Methods</h3>
-<h4>Manual (Recommended)</h4>
-<pre><code class="language-bash"># 1. Clone
-git clone https://github.com/xaspx/hermes-control-interface.git
-cd hermes-control-interface
-
-# 2. Install dependencies
-npm install
-
-# 3. Configure
-cp .env.example .env
-# Edit .env and set:
-#   HERMES_CONTROL_PASSWORD=your-secure-password
-#   HERMES_CONTROL_SECRET=$(openssl rand -hex 32)
-
-# 4. Build frontend
-npm run build
-
-# 5. Start
-npm start
-</code></pre>
-<p>Access at <code>http://localhost:10272</code> (default PORT).</p>
-<h4>Systemd Service (Production)</h4>
-<pre><code class="language-bash"># Use the provided gateway service script as reference
-bash scripts/setup-gateway-service.sh
-</code></pre>
-<p>Or create a simple systemd unit:</p>
-<pre><code class="language-ini"># /etc/systemd/system/hermes-control.service
-[Unit]
-Description=Hermes Control Interface
-After=network.target
-
-[Service]
-Type=simple
-User=root
-WorkingDirectory=/path/to/hermes-control-interface
-ExecStart=/usr/bin/node server.js
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-</code></pre>
-<pre><code class="language-bash">sudo systemctl enable hermes-control
-sudo systemctl start hermes-control
-</code></pre>
-<hr>
-<h3>Environment Variables</h3>
+<h3>Configuration</h3>
 <table>
 <thead>
 <tr>
 <th>Variable</th>
-<th>Required</th>
+<th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody><tr>
 <td><code>HERMES_CONTROL_PASSWORD</code></td>
-<td>Yes</td>
-<td>Login password</td>
+<td>—</td>
+<td>Login password (bcrypt hashed)</td>
 </tr>
 <tr>
 <td><code>HERMES_CONTROL_SECRET</code></td>
-<td>Yes</td>
-<td>CSRF + internal auth secret</td>
+<td>—</td>
+<td>Session secret (random string)</td>
 </tr>
 <tr>
 <td><code>PORT</code></td>
-<td>No</td>
-<td>Server port (default: 10272)</td>
+<td><code>10274</code></td>
+<td>Server port</td>
 </tr>
 <tr>
 <td><code>HERMES_CONTROL_HOME</code></td>
-<td>No</td>
-<td>Hermes home dir (default: ~/.hermes)</td>
-</tr>
-<tr>
-<td><code>HERMES_CONTROL_ROOTS</code></td>
-<td>No</td>
-<td>File explorer roots (JSON array)</td>
+<td><code>~/.hermes</code></td>
+<td>Hermes state directory</td>
 </tr>
 <tr>
 <td><code>HERMES_PROJECTS_ROOT</code></td>
-<td>No</td>
+<td>parent of repo</td>
 <td>Projects directory</td>
 </tr>
 </tbody></table>
+<p>Full config: <a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/CONFIG.md">docs/CONFIG.md</a></p>
 <hr>
-<h3>Reset Password Without Dashboard Access</h3>
-<p>If you can&#39;t log in to the dashboard, reset the password via CLI:</p>
-<p><strong>Option 1 — Edit .env directly</strong></p>
-<pre><code class="language-bash"># SSH into your server
-nano ~/.hermes/.env
-# Change HERMES_CONTROL_PASSWORD=your-new-password
-
-# Restart
-sudo systemctl restart hermes-control
-# or: pkill node; npm start &amp;
-</code></pre>
-<p><strong>Option 2 — Generate bcrypt hash via Node.js</strong></p>
-<pre><code class="language-bash">node -e &quot;const bcrypt=require(&#39;bcrypt&#39;); bcrypt.hash(require(&#39;crypto&#39;).randomBytes(24).toString(&#39;hex&#39;), 10).then(h=&gt;console.log(&#39;HERMES_CONTROL_PASSWORD=&#39;+h))&quot;
-# Copy the output to .env, then restart
-</code></pre>
-<p><strong>Key point:</strong> <code>.env</code> is the source of truth. Dashboard access = server access. If you lose access to both, you must have server/SSH access to reset.</p>
-<hr>
-<h3>Architecture</h3>
-<pre><code>src/                    # Vite source (ES modules)
-├── index.html          # Entry point
-├── js/main.js          # App logic (~4800 lines, modular sections)
-├── css/
-│   ├── theme.css       # Color palette (dark/light)
-│   ├── layout.css      # Topbar, modals, dropdowns, sidebar
-│   └── components.css  # Cards, tables, forms, editor, file explorer
-├── public/
-│   └── favicon.svg     # Served unhashed
-└── assets/             # SVG icons
-
-dist/                   # Vite build output (served by Express)
-server.js               # Express + WebSocket + PTY + API (~2300 lines)
-auth.js                 # Multi-user auth + RBAC (bcrypt, sessions, permissions)
-</code></pre>
-<hr>
-<h3>Development</h3>
-<pre><code class="language-bash"># Edit source in src/
-npx vite build
-
-# Restart (never in foreground — use detached)
-kill $(lsof -t -i:10272) 2&gt;/dev/null
-nohup node server.js &amp;&gt;/dev/null &amp; disown
-</code></pre>
-<hr>
-<h3>API</h3>
-<p>100+ endpoints covering:</p>
+<h3>Requirements</h3>
 <ul>
-<li><strong>Auth</strong>: login, logout, session management, setup</li>
-<li><strong>Users</strong>: CRUD, role assignment, permission management, reset password</li>
-<li><strong>Sessions</strong>: list, rename, delete, export, resume</li>
-<li><strong>Profiles</strong>: list, create, clone, delete, use, gateway control</li>
-<li><strong>Chat</strong>: send message, stream response, tool calls</li>
-<li><strong>Cron</strong>: list, create, pause, resume, run, remove</li>
-<li><strong>Config</strong>: read, write, YAML parsing, reset</li>
-<li><strong>Memory</strong>: provider-specific panels (MEMORY.md, honcho, external)</li>
-<li><strong>Skills</strong>: list, parse, search, install, uninstall, check updates</li>
-<li><strong>Files</strong>: list, read, write, save (scoped to Hermes home)</li>
-<li><strong>System</strong>: health, insights, usage analytics, doctor, dump, update, backup</li>
-<li><strong>Notifications</strong>: list, dismiss, clear</li>
-<li><strong>Plugins</strong>: admin-only plugin management</li>
-<li><strong>Terminal</strong>: exec command via PTY</li>
-<li><strong>Audit</strong>: activity log</li>
-</ul>
-<p>See <code>docs/API.md</code> for full reference.</p>
-<hr>
-<p><strong>Security Audit</strong></p>
-<p>Full audit report: <a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/SECURITY_AUDIT.md">docs/SECURITY_AUDIT.md</a>
-<strong>Score: 7.5/10</strong> — Production-ready.</p>
-<p>Issues found and fixed in v3.3.0 and later:</p>
-<ul>
-<li>XSS in home cards (<code>loadHomeCards()</code>) — fixed with <code>escapeHtml()</code></li>
-<li>XSS in error handlers (15+ locations) — all <code>e.message</code> now sanitized in innerHTML (v3.5.0)</li>
-<li>Missing admin gate on plugins API — fixed</li>
-<li>Terminal exec rate limit — 30 commands/minute per IP</li>
-<li>Token cleanup interval — now runs every 15 minutes</li>
+<li>Node.js 20+</li>
+<li>Hermes Agent installed on the same machine</li>
+<li><code>hermes</code> CLI available on PATH</li>
 </ul>
 <hr>
-<h3>Updating HCI</h3>
-<pre><code class="language-bash"># 1. Pull latest code
-cd /root/projects/hermes-control-interface
-git pull origin main
-
-# 2. Install dependencies (if package.json changed)
+<h3>Updating</h3>
+<pre><code class="language-bash">git pull origin main
 npm install
-
-# 3. Rebuild frontend
 npm run build
-
-# 4. Restart production server
-kill $(lsof -t -i :10272) 2&gt;/dev/null
-nohup node server.js &amp;&gt;/dev/null &amp; disown
+systemctl restart hci-staging
 </code></pre>
-<p>Or use the HCI UI: <strong>Maintenance → HCI Restart</strong> (restarts from browser).</p>
-<p><strong>Non-root users:</strong> Replace <code>/root/projects</code> with your user&#39;s project directory.
-If running via systemd, use <code>sudo systemctl restart hermes-control</code>.</p>
+<p>See <a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/DEPLOY.md">docs/DEPLOY.md</a> for zero-downtime deploys.</p>
 <hr>
-<h3>Changelog</h3>
-<h4>v3.5.0 (2026-04-27)</h4>
-<p><strong>🧹 Maintenance &amp; Security Hardening:</strong></p>
-<ul>
-<li><strong>Dead code removed:</strong> <code>getProjects()</code> and <code>formatBytes()</code> functions (unused — never called anywhere)</li>
-<li><strong>XSS audit complete (S1):</strong> All 15+ <code>e.message</code> and <code>err.message</code> in <code>innerHTML</code> now wrapped with <code>escapeHtml()</code> — error handlers across all pages (home, agents, sessions, logs, config, files, terminal, modals, audit log, users)</li>
-<li><strong>RBAC precision:</strong> Permissions refined to 20 across 3 roles (admin/viewer/custom) — cleaner than 28 across 12 groups</li>
-<li><strong>Session sorting:</strong> Chat sessions sorted by last activity (MAX message timestamp from messages table)</li>
-<li><strong>Audit log UX:</strong> Newest-first ordering with Load More at bottom (consistent with other paginated lists)</li>
-</ul>
-<p><strong>🐛 Bug Fixes:</strong></p>
-<ul>
-<li><strong>Profile selector sync:</strong> Profile dropdown now correctly syncs after <code>hermes profile use</code> (no more stale state after setting default)</li>
-<li><strong>Chat agent info panel:</strong> Always visible inside sidebar (no toggle) — shows active agent with bold gold name, all agents list with status dots, ★ default badge</li>
-<li><strong><code>finalizeWsChat</code> race guard:</strong> <code>_finalizeInProgress</code> flag prevents double-call race condition</li>
-<li><strong><code>reloadCurrentSessionMessages</code> race guard:</strong> <code>_reloadInProgress</code> flag + all exit paths clear the flag</li>
-<li><strong><code>showModal</code> return fix:</strong> Proper if/else with <code>return</code> in cancel branch (prevents undefined <code>.action</code>)</li>
-</ul>
-<h4>v3.4.0 (2026-04-19)</h4>
-<p><strong>⚡ Chat Revamp (CLI → Gateway API):</strong></p>
-<ul>
-<li><strong>Gateway API chat:</strong> Full rewrite from CLI subprocess to Gateway API (<code>/v1/responses</code>) — real-time SSE streaming, structured events, no more waiting for full response</li>
-<li><strong>Tool call cards:</strong> Collapsible cards with JSON viewer for tool results (collapsed by default)</li>
-<li><strong>Session resume:</strong> Auto via <code>X-Hermes-Session-Id</code> header — conversations persist across page reloads</li>
-<li><strong>Stop button:</strong> Cancel running streams mid-response</li>
-<li><strong>Multi-profile support:</strong> All profiles (default/soci/cuan/david) work via Gateway API with auto port discovery</li>
-<li><strong>CLI fallback:</strong> Automatic fallback to CLI if gateway is down</li>
-<li><strong>Session list:</strong> Sorted by last activity, filter by source type (Telegram/Discord/API/CLI/Cron)</li>
-<li><strong>Mobile UX:</strong> Auto-hide sidebar on session select, responsive header, opaque topbar</li>
-</ul>
-<p><strong>🔒 Security (CRITICAL + HIGH):</strong></p>
-<ul>
-<li><strong>Command injection fixed:</strong> Skills uninstall/update endpoints use <code>execHermes()</code> + strict regex <code>^[\w.\-]+$</code> validation</li>
-<li><strong>CSRF protection:</strong> 21 admin endpoints now require <code>requireCsrf</code> (user mgmt, config, keys, skills, HCI update/rollback/restart, backup, doctor, profiles)</li>
-<li><strong>Gateway API key:</strong> Dynamic from <code>~/.hermes/config.yaml</code> (removed hardcoded <code>&#39;hci-gateway-2026&#39;</code> from source)</li>
-<li><strong>Dynamic CORS origins:</strong> <code>cors_origins</code> no longer hardcoded — supports <code>HCI_CORS_ORIGINS</code> env var, auto-detect from request, or localhost defaults</li>
-<li><strong><code>escapeHtml()</code> fix:</strong> Added <code>&quot;</code> and <code>&#39;</code> escaping to prevent XSS via HTML attributes</li>
-<li><strong>Debug CSRF logging removed:</strong> Partial tokens no longer logged to console</li>
-<li><strong>18-item security audit report</strong> (SECURITY_AUDIT.md)</li>
-</ul>
-<p><strong>🧹 Maintenance:</strong></p>
-<ul>
-<li>~270 lines dead code removed (unused functions, duplicate endpoints, redundant imports, duplicate CSS)</li>
-<li>Session cache invalidation after rename and delete operations</li>
-</ul>
-<p><strong>🔌 Open-Source Ready:</strong></p>
-<ul>
-<li>CORS origins: dynamic resolution for any deployment (env var → auto-detect → localhost defaults)</li>
-<li>Gateway API key: reads from config.yaml, env var override supported</li>
-<li><code>.env.example</code> updated with <code>GATEWAY_API_KEY</code> and <code>HCI_CORS_ORIGINS</code> documentation</li>
-</ul>
-<h4>v3.3.3 (2026-04-19)</h4>
-<p><strong>🔒 Security (Critical + High):</strong></p>
-<ul>
-<li><strong>Command injection fix:</strong> Skills uninstall/update endpoints now use <code>execHermes()</code> + strict regex validation <code>^[\w.\-]+$</code> on skill names (prevents shell metacharacter injection)</li>
-<li><strong>CSRF protection:</strong> Added <code>requireCsrf</code> to 21 admin endpoints (user mgmt, config, keys, skills, HCI update/rollback/restart, backup, doctor, profile create/delete)</li>
-<li><strong>Hardcoded API key removed:</strong> Gateway API key now reads from <code>~/.hermes/config.yaml</code> dynamically (was hardcoded <code>&#39;hci-gateway-2026&#39;</code> in source)</li>
-<li><strong>Dynamic CORS origins:</strong> <code>cors_origins</code> no longer hardcoded to specific domains — supports <code>HCI_CORS_ORIGINS</code> env var, auto-detect from request origin, or localhost defaults</li>
-<li><strong>Session rename:</strong> Switched from <code>shell()</code> to <code>execHermes()</code> (defense-in-depth)</li>
-</ul>
-<p><strong>🧹 Maintenance:</strong></p>
-<ul>
-<li><strong>Dead code cleanup:</strong> ~270 lines removed across 6 files (unused functions, duplicate endpoints, redundant imports, duplicate CSS)</li>
-<li><strong>18-item security audit report</strong> added (SECURITY_AUDIT.md)</li>
-</ul>
-<p><strong>🐛 Bug Fixes:</strong></p>
-<ul>
-<li><strong>Session list sorting:</strong> Fixed sort order — backend now correctly sorts by last activity timestamp</li>
-<li><strong>Delete session button:</strong> Fixed operator precedence bug in <code>await showModal({...})?.action</code> that prevented delete API call</li>
-<li><strong>Session list refresh:</strong> Cache invalidated after rename and delete operations (stale 10s cache)</li>
-<li><strong>Gateway session resume:</strong> Gateway process restart fixed stale bytecode issue</li>
-</ul>
-<p><strong>🔌 Open-Source Ready:</strong></p>
-<ul>
-<li>CORS origins: dynamic resolution (env var → auto-detect → localhost defaults)</li>
-<li>Gateway API key: reads from config.yaml, env var override supported</li>
-<li><code>.env.example</code> updated with <code>GATEWAY_API_KEY</code> and <code>HCI_CORS_ORIGINS</code> docs</li>
-</ul>
-<h4>v3.3.2 (2026-04-17)</h4>
-<p><strong>🐛 Bug Fixes:</strong></p>
-<ul>
-<li><strong>HTTP-only deployments:</strong> Disable <code>upgrade-insecure-requests</code> CSP directive that broke UI on Tailscale/LAN/dev environments</li>
-<li><strong>HOST env var:</strong> Support <code>HOST</code> env var for non-localhost server binding (Tailscale IP, LAN, specific interface)</li>
-</ul>
-<p><strong>🤝 Contributors:</strong></p>
-<ul>
-<li>@hifiguy — 2 fixes (HOST env + CSP HTTP fix)</li>
-</ul>
-<h4>v3.3.0 (2026-04-17)</h4>
-<p><strong>💬 Chat Revamp:</strong></p>
-<ul>
-<li>Tool call cards: collapsible cards with JSON viewer, collapsed by default</li>
-<li>Banner suppression: <code>-Q</code> flag passed to hermes for clean output</li>
-<li>Session sidebar: model tag, session list, resume/new chat buttons</li>
-<li>Auto-detect session ID format: new (<code>session_id: YYYYMMDD_HHMMSS_HEX</code>) and legacy (<code>Session: YYYYMMDD_HHMMSS_HEX</code>)</li>
-<li><code>--continue &quot;&quot;</code> (empty) creates fresh session; bare <code>--continue</code> resumes last session</li>
-</ul>
-<p><strong>👥 User Management v2 (RBAC):</strong></p>
-<ul>
-<li>20 permissions across 3 roles: Admin (full), Viewer (read-only), Custom (your choice)</li>
-<li>Built-in roles: <code>admin</code> (full access), <code>viewer</code> (read-only), custom role</li>
-<li>Create/edit user modal: role presets (Admin/Viewer), grouped permission checklist, reset password button</li>
-<li>Permission gating on 9 previously-unprotected endpoints</li>
-</ul>
-<p><strong>🔒 Security:</strong></p>
-<ul>
-<li>Full security audit (docs/SECURITY_AUDIT.md) — score 7.0/10</li>
-<li>XSS fix: <code>loadHomeCards()</code> now escapes all dynamic values with <code>escapeHtml()</code></li>
-<li>Rate limiter: terminal exec limited to 30 commands/minute per IP (429 on exceeded)</li>
-<li>Token cleanup: proper <code>setInterval()</code> every 15 minutes (was only on token creation)</li>
-<li>Admin-only gate: <code>GET /api/plugins</code> now requires admin role</li>
-<li>Full activity audit log: Maintenance → Audit panel</li>
-</ul>
-<p><strong>📦 Skills:</strong></p>
-<ul>
-<li>Check updates: handles &quot;unavailable&quot; source status gracefully (info message, not error)</li>
-<li>Uninstall: uses stdin pipe (<code>echo y |</code>) instead of unsupported <code>--yes</code> flag</li>
-</ul>
-<p><strong>🐛 Bug Fixes:</strong></p>
-<ul>
-<li>Notification dismiss: backend handles both <code>/api/notifications/:id/dismiss</code> and <code>/api/notifications/dismiss</code></li>
-<li>Sidebar: responsive CSS, <code>flex-shrink:0</code>, mobile breakpoints at 480px</li>
-<li>Agent dropdown: follows dark/light theme correctly</li>
-<li>Favicon 404 loop: moved to <code>public/</code> to prevent Vite hash mismatch</li>
-<li>HCI Info panel: version, GitHub link, Twitter @bayendor link in Maintenance</li>
-</ul>
-<p><strong>📝 Docs:</strong></p>
-<ul>
-<li>Security audit report (12 categories)</li>
-<li>Removed outdated script references (install.sh, reset-password.sh)</li>
-<li>Screenshots: 13 dark mode, 6 light mode</li>
-</ul>
-<h4>v3.2.0 (2026-04-14)</h4>
-<p><strong>⚡ Performance:</strong></p>
-<ul>
-<li>Insights speed: 60s+ timeout → 0.65s via IPv4 adapter on model_metadata.py</li>
-<li>Timeouts reduced: 10s → 5s (model metadata), 5s → 3s (llama.cpp props)</li>
-</ul>
-<p><strong>🔒 Security:</strong></p>
-<ul>
-<li>WebSocket origin: exact match (was substring check)</li>
-<li>Body limit: 10MB → 1MB global, 10MB only on avatar upload</li>
-<li>Temp files: <code>crypto.randomUUID()</code> (no predictable paths)</li>
-<li>Skills install/uninstall: <code>execHermes()</code> instead of shell interpolation</li>
-<li>Username validation: 2-32 chars, alphanumeric/_.- only</li>
-</ul>
-<p><strong>✨ Features:</strong></p>
-<ul>
-<li>Log tabs: Agent, Error, and Gateway logs now working</li>
-<li>Non-root user support: dynamic HCI identity, HOME-aware paths</li>
-<li>Gateway service: auto-detect <code>hermes-gateway-&lt;profile&gt;</code> for non-root</li>
-</ul>
-<p><strong>🐛 Fixes:</strong></p>
-<ul>
-<li>Terminal flow: transcript handling after sendCommand</li>
-<li>XSS: 15+ escaped user-facing error messages</li>
-<li>Auth panel: data loaded async, doesn&#39;t block page load</li>
-<li>CPR stripping: removed ANSI escape from terminal</li>
-</ul>
-<h4>v3.1.0 (2026-04-12)</h4>
-<ul>
-<li>Skills Hub + Honcho panel + Gateway connections</li>
-<li>HTTPS support</li>
-<li>Maintenance UI: Backup &amp; Import, HCI Restart buttons</li>
-</ul>
+<h3>Documentation</h3>
+<table>
+<thead>
+<tr>
+<th>Doc</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/INSTALL.md">INSTALL.md</a></td>
+<td>Full setup — nginx, systemd, Cloudflare</td>
+</tr>
+<tr>
+<td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/CONFIG.md">CONFIG.md</a></td>
+<td>All environment variables</td>
+</tr>
+<tr>
+<td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/API.md">API.md</a></td>
+<td>REST API reference</td>
+</tr>
+<tr>
+<td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/ARCHITECTURE.md">ARCHITECTURE.md</a></td>
+<td>Design decisions, data flow</td>
+</tr>
+<tr>
+<td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/SECURITY.md">SECURITY.md</a></td>
+<td>CSP, CSRF, auth, hardening</td>
+</tr>
+<tr>
+<td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/DEPLOY.md">DEPLOY.md</a></td>
+<td>Production deployment patterns</td>
+</tr>
+<tr>
+<td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></td>
+<td>Common issues and fixes</td>
+</tr>
+<tr>
+<td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/CHANGELOG.md">CHANGELOG.md</a></td>
+<td>Version history</td>
+</tr>
+</tbody></table>
 <hr>
-<h3>License</h3>
-<p>MIT</p>
-<h3>Credits</h3>
-<p>Built for the <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> ecosystem.</p>
-<p><a href="https://x.com/bayendor">@bayendor</a> — GitHub: <a href="https://github.com/xaspx">xaspx</a></p>
+<p>Built for the <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> ecosystem.<br><a href="https://x.com/bayendor">@bayendor</a> · <a href="https://github.com/xaspx/hermes-control-interface">GitHub</a></p>
 
   </section>
 </details>
@@ -952,35 +472,35 @@ If running via systemd, use <code>sudo systemctl restart hermes-control</code>.<
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/outsourc-e/hermes-workspace">
-        <div class="stars">★ 5.2K</div>
+        <div class="stars">★ 5.3K</div>
         <div class="name"><span class="org">outsourc-e /</span> hermes-workspace</div>
       </a>
       <a class="related-row" href="/projects/fathah/hermes-desktop">
-        <div class="stars">★ 9.0K</div>
+        <div class="stars">★ 9.7K</div>
         <div class="name"><span class="org">fathah /</span> hermes-desktop</div>
       </a>
       <a class="related-row" href="/projects/sanchomuzax/hermes-webui">
-        <div class="stars">★ 101</div>
+        <div class="stars">★ 103</div>
         <div class="name"><span class="org">sanchomuzax /</span> hermes-webui</div>
       </a>
       <a class="related-row" href="/projects/Euraika-Labs/pan-ui">
-        <div class="stars">★ 72</div>
+        <div class="stars">★ 73</div>
         <div class="name"><span class="org">Euraika-Labs /</span> pan-ui</div>
       </a>
       <a class="related-row" href="/projects/Eynzof/hermes-agent-cn-desktop">
-        <div class="stars">★ 214</div>
+        <div class="stars">★ 228</div>
         <div class="name"><span class="org">Eynzof /</span> hermes-agent-cn-desktop</div>
       </a>
       <a class="related-row" href="/projects/Felix-Forever/hermes-agent-desktop">
-        <div class="stars">★ 36</div>
+        <div class="stars">★ 39</div>
         <div class="name"><span class="org">Felix-Forever /</span> hermes-agent-desktop</div>
       </a>
       <a class="related-row" href="/projects/jazzyalex/agent-sessions">
-        <div class="stars">★ 596</div>
+        <div class="stars">★ 604</div>
         <div class="name"><span class="org">jazzyalex /</span> agent-sessions</div>
       </a>
       <a class="related-row" href="/projects/nickvasilescu/hermes-desktop-os1">
-        <div class="stars">★ 454</div>
+        <div class="stars">★ 456</div>
         <div class="name"><span class="org">nickvasilescu /</span> hermes-desktop-os1</div>
       </a>
     </div>

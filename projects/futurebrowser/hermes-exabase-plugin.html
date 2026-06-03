@@ -40,11 +40,13 @@
   "codeRepository": "https://github.com/futurebrowser/hermes-exabase-plugin",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
   "author": {
     "@type": "Organization",
     "name": "futurebrowser",
     "url": "https://github.com/futurebrowser"
   },
+  "dateModified": "2026-06-02T13:11:57.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -79,7 +81,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span>apr·2026</span>
-    <span id="meta-count">161·repos</span>
+    <span id="meta-count">160·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -110,15 +112,15 @@
 
   <div class="meta-row">
     <span class="stars">★ 4</span>
+    <span><span class="meta-label">lang</span>Python</span>
     
     
-    
-    
+    <span><span class="meta-label">updated</span>2026-06-02</span>
   </div>
 
   <div class="actions">
     <a href="https://github.com/futurebrowser/hermes-exabase-plugin" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
-    
+    <a href="https://exabase.io" target="_blank" rel="noopener" class="btn-secondary">homepage</a>
   </div>
 </section>
 
@@ -129,7 +131,93 @@
 <details class="readme-details" open>
   <summary class="readme-toggle">readme</summary>
   <section class="readme" data-nosnippet>
-    <div class="no-readme">This project doesn't have a README yet. <a href="https://github.com/futurebrowser/hermes-exabase-plugin" target="_blank">Visit GitHub</a> for more details.</div>
+    <h2>Exabase M-1 Memory Plugin for Hermes Agent</h2>
+<p>Exabase M-1 memory-provider integration for Hermes Agent.</p>
+<h3>About</h3>
+<p><a href="https://exabase.io/memory">Exabase Memory (M-1)</a> is a self-organising memory
+engine for AI agents. It stores facts, preferences, and events, builds a living
+knowledge graph, resolves contradictions, and evolves with every interaction.</p>
+<p>M-1 is SOTA on the leading AI memory benchmark (LongMemEval), with the highest
+recorded QA score, and using a small model. Read the research paper
+<a href="https://exabase.io/research/exabase-achieves-state-of-the-art-on-longmemeval-benchmark">here</a>.</p>
+<table>
+<thead>
+<tr>
+<th>System</th>
+<th>Model</th>
+<th>Score</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>M-1 (Exabase)</td>
+<td>Gemini 3 Flash</td>
+<td>96.4%</td>
+</tr>
+<tr>
+<td>Mem0</td>
+<td>Gemini 3 Pro</td>
+<td>94.8%</td>
+</tr>
+<tr>
+<td>Honcho</td>
+<td>Gemini 3 Pro</td>
+<td>92.6%</td>
+</tr>
+<tr>
+<td>HydraDB</td>
+<td>Gemini 3 Pro</td>
+<td>90.79%</td>
+</tr>
+<tr>
+<td>Supermemory</td>
+<td>Gemini 3 Pro</td>
+<td>85.2%</td>
+</tr>
+</tbody></table>
+<p>Exabase Memory powers memory in production apps like
+<a href="https://fabric.so">Fabric</a>, used by 300,000+ people.</p>
+<h3>What it does</h3>
+<p>This plugin adds support for Exabase M-1 long-term memory provider to Hermes
+Agent. It allows agents to store conversation turns and inferred memories in
+Exabase, and provide context for future interactions.</p>
+<h3>Installation</h3>
+<p>Install the plugin from this repository and enable it in your Hermes Agent
+configuration:</p>
+<pre><code class="language-bash">hermes plugins install git@github.com:futurebrowser/hermes-exabase-plugin.git
+hermes memory setup  # choose &#39;exabase&#39;
+</code></pre>
+<p>Choose <code>exabase</code> as the memory provider when prompted and enter your Exabase
+API key.</p>
+<h3>Configuration</h3>
+<p>The plugin can be configured with optional parameters that control how memories
+are stored and retrieved.</p>
+<ul>
+<li><p><strong>Base ID</strong>: The Exabase Base used for storing memories. This lets you scope
+memories and separate them by project, agent, or any other criteria. If not
+provided, no scoping will be used and memories will be stored in the default
+base.</p>
+</li>
+<li><p><strong>Precision</strong>: Controls the precision of memory retrieval. Higher precision
+means only the most relevant memories will be retrieved, while lower
+precision allows for more memories.</p>
+</li>
+<li><p><strong>Query expansion</strong>: Enabling query expansion allows the plugin to expand
+search queries with related terms, which broadens the search space and may
+help find more relevant memories at the cost of speed and Exabase credits.</p>
+</li>
+<li><p><strong>Result reranking</strong>: Uses an additional round of processing to rerank
+retrieved memories based on relevance to the query. This may improve the
+ranking of relevant memories at the cost of speed and Exabase credits.</p>
+</li>
+</ul>
+<h3>Tools</h3>
+<ul>
+<li><code>exabase_search</code> searches long-term memories.</li>
+<li><code>exabase_remember</code> stores a memory.</li>
+</ul>
+<p>Completed conversation turns are sent to Exabase in the background for inferred
+memory extraction.</p>
+
   </section>
 </details>
 
@@ -141,11 +229,11 @@
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 57.3K</div>
+        <div class="stars">★ 57.6K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 15.4K</div>
+        <div class="stars">★ 15.6K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -153,23 +241,23 @@
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 277</div>
+        <div class="stars">★ 285</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
-        <div class="stars">★ 179</div>
+        <div class="stars">★ 180</div>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/Signet-AI/signetai">
-        <div class="stars">★ 179</div>
+        <div class="stars">★ 182</div>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 148</div>
+        <div class="stars">★ 153</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
-        <div class="stars">★ 29</div>
+        <div class="stars">★ 30</div>
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
     </div>

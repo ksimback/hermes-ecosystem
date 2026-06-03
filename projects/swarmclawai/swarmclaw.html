@@ -47,13 +47,13 @@
     "name": "swarmclawai",
     "url": "https://github.com/swarmclawai"
   },
-  "dateModified": "2026-05-26T13:53:45.000Z",
+  "dateModified": "2026-06-02T12:01:17.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 537
+    "userInteractionCount": 542
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -82,7 +82,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span>apr·2026</span>
-    <span id="meta-count">153·repos</span>
+    <span id="meta-count">160·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -112,11 +112,11 @@
   <p class="project-desc">Open-source self-hosted AI agent runtime and multi-agent framework for autonomous agent swarms. Agent memory, MCP tools, schedules, delegation, and 23+ LLM providers (Claude, GPT, Gemini, OpenRouter, Ollama). A practical Claude Code and LangChain alternative.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 537</span>
+    <span class="stars">★ 542</span>
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-05-26</span>
+    <span><span class="meta-label">updated</span>2026-06-02</span>
   </div>
 
   <div class="actions">
@@ -260,6 +260,14 @@ docker compose up -d --build
 <pre><code class="language-bash">openclaw skills install swarmclaw
 </code></pre>
 <p><a href="https://clawhub.ai/waydelyle/swarmclaw">Browse on ClawHub</a></p>
+<h3>v1.9.37 Highlights</h3>
+<p>Theme and memory-pressure release for lighter UI preferences and leaner chat history storage.</p>
+<ul>
+<li><strong>Light, dark, and system theme modes.</strong> Settings → Appearance now persists a Light/Dark/System selector while keeping the existing hue presets and custom color picker.</li>
+<li><strong>Lean session history storage.</strong> Legacy transcript blobs migrate into the <code>session_messages</code> table and are compacted from session records after persistence is verified, reducing page-load memory pressure on lower-RAM devices.</li>
+<li><strong>Repo-backed message readers.</strong> Global search, live usage summaries, and OpenClaw history merge now read table-backed messages after transcript compaction.</li>
+<li><strong>Regression coverage.</strong> Added tests for theme-mode normalization, legacy transcript compaction, and repo-backed message search.</li>
+</ul>
 <h3>v1.9.36 Highlights</h3>
 <p>Protocol builder visibility release for built-in Structured Sessions.</p>
 <ul>
@@ -579,6 +587,14 @@ OTEL_EXPORTER_OTLP_HEADERS=Authorization=Bearer your-token
 <p>If you need a trace-specific endpoint, set <code>OTEL_EXPORTER_OTLP_TRACES_ENDPOINT</code> directly instead.</p>
 <p>Operational docs: <a href="https://swarmclaw.ai/docs/observability">https://swarmclaw.ai/docs/observability</a></p>
 <h3>Releases</h3>
+<h4>v1.9.37 Highlights</h4>
+<p>Theme and memory-pressure release for lighter UI preferences and leaner chat history storage.</p>
+<ul>
+<li><strong>Light, dark, and system theme modes.</strong> Settings → Appearance now persists a Light/Dark/System selector while keeping the existing hue presets and custom color picker.</li>
+<li><strong>Lean session history storage.</strong> Legacy transcript blobs migrate into the <code>session_messages</code> table and are compacted from session records after persistence is verified, reducing page-load memory pressure on lower-RAM devices.</li>
+<li><strong>Repo-backed message readers.</strong> Global search, live usage summaries, and OpenClaw history merge now read table-backed messages after transcript compaction.</li>
+<li><strong>Regression coverage.</strong> Added tests for theme-mode normalization, legacy transcript compaction, and repo-backed message search.</li>
+</ul>
 <h4>v1.9.36 Highlights</h4>
 <p>Protocol builder visibility release for built-in Structured Sessions.</p>
 <ul>
@@ -774,22 +790,7 @@ OTEL_EXPORTER_OTLP_HEADERS=Authorization=Bearer your-token
 <ul>
 <li><strong>Task execution policies.</strong> Tasks now persist <code>executionPolicy</code> and <code>executionPolicyState</code> with ordered stages, decision history, current-stage tracking, and reset support.</li>
 <li><strong>Completion guardrails.</strong> <code>PUT /api/tasks/:id</code> returns a 409 when a required execution policy is still waiting or has requested changes, keeping the task in its prior status.</li>
-<li><strong>Policy API and CLI.</strong> <code>GET /api/tasks/:id/execution-policy</code> reports policy state, while <code>swarmclaw tasks execution-policy-decision</code> records approve, request-changes, and reset actions.</li>
-<li><strong>Operator UI and handoffs.</strong> The task sheet can configure policy stages and record decisions, and task handoff packets plus workspace context now include policy status.</li>
-</ul>
-<h4>v1.9.10 Highlights</h4>
-<p>Task handoff release: operators can package task state, readiness, workspace context, dependencies, outputs, and resume handles into a shareable packet before continuing work.</p>
-<ul>
-<li><strong>Task handoff packets.</strong> <code>GET /api/tasks/:id/handoff</code> returns a structured packet with owner, liveness, workspace, runtime links, dependencies, quality checks, outputs, run summary, and recommended actions.</li>
-<li><strong>Workspace snapshots.</strong> <code>POST /api/tasks/:id/handoff</code> prepares a workspace when needed and writes <code>handoff.md</code> plus <code>handoff.json</code> beside the task context files.</li>
-<li><strong>Board-level triage.</strong> <code>GET /api/tasks/handoffs</code> lists readiness packets with ready, needs-attention, and blocked counts so operators can scan handoff risk across the board.</li>
-<li><strong>CLI and UI access.</strong> <code>swarmclaw tasks handoff</code>, <code>swarmclaw tasks handoff-save</code>, and <code>swarmclaw tasks handoffs</code> expose the workflow for scripts, while the task sheet can copy, open, or save packets.</li>
-</ul>
-<h4>v1.9.9 Highlights</h4>
-<p>Schedule revision timeline release: schedule edits, lifecycle changes, and run evidence now stay inspectable from UI, API, and CLI surfaces.</p>
-<ul>
-<li><strong>Schedule history ledger.</strong> Schedules now carry a bounded revision history for create, update, archive, restore, skipped, failed, and run-started events.</li>
-<li><strong>History console.</strong> The Schedule Console adds a searchable History tab with revision badges, actor labels, and before/after change summaries.</li>
+<li><strong>Policy API and CLI.</strong> <code>GET /api/tasks/:id/execution-policy</code> reports policy state, while <code>swarmclaw tasks execution-policy-decision</code> records approve, request-chan</li>
 </ul>
 <hr>
 <p><em>README truncated. <a href="https://github.com/swarmclawai/swarmclaw#readme">Continue reading on GitHub</a></em></p>
@@ -805,11 +806,11 @@ OTEL_EXPORTER_OTLP_HEADERS=Authorization=Bearer your-token
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/builderz-labs/mission-control">
-        <div class="stars">★ 5.1K</div>
+        <div class="stars">★ 5.2K</div>
         <div class="name"><span class="org">builderz-labs /</span> mission-control</div>
       </a>
       <a class="related-row" href="/projects/howdymary/hermes-agent-metaharness">
-        <div class="stars">★ 87</div>
+        <div class="stars">★ 88</div>
         <div class="name"><span class="org">howdymary /</span> hermes-agent-metaharness</div>
       </a>
       <a class="related-row" href="/projects/runtimenoteslabs/gladiator">
@@ -817,24 +818,24 @@ OTEL_EXPORTER_OTLP_HEADERS=Authorization=Bearer your-token
         <div class="name"><span class="org">runtimenoteslabs /</span> gladiator</div>
       </a>
       <a class="related-row" href="/projects/1ilkhamov/opencode-hermes-multiagent">
-        <div class="stars">★ 121</div>
+        <div class="stars">★ 124</div>
         <div class="name"><span class="org">1ilkhamov /</span> opencode-hermes-multiagent</div>
       </a>
       <a class="related-row" href="/projects/Rainhoole/hermes-agent-acp-skill">
-        <div class="stars">★ 35</div>
+        <div class="stars">★ 37</div>
         <div class="name"><span class="org">Rainhoole /</span> hermes-agent-acp-skill</div>
       </a>
-      <a class="related-row" href="/projects/MorvaniLabs/cordn8">
-        <div class="stars">★ 4</div>
-        <div class="name"><span class="org">MorvaniLabs /</span> cordn8</div>
-      </a>
       <a class="related-row" href="/projects/linke-ai/hermes-agent-team">
-        <div class="stars">★ 127</div>
+        <div class="stars">★ 133</div>
         <div class="name"><span class="org">linke-ai /</span> hermes-agent-team</div>
       </a>
       <a class="related-row" href="/projects/Agent-3-7/minions">
-        <div class="stars">★ 569</div>
+        <div class="stars">★ 559</div>
         <div class="name"><span class="org">Agent-3-7 /</span> minions</div>
+      </a>
+      <a class="related-row" href="/projects/CryptoDmitry/hermes-agent-control-room">
+        <div class="stars">★ 844</div>
+        <div class="name"><span class="org">CryptoDmitry /</span> hermes-agent-control-room</div>
       </a>
     </div>
     <p class="list-link"><a href="/lists/multi-agent-frameworks">see all multi-agent &amp; orchestration →</a></p>

@@ -40,20 +40,20 @@
   "codeRepository": "https://github.com/ReinaMacCredy/maestro",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Cross-platform",
-  "programmingLanguage": "TypeScript",
+  "programmingLanguage": "Rust",
   "license": "https://spdx.org/licenses/MIT.html",
   "author": {
     "@type": "Organization",
     "name": "ReinaMacCredy",
     "url": "https://github.com/ReinaMacCredy"
   },
-  "dateModified": "2026-05-29T04:59:45.000Z",
+  "dateModified": "2026-06-02T19:37:33.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 182
+    "userInteractionCount": 184
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -82,7 +82,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span>apr·2026</span>
-    <span id="meta-count">153·repos</span>
+    <span id="meta-count">160·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -112,11 +112,11 @@
   <p class="project-desc">Agent harness for codebases. Gives Claude Code, Codex, and CI a shared task system, verdict ledger, and state store so agent work is traceable and auditable.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 182</span>
-    <span><span class="meta-label">lang</span>TypeScript</span>
+    <span class="stars">★ 184</span>
+    <span><span class="meta-label">lang</span>Rust</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-05-29</span>
+    <span><span class="meta-label">updated</span>2026-06-02</span>
   </div>
 
   <div class="actions">
@@ -144,1119 +144,554 @@
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
     <h2>maestro</h2>
-<p>Maestro is a local-first agent harness for the spec-to-ship loop. It gives agents one CLI and one on-disk state model for specs, tasks, evidence, contracts, handoffs, and principles so separate sessions can collaborate without a server, database, or background daemon.</p>
-<p>In day-to-day use it acts as a conductor: a human operator drives multiple terminals while Maestro keeps the shared state disciplined and inspectable. The vocabulary is <code>spec -&gt; task -&gt; verify -&gt; ship</code>. One task equals one PR (ADR-0006). Multi-PR work decomposes into an exec-plan via <code>maestro plan</code>. See <code>docs/harness-positioning.md</code> for the principle-to-primitive mapping.</p>
-<h3>Why Maestro</h3>
+<p>Local-first harness for agent-built codebases. Humans steer, agents execute, maestro is the substrate.</p>
+<p><a href="https://github.com/ReinaMacCredy/maestro/actions/workflows/ci.yml"><img src="https://github.com/ReinaMacCredy/maestro/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+<img src="https://img.shields.io/badge/rust-edition%202024-orange?logo=rust&amp;logoColor=white" alt="Rust">
+<img src="https://img.shields.io/badge/local--first-no%20daemon-blue" alt="Local-first"></p>
+<p>maestro is a single Rust binary that gives a coding agent a durable place to work. Every
+unit of work, what is being built, who is doing it, and the proof it was done, lives as
+plain files under <code>.maestro/</code> in your repo. No daemon, no hidden service state, no cloud.
+The agent runs the lifecycle through the CLI; you review the artifacts.</p>
+<h3>Why</h3>
+<p>Coding agents are fast but forgetful. They lose the thread across sessions, ship work that
+was never verified, and leave no trail you can audit. maestro fixes that by making the work
+itself durable and gated:</p>
 <ul>
-<li>Shared state lives on disk in <code>.maestro/</code>, not in chat history.</li>
-<li>Specs define acceptance criteria, risk class, and non-goals before code is written.</li>
-<li>Tasks carry durable, per-session continuation records so the next agent resumes exactly where the last left off.</li>
-<li>Handoff envelopes are emitted passively at each lifecycle transition; the next agent reads the file on disk.</li>
-<li>Evidence turns agent claims into auditable, witnessed rows tied to tasks and contracts.</li>
-<li>The trust substrate (contracts, verifier, verdict, CI) gates completion on witnessed evidence, not convention.</li>
-<li>Mission Control gives you a read-only TUI and JSON snapshots of current state.</li>
-<li>The runtime stays local-first: filesystem, git, config, and terminal tools.</li>
+<li>A <strong>feature</strong> carries the product contract and walks a real lifecycle: <code>proposed -&gt; ready -&gt; in_progress -&gt; shipped</code>.</li>
+<li>A <strong>task</strong> cannot be called done until its claim is backed by <strong>proof</strong> that you can read.</li>
+<li><strong>QA</strong> (baseline plus slices) gates a ship, so &quot;shipped&quot; means covered, not just compiled.</li>
+<li><strong>Decisions</strong> are recorded as files, so the why survives the agent&#39;s context window.</li>
 </ul>
-<h3>System Map</h3>
-<p><img src="https://raw.githubusercontent.com/ReinaMacCredy/maestro/main/assets/diagrams/readme-system-overview.svg" alt="Maestro system overview"></p>
-<p>Maestro is the shared state layer in the middle. The operator and fresh agent runs both go through the CLI, the CLI persists shared state locally, and Mission Control projects that same state without mutating it.</p>
-<h3>What Maestro Is Not</h3>
-<ul>
-<li>It is not a hosted orchestration service or remote agent platform.</li>
-<li>It is not tied to a single model vendor or harness.</li>
-<li>It does not require a database, queue, or network API to work.</li>
-<li>It does not schedule or background anything. &quot;Automatic&quot; means computed from the result of the verb the agent just called.</li>
-</ul>
-<p>The human operator is the bridge between terminals. Maestro is the shared state layer underneath that workflow.</p>
-<h3>Core Concepts</h3>
-<table>
-<thead>
-<tr>
-<th>Concept</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Spec</td>
-<td>A product-spec markdown file with YAML frontmatter: acceptance criteria, non-goals, risk class, mode, and work type. The input to the task lifecycle.</td>
-</tr>
-<tr>
-<td>Task</td>
-<td>The atomic unit of work. One task equals one PR. Carries a state machine, continuation record, optional contract, and linked evidence.</td>
-</tr>
-<tr>
-<td>Exec-plan</td>
-<td>A container for multiple child tasks decomposed from a heavy-mode spec. Auto-completes when all children reach a terminal state.</td>
-</tr>
-<tr>
-<td>Evidence</td>
-<td>An auditable row tied to a task: command run, exit code, optional log path, and a witness level.</td>
-</tr>
-<tr>
-<td>Contract</td>
-<td>A machine-checked scope agreement attached to a task: files expected, files forbidden, and explicit done-when criteria.</td>
-</tr>
-<tr>
-<td>Handoff</td>
-<td>A passive JSON envelope emitted at lifecycle transitions. The next agent reads <code>.maestro/handoffs/&lt;id&gt;.json</code> to learn what happened and why.</td>
-</tr>
-<tr>
-<td>Principle</td>
-<td>A behavioral rule stored at <code>.maestro/principles.jsonl</code> and injected into agent prompts.</td>
-</tr>
-<tr>
-<td>Verdict</td>
-<td>The deterministic gating decision after verification: <code>PASS</code>, <code>FAIL</code>, <code>HUMAN</code>, or <code>BLOCK</code>.</td>
-</tr>
-<tr>
-<td>Mission Control</td>
-<td>A read-only terminal dashboard and JSON snapshot surface for inspecting current state.</td>
-</tr>
-</tbody></table>
-<h3>How Work Flows</h3>
-<p><img src="https://raw.githubusercontent.com/ReinaMacCredy/maestro/main/assets/diagrams/readme-how-work-flows.svg" alt="How Maestro work flows"></p>
-<p>The loop is deliberately simple: author a spec, create a task, claim it, implement and verify in a loop, then ship. Each transition emits evidence and a handoff envelope so any subsequent agent can resume without a briefing.</p>
-<h3>Installation</h3>
-<h4>Requirements</h4>
-<ul>
-<li><a href="https://bun.sh/">Bun</a></li>
-<li>Git</li>
-<li>A local agent harness in another terminal, such as Codex, Claude Code, or Hermes</li>
-</ul>
-<h4>Install From Release</h4>
-<p>Install the latest published Maestro binary:</p>
-<pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/ReinaMacCredy/maestro/main/scripts/install.sh | bash
+<p>Everything is repo-local and reviewable in a diff.</p>
+<h3>Lifecycle</h3>
+<p>Features, tasks, and harness improvements each walk an explicit, gated state machine. The
+agent drives the transitions through the CLI; the gates are enforced, not advisory.</p>
+<p>A <strong>feature</strong> carries the product contract:</p>
+<pre><code class="language-mermaid">stateDiagram-v2
+    [*] --&gt; proposed: feature new
+    proposed --&gt; ready: accept
+    ready --&gt; in_progress: start
+    in_progress --&gt; shipped: ship
+    proposed --&gt; cancelled: cancel
+    ready --&gt; cancelled: cancel
+    in_progress --&gt; cancelled: cancel
+    shipped --&gt; [*]: archive
+    cancelled --&gt; [*]: archive
 </code></pre>
-<p>Install a specific published release:</p>
-<pre><code class="language-bash">MAESTRO_VERSION=&lt;version&gt; curl -fsSL https://raw.githubusercontent.com/ReinaMacCredy/maestro/main/scripts/install.sh | bash
+<p><code>accept</code> is gated on a frozen contract plus a behavior baseline. <code>ship</code> is gated on no live
+child tasks plus QA coverage. <code>amend</code> grows a frozen contract additively with an audit reason.</p>
+<p>A <strong>task</strong> is a unit of work, gated by proof:</p>
+<pre><code class="language-mermaid">stateDiagram-v2
+    [*] --&gt; draft: create
+    note right of draft : created directly, under a feature, or spawned by harness apply
+    draft --&gt; in_progress: claim
+    in_progress --&gt; needs_verification: complete
+    needs_verification --&gt; verified: verify
+    in_progress --&gt; abandoned: abandon
+    needs_verification --&gt; rejected: reject
+    verified --&gt; [*]: archive
 </code></pre>
-<p>After installation, refresh to the latest published release with:</p>
-<pre><code class="language-bash">maestro update
+<p>The task is the shared unit of work: a feature spins off child tasks (<code>task create --feature</code>)
+and the harness spins off a standalone task (<code>harness apply</code>), both landing here in <code>draft</code>.
+<code>claim</code> fast-tracks the internal accept steps when the feature contract or task checks are
+present (a standalone task needs at least one <code>--check</code> first). <code>verify</code> is the evidence gate:
+it passes only when the claim is backed by recorded proof.</p>
+<p>A <strong>harness improvement</strong> is a self-improvement proposal the harness surfaces from the run log
+and task history; it walks its own lifecycle behind features and tasks:</p>
+<pre><code class="language-mermaid">stateDiagram-v2
+    [*] --&gt; proposed: detector
+    proposed --&gt; accepted: apply
+    accepted --&gt; measured: measure (friction gone)
+    accepted --&gt; proposed: measure (ineffective)
+    measured --&gt; proposed: regressed
 </code></pre>
-<h4>Build From Source</h4>
-<pre><code class="language-bash">bun install
-bun run build
+<p><code>apply</code> accepts a proposal and spawns a linked task, so the fix runs through the task lifecycle
+above. <code>measure</code> re-runs the originating detector to close the loop: it reaches <code>measured</code> only
+when the friction is actually gone, reverts to <code>proposed</code> if the fix was ineffective, and
+reopens a <code>measured</code> item if the friction later returns. <code>measure</code> requires the linked task
+verified unless <code>--force</code>.</p>
+<h4>How the three fit together</h4>
+<p>Features and the harness are the two things that produce tasks, and both only reach their
+terminal state once those tasks are verified. The task lifecycle is the hub:</p>
+<pre><code class="language-mermaid">flowchart TB
+    subgraph feature [Feature]
+        F1[proposed] --&gt; F2[ready] --&gt; F3[in_progress] --&gt; F4[shipped]
+    end
+    subgraph harness [Harness]
+        H1[proposed] --&gt; H2[accepted] --&gt; H3[measured]
+    end
+    subgraph task [Task]
+        T1[draft] --&gt; T2[in_progress] --&gt; T3[needs_verification] --&gt; T4[verified]
+    end
+    F3 --&gt;|&quot;task create --feature&quot;| T1
+    H2 --&gt;|&quot;apply spawns&quot;| T1
+    T4 --&gt;|&quot;child tasks done + QA&quot;| F4
+    T4 --&gt;|&quot;linked task verified&quot;| H3
 </code></pre>
-<p>This produces the compiled binary at <code>./dist/maestro</code>.</p>
-<h4>Install Locally</h4>
-<pre><code class="language-bash">bun run release:local
-command -v maestro
-maestro --version
+<h3>Install</h3>
+<p>From source (always works):</p>
+<pre><code>git clone https://github.com/ReinaMacCredy/maestro
+cd maestro
+cargo install --path . --locked
 </code></pre>
-<p>If you also want to initialize global config and inject supported agent instruction blocks:</p>
-<pre><code class="language-bash">maestro install
+<p>With Cargo, directly from git:</p>
+<pre><code>cargo install --git https://github.com/ReinaMacCredy/maestro --locked
 </code></pre>
-<p>This syncs bundled Maestro skills into Codex, Claude Code, Hermes, and the shared AgentSkills root when those targets are available. See <a href="https://github.com/ReinaMacCredy/maestro/blob/main/docs/providers.md">Provider Registry and Skills</a> for roots, diagnostics, and external skill installs.</p>
-<p><code>./dist/maestro</code> is the fresh repo build. <code>maestro</code> on your <code>PATH</code> is the installed local binary.</p>
-<h3>Quick Start</h3>
-<h4>1. Initialize a project</h4>
-<pre><code class="language-bash">maestro init
+<p>Release binary (macOS and Linux, arm64 and amd64):</p>
+<pre><code>curl -fsSL https://raw.githubusercontent.com/ReinaMacCredy/maestro/main/scripts/install.sh | bash
 </code></pre>
-<p>Creates the local <code>.maestro/</code> workspace for the current repository and writes <code>.maestro/MAESTRO.md</code> — a read-order compass that points fresh agents at the right files.</p>
-<h4>2. Scaffold the directory layout</h4>
-<pre><code class="language-bash">maestro setup
+<p>The installer drops the binary in <code>~/.local/bin</code> (override with <code>MAESTRO_INSTALL_DIR</code>).
+Verify with <code>maestro version</code> and <code>maestro doctor</code>.</p>
+<h3>Let your agent set it up</h3>
+<p>maestro is meant to be driven by your coding agent. The installer wires agent skills and hooks
+into your repo — including a <code>maestro-setup</code> skill that tunes the harness to your build/test
+commands and conventions — so the agent learns the lifecycle and records its own work. Point
+your agent (Claude Code, Codex, or any CLI agent) at the repo and paste:</p>
+<pre><code>Set up maestro in this repo: run `maestro init --yes`, then `maestro install --agent claude`
+(or `--agent codex`). Then follow the maestro-setup skill it installs to tune the harness to
+this repo, and drive the feature and task lifecycle through the `maestro` CLI from there.
 </code></pre>
-<p>Runs the idempotent setup state machine: scaffolds the canonical subdirectories under <code>.maestro/</code>, writes the project config, drops bundled skills, and seeds the default principles pack. Safe to re-run.</p>
-<h4>3. Check setup</h4>
-<pre><code class="language-bash">maestro setup check
+<h3>Quickstart</h3>
+<p>Scaffold the repo and install the agent integration:</p>
+<pre><code>maestro init --yes                 # create .maestro/ and extract bundled skills/hooks
+maestro install --agent claude     # wire skills + hooks into CLAUDE.md/AGENTS.md (or --agent codex)
+maestro doctor                     # check the installation
 </code></pre>
-<p>Audits the directory layout, principles pack, and config file. Exits 1 only when an entry is <code>missing</code>; <code>warn</code> is informational. Add <code>--json</code> for machine output.</p>
-<h4>4. Author a spec</h4>
-<pre><code class="language-bash">maestro spec new my-feature --title &quot;My first feature&quot;
+<p>The smallest loop is a single task. A standalone task (no feature) carries its own
+acceptance check, and closes once a recorded run backs its claim:</p>
+<pre><code>maestro task create &quot;Patch null deref in parser&quot;            # -&gt; draft
+maestro task set task-001 --check &quot;regression test passes&quot;  # standalone tasks need their own check
+maestro task claim task-001                                 # -&gt; in_progress
+maestro task complete task-001 --summary &quot;guard the None case&quot; --claim &quot;cargo test parser passes&quot;
+
+# verify is gated on recorded proof. During a real agent run the installed hooks
+# record that proof automatically from your tool runs; by hand, record it explicitly:
+maestro event create --task-id task-001 --claim &quot;cargo test parser passes&quot;
+maestro task verify task-001                                # passes once the claim is backed by recorded proof
 </code></pre>
-<p>Scaffolds <code>.maestro/specs/my-feature.md</code> with YAML frontmatter. Open the file and fill in <code>acceptance</code>, <code>non_goals</code>, <code>risk_class</code>, <code>mode</code>, and <code>work_type</code>. For a guided interview, run the <code>maestro-design</code> skill before this step.</p>
-<p>The frontmatter shape:</p>
-<pre><code class="language-yaml">---
-slug: my-feature
-title: My first feature
-status: draft
-acceptance:
-  - &quot;The new endpoint returns 200 for valid input&quot;
-non_goals:
-  - &quot;Migrating existing data&quot;
-risk_class: medium
-mode: light
-work_type: feature
-blocked_by: []
----
+<p>For a larger change, wrap the work in a feature contract and spin off child tasks:</p>
+<pre><code>maestro feature new &quot;CSV export&quot;                         # -&gt; proposed
+maestro feature set csv-export --acceptance &quot;Export a report to CSV&quot; --area &quot;src/export&quot;
+
+# accept is gated on a captured behavior baseline. The qa-baseline skill writes this
+# for you during an agent run; by hand it is just a non-empty file of [bl-NNN] scenarios:
+cat &gt; .maestro/features/csv-export/baseline.md &lt;&lt;&#39;EOF&#39;
+# Behavior baseline: CSV export
+
+## Scenario Matrix
+- [bl-001] Exporting an empty report yields a header-only CSV file.
+EOF
+
+maestro feature accept csv-export                        # freeze the contract -&gt; ready
+maestro feature start csv-export                         # -&gt; in_progress
+
+maestro task create &quot;Implement CSV writer&quot; --feature csv-export   # inherits the feature&#39;s contract; no --check
+maestro task claim task-001
+maestro task complete task-001 --summary &quot;wrote csv writer&quot; --claim &quot;cargo test export passes&quot;
+maestro event create --task-id task-001 --claim &quot;cargo test export passes&quot;   # hooks record this in an agent run
+maestro task verify task-001
+
+# ship is gated on QA coverage: every [bl-NNN] baseline scenario needs a proven slice.
+# The qa-slice skill writes this for you; by hand it maps each scenario to its evidence:
+cat &gt; .maestro/features/csv-export/qa-slices.yaml &lt;&lt;&#39;EOF&#39;
+slices:
+  - scenarios: [&quot;bl-001&quot;]
+    evidence: [&quot;cargo test export::empty_report_header_only passes&quot;]
+EOF
+
+maestro feature ship csv-export --outcome &quot;Shipped streaming CSV export&quot;   # -&gt; shipped
 </code></pre>
-<p>Run <code>maestro spec validate .maestro/specs/my-feature.md</code> to check frontmatter before proceeding.</p>
-<h4>5. Create the task</h4>
-<pre><code class="language-bash">maestro task from-spec .maestro/specs/my-feature.md
+<p><code>maestro feature show &lt;id&gt;</code> and <code>maestro task show &lt;id&gt;</code> render the current state and the
+recorded reasoning at any point.</p>
+<p>maestro surfaces improvement proposals once it has enough run history to spot friction, so a
+fresh repo shows none (<code>harness list</code> -&gt; &quot;no improvement proposals found&quot;). The <code>hb-001</code> below
+is illustrative; once the backlog has a real entry, run it through the same task loop:</p>
+<pre><code>maestro harness list                       # what friction the run log surfaced
+maestro harness apply hb-001                # accept a proposal -&gt; spawns a standalone task
+maestro task set task-003 --check &quot;deflake the integration suite&quot;   # standalone tasks need a check first
+maestro task claim task-003
+maestro task complete task-003 --summary &quot;stabilized the suite&quot; --claim &quot;cargo test integration passes&quot;
+maestro event create --task-id task-003 --claim &quot;cargo test integration passes&quot;   # proof (hooks do this live)
+maestro task verify task-003                # gated on the claim&#39;s recorded proof
+maestro harness measure hb-001              # close the loop once that task is verified
 </code></pre>
-<p>Creates a task in <code>draft</code> state and prints the task ID (<code>tsk-...</code>).</p>
-<h4>6. Claim the task</h4>
-<pre><code class="language-bash">maestro task claim &lt;tsk-id&gt;
-# or the hot-path alias:
-claim &lt;tsk-id&gt;
+<p><code>harness apply</code> spawns a <em>standalone</em> task, so it needs a <code>--check</code> before you can claim it.
+<code>harness measure</code> will not mark the improvement <code>measured</code> until that linked task is verified
+(pass <code>--force</code> to close it anyway).</p>
+<h4>Suggested workflow</h4>
+<p>The three lifecycles compose into one operating rhythm. The <a href="#quickstart">Quickstart</a> above is the
+terse command path; this section narrates it — the agent prompt you hand off for each flow, and what
+the run actually looks like, gates and all. <code>maestro install</code> puts the matching skills in your repo
+(design, feature, task, verify, QA), so each prompt below hands off to the skill that owns that flow
+rather than spelling out every verb. Every transcript below is real output from the current binary.</p>
+<h5>From a high-level idea to a shipped product</h5>
+<p>One feature, start to finish: a raw idea becomes a frozen contract, the work is proven slice by slice,
+and it ships only once QA covers the baseline. This is the prompt you paste into a fresh agent session:</p>
+<blockquote>
+<p>We want to add rate limiting to the public API: requests over a key&#39;s limit should get an HTTP 429.
+Set it up as a maestro feature, driving each step through its skill — <code>maestro-design</code> to map the
+contract and record the fixed-window-vs-token-bucket decision, <code>qa-baseline</code> to capture a behavior
+baseline, then <code>maestro-task</code> and <code>maestro-verify</code> to drive it to shipped through proof-gated tasks,
+and <code>qa-slice</code> for the ship gate. Don&#39;t skip the gates.</p>
+</blockquote>
+<p>How it looks end to end (the <code>baseline.md</code> and <code>qa-slices.yaml</code> file bodies are in flows 1 and 3 below,
+and copy-paste-ready in the Quickstart):</p>
+<pre><code>$ maestro feature new &quot;API rate limiting&quot;
+created feature api-rate-limiting (proposed)
+
+$ maestro feature set api-rate-limiting \
+    --acceptance &quot;Requests over a key&#39;s limit get HTTP 429 with Retry-After&quot; \
+    --acceptance &quot;Counters reset on a fixed window boundary&quot; \
+    --area &quot;src/api/middleware&quot; --non-goal &quot;No multi-node coordination in this pass&quot; \
+    --question &quot;Per-key or per-IP buckets?&quot;
+set api-rate-limiting (replace-per-field); acceptance=2, areas=1, non_goals=1, questions=1
+
+$ maestro decision new &quot;Fixed-window counter, not a token bucket, for v1&quot;
+created decision decision-001
+
+# (write .maestro/features/api-rate-limiting/baseline.md first — see flow 1) — accept then succeeds:
+$ maestro feature accept api-rate-limiting
+accepted api-rate-limiting (→ ready); contract frozen (acceptance=2, areas=1); note: 1 open question(s) carried (non-blocking)
+$ maestro feature start api-rate-limiting
+started api-rate-limiting (→ in_progress)
+
+$ maestro task create &quot;Add fixed-window counter middleware&quot; --feature api-rate-limiting
+created task-001
+$ maestro task claim task-001
+auto-accepted task-001 (draft -&gt; ready, acceptance locked)
+updated task-001 -&gt; in_progress
+$ maestro task complete task-001 --summary &quot;fixed-window counter in the request middleware&quot; --claim &quot;cargo test ratelimit passes&quot;
+updated task-001 -&gt; needs_verification
+$ maestro event create --task-id task-001 --claim &quot;cargo test ratelimit passes&quot;   # hooks do this live
+created task_proof event for run manual
+$ maestro task verify task-001
+verification passed for task-001 (1 claim(s), 1 proof source(s))
+
+# (write .maestro/features/api-rate-limiting/qa-slices.yaml first — see flow 3) — ship then succeeds:
+$ maestro feature ship api-rate-limiting --outcome &quot;Shipped fixed-window rate limiting&quot;
+shipped api-rate-limiting (→ shipped)
 </code></pre>
-<p>Transitions the task to <code>claimed</code>, records a transition evidence row, and emits a handoff envelope at <code>.maestro/handoffs/&lt;id&gt;.json</code>. For heavy-mode specs, a worktree is auto-created at this step. To skip worktree creation:</p>
-<pre><code class="language-bash">maestro task claim &lt;tsk-id&gt; --skip-worktree
+<p>The same journey, flow by flow — each leads with the gate that blocks you until the evidence exists,
+because that gate is the point.</p>
+<h5>1. Design as a feature</h5>
+<p><code>feature new</code> then <code>feature set</code> map the contract (acceptance, affected areas, non-goals, open
+questions); <code>decision new</code> records each fork as a durable file. <code>feature accept</code> freezes the contract
+into <code>ready</code> — but only once you have captured a behavior baseline — and <code>feature start</code> moves it to
+<code>in_progress</code>.</p>
+<p><em>Prompt:</em> &quot;Follow the <code>maestro-design</code> skill to set up <idea> as a maestro feature: <code>feature new</code>, then
+<code>feature set</code> with the acceptance criteria, affected areas, non-goals, and open questions, recording
+each fork with <code>decision new</code>. Capture the <code>[bl-NNN]</code> behavior baseline at
+<code>.maestro/features/&lt;id&gt;/baseline.md</code> with the <code>qa-baseline</code> skill, then <code>feature accept</code> and
+<code>feature start</code>.&quot;</p>
+<p>The gate: <code>accept</code> refuses until a baseline exists, and names the file it wants.</p>
+<pre><code>$ maestro feature accept api-rate-limiting
+Error: cannot accept api-rate-limiting — contract incomplete:
+  qa-baseline (.maestro/features/api-rate-limiting/baseline.md missing) — fix: capture current behavior before edits via the qa-baseline skill (a non-empty baseline.md); tagging scenarios [bl-NNN] now satisfies the ship gate later
 </code></pre>
-<h4>7. Do the work, then verify</h4>
-<p>Implement the change. When ready:</p>
-<pre><code class="language-bash">maestro task verify &lt;tsk-id&gt;
-# or:
-verify &lt;tsk-id&gt;
+<h5>2. Spin off tasks, each closed by proof</h5>
+<p><code>task create --feature &lt;id&gt;</code> per slice — feature-linked tasks inherit the contract, while a standalone
+task needs its own <code>--check</code> first. Then drive every task through the same gated loop: <code>task claim</code> →
+<code>task complete --summary &quot;...&quot; --claim &quot;...&quot;</code> → the proof (the installed hooks record it as the agent
+runs its tools; by hand it is <code>maestro event create --task-id &lt;id&gt; --claim &quot;&lt;same text&gt;&quot;</code>) →
+<code>task verify</code>. A <code>verified</code> task is always evidence you can open.</p>
+<p><em>Prompt:</em> &quot;Follow the <code>maestro-task</code> skill: for each slice of <feature>, <code>task create --feature &lt;id&gt;</code>,
+claim it, do the work, then <code>task complete</code> with a <code>--claim</code> stating what proves it. The installed
+hooks record that proof as you run your tools; then use the <code>maestro-verify</code> skill and <code>task verify</code> to
+gate the task on it. Use the same wording in the claim and the proof.&quot;</p>
+<p>The gate: <code>verify</code> refuses until the claim is backed by recorded proof — and prints the exact command
+to record it.</p>
+<pre><code>$ maestro task verify task-001
+verification failure: missing proof: no task events or proof artifacts found; hooks record proof during agent runs, or add one with `maestro event create --task-id task-001 --claim &quot;...&quot;`
+verification failure: claim not backed by events/proof: cargo test ratelimit passes; record matching proof with `maestro event create --task-id task-001 --claim &quot;cargo test ratelimit passes&quot;`
+Error: verification failed for task-001
 </code></pre>
-<p>Exit codes:</p>
-<table>
-<thead>
-<tr>
-<th>Code</th>
-<th>Meaning</th>
-<th>Next action</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>0</code></td>
-<td>PASS</td>
-<td>Task auto-advances to <code>ready</code>. Run <code>ship</code>.</td>
-</tr>
-<tr>
-<td><code>1</code></td>
-<td>FAIL</td>
-<td>Fix the cited violations. Run <code>verify</code> again.</td>
-</tr>
-<tr>
-<td><code>2</code></td>
-<td>HUMAN</td>
-<td>Task stays at <code>verifying</code>. Hand off and stop.</td>
-</tr>
-<tr>
-<td><code>3</code></td>
-<td>BLOCK</td>
-<td>Task transitions to <code>blocked</code>. Surface the reason.</td>
-</tr>
-</tbody></table>
-<h4>8. Ship</h4>
-<pre><code class="language-bash">maestro task ship &lt;tsk-id&gt;
-# or:
-ship &lt;tsk-id&gt;
+<h5>3. Ship the feature once QA is proven</h5>
+<p>A feature ships only when it has no live child tasks <em>and</em> its QA coverage is green: every <code>[bl-NNN]</code>
+scenario in the baseline must be matched by a slice in <code>qa-slices.yaml</code> carrying non-empty evidence.
+Coverage is checked, not asserted, so a green ship is a real signal.</p>
+<p><em>Prompt:</em> &quot;With the <code>qa-slice</code> skill, map every <code>[bl-NNN]</code> baseline scenario of <feature> to a slice in
+<code>.maestro/features/&lt;id&gt;/qa-slices.yaml</code> with the test that proves it as <code>evidence</code>. Then
+<code>feature ship --outcome &quot;...&quot;</code>. Verify the gate passes; don&#39;t <code>--force</code> it.&quot;</p>
+<p>The gate: <code>ship</code> refuses while any baseline scenario lacks a covering slice, and lists which.</p>
+<pre><code>$ maestro feature ship api-rate-limiting --outcome &quot;Shipped fixed-window rate limiting&quot;
+Error: cannot ship api-rate-limiting:
+  qa-slice coverage incomplete — 2 baseline scenario(s) without a counting slice: bl-001, bl-002; fix: add to .maestro/features/api-rate-limiting/qa-slices.yaml a `slices:` entry per scenario with `scenarios: [bl-NNN]` and non-empty `evidence: [...]`, or run the qa-slice skill
 </code></pre>
-<p>Transitions <code>ready -&gt; shipped</code>. Optionally attach a PR URL:</p>
-<pre><code class="language-bash">maestro task ship &lt;tsk-id&gt; --pr-url https://github.com/owner/repo/pull/123
+<h5>4. Improve the harness — maestro&#39;s self-improvement</h5>
+<p>The first three flows build the product; this one sharpens the tool that builds it, through the very
+same proof loop. maestro watches its own run log and task history, and surfaces a proposal when the
+same friction <em>recurs</em> — that is, when work keeps going wrong the same way. It never acts on its own:
+proposals are listed on demand and only become work when you apply them.</p>
+<p>What it catches (the rule-based detectors, no LLM calls): the same blocker reason across two or more
+tasks (<code>recurring_blocker</code>); a session full of correction prompts (<code>recurring_intervention</code>); a task
+verified with a command that is not in your reusable harness stack (<code>missing_verification</code>); a work
+domain whose tasks take far longer to verify than the rest (<code>missing_skill</code>); a topic rediscovered
+across tasks with no decision on record (<code>rediscovered_decision</code>).</p>
+<p><em>Prompt:</em> &quot;Follow the <code>maestro-task</code> skill&#39;s harness loop: run <code>maestro harness list</code>, and for each
+proposal worth doing, <code>harness apply &lt;id&gt;</code> to spawn the fix task, close that task through the proof
+loop (<code>set --check</code>, claim, complete <code>--claim</code>, record proof, <code>verify</code>), then <code>harness measure &lt;id&gt;</code>
+to record the outcome.&quot;</p>
+<p>A fresh repo has no history, so nothing is proposed. Here two tasks hit the same blocker — that <em>is</em> the
+recurring friction — and the detector turns it into a tracked proposal:</p>
+<pre><code>$ maestro harness list
+no improvement proposals found
+
+$ maestro task block task-001 --reason &quot;staging credentials missing&quot;
+blocked task-001 (blk-001)
+$ maestro task block task-002 --reason &quot;staging credentials missing&quot;
+blocked task-002 (blk-001)
+
+$ maestro harness list
+ID	STATUS	TYPE	TITLE
+hb-001	proposed	recurring_blocker	Reduce recurring blocker: staging credentials missing
+
+$ maestro harness apply hb-001                 # accept → spawns a standalone task
+accepted hb-001 (spawned task-003)
+next: `maestro task set task-003 --check &quot;...&quot;` then `maestro task claim task-003`
+
+# close the spawned (standalone) task through the proof loop
+$ maestro task set task-003 --check &quot;staging credentials documented in onboarding&quot;
+updated task-003 checks
+$ maestro task claim task-003
+auto-accepted task-003 (draft -&gt; ready, acceptance locked)
+updated task-003 -&gt; in_progress
+$ maestro task complete task-003 --summary &quot;added staging creds to onboarding&quot; --claim &quot;onboarding doc lists staging creds&quot;
+updated task-003 -&gt; needs_verification
+$ maestro event create --task-id task-003 --claim &quot;onboarding doc lists staging creds&quot;
+created task_proof event for run manual
+$ maestro task verify task-003
+verification passed for task-003 (1 claim(s), 1 proof source(s))
+
+$ maestro harness measure hb-001
+hb-001 is now measured
+note: friction is still detected; this behavioral item was closed by judgment, not by a silence check
 </code></pre>
-<h3>The Six Skills</h3>
-<p>Maestro ships a bundle of six agent-facing skills. Agents load them at session start. Each skill is a markdown document in <code>skills/bundled/</code>.</p>
-<h4>maestro-design</h4>
-<p>Interview-driven product-spec authoring. Runs the grill protocol: a one-question-at-a-time interview that walks acceptance criteria, non-goals, risk class, mode, and work type, challenging user language against <code>CONTEXT.md</code> and committed ADRs. Output is a committed <code>.maestro/specs/&lt;slug&gt;.md</code> ready for <code>maestro task from-spec</code>. Use this skill before authoring any spec.</p>
-<h4>maestro-handoff</h4>
-<p>Session handoff awareness for the passive handoff model. Describes the envelope schema, which lifecycle verbs emit envelopes (<code>task:claim</code>, <code>task:block</code>), and the read-only pickup protocol an incoming agent follows to resume a task left by a prior agent. Also documents the four handoff MCP tools for runtimes that prefer structured tool calls over direct file reads. Read this skill at session start in any <code>.maestro/</code> project to learn what the last agent left behind.</p>
-<h4>maestro-mission</h4>
-<p>Heavy-mode workflow. Takes an approved <code>mode: heavy</code> product-spec and turns it into a mission with child tasks via <code>maestro mission from-spec</code> followed by <code>maestro mission decompose</code>. The decompose step runs the grill protocol against the spec, <code>CONTEXT.md</code>, and the architecture lint set before emitting the task batch. The mission auto-completes when every child task reaches <code>shipped</code> or <code>abandoned</code> (ADR-0011). Use this skill when the work spans three or more vertical slices or multiple feature directories.</p>
-<h4>maestro-task</h4>
-<p>Single-task execution loop for light-mode specs. Guides the agent from <code>task from-spec</code> through <code>claim</code>, the <code>doing &lt;-&gt; verifying</code> iteration, blocking when stuck, and finally <code>ship</code>. Auto-activates when a <code>.maestro/</code> directory is detected in the working tree. Every state transition emits a handoff envelope and an evidence row. Use this skill for any single-PR implementation task.</p>
-<h4>maestro-verify</h4>
-<p>The canonical verification protocol. Documents exit-code routing (PASS / FAIL / HUMAN / BLOCK), the architecture-lint corpus, the Trust Verifier checks, and the ProofMap acceptance-criteria coverage gate. Cross-referenced by <code>maestro-task</code> and <code>maestro-mission</code>. Read this skill before declaring any task complete; it is the shared pre-ship ritual every agent follows.</p>
-<h4>maestro-setup</h4>
-<p>Repository onboarding. The skill generates context docs under <code>.maestro/context/</code>, a hierarchical <code>AGENTS.md</code>, language style guides, and a setup report. The CLI mirrors the skill: <code>setup check</code> audits drift; <code>setup</code> runs the idempotent state machine that scaffolds and reconciles the directory layout, drops bundled skills, and seeds the default principles pack. Use this skill when initializing a new project.</p>
-<h3>Handoffs</h3>
-<p>Handoffs in Maestro are passive. Lifecycle verbs drop a small JSON envelope on disk at each meaningful transition; the next agent reads the file to understand what was happening and why. There is no launch daemon, no remote queue, and no active broker.</p>
-<h4>Which verbs emit envelopes</h4>
-<table>
-<thead>
-<tr>
-<th>Verb</th>
-<th>Emits</th>
-<th>Envelope <code>trigger_verb</code></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>maestro task claim</code></td>
-<td>yes</td>
-<td><code>task:claim</code></td>
-</tr>
-<tr>
-<td><code>maestro task block</code></td>
-<td>yes</td>
-<td><code>task:block</code></td>
-</tr>
-<tr>
-<td><code>maestro task ship</code></td>
-<td>roadmap</td>
-<td>—</td>
-</tr>
-<tr>
-<td><code>maestro task verify</code></td>
-<td>roadmap</td>
-<td>—</td>
-</tr>
-<tr>
-<td><code>maestro task abandon</code></td>
-<td>roadmap</td>
-<td>—</td>
-</tr>
-</tbody></table>
-<p><code>task:claim</code> and <code>task:block</code> are the only wired emitters. The remaining triggers are reserved in the port and will emit when wired.</p>
-<h4>Envelope schema</h4>
-<p>Envelopes land at <code>.maestro/handoffs/&lt;hnd-&lt;base36&gt;-&lt;rand&gt;&gt;.json</code>:</p>
-<pre><code class="language-json">{
-  &quot;id&quot;: &quot;hnd-...&quot;,
-  &quot;task_id&quot;: &quot;tsk-...&quot;,
-  &quot;trigger_verb&quot;: &quot;task:claim&quot;,
-  &quot;created_at&quot;: &quot;&lt;ISO-8601&gt;&quot;,
-  &quot;agent_id&quot;: &quot;&lt;optional&gt;&quot;,
-  &quot;worktree_path&quot;: &quot;&lt;optional&gt;&quot;,
-  &quot;spec_path&quot;: &quot;&lt;optional&gt;&quot;,
-  &quot;reason&quot;: &quot;&lt;optional, present on task:block&gt;&quot;
-}
-</code></pre>
-<h4>Pickup protocol</h4>
-<ol>
-<li>Scan recent envelopes: <code>ls -1t .maestro/handoffs/*.json | head -10</code></li>
-<li>Read the envelope that matches the task you intend to pick up.</li>
-<li>Check <code>trigger_verb</code>:<ul>
-<li><code>task:claim</code> — a prior agent had it; verify they are gone before re-claiming.</li>
-<li><code>task:block</code> — read <code>reason</code>; resolve the blocker before re-claiming.</li>
-</ul>
-</li>
-<li>Re-claim: <code>maestro task claim &lt;task_id&gt; --agent &lt;your-agent-id&gt;</code></li>
-<li>Continue the verification loop per <code>maestro-verify</code>.</li>
-</ol>
-<p>Pickup sidecars live at <code>&lt;id&gt;.picked_up.json</code>. The <code>*.json</code> glob matches envelope files only; pickup sidecars are excluded by <code>maestro_handoff_list</code> by default.</p>
-<h3>Task System</h3>
-<p>Tasks are Maestro&#39;s lightweight, mutable issue graph for the daily queue. A task answers &quot;what do I do next?&quot; Tasks live in <code>.maestro/tasks/tasks.jsonl</code>, are repo-tracked, and review like regular diffs.</p>
-<h4>Lifecycle</h4>
+<p>That closing note is the honest part: <code>measure</code> confirms the friction is <em>gone</em> only for the
+state-based detectors (<code>missing_verification</code>, <code>rediscovered_decision</code>), which it re-runs and expects to
+fall silent. A behavioral item like <code>recurring_blocker</code> is drawn from history, so <code>measure</code> closes it by
+<em>your</em> judgment that you addressed the root cause, and says so rather than pretending the signal
+vanished. Either way, the improvement is tracked and backed by a verified task — never a silent edit.</p>
+<h4>Feature lifecycle</h4>
+<p>A feature is the product contract. <code>proposed</code> is the design state where the contract is
+editable; <code>accept</code> freezes it into <code>ready</code> (and requires a behavior baseline); <code>start</code> moves
+it to <code>in_progress</code>; <code>ship</code> requires no live child tasks plus QA coverage. Each feature owns
+a directory under <code>.maestro/features/&lt;id&gt;/</code> with its contract, baseline, QA slices, amend log,
+and a free-form <code>notes.md</code> running design log.</p>
+<h4>Tasks gated by proof</h4>
+<p>Tasks move <code>draft -&gt; in_progress -&gt; needs_verification -&gt; verified</code>. <code>verify</code> reads the proof
+recorded for the task and checks it against the claim; a task with no checks cannot be claimed.
+The result is that &quot;done&quot; is always backed by evidence you can open.</p>
+<h4>QA: baseline and slices</h4>
+<p>A feature ships only when its behavior baseline is fresh and its QA slices cover the scenarios.
+Coverage is checked, not asserted, so a green ship is a real signal.</p>
+<h4>Decisions</h4>
+<p><code>maestro decision new &quot;&lt;the fork&gt;&quot;</code> records an architectural decision as a file under
+<code>.maestro/decisions/</code>, so the reasoning outlives any single agent session.</p>
+<h4>Harness self-improvement</h4>
+<p>The harness is the part of maestro that improves the tool you build with, through the same
+proof loop the product work uses. It watches its own run log and task history and proposes a
+fix when the same friction <em>recurs</em>. It is rule-based — no LLM calls — and passive: nothing is
+detected or acted on in the background. <code>maestro harness list</code> surfaces the backlog on demand,
+<code>maestro harness apply &lt;id&gt;</code> accepts a proposal and spawns a real task to do the work, and
+<code>maestro harness measure &lt;id&gt;</code> records the outcome.</p>
+<p>The loop, end to end: your run log and task history feed the detectors; a recurring friction
+becomes a <code>proposed</code> item; <code>apply</code> accepts it and spins off a linked task; you close that task
+through the normal proof loop; and <code>measure</code> confirms the outcome.</p>
 <pre><code class="language-mermaid">flowchart LR
-    pending --&gt;|claim| in_progress
-    in_progress --&gt;|unclaim| pending
-    in_progress --&gt;|complete| completed
-    completed -.-&gt;|reopen| pending
+    H[run log + task history] --&gt; D{detectors}
+    D --&gt;|&quot;friction recurs&quot;| P[proposed]
+    P --&gt;|&quot;harness apply&quot;| A[accepted: spawns a linked task]
+    A --&gt;|&quot;task closed by proof&quot;| M[harness measure]
+    M --&gt;|&quot;friction gone / judged fixed&quot;| V[measured]
+    M --&gt;|&quot;fix ineffective&quot;| P
+    V -.-&gt;|&quot;friction returns&quot;| P
 </code></pre>
-<ul>
-<li><code>pending</code> tasks sit in the queue.</li>
-<li><code>in_progress</code> tasks are claimed by exactly one session.</li>
-<li><code>completed</code> tasks are locked; edits or re-runs require <code>task reopen</code>, which restores the task and its continuation summary.</li>
-<li>Legacy statuses (<code>open</code>, <code>blocked</code>, <code>deferred</code>, <code>closed</code>) still parse from older state files and collapse to <code>pending</code> or <code>completed</code> on read.</li>
-</ul>
-<p>Every task carries a <code>type</code> (<code>task</code>, <code>bug</code>, <code>feature</code>, <code>epic</code>, <code>chore</code>), a <code>priority</code> (<code>P0</code>-<code>P4</code>, default <code>P2</code>), freeform <code>labels</code>, optional <code>parentId</code>, ownership metadata (<code>assignee</code>, <code>claimedAt</code>, <code>lastActivityAt</code>), optional <code>contractId</code>, and an optional <code>receipt</code> (<code>summary</code>, <code>surprise</code>, <code>verifiedBy</code>) captured at completion.</p>
-<h4>Dependencies and blocking</h4>
-<p>Blocking is symmetric and stored on both sides. Each task has a <code>blockedBy</code> list of prerequisites and a <code>blocks</code> list of dependents. Declaring that <code>A</code> blocks <code>B, C</code> atomically updates all three tasks.</p>
-<pre><code class="language-bash">maestro task block &lt;id&gt; &lt;blockedTaskIds...&gt;
-maestro task unblock &lt;id&gt; &lt;blockedTaskIds...&gt;
-maestro task create &quot;...&quot; --blocked-by &lt;ids&gt;
+<p><strong>What it catches.</strong> Five detectors run, in two classes. <strong>State detectors</strong> read current repo
+state, so their silence reliably means the friction is fixed — <code>measure</code> re-runs them and
+closes the item automatically once they fall silent. <strong>Behavioral detectors</strong> are drawn from
+history, so <code>measure</code> closes them on your judgment that you fixed the root cause, and says so
+rather than pretending the signal vanished.</p>
+<table>
+<thead>
+<tr>
+<th>Detector</th>
+<th>Class</th>
+<th>What it catches</th>
+<th>Fires when</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>missing_verification</code></td>
+<td>state</td>
+<td>a task verified with a command not in your reusable <code>harness.yml</code> stack</td>
+<td>a verified task uses such a command</td>
+</tr>
+<tr>
+<td><code>rediscovered_decision</code></td>
+<td>state</td>
+<td>a topic worked across tasks with no decision on record</td>
+<td>2+ tasks, no matching decision</td>
+</tr>
+<tr>
+<td><code>recurring_blocker</code></td>
+<td>behavioral</td>
+<td>the same blocker reason hit by more than one task</td>
+<td>2+ tasks, same reason</td>
+</tr>
+<tr>
+<td><code>recurring_intervention</code></td>
+<td>behavioral</td>
+<td>a session full of correction-like prompts</td>
+<td>3+ in one session</td>
+</tr>
+<tr>
+<td><code>missing_skill</code></td>
+<td>behavioral</td>
+<td>a work domain far slower to verify than the rest</td>
+<td>2+ tasks, domain median &gt; 2x overall</td>
+</tr>
+</tbody></table>
+<p><strong>Identity and lifecycle.</strong> Each proposal carries a stable fingerprint — <code>&lt;detector&gt;:&lt;subject&gt;</code>
+— so re-running detection never piles up duplicates: the same friction stays one tracked item
+as it moves <code>proposed -&gt; accepted -&gt; measured</code>. <code>measure</code> sends an ineffective fix back to
+<code>proposed</code>, and reopens a <code>measured</code> <em>state</em> item to <code>proposed</code> if its friction later returns (a
+regression). <code>measure</code> requires the linked task verified unless you pass <code>--force</code>.</p>
+<p><strong>What it looks like.</strong> A fresh repo proposes nothing. Here two tasks hit the same blocker —
+<code>maestro task block task-001 --reason &quot;staging credentials missing&quot;</code> and the same on
+<code>task-002</code> — which is the recurring friction the <code>recurring_blocker</code> detector watches for. This
+transcript is real output from the current binary:</p>
+<pre><code>$ maestro harness list
+no improvement proposals found
+
+# after the two blockers, the detector has something to surface:
+$ maestro harness list
+ID	STATUS	TYPE	TITLE
+hb-001	proposed	recurring_blocker	Reduce recurring blocker: staging credentials missing
+
+# accept it — maestro spawns a standalone task to carry the fix, and tells you the next step:
+$ maestro harness apply hb-001
+accepted hb-001 (spawned task-003)
+next: `maestro task set task-003 --check &quot;...&quot;` then `maestro task claim task-003`
+
+# show reveals the evidence, the fingerprint&#39;s spawned task, and the append-only history:
+$ maestro harness show hb-001
+id: hb-001
+title: Reduce recurring blocker: staging credentials missing
+type: recurring_blocker
+status: accepted
+priority: medium
+source: blockers
+spawned_task: task-003
+evidence:
+- same blocker pattern appeared in 2 tasks: task-001, task-002
+history:
+- accepted (task-003) 2026-06-02T16:13:36.670896000Z
+
+# close task-003 through the proof loop (set --check, claim, complete --claim, record proof):
+$ maestro task verify task-003
+verification passed for task-003 (1 claim(s), 1 proof source(s))
+
+# with the linked task verified, close the loop — no --force needed:
+$ maestro harness measure hb-001
+hb-001 is now measured
+note: friction is still detected; this behavioral item was closed by judgment, not by a silence check
+
+# measured items leave the default list; the ledger lives under --all:
+$ maestro harness list
+no improvement proposals found
+# 1 measured proposal(s) hidden; use --all to include
+$ maestro harness list --all
+ID	STATUS	TYPE	TITLE
+hb-001	measured	recurring_blocker	Reduce recurring blocker: staging credentials missing
 </code></pre>
-<p>Rules enforced by the domain layer:</p>
-<ul>
-<li>A task is <strong>ready</strong> only when every entry in its <code>blockedBy</code> is <code>completed</code> (or missing from the store). <code>task ready</code> returns exactly the pending, unblocked, unassigned set, ranked <code>P0</code>/<code>P1</code> first and then by creation time.</li>
-<li>Status moves into <code>in_progress</code> or <code>completed</code> fail with a blocker error when any prerequisite is still open.</li>
-<li>The retired <code>task deps add|remove</code> verbs now error and point to <code>task block</code> / <code>task unblock</code>.</li>
-</ul>
-<h4>Discovery</h4>
+<p>That closing <code>note</code> is the honest part: <code>recurring_blocker</code> is a behavioral detector, so
+<code>measure</code> closes it on your judgment rather than claiming the historical signal vanished. A
+state detector (<code>missing_verification</code>, <code>rediscovered_decision</code>) would instead be re-run and
+only reach <code>measured</code> once it actually fell silent.</p>
+<p>The <a href="#4-improve-the-harness--maestros-self-improvement">Suggested workflow</a> walks this same loop
+in context, alongside the feature and task flows.</p>
+<h4>Skills and hooks</h4>
+<p><code>maestro install</code> extracts agent skills (design, feature, task, verify, QA) into
+<code>.maestro/skills/</code> and wires hook scripts so the agent&#39;s actions are recorded as run events.
+<code>maestro sync</code> refreshes those bundled resources to the running binary, preserving your edits.</p>
+<h3>Command reference</h3>
 <table>
 <thead>
 <tr>
 <th>Command</th>
-<th>Returns</th>
+<th>What it does</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>maestro task status</code></td>
-<td>Hybrid board: compact active/ready/blocked lists plus expanded dependency tracks.</td>
+<td><code>init</code></td>
+<td>Scaffold <code>.maestro/</code> and extract bundled resources</td>
 </tr>
 <tr>
-<td><code>maestro task ready</code></td>
-<td>Pending, unblocked, unassigned tasks, <code>P0</code>/<code>P1</code> first.</td>
+<td><code>install</code> / <code>uninstall</code></td>
+<td>Wire or remove agent hooks and config (<code>--agent claude|codex</code>)</td>
 </tr>
 <tr>
-<td><code>maestro task mine</code></td>
-<td>Tasks claimed by the active session.</td>
+<td><code>sync</code></td>
+<td>Resync bundled resources to this binary, offline, preserving edits</td>
 </tr>
 <tr>
-<td><code>maestro task stuck</code></td>
-<td><code>in_progress</code> tasks idle past <code>--older-than</code> (default <code>4h</code>).</td>
+<td><code>update</code></td>
+<td>Upgrade the binary and refresh resources</td>
 </tr>
 <tr>
-<td><code>maestro task similar &lt;id&gt;</code></td>
-<td>Tasks that look alike by title, completion reason, receipt text, and linked contract text.</td>
+<td><code>doctor</code></td>
+<td>Diagnose the installation</td>
 </tr>
 <tr>
-<td><code>maestro task list</code></td>
-<td>Full filter set: <code>--status</code>, <code>--priority</code>, <code>--type</code>, <code>--label</code>, <code>--parent</code>, <code>--assignee</code>, <code>--limit</code>. Add <code>--tracks</code> for headline-only output.</td>
+<td><code>feature</code></td>
+<td>Manage the product contract and its lifecycle</td>
+</tr>
+<tr>
+<td><code>task</code></td>
+<td>Create, claim, complete, verify, and query tasks</td>
+</tr>
+<tr>
+<td><code>verify</code></td>
+<td>Verify a task against its recorded proof</td>
+</tr>
+<tr>
+<td><code>decision</code></td>
+<td>Create and list decision records</td>
+</tr>
+<tr>
+<td><code>harness</code></td>
+<td>List, show, apply, and measure self-improvement proposals</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>Print the version and binary path</td>
 </tr>
 </tbody></table>
-<h4>Ownership and claim</h4>
-<p>Claiming is exclusive and session-scoped. Session IDs come from the <code>sessionDetection</code> config (Claude Code out of the box) or <code>--session &lt;id&gt;</code> when scripting.</p>
-<pre><code class="language-bash">maestro task claim &lt;id&gt;
-maestro task claim &lt;id&gt; --busy-check        # refuse if this session already owns open work
-maestro task claim &lt;id&gt; --force             # steal from another session
-maestro task claim &lt;id&gt; --stale-after 4h   # auto-release a dead owner&#39;s stale claim
-maestro task unclaim &lt;id&gt;                   # in_progress demotes to pending
-maestro task release-owned &lt;sessionId&gt;      # release everything a session held
-maestro task heartbeat &lt;id&gt;                 # bump lastActivityAt without other edits
+<p>Run <code>maestro &lt;command&gt; --help</code> for the full surface.</p>
+<h3>Migrating from the TypeScript maestro</h3>
+<p>Earlier maestro was a TypeScript build. The Rust rewrite is a different, leaner, repo-local
+product, so moving an existing repo over is a best-effort, agent-driven step (the binary does
+no data conversion itself). <a href="https://github.com/ReinaMacCredy/maestro/blob/main/MIGRATE.md">MIGRATE.md</a> is written as an instruction for a
+coding agent.</p>
+<p>Install the Rust binary, then paste this into a fresh agent session (Claude Code, Codex, or
+any CLI agent):</p>
+<pre><code>Migrate my maestro data from the TypeScript build to the Rust build by fetching and following
+https://raw.githubusercontent.com/ReinaMacCredy/maestro/main/MIGRATE.md: back up the old data
+first, map it into the new `.maestro/` model, and write me the mapping report. Never delete
+the original data.
 </code></pre>
-<h4>Batch planning</h4>
-<p>Agents can stage a whole queue upfront from one JSON file. References between tasks use a batch-local <code>name</code> slot that resolves to real ids inside a single atomic write.</p>
-<pre><code class="language-bash">maestro task plan --file plan.json
-maestro task plan --file - &lt; plan.json
-maestro task plan --file plan.json --start scaffold    # auto-claim the named task
-maestro task plan --file plan.json --dry-run           # validate without writing
+<h3>Project layout</h3>
+<pre><code>src/         Rust crate: domain, operations, interfaces, foundation
+tests/       contract, adapter, runtime-flow, and safety tests
+embedded/    shipped harness, hook, shell, and skill resources
+.maestro/    repo-local artifacts for this checkout
 </code></pre>
-<pre><code class="language-json">{
-  &quot;batchId&quot;: &quot;auth-slice&quot;,
-  &quot;tasks&quot;: [
-    { &quot;name&quot;: &quot;scaffold&quot;, &quot;title&quot;: &quot;Scaffold auth module&quot;, &quot;type&quot;: &quot;chore&quot;, &quot;priority&quot;: 2 },
-    { &quot;name&quot;: &quot;tests&quot;, &quot;title&quot;: &quot;Add login tests&quot;, &quot;blockedBy&quot;: [&quot;scaffold&quot;] },
-    { &quot;title&quot;: &quot;Wire login route&quot;, &quot;blockedBy&quot;: [&quot;scaffold&quot;, &quot;tests&quot;], &quot;labels&quot;: [&quot;auth&quot;] }
-  ]
-}
-</code></pre>
-<h4>Resumable continuation</h4>
-<p>Every task has a durable, on-disk continuation record that tells the next agent where work stands. It is the source of truth for resume across sessions, across agents, and across context compaction. Handoff envelopes are the transfer signal; the continuation is the state.</p>
-<p>Two files back each task:</p>
+<h3>Documentation</h3>
 <ul>
-<li><code>.maestro/tasks/continuations/active/&lt;taskId&gt;.json</code> — live summary. Moves to <code>completed/&lt;taskId&gt;.json</code> at <code>task update --status completed</code> and returns to <code>active/</code> on <code>task reopen</code>.</li>
-<li><code>.maestro/tasks/local-history/&lt;taskId&gt;.jsonl</code> — append-only event log (per-machine).</li>
+<li><a href="https://github.com/ReinaMacCredy/maestro/blob/main/AGENTS.md">AGENTS.md</a>: agent notes, code map, and conventions</li>
+<li><a href="https://github.com/ReinaMacCredy/maestro/blob/main/TESTING.md">TESTING.md</a>: the smallest falsifying checks by touched surface</li>
+<li><a href="https://github.com/ReinaMacCredy/maestro/blob/main/MAINTENANCE.md">MAINTENANCE.md</a>: refactor discipline, drift rules, handoff standard</li>
 </ul>
-<p>Summary fields: <code>currentState</code>, <code>nextAction</code>, <code>keyDecisions</code>, <code>activeAgent</code>, <code>lastActiveAt</code>. Event kinds: <code>snapshot</code>, <code>decision</code>, <code>next_action_set</code>, <code>blocker_set</code>, <code>handoff_created</code>, <code>handoff_picked_up</code>, <code>agent_takeover</code>, <code>task_completed</code>, <code>task_reopened</code>.</p>
-<h5>Three ways work resumes</h5>
-<ol>
-<li><p><strong>Same session, chat intent.</strong> Maestro installs Claude Code hooks that hydrate the active continuation into the agent&#39;s context with no CLI call:</p>
-<ul>
-<li><code>SessionStart</code> injects a short pointer when an active task exists: id, title, status, last-active timestamp, and a nudge to say <code>continue</code> or <code>resume</code>.</li>
-<li><code>UserPromptSubmit</code> watches for these exact phrases (case- and punctuation-insensitive) and expands them into the full resume payload before the model sees the prompt:<ul>
-<li><code>continue</code></li>
-<li><code>continue work</code></li>
-<li><code>resume</code></li>
-<li><code>resume work</code></li>
-<li><code>pick up where we left off</code></li>
-<li><code>resume where we left off</code></li>
-<li><code>resume from where we left off</code></li>
-</ul>
-</li>
-<li><code>PreCompact</code> preserves the continuation in the compacted summary so resume survives a context reset.</li>
-</ul>
-<p>These are plain chat intents, not Maestro CLI commands.</p>
-</li>
-<li><p><strong>Different agent, handoff pickup.</strong> Read the envelope at <code>.maestro/handoffs/</code>, confirm <code>task_id</code> and <code>trigger_verb</code>, then re-claim the task. See the <a href="#handoffs">Handoffs</a> section for the full pickup protocol.</p>
-</li>
-<li><p><strong>Manual inspection.</strong> <code>maestro task show &lt;id&gt;</code> prints the raw task and continuation state for offline review.</p>
-</li>
-</ol>
-<h5>Keep the continuation fresh while working</h5>
-<pre><code class="language-bash">maestro task update &lt;id&gt; \
-  --current-state &quot;Tests pass locally; rebased on main&quot; \
-  --next-action &quot;Open PR and request review&quot; \
-  --add-decision &quot;Use bcrypt over argon2 for parity with legacy&quot; \
-  --remove-decision &quot;Use JWTs in localStorage&quot;
-</code></pre>
-<p>Refresh when current state or next action changes, when a load-bearing decision or constraint changes, or when blockers appear or clear.</p>
-<h4>Contracts</h4>
-<p>A contract is a machine-checked agreement attached to a task: what to touch, what to avoid, and what &quot;done&quot; means. At completion, Maestro diffs <code>claimedAtCommit..HEAD</code> and renders a verdict.</p>
-<p>Lifecycle: <code>draft</code> -&gt; <code>locked</code> or <code>amended</code> -&gt; <code>fulfilled</code> or <code>broken</code>, with <code>discarded</code> as an early-exit from <code>draft</code>. A closed contract can be reopened alongside its task.</p>
-<pre><code class="language-bash">maestro task contract new &lt;taskId&gt; --editor &quot;$EDITOR&quot;   # or --from template.yaml
-maestro task contract edit &lt;ref&gt;
-maestro task contract lock &lt;ref&gt;                         # freeze scope + claim commit
-maestro task contract amend &lt;ref&gt;                        # record a post-lock change
-maestro task contract show &lt;ref&gt;
-maestro task contract list
-maestro task contract verdict &lt;ref&gt;                      # preview without closing
-maestro task contract discard &lt;ref&gt;                      # draft only
-maestro task contract reopen &lt;ref&gt;                       # after fulfilled/broken
-maestro task contract criteria mark &lt;ref&gt; &lt;criterionId&gt; --evidence &quot;bun test&quot;
-maestro task contract criteria add &lt;ref&gt; &quot;New criterion text&quot;
-maestro task contract criteria remove &lt;ref&gt; &lt;criterionId&gt;
-</code></pre>
-<p>Completion gating: <code>task update --status completed</code> against a task with a locked contract closes the contract, renders a verdict, and fails completion when the verdict is broken and either <code>contracts.strict=true</code> is set or <code>--strict</code> is passed.</p>
-<h4>Task storage</h4>
-<pre><code class="language-text">.maestro/tasks/
-├── tasks.jsonl                 # authoritative task graph (repo-tracked)
-├── contracts/                  # per-task locked contracts and verdicts (repo-tracked)
-├── contract-templates/         # reusable YAML drafts for `contract new --from`
-├── continuations/              # per-task resume summaries + event logs
-├── batches/                    # batch plan manifests
-├── candidates/                 # captured work candidates awaiting promotion
-└── local-history/              # per-machine audit log (ignored)
-</code></pre>
-<p><code>tasks.jsonl</code>, <code>contracts/</code>, and <code>principles.jsonl</code> are intentionally repo-tracked so the queue and its policies review like any other code change.</p>
-<h3>Evidence</h3>
-<p>Maestro has a lightweight logbook for recording verifiable outputs tied to a task. Use it to document commands that ran, their exit codes, and optional manual notes — before or after completing work.</p>
-<p>Evidence rows are stored under <code>.maestro/evidence/</code> (gitignored, per-machine) and stamped with a <code>WitnessLevel</code> that captures how trustworthy the claim is: <code>witnessed-by-maestro</code> for Maestro-invoked commands, <code>agent-claimed-locally</code> for evidence the agent self-reported, and <code>agent-claimed-and-not-reproducible</code> for manual notes.</p>
-<pre><code class="language-bash"># Record a command run
-maestro evidence record --task tsk-aaaaaa --command &quot;bun test&quot; --exit 0
-
-# Record with duration and optional log path
-maestro evidence record --task tsk-aaaaaa --command &quot;bun run build&quot; --exit 0 --duration 12345 --log ./build.log
-
-# Record a manual note
-maestro evidence record --task tsk-aaaaaa --kind manual-note --note &quot;Verified UI on staging&quot;
-
-# List evidence for a task
-maestro evidence list --task tsk-aaaaaa
-
-# Show one evidence row
-maestro evidence show evd-xxxxxx
-</code></pre>
-<p>Evidence rows are linked to a task id and optionally to a contract criterion via <code>--criterion &lt;id&gt;</code>. Run <code>maestro evidence record --help</code> for the full flag set.</p>
-<h3>Trust Substrate</h3>
-<p>Maestro&#39;s trust substrate is a stack of opt-in layers that turn agent claims into deterministic, auditable, gated decisions. Each layer is independently useful; together they compose. Contracts narrow the scope of work, the Trust Verifier checks the diff against that scope, the Verdict gates completion on witnessed evidence, CI makes the verdict authoritative, and the optional layers above (auto-merge, deploy safety, cross-task conflict) extend the same primitives outward.</p>
-<p>The sections below cover each layer in turn. They are presented in the order a team typically adopts them, but every layer past contracts is opt-in and can be enabled independently.</p>
-<h3>Contracts and the Trust Verifier</h3>
-<p>This is the foundation. A contract pins down what a task is allowed to touch; the Trust Verifier checks the diff against that contract. Three behaviors define this layer:</p>
-<ol>
-<li><p><strong>Plan proposes a contract.</strong> During <code>maestro-mission</code>, the plan must include a <code>proposed_contract</code> with <code>allowed_files</code>, <code>forbidden_paths</code>, <code>done_when</code> criteria, and an <code>amendment_budget</code>. Plan-time proposals are not amendments — they seed the contract that gets locked when the agent claims the task.</p>
-</li>
-<li><p><strong>Agent works within scope; amends on genuine discovery.</strong> When work uncovers a file that lies outside the locked contract scope, the agent must amend before touching it:</p>
-<pre><code class="language-bash">maestro contract amend --task &lt;id&gt; --add-path src/new-file.ts --reason &quot;discovered at runtime&quot;
-</code></pre>
-<p>Each amendment writes a new versioned contract snapshot and a <code>contract-amended</code> Evidence row. The budget defaults are <code>max_amendments: 3</code>, <code>max_paths_per_amendment: 5</code>. Amendments are versioned Evidence and never silent edits.</p>
-</li>
-<li><p><strong>Agent verifies before completing.</strong> <code>maestro task verify</code> runs the Trust Verifier against the current diff and the locked contract:</p>
-<pre><code class="language-bash">maestro task verify --task &lt;id&gt;
-</code></pre>
-<p>The verifier runs 6 checks in parallel: scope adherence, lockfile parity, generated-file parity, sensitive-path policy, commit metadata, and secrets-in-diff. Findings are printed with severity (<code>info</code>, <code>warn</code>, <code>error</code>). Exit codes: <code>0</code> when no <code>error</code> findings, <code>1</code> when at least one <code>error</code> finding, <code>2</code> when the task has no locked contract.</p>
-</li>
-</ol>
-<h4>CLI surface</h4>
-<pre><code class="language-bash"># Versioned contract inspection and amendment
-maestro contract show --task &lt;id&gt;
-maestro contract show --task &lt;id&gt; --version &lt;n&gt;
-maestro contract amend --task &lt;id&gt; --add-path &lt;path&gt; --reason &quot;&lt;why&gt;&quot;
-maestro contract amend --task &lt;id&gt; --remove-path &lt;path&gt; --reason &quot;&lt;why&gt;&quot;
-maestro contract history --task &lt;id&gt;
-
-# Trust Verifier
-maestro task verify --task &lt;id&gt;
-maestro task verify --task &lt;id&gt; --base &lt;git-ref&gt;
-maestro task verify --task &lt;id&gt; --json
-
-# Spec (acceptance criteria and non-goals)
-maestro spec new &lt;slug&gt; [--title &lt;text&gt;] [--mode light|heavy]
-maestro spec validate &lt;path&gt;
-</code></pre>
-<h4>Policy files</h4>
-<p><code>maestro init</code> bootstraps two policy files committed under <code>.maestro/policies/</code>:</p>
-<ul>
-<li><code>sensitive-paths.yaml</code> — glob list; paths matching these globs trigger <code>checkSensitivePaths</code> findings.</li>
-<li><code>owners.yaml</code> — three role lists (<code>policy_approver</code>, <code>ratchet_approver</code>, <code>sensitive_waiver</code>). See <code>docs/owners-yaml-format.md</code> for the schema reference.</li>
-</ul>
-<h3>Verdicts and Risk Class</h3>
-<p>The verdict layer turns a verifier run into a deterministic gating decision. After <code>maestro task verify</code>, an agent requests a verdict that produces one of four outcomes:</p>
-<table>
-<thead>
-<tr>
-<th>Verdict</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>PASS</code></td>
-<td>All acceptance criteria are met with evidence at or above the required witness level for the effective risk class. Completion is unblocked.</td>
-</tr>
-<tr>
-<td><code>FAIL</code></td>
-<td>Evidence is present but insufficient: a criterion is unmet, or the evidence witness level is below the autopilot policy threshold.</td>
-</tr>
-<tr>
-<td><code>HUMAN</code></td>
-<td>Criteria are met but the effective risk class or autopilot policy requires a human reviewer before the task can be sealed.</td>
-</tr>
-<tr>
-<td><code>BLOCK</code></td>
-<td>A hard blocker is active: broken contract, <code>critical</code> risk class with no human signoff, or a policy loosening still in its 30-day soak window.</td>
-</tr>
-</tbody></table>
-<h4>Witness levels</h4>
-<p>Every Evidence row carries a <code>witness_level</code> that captures how trustworthy the claim is. The ladder, strongest to weakest:</p>
-<ol>
-<li><code>witnessed-by-maestro</code> — Maestro itself ran the command and captured the result.</li>
-<li><code>witnessed-by-ci</code> — A trusted CI gate ran the command and posted the result back.</li>
-<li><code>agent-claimed-locally</code> — The agent self-reported a local run; Maestro did not observe it.</li>
-<li><code>agent-claimed-and-not-reproducible</code> — A manual note; cannot be reproduced. Weakest level.</li>
-</ol>
-<p>The Risk Engine demotes <code>PASS</code> to <code>HUMAN</code> if any evidence row&#39;s witness level is below the threshold required by the effective autopilot policy for the derived risk class.</p>
-<p>See <code>docs/witness-levels.md</code> for the full reference.</p>
-<h4>Risk class</h4>
-<p>The Risk Engine derives a risk class from deterministic diff signals and takes the higher of agent-proposed vs Maestro-derived. An agent can never lower the derived class. The four levels are <code>low</code>, <code>medium</code>, <code>high</code>, and <code>critical</code>. See <code>docs/risk-class-derivation.md</code> for the signal-to-class mapping table.</p>
-<h4>ProofMap</h4>
-<p>ProofMap coverage is computed inside <code>maestro verdict request</code>. For every acceptance criterion in the linked Spec, the verdict checks which Evidence rows satisfy it at the required witness level; gaps surface as <code>proof-map-incomplete</code> diagnostics in the verdict&#39;s <code>reasons[]</code> array, with the failing criterion ids listed alongside.</p>
-<h4>Asymmetric policy editing</h4>
-<p>Policy tightenings (stricter rules, lower budgets) take effect immediately. Policy loosenings (relaxed rules, higher budgets) soak for 30 days before becoming effective. Pending loosenings accumulate in <code>.maestro/policies/.pending-loosenings.json</code> (gitignored). Use <code>maestro policy pending</code> to inspect.</p>
-<h4>CLI surface</h4>
-<pre><code class="language-bash"># Verdict
-maestro verdict request --task &lt;id&gt;           # exit 0=PASS 1=FAIL 2=HUMAN 3=BLOCK
-maestro verdict request --task &lt;id&gt; --json
-maestro verdict show --task &lt;id&gt;
-maestro verdict show --task &lt;id&gt; --version &lt;id&gt;
-
-# ProofMap diagnostics surface inside `verdict request` (no separate verb)
-
-# Policy inspection
-maestro policy check --task &lt;id&gt;
-maestro policy pending
-</code></pre>
-<h4>Policy files</h4>
-<p><code>maestro init</code> bootstraps three additional policy files under <code>.maestro/policies/</code>:</p>
-<ul>
-<li><code>risk.yaml</code> — extends or tightens the default signal-to-class mapping. Absent means defaults apply.</li>
-<li><code>autopilot.yaml</code> — per-risk-class required witness level and auto-pass eligibility.</li>
-<li><code>release.yaml</code> — release-gate rules (e.g., minimum witness level required before a release commit is stamped).</li>
-</ul>
-<p>See <code>docs/policy-format.md</code> for the schema reference for all five policy files.</p>
-<h3>The Pre-Claim Loop</h3>
-<p>The pre-claim loop closes the inner agent loop: the agent runs plan, implement, verify, and verdict steps without human intervention; humans still review and merge. The cycle is enforced by the tools, not by convention.</p>
-<h4>The pre-claim ritual</h4>
-<p>Before claiming any non-trivial task done, the agent runs this ordered loop:</p>
-<ol>
-<li><strong>Plan</strong> — write a plan file and run <code>maestro plan check</code> to catch problems before code is written.</li>
-<li><strong>Implement</strong> — write code and record evidence after each verification command.</li>
-<li><strong>Verify (arch-lint)</strong> — run <code>maestro task verify</code> and address every <code>error</code> finding.</li>
-<li><strong>Verdict</strong> — run <code>maestro verdict request</code> and branch on the exit code. The verdict runs Trust Verifier + ProofMap + autopilot policy; ProofMap gaps surface as <code>proof-map-incomplete</code> reasons.</li>
-</ol>
-<p>The canonical source for this ritual is the <code>maestro-verify</code> bundled skill.</p>
-<h4>Plan-check</h4>
-<p><code>maestro plan check</code> evaluates a plan file against the locked contract and spec before any code is written. It catches three classes of problems: <code>scope-widens</code>, <code>missing-proof</code>, and <code>risk-class-too-low</code>.</p>
-<pre><code class="language-bash">maestro plan check --task &lt;id&gt; --plan-file ./plan.yaml
-maestro plan check --task &lt;id&gt; --plan-file ./plan.yaml --json
-</code></pre>
-<h4>Dev-time observability</h4>
-<p><code>maestro task observe</code> is ad-hoc per-worktree observability for the agent during implementation. It does <strong>not</strong> gate any verdict — use <code>runtime check</code> for verdict-bearing signal recording.</p>
-<p>Two subcommands:</p>
-<pre><code class="language-bash"># One-shot PromQL query against the dev metrics backend
-maestro task observe metrics &lt;promql&gt;
-maestro task observe metrics &lt;promql&gt; --prometheus-url &lt;url&gt;   # override MAESTRO_PROMETHEUS_URL
-maestro task observe metrics &lt;promql&gt; --json                   # emit JSON envelope
-maestro task observe metrics &lt;promql&gt; --record --task &lt;id&gt;     # write a manual-note evidence row
-
-# Tail the dev log file
-maestro task observe logs
-maestro task observe logs --log-file &lt;path&gt;                    # override MAESTRO_DEV_LOG_FILE
-maestro task observe logs --lines &lt;n&gt;                          # default: 100
-maestro task observe logs --filter &lt;string&gt;                    # substring filter
-maestro task observe logs --json
-maestro task observe logs --record --task &lt;id&gt;
-</code></pre>
-<p>Exit codes:</p>
-<table>
-<thead>
-<tr>
-<th>Code</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>0</code></td>
-<td>Success</td>
-</tr>
-<tr>
-<td><code>1</code></td>
-<td>Config error (no URL / no log path configured)</td>
-</tr>
-<tr>
-<td><code>2</code></td>
-<td>Backend error (query failed or file unreadable)</td>
-</tr>
-</tbody></table>
-<p>When <code>--record --task &lt;id&gt;</code> is passed, the result is written as a <code>manual-note</code> evidence row tagged <code>[dev-observation:metrics]</code> or <code>[dev-observation:logs]</code>. This is informational evidence; it does not satisfy any ProofMap criterion on its own.</p>
-<h4>AI Reviewer Evidence</h4>
-<p>Agents can record reviewer findings as structured evidence via <code>maestro evidence record --kind ai-review</code>. Three reviewer kinds are available: <code>bug</code>, <code>security</code>, and <code>architecture</code>.</p>
-<p>Any <code>error</code>-severity finding raises the effective risk class by one notch. A <code>security</code>-reviewer <code>error</code> always lifts to <code>critical</code>. A clean review never lowers the deterministic baseline derived from diff signals.</p>
-<p>See <code>docs/ai-reviewer-protocol.md</code> for the finding schema, confidence semantics, and recording guidance.</p>
-<h4>Threat-model evidence</h4>
-<p>When the diff intersects security-relevant sensitive paths, the Verdict is <code>HUMAN</code> with reason <code>threat-model-required</code> unless a <code>threat-model</code> Evidence row is present:</p>
-<pre><code class="language-bash">maestro evidence record --task &lt;id&gt; --kind threat-model \
-  --threat-model-file ./threat-model.json
-</code></pre>
-<p>See <code>docs/threat-model-format.md</code> for the schema.</p>
-<h4>Cost budgets</h4>
-<p>Contracts can declare cost limits: <code>maxRetries</code>, <code>maxWallClockSeconds</code>, and <code>maxTokens</code>. When any limit is exceeded, the next <code>verdict request</code> returns <code>BLOCK</code> (exit 3) with reason <code>cost-budget-exhausted</code>.</p>
-<pre><code class="language-bash">maestro task budget --task &lt;id&gt;
-maestro task budget --task &lt;id&gt; --json
-</code></pre>
-<h4>CLI surface</h4>
-<pre><code class="language-bash"># Plan-check
-maestro plan check --task &lt;id&gt; --plan-file &lt;path&gt;
-maestro plan check --task &lt;id&gt; --plan-file &lt;path&gt; --json
-
-# Dev-time observability (does not gate verdicts)
-maestro task observe metrics &lt;promql&gt; [--prometheus-url &lt;url&gt;] [--json] [--record --task &lt;id&gt;]
-maestro task observe logs [--log-file &lt;path&gt;] [--lines &lt;n&gt;] [--filter &lt;s&gt;] [--json] [--record --task &lt;id&gt;]
-
-# Cost-budget inspection (read-only, always exits 0)
-maestro task budget --task &lt;id&gt;
-maestro task budget --task &lt;id&gt; --json
-
-# AI Reviewer evidence
-maestro evidence record --task &lt;id&gt; --kind ai-review \
-  --reviewer &lt;bug|security|architecture&gt; \
-  --findings &#39;&lt;inline-json-or-path&gt;&#39; \
-  --confidence &lt;0-1&gt;
-
-# Threat-model evidence
-maestro evidence record --task &lt;id&gt; --kind threat-model \
-  --threat-model-file &lt;path&gt;
-</code></pre>
-<h3>CI Integration</h3>
-<p>Local Maestro is advisory; CI Maestro is authoritative. The PR check status posted by <code>maestro ci verify</code> is the merge gate.</p>
-<ol>
-<li>Bootstrap your repo with <code>maestro setup</code> — the maestro-setup skill installs <code>.github/workflows/maestro-verify.yml</code> from its bundled template (when <code>.github/</code> exists).</li>
-<li>Pin the Maestro binary version in the workflow (default: latest tagged release).</li>
-<li>Open a PR. GitHub Actions runs <code>maestro ci verify</code>, which runs Trust Verifier, ingests CI job results as <code>witnessed-by-ci</code> Evidence, computes the Verdict, and posts a GitHub Check.</li>
-<li>Merge when the check is green. Use <code>maestro verdict show --pr &lt;n&gt;</code> locally to inspect the latest verdict for a PR (looked up by current HEAD tree SHA).</li>
-</ol>
-<p>Verdicts are bound to (pr, tree_sha), so squashes survive but force-pushes to a different tree invalidate them.</p>
-<p>See <code>docs/ci-integration.md</code> for the full reference.</p>
-<h3>Auto-Merge</h3>
-<p>When all 8 eligibility predicates pass, <code>maestro merge auto</code> triggers <code>gh pr merge --auto</code> without further human intervention.</p>
-<h4>Opt-in</h4>
-<p>Auto-merge is disabled for all risk classes by default. Opt in per class in <code>.maestro/policies/autopilot.yaml</code>:</p>
-<pre><code class="language-yaml">autoMergeAllowed:
-  low: true
-  medium: true
-  high: false
-  critical: false
-</code></pre>
-<h4>Eligibility predicates</h4>
-<p>All 8 must pass for <code>merge auto</code> to trigger. In canonical check order:</p>
-<table>
-<thead>
-<tr>
-<th>Code</th>
-<th>Condition</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>verdict-not-pass</code></td>
-<td>Verdict decision must be <code>PASS</code></td>
-</tr>
-<tr>
-<td><code>auto-merge-class-disabled</code></td>
-<td><code>autoMergeAllowed.&lt;riskClass&gt;</code> must be <code>true</code> in <code>autopilot.yaml</code></td>
-</tr>
-<tr>
-<td><code>evidence-witness-too-weak</code></td>
-<td>All gating evidence rows must be at <code>witnessed-by-ci</code> or stronger</td>
-</tr>
-<tr>
-<td><code>forbidden-paths-touched</code></td>
-<td>Diff must not intersect <code>contract.scope.filesForbidden</code></td>
-</tr>
-<tr>
-<td><code>sensitive-paths-untouched-without-waiver</code></td>
-<td>If diff touches sensitive paths, a <code>verdict-override</code> waiver must exist</td>
-</tr>
-<tr>
-<td><code>rollback-not-witnessed</code></td>
-<td>When the spec declares a rollout plan or a <code>deploy-readiness</code> row exists, a successful <code>rollback-exercised</code> Evidence row at <code>witnessed-by-ci</code> or stronger must exist</td>
-</tr>
-<tr>
-<td><code>review-ack-missing</code></td>
-<td>HUMAN verdicts at <code>&gt;=medium</code> risk require a <code>review-ack</code> Evidence row</td>
-</tr>
-<tr>
-<td><code>spec-score-below-threshold</code></td>
-<td>If a Spec is linked, its quality score must be 1.0</td>
-</tr>
-</tbody></table>
-<h4>CLI shapes</h4>
-<pre><code class="language-bash"># Check eligibility and trigger if eligible
-maestro merge auto --pr &lt;number&gt; --task &lt;id&gt; [--base &lt;ref&gt;] [--repo &lt;owner/name&gt;] [--json]
-
-# Record override waiver (requires sensitive_waiver authorization in owners.yaml)
-maestro verdict override --task &lt;id&gt; --pr &lt;number&gt; --reason &quot;&lt;text&gt;&quot; [--verdict &lt;id&gt;] [--base &lt;ref&gt;]
-
-# Record human review acknowledgement (for HUMAN verdicts at &gt;=medium risk)
-maestro review ack --task &lt;id&gt; --verdict &lt;id&gt; --criterion &quot;&lt;text&gt;&quot; [--criterion &quot;&lt;text&gt;&quot; ...]
-</code></pre>
-<p>Exit codes for <code>merge auto</code>: 0 = eligible and triggered, 1 = ineligible (reasons printed).</p>
-<p>See <code>docs/auto-merge-eligibility.md</code> for the full predicate reference.</p>
-<h3>Deploy Safety</h3>
-<p>Deploy Safety is opt-in. Producing <code>deploy-readiness</code> and <code>runtime-signal</code> Evidence does not by itself flip Verdict semantics; teams wire the new Evidence into <code>policies/risk.yaml</code> if they want it to gate.</p>
-<h4><code>maestro deploy gate</code></h4>
-<p>Runs four checks and records a <code>deploy-readiness</code> Evidence row. Exits 0 when all checks pass, 1 when any fail.</p>
-<table>
-<thead>
-<tr>
-<th>Check</th>
-<th>Passes when</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>feature_flag</code></td>
-<td><code>Spec.rollout_plan.feature_flag</code> is a non-empty string</td>
-</tr>
-<tr>
-<td><code>canary_plan</code></td>
-<td><code>Spec.rollout_plan.canary.stages</code> has at least one stage</td>
-</tr>
-<tr>
-<td><code>rollback</code></td>
-<td>A successful <code>rollback-exercised</code> Evidence row at <code>witnessed-by-ci</code> or stronger exists</td>
-</tr>
-<tr>
-<td><code>owner</code></td>
-<td><code>owners.yaml.deploy_approver</code> has at least one entry</td>
-</tr>
-</tbody></table>
-<h4><code>maestro deploy rollback</code></h4>
-<p>Runs the provided shell command, records a <code>rollback-exercised</code> Evidence row, and exits 1 if the command fails.</p>
-<h4><code>maestro runtime check</code></h4>
-<p>Queries each signal declared in <code>Spec.runtime_signals</code> via the configured provider (Prometheus). Records one <code>runtime-signal</code> Evidence row per signal. Exit code is always 0; <code>pass=false</code> rows are advisory unless wired into risk policy.</p>
-<p>Provider base URL precedence: <code>--provider-base-url</code> flag → <code>MAESTRO_PROMETHEUS_URL</code> env → <code>http://localhost:9090</code>.</p>
-<h4>CLI shapes</h4>
-<pre><code class="language-bash">maestro deploy gate --task &lt;id&gt; [--base &lt;ref&gt;] [--json]
-maestro deploy rollback --task &lt;id&gt; --command &lt;cmd&gt; [--json]
-maestro runtime check --task &lt;id&gt; [--provider-base-url &lt;url&gt;] [--json]
-</code></pre>
-<p>See <code>docs/deploy-gate.md</code> and <code>docs/runtime-monitoring.md</code> for the full references.</p>
-<h3>Cross-Task Conflict and Trust Benchmarks</h3>
-<h4>Cross-task conflict detection</h4>
-<p><code>maestro ci verify</code> checks whether other open PRs touch any of the same file paths as the current PR. When overlap is detected, it records a <code>kind=cross-task-conflict</code> Evidence row at <code>witnessed-by-ci</code> and passes it to the Risk Engine. The Risk Engine raises the effective risk class one tier per signal (capped at <code>critical</code>; multiple conflict rows still produce only a one-tier raise total).</p>
-<p>See <code>docs/cross-task-conflict.md</code> for the port/adapter/use-case flow, payload schema, and troubleshooting.</p>
-<h4>Trust benchmark corpus</h4>
-<p><code>tests/e2e/trust-benchmark/</code> is an end-to-end regression corpus of 9 scenarios drawn from a master edge-case list of 32. The corpus covers: out-of-scope edits, generated-file drift, sensitive-path violations, security-thin diffs, amendment creep, proof not tied to criteria, rebase/squash verdict identity, deploy-gate decision authority, and PR self-weakening. Each scenario includes a positive assertion (mitigation fires) and a negative assertion (mitigation does not fire without the trigger).</p>
-<pre><code class="language-bash">bun test tests/e2e/trust-benchmark/
-</code></pre>
-<p>See <code>docs/trust-benchmark.md</code> for the full scenario table, fixture pattern, and how to add new scenarios.</p>
-<h3>MCP Server</h3>
-<p>Maestro ships a Model Context Protocol (MCP) server that exposes its core verbs to MCP-aware agent runtimes. Agents call <code>maestro_task_claim</code>, <code>maestro_evidence_record</code>, <code>maestro_verdict_request</code>, and so on as structured tools instead of shelling out to the CLI and parsing text. The server is the same maestro binary, run with <code>maestro mcp serve</code> over stdio.</p>
-<h4>Tool surface</h4>
-<p>20 tools across 8 surfaces, each a 1:1 wrapper around an existing maestro use case:</p>
-<table>
-<thead>
-<tr>
-<th>Surface</th>
-<th>Tools</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Task</td>
-<td><code>maestro_task_list</code>, <code>maestro_task_get</code>, <code>maestro_task_from_spec</code>, <code>maestro_task_claim</code>, <code>maestro_task_ship</code>, <code>maestro_task_block</code></td>
-</tr>
-<tr>
-<td>Evidence</td>
-<td><code>maestro_evidence_record</code>, <code>maestro_evidence_list</code></td>
-</tr>
-<tr>
-<td>Contract</td>
-<td><code>maestro_contract_show</code>, <code>maestro_contract_amend</code></td>
-</tr>
-<tr>
-<td>Verdict</td>
-<td><code>maestro_verdict_show</code>, <code>maestro_verdict_request</code></td>
-</tr>
-<tr>
-<td>Policy</td>
-<td><code>maestro_policy_check</code></td>
-</tr>
-<tr>
-<td>Principle</td>
-<td><code>maestro_principle_promote</code></td>
-</tr>
-<tr>
-<td>Setup</td>
-<td><code>maestro_setup_check</code></td>
-</tr>
-<tr>
-<td>Handoff</td>
-<td><code>maestro_handoff_list</code>, <code>maestro_handoff_show</code>, <code>maestro_handoff_emit</code>, <code>maestro_handoff_pickup</code></td>
-</tr>
-</tbody></table>
-<p><code>maestro_task_list</code>, <code>maestro_evidence_list</code>, and <code>maestro_handoff_list</code> are paginated (<code>limit</code>/<code>offset</code> in, <code>pagination: { total, limit, offset, hasMore }</code> out). Every tool declares both a strict <code>inputSchema</code> (unknown fields error rather than being silently dropped) and an <code>outputSchema</code> mirroring the success-path <code>structuredContent</code>. Failures set <code>isError: true</code> with a stable <code>{ code, message, hints }</code> payload.</p>
-<p><strong>Handoff tools:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Tool</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>maestro_handoff_list</code></td>
-<td>List open envelopes. Filters: <code>task_id</code>, <code>trigger_verb</code>, <code>include_picked_up</code> (default <code>false</code>). Returns <code>id</code>, <code>task_id</code>, <code>trigger_verb</code>, <code>created_at</code>, <code>picked_up</code>.</td>
-</tr>
-<tr>
-<td><code>maestro_handoff_show</code></td>
-<td>Fetch one envelope by <code>hnd-*</code> id. Returns the envelope and pickup metadata when present.</td>
-</tr>
-<tr>
-<td><code>maestro_handoff_emit</code></td>
-<td>Write an envelope. Use only when emitting outside the lifecycle verbs that already emit.</td>
-</tr>
-<tr>
-<td><code>maestro_handoff_pickup</code></td>
-<td>Mark an envelope picked up via a <code>&lt;id&gt;.picked_up.json</code> sidecar. Second pickup returns <code>HANDOFF_ALREADY_PICKED_UP</code>. Does not claim the task — call <code>maestro_task_claim</code> after pickup.</td>
-</tr>
-</tbody></table>
-<h4>Auto-configure on install</h4>
-<p><code>maestro install</code> and <code>bun run release:local</code> register the MCP entry with each supported runtime. The entry lands in the canonical file each runtime reads:</p>
-<table>
-<thead>
-<tr>
-<th>Runtime</th>
-<th>Config file</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Claude Code (user scope)</td>
-<td><code>~/.claude.json</code> (top-level <code>mcpServers.maestro</code>)</td>
-</tr>
-<tr>
-<td>Codex</td>
-<td><code>~/.codex/config.toml</code> (<code>[mcp_servers.maestro]</code> table)</td>
-</tr>
-</tbody></table>
-<h4>CLI surface</h4>
-<pre><code class="language-bash">maestro mcp serve                                  # stdio transport, default
-maestro mcp serve --project-root /abs/path         # override project root detection
-maestro mcp check                                  # verify installed binary + runtime configs
-maestro mcp check --json
-</code></pre>
-<p>See <a href="https://github.com/ReinaMacCredy/maestro/blob/main/docs/mcp-server.md"><code>docs/mcp-server.md</code></a> for the full tool and error-code reference, and <a href="https://github.com/ReinaMacCredy/maestro/blob/main/docs/mcp-setup.md"><code>docs/mcp-setup.md</code></a> for the manual configuration path and troubleshooting.</p>
-<h3>Common Commands</h3>
-<table>
-<thead>
-<tr>
-<th>Command</th>
-<th>Use it when you want to...</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>maestro init</code></td>
-<td>Create local project state and install the <code>.maestro/MAESTRO.md</code> compass.</td>
-</tr>
-<tr>
-<td><code>maestro install</code></td>
-<td>Initialize global config and inject supported agent instruction blocks.</td>
-</tr>
-<tr>
-<td><code>maestro update</code></td>
-<td>Upgrade the local binary to the latest release and refresh agent instruction blocks.</td>
-</tr>
-<tr>
-<td><code>maestro doctor</code></td>
-<td>Check whether the local environment is configured correctly.</td>
-</tr>
-<tr>
-<td><code>maestro providers list</code> / <code>maestro providers doctor</code></td>
-<td>Inspect runtime and skill-target provider configuration.</td>
-</tr>
-<tr>
-<td><code>maestro skills list</code> / <code>maestro skills install &lt;source&gt;</code></td>
-<td>Discover, inspect, install, remove, and sync AgentSkills-compatible skills.</td>
-</tr>
-<tr>
-<td><code>maestro status</code></td>
-<td>Inspect the current Maestro state quickly.</td>
-</tr>
-<tr>
-<td><code>maestro setup</code></td>
-<td>Scaffold and reconcile the canonical <code>.maestro/</code> directory layout. Idempotent.</td>
-</tr>
-<tr>
-<td><code>maestro setup check</code></td>
-<td>Audit the directory layout, principles pack, and config file for drift.</td>
-</tr>
-<tr>
-<td><code>maestro spec new &lt;slug&gt;</code></td>
-<td>Author a product-spec with the grill protocol (<code>maestro-design</code> skill).</td>
-</tr>
-<tr>
-<td><code>maestro spec validate &lt;path&gt;</code></td>
-<td>Check frontmatter and schema before creating a task.</td>
-</tr>
-<tr>
-<td><code>maestro task from-spec &lt;path&gt;</code></td>
-<td>Create a task in <code>draft</code> state from a validated spec.</td>
-</tr>
-<tr>
-<td><code>maestro task claim &lt;id&gt;</code></td>
-<td>Claim a task for the current session. Emits a handoff envelope.</td>
-</tr>
-<tr>
-<td><code>maestro task verify &lt;id&gt;</code></td>
-<td>Run the Trust Verifier and route on exit code (PASS/FAIL/HUMAN/BLOCK).</td>
-</tr>
-<tr>
-<td><code>maestro task ship &lt;id&gt;</code></td>
-<td>Transition <code>ready -&gt; shipped</code>. Optionally attach a PR URL.</td>
-</tr>
-<tr>
-<td><code>maestro task block &lt;id&gt; --reason &quot;...&quot;</code></td>
-<td>Raise a blocker and emit a handoff envelope so the next agent knows why.</td>
-</tr>
-<tr>
-<td><code>maestro task observe metrics &lt;promql&gt;</code></td>
-<td>Ad-hoc PromQL query against the dev metrics backend (does not gate verdict).</td>
-</tr>
-<tr>
-<td><code>maestro task observe logs</code></td>
-<td>Tail the dev log file (does not gate verdict).</td>
-</tr>
-<tr>
-<td><code>maestro task update &lt;id&gt; --current-state &quot;...&quot; --next-action &quot;...&quot;</code></td>
-<td>Refresh the resumable continuation summary for the next agent.</td>
-</tr>
-<tr>
-<td><code>maestro task status</code></td>
-<td>Hybrid board: active, ready, blocked, and dependency tracks.</td>
-</tr>
-<tr>
-<td><code>maestro task ready</code></td>
-<td>List actionable pending tasks with no unresolved blockers.</td>
-</tr>
-<tr>
-<td><code>maestro evidence record --task &lt;id&gt; --command &quot;bun test&quot; --exit 0</code></td>
-<td>Log a command run as evidence for a task.</td>
-</tr>
-<tr>
-<td><code>maestro evidence list --task &lt;id&gt;</code></td>
-<td>List all evidence rows for a task.</td>
-</tr>
-<tr>
-<td><code>maestro verdict request --task &lt;id&gt;</code></td>
-<td>Request a verdict (exit 0=PASS 1=FAIL 2=HUMAN 3=BLOCK).</td>
-</tr>
-<tr>
-<td><code>maestro verdict show --task &lt;id&gt;</code></td>
-<td>Show the latest verdict for a task.</td>
-</tr>
-<tr>
-<td><code>maestro mission from-spec &lt;path&gt;</code></td>
-<td>Create a mission from a heavy-mode spec.</td>
-</tr>
-<tr>
-<td><code>maestro mission decompose &lt;id&gt; --file &lt;path&gt;</code></td>
-<td>Decompose a mission into child tasks from a batch file.</td>
-</tr>
-<tr>
-<td><code>maestro mcp serve</code></td>
-<td>Start the MCP server on stdio. Agents launch this; you do not start it manually.</td>
-</tr>
-<tr>
-<td><code>maestro mcp check</code></td>
-<td>Verify the installed maestro binary and the canonical agent runtime config files.</td>
-</tr>
-<tr>
-<td><code>maestro principle list</code> / <code>principle promote &lt;evd-id&gt;</code></td>
-<td>Inspect or promote a correction to a behavioral principle.</td>
-</tr>
-<tr>
-<td><code>maestro bundle export &lt;id&gt; --out ./review.bundle.tar.gz</code></td>
-<td>Package a plan or task + artifacts as a portable archive.</td>
-</tr>
-<tr>
-<td><code>maestro mission-control --preview</code></td>
-<td>Render a read-only dashboard preview in the terminal.</td>
-</tr>
-<tr>
-<td><code>maestro mission-control --json</code></td>
-<td>Get a machine-readable snapshot of current state.</td>
-</tr>
-</tbody></table>
-<p>Run <code>maestro &lt;command&gt; --help</code> for full flags and examples.</p>
-<h3>Mission Control</h3>
-<p><img src="https://raw.githubusercontent.com/ReinaMacCredy/maestro/main/assets/images/Misson_Control_Preview.png" alt="Mission Control preview"></p>
-<p>Mission Control is a read-only dashboard over Maestro state. It supports:</p>
-<ul>
-<li>Interactive TTY mode with <code>maestro mission-control</code></li>
-<li>Single-frame previews with <code>maestro mission-control --preview</code></li>
-<li>Machine-readable snapshots with <code>maestro mission-control --json</code></li>
-<li>Render validation with <code>maestro mission-control --render-check --size 120x40</code></li>
-</ul>
-<p>Available preview screens include:</p>
-<ul>
-<li><code>dashboard</code></li>
-<li><code>features</code></li>
-<li><code>config</code></li>
-<li><code>memory</code></li>
-<li><code>graph</code></li>
-<li><code>agents</code></li>
-<li><code>events</code></li>
-<li><code>tasks</code></li>
-<li><code>principles</code></li>
-<li><code>help</code></li>
-</ul>
-<p>For non-interactive environments, prefer <code>--preview</code>, <code>--preview all</code>, or <code>--json</code>.</p>
-<h3>Architecture</h3>
-<p><img src="https://raw.githubusercontent.com/ReinaMacCredy/maestro/main/assets/diagrams/readme-architecture-layers.svg" alt="Maestro architecture layers"></p>
-<p>The implementation follows a forward-only layered architecture enforced by <code>docs/architecture.yaml</code> and checked at every <code>maestro task verify</code>:</p>
-<table>
-<thead>
-<tr>
-<th>Layer</th>
-<th>Path</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>types</code></td>
-<td><code>src/types/</code></td>
-<td>Domain types: task state machine, exec-plan state machine, product-spec shape, evidence kinds</td>
-</tr>
-<tr>
-<td><code>config</code></td>
-<td><code>src/config/</code></td>
-<td>Per-project and per-repo configuration loading</td>
-</tr>
-<tr>
-<td><code>repo</code></td>
-<td><code>src/repo/</code></td>
-<td>Ports and adapters: task store, plan store, spec store, evidence store, worktree store, handoff store</td>
-</tr>
-<tr>
-<td><code>service</code></td>
-<td><code>src/service/</code></td>
-<td>Use cases: task-claim, task-verify, plan-decompose, setup-check, principle-promote, emit-handoff</td>
-</tr>
-<tr>
-<td><code>runtime</code></td>
-<td><code>src/runtime/</code></td>
-<td>CLI command registration: spec, task, plan, principle, setup verbs</td>
-</tr>
-<tr>
-<td><code>providers</code></td>
-<td><code>src/providers/</code></td>
-<td>Cross-cutting service wiring (importable from any layer)</td>
-</tr>
-</tbody></table>
-<p>Layer-order imports are enforced mechanically. A service may not import from runtime; a repo adapter may not import from service. The <code>providers</code> layer is exempt in both directions.</p>
-<p>For the full WHERE TO LOOK table, see <code>AGENTS.md</code>.</p>
-<h3>Storage Model</h3>
-<p>Maestro stores project-local state in <code>.maestro/</code> and user-level defaults in <code>~/.maestro/</code>.</p>
-<pre><code class="language-text">.maestro/
-├── config.yaml
-├── specs/              product-spec markdown files (&lt;slug&gt;.md, YAML frontmatter)
-├── tasks/
-│   ├── tasks.jsonl     append-only task ledger (repo-tracked)
-│   ├── contracts/      per-task locked contracts and verdicts (repo-tracked)
-│   ├── contract-templates/
-│   ├── continuations/  per-task resume summaries + event logs
-│   ├── batches/        batch plan manifests
-│   ├── candidates/     captured work candidates
-│   └── local-history/  per-machine audit log (gitignored)
-├── plans/
-│   ├── plans.jsonl     exec-plan ledger (repo-tracked)
-│   └── &lt;slug&gt;.md       optional human-readable plan sidecar
-├── evidence/
-│   └── &lt;date&gt;.jsonl    transition + ad-hoc evidence rows (per-machine)
-├── runs/
-│   └── &lt;task-id&gt;/
-│       └── observability.jsonl   per-task observability mirror (per-machine)
-├── handoffs/           handoff envelopes (&lt;hnd-...&gt;.json) and pickup sidecars
-├── worktrees/
-│   └── &lt;task-id&gt;.json  worktree binding records
-├── context/            operator-authored context docs
-├── policies/           risk, autopilot, release, sensitive-paths, owners
-└── principles.jsonl    behavioral principles (repo-tracked)
-
-~/.maestro/
-├── config.yaml
-└── graph/
-    └── projects.json
-</code></pre>
-<p><code>tasks.jsonl</code>, <code>contracts/</code>, and <code>principles.jsonl</code> are intentionally repo-tracked so the queue and its policies review like any other code change. Local histories, evidence, and observability files stay per-machine.</p>
-<h3>Codebase Layout</h3>
-<p>Maestro is organized as a feature-first hexagonal codebase:</p>
-<ul>
-<li><code>src/features/&lt;name&gt;/</code> — each feature is a bounded context containing its own <code>commands/</code>, <code>usecases/</code>, <code>domain/</code>, <code>ports/</code>, <code>adapters/</code>, plus a <code>services.ts</code> composition factory and <code>index.ts</code> public surface. Current features: <code>bundle</code>, <code>ci</code>, <code>deploy</code>, <code>evidence</code>, <code>gc</code>, <code>mcp</code>, <code>merge</code>, <code>plan</code>, <code>policy</code>, <code>principle</code>, <code>recover</code>, <code>reply</code>, <code>review</code>, <code>risk</code>, <code>runtime</code>, <code>skills</code>, <code>verdict</code>, <code>worktree</code>.</li>
-<li><code>src/runtime/</code> — CLI command registration: <code>spec</code>, <code>task</code>, <code>plan</code>, <code>principle</code>, <code>setup</code> command trees.</li>
-<li><code>src/infra/</code> — plumbing that isn&#39;t a feature: init, doctor, status, install, update, uninstall, providers, and mission-control commands; config and git ports/adapters; infra-owned domain types.</li>
-<li><code>src/shared/</code> — generic utilities with no domain knowledge: filesystem, YAML, shell, path safety, and output form</li>
-</ul>
-<hr>
-<p><em>README truncated. <a href="https://github.com/ReinaMacCredy/maestro#readme">Continue reading on GitHub</a></em></p>
 
   </section>
 </details>
@@ -1269,11 +704,11 @@ maestro mcp check --json
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
-        <div class="stars">★ 13.1K</div>
+        <div class="stars">★ 13.8K</div>
         <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
       </a>
       <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
-        <div class="stars">★ 1.6K</div>
+        <div class="stars">★ 1.7K</div>
         <div class="name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
       </a>
       <a class="related-row" href="/projects/wondelai/skills">
@@ -1281,23 +716,23 @@ maestro mcp check --json
         <div class="name"><span class="org">wondelai /</span> skills</div>
       </a>
       <a class="related-row" href="/projects/DougTrajano/pydantic-ai-skills">
-        <div class="stars">★ 302</div>
+        <div class="stars">★ 304</div>
         <div class="name"><span class="org">DougTrajano /</span> pydantic-ai-skills</div>
       </a>
       <a class="related-row" href="/projects/Agents365-ai/drawio-skill">
-        <div class="stars">★ 2.0K</div>
+        <div class="stars">★ 2.1K</div>
         <div class="name"><span class="org">Agents365-ai /</span> drawio-skill</div>
       </a>
       <a class="related-row" href="/projects/smartcontractkit/chainlink-agent-skills">
-        <div class="stars">★ 106</div>
+        <div class="stars">★ 108</div>
         <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
       </a>
       <a class="related-row" href="/projects/tlehman/litprog-skill">
-        <div class="stars">★ 162</div>
+        <div class="stars">★ 167</div>
         <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
       </a>
       <a class="related-row" href="/projects/esaradev/icarus-plugin">
-        <div class="stars">★ 123</div>
+        <div class="stars">★ 128</div>
         <div class="name"><span class="org">esaradev /</span> icarus-plugin</div>
       </a>
     </div>

@@ -6,10 +6,9 @@
  * errors (deleted / renamed / private repos), and writes a markdown
  * tracking-issue body to dead-repos.md. Empty file = no dead repos.
  *
- * Background: lib/github.js fetchAllMetadata throws on any GraphQL
- * error (intentional fail-loud per PR #107). Without proactive
- * monitoring, a single deleted third-party repo silently blocks every
- * subsequent build-pages run until manual triage.
+ * Background: deleted / renamed / private repos should be removed from
+ * Atlas even when build-pages can skip missing metadata, because they
+ * otherwise leave stale GitHub links and project pages in the catalog.
  */
 import fs from "node:fs/promises";
 import { githubHeaders } from "../lib/github.js";
@@ -68,8 +67,8 @@ if (dead.length > 0) {
   body =
     `The following ${dead.length} repo${dead.length === 1 ? "" : "s"} in \`data/repos.json\` no longer resolve on GitHub. ` +
     `They may have been deleted, renamed, or made private.\n\n` +
-    `**Why this matters**: \`lib/github.js\` \`fetchAllMetadata\` throws on any GraphQL \`NOT_FOUND\` (PR #107 fail-loud). ` +
-    `A single dead entry blocks every \`build-pages.yml\` run until it's removed.\n\n` +
+    `**Why this matters**: dead GitHub entries leave stale external links, stale generated project pages, ` +
+    `and incomplete metadata in Atlas.\n\n` +
     `## Dead entries\n\n`;
   for (const d of dead) {
     body += `- \`${d.owner}/${d.repo}\` — ${d.url}\n`;
