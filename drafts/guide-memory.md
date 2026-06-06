@@ -4,9 +4,13 @@ By [Kevin Simback](https://x.com/KSimback) · Published on X, May 23, 2026
 
 Source: https://x.com/KSimback/status/2058262328496554021
 
+![The Complete Guide to Hermes Agent Memory](/guide/memory/assets/complete-guide-to-hermes-agent-memory.jpg)
+
 TLDR: this is your definitive guide to all things related to memory systems for Hermes Agent. Why create this? Because every week I see new posts or articles describing some new memory tool for Hermes agents and these make me question if my memory setup is the best. So I dug into all of them and broke it down for you.
 
 Over the past few months my Hermes agent has been mapping the Hermes ecosystem over at hermesatlas.com. One of the key areas it has covered is memory and it even has a dedicated section for it.
+
+![Best Memory Providers for Hermes Agent](/guide/memory/assets/best-memory-providers-for-hermes-agent.jpg)
 
 And let's be honest, there are a LOT of memory related tools available and there are a LOT of write-ups about them. I see new articles on X every week about some new memory setup. It's hard to keep up, and even harder to know if you're doing it all wrong because they all make claims about how certain memory systems are better than others.
 
@@ -35,6 +39,8 @@ Layer 2 - the optional plug-in slot. When you outgrow the native layer (you want
 Layer 3 - what the community builds beyond the official 8. Two flavors. Some community projects are MemoryProvider plug-ins that compete head-to-head with the Layer 2 picks (Mnemosyne is the standout - fully local, sub-millisecond, with a real tiered cognitive architecture). Others sit alongside the official providers in a different slot entirely (GBrain is the standout here - it stores world facts like people, companies, and projects in a markdown vault, while your Layer 2 provider handles operational memory). Layer 3 usually means more setup and less polish than the official 8, but it's where you go when you need a capability the eight providers don't offer.
 
 The layers stack rather than replace each other. Switching the Layer 2 provider does not wipe Layer 1. Each provider has its own store, but the native session database and the two markdown files keep running underneath. Layer 3 plug-ins are additive on top of both.
+
+![Hermes Agent memory as a three-layer stack: native memory, official MemoryProviders, and community plug-ins](/guide/memory/assets/hermes-memory-three-layer-stack.jpg)
 
 ## Layer 1: Native - what you get out of the box
 
@@ -154,6 +160,8 @@ Good choice if you want to operate at real scale (consumer app, multi-tenant Saa
 
 Here's a comparative look across all 8
 
+![Memory Provider Comparison table for the eight official Hermes MemoryProviders](/guide/memory/assets/memory-provider-comparison.jpg)
+
 ## Layer 3: Community plug-ins worth knowing
 
 If none of the official 8 fits your use case, or if you want even more on top, the community has built another layer of memory tooling for Hermes. About five of these are production-quality enough to consider seriously, plus a longer tail of experiments to keep eyes on.
@@ -214,7 +222,11 @@ One thing I expected to find that doesn't exist: memory-as-skill is effectively 
 
 Step 1: pick your layer strategy
 
+![Flowchart for picking a Hermes memory setup: native only, Layer 2 by need, or shared-state plan](/guide/memory/assets/pick-hermes-memory-setup.jpg)
+
 Step 2: pick your layer 2 system
+
+![Memory Setup Quick Picks table mapping requirements to providers](/guide/memory/assets/provider-decision-tree.jpg)
 
 ## Warning signs you went too heavy:
 
