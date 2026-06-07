@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/nesquena/hermes-webui#software",
   "name": "hermes-webui",
-  "description": "Hermes WebUI is a lightweight browser interface for the Hermes Agent that provides a visual alternative to the command-line experience. It is built using Python and vanilla JavaScript without the need for external frameworks or build steps. The interface features a three-panel layout for managing sessions, chatting, and browsing workspace files. It integrates directly with an existing Hermes Agent setup to provide persistent memory and provider-agnostic model access.",
+  "description": "Hermes WebUI is a lightweight browser-based interface for the Hermes Agent that provides a graphical alternative to the terminal. It is built using Python and vanilla JavaScript without the need for a build step or external frameworks. The interface features a three-panel layout for managing sessions, chat, and workspace files with full parity to the CLI experience. Users can securely access their existing agent and models via an SSH tunnel or Docker deployment.",
   "url": "https://hermesatlas.com/projects/nesquena/hermes-webui",
   "codeRepository": "https://github.com/nesquena/hermes-webui",
   "applicationCategory": "DesktopEnhancementApplication",
@@ -47,13 +47,13 @@
     "name": "nesquena",
     "url": "https://github.com/nesquena"
   },
-  "dateModified": "2026-06-03T05:48:40.000Z",
+  "dateModified": "2026-06-07T04:36:42.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 12879
+    "userInteractionCount": 13715
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">160·repos</span>
+    <span id="meta-count">162·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -111,11 +111,11 @@
   <p class="project-desc">Hermes WebUI: The best way to use Hermes Agent from the web or from your phone!</p>
 
   <div class="meta-row">
-    <span class="stars">★ 12.9K</span>
+    <span class="stars">★ 13.7K</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-06-03</span>
+    <span><span class="meta-label">updated</span>2026-06-07</span>
   </div>
 
   <div class="actions">
@@ -130,11 +130,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes WebUI is a lightweight browser interface for the Hermes Agent that provides a visual alternative to the command-line experience. It is built using Python and vanilla JavaScript without the need for external frameworks or build steps. The interface features a three-panel layout for managing sessions, chatting, and browsing workspace files. It integrates directly with an existing Hermes Agent setup to provide persistent memory and provider-agnostic model access.</p>
+    <p class="summary-text">Hermes WebUI is a lightweight browser-based interface for the Hermes Agent that provides a graphical alternative to the terminal. It is built using Python and vanilla JavaScript without the need for a build step or external frameworks. The interface features a three-panel layout for managing sessions, chat, and workspace files with full parity to the CLI experience. Users can securely access their existing agent and models via an SSH tunnel or Docker deployment.</p>
     <ul class="summary-highlights">
       <li>Full feature parity with the Hermes CLI experience</li>
-      <li>Three-panel layout with workspace file browsing and inline preview</li>
-      <li>Zero-build architecture using only Python and vanilla JavaScript</li>
+      <li>Three-panel layout with workspace file browsing and inline previews</li>
+      <li>Lightweight architecture using Python and vanilla JavaScript</li>
     </ul>
   </div>
 </section>
@@ -596,6 +596,16 @@ export HERMES_WEBUI_AUTO_INSTALL=1  # enable auto-install of agent deps (disable
 <td><code>$HERMES_HOME/config.yaml</code></td>
 <td>Path to Hermes config file</td>
 </tr>
+<tr>
+<td><code>HERMES_WEBUI_AGENT_CACHE_MAX</code></td>
+<td><code>25</code></td>
+<td>Max live agent instances kept warm in the in-memory LRU. Each pins a full conversation transcript, so this is the dominant lever on resident memory — lower it on installs with many long sessions to cap RAM (at the cost of more cold reloads)</td>
+</tr>
+<tr>
+<td><code>HERMES_WEBUI_SESSIONS_MAX</code></td>
+<td><code>100</code></td>
+<td>Max compact <code>Session</code> objects held in the in-memory LRU. Lighter than the agent cache; lower it on installs with hundreds of sessions</td>
+</tr>
 </tbody></table>
 <hr>
 <h4>Remote access (SSH tunnel, Tailscale, phone)</h4>
@@ -772,6 +782,18 @@ docker-compose.yml  Compose with named volume and optional auth
 <p>State lives outside the repo at <code>~/.hermes/webui/</code> by default
 (sessions, workspaces, settings, projects, last_workspace). Override with <code>HERMES_WEBUI_STATE_DIR</code>.
 Full design notes and the endpoint catalog are in <a href="https://github.com/nesquena/hermes-webui/blob/main/ARCHITECTURE.md"><code>ARCHITECTURE.md</code></a>.</p>
+<hr>
+<h3>Compatibility</h3>
+<p>The version shown in the WebUI runtime status is the <strong>WebUI version only</strong> (build/image/tag currently running). It is not a full compatibility map.</p>
+<p>The WebUI is still coupled to Hermes Agent internals for runtime execution, provider/model access, and state/schema usage until the stable agent boundary work in <a href="https://github.com/nesquena/hermes-webui/issues/1925">#1925</a> and <a href="https://github.com/nesquena/hermes-webui/issues/2491">#2491</a> land. In practice, the WebUI imports Agent modules directly (<code>api/config.py</code>, <code>api/providers.py</code>, <code>api/streaming.py</code>) and reads Agent state layout directly, so version skew can cause import or behavior drift.</p>
+<p><strong>Compatibility policy</strong></p>
+<ul>
+<li>WebUI release branches are tested against the matching Hermes Agent release available at that WebUI release time.</li>
+<li><strong>Upgrade both together</strong>: upgrade or pin WebUI and hermes-agent together (same release train/version/date), especially before enabling production traffic.</li>
+<li>Running pinned older/newer combinations is <strong>untested and unsupported</strong> until the stable API boundary work in <a href="https://github.com/nesquena/hermes-webui/issues/1925">#1925</a> / <a href="https://github.com/nesquena/hermes-webui/issues/2491">#2491</a> is in place.</li>
+<li>Record the full <code>hermes-agent</code> + <code>hermes-webui</code> versions in issue reports when upgrade mismatches are suspected.</li>
+</ul>
+<p><strong>Docker users</strong>: pin both image tags (or corresponding pinned source revisions) rather than using <code>latest</code> on one side and a fixed tag on the other. When upgrading the multi-container setup, follow the agent-image upgrade procedure in <a href="https://github.com/nesquena/hermes-webui/blob/main/docs/docker.md"><code>docs/docker.md</code></a> (which requires dropping the <code>hermes-agent-src</code> volume before recreating). The current source-boundary status is tracked in <a href="https://github.com/nesquena/hermes-webui/blob/main/docs/rfcs/agent-source-boundary.md"><code>docs/rfcs/agent-source-boundary.md</code></a>.</p>
 <hr>
 <h3>Docs</h3>
 <p><strong>Start here</strong></p>
@@ -972,35 +994,35 @@ Configurable assistant display name, thinking/reasoning block display, and a log
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/outsourc-e/hermes-workspace">
-        <div class="stars">★ 5.3K</div>
+        <div class="stars">★ 5.5K</div>
         <div class="name"><span class="org">outsourc-e /</span> hermes-workspace</div>
       </a>
       <a class="related-row" href="/projects/fathah/hermes-desktop">
-        <div class="stars">★ 9.7K</div>
+        <div class="stars">★ 10.9K</div>
         <div class="name"><span class="org">fathah /</span> hermes-desktop</div>
       </a>
       <a class="related-row" href="/projects/sanchomuzax/hermes-webui">
-        <div class="stars">★ 103</div>
+        <div class="stars">★ 105</div>
         <div class="name"><span class="org">sanchomuzax /</span> hermes-webui</div>
       </a>
       <a class="related-row" href="/projects/Euraika-Labs/pan-ui">
-        <div class="stars">★ 73</div>
+        <div class="stars">★ 77</div>
         <div class="name"><span class="org">Euraika-Labs /</span> pan-ui</div>
       </a>
       <a class="related-row" href="/projects/Eynzof/hermes-agent-cn-desktop">
-        <div class="stars">★ 228</div>
+        <div class="stars">★ 259</div>
         <div class="name"><span class="org">Eynzof /</span> hermes-agent-cn-desktop</div>
       </a>
       <a class="related-row" href="/projects/Felix-Forever/hermes-agent-desktop">
-        <div class="stars">★ 39</div>
+        <div class="stars">★ 50</div>
         <div class="name"><span class="org">Felix-Forever /</span> hermes-agent-desktop</div>
       </a>
       <a class="related-row" href="/projects/jazzyalex/agent-sessions">
-        <div class="stars">★ 604</div>
+        <div class="stars">★ 613</div>
         <div class="name"><span class="org">jazzyalex /</span> agent-sessions</div>
       </a>
       <a class="related-row" href="/projects/nickvasilescu/hermes-desktop-os1">
-        <div class="stars">★ 456</div>
+        <div class="stars">★ 464</div>
         <div class="name"><span class="org">nickvasilescu /</span> hermes-desktop-os1</div>
       </a>
     </div>

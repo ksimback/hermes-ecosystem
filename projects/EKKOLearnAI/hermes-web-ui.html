@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/EKKOLearnAI/hermes-web-ui#software",
   "name": "hermes-web-ui",
-  "description": "Hermes Web UI is a comprehensive dashboard and desktop application designed to manage Hermes Agent operations through a graphical interface. It centralizes agent control by providing real-time chat streaming, multi-session management, and a unified configuration suite for eight messaging platforms including Discord, Slack, and WhatsApp. The system includes specialized modules for monitoring token usage and costs, scheduling cron jobs, and managing multi-agent group chats with context compression",
+  "description": "Hermes Web UI is a comprehensive desktop application and web dashboard designed to manage the Hermes Agent ecosystem. It provides a centralized interface for handling AI chat sessions, model providers, and system configurations through a Socket.IO-powered real-time bridge. The tool integrates multi-platform channel management for eight different messaging services and includes detailed usage analytics and scheduled cron job execution. Users can organize their workflows using profile-scoped setti",
   "url": "https://hermesatlas.com/projects/EKKOLearnAI/hermes-web-ui",
   "codeRepository": "https://github.com/EKKOLearnAI/hermes-web-ui",
   "applicationCategory": "DesktopEnhancementApplication",
@@ -46,13 +46,13 @@
     "name": "EKKOLearnAI",
     "url": "https://github.com/EKKOLearnAI"
   },
-  "dateModified": "2026-06-03T11:59:44.000Z",
+  "dateModified": "2026-06-07T04:08:24.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 7134
+    "userInteractionCount": 7458
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -80,7 +80,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">160·repos</span>
+    <span id="meta-count">162·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -110,11 +110,11 @@
   <p class="project-desc">Web dashboard for Hermes Agent — multi-platform AI chat, session management, scheduled jobs, usage analytics </p>
 
   <div class="meta-row">
-    <span class="stars">★ 7.1K</span>
+    <span class="stars">★ 7.5K</span>
     <span><span class="meta-label">lang</span>TypeScript</span>
     
     
-    <span><span class="meta-label">updated</span>2026-06-03</span>
+    <span><span class="meta-label">updated</span>2026-06-07</span>
   </div>
 
   <div class="actions">
@@ -129,11 +129,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Web UI is a comprehensive dashboard and desktop application designed to manage Hermes Agent operations through a graphical interface. It centralizes agent control by providing real-time chat streaming, multi-session management, and a unified configuration suite for eight messaging platforms including Discord, Slack, and WhatsApp. The system includes specialized modules for monitoring token usage and costs, scheduling cron jobs, and managing multi-agent group chats with context compression. Users can also browse remote files, execute commands via an integrated web terminal, and manage model providers through a profile-scoped authentication system.</p>
+    <p class="summary-text">Hermes Web UI is a comprehensive desktop application and web dashboard designed to manage the Hermes Agent ecosystem. It provides a centralized interface for handling AI chat sessions, model providers, and system configurations through a Socket.IO-powered real-time bridge. The tool integrates multi-platform channel management for eight different messaging services and includes detailed usage analytics and scheduled cron job execution. Users can organize their workflows using profile-scoped settings and a built-in file browser for remote backends.</p>
     <ul class="summary-highlights">
-      <li>Unified configuration for Telegram, Discord, Slack, WhatsApp, and Matrix channels</li>
-      <li>Real-time AI chat with session management and markdown rendering</li>
-      <li>Usage analytics for tracking token consumption, costs, and model distribution</li>
+      <li>Unified configuration for 8 messaging platforms including Telegram and Discord</li>
+      <li>Multi-profile management with scoped settings, memory, and model visibility</li>
+      <li>Real-time AI chat with token tracking and usage analytics</li>
     </ul>
   </div>
 </section>
@@ -327,6 +327,14 @@ hermes-web-ui reset-default-login
 <li>Model settings (default model &amp; provider)</li>
 <li>Profile and provider configuration</li>
 </ul>
+<h4>Voice / TTS</h4>
+<ul>
+<li>Read assistant replies aloud from chat and group-chat messages.</li>
+<li>Providers: browser Web Speech, built-in Edge TTS, OpenAI-compatible <code>/audio/speech</code>, custom OpenAI-compatible TTS endpoints, and MiMo.</li>
+<li>MiMo supports preset voices, voice design prompts, and voice clone reference audio (<code>.mp3</code>/<code>.wav</code>, max 10 MB) with selectable auth header mode (<code>Authorization</code>, <code>api-key</code>, or both).</li>
+<li>Edge/OpenAI-compatible/custom/MiMo playback uses the Web UI backend&#39;s unified <code>/api/hermes/tts/synthesize</code> endpoint, so stop/pause state is shared and in-flight fetches are aborted when possible.</li>
+<li>Limitation: external TTS providers may continue processing a request after the browser/server aborts; custom/OpenAI-compatible and MiMo base URLs must be public <code>http</code>/<code>https</code> endpoints and cannot target localhost/private networks; voice-clone reference audio is stored in browser settings as a data URI, so avoid large or sensitive samples.</li>
+</ul>
 <h4>Web Terminal</h4>
 <ul>
 <li>Integrated terminal powered by node-pty and @xterm/xterm</li>
@@ -414,8 +422,8 @@ and package installs such as <code>pip install hermes-agent</code>.</p>
 </tr>
 <tr>
 <td><code>CORS_ORIGINS</code></td>
-<td><code>*</code></td>
-<td>Koa CORS origin setting.</td>
+<td>same host only</td>
+<td>Comma- or space-separated cross-origin allowlist for HTTP, Socket.IO, and WebSocket requests. Set <code>*</code> only when you intentionally need legacy wildcard CORS.</td>
 </tr>
 <tr>
 <td><code>AUTH_TOKEN</code></td>
@@ -578,6 +586,16 @@ and package installs such as <code>pip install hermes-agent</code>.</p>
 <td>Force managed legacy gateway process handling. Set <code>1</code>, <code>true</code>, <code>yes</code>, or <code>on</code> to enable.</td>
 </tr>
 <tr>
+<td><code>HERMES_WEB_UI_DISABLE_GATEWAY_AUTOSTART</code></td>
+<td>unset</td>
+<td>Skip startup gateway checks/autostart. Set <code>1</code>, <code>true</code>, <code>yes</code>, or <code>on</code> for dashboard-only deployments where another service owns Hermes gateway lifecycle.</td>
+</tr>
+<tr>
+<td><code>HERMES_WEB_UI_DISABLE_SKILL_INJECTION</code></td>
+<td>unset</td>
+<td>Skip startup bundled skill injection. Set <code>1</code>, <code>true</code>, <code>yes</code>, or <code>on</code> when bundled skills are managed outside Web UI or target skill directories must not be overwritten.</td>
+</tr>
+<tr>
 <td><code>HERMES_WEB_UI_STOP_GATEWAYS_ON_SHUTDOWN</code></td>
 <td>enabled in production</td>
 <td>Controls whether Web UI shutdown also stops managed gateway processes. Set <code>0</code> or <code>false</code> to detach them.</td>
@@ -628,6 +646,10 @@ and package installs such as <code>pip install hermes-agent</code>.</p>
 <tr>
 <td><code>hermes-web-ui start --port 9000</code></td>
 <td>Start on custom port</td>
+</tr>
+<tr>
+<td><code>hermes-web-ui client</code></td>
+<td>Start for a remote client (<code>HERMES_WEB_UI_DISABLE_GATEWAY_AUTOSTART=1</code>, <code>CORS_ORIGINS=*</code>)</td>
 </tr>
 <tr>
 <td><code>hermes-web-ui stop</code></td>
@@ -713,35 +735,35 @@ npm run dev
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/outsourc-e/hermes-workspace">
-        <div class="stars">★ 5.3K</div>
+        <div class="stars">★ 5.5K</div>
         <div class="name"><span class="org">outsourc-e /</span> hermes-workspace</div>
       </a>
       <a class="related-row" href="/projects/fathah/hermes-desktop">
-        <div class="stars">★ 9.7K</div>
+        <div class="stars">★ 10.9K</div>
         <div class="name"><span class="org">fathah /</span> hermes-desktop</div>
       </a>
       <a class="related-row" href="/projects/sanchomuzax/hermes-webui">
-        <div class="stars">★ 103</div>
+        <div class="stars">★ 105</div>
         <div class="name"><span class="org">sanchomuzax /</span> hermes-webui</div>
       </a>
       <a class="related-row" href="/projects/Euraika-Labs/pan-ui">
-        <div class="stars">★ 73</div>
+        <div class="stars">★ 77</div>
         <div class="name"><span class="org">Euraika-Labs /</span> pan-ui</div>
       </a>
       <a class="related-row" href="/projects/Eynzof/hermes-agent-cn-desktop">
-        <div class="stars">★ 228</div>
+        <div class="stars">★ 259</div>
         <div class="name"><span class="org">Eynzof /</span> hermes-agent-cn-desktop</div>
       </a>
       <a class="related-row" href="/projects/Felix-Forever/hermes-agent-desktop">
-        <div class="stars">★ 39</div>
+        <div class="stars">★ 50</div>
         <div class="name"><span class="org">Felix-Forever /</span> hermes-agent-desktop</div>
       </a>
       <a class="related-row" href="/projects/jazzyalex/agent-sessions">
-        <div class="stars">★ 604</div>
+        <div class="stars">★ 613</div>
         <div class="name"><span class="org">jazzyalex /</span> agent-sessions</div>
       </a>
       <a class="related-row" href="/projects/nickvasilescu/hermes-desktop-os1">
-        <div class="stars">★ 456</div>
+        <div class="stars">★ 464</div>
         <div class="name"><span class="org">nickvasilescu /</span> hermes-desktop-os1</div>
       </a>
     </div>

@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/colbymchenry/codegraph#software",
   "name": "codegraph",
-  "description": "CodeGraph is a local developer tool that provides a pre-indexed semantic knowledge graph for AI coding agents to improve codebase navigation. It works by mapping symbol relationships, call graphs, and code structures into a local index, allowing agents to query the graph directly instead of performing expensive file scans or grep operations. This approach reduces token consumption and tool calls while accelerating response times for architectural queries. The tool integrates via MCP with various",
+  "description": "CodeGraph is a local pre-indexed code knowledge graph designed to reduce token consumption and tool call frequency for coding agents. It replaces expensive file scanning and grep operations by providing agents with instant access to symbol relationships, call graphs, and code structure. This approach allows agents to query the graph directly rather than reading multiple files to understand architecture. It integrates via an MCP server with agents including Hermes Agent, Claude Code, Cursor, and ",
   "url": "https://hermesatlas.com/projects/colbymchenry/codegraph",
   "codeRepository": "https://github.com/colbymchenry/codegraph",
   "applicationCategory": "DeveloperApplication",
@@ -47,13 +47,13 @@
     "name": "colbymchenry",
     "url": "https://github.com/colbymchenry"
   },
-  "dateModified": "2026-06-03T02:44:28.000Z",
+  "dateModified": "2026-06-07T07:10:10.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 38834
+    "userInteractionCount": 43314
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">160·repos</span>
+    <span id="meta-count">162·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -111,11 +111,11 @@
   <p class="project-desc">Pre-indexed code knowledge graph for Claude Code, Codex, Gemini, Cursor, OpenCode, AntiGravity, Kiro, and Hermes Agent — fewer tokens, fewer tool calls, 100% local</p>
 
   <div class="meta-row">
-    <span class="stars">★ 38.8K</span>
+    <span class="stars">★ 43.3K</span>
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-06-03</span>
+    <span><span class="meta-label">updated</span>2026-06-07</span>
   </div>
 
   <div class="actions">
@@ -130,11 +130,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">CodeGraph is a local developer tool that provides a pre-indexed semantic knowledge graph for AI coding agents to improve codebase navigation. It works by mapping symbol relationships, call graphs, and code structures into a local index, allowing agents to query the graph directly instead of performing expensive file scans or grep operations. This approach reduces token consumption and tool calls while accelerating response times for architectural queries. The tool integrates via MCP with various agents including Hermes Agent, Claude Code, and Cursor.</p>
+    <p class="summary-text">CodeGraph is a local pre-indexed code knowledge graph designed to reduce token consumption and tool call frequency for coding agents. It replaces expensive file scanning and grep operations by providing agents with instant access to symbol relationships, call graphs, and code structure. This approach allows agents to query the graph directly rather than reading multiple files to understand architecture. It integrates via an MCP server with agents including Hermes Agent, Claude Code, Cursor, and Gemini.</p>
     <ul class="summary-highlights">
-      <li>Reduces tool calls by approximately 58% through pre-indexed symbol mapping</li>
-      <li>Operates 100% locally with no external dependencies or Node.js required</li>
-      <li>Supports Hermes Agent, Claude Code, Cursor, and other MCP-compatible agents</li>
+      <li>Reduces tool calls by 58% and costs by 16% on average</li>
+      <li>Provides local semantic intelligence without requiring Node.js installation</li>
+      <li>Supports multiple agents including Hermes Agent, Cursor, and Claude Code</li>
     </ul>
   </div>
 </section>
@@ -162,6 +162,11 @@
 <a href="#supported-agents"><img src="https://img.shields.io/badge/Gemini-supported-blueviolet.svg" alt="Gemini"></a>
 <a href="#supported-agents"><img src="https://img.shields.io/badge/Antigravity-supported-blueviolet.svg" alt="Antigravity"></a>
 <a href="#supported-agents"><img src="https://img.shields.io/badge/Kiro-supported-blueviolet.svg" alt="Kiro"></a></p>
+<br>
+
+<p><strong>The CodeGraph platform is coming</strong> — for every PR, know exactly what to test, what could break, which flows are affected, and whether business logic is compromised.</p>
+<p><a href="https://getcodegraph.com"><img alt="Join the waitlist for early beta access" src="https://raw.githubusercontent.com/colbymchenry/codegraph/main/assets/waitlist.svg?v=2" height="52"></a></p>
+<p><sub>Get <b>early beta access</b> to the hosted product · <a href="https://getcodegraph.com">getcodegraph.com</a></sub></p>
 </div>
 
 <h3>Get Started</h3>
@@ -177,6 +182,7 @@ irm https://raw.githubusercontent.com/colbymchenry/codegraph/main/install.ps1 | 
 <pre><code class="language-bash">npm i -g @colbymchenry/codegraph
 </code></pre>
 <p><sub>CodeGraph bundles its own runtime — nothing to compile, no native build, works the same everywhere. The installer puts <code>codegraph</code> on your PATH but <strong>doesn&#39;t change your current shell</strong> — open a new terminal before the next step so the command resolves.</sub></p>
+<p><sub><strong>Upgrade any time</strong> with <code>codegraph upgrade</code> — it detects how you installed (bundle, npm, or npx) and updates in place. Add <code>--check</code> to see if an update is available, or <code>codegraph upgrade &lt;version&gt;</code> to pin one.</sub></p>
 <h4>2. Wire up your agent(s)</h4>
 <p>In a <strong>new terminal</strong>, run the installer to connect CodeGraph to the agents you use:</p>
 <pre><code class="language-bash">codegraph install
@@ -1046,6 +1052,7 @@ codegraph callees &lt;symbol&gt;        # Find what a function/method calls (--l
 codegraph impact &lt;symbol&gt;         # Analyze what code is affected by changing a symbol (--depth, --json)
 codegraph affected [files...]     # Find test files affected by changes (see below)
 codegraph serve --mcp             # Start MCP server
+codegraph upgrade [version]       # Update to the latest release (--check, --force)
 </code></pre>
 <h4><code>codegraph affected</code></h4>
 <p>Traces import dependencies transitively to find which test files are affected by changed source files.</p>
@@ -1358,6 +1365,123 @@ is written):</p>
 <td>Full support (everything in Lua, plus <code>type</code>/<code>export type</code> aliases, typed signatures, and Roblox instance-path <code>require</code>)</td>
 </tr>
 </tbody></table>
+<h3>Measured cross-file coverage</h3>
+<p>Impact and blast-radius queries are only as good as the dependency graph behind them, so coverage is measured rather than asserted. <strong>Fair coverage</strong> = the share of symbol-bearing source files that have at least one <em>resolved cross-file dependent</em> — something that imports, calls, references, or (through a framework convention) routes to them — on a real-world benchmark repo per language. The residual is always a genuine static-analysis frontier (runtime dynamic dispatch, reflection / DI containers, framework-convention entry points, vendored third-party code), never hidden by gaming the denominator.</p>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>Benchmark repo</th>
+<th>Coverage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TypeScript / JavaScript</td>
+<td>this repo</td>
+<td>95.8%</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>psf/requests</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>Go</td>
+<td>gin-gonic/gin</td>
+<td>96.6%</td>
+</tr>
+<tr>
+<td>Rust</td>
+<td>BurntSushi/ripgrep</td>
+<td>86.7%</td>
+</tr>
+<tr>
+<td>Java</td>
+<td>google/gson</td>
+<td>93.3%</td>
+</tr>
+<tr>
+<td>C#</td>
+<td>jbogard/MediatR</td>
+<td>85.2%</td>
+</tr>
+<tr>
+<td>PHP</td>
+<td>guzzle/guzzle</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>Ruby</td>
+<td>sidekiq/sidekiq</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>C</td>
+<td>redis/redis</td>
+<td>92.2%</td>
+</tr>
+<tr>
+<td>C++</td>
+<td>google/leveldb</td>
+<td>94.8%</td>
+</tr>
+<tr>
+<td>Objective-C</td>
+<td>SDWebImage</td>
+<td>91.6%</td>
+</tr>
+<tr>
+<td>Swift</td>
+<td>Alamofire</td>
+<td>95.3%</td>
+</tr>
+<tr>
+<td>Kotlin</td>
+<td>square/okhttp</td>
+<td>96.2%</td>
+</tr>
+<tr>
+<td>Scala</td>
+<td>gatling/gatling</td>
+<td>91.2%</td>
+</tr>
+<tr>
+<td>Dart</td>
+<td>flutter/packages</td>
+<td>92.4%</td>
+</tr>
+<tr>
+<td>Svelte / SvelteKit</td>
+<td>sveltejs/realworld</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>Vue / Nuxt</td>
+<td>nuxt/movies</td>
+<td>93.5%</td>
+</tr>
+<tr>
+<td>Lua</td>
+<td>nvim-telescope/telescope.nvim</td>
+<td>84.2%</td>
+</tr>
+<tr>
+<td>Luau</td>
+<td>dphfox/Fusion</td>
+<td>92.2%</td>
+</tr>
+<tr>
+<td>Liquid</td>
+<td>Shopify/dawn</td>
+<td>73.8%</td>
+</tr>
+<tr>
+<td>Pascal / Delphi</td>
+<td>PascalCoin</td>
+<td>75.7%</td>
+</tr>
+</tbody></table>
+<p>Framework routing is validated the same way, on a canonical app per framework: Express 100%, FastAPI 98%, Flask 100%, NestJS 96.8%, Gin 96.5%, Axum 100%, Rocket 93.8%, Vapor 100%, Laravel 92%, Rails 89.6%, React Router 100% — and the convention/reflection-heavy ones at their honest static-analysis ceiling: ASP.NET 83.9%, Spring 83.3%, Drupal 78.9%, Django 74.1%.</p>
 <h3>Troubleshooting</h3>
 <p><strong>&quot;CodeGraph not initialized&quot;</strong> — Run <code>codegraph init</code> in your project directory first.</p>
 <p><strong>Indexing is slow</strong> — Check that <code>node_modules</code> and other large directories are excluded. Use <code>--quiet</code> to reduce output overhead.</p>
@@ -1397,11 +1521,11 @@ is written):</p>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/Salomondiei08/oh-my-hermes">
-        <div class="stars">★ 425</div>
+        <div class="stars">★ 481</div>
         <div class="name"><span class="org">Salomondiei08 /</span> oh-my-hermes</div>
       </a>
       <a class="related-row" href="/projects/liaohch3/claude-tap">
-        <div class="stars">★ 1.3K</div>
+        <div class="stars">★ 1.5K</div>
         <div class="name"><span class="org">liaohch3 /</span> claude-tap</div>
       </a>
       <a class="related-row" href="/projects/adityahimaone/hermes-agent-rtk-caveman">
@@ -1413,11 +1537,11 @@ is written):</p>
         <div class="name"><span class="org">junhoyeo /</span> tokscale</div>
       </a>
       <a class="related-row" href="/projects/joeynyc/hermes-skins">
-        <div class="stars">★ 427</div>
+        <div class="stars">★ 432</div>
         <div class="name"><span class="org">joeynyc /</span> hermes-skins</div>
       </a>
       <a class="related-row" href="/projects/AlexAI-MCP/hermes-CCC">
-        <div class="stars">★ 111</div>
+        <div class="stars">★ 112</div>
         <div class="name"><span class="org">AlexAI-MCP /</span> hermes-CCC</div>
       </a>
       <a class="related-row" href="/projects/unmodeled-tyler/vessel-browser">
@@ -1425,7 +1549,7 @@ is written):</p>
         <div class="name"><span class="org">unmodeled-tyler /</span> vessel-browser</div>
       </a>
       <a class="related-row" href="/projects/Abruptive/Ankh.md">
-        <div class="stars">★ 61</div>
+        <div class="stars">★ 62</div>
         <div class="name"><span class="org">Abruptive /</span> Ankh.md</div>
       </a>
     </div>

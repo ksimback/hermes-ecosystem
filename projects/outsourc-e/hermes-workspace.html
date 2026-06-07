@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/outsourc-e/hermes-workspace#software",
   "name": "hermes-workspace",
-  "description": "Hermes Workspace is a native web-based command center designed to provide a unified graphical interface for the Hermes Agent ecosystem. It integrates real-time chat, a cross-platform terminal, and a file browser with specialized tools for managing agent memory, skills, and Model Context Protocol (MCP) servers. The platform features a 'Swarm Mode' that uses persistent tmux-backed workers to orchestrate multiple autonomous agents across role-based dispatch lanes. Users can monitor agent state, tra",
+  "description": "Hermes Workspace is a comprehensive command center designed to orchestrate AI agents through a unified web interface. It integrates with the vanilla hermes-agent to provide a zero-fork environment for managing chat, memory, and system operations. The platform features a Swarm Mode that utilizes tmux-backed workers for autonomous, role-based task dispatching and a Kanban board for tracking progress. Users can manage over 2,000 skills, browse MCP catalogs, and access a cross-platform PTY terminal ",
   "url": "https://hermesatlas.com/projects/outsourc-e/hermes-workspace",
   "codeRepository": "https://github.com/outsourc-e/hermes-workspace",
   "applicationCategory": "DesktopEnhancementApplication",
@@ -47,13 +47,13 @@
     "name": "outsourc-e",
     "url": "https://github.com/outsourc-e"
   },
-  "dateModified": "2026-06-01T22:28:30.000Z",
+  "dateModified": "2026-06-06T00:46:46.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 5299
+    "userInteractionCount": 5464
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">160·repos</span>
+    <span id="meta-count">162·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -111,11 +111,11 @@
   <p class="project-desc">Native web workspace for Hermes Agent — chat, terminal, memory, skills, inspector.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 5.3K</span>
+    <span class="stars">★ 5.5K</span>
     <span><span class="meta-label">lang</span>JavaScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-06-01</span>
+    <span><span class="meta-label">updated</span>2026-06-06</span>
   </div>
 
   <div class="actions">
@@ -130,11 +130,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Workspace is a native web-based command center designed to provide a unified graphical interface for the Hermes Agent ecosystem. It integrates real-time chat, a cross-platform terminal, and a file browser with specialized tools for managing agent memory, skills, and Model Context Protocol (MCP) servers. The platform features a 'Swarm Mode' that uses persistent tmux-backed workers to orchestrate multiple autonomous agents across role-based dispatch lanes. Users can monitor agent state, track costs, and manage complex missions through a centralized dashboard and Kanban task board.</p>
+    <p class="summary-text">Hermes Workspace is a comprehensive command center designed to orchestrate AI agents through a unified web interface. It integrates with the vanilla hermes-agent to provide a zero-fork environment for managing chat, memory, and system operations. The platform features a Swarm Mode that utilizes tmux-backed workers for autonomous, role-based task dispatching and a Kanban board for tracking progress. Users can manage over 2,000 skills, browse MCP catalogs, and access a cross-platform PTY terminal from a single dashboard.</p>
     <ul class="summary-highlights">
-      <li>Unified interface for chat, terminal, memory editing, and skill management.</li>
-      <li>Swarm Mode for orchestrating multiple persistent, role-based autonomous agents.</li>
-      <li>Zero-fork compatibility with vanilla Hermes Agent and dashboard installations.</li>
+      <li>Swarm Mode with role-based dispatch and tmux-backed workers</li>
+      <li>Integrated memory browser, skills manager, and MCP catalog</li>
+      <li>Full workspace file browser with Monaco and PTY terminal</li>
     </ul>
   </div>
 </section>
@@ -309,7 +309,12 @@ pnpm dev                            # http://localhost:3000 (override with PORT=
 <ul>
 <li><code>curl http://127.0.0.1:8642/health</code> should return ok.</li>
 <li><code>curl http://127.0.0.1:9119/api/status</code> should return dashboard metadata.</li>
+<li><code>curl http://127.0.0.1:3000/api/sessions</code> (after the workspace boots) should return a sessions payload or an empty list.</li>
 </ul>
+<p>If <code>/api/sessions</code> is already returning data, <strong>do not start another gateway just because the UI still says Offline</strong> — refresh or reprobe the Workspace UI first.</p>
+<p>If your default model is <code>gpt-5.4</code> / <code>openai-codex</code>, make sure Codex CLI auth is live before testing chat:</p>
+<pre><code class="language-bash">codex login
+</code></pre>
 <p>Then start the workspace and complete onboarding — it should detect the gateway + dashboard pair and unlock the enhanced panes automatically.</p>
 <h5>Running on a remote host (Tailscale / VPN / LAN)</h5>
 <p>If the workspace and its browser live on different machines — e.g. the workspace runs on a Pi/Mac/home server and you access it from your phone over Tailscale — point <code>HERMES_API_URL</code> at the <strong>reachable</strong> backend address, not <code>127.0.0.1</code>:</p>
@@ -359,6 +364,12 @@ pnpm dev                   # Starts on http://localhost:3000
 <blockquote>
 <p><strong>Verify:</strong> Open <code>http://localhost:3000</code> and complete the onboarding flow. First connect the backend, then verify chat works. If your gateway exposes Hermes Agent APIs, advanced features appear automatically.</p>
 </blockquote>
+<h5>Run without an open terminal</h5>
+<p>After <code>pnpm build</code>, install Workspace as a user-level launchd/systemd service:</p>
+<pre><code class="language-bash">chmod +x scripts/install-dashboard-service.sh
+scripts/install-dashboard-service.sh
+</code></pre>
+<p>See <a href="https://github.com/outsourc-e/hermes-workspace/blob/main/docs/dashboard-service.md"><code>docs/dashboard-service.md</code></a> for macOS launchd, Linux systemd, logs, overrides, and uninstall steps.</p>
 <h5>Environment Variables</h5>
 <pre><code class="language-env"># OpenAI-compatible backend URL
 HERMES_API_URL=http://127.0.0.1:8642
@@ -507,6 +518,8 @@ HERMES_DASHBOARD_URL=http://127.0.0.1:9119
 <ul>
 <li><strong><code>Could not reach Hermes gateway on 8645, 8642, or 8643</code></strong> — gateway isn&#39;t running, or <code>HERMES_API_URL</code> points somewhere unreachable. Run <code>hermes gateway run</code> and re-check.</li>
 <li><strong>Workspace shows &quot;portable mode&quot; / extended APIs missing</strong> — dashboard isn&#39;t running. Start <code>hermes dashboard</code> in another terminal and refresh.</li>
+<li><strong>Sessions probe says unavailable / UI claims Offline but pairing should be live</strong> — verify <code>curl http://localhost:3000/api/sessions</code> before starting another gateway. If it returns sessions (or an empty array), the backend pairing is alive and the UI needs a refresh/reprobe.</li>
+<li><strong>Chat send fails on <code>gpt-5.4</code> / Codex</strong> — Codex CLI auth is stale. Run <code>codex login</code>, then retry the chat without starting another gateway.</li>
 <li><strong><code>Unauthorized</code> on every API call</strong> — gateway has <code>API_SERVER_KEY</code> set but workspace is missing <code>HERMES_API_TOKEN</code>. Match them.</li>
 <li><strong><code>Could not connect</code> from your phone over Tailscale</strong> — gateway is bound to loopback. Set <code>API_SERVER_HOST=0.0.0.0</code> in <code>~/.hermes/.env</code> and restart it.</li>
 </ul>
@@ -965,35 +978,35 @@ hermes dashboard      # dashboard plugin on :9119 (sessions/skills/jobs/config)
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/fathah/hermes-desktop">
-        <div class="stars">★ 9.7K</div>
+        <div class="stars">★ 10.9K</div>
         <div class="name"><span class="org">fathah /</span> hermes-desktop</div>
       </a>
       <a class="related-row" href="/projects/sanchomuzax/hermes-webui">
-        <div class="stars">★ 103</div>
+        <div class="stars">★ 105</div>
         <div class="name"><span class="org">sanchomuzax /</span> hermes-webui</div>
       </a>
       <a class="related-row" href="/projects/Euraika-Labs/pan-ui">
-        <div class="stars">★ 73</div>
+        <div class="stars">★ 77</div>
         <div class="name"><span class="org">Euraika-Labs /</span> pan-ui</div>
       </a>
       <a class="related-row" href="/projects/Eynzof/hermes-agent-cn-desktop">
-        <div class="stars">★ 228</div>
+        <div class="stars">★ 259</div>
         <div class="name"><span class="org">Eynzof /</span> hermes-agent-cn-desktop</div>
       </a>
       <a class="related-row" href="/projects/Felix-Forever/hermes-agent-desktop">
-        <div class="stars">★ 39</div>
+        <div class="stars">★ 50</div>
         <div class="name"><span class="org">Felix-Forever /</span> hermes-agent-desktop</div>
       </a>
       <a class="related-row" href="/projects/jazzyalex/agent-sessions">
-        <div class="stars">★ 604</div>
+        <div class="stars">★ 613</div>
         <div class="name"><span class="org">jazzyalex /</span> agent-sessions</div>
       </a>
       <a class="related-row" href="/projects/nickvasilescu/hermes-desktop-os1">
-        <div class="stars">★ 456</div>
+        <div class="stars">★ 464</div>
         <div class="name"><span class="org">nickvasilescu /</span> hermes-desktop-os1</div>
       </a>
       <a class="related-row" href="/projects/farion1231/cc-switch">
-        <div class="stars">★ 90.2K</div>
+        <div class="stars">★ 93.7K</div>
         <div class="name"><span class="org">farion1231 /</span> cc-switch</div>
       </a>
     </div>

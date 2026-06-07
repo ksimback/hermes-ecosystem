@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/Eynzof/hermes-agent-cn-desktop#software",
   "name": "hermes-agent-cn-desktop",
-  "description": "Hermes Agent CN Desktop is a cross-platform client designed to provide a native desktop experience for the Hermes Agent Chinese community. It uses Tauri, Rust, React, and TypeScript to wrap the agent's runtime and dashboard into a standalone application for Windows and macOS. The project manages local process execution, runtime installation, and a production-grade proxy layer to bypass WebView CORS restrictions. It offers a comprehensive UI for managing skills, memory, and model providers while ",
+  "description": "Hermes Agent CN Desktop is a desktop client designed to enhance the user experience of the Hermes Agent beyond its standard web dashboard. It utilizes Tauri v2, Rust, React, and TypeScript to provide native window management, local process control, and a secure REST/SSE proxy layer. The application includes a modified Chinese community version of the Hermes Agent kernel and supports features like memory management, MCP tools, and runtime diagnostics. It is currently in alpha and provides native ",
   "url": "https://hermesatlas.com/projects/Eynzof/hermes-agent-cn-desktop",
   "codeRepository": "https://github.com/Eynzof/hermes-agent-cn-desktop",
   "applicationCategory": "DesktopEnhancementApplication",
@@ -46,13 +46,13 @@
     "name": "Eynzof",
     "url": "https://github.com/Eynzof"
   },
-  "dateModified": "2026-06-03T03:36:39.000Z",
+  "dateModified": "2026-06-07T07:47:31.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 228
+    "userInteractionCount": 259
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -80,7 +80,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">160·repos</span>
+    <span id="meta-count">162·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -110,11 +110,11 @@
   <p class="project-desc">Hermes Agent CN desktop app, Windows-First, built with Tauri, Typescript and Rust. Isolated Hermes Agent core insides. </p>
 
   <div class="meta-row">
-    <span class="stars">★ 228</span>
+    <span class="stars">★ 259</span>
     <span><span class="meta-label">lang</span>TypeScript</span>
     
     
-    <span><span class="meta-label">updated</span>2026-06-03</span>
+    <span><span class="meta-label">updated</span>2026-06-07</span>
   </div>
 
   <div class="actions">
@@ -129,11 +129,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Agent CN Desktop is a cross-platform client designed to provide a native desktop experience for the Hermes Agent Chinese community. It uses Tauri, Rust, React, and TypeScript to wrap the agent's runtime and dashboard into a standalone application for Windows and macOS. The project manages local process execution, runtime installation, and a production-grade proxy layer to bypass WebView CORS restrictions. It offers a comprehensive UI for managing skills, memory, and model providers while simplifying the setup process for end users.</p>
+    <p class="summary-text">Hermes Agent CN Desktop is a desktop client designed to enhance the user experience of the Hermes Agent beyond its standard web dashboard. It utilizes Tauri v2, Rust, React, and TypeScript to provide native window management, local process control, and a secure REST/SSE proxy layer. The application includes a modified Chinese community version of the Hermes Agent kernel and supports features like memory management, MCP tools, and runtime diagnostics. It is currently in alpha and provides native installers for Windows and macOS.</p>
     <ul class="summary-highlights">
       <li>Native Windows and macOS support via Tauri v2</li>
-      <li>Built-in management for Hermes Agent kernel installation and updates</li>
-      <li>Integrated UI for MCP tools, skills, and memory management</li>
+      <li>Integrated management for Hermes Agent kernel installation and updates</li>
+      <li>Built-in support for MCP tools, Skills, and Memory management</li>
     </ul>
   </div>
 </section>
@@ -149,7 +149,7 @@
 <a href="./LICENSE"><img src="https://img.shields.io/badge/License-PolyForm%20NC%201.0.0-orange.svg" alt="License: PolyForm NC 1.0.0"></a></p>
 <p>Hermes Agent CN Desktop 是 Hermes Agent 中文社区推出的桌面客户端，原生支持Windows与MacOS系统。项目基于 <a href="https://v2.tauri.app/">Tauri v2</a>、Rust、React 和 TypeScript 构建，包含 <a href="https://github.com/Eynzof/hermes-agent-cn">hermes-agent-cn</a> 中文社区修改版的 Hermes Agent 内核。</p>
 <blockquote>
-<p>当前版本是 <code>v0.1.0-alpha.2</code>。项目仍处于 alpha 阶段，API、打包流程、运行时分发策略和界面细节都可能在稳定版发布前继续调整。</p>
+<p>当前版本是 <code>v0.2.2</code>。项目仍处于 alpha 阶段，API、打包流程、运行时分发策略和界面细节都可能在稳定版发布前继续调整。</p>
 </blockquote>
 <h3>演示</h3>
 <h4>原型图预览</h4>
@@ -239,13 +239,14 @@
 <li><strong>内置独立Hermes Agent内核</strong>：桌面端支持安装、更新、签名校验、健康检查和回滚本地 Hermes Agent内核。</li>
 <li><strong>面向 Agent 的完整 UI</strong>：支持聊天、流式输出、附件、MCP 工具、Skills、Memory、Profiles、定时任务和运行时健康面板。</li>
 <li><strong>生产级传输桥</strong>：生产模式下通过 Rust command 代理 REST、上传和 SSE，绕过 WebView CORS 限制，并集中处理鉴权。</li>
+<li><strong>YOLO 模式开关</strong>：「设置 → 常规」底部独立的「高风险操作」区提供开关，开启需二次确认，自动批准危险命令（对应后端 <code>HERMES_YOLO_MODE</code>），切换后自动重启内核生效，详见 <a href="https://github.com/Eynzof/hermes-agent-cn-desktop/blob/main/docs/yolo-mode.md">docs/yolo-mode.md</a>。</li>
 </ul>
 <h3>下载</h3>
 <p>预发布安装包会发布在 <a href="https://github.com/Eynzof/hermes-agent-cn-desktop/releases">GitHub Releases</a> 页面。</p>
 <p>当前 alpha 版本包含：</p>
 <ul>
-<li>macOS Apple Silicon DMG：<code>Hermes.Agent.CN.Desktop_0.1.0_aarch64.dmg</code></li>
-<li>Windows x64 安装器：<code>Hermes.Agent.CN.Desktop_0.1.0_x64-setup.exe</code></li>
+<li>macOS Apple Silicon DMG：<code>Hermes.Agent.CN.Desktop_0.2.2_aarch64.dmg</code></li>
+<li>Windows x64 安装器：<code>Hermes.Agent.CN.Desktop_0.2.2_x64-setup.exe</code></li>
 </ul>
 <p>当前 Windows 与 macOS 安装包都会预置 <code>hermes-agent-cn</code> runtime，安装后优先从包内 runtime 完成本地内核初始化；托管 runtime 下载与更新流程只作为升级或兜底路径使用。</p>
 <h3>开发环境要求</h3>
@@ -356,6 +357,9 @@ v0.1.1
 <li>打磨 macOS 与 Windows 的打包和安装行为；</li>
 <li>完善桌面端与 runtime 边界文档，降低贡献门槛。</li>
 </ul>
+<h3>Star Track</h3>
+<p>可以通过下面的趋势图查看本仓库 GitHub Star 的增长变化。</p>
+<p><a href="https://www.star-history.com/#Eynzof/hermes-agent-cn-desktop&Date"><img src="https://api.star-history.com/svg?repos=Eynzof/hermes-agent-cn-desktop&amp;type=Date" alt="Hermes Agent CN Desktop Star 趋势图"></a></p>
 <h3>贡献</h3>
 <p>欢迎提交 Issue 和 Pull Request。参与贡献前请阅读 <a href="https://github.com/Eynzof/hermes-agent-cn-desktop/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>。</p>
 <p>如果要报告安全问题，请遵循 <a href="https://github.com/Eynzof/hermes-agent-cn-desktop/blob/main/SECURITY.md">SECURITY.md</a>，不要直接创建公开 Issue。</p>
@@ -373,35 +377,35 @@ v0.1.1
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/outsourc-e/hermes-workspace">
-        <div class="stars">★ 5.3K</div>
+        <div class="stars">★ 5.5K</div>
         <div class="name"><span class="org">outsourc-e /</span> hermes-workspace</div>
       </a>
       <a class="related-row" href="/projects/fathah/hermes-desktop">
-        <div class="stars">★ 9.7K</div>
+        <div class="stars">★ 10.9K</div>
         <div class="name"><span class="org">fathah /</span> hermes-desktop</div>
       </a>
       <a class="related-row" href="/projects/sanchomuzax/hermes-webui">
-        <div class="stars">★ 103</div>
+        <div class="stars">★ 105</div>
         <div class="name"><span class="org">sanchomuzax /</span> hermes-webui</div>
       </a>
       <a class="related-row" href="/projects/Euraika-Labs/pan-ui">
-        <div class="stars">★ 73</div>
+        <div class="stars">★ 77</div>
         <div class="name"><span class="org">Euraika-Labs /</span> pan-ui</div>
       </a>
       <a class="related-row" href="/projects/Felix-Forever/hermes-agent-desktop">
-        <div class="stars">★ 39</div>
+        <div class="stars">★ 50</div>
         <div class="name"><span class="org">Felix-Forever /</span> hermes-agent-desktop</div>
       </a>
       <a class="related-row" href="/projects/jazzyalex/agent-sessions">
-        <div class="stars">★ 604</div>
+        <div class="stars">★ 613</div>
         <div class="name"><span class="org">jazzyalex /</span> agent-sessions</div>
       </a>
       <a class="related-row" href="/projects/nickvasilescu/hermes-desktop-os1">
-        <div class="stars">★ 456</div>
+        <div class="stars">★ 464</div>
         <div class="name"><span class="org">nickvasilescu /</span> hermes-desktop-os1</div>
       </a>
       <a class="related-row" href="/projects/farion1231/cc-switch">
-        <div class="stars">★ 90.2K</div>
+        <div class="stars">★ 93.7K</div>
         <div class="name"><span class="org">farion1231 /</span> cc-switch</div>
       </a>
     </div>

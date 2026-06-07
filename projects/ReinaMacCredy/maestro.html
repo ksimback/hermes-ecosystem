@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/ReinaMacCredy/maestro#software",
   "name": "maestro",
-  "description": "Maestro is a Rust-based, local-first harness designed to provide a durable execution environment for coding agents. It manages the agent lifecycle by storing features, tasks, and decision logs as plain files within a repository's `.maestro/` directory. The system enforces gated state transitions, requiring agents to provide verifiable proof of work before tasks can be marked as complete. This approach ensures that agent actions remain auditable, persistent across sessions, and integrated directl",
+  "description": "maestro is a local-first harness that provides a durable structure for coding agents to manage long-running work. It uses a Rust-based CLI to track features, tasks, and harness improvements as plain files within a `.maestro/` directory, eliminating the need for external daemons or cloud state. The system enforces a gated state machine where work must be backed by recorded proof and QA baselines before being marked as shipped. It integrates with agents like Claude Code and Codex via specialized s",
   "url": "https://hermesatlas.com/projects/ReinaMacCredy/maestro",
   "codeRepository": "https://github.com/ReinaMacCredy/maestro",
   "applicationCategory": "DeveloperApplication",
@@ -47,7 +47,7 @@
     "name": "ReinaMacCredy",
     "url": "https://github.com/ReinaMacCredy"
   },
-  "dateModified": "2026-06-02T19:37:33.000Z",
+  "dateModified": "2026-06-06T21:37:09.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">160·repos</span>
+    <span id="meta-count">162·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -115,7 +115,7 @@
     <span><span class="meta-label">lang</span>Rust</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-06-02</span>
+    <span><span class="meta-label">updated</span>2026-06-06</span>
   </div>
 
   <div class="actions">
@@ -130,11 +130,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Maestro is a Rust-based, local-first harness designed to provide a durable execution environment for coding agents. It manages the agent lifecycle by storing features, tasks, and decision logs as plain files within a repository's `.maestro/` directory. The system enforces gated state transitions, requiring agents to provide verifiable proof of work before tasks can be marked as complete. This approach ensures that agent actions remain auditable, persistent across sessions, and integrated directly into standard version control workflows.</p>
+    <p class="summary-text">maestro is a local-first harness that provides a durable structure for coding agents to manage long-running work. It uses a Rust-based CLI to track features, tasks, and harness improvements as plain files within a `.maestro/` directory, eliminating the need for external daemons or cloud state. The system enforces a gated state machine where work must be backed by recorded proof and QA baselines before being marked as shipped. It integrates with agents like Claude Code and Codex via specialized skills and hooks to automate the lifecycle of development.</p>
     <ul class="summary-highlights">
-      <li>Local-first architecture using plain files without background daemons</li>
-      <li>Gated state machine for features, tasks, and harness improvements</li>
-      <li>Evidence-based verification requiring recorded proof for task completion</li>
+      <li>Gated lifecycles for features, tasks, and harness improvements</li>
+      <li>Local-first storage of work and proof in plain files</li>
+      <li>Integration skills for Claude Code and Codex agents</li>
     </ul>
   </div>
 </section>
@@ -248,26 +248,28 @@ commands and conventions — so the agent learns the lifecycle and records its o
 your agent (Claude Code, Codex, or any CLI agent) at the repo and paste:</p>
 <pre><code>Set up maestro in this repo: run `maestro init --yes`, then `maestro install --agent claude`
 (or `--agent codex`). Then follow the maestro-setup skill it installs to tune the harness to
-this repo, and drive the feature and task lifecycle through the `maestro` CLI from there.
+this repo. Start each session with `maestro status`, then drive the feature and task lifecycle
+through the `maestro` CLI from there.
 </code></pre>
 <h3>Quickstart</h3>
 <p>Scaffold the repo and install the agent integration:</p>
 <pre><code>maestro init --yes                 # create .maestro/ and extract bundled skills/hooks
 maestro install --agent claude     # wire skills + hooks into CLAUDE.md/AGENTS.md (or --agent codex)
 maestro doctor                     # check the installation
+maestro status                     # resume with the next agent action
 </code></pre>
 <p>The smallest loop is a single task. A standalone task (no feature) carries its own
 acceptance check, and closes once a recorded run backs its claim:</p>
-<pre><code>maestro task create &quot;Patch null deref in parser&quot;            # -&gt; draft
-maestro task set task-001 --check &quot;regression test passes&quot;  # standalone tasks need their own check
-maestro task claim task-001                                 # -&gt; in_progress
-maestro task complete task-001 --summary &quot;guard the None case&quot; --claim &quot;cargo test parser passes&quot;
-
-# verify is gated on recorded proof. During a real agent run the installed hooks
-# record that proof automatically from your tool runs; by hand, record it explicitly:
-maestro event create --task-id task-001 --claim &quot;cargo test parser passes&quot;
-maestro task verify task-001                                # passes once the claim is backed by recorded proof
+<pre><code>maestro task create &quot;Patch null deref in parser&quot; --check &quot;regression test passes&quot;  # -&gt; draft
+maestro task explore task-001                                # -&gt; exploring
+maestro task accept task-001                                 # locks the check -&gt; ready
+maestro task claim --next                                    # -&gt; in_progress
+maestro task complete task-001 --summary &quot;guard the None case&quot; \
+  --claim &quot;cargo test parser passes&quot; --proof &quot;observed: cargo test parser passes&quot;
 </code></pre>
+<p><code>task complete</code> records the inline proof and runs <code>task verify</code> automatically. If the
+proof is missing or stale, the task stays in <code>needs_verification</code>; run
+<code>maestro query proof &lt;id&gt;</code> for the repair path.</p>
 <p>For a larger change, wrap the work in a feature contract and spin off child tasks:</p>
 <pre><code>maestro feature new &quot;CSV export&quot;                         # -&gt; proposed
 maestro feature set csv-export --acceptance &quot;Export a report to CSV&quot; --area &quot;src/export&quot;
@@ -282,13 +284,14 @@ cat &gt; .maestro/features/csv-export/baseline.md &lt;&lt;&#39;EOF&#39;
 EOF
 
 maestro feature accept csv-export                        # freeze the contract -&gt; ready
-maestro feature start csv-export                         # -&gt; in_progress
-
-maestro task create &quot;Implement CSV writer&quot; --feature csv-export   # inherits the feature&#39;s contract; no --check
-maestro task claim task-001
-maestro task complete task-001 --summary &quot;wrote csv writer&quot; --claim &quot;cargo test export passes&quot;
-maestro event create --task-id task-001 --claim &quot;cargo test export passes&quot;   # hooks record this in an agent run
-maestro task verify task-001
+cat &gt; PLAN-csv-export.md &lt;&lt;&#39;EOF&#39;
+## Task T1: Implement CSV writer
+check: cargo test export passes
+EOF
+maestro feature prepare csv-export --from PLAN-csv-export.md
+maestro task claim --next
+maestro task complete task-001 --summary &quot;wrote csv writer&quot; \
+  --claim &quot;cargo test export passes&quot; --proof &quot;observed: cargo test export passes&quot;
 
 # ship is gated on QA coverage: every [bl-NNN] baseline scenario needs a proven slice.
 # The qa-slice skill writes this for you; by hand it maps each scenario to its evidence:
@@ -308,10 +311,11 @@ is illustrative; once the backlog has a real entry, run it through the same task
 <pre><code>maestro harness list                       # what friction the run log surfaced
 maestro harness apply hb-001                # accept a proposal -&gt; spawns a standalone task
 maestro task set task-003 --check &quot;deflake the integration suite&quot;   # standalone tasks need a check first
-maestro task claim task-003
-maestro task complete task-003 --summary &quot;stabilized the suite&quot; --claim &quot;cargo test integration passes&quot;
-maestro event create --task-id task-003 --claim &quot;cargo test integration passes&quot;   # proof (hooks do this live)
-maestro task verify task-003                # gated on the claim&#39;s recorded proof
+maestro task explore task-003
+maestro task accept task-003
+maestro task claim --next
+maestro task complete task-003 --summary &quot;stabilized the suite&quot; \
+  --claim &quot;cargo test integration passes&quot; --proof &quot;observed: cargo test integration passes&quot;
 maestro harness measure hb-001              # close the loop once that task is verified
 </code></pre>
 <p><code>harness apply</code> spawns a <em>standalone</em> task, so it needs a <code>--check</code> before you can claim it.
@@ -350,53 +354,51 @@ created decision decision-001
 
 # (write .maestro/features/api-rate-limiting/baseline.md first — see flow 1) — accept then succeeds:
 $ maestro feature accept api-rate-limiting
-accepted api-rate-limiting (→ ready); contract frozen (acceptance=2, areas=1); note: 1 open question(s) carried (non-blocking)
-$ maestro feature start api-rate-limiting
-started api-rate-limiting (→ in_progress)
-
-$ maestro task create &quot;Add fixed-window counter middleware&quot; --feature api-rate-limiting
-created task-001
-$ maestro task claim task-001
-auto-accepted task-001 (draft -&gt; ready, acceptance locked)
-updated task-001 -&gt; in_progress
-$ maestro task complete task-001 --summary &quot;fixed-window counter in the request middleware&quot; --claim &quot;cargo test ratelimit passes&quot;
-updated task-001 -&gt; needs_verification
-$ maestro event create --task-id task-001 --claim &quot;cargo test ratelimit passes&quot;   # hooks do this live
-created task_proof event for run manual
-$ maestro task verify task-001
+accepted api-rate-limiting (-&gt; ready); contract frozen (acceptance=2, areas=1); note: 1 open question(s) carried (non-blocking)
+$ maestro feature prepare api-rate-limiting --from PLAN-api-rate-limiting.md
+prepared 1 task(s)
+started api-rate-limiting -&gt; in_progress
+next: maestro task claim --next
+$ maestro task claim --next
+claimed task-001 -&gt; in_progress
+$ maestro task complete task-001 --summary &quot;fixed-window counter in the request middleware&quot; --claim &quot;cargo test ratelimit passes&quot; --proof &quot;observed: cargo test ratelimit passes&quot;
+auto: recorded task_proof event for task-001
+auto: maestro task verify task-001
 verification passed for task-001 (1 claim(s), 1 proof source(s))
 
 # (write .maestro/features/api-rate-limiting/qa-slices.yaml first — see flow 3) — ship then succeeds:
 $ maestro feature ship api-rate-limiting --outcome &quot;Shipped fixed-window rate limiting&quot;
-shipped api-rate-limiting (→ shipped)
+shipped api-rate-limiting (-&gt; shipped)
 </code></pre>
 <p>The same journey, flow by flow — each leads with the gate that blocks you until the evidence exists,
 because that gate is the point.</p>
 <h5>1. Design as a feature</h5>
 <p><code>feature new</code> then <code>feature set</code> map the contract (acceptance, affected areas, non-goals, open
 questions); <code>decision new</code> records each fork as a durable file. <code>feature accept</code> freezes the contract
-into <code>ready</code> — but only once you have captured a behavior baseline — and <code>feature start</code> moves it to
-<code>in_progress</code>.</p>
+into <code>ready</code> — but only once you have captured a behavior baseline — and <code>feature prepare</code> turns a
+reviewed plan file into ready child tasks.</p>
 <p><em>Prompt:</em> &quot;Follow the <code>maestro-design</code> skill to set up <idea> as a maestro feature: <code>feature new</code>, then
 <code>feature set</code> with the acceptance criteria, affected areas, non-goals, and open questions, recording
 each fork with <code>decision new</code>. Capture the <code>[bl-NNN]</code> behavior baseline at
-<code>.maestro/features/&lt;id&gt;/baseline.md</code> with the <code>qa-baseline</code> skill, then <code>feature accept</code> and
-<code>feature start</code>.&quot;</p>
+<code>.maestro/features/&lt;id&gt;/baseline.md</code> with the <code>qa-baseline</code> skill, then <code>feature accept</code>,
+<code>feature prepare --draft</code>, and <code>feature prepare --from &lt;plan-file&gt;</code>.&quot;</p>
 <p>The gate: <code>accept</code> refuses until a baseline exists, and names the file it wants.</p>
 <pre><code>$ maestro feature accept api-rate-limiting
 Error: cannot accept api-rate-limiting — contract incomplete:
-  qa-baseline (.maestro/features/api-rate-limiting/baseline.md missing) — fix: capture current behavior before edits via the qa-baseline skill (a non-empty baseline.md); tagging scenarios [bl-NNN] now satisfies the ship gate later
+  qa-baseline (.maestro/features/api-rate-limiting/baseline.md missing)
+      skill: qa-baseline
+      target: .maestro/features/api-rate-limiting/baseline.md
+      retry: maestro feature accept api-rate-limiting
 </code></pre>
 <h5>2. Spin off tasks, each closed by proof</h5>
-<p><code>task create --feature &lt;id&gt;</code> per slice — feature-linked tasks inherit the contract, while a standalone
-task needs its own <code>--check</code> first. Then drive every task through the same gated loop: <code>task claim</code> →
-<code>task complete --summary &quot;...&quot; --claim &quot;...&quot;</code> → the proof (the installed hooks record it as the agent
-runs its tools; by hand it is <code>maestro event create --task-id &lt;id&gt; --claim &quot;&lt;same text&gt;&quot;</code>) →
-<code>task verify</code>. A <code>verified</code> task is always evidence you can open.</p>
-<p><em>Prompt:</em> &quot;Follow the <code>maestro-task</code> skill: for each slice of <feature>, <code>task create --feature &lt;id&gt;</code>,
-claim it, do the work, then <code>task complete</code> with a <code>--claim</code> stating what proves it. The installed
-hooks record that proof as you run your tools; then use the <code>maestro-verify</code> skill and <code>task verify</code> to
-gate the task on it. Use the same wording in the claim and the proof.&quot;</p>
+<p><code>feature prepare --from &lt;plan-file&gt;</code> creates the feature&#39;s child task queue from explicit <code>## Task</code>,
+<code>check:</code>, <code>blocker:</code>, and <code>after:</code> lines. Then drive every task through the same gated loop:
+<code>task claim --next</code> -&gt; work -&gt; <code>task complete --summary &quot;...&quot; --claim &quot;...&quot; --proof &quot;...&quot;</code>.
+Completion records the inline proof and runs <code>task verify</code>; a <code>verified</code> task is always evidence
+you can open.</p>
+<p><em>Prompt:</em> &quot;Follow the <code>maestro-task</code> skill: claim the next ready task with <code>task claim --next</code>, do
+the work, then <code>task complete</code> with a <code>--claim</code> stating what proves it and <code>--proof</code> containing the
+observed evidence. Use the <code>maestro-verify</code> skill and <code>maestro query proof</code> if verification fails.&quot;</p>
 <p>The gate: <code>verify</code> refuses until the claim is backed by recorded proof — and prints the exact command
 to record it.</p>
 <pre><code>$ maestro task verify task-001
@@ -414,7 +416,10 @@ Coverage is checked, not asserted, so a green ship is a real signal.</p>
 <p>The gate: <code>ship</code> refuses while any baseline scenario lacks a covering slice, and lists which.</p>
 <pre><code>$ maestro feature ship api-rate-limiting --outcome &quot;Shipped fixed-window rate limiting&quot;
 Error: cannot ship api-rate-limiting:
-  qa-slice coverage incomplete — 2 baseline scenario(s) without a counting slice: bl-001, bl-002; fix: add to .maestro/features/api-rate-limiting/qa-slices.yaml a `slices:` entry per scenario with `scenarios: [bl-NNN]` and non-empty `evidence: [...]`, or run the qa-slice skill
+  qa-slice coverage incomplete — 2 baseline scenario(s) without a counting slice: bl-001, bl-002
+      skill: qa-slice
+      target: .maestro/features/api-rate-limiting/qa-slices.yaml
+      retry: maestro feature ship api-rate-limiting --outcome &quot;&lt;outcome&gt;&quot;
 </code></pre>
 <h5>4. Improve the harness — maestro&#39;s self-improvement</h5>
 <p>The first three flows build the product; this one sharpens the tool that builds it, through the very
@@ -446,19 +451,20 @@ hb-001	proposed	recurring_blocker	Reduce recurring blocker: staging credentials 
 
 $ maestro harness apply hb-001                 # accept → spawns a standalone task
 accepted hb-001 (spawned task-003)
-next: `maestro task set task-003 --check &quot;...&quot;` then `maestro task claim task-003`
+next: `maestro task set task-003 --check &quot;...&quot;` then `maestro task explore task-003`
 
 # close the spawned (standalone) task through the proof loop
 $ maestro task set task-003 --check &quot;staging credentials documented in onboarding&quot;
 updated task-003 checks
-$ maestro task claim task-003
-auto-accepted task-003 (draft -&gt; ready, acceptance locked)
-updated task-003 -&gt; in_progress
-$ maestro task complete task-003 --summary &quot;added staging creds to onboarding&quot; --claim &quot;onboarding doc lists staging creds&quot;
-updated task-003 -&gt; needs_verification
-$ maestro event create --task-id task-003 --claim &quot;onboarding doc lists staging creds&quot;
-created task_proof event for run manual
-$ maestro task verify task-003
+$ maestro task explore task-003
+updated task-003 -&gt; exploring
+$ maestro task accept task-003
+accepted task-003 -&gt; ready
+$ maestro task claim --next
+claimed task-003 -&gt; in_progress
+$ maestro task complete task-003 --summary &quot;added staging creds to onboarding&quot; --claim &quot;onboarding doc lists staging creds&quot; --proof &quot;observed: onboarding doc lists staging creds&quot;
+auto: recorded task_proof event for task-003
+auto: maestro task verify task-003
 verification passed for task-003 (1 claim(s), 1 proof source(s))
 
 $ maestro harness measure hb-001
@@ -570,7 +576,7 @@ hb-001	proposed	recurring_blocker	Reduce recurring blocker: staging credentials 
 # accept it — maestro spawns a standalone task to carry the fix, and tells you the next step:
 $ maestro harness apply hb-001
 accepted hb-001 (spawned task-003)
-next: `maestro task set task-003 --check &quot;...&quot;` then `maestro task claim task-003`
+next: `maestro task set task-003 --check &quot;...&quot;` then `maestro task explore task-003`
 
 # show reveals the evidence, the fingerprint&#39;s spawned task, and the append-only history:
 $ maestro harness show hb-001
@@ -586,7 +592,7 @@ evidence:
 history:
 - accepted (task-003) 2026-06-02T16:13:36.670896000Z
 
-# close task-003 through the proof loop (set --check, claim, complete --claim, record proof):
+# close task-003 through the proof loop (set --check, explore, accept, claim, complete with --proof):
 $ maestro task verify task-003
 verification passed for task-003 (1 claim(s), 1 proof source(s))
 
@@ -612,7 +618,11 @@ in context, alongside the feature and task flows.</p>
 <h4>Skills and hooks</h4>
 <p><code>maestro install</code> extracts agent skills (design, feature, task, verify, QA) into
 <code>.maestro/skills/</code> and wires hook scripts so the agent&#39;s actions are recorded as run events.
-<code>maestro sync</code> refreshes those bundled resources to the running binary, preserving your edits.</p>
+It also syncs Maestro-owned global skills under <code>~/.maestro/skills</code> and links them into
+supported agent roots (<code>~/.agents/skills</code>, <code>~/.claude/skills</code>) so Maestro skills are available
+outside the current repo. <code>~/.codex/skills</code> is not managed in v1.
+<code>maestro sync</code> refreshes repo-local bundled resources to the running binary, preserving your
+edits. <code>maestro sync --global-skills</code> refreshes only the user-level global skill cache and links.</p>
 <h3>Command reference</h3>
 <table>
 <thead>
@@ -631,7 +641,7 @@ in context, alongside the feature and task flows.</p>
 </tr>
 <tr>
 <td><code>sync</code></td>
-<td>Resync bundled resources to this binary, offline, preserving edits</td>
+<td>Resync repo-local bundled resources, or global skills with <code>--global-skills</code></td>
 </tr>
 <tr>
 <td><code>update</code></td>
@@ -703,7 +713,7 @@ embedded/    shipped harness, hook, shell, and skill resources
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
-        <div class="stars">★ 13.8K</div>
+        <div class="stars">★ 14.7K</div>
         <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
       </a>
       <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
@@ -727,11 +737,11 @@ embedded/    shipped harness, hook, shell, and skill resources
         <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
       </a>
       <a class="related-row" href="/projects/tlehman/litprog-skill">
-        <div class="stars">★ 167</div>
+        <div class="stars">★ 169</div>
         <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
       </a>
       <a class="related-row" href="/projects/esaradev/icarus-plugin">
-        <div class="stars">★ 128</div>
+        <div class="stars">★ 131</div>
         <div class="name"><span class="org">esaradev /</span> icarus-plugin</div>
       </a>
     </div>

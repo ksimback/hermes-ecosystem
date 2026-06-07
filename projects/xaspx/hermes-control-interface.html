@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/xaspx/hermes-control-interface#software",
   "name": "hermes-control-interface",
-  "description": "Hermes Control Interface is a self-hosted web dashboard designed to centralize the management and monitoring of the Hermes AI agent stack. It utilizes a Node.js and Express backend with WebSockets to provide real-time interaction with agents, files, and system processes. Users can oversee swarm pipelines via a specialized Kanban monitor, manage MCP servers, and track token usage analytics. The interface also includes built-in security features like role-based access control and a password-protec",
+  "description": "Hermes Control Interface is a self-hosted web dashboard designed to centralize the management of the Hermes AI agent stack. It utilizes a Node.js and Express backend with a Vanilla JS frontend to provide real-time control over agents, files, and system metrics. The interface includes a specialized swarm monitor for tracking agent health and task pipelines via a kanban system. It also integrates a full control plane for managing MCP servers and tracking token usage and costs.",
   "url": "https://hermesatlas.com/projects/xaspx/hermes-control-interface",
   "codeRepository": "https://github.com/xaspx/hermes-control-interface",
   "applicationCategory": "DesktopEnhancementApplication",
@@ -47,13 +47,13 @@
     "name": "xaspx",
     "url": "https://github.com/xaspx"
   },
-  "dateModified": "2026-06-03T09:06:39.000Z",
+  "dateModified": "2026-06-05T07:15:47.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 738
+    "userInteractionCount": 753
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">160·repos</span>
+    <span id="meta-count">162·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -111,11 +111,11 @@
   <p class="project-desc">A self-hosted web dashboard for the Hermes AI agent stack. Provides a browser-based terminal, file explorer, session overview, cron management, system metrics, and an agent status panel — all behind a single password gate.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 738</span>
+    <span class="stars">★ 753</span>
     <span><span class="meta-label">lang</span>JavaScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-06-03</span>
+    <span><span class="meta-label">updated</span>2026-06-05</span>
   </div>
 
   <div class="actions">
@@ -130,11 +130,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Control Interface is a self-hosted web dashboard designed to centralize the management and monitoring of the Hermes AI agent stack. It utilizes a Node.js and Express backend with WebSockets to provide real-time interaction with agents, files, and system processes. Users can oversee swarm pipelines via a specialized Kanban monitor, manage MCP servers, and track token usage analytics. The interface also includes built-in security features like role-based access control and a password-protected gateway.</p>
+    <p class="summary-text">Hermes Control Interface is a self-hosted web dashboard designed to centralize the management of the Hermes AI agent stack. It utilizes a Node.js and Express backend with a Vanilla JS frontend to provide real-time control over agents, files, and system metrics. The interface includes a specialized swarm monitor for tracking agent health and task pipelines via a kanban system. It also integrates a full control plane for managing MCP servers and tracking token usage and costs.</p>
     <ul class="summary-highlights">
-      <li>Real-time swarm monitoring with a three-panel Kanban pipeline</li>
-      <li>Full operational control plane for MCP servers</li>
-      <li>Comprehensive token analytics and cost projection tools</li>
+      <li>ZOO Swarm Monitor with kanban pipeline and live event feed</li>
+      <li>Full MCP server control plane with config editor and log tailing</li>
+      <li>Real-time chat with streaming, multi-profile support, and tool call cards</li>
     </ul>
   </div>
 </section>
@@ -304,7 +304,7 @@ node server.js            # → http://localhost:10274
        │
    HTTPS :10274
        │
-   Express Server (server.js — 6.4K lines)
+   Express Server (server.js — monolithic, ~6K+ lines)
        ├── Auth (bcrypt, sessions, CSRF)
        ├── RBAC (20 permissions, 3 roles)
        ├── REST API (30+ routes)
@@ -412,6 +412,7 @@ node server.js            # → http://localhost:10274
 <pre><code class="language-bash">git pull origin main
 npm install
 npm run build
+# Restart your HCI service (adjust service name):
 systemctl restart hci-staging
 </code></pre>
 <p>See <a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/DEPLOY.md">docs/DEPLOY.md</a> for zero-downtime deploys.</p>
@@ -452,13 +453,383 @@ systemctl restart hci-staging
 <td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></td>
 <td>Common issues and fixes</td>
 </tr>
-<tr>
-<td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/CHANGELOG.md">CHANGELOG.md</a></td>
-<td>Version history</td>
-</tr>
 </tbody></table>
 <hr>
 <p>Built for the <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> ecosystem.<br><a href="https://x.com/bayendor">@bayendor</a> · <a href="https://github.com/xaspx/hermes-control-interface">GitHub</a></p>
+<hr>
+<h3>❓ Frequently Asked Questions</h3>
+<h4>General</h4>
+<p><strong>Q: What is Hermes Control Interface (HCI)?</strong></p>
+<p>HCI is a <strong>self-hosted web dashboard</strong> for the Hermes AI agent stack. Manage agents, chat, terminals, files, cron, token analytics, MCP servers, and swarm pipelines — all behind a password gate.</p>
+<p><strong>Q: What can I manage with HCI?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Capabilities</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Home</strong></td>
+<td>System health, agent overview, gateway status, token usage</td>
+</tr>
+<tr>
+<td><strong>Chat</strong></td>
+<td>Real-time streaming, tool call cards, multi-profile</td>
+</tr>
+<tr>
+<td><strong>Agents</strong></td>
+<td>Profile CRUD, gateway lifecycle, dashboard/sessions/cron</td>
+</tr>
+<tr>
+<td><strong>Office</strong></td>
+<td>3-panel swarm monitor — agent health, kanban, live feed</td>
+</tr>
+<tr>
+<td><strong>Monitor</strong></td>
+<td>Gateway logs, CPU/RAM metrics, live process view</td>
+</tr>
+<tr>
+<td><strong>Usage</strong></td>
+<td>Token analytics, daily trends, cost projections, alerts</td>
+</tr>
+<tr>
+<td><strong>Logs</strong></td>
+<td>Agent/error/gateway logs with level filter</td>
+</tr>
+<tr>
+<td><strong>Skills</strong></td>
+<td>Browse, install, remove Hermes skills</td>
+</tr>
+<tr>
+<td><strong>Files</strong></td>
+<td>Browse and edit server files</td>
+</tr>
+<tr>
+<td><strong>MCP</strong></td>
+<td>Start, stop, restart MCP servers, log tail, config editor</td>
+</tr>
+<tr>
+<td><strong>Maintenance</strong></td>
+<td>Backup, restore, HCI update, system doctor</td>
+</tr>
+</tbody></table>
+<h4>Features</h4>
+<p><strong>Q: What is Office v3 — ZOO Swarm Monitor?</strong></p>
+<p>Three-panel dashboard with <strong>zero-subprocess agent states</strong> (~100ms vs 3000ms):</p>
+<ul>
+<li><strong>Agents Panel</strong> — health grid via config.yaml + kanban.db</li>
+<li><strong>Kanban Panel</strong> — 8 status lanes (triage→done), dependency arrows</li>
+<li><strong>Live Feed</strong> — 50 events from gateway logs, agent filter, keyword search</li>
+<li><strong>Task Popup</strong> — run history, workspace file browser, event enrichment</li>
+</ul>
+<p><strong>Q: What chat features are available?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Real-time streaming</strong></td>
+<td>WebSocket gateway API</td>
+</tr>
+<tr>
+<td><strong>Multi-profile</strong></td>
+<td>Profile switcher for different agents</td>
+</tr>
+<tr>
+<td><strong>Tool call cards</strong></td>
+<td>Collapsible JSON viewer</td>
+</tr>
+<tr>
+<td><strong>Stop button</strong></td>
+<td>Pause streaming mid-conversation</td>
+</tr>
+<tr>
+<td><strong>Session resume</strong></td>
+<td>Continue previous conversation</td>
+</tr>
+<tr>
+<td><strong>Fork from message</strong></td>
+<td>Branch conversation from any point</td>
+</tr>
+</tbody></table>
+<p><strong>Q: What is MCP Manager?</strong></p>
+<p>Full operational control plane for MCP servers:</p>
+<ul>
+<li>List, start, stop, restart servers</li>
+<li>Live log tail from browser</li>
+<li>Config editor (JSON/YAML)</li>
+<li>11 REST API routes</li>
+</ul>
+<h4>Installation</h4>
+<p><strong>Q: How do I install HCI?</strong></p>
+<pre><code class="language-bash">git clone https://github.com/xaspx/hermes-control-interface.git
+cd hermes-control-interface
+cp .env.example .env     # set HERMES_CONTROL_PASSWORD + HERMES_CONTROL_SECRET
+npm install &amp;&amp; npm run build
+node server.js            # → http://localhost:10274
+</code></pre>
+<p>See <a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/INSTALL.md">docs/INSTALL.md</a> for production setup.</p>
+<p><strong>Q: What are the requirements?</strong></p>
+<ul>
+<li>Node.js 20+</li>
+<li>Hermes Agent installed on same machine</li>
+<li><code>hermes</code> CLI available on PATH</li>
+</ul>
+<p><strong>Q: How do I update HCI?</strong></p>
+<pre><code class="language-bash">git pull origin main
+npm install
+npm run build
+# Restart your HCI service (adjust service name):
+systemctl restart hci-staging
+</code></pre>
+<h4>Tech Stack</h4>
+<p><strong>Q: What technologies does HCI use?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Technology</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Frontend</strong></td>
+<td>Vanilla JS + Vite</td>
+</tr>
+<tr>
+<td><strong>Backend</strong></td>
+<td>Node.js + Express + WebSocket</td>
+</tr>
+<tr>
+<td><strong>Terminal</strong></td>
+<td>xterm.js</td>
+</tr>
+<tr>
+<td><strong>Charts</strong></td>
+<td>Chart.js</td>
+</tr>
+<tr>
+<td><strong>Database</strong></td>
+<td>better-sqlite3</td>
+</tr>
+<tr>
+<td><strong>Version</strong></td>
+<td>3.6.0</td>
+</tr>
+</tbody></table>
+<h4>Security</h4>
+<p><strong>Q: What security features are included?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Implementation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>CSP</strong></td>
+<td>No <code>unsafe-eval</code></td>
+</tr>
+<tr>
+<td><strong>CSRF</strong></td>
+<td>All mutating endpoints</td>
+</tr>
+<tr>
+<td><strong>Rate limiting</strong></td>
+<td>Global + chat</td>
+</tr>
+<tr>
+<td><strong>WebSocket RBAC</strong></td>
+<td>Role-based access</td>
+</tr>
+<tr>
+<td><strong>Path traversal</strong></td>
+<td>Prevention</td>
+</tr>
+<tr>
+<td><strong>XSS</strong></td>
+<td>Protection</td>
+</tr>
+<tr>
+<td><strong>Permissions</strong></td>
+<td>20 across 3 roles (admin, viewer, custom)</td>
+</tr>
+</tbody></table>
+<h4>PWA</h4>
+<p><strong>Q: Can I install HCI as a PWA?</strong></p>
+<p>Yes!</p>
+<ul>
+<li>Installable to homescreen</li>
+<li>Service worker with offline caching</li>
+<li>Auto-update on new version</li>
+</ul>
+<h4>Configuration</h4>
+<p><strong>Q: What environment variables are required?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>HERMES_CONTROL_PASSWORD</code></td>
+<td>—</td>
+<td>Login password (bcrypt)</td>
+</tr>
+<tr>
+<td><code>HERMES_CONTROL_SECRET</code></td>
+<td>—</td>
+<td>Session secret</td>
+</tr>
+<tr>
+<td><code>PORT</code></td>
+<td><code>10274</code></td>
+<td>Server port</td>
+</tr>
+<tr>
+<td><code>HERMES_CONTROL_HOME</code></td>
+<td><code>~/.hermes</code></td>
+<td>Hermes state directory</td>
+</tr>
+<tr>
+<td><code>HERMES_PROJECTS_ROOT</code></td>
+<td>parent of repo</td>
+<td>Projects directory</td>
+</tr>
+</tbody></table>
+<p>See <a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/CONFIG.md">docs/CONFIG.md</a> for full list.</p>
+<h4>API</h4>
+<p><strong>Q: What REST API endpoints are available?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Auth</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GET /api/office/kanban?board=</code></td>
+<td>Login</td>
+<td>Kanban board</td>
+</tr>
+<tr>
+<td><code>GET /api/office/kanban/:id?board=</code></td>
+<td>Login</td>
+<td>Task detail</td>
+</tr>
+<tr>
+<td><code>GET /api/office/kanban/:id/workspace-file</code></td>
+<td>Login</td>
+<td>Read workspace files</td>
+</tr>
+<tr>
+<td><code>POST /api/office/kanban/:id/action</code></td>
+<td>Login+CSRF</td>
+<td>Quick actions</td>
+</tr>
+<tr>
+<td><code>GET /api/office/agent-states</code></td>
+<td>Login</td>
+<td>Agent health grid</td>
+</tr>
+<tr>
+<td><code>GET /api/office/events</code></td>
+<td>Admin</td>
+<td>Live feed</td>
+</tr>
+<tr>
+<td><code>GET /api/office/summary?board=</code></td>
+<td>Login</td>
+<td>Board stats</td>
+</tr>
+</tbody></table>
+<p>See <a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/API.md">docs/API.md</a> for full reference.</p>
+<h4>Architecture</h4>
+<p><strong>Q: What is the HCI architecture?</strong></p>
+<pre><code>Browser (11 pages, SPA)
+       │
+   HTTPS :10274
+       │
+   Express Server (server.js — monolithic, ~6K+ lines)
+       ├── Auth (bcrypt, sessions, CSRF)
+       ├── RBAC (20 permissions, 3 roles)
+       ├── REST API (30+ routes)
+       ├── WebSocket (real-time)
+       │
+       ├── Hermes CLI (agent states, gateway control)
+       ├── SQLite (kanban.db — task pipeline)
+       ├── Filesystem (config.yaml, logs, skills)
+       └── External (MCP servers, token pricing)
+</code></pre>
+<p>See <a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/ARCHITECTURE.md">docs/ARCHITECTURE.md</a> for details.</p>
+<h4>Documentation</h4>
+<p><strong>Q: Where can I find more documentation?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Doc</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/INSTALL.md">INSTALL.md</a></td>
+<td>nginx, systemd, Cloudflare</td>
+</tr>
+<tr>
+<td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/CONFIG.md">CONFIG.md</a></td>
+<td>All environment variables</td>
+</tr>
+<tr>
+<td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/API.md">API.md</a></td>
+<td>REST API reference</td>
+</tr>
+<tr>
+<td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/ARCHITECTURE.md">ARCHITECTURE.md</a></td>
+<td>Design decisions, data flow</td>
+</tr>
+<tr>
+<td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/SECURITY.md">SECURITY.md</a></td>
+<td>CSP, CSRF, auth, hardening</td>
+</tr>
+<tr>
+<td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/DEPLOY.md">DEPLOY.md</a></td>
+<td>Zero-downtime deploys</td>
+</tr>
+<tr>
+<td><a href="https://github.com/xaspx/hermes-control-interface/blob/main/docs/TROUBLESHOOTING.md">TROUBLESHOOTING.md</a></td>
+<td>Common issues and fixes</td>
+</tr>
+</tbody></table>
+<h4>Community &amp; Support</h4>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>GitHub Issues</strong></td>
+<td><a href="https://github.com/xaspx/hermes-control-interface/issues">github.com/xaspx/hermes-control-interface/issues</a></td>
+</tr>
+<tr>
+<td><strong>Twitter</strong></td>
+<td><a href="https://x.com/bayendor">@bayendor</a></td>
+</tr>
+<tr>
+<td><strong>Hermes Agent</strong></td>
+<td><a href="https://github.com/NousResearch/hermes-agent">NousResearch/hermes-agent</a></td>
+</tr>
+</tbody></table>
+<h4>License</h4>
+<p><strong>Q: Is Hermes Control Interface free and open source?</strong></p>
+<p>Yes! <strong>MIT License</strong> - see <a href="LICENSE">LICENSE</a>. Self-host for free, manage your Hermes agent stack with a beautiful web UI.</p>
 
   </section>
 </details>
@@ -471,35 +842,35 @@ systemctl restart hci-staging
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/outsourc-e/hermes-workspace">
-        <div class="stars">★ 5.3K</div>
+        <div class="stars">★ 5.5K</div>
         <div class="name"><span class="org">outsourc-e /</span> hermes-workspace</div>
       </a>
       <a class="related-row" href="/projects/fathah/hermes-desktop">
-        <div class="stars">★ 9.7K</div>
+        <div class="stars">★ 10.9K</div>
         <div class="name"><span class="org">fathah /</span> hermes-desktop</div>
       </a>
       <a class="related-row" href="/projects/sanchomuzax/hermes-webui">
-        <div class="stars">★ 103</div>
+        <div class="stars">★ 105</div>
         <div class="name"><span class="org">sanchomuzax /</span> hermes-webui</div>
       </a>
       <a class="related-row" href="/projects/Euraika-Labs/pan-ui">
-        <div class="stars">★ 73</div>
+        <div class="stars">★ 77</div>
         <div class="name"><span class="org">Euraika-Labs /</span> pan-ui</div>
       </a>
       <a class="related-row" href="/projects/Eynzof/hermes-agent-cn-desktop">
-        <div class="stars">★ 228</div>
+        <div class="stars">★ 259</div>
         <div class="name"><span class="org">Eynzof /</span> hermes-agent-cn-desktop</div>
       </a>
       <a class="related-row" href="/projects/Felix-Forever/hermes-agent-desktop">
-        <div class="stars">★ 39</div>
+        <div class="stars">★ 50</div>
         <div class="name"><span class="org">Felix-Forever /</span> hermes-agent-desktop</div>
       </a>
       <a class="related-row" href="/projects/jazzyalex/agent-sessions">
-        <div class="stars">★ 604</div>
+        <div class="stars">★ 613</div>
         <div class="name"><span class="org">jazzyalex /</span> agent-sessions</div>
       </a>
       <a class="related-row" href="/projects/nickvasilescu/hermes-desktop-os1">
-        <div class="stars">★ 456</div>
+        <div class="stars">★ 464</div>
         <div class="name"><span class="org">nickvasilescu /</span> hermes-desktop-os1</div>
       </a>
     </div>

@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/conorbronsdon/avoid-ai-writing#software",
   "name": "avoid-ai-writing",
-  "description": "avoid-ai-writing is a portable agent skill designed to identify and eliminate common AI-generated writing patterns. It utilizes a structured audit process featuring a 109-entry word replacement table and 47 distinct pattern categories to replace \"AI-isms\" with plainer language. The tool supports multiple operational modes and voice profiles, integrating with agents like Hermes, Claude Code, and OpenClaw via a standardized SKILL.md format.",
+  "description": "avoid-ai-writing is a portable writing skill designed to audit and remove detectable AI writing patterns from content. It utilizes a structured two-pass detection system and a tiered word replacement table to identify and replace \"AI-isms\" with plainer alternatives. The tool supports multiple operational modes and voice profiles, making it compatible with various agent frameworks including Hermes, Claude Code, and OpenClaw.",
   "url": "https://hermesatlas.com/projects/conorbronsdon/avoid-ai-writing",
   "codeRepository": "https://github.com/conorbronsdon/avoid-ai-writing",
   "applicationCategory": "DeveloperApplication",
@@ -47,13 +47,13 @@
     "name": "conorbronsdon",
     "url": "https://github.com/conorbronsdon"
   },
-  "dateModified": "2026-05-29T08:06:08.000Z",
+  "dateModified": "2026-06-06T07:17:44.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 1671
+    "userInteractionCount": 1715
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">160·repos</span>
+    <span id="meta-count">162·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -115,7 +115,7 @@
     <span><span class="meta-label">lang</span>JavaScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-05-29</span>
+    <span><span class="meta-label">updated</span>2026-06-06</span>
   </div>
 
   <div class="actions">
@@ -130,10 +130,10 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">avoid-ai-writing is a portable agent skill designed to identify and eliminate common AI-generated writing patterns. It utilizes a structured audit process featuring a 109-entry word replacement table and 47 distinct pattern categories to replace &quot;AI-isms&quot; with plainer language. The tool supports multiple operational modes and voice profiles, integrating with agents like Hermes, Claude Code, and OpenClaw via a standardized SKILL.md format.</p>
+    <p class="summary-text">avoid-ai-writing is a portable writing skill designed to audit and remove detectable AI writing patterns from content. It utilizes a structured two-pass detection system and a tiered word replacement table to identify and replace &quot;AI-isms&quot; with plainer alternatives. The tool supports multiple operational modes and voice profiles, making it compatible with various agent frameworks including Hermes, Claude Code, and OpenClaw.</p>
     <ul class="summary-highlights">
-      <li>Three modes: Rewrite, Detect, and targeted in-place Edit</li>
-      <li>Two-pass detection to catch lingering AI patterns after editing</li>
+      <li>Three modes: Rewrite, Detect, and Edit-in-place</li>
+      <li>109-entry tiered word replacement table and 48 pattern categories</li>
       <li>Compatible with Hermes, Claude Code, OpenClaw, and Cursor</li>
     </ul>
   </div>
@@ -176,7 +176,7 @@
 <li><strong>Structured audit</strong> — returns identified issues with quoted text, the rewrite, a change summary, and a second-pass audit in four discrete sections. You see exactly what changed and why.</li>
 <li><strong>Two-pass detection</strong> — the second pass re-reads the rewrite and catches patterns that survive the first edit: recycled transitions, lingering inflation, copula swaps that snuck through.</li>
 <li><strong>109-entry word replacement table across 3 tiers + 10 Tier 3 phrases</strong> — not vibes-based. Every flagged word has a specific, plainer alternative. &quot;Leverage&quot; → &quot;use.&quot; &quot;Commence&quot; → &quot;start.&quot; Tier 1 words always flag, Tier 2 words flag when they cluster, Tier 3 words flag only at high density. Tier 3 <em>phrases</em> (multi-word boilerplate like &quot;the integration of,&quot; &quot;decentralized compute&quot;) flag on per-phrase repetition or when 3+ distinct phrases stack in one piece — the LLM-self-varies-boilerplate shape.</li>
-<li><strong>47 pattern categories</strong> — representative examples below, each with before/after. Includes structural detection (hashtag stuffing, bare-NP bullet lists, hedge-stacked predictions), AI-tool fingerprints (placeholders, citation markup, UTM params), rhythm/uniformity checks, and writer-side tests. The full catalog lives in <a href="https://github.com/conorbronsdon/avoid-ai-writing/blob/main/SKILL.md"><code>SKILL.md</code></a>; this count is enforced against it in CI.</li>
+<li><strong>48 pattern categories</strong> — representative examples below, each with before/after. Includes structural detection (hashtag stuffing, bare-NP bullet lists, hedge-stacked predictions), AI-tool fingerprints (placeholders, citation markup, UTM params), rhythm/uniformity checks, and writer-side tests. The full catalog lives in <a href="https://github.com/conorbronsdon/avoid-ai-writing/blob/main/SKILL.md"><code>SKILL.md</code></a>; this count is enforced against it in CI.</li>
 <li><strong>Detect mode</strong> — flag patterns without rewriting. See which flags are real problems vs. judgment calls. Useful when patterns might be intentional or you&#39;re auditing content you don&#39;t want altered.</li>
 <li><strong>Works across platforms</strong> — one <code>SKILL.md</code> runs in Claude Code, Cowork (as a plugin), OpenClaw, and Cursor (as a ported rule). See the install paths below.</li>
 </ul>
@@ -290,7 +290,7 @@ curl -o .agents/skills/avoid-ai-writing/SKILL.md \
 <p>Trigger detect mode with: &quot;detect,&quot; &quot;flag only,&quot; &quot;audit only,&quot; &quot;just flag,&quot; &quot;scan,&quot; or similar.</p>
 <h3>Pattern reference</h3>
 <blockquote>
-<p>Representative examples from the catalog — not the exhaustive list (that&#39;s <a href="https://github.com/conorbronsdon/avoid-ai-writing/blob/main/SKILL.md"><code>SKILL.md</code></a>). The skill&#39;s human-facing prose catalog and the <a href="./detector/">detector engine</a> use <strong>different counts on purpose</strong>: the engine implements 43 <code>type</code> categories because it splits the vocabulary tiers and adds stylometric/fingerprint signals (punctuation distribution, function-word entropy, bypass-trick detection) that work as math over a document rather than as a rule you&#39;d look up. The two are mapped in <a href="https://github.com/conorbronsdon/avoid-ai-writing/blob/main/detector/CATEGORIES.md"><code>detector/CATEGORIES.md</code></a>; don&#39;t &quot;fix&quot; one count to match the other.</p>
+<p>Representative examples from the catalog — not the exhaustive list (that&#39;s <a href="https://github.com/conorbronsdon/avoid-ai-writing/blob/main/SKILL.md"><code>SKILL.md</code></a>). The skill&#39;s human-facing prose catalog and the <a href="./detector/">detector engine</a> use <strong>different counts on purpose</strong>: the engine implements 44 <code>type</code> categories because it splits the vocabulary tiers and adds stylometric/fingerprint signals (punctuation distribution, function-word entropy, bypass-trick detection) that work as math over a document rather than as a rule you&#39;d look up. The two are mapped in <a href="https://github.com/conorbronsdon/avoid-ai-writing/blob/main/detector/CATEGORIES.md"><code>detector/CATEGORIES.md</code></a>; don&#39;t &quot;fix&quot; one count to match the other.</p>
 </blockquote>
 <h4>Content Patterns</h4>
 <table>
@@ -695,7 +695,7 @@ curl -o .agents/skills/avoid-ai-writing/SKILL.md \
 <p>That&#39;s 35+ AI tells.</p>
 <h3>Run the detector</h3>
 <p>The skill ships a deterministic, zero-dependency detection engine in
-<a href="./detector/"><code>detector/</code></a> — the same 43-category engine the rules above
+<a href="./detector/"><code>detector/</code></a> — the same 44-category engine the rules above
 describe, as runnable code. It works in Node (<code>&gt;=18</code>) and the browser with no
 build step.</p>
 <p>It&#39;s also the single source of the numeric score: the skill itself (and <code>detect</code> mode) report <em>which</em> patterns are present and how severe (P0/P1/P2), and the engine is what turns those into one computed 0–100 <code>score</code>. There&#39;s deliberately no second, prose-estimated score in <code>SKILL.md</code> — one scorer, not two.</p>
@@ -741,7 +741,7 @@ map that keeps <code>SKILL.md</code> and the engine in sync.</p>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
-        <div class="stars">★ 13.8K</div>
+        <div class="stars">★ 14.7K</div>
         <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
       </a>
       <a class="related-row" href="/projects/wondelai/skills">
@@ -761,11 +761,11 @@ map that keeps <code>SKILL.md</code> and the engine in sync.</p>
         <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
       </a>
       <a class="related-row" href="/projects/tlehman/litprog-skill">
-        <div class="stars">★ 167</div>
+        <div class="stars">★ 169</div>
         <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
       </a>
       <a class="related-row" href="/projects/esaradev/icarus-plugin">
-        <div class="stars">★ 128</div>
+        <div class="stars">★ 131</div>
         <div class="name"><span class="org">esaradev /</span> icarus-plugin</div>
       </a>
       <a class="related-row" href="/projects/chigwell/skilldock.io">
