@@ -8,7 +8,7 @@ Source: https://x.com/KSimback/status/2058262328496554021
 
 TLDR: this is your definitive guide to all things related to memory systems for Hermes Agent. Why create this? Because every week I see new posts or articles describing some new memory tool for Hermes agents and these make me question if my memory setup is the best. So I dug into all of them and broke it down for you.
 
-Over the past few months my Hermes agent has been mapping the Hermes ecosystem over at hermesatlas.com. One of the key areas it has covered is memory and it even has a dedicated section for it.
+Over the past few months my Hermes agent has been mapping the Hermes ecosystem over at [hermesatlas.com](https://hermesatlas.com). One of the key areas it has covered is memory and it even has a dedicated [memory providers section](/lists/best-memory-providers) for it.
 
 ![Best Memory Providers for Hermes Agent](/guide/memory/assets/best-memory-providers-for-hermes-agent.jpg)
 
@@ -22,7 +22,7 @@ Without memory, an agent is just a stateless function and no different than a bl
 
 A coding session that doesn't remember the conventions you established last Tuesday will reinvent them this Tuesday. A personal assistant agent that doesn't remember your preferences has to ask you the same repeated questions. Without memory, an agent really isn't an agent at all.
 
-Memory is what turns an chatbot into something that compounds. Which is why every serious agent harness - OpenClaw, Claude Code, Codex, and our beloved Hermes - has memory primitives built in, and why a real product category has emerged around dedicated memory infrastructure or agents (Mem0 raised $24M, Letta $10M, plus Zep, Cipher, Supermemory, Hindsight, etc.).
+Memory is what turns an chatbot into something that compounds. Which is why every serious agent harness - OpenClaw, Claude Code, Codex, and our beloved [Hermes Agent](/projects/NousResearch/hermes-agent) - has memory primitives built in, and why a real product category has emerged around dedicated memory infrastructure or agents ([Mem0](/projects/mem0ai/mem0) raised $24M, [Letta](https://www.letta.com/) $10M, plus [Zep](https://www.getzep.com/), Cipher, [Supermemory](/projects/supermemoryai/supermemory), [Hindsight](/projects/vectorize-io/hindsight), etc.).
 
 The Hermes Agent take is interesting because Nous Research treats memory as first-class plug-in infrastructure, not a feature. There's a base layer that always runs, a pluggable provider system that lets you choose from 8 architectures (or write your own), and a healthy community plug-in layer on top.
 
@@ -108,19 +108,19 @@ Let's dive in.
 
 ## The 8 Official Providers
 
-## Honcho (Plastic Labs) - AI-native dialectic user modeling
+## [Honcho](/projects/plastic-labs/honcho) (Plastic Labs) - AI-native dialectic user modeling
 
 The only provider in the lineup that tries to model how you think, not just what you said. Instead of storing flat facts like "Kevin uses 4-space indents," Honcho runs a multi-step reasoning pass after your conversations to build a profile of your reasoning patterns, preferences, and goals.
 
 That profile evolves over time, so the agent gets better at anticipating what you'd want even on topics you've never discussed. It also lets multiple "AI identities" share the same view of you - useful if you run different specialist agents for coding, writing, and strategy and want all of them to know your style. Most-cited favorite in the Hermes Discord (@offendingcommit: "I've tried them all... I freakin' love Honcho.").
 
-## Mem0 - fastest 30-second setup, broadest ecosystem
+## [Mem0](/projects/mem0ai/mem0) - fastest 30-second setup, broadest ecosystem
 
 The "just give me memory and stop asking questions" pick. You sign up for Mem0 cloud, paste an API key, and you're done - the provider extracts facts from conversations, deduplicates them, and serves up semantic search automatically in the background.
 
 It's also the exclusive memory provider for AWS's Strands Agents SDK, which gives it the widest ecosystem reach in the lineup. In April 2026 Mem0 shipped a "v3" algorithm claiming to leapfrog Hindsight on benchmarks (94.8 on LongMemEval, 91.6 on LoCoMo).
 
-## Hindsight (Vectorize.io) - the benchmark king
+## [Hindsight](/projects/vectorize-io/hindsight) (Vectorize.io) - the benchmark king
 
 The first memory system of any kind to publicly cross 90 on LongMemEval (91.4, December 2025). Hindsight thinks about memory as four separate networks - things about the world, things that happened, opinions, and raw observations - and pulls only a handful of high-value facts from each conversation (2 to 5, not one per sentence).
 
@@ -132,7 +132,7 @@ It's also the only provider with a reflect tool that lets the agent run a reason
 
 The only provider in the lineup that needs no internet, no API key, and no LLM to function. Everything lives in a local SQLite file. It uses a 1991-era technique called Holographic Reduced Representations to do compositional reasoning over facts - you can bind concepts together algebraically and probe for related ones later. Retrieval is sub-millisecond because it's pure local SQL.
 
-## OpenViking - tiered filesystem context DB
+## [OpenViking](/projects/volcengine/OpenViking) - tiered filesystem context DB
 
 Your memory lives as files in a directory tree on your disk. You can cat them, grep them, edit them by hand. Each piece of stored knowledge has three loading tiers: a one-sentence summary, a paragraph-level overview, and the full content.
 
@@ -144,13 +144,13 @@ $20/month for 100,000 queries, with a free tier of 10,000 operations to test. Th
 
 Pick this option if you want shared memory across team members or agents and you don't want to operate a database.
 
-## ByteRover - memory as a git repo
+## [ByteRover](/projects/campfirein/byterover-cli) - memory as a git repo
 
 Your memory is plain markdown files in a .brv/context-tree/ directory - grep-able, version-controllable, no database to run. ByteRover layers a 5-tier retrieval system on top, and four of those tiers don't need an LLM call, so most lookups finish in under 100ms with zero token spend.
 
 The key selling point: you can branch, merge, and roll back memory like code with CLI commands. It also uses a special hook to extract high-value insights before Hermes compresses context, which is the cleanest fix in the lineup for the "agent loses memory after restart" failure mode (noted in issue #17251).
 
-## Supermemory - latency + scale leader
+## [Supermemory](/projects/supermemoryai/supermemory) - latency + scale leader
 
 Sub-300ms recall sustained at over 100 billion tokens per month. Supermemory built a custom vector graph engine for this rather than stapling a vector DB and a graph DB together.
 
@@ -168,13 +168,13 @@ If none of the official 8 fits your use case, or if you want even more on top, t
 
 Two things to know up front about Layer 3:
 
-Not every Layer 3 project competes with Layer 2. Some are alternative MemoryProvider plug-ins you'd pick instead of one of the official 8 (Mnemosyne is the clearest example). Others occupy a different role entirely - they store a different type of memory and run alongside your Layer 2 provider, not in place of it (GBrain is the clearest example, storing world facts about people, companies, and projects in a separate brain layer while your Layer 2 provider handles operational memory).
+Not every Layer 3 project competes with Layer 2. Some are alternative MemoryProvider plug-ins you'd pick instead of one of the official 8 ([Mnemosyne](/projects/AxDSan/mnemosyne) is the clearest example). Others occupy a different role entirely - they store a different type of memory and run alongside your Layer 2 provider, not in place of it ([GBrain](/projects/garrytan/gbrain) is the clearest example, storing world facts about people, companies, and projects in a separate brain layer while your Layer 2 provider handles operational memory).
 
 You give up polish to get capability. The official 8 ship with Nous's review and tend to "just work." Community plug-ins are typically a bit rougher on the install, have fewer docs, and more chance of hitting a bug. But they unlock things the official set doesn't offer like fully-local sub-millisecond retrieval (Mnemosyne), a markdown-and-Postgres knowledge graph that builds itself with zero LLM calls (GBrain), explainable retrieval rankings (yantrikdb), and cross-agent memory portability (PLUR).
 
-The safe path if you're committing to a memory stack for real work: start with one of the official 8 and only reach for Layer 3 when you've identified a specific capability gap a community project fills. The standouts below are GBrain and Mnemosyne.
+The safe path if you're committing to a memory stack for real work: start with one of the official 8 and only reach for Layer 3 when you've identified a specific capability gap a community project fills. The standouts below are [GBrain](/projects/garrytan/gbrain) and [Mnemosyne](/projects/AxDSan/mnemosyne).
 
-## GBrain (by garrytan) - this is what I personally use
+## [GBrain](/projects/garrytan/gbrain) (by garrytan) - this is what I personally use
 
 Open-sourced in April, MIT licensed, ~18k+ stars. TypeScript. Built by Garry Tan to run his own production agents. GBrain is structurally different from the official 8. GBrain does not subclass MemoryProvider, it plugs in as skillpack + MCP server (~30 MCP tools), and occupys a different ontological slot. The explicit doctrine in docs/guides/brain-vs-memory.md:
 
@@ -196,7 +196,7 @@ Autonomous enrichment + persistent personal memory: tiered enrichment based on h
 
 Why pick GBrain over the official 8? If you want a graph cheap, git as system of record, overnight maintenance, you already have a markdown vault (migration covers Obsidian / Logseq / Notion / Roam), or you're building a "company of agents."
 
-## Mnemosyne (AxDSan/mnemosyne)
+## [Mnemosyne](/projects/AxDSan/mnemosyne) (AxDSan/mnemosyne)
 
 The strongest community alternative when you want a real MemoryProvider plug-in (rather than GBrain, which plays a different role). Runs entirely on your machine - no cloud, no API key, no internet - and recall is fast enough to feel instant (under 2 milliseconds in published tests).
 
@@ -206,15 +206,15 @@ The standout feature for serious users: memory has a sense of time. You can ask 
 
 ## Others worth knowing about
 
-Ladybug Memory - the local-only option with built-in importance ranking. Every memory gets a score from 1 to 10 so the system surfaces the things that matter first instead of treating everything equally. Pick it if you want fully-local memory and the built-in MEMORY.md cap is too small for your knowledge.
+[Ladybug Memory](/projects/Ladybug-Memory/hermes-memory-plugin) - the local-only option with built-in importance ranking. Every memory gets a score from 1 to 10 so the system surfaces the things that matter first instead of treating everything equally. Pick it if you want fully-local memory and the built-in MEMORY.md cap is too small for your knowledge.
 
-yantrikdb - he one to pick when you need to know why the agent recalled what it did. Every retrieval comes back with a "why retrieved" explanation, which is useful for debugging when the agent surfaces the wrong thing or for high-trust contexts where you need to audit what's shaping the agent's responses. Runs embedded out of the box, no separate database to manage.
+[yantrikdb](/projects/yantrikos/yantrikdb-hermes-plugin) - the one to pick when you need to know why the agent recalled what it did. Every retrieval comes back with a "why retrieved" explanation, which is useful for debugging when the agent surfaces the wrong thing or for high-trust contexts where you need to audit what's shaping the agent's responses. Runs embedded out of the box, no separate database to manage.
 
-hermes-agentmemory - a community fix for a real Hermes problem: when you tell the agent to forget something, it doesn't actually forget - it keeps an internal summary that quietly influences future recall. This provider does real deletion (gone is gone) and logs every memory operation so you can audit what happened. Pick it if compliance, privacy, or user-controlled forgetting matters.
+[hermes-agentmemory](/projects/MukundaKatta/hermes-agentmemory) - a community fix for a real Hermes problem: when you tell the agent to forget something, it doesn't actually forget - it keeps an internal summary that quietly influences future recall. This provider does real deletion (gone is gone) and logs every memory operation so you can audit what happened. Pick it if compliance, privacy, or user-controlled forgetting matters.
 
-PLUR - the cross-agent memory bridge. Hermes memory normally doesn't reach Cursor, and Cursor's doesn't reach Claude Code. PLUR stores everything in a shared .plur/ folder that all of them can read, so a fact you teach one agent automatically shows up in the others. Pick it if you work across multiple agents on the same project and don't want to teach each one separately.
+[PLUR](/projects/plur-ai/plur) - the cross-agent memory bridge. Hermes memory normally doesn't reach Cursor, and Cursor's doesn't reach Claude Code. PLUR stores everything in a shared .plur/ folder that all of them can read, so a fact you teach one agent automatically shows up in the others. Pick it if you work across multiple agents on the same project and don't want to teach each one separately.
 
-FlowState-QMD - The "guess what you'll need next" provider. It tries to predict the agent's next likely query and warms up that memory in advance, so by the time the agent actually searches, the result is already cached and responses come back faster. Pick it if your agent does repetitive long-horizon work where the next step is usually guessable from context.
+[FlowState-QMD](/projects/amanning3390/flowstate-qmd) - The "guess what you'll need next" provider. It tries to predict the agent's next likely query and warms up that memory in advance, so by the time the agent actually searches, the result is already cached and responses come back faster. Pick it if your agent does repetitive long-horizon work where the next step is usually guessable from context.
 
 One thing I expected to find that doesn't exist: memory-as-skill is effectively a non-pattern. The agentskills.io standard means a "skill" could in principle implement memory. In practice all credible persistent memory flows through the MemoryProvider ABC. Even skills that "do memory" (the Mnemosyne SKILL.md, for instance) are wrappers around plug-ins, telling the agent how to use them.
 
@@ -240,4 +240,18 @@ The agent runs out of context mid-conversation. A greedy memory layer eats into 
 
 Your work isn't actually getting better. This is the one that matters most. You added memory expecting more accurate, more personalized output. After a couple of weeks, can you point at a specific way the agent is genuinely better than before? If you can't, the memory layer isn't earning its complexity. Pull it.
 
-I hope you enjoyed this Hermes Agent deep dive on all things memory. If you want to explore more within the Hermes ecosystem, check out hermesatlas.com and sign up for the Hermes Atlas newsletter to stay up to date on everything.
+## Frequently asked questions
+
+## What are the layers of Hermes Agent memory?
+
+Hermes Agent memory has three practical layers: native memory that ships with Hermes, one optional official MemoryProvider, and community plug-ins such as [GBrain](/projects/garrytan/gbrain) or [Mnemosyne](/projects/AxDSan/mnemosyne) for specialized needs.
+
+## Which Hermes memory provider should I choose?
+
+Start with native memory unless you need semantic recall, shared team memory, graph memory, or compliance-grade deletion. Then choose the provider that matches that specific gap rather than installing memory infrastructure by default.
+
+## Can Hermes Agent use GBrain with another MemoryProvider?
+
+Yes. [GBrain](/projects/garrytan/gbrain) occupies a different knowledge-graph slot than the official MemoryProvider layer, so it can complement a Layer 2 provider that handles operational conversation memory.
+
+I hope you enjoyed this Hermes Agent deep dive on all things memory. If you want to explore more within the Hermes ecosystem, check out [hermesatlas.com](https://hermesatlas.com) and sign up for the [Hermes Atlas newsletter](/#newsletter) to stay up to date on everything.
