@@ -2,10 +2,6 @@
 
 **Source:** https://hermes-agent.nousresearch.com/docs/skills/
 
-🔍
+### Loading the catalog…
 
-### No skills found
-
-Try a different search term or clear your filters.
-
-Reset all filters
+Fetching 88k+ skills across every registry. One moment.

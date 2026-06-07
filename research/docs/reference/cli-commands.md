@@ -56,7 +56,11 @@ Skip auto-injection of `AGENTS.md`, `SOUL.md`, `.cursorrules`, memory, and prelo
 
 `--tui`
 
-Launch the [TUI](/docs/user-guide/tui) instead of the classic CLI. Equivalent to `HERMES_TUI=1`.
+Launch the [TUI](/docs/user-guide/tui) instead of the classic CLI. Equivalent to `HERMES_TUI=1`. Always wins over `display.interface`.
+
+`--cli`
+
+Force the classic prompt\_toolkit REPL. Use this to override `display.interface: tui` for a single invocation.
 
 `--dev`
 
@@ -290,7 +294,7 @@ Enable a comma-separated set of toolsets.
 
 `--provider <provider>`
 
-Force a provider: `auto`, `openrouter`, `nous`, `openai-codex`, `copilot-acp`, `copilot`, `anthropic`, `gemini`, `google-gemini-cli`, `huggingface`, `novita`, `zai`, `kimi-coding`, `kimi-coding-cn`, `minimax`, `minimax-cn`, `minimax-oauth`, `kilocode`, `xiaomi`, `arcee`, `gmi`, `alibaba`, `alibaba-coding-plan` (alias `alibaba_coding`), `deepseek`, `nvidia`, `ollama-cloud`, `xai` (alias `grok`), `xai-oauth` (alias `grok-oauth`), `qwen-oauth`, `bedrock`, `opencode-zen`, `opencode-go`, `azure-foundry`, `lmstudio`, `stepfun`, `tencent-tokenhub` (alias `tencent`, `tokenhub`).
+Force a provider: `auto`, `openrouter`, `nous`, `openai-codex`, `copilot-acp`, `copilot`, `anthropic`, `gemini`, `google-gemini-cli`, `huggingface`, `novita` (aliases `novita-ai`, `novitaai`), `openai-api`, `zai`, `kimi-coding`, `kimi-coding-cn`, `minimax`, `minimax-cn`, `minimax-oauth`, `kilocode`, `xiaomi`, `arcee`, `gmi`, `alibaba`, `alibaba-coding-plan` (alias `alibaba_coding`), `deepseek`, `nvidia`, `ollama-cloud`, `xai` (alias `grok`), `xai-oauth` (alias `grok-oauth`), `qwen-oauth`, `bedrock`, `opencode-zen`, `opencode-go`, `azure-foundry`, `lmstudio`, `stepfun`, `tencent-tokenhub` (alias `tencent`, `tokenhub`).
 
 `-s`, `--skills <name>`
 
@@ -1103,7 +1107,7 @@ Flesh out a triage-column task into a concrete spec (title + body with goal, app
 
 `decompose <id>` / `decompose --all`
 
-Fan a triage-column task out into a graph of child tasks routed to specialist profiles by description (the orchestrator-driven path). Falls back to specify-style single-task promotion when the LLM decides the task doesn't benefit from fan-out. Same flags as `specify`. Configure the model under `auxiliary.kanban_decomposer` in `config.yaml`. Also runs automatically every dispatcher tick when `kanban.auto_decompose: true` (the default). See [Auto vs Manual orchestration](/docs/user-guide/features/kanban#auto-vs-manual-orchestration).
+Fan a triage-column task out into a graph of child tasks routed to specialist profiles by description. Falls back to specify-style single-task promotion when the LLM decides the task doesn't benefit from fan-out. Same flags as `specify`. Configure the decomposer model under `auxiliary.kanban_decomposer` in `config.yaml`; `kanban.orchestrator_profile` only controls who owns the root/orchestration task after fan-out. Also runs automatically every dispatcher tick when `kanban.auto_decompose: true` (the default). See [Auto vs Manual orchestration](/docs/user-guide/features/kanban#auto-vs-manual-orchestration).
 
 `gc`
 
@@ -1549,6 +1553,18 @@ Warnings and errors only — a filtered subset of agent.log
 
 Messaging gateway activity — platform connections, message dispatch, webhook events
 
+`gui`
+
+`gui.log`
+
+Dashboard / TUI-gateway / PTY-bridge / websocket events
+
+`desktop`
+
+`desktop.log`
+
+Electron desktop app — boot, backend spawn output, and recent Python tracebacks
+
 ### Options
 
 Option
@@ -1774,6 +1790,14 @@ Remove a hub-installed skill.
 
 Un-stick a bundled skill flagged as `user_modified` by clearing its manifest entry. With `--restore`, also replaces the user copy with the bundled version.
 
+`opt-out`
+
+Stop bundled skills from being seeded into the active profile. Writes a `.no-bundled-skills` marker so the installer, `hermes update`, and any sync skip bundled-skill seeding. Safe by default — nothing on disk is touched. With `--remove`, also deletes already-present bundled skills that are **unmodified** (user-edited, hub-installed, and hand-written skills are never removed; previews and confirms first, `--yes` to skip).
+
+`opt-in`
+
+Undo `opt-out` by removing the `.no-bundled-skills` marker so bundled skills are seeded again on the next `hermes update`. With `--sync`, re-seed immediately.
+
 `publish`
 
 Publish a skill to a registry.
@@ -1808,6 +1832,9 @@ hermes skills update
 hermes skills config
 hermes skills reset google-workspace
 hermes skills reset google-workspace --restore --yes
+hermes skills opt-out                  # stop future bundled-skill seeding (nothing deleted)
+hermes skills opt-out --remove --yes   # also delete UNMODIFIED bundled skills
+hermes skills opt-in --sync            # undo: remove marker and re-seed now
 ```
 
 Notes:
@@ -2359,7 +2386,7 @@ hermes claw migrate --source /home/user/old-openclaw
 hermes dashboard [options]
 ```
 
-Launch the web dashboard — a browser-based UI for managing configuration, API keys, and monitoring sessions. Requires `pip install hermes-agent[web]` (FastAPI + Uvicorn). The embedded browser Chat tab requires `--tui` plus the `pty` extra. See [Web Dashboard](/docs/user-guide/features/web-dashboard) for full documentation.
+Launch the web dashboard — a browser-based UI for managing configuration, API keys, and monitoring sessions. Requires `pip install hermes-agent[web]` (FastAPI + Uvicorn). The embedded browser Chat tab is always available and additionally needs the `pty` extra (`pip install 'hermes-agent[web,pty]'`) plus a POSIX PTY environment such as Linux, macOS, or WSL2. See [Web Dashboard](/docs/user-guide/features/web-dashboard) for full documentation.
 
 Option
 
@@ -2385,12 +2412,6 @@ Bind address
 
 Don't auto-open the browser
 
-`--tui`
-
-off
-
-Enable the in-browser Chat tab by running `hermes --tui` behind a PTY/WebSocket bridge. Requires `pip install 'hermes-agent[web,pty]'` and a POSIX PTY environment such as Linux, macOS, or WSL2.
-
 `--insecure`
 
 off
@@ -2415,9 +2436,34 @@ hermes dashboard
 
 # Custom port, no browser
 hermes dashboard --port 8080 --no-open
+```
 
-# Enable the browser Chat tab
-hermes dashboard --tui
+### `hermes dashboard register`
+
+Register this install as a self-hosted dashboard with your Nous Portal account, so the dashboard's OAuth (Nous) auth gate can be used. Resolves your existing Nous login (run `hermes setup` first if you're not logged in), creates an OAuth client, writes `HERMES_DASHBOARD_OAUTH_CLIENT_ID` into `~/.hermes/.env`, and prints how to engage the login gate. You can also register, name, and revoke dashboards from the Portal [`/local-dashboards`](https://portal.nousresearch.com/local-dashboards) page.
+
+Option
+
+Default
+
+Description
+
+`--name`
+
+auto-generated
+
+Human-readable label for the dashboard
+
+`--redirect-uri`
+
+—
+
+Public HTTPS OAuth redirect URI for an internet-facing host, e.g. `https://hermes.example.com/auth/callback`. Omit for localhost-only use.
+
+```
+hermes dashboard register
+# ✓ Registered dashboard "swift_falcon"
+# …writes HERMES_DASHBOARD_OAUTH_CLIENT_ID to ~/.hermes/.env
 ```
 
 ## `hermes profile`
@@ -2525,6 +2571,8 @@ Pulls the latest `hermes-agent` code and reinstalls dependencies in your venv, t
 
 **pip installs:** `hermes update` detects pip-based installations automatically — it queries PyPI for the latest release and runs `pip install --upgrade hermes-agent` instead of `git pull`. PyPI releases track tagged versions (major/minor releases), not every commit on `main`. Use `--check` to see if a newer PyPI release is available without installing.
 
+**git installs:** `hermes update` pulls the configured update branch (default: `main`). If your checkout is on another branch, Hermes may check out the update branch before pulling. Commit branch work before updating when you want to keep it outside the update autostash flow.
+
 Option
 
 Description
@@ -2552,6 +2600,8 @@ Assume yes for interactive prompts such as config migration and stash restore. A
 Additional behavior:
 
 -   **Gateway restart.** After a successful update, Hermes attempts to restart all running gateway profiles automatically so they pick up the new code. Use `hermes gateway restart` when you want to restart a gateway without applying an update.
+-   **Local source changes.** For git installs, dirty tracked files and untracked files are auto-stashed before branch checkout or pull (`git stash push --include-untracked`). Interactive terminal updates ask before restoring the stash. Non-interactive updates restore it by default; set `updates.non_interactive_local_changes: discard` only on managed installs where local source edits should be thrown away after a successful pull. If stash restore conflicts or the pull fails, the stash is left in place for manual recovery.
+-   **npm lockfile churn.** Before stashing or switching branches, Hermes makes a best-effort cleanup of tracked `package-lock.json` diffs produced by npm install/build steps. Commit or manually stash intentional lockfile edits before running `hermes update`.
 -   **Pairing data snapshot.** Even when `--backup` is off, `hermes update` takes a lightweight snapshot of `~/.hermes/pairing/` and the Feishu comment rules before `git pull`. You can roll it back with `hermes backup restore --state pre-update` if a pull rewrites a file you were editing.
 -   **Legacy `hermes.service` warning.** If Hermes detects a pre-rename `hermes.service` systemd unit (instead of the current `hermes-gateway.service`), it prints a one-time migration hint so you can avoid flap-loop issues.
 -   **Exit codes.** `0` on success, `1` on pull/install/post-install errors, `2` on unexpected working-tree changes that block `git pull`.
@@ -2574,9 +2624,9 @@ Pull latest changes and reinstall dependencies.
 
 Internal bootstrap. Runs once after `pip install hermes-agent` (or `hermes update` on pip installs) to install non-Python dependencies that pip cannot provide — Node.js runtime, headless browser, ripgrep, ffmpeg — and then trigger `hermes setup` if the profile has not been configured yet. Safe to re-run idempotently.
 
-`hermes uninstall [--full] [--yes]`
+`hermes uninstall [--full] [--gui] [--yes]`
 
-Remove Hermes, optionally deleting all config/data.
+Remove Hermes, optionally deleting all config/data. `--gui` removes only the desktop Chat GUI, leaving the agent intact; `--full` also deletes config/data; `--yes` skips prompts.
 
 ## See also
 

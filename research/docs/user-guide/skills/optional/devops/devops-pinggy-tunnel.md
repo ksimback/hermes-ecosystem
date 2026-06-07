@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-`cloudflared-quick-tunnel`, [`webhook-subscriptions`](/docs/user-guide/skills/bundled/devops/devops-webhook-subscriptions)
+`cloudflared-quick-tunnel`, `webhook-subscriptions`
 
 ## Reference: full SKILL.md
 

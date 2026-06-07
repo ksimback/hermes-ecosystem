@@ -130,6 +130,12 @@ Smart home control via Home Assistant. Only available when `HASS_TOKEN` is set.
 
 Background macOS desktop control via cua-driver — does not steal cursor/focus. Works with any tool-capable model. macOS only; requires `cua-driver` on `$PATH`.
 
+`context_engine`
+
+(varies)
+
+Runtime tools exposed by the active context-engine plugin (empty until a plugin populates it).
+
 `image_gen`
 
 `image_generate`

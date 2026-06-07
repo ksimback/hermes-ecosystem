@@ -244,7 +244,13 @@ Video
 
 `grok-imagine-video`
 
-Text-to-video and image-to-video; up to 7 reference images
+Text-to-video
+
+Video
+
+`grok-imagine-video-1.5-preview`
+
+Image-to-video; dated alias `grok-imagine-video-1.5-2026-05-30`
 
 TTS
 

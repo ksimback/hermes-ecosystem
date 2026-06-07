@@ -33,7 +33,7 @@ Notes
 
 **Git**
 
-With `--recurse-submodules` support, and the `git-lfs` extension installed
+With the `git-lfs` extension installed
 
 **Python 3.11+**
 
@@ -50,7 +50,7 @@ Optional — needed for browser tools and WhatsApp bridge (matches root `package
 ### Clone and Install
 
 ```
-git clone --recurse-submodules https://github.com/NousResearch/hermes-agent.git
+git clone https://github.com/NousResearch/hermes-agent.git
 cd hermes-agent
 
 # Create venv with Python 3.11

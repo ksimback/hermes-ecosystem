@@ -26,10 +26,18 @@ Set your provider with `hermes model` or by editing `~/.hermes/.env`. See the [E
 
 ### Does it work on Windows?
 
-**Not natively.** Hermes Agent requires a Unix-like environment. On Windows, install [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) and run Hermes from inside it. The standard install command works perfectly in WSL2:
+**Yes, natively.** Hermes supports native Windows via the PowerShell installer — no WSL required. Run in PowerShell:
 
 ```
-curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+iex (irm https://hermes-agent.nousresearch.com/install.ps1)
+```
+
+The installer provisions a PortableGit that backs the terminal tool's shell. See the [Windows (Native) Guide](/docs/user-guide/windows-native) for details.
+
+WSL2 remains a fully supported alternative. To run Hermes inside WSL2, install [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) and use the standard install command:
+
+```
+curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
 ```
 
 ### I run Hermes in WSL2. What's the best way to control my normal Windows Chrome?
@@ -57,7 +65,7 @@ Yes — Hermes now has a tested Termux install path for Android phones.
 Quick install:
 
 ```
-curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
 ```
 
 For the fully explicit manual steps, supported extras, and current limitations, see the [Termux guide](/docs/getting-started/termux).
@@ -226,7 +234,7 @@ source ~/.bashrc
 # If you previously installed with sudo, clean up:
 sudo rm /usr/local/bin/hermes
 # Then re-run the standard installer
-curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
 ```
 
 * * *
@@ -799,7 +807,7 @@ Skills with very long descriptions are truncated to 40 characters in the Telegra
 1.  Install Hermes Agent on the new machine:
     
     ```
-    curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+    curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
     ```
     
 2.  On the **source machine**, create a full backup:

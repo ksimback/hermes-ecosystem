@@ -150,7 +150,7 @@ Hermes will:
 This is the easiest way to get worktree isolation. You can also combine it with a single query:
 
 ```
-hermes -w -q "Fix issue #123"
+hermes -w -z "Fix issue #123"
 ```
 
 For parallel agents, open multiple terminals and run `hermes -w` in each — every invocation gets its own worktree and branch automatically.

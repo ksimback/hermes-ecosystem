@@ -28,6 +28,10 @@ Set the active (default) profile.
 
 Create a new profile.
 
+`describe`
+
+Read or set a profile's description (used by the kanban orchestrator for routing).
+
 `delete`
 
 Delete a profile.
@@ -145,7 +149,7 @@ One- or two-sentence description of what this profile is good at. Used by the ka
 
 `--no-skills`
 
-Create an **empty** profile with zero bundled skills enabled. Writes a `.no-skills` marker into the profile so future `hermes update` runs won't re-seed the bundled set, and refuses to combine with `--clone` / `--clone-all` (which would copy skills in anyway). Useful for narrow orchestrator profiles or sandbox profiles that should not inherit the full skill catalog.
+Create an **empty** profile with zero bundled skills enabled. Writes a `.no-bundled-skills` marker into the profile so future `hermes update` runs won't re-seed the bundled set, and refuses to combine with `--clone` / `--clone-all` (which would copy skills in anyway). Useful for narrow orchestrator profiles or sandbox profiles that should not inherit the full skill catalog. To toggle this on an already-created profile (including the default `~/.hermes`), use `hermes skills opt-out` / `hermes skills opt-in`.
 
 Creating a profile does **not** make that profile directory the default project/workspace directory for terminal commands. If you want a profile to start in a specific project, set `terminal.cwd` in that profile's `config.yaml`.
 

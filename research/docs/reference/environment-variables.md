@@ -42,6 +42,14 @@ API key for custom OpenAI-compatible endpoints (used with `OPENAI_BASE_URL`)
 
 Base URL for custom endpoint (VLLM, SGLang, etc.)
 
+`LM_API_KEY`
+
+API key for LM Studio (`lmstudio` provider). Often a placeholder for local servers
+
+`LM_BASE_URL`
+
+LM Studio base URL (default: `http://localhost:1234/v1`)
+
 `COPILOT_GITHUB_TOKEN`
 
 GitHub token for Copilot API — first priority (OAuth `gho_*` or fine-grained PAT `github_pat_*`; classic PATs `ghp_*` are **not supported**)
@@ -70,6 +78,10 @@ Override Copilot ACP arguments (default: `--acp --stdio`)
 
 Override Copilot ACP base URL
 
+`COPILOT_API_BASE_URL`
+
+Override the Copilot API base URL (`copilot` provider)
+
 `GLM_API_KEY`
 
 z.ai / ZhipuAI GLM API key ([z.ai](https://z.ai))
@@ -89,6 +101,10 @@ Override z.ai base URL (default: `https://api.z.ai/api/paas/v4`)
 `KIMI_API_KEY`
 
 Kimi / Moonshot AI API key ([moonshot.ai](https://platform.moonshot.ai))
+
+`KIMI_CODING_API_KEY`
+
+Alias key for the `kimi-coding` provider (accepted alongside `KIMI_API_KEY`)
 
 `KIMI_BASE_URL`
 
@@ -230,6 +246,10 @@ GCP project ID for paid Gemini tiers (free tier auto-provisions)
 
 Anthropic Console API key ([console.anthropic.com](https://console.anthropic.com/))
 
+`ANTHROPIC_BASE_URL`
+
+Override the Anthropic API base URL
+
 `ANTHROPIC_TOKEN`
 
 Manual or legacy Anthropic OAuth/setup-token override
@@ -241,6 +261,14 @@ Qwen Cloud (Alibaba DashScope) API key for Qwen models ([modelstudio.console.ali
 `DASHSCOPE_BASE_URL`
 
 Custom DashScope base URL (default: `https://dashscope-intl.aliyuncs.com/compatible-mode/v1`; use `https://dashscope.aliyuncs.com/compatible-mode/v1` for mainland-China region)
+
+`ALIBABA_CODING_PLAN_API_KEY`
+
+Qwen Coding Plan API key (`alibaba-coding-plan` provider)
+
+`ALIBABA_CODING_PLAN_BASE_URL`
+
+Override the Qwen Coding Plan base URL
 
 `DEEPSEEK_API_KEY`
 
@@ -1472,6 +1500,60 @@ Comma-separated user IDs allowed across all platforms
 
 Allow all users without allowlists (`true`/`false`, default: `false`)
 
+### Web Dashboard & Hermes Desktop
+
+Auth for the [web dashboard](/docs/user-guide/features/web-dashboard) and for connecting [Hermes Desktop to a remote backend](/docs/user-guide/features/web-dashboard#connecting-hermes-desktop-to-a-remote-backend). Per the secrets-only convention, credentials belong in `~/.hermes/.env`; the OAuth `client_id` is better set under `dashboard.oauth` in `config.yaml` (env wins when set).
+
+Three dashboard-auth providers ship in the box. For a remote Hermes Desktop connection or any internet-facing dashboard, the recommended provider is **OAuth (Nous Portal)** — set `HERMES_DASHBOARD_OAUTH_CLIENT_ID` (provision it with `hermes dashboard register`). The bundled **username/password** provider (`HERMES_DASHBOARD_BASIC_AUTH_*`) is the quickest option for a backend on a trusted LAN or behind a VPN, but is not suitable for direct public-internet exposure. To authenticate against your own identity provider, use the **self-hosted OIDC** provider (`HERMES_DASHBOARD_OIDC_*`). Either way, a non-loopback bind (`hermes dashboard --host 0.0.0.0`) engages the auth gate. See [Web Dashboard → Authentication](/docs/user-guide/features/web-dashboard#authentication-gated-mode) for the full picture.
+
+Variable
+
+Description
+
+`HERMES_DASHBOARD_BASIC_AUTH_USERNAME`
+
+Username for the bundled username/password dashboard-auth provider (`plugins/dashboard_auth/basic`). Activates the provider when set together with a password. Overrides `dashboard.basic_auth.username`.
+
+`HERMES_DASHBOARD_BASIC_AUTH_PASSWORD`
+
+Plaintext password for the basic provider (hashed in-memory at load). Wins over a config `password_hash` so you can rotate via env. Overrides `dashboard.basic_auth.password`.
+
+`HERMES_DASHBOARD_BASIC_AUTH_PASSWORD_HASH`
+
+scrypt password hash for the basic provider (preferred — no plaintext at rest). Compute with `python -c "from plugins.dashboard_auth.basic import hash_password; print(hash_password('PW'))"`. Overrides `dashboard.basic_auth.password_hash`.
+
+`HERMES_DASHBOARD_BASIC_AUTH_SECRET`
+
+HMAC key (32+ bytes, base64/hex/raw) signing the basic provider's stateless session tokens. Set explicitly so sessions survive restarts / span multiple workers; blank → random per-process (you'll be logged out on every restart). Overrides `dashboard.basic_auth.secret`.
+
+`HERMES_DASHBOARD_BASIC_AUTH_TTL_SECONDS`
+
+Access-token lifetime for the basic provider (default 12h). Overrides `dashboard.basic_auth.session_ttl_seconds`.
+
+`HERMES_DASHBOARD_OAUTH_CLIENT_ID`
+
+OAuth client id (`agent:{instance_id}`) for the gated/public dashboard, activating the Nous (`plugins/dashboard_auth/nous`) provider. Overrides `dashboard.oauth.client_id`. Provision it with `hermes dashboard register`.
+
+`HERMES_DASHBOARD_PUBLIC_URL`
+
+Complete public URL the dashboard is reached at, for OAuth callback construction behind reverse proxies. Overrides `dashboard.public_url`.
+
+`HERMES_DASHBOARD_OIDC_ISSUER`
+
+OIDC issuer URL for the bundled self-hosted OIDC provider (`plugins/dashboard_auth/self_hosted`). Required to activate it. Overrides `dashboard.oauth.self_hosted.issuer`.
+
+`HERMES_DASHBOARD_OIDC_CLIENT_ID`
+
+Public OIDC client id (authorization-code + PKCE) for the self-hosted OIDC provider. Required to activate it. Overrides `dashboard.oauth.self_hosted.client_id`.
+
+`HERMES_DASHBOARD_OIDC_SCOPES`
+
+Requested OIDC scopes for the self-hosted OIDC provider (default `openid profile email`). Overrides `dashboard.oauth.self_hosted.scopes`.
+
+`HERMES_DESKTOP_REMOTE_URL`
+
+(Desktop side) Base URL of the remote backend, e.g. `http://host:9119`. When set, overrides the in-app Gateway URL; you still sign in from the Gateway settings panel (OAuth redirect or username/password, whichever the backend advertises).
+
 ### Microsoft Graph (Teams Meetings)
 
 App-only credentials for the Microsoft Graph REST client used by the upcoming Teams meeting summary pipeline. See [Register a Microsoft Graph application](/docs/guides/microsoft-graph-app-registration) for the Azure portal walkthrough and the exact API permissions required.
@@ -1761,6 +1843,10 @@ Whether the gateway sends an acknowledgment message (⚡/⏳/⏩) when a user se
 `HERMES_GATEWAY_NO_SUPERVISE`
 
 Inside the s6-overlay Docker image, opt out of auto-supervision when running `hermes gateway run` and use pre-s6 foreground semantics (no auto-restart, gateway is the container's main process). Truthy values: `1`, `true`, `yes`. Equivalent to the `--no-supervise` CLI flag. No-op outside the s6 image.
+
+`HERMES_GATEWAY_BOOTSTRAP_STATE`
+
+Inside the s6-overlay Docker image, declare the gateway's **initial** supervised state on a fresh volume. On a blank volume there is no persisted `gateway_state.json`, so the boot reconciler registers the `gateway-default` slot but leaves it **down** (it only auto-starts when the last recorded state was `running`). Set this to `running` and the first-boot setup hook seeds `gateway_state.json` _before_ the reconciler runs, so the gateway comes up on the very first boot. Only the literal value `running` is honoured. First-boot-only: an existing `gateway_state.json` is never overwritten, so a deliberately-stopped gateway stays stopped across restarts. No-op outside the s6 image.
 
 `HERMES_FILE_MUTATION_VERIFIER`
 

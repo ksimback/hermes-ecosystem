@@ -72,12 +72,6 @@ Configure, extend, or contribute to Hermes Agent.
 
 `autonomous-ai-agents/hermes-agent`
 
-[`kanban-codex-lane`](/docs/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-kanban-codex-lane)
-
-Use when a Hermes Kanban worker wants to run Codex CLI as an isolated implementation lane while Hermes keeps ownership of task lifecycle, reconciliation, testing, and handoff.
-
-`autonomous-ai-agents/kanban-codex-lane`
-
 [`opencode`](/docs/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-opencode)
 
 Delegate coding to OpenCode CLI (features, PR review).
@@ -110,18 +104,6 @@ ASCII video: convert video/audio to colored ASCII MP4/GIF.
 
 `creative/ascii-video`
 
-[`baoyu-article-illustrator`](/docs/user-guide/skills/bundled/creative/creative-baoyu-article-illustrator)
-
-Article illustrations: type × style × palette consistency.
-
-`creative/baoyu-article-illustrator`
-
-[`baoyu-comic`](/docs/user-guide/skills/bundled/creative/creative-baoyu-comic)
-
-Knowledge comics (知识漫画): educational, biography, tutorial.
-
-`creative/baoyu-comic`
-
 [`baoyu-infographic`](/docs/user-guide/skills/bundled/creative/creative-baoyu-infographic)
 
 Infographics: 21 layouts x 21 styles (信息图, 可视化).
@@ -139,12 +121,6 @@ Design one-off HTML artifacts (landing, deck, prototype).
 Generate images, video, and audio with ComfyUI — install, launch, manage nodes/models, run workflows with parameter injection. Uses the official comfy-cli for lifecycle and direct REST/WebSocket API for execution.
 
 `creative/comfyui`
-
-[`ideation`](/docs/user-guide/skills/bundled/creative/creative-creative-ideation)
-
-Generate project ideas via creative constraints.
-
-`creative/creative-ideation`
 
 [`design-md`](/docs/user-guide/skills/bundled/creative/creative-design-md)
 
@@ -175,12 +151,6 @@ Manim CE animations: 3Blue1Brown math/algo videos.
 p5.js sketches: gen art, shaders, interactive, 3D.
 
 `creative/p5js`
-
-[`pixel-art`](/docs/user-guide/skills/bundled/creative/creative-pixel-art)
-
-Pixel art w/ era palettes (NES, Game Boy, PICO-8).
-
-`creative/pixel-art`
 
 [`popular-web-designs`](/docs/user-guide/skills/bundled/creative/creative-popular-web-designs)
 
@@ -246,12 +216,6 @@ Pitfalls, examples, and edge cases for Hermes Kanban workers. The lifecycle itse
 
 `devops/kanban-worker`
 
-[`webhook-subscriptions`](/docs/user-guide/skills/bundled/devops/devops-webhook-subscriptions)
-
-Webhook subscriptions: event-driven agent runs.
-
-`devops/webhook-subscriptions`
-
 ## dogfood
 
 Skill
@@ -279,26 +243,6 @@ Path
 Himalaya CLI: IMAP/SMTP email from terminal.
 
 `email/himalaya`
-
-## gaming
-
-Skill
-
-Description
-
-Path
-
-[`minecraft-modpack-server`](/docs/user-guide/skills/bundled/gaming/gaming-minecraft-modpack-server)
-
-Host modded Minecraft servers (CurseForge, Modrinth).
-
-`gaming/minecraft-modpack-server`
-
-[`pokemon-player`](/docs/user-guide/skills/bundled/gaming/gaming-pokemon-player)
-
-Play Pokemon via headless emulator + RAM reads.
-
-`gaming/pokemon-player`
 
 ## github
 
@@ -344,20 +288,6 @@ Clone/create/fork repos; manage remotes, releases.
 
 `github/github-repo-management`
 
-## mcp
-
-Skill
-
-Description
-
-Path
-
-[`native-mcp`](/docs/user-guide/skills/bundled/mcp/mcp-native-mcp)
-
-MCP client: connect servers, register tools (stdio/HTTP).
-
-`mcp/native-mcp`
-
 ## media
 
 Skill
@@ -384,12 +314,6 @@ Audio spectrograms/features (mel, chroma, MFCC) via CLI.
 
 `media/songsee`
 
-[`spotify`](/docs/user-guide/skills/bundled/media/media-spotify)
-
-Spotify: play, search, queue, manage playlists and devices.
-
-`media/spotify`
-
 [`youtube-content`](/docs/user-guide/skills/bundled/media/media-youtube-content)
 
 YouTube transcripts to summaries, threads, blogs.
@@ -409,12 +333,6 @@ Path
 AudioCraft: MusicGen text-to-music, AudioGen text-to-sound.
 
 `mlops/models/audiocraft`
-
-[`dspy`](/docs/user-guide/skills/bundled/mlops/mlops-research-dspy)
-
-DSPy: declarative LM programs, auto-optimize prompts, RAG.
-
-`mlops/research/dspy`
 
 [`huggingface-hub`](/docs/user-guide/skills/bundled/mlops/mlops-huggingface-hub)
 
@@ -491,12 +409,6 @@ Airtable REST API via curl. Records CRUD, filters, upserts.
 Gmail, Calendar, Drive, Docs, Sheets via gws CLI or Python.
 
 `productivity/google-workspace`
-
-[`linear`](/docs/user-guide/skills/bundled/productivity/productivity-linear)
-
-Linear: manage issues, projects, teams via GraphQL + curl.
-
-`productivity/linear`
 
 [`maps`](/docs/user-guide/skills/bundled/productivity/productivity-maps)
 
@@ -622,23 +534,11 @@ Description
 
 Path
 
-[`debugging-hermes-tui-commands`](/docs/user-guide/skills/bundled/software-development/software-development-debugging-hermes-tui-commands)
-
-Debug Hermes TUI slash commands: Python, gateway, Ink UI.
-
-`software-development/debugging-hermes-tui-commands`
-
 [`hermes-agent-skill-authoring`](/docs/user-guide/skills/bundled/software-development/software-development-hermes-agent-skill-authoring)
 
 Author in-repo SKILL.md: frontmatter, validator, structure.
 
 `software-development/hermes-agent-skill-authoring`
-
-[`hermes-s6-container-supervision`](/docs/user-guide/skills/bundled/software-development/software-development-hermes-s6-container-supervision)
-
-Modify, debug, or extend the s6-overlay supervision tree inside the Hermes Agent Docker image — adding new services, debugging profile gateways, understanding the Architecture B main-program pattern.
-
-`software-development/hermes-s6-container-supervision`
 
 [`node-inspect-debugger`](/docs/user-guide/skills/bundled/software-development/software-development-node-inspect-debugger)
 
@@ -648,7 +548,7 @@ Debug Node.js via --inspect + Chrome DevTools Protocol CLI.
 
 [`plan`](/docs/user-guide/skills/bundled/software-development/software-development-plan)
 
-Plan mode: write markdown plan to .hermes/plans/, no exec.
+Plan mode: write an actionable markdown plan to .hermes/plans/, no execution. Bite-sized tasks, exact paths, complete code.
 
 `software-development/plan`
 
@@ -670,12 +570,6 @@ Throwaway experiments to validate an idea before build.
 
 `software-development/spike`
 
-[`subagent-driven-development`](/docs/user-guide/skills/bundled/software-development/software-development-subagent-driven-development)
-
-Execute plans via delegate\_task subagents (2-stage review).
-
-`software-development/subagent-driven-development`
-
 [`systematic-debugging`](/docs/user-guide/skills/bundled/software-development/software-development-systematic-debugging)
 
 4-phase root cause debugging: understand bugs before fixing.
@@ -687,12 +581,6 @@ Execute plans via delegate\_task subagents (2-stage review).
 TDD: enforce RED-GREEN-REFACTOR, tests before code.
 
 `software-development/test-driven-development`
-
-[`writing-plans`](/docs/user-guide/skills/bundled/software-development/software-development-writing-plans)
-
-Write implementation plans: bite-sized tasks, paths, code.
-
-`software-development/writing-plans`
 
 ## yuanbao
 

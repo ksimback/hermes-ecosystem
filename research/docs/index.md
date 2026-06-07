@@ -4,23 +4,43 @@
 
 The self-improving AI agent built by [Nous Research](https://nousresearch.com). The only agent with a built-in learning loop — it creates skills from experience, improves them during use, nudges itself to persist knowledge, and builds a deepening model of who you are across sessions.
 
-[Get Started →](/docs/getting-started/installation)[View on GitHub](https://github.com/NousResearch/hermes-agent)
+[
+
+Get Started →
+
+](/docs/getting-started/installation)[
+
+Download Desktop
+
+](https://hermes-agent.nousresearch.com/desktop)[
+
+View on GitHub
+
+](https://github.com/NousResearch/hermes-agent)
 
 ## Install
 
-**Linux / macOS / WSL2**
+### Windows or macOS
+
+To easily install the command-line and desktop applications, [download the Hermes Desktop installer](https://hermes-agent.nousresearch.com/desktop) from our website and run it.
+
+### Without Hermes Desktop:
+
+For a command-line only install without Hermes Desktop, run:
+
+#### Linux / macOS / WSL2 / Android (Termux)
 
 ```
-curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
 ```
 
-**Windows (native, PowerShell)** — _[details →](/docs/user-guide/windows-native)_
+#### Windows (native)
+
+Run in powershell:
 
 ```
-iex (irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1)
+iex (irm https://hermes-agent.nousresearch.com/install.ps1)
 ```
-
-**Android (Termux)** — same curl one-liner as Linux; the installer auto-detects Termux.
 
 See the full **[Installation Guide](/docs/getting-started/installation)** for what the installer does, the per-user vs root layout, and Windows-specific notes.
 
@@ -124,6 +144,6 @@ Common questions and solutions
 Machine-readable entry points to this documentation:
 
 -   **[`/llms.txt`](/docs/assets/files/llms-d4972c57170916efd83766ae50c3bb3d.txt)** — curated index of every doc page with short descriptions. ~17 KB, safe to load into an LLM context.
--   **[`/llms-full.txt`](/docs/assets/files/llms-full-af425d591bd91e3f5ffafaf5345bd21d.txt)** — every doc page concatenated into a single markdown file for one-shot ingestion. ~1.8 MB.
+-   **[`/llms-full.txt`](/docs/assets/files/llms-full-433a5d599591cae2da2a461c3dafe5e8.txt)** — every doc page concatenated into a single markdown file for one-shot ingestion. ~1.8 MB.
 
 Both files also resolve at `/docs/llms.txt` and `/docs/llms-full.txt`. Generated fresh on every deploy.

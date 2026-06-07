@@ -46,9 +46,9 @@ Interactive browser automation with text and vision support.
 
 **Media**
 
-`vision_analyze`, `image_generate`, `video_generate`, `video_analyze`, `text_to_speech`
+`vision_analyze`, `image_generate`, `text_to_speech`
 
-Multimodal analysis and generation. `video_generate` and `video_analyze` are opt-in (add `video_gen` / `video` toolsets via `hermes tools` or `--toolsets`).
+Multimodal analysis and generation.
 
 **Agent orchestration**
 
@@ -70,9 +70,9 @@ Scheduled tasks with create/list/update/pause/resume/run/remove actions, plus ou
 
 **Integrations**
 
-`ha_*`, MCP server tools, `rl_*`
+`ha_*`, MCP server tools
 
-Home Assistant, MCP, RL training, and other integrations.
+Home Assistant, MCP, and other integrations.
 
 For the authoritative code-derived registry, see [Built-in Tools Reference](/docs/reference/tools-reference) and [Toolsets Reference](/docs/reference/toolsets-reference).
 
@@ -93,7 +93,7 @@ hermes tools
 hermes tools
 ```
 
-Common toolsets include `web`, `search`, `terminal`, `file`, `browser`, `vision`, `image_gen`, `moa`, `skills`, `tts`, `todo`, `memory`, `session_search`, `cronjob`, `code_execution`, `delegation`, `clarify`, `homeassistant`, `messaging`, `spotify`, `discord`, `discord_admin`, `debugging`, `safe`, and `rl`.
+Common toolsets include `web`, `search`, `terminal`, `file`, `browser`, `vision`, `image_gen`, `moa`, `skills`, `tts`, `todo`, `memory`, `session_search`, `cronjob`, `code_execution`, `delegation`, `clarify`, `homeassistant`, `messaging`, `spotify`, `discord`, `discord_admin`, `debugging`, and `safe`.
 
 See [Toolsets Reference](/docs/reference/toolsets-reference) for the full set, including platform presets such as `hermes-cli`, `hermes-telegram`, and dynamic MCP toolsets like `mcp-<server>`.
 

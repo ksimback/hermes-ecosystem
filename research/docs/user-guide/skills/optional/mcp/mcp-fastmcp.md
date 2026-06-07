@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`native-mcp`](/docs/user-guide/skills/bundled/mcp/mcp-native-mcp), [`mcporter`](/docs/user-guide/skills/optional/mcp/mcp-mcporter)
+`native-mcp`, [`mcporter`](/docs/user-guide/skills/optional/mcp/mcp-mcporter)
 
 ## Reference: full SKILL.md
 

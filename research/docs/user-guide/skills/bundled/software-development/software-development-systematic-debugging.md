@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`test-driven-development`](/docs/user-guide/skills/bundled/software-development/software-development-test-driven-development), [`writing-plans`](/docs/user-guide/skills/bundled/software-development/software-development-writing-plans), [`subagent-driven-development`](/docs/user-guide/skills/bundled/software-development/software-development-subagent-driven-development)
+[`test-driven-development`](/docs/user-guide/skills/bundled/software-development/software-development-test-driven-development), [`plan`](/docs/user-guide/skills/bundled/software-development/software-development-plan), [`subagent-driven-development`](/docs/user-guide/skills/optional/software-development/software-development-subagent-driven-development)
 
 ## Reference: full SKILL.md
 

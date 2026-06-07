@@ -83,6 +83,14 @@ Skill
 
 Description
 
+[**baoyu-article-illustrator**](/docs/user-guide/skills/optional/creative/creative-baoyu-article-illustrator)
+
+Article illustrations: type × style × palette consistency.
+
+[**baoyu-comic**](/docs/user-guide/skills/optional/creative/creative-baoyu-comic)
+
+Knowledge comics (知识漫画): educational, biography, tutorial.
+
 [**blender-mcp**](/docs/user-guide/skills/optional/creative/creative-blender-mcp)
 
 Control Blender directly from Hermes via socket connection to the blender-mcp addon. Create 3D objects, materials, animations, and run arbitrary Blender Python (bpy) code. Use when user wants to create or modify anything in Blender.
@@ -90,6 +98,10 @@ Control Blender directly from Hermes via socket connection to the blender-mcp ad
 [**concept-diagrams**](/docs/user-guide/skills/optional/creative/creative-concept-diagrams)
 
 Generate flat, minimal light/dark-aware SVG diagrams as standalone HTML files, using a unified educational visual language with 9 semantic color ramps, sentence-case typography, and automatic dark mode. Best suited for educational and no...
+
+[**ideation**](/docs/user-guide/skills/optional/creative/creative-creative-ideation)
+
+Generate project ideas via creative constraints.
 
 [**hyperframes**](/docs/user-guide/skills/optional/creative/creative-hyperframes)
 
@@ -102,6 +114,10 @@ Plan, set up, and monitor a multi-agent video production pipeline backed by Herm
 [**meme-generation**](/docs/user-guide/skills/optional/creative/creative-meme-generation)
 
 Generate real meme images by picking a template and overlaying text with Pillow. Produces actual .png meme files.
+
+[**pixel-art**](/docs/user-guide/skills/optional/creative/creative-pixel-art)
+
+Pixel art w/ era palettes (NES, Game Boy, PICO-8).
 
 ## devops
 
@@ -116,6 +132,10 @@ Run 150+ AI apps via inference.sh CLI (infsh) — image generation, video creati
 [**docker-management**](/docs/user-guide/skills/optional/devops/devops-docker-management)
 
 Manage Docker containers, images, volumes, networks, and Compose stacks — lifecycle ops, debugging, cleanup, and Dockerfile optimization.
+
+[**hermes-s6-container-supervision**](/docs/user-guide/skills/optional/devops/devops-hermes-s6-container-supervision)
+
+Modify, debug, or extend the s6-overlay supervision tree inside the Hermes Agent Docker image — adding new services, debugging profile gateways, understanding the Architecture B main-program pattern.
 
 [**pinggy-tunnel**](/docs/user-guide/skills/optional/devops/devops-pinggy-tunnel)
 
@@ -183,6 +203,20 @@ Build PowerPoint decks headless with python-pptx. Pairs with excel-author for mo
 
 Stock quotes, history, search, compare, crypto via Yahoo.
 
+## gaming
+
+Skill
+
+Description
+
+[**minecraft-modpack-server**](/docs/user-guide/skills/optional/gaming/gaming-minecraft-modpack-server)
+
+Host modded Minecraft servers (CurseForge, Modrinth).
+
+[**pokemon-player**](/docs/user-guide/skills/optional/gaming/gaming-pokemon-player)
+
+Play Pokemon via headless emulator + RAM reads.
+
 ## health
 
 Skill
@@ -242,6 +276,10 @@ Open-source embedding database for AI applications. Store embeddings and metadat
 [**clip**](/docs/user-guide/skills/optional/mlops/mlops-clip)
 
 OpenAI's model connecting vision and language. Enables zero-shot image classification, image-text matching, and cross-modal retrieval. Trained on 400M image-text pairs. Use for image search, content moderation, or vision-language tasks w...
+
+[**dspy**](/docs/user-guide/skills/optional/mlops/mlops-research-dspy)
+
+DSPy: declarative LM programs, auto-optimize prompts, RAG.
 
 [**faiss**](/docs/user-guide/skills/optional/mlops/mlops-faiss)
 
@@ -458,6 +496,10 @@ Generate wiki docs + Mermaid diagrams for any codebase.
 [**rest-graphql-debug**](/docs/user-guide/skills/optional/software-development/software-development-rest-graphql-debug)
 
 Debug REST/GraphQL APIs: status codes, auth, schemas, repro.
+
+[**subagent-driven-development**](/docs/user-guide/skills/optional/software-development/software-development-subagent-driven-development)
+
+Execute plans via delegate\_task subagents (2-stage review).
 
 ## web-development
 

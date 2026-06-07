@@ -72,6 +72,18 @@ hooks
 
 Trace turns / LLM calls / tools to [Langfuse](https://langfuse.com)
 
+`observability/nemo_relay`
+
+hooks
+
+Relay observability events (turns / LLM calls / tools) to an NVIDIA NeMo endpoint
+
+`teams_pipeline`
+
+standalone
+
+Microsoft Teams meeting pipeline — Graph-backed, transcript-first meeting summaries
+
 `spotify`
 
 backend (7 tools)
@@ -257,14 +269,22 @@ Traces Hermes turns, LLM calls, and tool invocations to [Langfuse](https://langf
 
 The plugin is fail-open: no SDK installed, no credentials, or a transient Langfuse error — all turn into a silent no-op in the hook. The agent loop is never impacted.
 
-**Setup:**
+**Setup (interactive — recommended):**
+
+```
+hermes tools          # → Langfuse Observability → Cloud or Self-Hosted
+```
+
+The wizard collects your keys, `pip install`s the `langfuse` SDK, and adds `observability/langfuse` to `plugins.enabled` for you. Restart Hermes and the next turn ships a trace.
+
+**Setup (manual):**
 
 ```
 pip install langfuse
 hermes plugins enable observability/langfuse
 ```
 
-Or check the box in the interactive `hermes plugins` UI. Then put the credentials in `~/.hermes/.env`:
+Then put the credentials in `~/.hermes/.env`:
 
 ```
 HERMES_LANGFUSE_PUBLIC_KEY=pk-lf-...

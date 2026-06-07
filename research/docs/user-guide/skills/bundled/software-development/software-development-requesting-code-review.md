@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`subagent-driven-development`](/docs/user-guide/skills/bundled/software-development/software-development-subagent-driven-development), [`writing-plans`](/docs/user-guide/skills/bundled/software-development/software-development-writing-plans), [`test-driven-development`](/docs/user-guide/skills/bundled/software-development/software-development-test-driven-development), [`github-code-review`](/docs/user-guide/skills/bundled/github/github-github-code-review)
+[`subagent-driven-development`](/docs/user-guide/skills/optional/software-development/software-development-subagent-driven-development), [`plan`](/docs/user-guide/skills/bundled/software-development/software-development-plan), [`test-driven-development`](/docs/user-guide/skills/bundled/software-development/software-development-test-driven-development), [`github-code-review`](/docs/user-guide/skills/bundled/github/github-github-code-review)
 
 ## Reference: full SKILL.md
 
@@ -294,7 +294,7 @@ element.textContent = userInput;
 
 **test-driven-development:** This pipeline verifies TDD discipline was followed — tests exist, tests pass, no regressions.
 
-**writing-plans:** Validates implementation matches the plan requirements.
+**plan:** Validates implementation matches the plan requirements.
 
 ## Pitfalls
 

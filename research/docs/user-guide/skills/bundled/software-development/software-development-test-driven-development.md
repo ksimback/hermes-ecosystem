@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`systematic-debugging`](/docs/user-guide/skills/bundled/software-development/software-development-systematic-debugging), [`writing-plans`](/docs/user-guide/skills/bundled/software-development/software-development-writing-plans), [`subagent-driven-development`](/docs/user-guide/skills/bundled/software-development/software-development-subagent-driven-development)
+[`systematic-debugging`](/docs/user-guide/skills/bundled/software-development/software-development-systematic-debugging), [`plan`](/docs/user-guide/skills/bundled/software-development/software-development-plan), [`subagent-driven-development`](/docs/user-guide/skills/optional/software-development/software-development-subagent-driven-development)
 
 ## Reference: full SKILL.md
 

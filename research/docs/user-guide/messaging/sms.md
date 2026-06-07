@@ -154,7 +154,7 @@ Webhook listener port (default: `8080`)
 
 No
 
-Webhook bind address (default: `0.0.0.0`)
+Webhook bind address (default: `127.0.0.1`)
 
 `SMS_INSECURE_NO_SIGNATURE`
 

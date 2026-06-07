@@ -74,12 +74,12 @@ hermes tools              # Enable the gateway per-tool — pick "Nous Subscript
 Check what's active at any time:
 
 ```
-hermes portal status      # Portal auth + Tool Gateway routing summary
+hermes portal info        # Portal auth + Tool Gateway routing summary
 hermes portal tools       # Gateway catalog with current routing per tool
 hermes status             # Full system status (Tool Gateway is one section)
 ```
 
-`hermes portal status` shows a section like:
+`hermes portal info` shows a section like:
 
 ```
 ◆ Nous Tool Gateway
@@ -95,6 +95,8 @@ Tools marked "active via Nous subscription" are going through the gateway. Anyth
 ## Eligibility
 
 The Tool Gateway is a **paid-subscription** feature. Free-tier Nous accounts can use Portal for inference but don't include managed tools — [upgrade your plan](https://portal.nousresearch.com/manage-subscription) to unlock the gateway.
+
+Some accounts are also entitled to a **free tool pool** — a small managed-tool allowance that covers gateway tool calls without a paid subscription. When a free pool is available, the gateway surfaces it and shows a setup prompt on first use, so you can opt in and start using managed tools right away.
 
 ## Mix and match
 
@@ -130,7 +132,7 @@ Fast, good default
 
 FLUX 2 Pro
 
-`fal-ai/flux-2/pro`
+`fal-ai/flux-2-pro`
 
 Higher fidelity FLUX
 
@@ -142,13 +144,13 @@ Stylized, fast
 
 Nano Banana Pro
 
-`fal-ai/gemini-3-pro-image`
+`fal-ai/nano-banana-pro`
 
 Google Gemini 3 Pro Image
 
 GPT Image 1.5
 
-`fal-ai/gpt-image-1/5`
+`fal-ai/gpt-image-1.5`
 
 OpenAI image gen, text+image
 
@@ -166,7 +168,7 @@ Strong prompt adherence + typography
 
 Recraft V4 Pro
 
-`fal-ai/recraft/v4/pro`
+`fal-ai/recraft/v4/pro/text-to-image`
 
 Vector-style, graphic design
 

@@ -178,7 +178,7 @@ Toggle YOLO mode — skip all dangerous command approval prompts.
 
 `/footer [on|off|status]`
 
-Toggle the gateway runtime-metadata footer on final replies (shows model, tool counts, timing).
+Toggle the gateway runtime-metadata footer on final replies (shows model, context %, and cwd).
 
 `/busy [queue|steer|interrupt|status]`
 
@@ -252,6 +252,10 @@ Description
 
 Show this help message
 
+`/version`
+
+Show Hermes Agent version, build, and environment info.
+
 `/usage`
 
 Show token usage, cost breakdown, session duration, and — when available from the active provider — an **Account limits** section with remaining quota / credits / plan usage pulled live from the provider's API.
@@ -300,7 +304,7 @@ Description
 
 `/quit`
 
-Exit the CLI (also: `/exit`). See note on `/q` under `/queue` above. Pass `--delete` (or `-d`) — e.g. `/exit --delete` — to also permanently remove the current session's SQLite history and on-disk transcripts before exiting. Useful for privacy-sensitive or one-off tasks.
+Exit the CLI (also: `/exit`).
 
 ### Dynamic CLI slash commands
 
@@ -489,7 +493,7 @@ Set a standing goal Hermes works toward across turns — our take on the Ralph l
 
 `/footer [on|off|status]`
 
-Toggle the runtime-metadata footer on final replies (shows model, tool counts, timing).
+Toggle the runtime-metadata footer on final replies (shows model, context %, and cwd).
 
 `/curator [status|run|pin|archive]`
 
@@ -544,7 +548,7 @@ Invoke any installed skill by name.
 -   `/skin`, `/snapshot`, `/gquota`, `/reload`, `/tools`, `/toolsets`, `/browser`, `/config`, `/cron`, `/skills`, `/platforms`, `/paste`, `/image`, `/statusbar`, `/plugins`, `/busy`, `/indicator`, `/redraw`, `/clear`, `/history`, `/save`, `/copy`, `/handoff`, and `/quit` are **CLI-only** commands.
 -   `/verbose` is **CLI-only by default**, but can be enabled for messaging platforms by setting `display.tool_progress_command: true` in `config.yaml`. When enabled, it cycles the `display.tool_progress` mode and saves to config.
 -   `/sethome`, `/update`, `/restart`, `/approve`, `/deny`, `/topic`, and `/commands` are **messaging-only** commands.
--   `/status`, `/background`, `/queue`, `/steer`, `/voice`, `/reload-mcp`, `/reload-skills`, `/rollback`, `/debug`, `/fast`, `/footer`, `/curator`, `/kanban`, `/sessions`, and `/yolo` work in **both** the CLI and the messaging gateway.
+-   `/status`, `/version`, `/background`, `/queue`, `/steer`, `/voice`, `/reload-mcp`, `/reload-skills`, `/rollback`, `/debug`, `/fast`, `/footer`, `/curator`, `/kanban`, `/sessions`, and `/yolo` work in **both** the CLI and the messaging gateway.
 -   `/voice join`, `/voice channel`, and `/voice leave` are only meaningful on Discord.
 -   In the TUI, `/sessions` shows live sessions in the current TUI process. Use `/resume [name]` or `hermes --tui --resume <id-or-title>` for saved or closed transcripts.
 
