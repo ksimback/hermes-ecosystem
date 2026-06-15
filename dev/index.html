@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build on Hermes Agent — A Developer Tutorial | Hermes Atlas</title>
+<meta name="description" content="A hands-on tutorial to the Hermes Agent open-source codebase, written for agentic developers and vibecoders who build with AI. Seven short modules from mental model to shipping your own skill, tool, or integration.">
+<link rel="canonical" href="https://hermesatlas.com/dev/">
+<meta property="og:title" content="Build on Hermes Agent — A Developer Tutorial">
+<meta property="og:description" content="Understand the Hermes Agent codebase and build on it. Seven 10–15 minute modules for agentic developers — no CS degree assumed.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hermesatlas.com/dev/">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=Build+on+Hermes+Agent&amp;subtitle=A+developer+tutorial+for+people+who+build+with+AI.&amp;kind=handbook">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Build on Hermes Agent — A Developer Tutorial">
+<meta name="twitter:description" content="Understand the Hermes Agent codebase and build on it. Seven short modules for agentic developers.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=Build+on+Hermes+Agent&amp;subtitle=A+developer+tutorial+for+people+who+build+with+AI.&amp;kind=handbook">
+<meta name="twitter:creator" content="@ksimback">
+<meta name="author" content="Kevin Simback">
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>
+  (function() {
+    try {
+      var stored = localStorage.getItem('theme');
+      var osLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      var theme = stored || (osLight ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "Build on Hermes Agent — A Developer Tutorial",
+  "description": "A hands-on tutorial to the Hermes Agent open-source codebase for agentic developers: mental model, agent loop, tools, skills, memory, MCP/gateway/cron, and how to build on it.",
+  "url": "https://hermesatlas.com/dev/",
+  "provider": { "@type": "Organization", "name": "Hermes Atlas", "url": "https://hermesatlas.com" },
+  "author": { "@type": "Person", "name": "Kevin Simback", "url": "https://x.com/ksimback" }
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>jun·2026</span>
+    <span id="meta-count">95·repos</span>
+    <span id="meta-version">hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/guide/">handbook</a>
+    <a href="/dev/" class="active">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="/#newsletter">newsletter</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span>dev
+</div>
+
+<main class="article" id="main">
+
+<header class="article-header">
+  <div class="article-badge">dev tutorial · 7 modules + references · ~90 min</div>
+  <h1>Build on Hermes Agent</h1>
+  <p class="subtitle">A hands-on tour of <a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener">Nous Research's open-source AI agent</a> — written for <strong>agentic developers</strong>: people who ship real things by pairing with AI, but never sat through a compilers class. No CS degree assumed. We build the mental model first, then show you exactly where to reach in to add your own skills, tools, and integrations.</p>
+  <p class="meta">Hermes Atlas dev tutorial · Python-optional · built on the MIT-licensed hermes-agent</p>
+</header>
+
+<blockquote><strong>How to read this</strong> — each module is a self-contained 10–15 minute lesson. They build on each other, so go in order the first time. Every module cites the real source files and the <a href="https://hermes-agent.nousresearch.com/docs/" target="_blank" rel="noopener">official docs</a>, and ends with a prompt you can paste to your own AI to go deeper. This is a companion to the beginner-focused <a href="/guide/">handbook</a> — the handbook gets you <em>using</em> Hermes; this tutorial gets you <em>building on</em> it.</blockquote>
+
+<h2>Foundations</h2>
+<ol class="dev-toc">
+<li><a href="/dev/what-is-hermes-agent"><strong>What Hermes Agent actually is</strong></a> — the mental model (an agent is a loop, not a chatbot), what makes it different, and getting it running in five minutes. <span class="meta">~12 min</span></li>
+<li><a href="/dev/agent-loop"><strong>The agent loop — the heartbeat</strong></a> — follow one message from your keyboard to the model and back. Tool calls, the loop, when it stops. The single most important concept. <span class="meta">~14 min</span></li>
+</ol>
+
+<h2>The extension points</h2>
+<ol class="dev-toc" start="3">
+<li><a href="/dev/tools-and-toolsets"><strong>Tools &amp; toolsets</strong></a> — what a "tool" really is, the self-registering registry, how tools get grouped, and the command-approval safety model. <span class="meta">~14 min</span></li>
+<li><a href="/dev/skills"><strong>Skills — the self-improvement loop</strong></a> — the headline feature, and your easiest way in. Author a skill by hand (it's just Markdown), then watch the agent improve its own. <span class="meta">~15 min</span></li>
+<li><a href="/dev/memory"><strong>Memory &amp; cross-session recall</strong></a> — how the agent remembers you between sessions: MEMORY.md, the user profile, full-text session search, and pluggable memory backends. <span class="meta">~11 min</span></li>
+</ol>
+
+<h2>Reach &amp; building</h2>
+<ol class="dev-toc" start="6">
+<li><a href="/dev/mcp-gateway-cron"><strong>Reaching out: MCP, the gateway &amp; cron</strong></a> — give the agent more tools (MCP), let it live on Telegram/Discord (the gateway), and have it work while you sleep (cron). <span class="meta">~13 min</span></li>
+<li><a href="/dev/building-on-hermes"><strong>Building on Hermes: pick your altitude</strong></a> — the capstone. The "Footprint Ladder" for choosing how to extend, embedding the agent in your own Python app, and delegating to subagents. <span class="meta">~15 min</span></li>
+</ol>
+
+<h2>Reference — keep these open while you build</h2>
+<ul>
+<li><a href="/dev/glossary"><strong>Glossary</strong></a> — every Hermes term used in the tutorial, in plain English.</li>
+<li><a href="/dev/codebase-map"><strong>Codebase map &amp; cheat sheet</strong></a> — the "where do I edit X?" companion: key files, your <code>~/.hermes/</code> data dir, and essential commands.</li>
+<li><a href="/dev/skill-template"><strong>Skill authoring template</strong></a> — a copy-paste <code>SKILL.md</code> with annotated frontmatter and a finished example.</li>
+</ul>
+
+<blockquote><strong>Your AI is your TA</strong> — this whole tutorial assumes you'll be pairing with an AI assistant. Clone the repo alongside these lessons and let your AI read the real files with you. Start with: <em>"I'm learning the Hermes Agent codebase (github.com/NousResearch/hermes-agent). I cloned it locally. Walk me through agent/conversation_loop.py and explain the main loop like I'm a product builder, not a compiler engineer."</em></blockquote>
+
+<div class="article-footer">
+  <a class="cta" href="/dev/what-is-hermes-agent">Start Module 1 · What Hermes Agent actually is →</a>
+</div>
+
+<aside class="email-cta email-cta--compact" id="newsletter" aria-label="Newsletter signup">
+  <div class="email-cta-kicker">newsletter · free · 1–2× / month</div>
+  <form class="email-cta-form" data-email-form novalidate>
+    <input type="email" name="email" class="email-cta-input" placeholder="you@domain.com" required autocomplete="email" aria-label="Email address">
+    <button type="submit" class="email-cta-button">subscribe</button>
+  </form>
+  <p class="email-cta-status" role="status" aria-live="polite"></p>
+  <p class="email-cta-foot">handled by beehiiv · <a href="/privacy">privacy</a></p>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.06</div>
+</footer>
+
+<script>
+  (function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();
+</script>
+<script src="/assets/js/email-capture.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill Authoring Template — Hermes Agent Dev Tutorial | Hermes Atlas</title>
+<meta name="description" content="A copy-paste SKILL.md with annotated frontmatter and a finished example — write a Hermes skill with no Python.">
+<link rel="canonical" href="https://hermesatlas.com/dev/skill-template">
+<meta property="og:title" content="Skill Authoring Template — Hermes Agent Dev Tutorial">
+<meta property="og:description" content="A copy-paste SKILL.md with annotated frontmatter and a finished example — write a Hermes skill with no Python.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/dev/skill-template">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="article:published_time" content="2026-06-15T00:00:00Z">
+<meta property="article:modified_time" content="2026-06-15T00:00:00Z">
+<meta property="article:author" content="https://x.com/ksimback">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=Skill+Authoring+Template&amp;subtitle=A+copy-paste+SKILL.md+with+annotated+frontmatter+%E2%80%94+no+Python.&amp;kind=handbook">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Skill Authoring Template — Hermes Agent Dev Tutorial">
+<meta name="twitter:description" content="A copy-paste SKILL.md with annotated frontmatter and a finished example — write a Hermes skill with no Python.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=Skill+Authoring+Template&amp;subtitle=A+copy-paste+SKILL.md+with+annotated+frontmatter+%E2%80%94+no+Python.&amp;kind=handbook">
+<meta name="twitter:creator" content="@ksimback">
+<meta name="author" content="Kevin Simback">
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>
+  (function() {
+    try {
+      var stored = localStorage.getItem('theme');
+      var osLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      var theme = stored || (osLight ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Hermes Agent Skill Authoring Template",
+  "description": "A copy-paste SKILL.md with annotated frontmatter and a finished example — write a Hermes skill with no Python.",
+  "image": "https://hermesatlas.com/api/og?title=Skill+Authoring+Template&subtitle=A+copy-paste+SKILL.md+with+annotated+frontmatter+%E2%80%94+no+Python.&kind=handbook",
+  "datePublished": "2026-06-15T00:00:00Z",
+  "dateModified": "2026-06-15T00:00:00Z",
+  "author": { "@type": "Person", "name": "Kevin Simback", "url": "https://x.com/ksimback" },
+  "publisher": { "@type": "Organization", "name": "Hermes Atlas", "url": "https://hermesatlas.com" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://hermesatlas.com/dev/skill-template" }
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>jun·2026</span>
+    <span id="meta-count">95·repos</span>
+    <span id="meta-version">hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/guide/">handbook</a>
+    <a href="/dev/" class="active">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="/#newsletter">newsletter</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/dev/">dev</a><span class="sep">/</span>skill template
+</div>
+
+<main class="article" id="main">
+
+<header class="article-header">
+  <div class="article-badge">dev tutorial · reference</div>
+  <h1>Skill authoring template</h1>
+  <p class="subtitle">Everything you need to hand-write a Hermes skill — no Python.</p>
+  <p class="meta">Hermes Atlas dev tutorial · reference</p>
+</header>
+
+<h2>What a skill is</h2>
+<p>A <strong>skill</strong> is a Markdown how-to that the agent loads <em>on demand</em> — a procedure it reads when a task matches, then follows. It's not code you compile; it's instructions you write in plain English (plus a little YAML at the top). Each skill lives in its own folder at <code>~/.hermes/skills/[category/]&lt;name&gt;/SKILL.md</code>, and the file is named <code>SKILL.md</code> exactly. For the full mental model of how skills get discovered, loaded, and improved over time, see <a href="/dev/skills">Module 4 — Skills: the learning loop</a>.</p>
+
+<h2>The directory layout</h2>
+<p>A skill is a folder. <code>SKILL.md</code> is the only required file; the four optional subfolders hold supporting material the body can point to.</p>
+<pre><code>~/.hermes/skills/
+  my-category/
+    my-skill/
+      SKILL.md            # required
+      references/         # optional supporting docs
+      templates/          # optional
+      scripts/            # optional helper scripts
+      assets/             # optional files</code></pre>
+<p>The category folder (<code>my-category/</code>) is optional too — a skill can sit directly under <code>~/.hermes/skills/&lt;name&gt;/</code>. Categories just keep large collections tidy.</p>
+
+<h2>The annotated template</h2>
+<p>Copy this whole block into a new <code>SKILL.md</code> and fill in the blanks. The frontmatter (between the <code>---</code> fences) is structured metadata; everything below it is the free-form body the agent reads.</p>
+
+<pre><code>---
+name: my-skill                      # required · lowercase, matches [a-z0-9][a-z0-9._-]*
+description: One clear sentence on what this does and when to use it.   # required
+version: 1.0.0                       # optional
+author: Your Name                   # optional
+license: MIT                         # optional
+platforms: [linux, macos, windows]  # optional
+metadata:
+  hermes:
+    tags: [Category, Keyword, Keyword]   # optional · helps discovery
+    related_skills: [some-other-skill]   # optional
+---
+
+# My Skill Title
+
+Short intro: what this skill helps the agent do, and when to reach for it.
+
+## When to use this
+- Bullet the trigger situations.
+
+## Steps
+1. First do this.
+2. Then this. Be concrete and command-level where you can.
+
+## Examples
+Show a real example (commands, expected output).
+
+## Gotchas
+- Note pitfalls so the agent avoids them.</code></pre>
+
+<h2>Frontmatter fields</h2>
+<p>Only two fields are required. Everything else is optional but improves discovery and provenance.</p>
+<table>
+  <thead><tr><th>Field</th><th>Required?</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td><code>name</code></td><td><strong>Required</strong></td><td>Lowercase identifier matching <code>[a-z0-9][a-z0-9._-]*</code>. Should match the folder name.</td></tr>
+    <tr><td><code>description</code></td><td><strong>Required</strong></td><td>One sentence on <em>what</em> it does and <em>when</em> to use it. This is what the agent scans to decide whether to load the skill — make it specific.</td></tr>
+    <tr><td><code>version</code></td><td>Optional</td><td>Semver string, e.g. <code>1.0.0</code>.</td></tr>
+    <tr><td><code>author</code></td><td>Optional</td><td>Your name or handle.</td></tr>
+    <tr><td><code>license</code></td><td>Optional</td><td>e.g. <code>MIT</code>.</td></tr>
+    <tr><td><code>platforms</code></td><td>Optional</td><td>List of supported OSes, e.g. <code>[linux, macos, windows]</code>.</td></tr>
+    <tr><td><code>metadata.hermes.tags</code></td><td>Optional</td><td>Keywords that help the agent surface the skill.</td></tr>
+    <tr><td><code>metadata.hermes.related_skills</code></td><td>Optional</td><td>Names of skills that pair well with this one.</td></tr>
+  </tbody>
+</table>
+
+<h2>The rules</h2>
+<blockquote><strong>Validation rules — keep these or the loader rejects the skill</strong>
+<ul>
+<li><strong>name</strong> must be lowercase and match <code>[a-z0-9][a-z0-9._-]*</code>.</li>
+<li><strong>SKILL.md</strong> can be up to <strong>~100,000 characters</strong> (about 36k tokens). If it grows past that, split the long parts into <code>references/</code> or <code>templates/</code>.</li>
+<li>Supporting files must live in one of four subfolders only: <code>references/</code>, <code>templates/</code>, <code>scripts/</code>, <code>assets/</code>.</li>
+<li>You can reference the skill's <em>own</em> folder from inside the body with <code>${HERMES_SKILL_DIR}</code> — Hermes expands it to the absolute path at load time, so a helper script becomes <code>${HERMES_SKILL_DIR}/scripts/run.sh</code>.</li>
+</ul></blockquote>
+<p>These constraints are enforced in <code>tools/skill_manager_tool.py</code> (name pattern, the 100,000-char ceiling, and the allowed-subdirs allowlist) and the <code>${HERMES_SKILL_DIR}</code> substitution happens in <code>agent/skill_preprocessing.py</code>.</p>
+
+<h2>A finished mini-example</h2>
+<p>Here's a complete, working skill — small but real. Save it as <code>~/.hermes/skills/git/git-clean-branches/SKILL.md</code> and the agent can run it the moment you ask it to tidy up your branches.</p>
+
+<pre><code>---
+name: git-clean-branches
+description: Delete local Git branches that have already been merged into the main branch. Use to tidy up a repo after merging PRs.
+version: 1.0.0
+author: Your Name
+license: MIT
+platforms: [linux, macos, windows]
+metadata:
+  hermes:
+    tags: [Git, Cleanup, Branches]
+---
+
+# Clean up merged Git branches
+
+Removes local branches that are fully merged into the default branch, so the
+branch list stays readable after a round of PRs.
+
+## When to use this
+- The user says "clean up my branches" or "delete merged branches".
+- After merging one or more pull requests.
+
+## Steps
+1. Confirm you're in a Git repo: `git rev-parse --is-inside-work-tree`.
+2. Find the default branch: `git symbolic-ref --short refs/remotes/origin/HEAD`
+   (usually `origin/main`). Switch to it: `git checkout main`.
+3. Update it: `git pull --ff-only`.
+4. List merged branches, excluding the current one and main:
+   `git branch --merged | grep -vE '^\*|main|master'`.
+5. Show that list to the user and confirm before deleting.
+6. Delete each: `git branch -d &lt;branch&gt;`.
+
+## Examples
+```
+$ git branch --merged | grep -vE '^\*|main|master'
+  feature/login-form
+  fix/typo
+$ git branch -d feature/login-form fix/typo
+Deleted branch feature/login-form (was a1b2c3d).
+Deleted branch fix/typo (was e4f5g6h).
+```
+
+## Gotchas
+- Use `-d` (safe), never `-D`, so Git refuses to drop unmerged work.
+- Never delete the branch you're standing on — checkout main first.
+- `--merged` is relative to the *current* branch; that's why step 2 matters.</code></pre>
+
+<h2>How to use it once written</h2>
+<ol>
+  <li>Save the file at <code>~/.hermes/skills/[category/]&lt;name&gt;/SKILL.md</code>.</li>
+  <li>Start the agent: run <code>hermes</code>.</li>
+  <li>Load it explicitly by typing <code>/my-skill</code> — or just describe a task that matches its <code>description</code> and let the agent find and load it on its own.</li>
+</ol>
+<p>When you're happy with it, share it: <code>hermes skills publish</code> pushes the skill out for others to install. Hermes skills follow the open <a href="https://agentskills.io" target="_blank" rel="noopener">agentskills.io</a> standard, so the same <code>SKILL.md</code> format works across compatible agents.</p>
+
+<blockquote><strong>Pair with your AI</strong> — don't start from a blank file; hand the workflow to your agent and edit what it returns. Try: <em>"Draft a complete SKILL.md for &lt;my workflow&gt;, following the Hermes frontmatter format."</em></blockquote>
+
+<div class="article-footer">
+  <a class="cta" href="/dev/skills">← back to Module 4 · Skills</a>
+  <p style="margin-top:1em;"><a class="back-link" href="/dev/">↩ Dev tutorial index</a> · <a class="back-link" href="/dev/glossary">glossary</a> · <a class="back-link" href="/dev/codebase-map">codebase map</a></p>
+</div>
+
+<aside class="email-cta email-cta--compact" id="newsletter" aria-label="Newsletter signup">
+  <div class="email-cta-kicker">newsletter · free · 1–2× / month</div>
+  <form class="email-cta-form" data-email-form novalidate>
+    <input type="email" name="email" class="email-cta-input" placeholder="you@domain.com" required autocomplete="email" aria-label="Email address">
+    <button type="submit" class="email-cta-button">subscribe</button>
+  </form>
+  <p class="email-cta-status" role="status" aria-live="polite"></p>
+  <p class="email-cta-foot">handled by beehiiv · <a href="/privacy">privacy</a></p>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.06</div>
+</footer>
+
+<script>
+  (function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();
+</script>
+<script src="/assets/js/email-capture.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+</body>
+</html>

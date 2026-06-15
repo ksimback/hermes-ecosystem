@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Agent Loop — Hermes Agent Dev Tutorial (Module 2) | Hermes Atlas</title>
+<meta name="description" content="Trace one message through Hermes Agent's loop — think, call a tool, see the result, repeat — from your keyboard out to the model and back to the screen.">
+<link rel="canonical" href="https://hermesatlas.com/dev/agent-loop">
+<meta property="og:title" content="The Agent Loop — Hermes Agent Dev Tutorial (Module 2)">
+<meta property="og:description" content="Trace one message through Hermes Agent's loop — think, call a tool, see the result, repeat — from your keyboard out to the model and back to the screen.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/dev/agent-loop">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="article:published_time" content="2026-06-15T00:00:00Z">
+<meta property="article:modified_time" content="2026-06-15T00:00:00Z">
+<meta property="article:author" content="https://x.com/ksimback">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=The+Agent+Loop&amp;subtitle=Trace+one+message+through+the+loop+%E2%80%94+think%2C+call%2C+see%2C+repeat.&amp;kind=handbook">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Agent Loop — Hermes Agent Dev Tutorial">
+<meta name="twitter:description" content="Trace one message through Hermes Agent's loop — think, call a tool, see the result, repeat.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=The+Agent+Loop&amp;subtitle=Trace+one+message+through+the+loop+%E2%80%94+think%2C+call%2C+see%2C+repeat.&amp;kind=handbook">
+<meta name="twitter:creator" content="@ksimback">
+<meta name="author" content="Kevin Simback">
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>
+  (function() {
+    try {
+      var stored = localStorage.getItem('theme');
+      var osLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      var theme = stored || (osLight ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "The Agent Loop",
+  "description": "Trace one message through Hermes Agent's loop — think, call a tool, see the result, repeat — from your keyboard out to the model and back to the screen. Module 2 of the Hermes Agent developer tutorial.",
+  "image": "https://hermesatlas.com/api/og?title=The+Agent+Loop&subtitle=Trace+one+message+through+the+loop.&kind=handbook",
+  "datePublished": "2026-06-15T00:00:00Z",
+  "dateModified": "2026-06-15T00:00:00Z",
+  "author": { "@type": "Person", "name": "Kevin Simback", "url": "https://x.com/ksimback" },
+  "publisher": { "@type": "Organization", "name": "Hermes Atlas", "url": "https://hermesatlas.com" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://hermesatlas.com/dev/agent-loop" }
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>jun·2026</span>
+    <span id="meta-count">95·repos</span>
+    <span id="meta-version">hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/guide/">handbook</a>
+    <a href="/dev/" class="active">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="/#newsletter">newsletter</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/dev/">dev</a><span class="sep">/</span>the agent loop
+</div>
+
+<main class="article" id="main">
+
+<header class="article-header">
+  <div class="article-badge">dev tutorial · module 2 of 7 · foundations</div>
+  <h1>The agent loop — the heartbeat</h1>
+  <p class="subtitle">In Module 1 we landed the one big idea: an agent is a loop, not a chatbot. That was the cartoon version. Now we trace the <em>real</em> loop — what actually happens, in which file, when you press Enter — so you can follow a single message from your keyboard, out to the model, and back to the screen.</p>
+  <p class="meta">Hermes Atlas dev tutorial · ~14 min · for builders, no CS degree assumed</p>
+</header>
+
+<blockquote><strong>Goal for this module</strong> — trace one message from keyboard to model and back: the entry path, one turn start to finish, the trajectory, provider-neutrality, and the sacred caching rule.</blockquote>
+
+<h2>Quick recap, then the real thing</h2>
+<p>Last module's picture was: <em>think → call a tool → see the result → repeat → answer.</em> That's true, and it's the whole soul of the system. But a real codebase has to handle messy reality: the model running out of room, asking for eight tools at once, the conversation needing to be saved, and the same loop somehow talking to OpenAI, Anthropic, Gemini, <em>and</em> a model running on your own laptop.</p>
+<p>This module opens the hood. We won't read all 3,900 lines of the loop — we'll build a mental model accurate enough that, when you <em>do</em> open the file, every part has an obvious job. The official write-up is the <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/agent-loop" target="_blank" rel="noopener">Agent Loop developer guide</a>; this is the friendly companion to it.</p>
+
+<h2>The entry path (how a keystroke becomes a loop)</h2>
+<p>You don't have to memorize this — just see that there's a clean, short trail from typing <code>hermes</code> to the loop starting. Each hop hands off to the next:</p>
+<table>
+  <thead><tr><th>Step</th><th>What happens</th></tr></thead>
+  <tbody>
+    <tr><td>You type <code>hermes</code></td><td>A small launcher script runs.</td></tr>
+    <tr><td><code>hermes_cli/main.py</code></td><td>The <code>main</code> entry point. With no command given, it defaults to a chat session.</td></tr>
+    <tr><td><code>HermesCLI</code> in <code>cli.py</code></td><td>Wires up your config and builds an <code>AIAgent</code> (defined in <code>run_agent.py</code>).</td></tr>
+    <tr><td><code>run_conversation()</code></td><td>The agent's <strong>heartbeat</strong>, living in <code>agent/conversation_loop.py</code>. This is where we'll spend the rest of the module.</td></tr>
+  </tbody>
+</table>
+<p>So: <code>hermes</code> → <code>hermes_cli/main.py</code> → <code>HermesCLI</code> → builds an <code>AIAgent</code> → calls <code>run_conversation()</code>. Everything above the loop is just plumbing to get you there. The interesting machine is the loop itself.</p>
+
+<h2>One turn, start to finish</h2>
+<p>The key word is <strong>turn</strong>. A turn is <em>everything that happens for one user message</em> — from "you hit Enter" to "Hermes replies." Inside one turn, the model might call ten tools and talk to the provider five times. You see one question and one answer; under the hood, a lot of laps happened.</p>
+<p>A turn has three parts: a <strong>prologue</strong> that runs once at the start, a <strong>main loop</strong> that repeats until there's an answer, and an <strong>epilogue</strong> that runs once at the end. Here's the whole thing:</p>
+
+<pre><code>You hit Enter on a message
+        |
+        v
+  +----------------------------------------------------------+
+  |  PROLOGUE — runs once   (agent/turn_context.py)          |
+  |  build_turn_context(): clean up the message, build or    |
+  |  restore the system prompt, set up the turn.             |
+  +----------------------------------------------------------+
+        |
+        v
+  +----------------------------------------------------------+
+  |  MAIN LOOP — repeats (capped at a max # of laps)         |
+  |                                                          |
+  |   build the message list  -->  call the LLM (streaming)  |
+  |                                       |                  |
+  |                          read finish_reason  <--         |
+  |                                       |                  |
+  |      +--------------------------------+----------+       |
+  |      v                v                          v       |
+  |  "tool_calls"        "stop"                  "length"    |
+  |  run the tools,      final answer —          out of room:|
+  |  append results,     append it &amp;             compress    |
+  |  loop again          exit loop               history,    |
+  |      |                                       retry       |
+  |      +------------- back to top -------------------+     |
+  +----------------------------------------------------------+
+        |
+        v
+  +----------------------------------------------------------+
+  |  EPILOGUE — runs once                                    |
+  |  save the conversation to SQLite, run post-turn hooks    |
+  |  (memory review, skill suggestions).                     |
+  +----------------------------------------------------------+
+        |
+        v
+Hermes replies on your screen</code></pre>
+
+<p>Let's walk the three parts.</p>
+
+<h3>Prologue — set the stage (once)</h3>
+<p><code>build_turn_context()</code> (in <code>agent/turn_context.py</code>) does the pre-flight: it <strong>sanitizes</strong> your message (strips characters that would choke a provider), <strong>builds or restores the system prompt</strong> (the standing instructions that tell the model who it is and what tools exist), and sets up the turn's bookkeeping. This happens <em>once</em> per turn — hold onto that, it matters in the caching section below.</p>
+
+<h3>Main loop — think, act, repeat (many times)</h3>
+<p>Now the laps begin. Each lap is the same three beats:</p>
+<ol>
+  <li><strong>Build the message list</strong> — assemble the running conversation so far (more on this in the trajectory section).</li>
+  <li><strong>Call the LLM</strong> — send it off, streaming the response token-by-token by default so you see text appear live.</li>
+  <li><strong>Read the <code>finish_reason</code></strong> — the model tells you <em>why it stopped talking</em>. This one field decides what happens next.</li>
+</ol>
+<p>There are three outcomes worth knowing, and the whole loop pivots on them:</p>
+<table>
+  <thead><tr><th><code>finish_reason</code></th><th>Meaning</th><th>What the loop does</th></tr></thead>
+  <tbody>
+    <tr><td><code>tool_calls</code></td><td>"I want to use some tools."</td><td>Execute them (in <code>agent/tool_executor.py</code>) — one at a time, or concurrently up to ~8 at once. Append each result as a <code>tool</code> message. <strong>Loop again.</strong></td></tr>
+    <tr><td><code>stop</code></td><td>"Here's my final answer."</td><td>Append the answer, <strong>exit the loop</strong>, show it to you. Turn done.</td></tr>
+    <tr><td><code>length</code></td><td>"I ran out of room."</td><td>Quietly <strong>compress</strong> older history (<code>agent/context_compressor.py</code>) and <strong>retry</strong>. You never see this happen.</td></tr>
+  </tbody>
+</table>
+<p>That <code>tool_calls</code> → run tools → loop again cycle is the engine. It's exactly the cartoon loop from Module 1, just with a real name for the signal (<code>finish_reason</code>) and a real file doing the work (<code>tool_executor.py</code>). And there's a safety belt: the loop is <strong>capped at a maximum number of laps</strong>, so a confused model can't spin forever.</p>
+
+<blockquote><strong>The <code>length</code> case is quietly clever</strong> — Models have a finite <em>context window</em> — a budget for how much text they can consider at once. Long conversations eventually blow past it. Instead of erroring out in your face, Hermes catches the <code>length</code> signal, summarizes/trims the older parts of the conversation, and tries again. From your seat it just... keeps working. We dig into how in the <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/context-compression-and-caching" target="_blank" rel="noopener">compression &amp; caching docs</a>.</blockquote>
+
+<h3>Epilogue — clean up (once)</h3>
+<p>Once the loop exits with an answer, the turn wraps up: the conversation is <strong>saved to SQLite</strong> (that's the <code>state.db</code> file from Module 1), and <strong>post-turn hooks</strong> fire — the background nudges that review what just happened for memory-worthy facts and suggest new skills. That self-improving behavior we flagged in Module 1? This is where it gets kicked off, <em>after</em> you already have your answer, so it never slows down your reply.</p>
+
+<h2>The trajectory — the conversation is a list</h2>
+<p>Here's the data structure that makes the whole thing tick, and it's simpler than you'd guess. The conversation is just a <strong>growing list of messages</strong>. Each message has a <code>role</code>, some <code>content</code>, and — when the model is requesting tools — a <code>tool_calls</code> field. This growing list has a name in the codebase:</p>
+
+<blockquote><strong>Define: trajectory</strong> — The <strong>trajectory</strong> is the full, ordered list of messages in a conversation — every user message, every assistant reply, every tool request, and every tool result, in the order they happened. It's the agent's working memory for the current turn. The loop reads the trajectory to build each model call, and appends to it after every lap.</blockquote>
+
+<p>There are three roles you'll see constantly. Here's a tiny slice of a trajectory after the model decided to check the time:</p>
+
+<pre><code>[
+  { "role": "user",
+    "content": "what time is it in tokyo?" },
+
+  { "role": "assistant",           // the model asks for a tool
+    "content": null,
+    "tool_calls": [{ "name": "get_time",
+                    "arguments": { "tz": "Asia/Tokyo" } }] },
+
+  { "role": "tool",                // the result comes back as its own message
+    "content": "2026-06-15 22:14 JST" }
+]</code></pre>
+
+<p>Read it top to bottom and the loop's logic falls out: the user asks; the assistant replies — but instead of prose, its reply is a <em>request to run a tool</em>; the tool result is appended as a brand-new message. Then the loop runs again, the model sees that <code>tool</code> message in the trajectory, and <em>now</em> it can answer "It's 10:14 PM in Tokyo" with <code>finish_reason: "stop"</code>. The trajectory grew by one message each lap. That's the entire dance.</p>
+
+<h2>One loop, every provider</h2>
+<p>Reasonable question: if there's just <em>one</em> loop, how does it talk to OpenAI, Anthropic, Gemini, <em>and</em> a model on your laptop — each of which speaks a slightly different dialect? The answer is a small abstraction that keeps the dialects out of the loop.</p>
+
+<blockquote><strong>Think of a universal power adapter</strong> — Your laptop charger ends in USB-C. The wall socket is different in every country. You don't rewire your laptop per country — you snap on the right <em>plug adapter</em> and the laptop never knows the difference. In Hermes, the loop is the laptop, and each provider is a different country's socket. A <strong>provider profile</strong> is the adapter that makes them all fit.</blockquote>
+
+<p>Concretely: <code>providers/base.py</code> defines a <code>ProviderProfile</code> — a declaration of how a given provider behaves. Per-provider <strong>adapters</strong> (like <code>agent/anthropic_adapter.py</code>) translate between the loop's neutral message format and what that specific provider expects on the wire. The payoff for you:</p>
+
+<blockquote><strong>Why a builder cares</strong> — Adding support for a new provider means <strong>declaring a profile and writing an adapter</strong> — not touching <code>conversation_loop.py</code>. The loop stays provider-blind. This is the "narrow waist" principle from Module 1 in action: capability lives at the edges, the core stays small. More in the <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/architecture" target="_blank" rel="noopener">architecture overview</a>.</blockquote>
+
+<h2>The one sacred rule: the system prompt is built once</h2>
+<p>Remember the prologue — it builds the system prompt <em>once</em>, and the loop reuses it on every lap. That's not laziness; it's a deliberate, load-bearing rule, and understanding it will explain a surprising number of design choices later in this series.</p>
+
+<blockquote><strong>Per-conversation prompt caching is sacred</strong> — Model providers can <strong>cache</strong> a prompt prefix they've seen before and charge you far less to reuse it. Hermes leans on this hard: the system prompt (often huge — all the tool definitions, instructions, your profile) is assembled <strong>once</strong> and reused <em>verbatim</em> every single turn, so the provider can cache it instead of re-reading it from scratch. The savings are large. Because of this, the architecture treats past context as <strong>immutable</strong> — it does not rewrite earlier messages mid-conversation, since any change would bust the cache. The <em>only</em> sanctioned exception is compression (the <code>length</code> case), which only happens when there's no choice.</blockquote>
+
+<p>Keep this in your pocket. When you later wonder "why doesn't Hermes just edit that earlier message?" or "why is the prompt assembled in this rigid order?" — the answer is almost always <em>"to protect the cache."</em> The <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/prompt-assembly" target="_blank" rel="noopener">prompt-assembly docs</a> go deep on how that prompt is built.</p>
+
+<h2>Why this matters for you</h2>
+<p>Here's the freeing part. You almost never need to touch <code>conversation_loop.py</code>. The loop is the stable heart, and it's <em>meant</em> to stay that way. When you extend Hermes you work at the two edges the loop already reaches for:</p>
+<ul>
+  <li><strong>Give the loop a new tool to call</strong> — a new ability the model can invoke during a <code>tool_calls</code> lap (<a href="/dev/tools-and-toolsets">Module 3</a>).</li>
+  <li><strong>Give the model better instructions</strong> — sharper prompts and skills about <em>when</em> to reach for things (<a href="/dev/skills">Module 4</a>).</li>
+</ul>
+<p>Either way, the loop keeps doing its thing — think, act, repeat — and your work plugs into the edges it already exposes. That's the payoff of a narrow waist: you get to build a lot without ever risking the heartbeat.</p>
+
+<h2>Key takeaways</h2>
+<ul>
+  <li>A <strong>turn</strong> is everything that happens for one user message: a one-time <strong>prologue</strong>, a repeating <strong>main loop</strong>, a one-time <strong>epilogue</strong>.</li>
+  <li>The loop pivots on the model's <code>finish_reason</code>: <code>tool_calls</code> → run tools &amp; loop, <code>stop</code> → answer &amp; exit, <code>length</code> → compress &amp; retry. A max-lap cap prevents infinite spinning.</li>
+  <li>The conversation is a growing list of messages called the <strong>trajectory</strong>, with roles <code>user</code> / <code>assistant</code> / <code>tool</code>.</li>
+  <li>One loop serves every provider via <strong>provider profiles</strong> + adapters — add a provider by declaring a profile, not editing the loop.</li>
+  <li><strong>Prompt caching is sacred:</strong> the system prompt is built once and reused verbatim, so past context is treated as immutable (compression is the only exception).</li>
+  <li>You extend at the <strong>edges</strong> (tools, instructions); the loop stays stable.</li>
+</ul>
+
+<blockquote><strong>Quick check</strong> — The model returns <code>finish_reason: "tool_calls"</code>. Does Hermes show the user a reply now? <br><br><em>Answer:</em> No. <code>tool_calls</code> means the model wants to <em>use tools</em>, not that it's finished. The loop runs those tools (in <code>tool_executor.py</code>), appends each result to the trajectory as a <code>tool</code> message, and <strong>loops again</strong> so the model can react to the results. The user only gets a reply when the model returns <code>finish_reason: "stop"</code> — its final answer.</blockquote>
+
+<blockquote><strong>Pair with your AI</strong> — Trace the real loop in your own clone to make this concrete: <em>"Open agent/conversation_loop.py in github.com/NousResearch/hermes-agent. Walk me through one turn of run_conversation() at a conceptual level: where it calls build_turn_context (the prologue), where the main loop branches on finish_reason (tool_calls vs stop vs length), and where the epilogue saves to SQLite and fires post-turn hooks. Point me to the line ranges but explain it like I'm a product builder, not a compiler."</em></blockquote>
+
+<div class="article-footer">
+  <p><a class="back-link" href="/dev/what-is-hermes-agent">← Module 1 · What Hermes Agent actually is</a></p>
+  <a class="cta" href="/dev/tools-and-toolsets">Module 3 · Tools &amp; toolsets →</a>
+  <p style="margin-top:1em;"><a class="back-link" href="/dev/">↩ Dev tutorial index</a></p>
+</div>
+
+<aside class="email-cta email-cta--compact" id="newsletter" aria-label="Newsletter signup">
+  <div class="email-cta-kicker">newsletter · free · 1–2× / month</div>
+  <form class="email-cta-form" data-email-form novalidate>
+    <input type="email" name="email" class="email-cta-input" placeholder="you@domain.com" required autocomplete="email" aria-label="Email address">
+    <button type="submit" class="email-cta-button">subscribe</button>
+  </form>
+  <p class="email-cta-status" role="status" aria-live="polite"></p>
+  <p class="email-cta-foot">handled by beehiiv · <a href="/privacy">privacy</a></p>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.06</div>
+</footer>
+
+<script>
+  (function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();
+</script>
+<script src="/assets/js/email-capture.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+</body>
+</html>

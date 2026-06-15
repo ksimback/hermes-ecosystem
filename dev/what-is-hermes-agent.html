@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Hermes Agent Actually Is — Dev Tutorial (Module 1) | Hermes Atlas</title>
+<meta name="description" content="The mental model behind Nous Research's Hermes Agent: an agent is a loop, not a chatbot. What makes it different, and how to get it running in five minutes. Module 1 of the Hermes Agent developer tutorial.">
+<link rel="canonical" href="https://hermesatlas.com/dev/what-is-hermes-agent">
+<meta property="og:title" content="What Hermes Agent Actually Is — Dev Tutorial (Module 1)">
+<meta property="og:description" content="An agent is a loop, not a chatbot. The mental model that makes the whole Hermes Agent codebase click — for builders, no CS degree required.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/dev/what-is-hermes-agent">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="article:published_time" content="2026-06-15T00:00:00Z">
+<meta property="article:modified_time" content="2026-06-15T00:00:00Z">
+<meta property="article:author" content="https://x.com/ksimback">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=What+Hermes+Agent+Actually+Is&amp;subtitle=An+agent+is+a+loop%2C+not+a+chatbot+%E2%80%94+the+developer+tutorial.&amp;kind=handbook">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="What Hermes Agent Actually Is — Dev Tutorial">
+<meta name="twitter:description" content="An agent is a loop, not a chatbot. The mental model that makes the codebase click.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=What+Hermes+Agent+Actually+Is&amp;subtitle=An+agent+is+a+loop%2C+not+a+chatbot+%E2%80%94+the+developer+tutorial.&amp;kind=handbook">
+<meta name="twitter:creator" content="@ksimback">
+<meta name="author" content="Kevin Simback">
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>
+  (function() {
+    try {
+      var stored = localStorage.getItem('theme');
+      var osLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      var theme = stored || (osLight ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "What Hermes Agent Actually Is",
+  "description": "The mental model behind Hermes Agent: an agent is a loop, not a chatbot. Module 1 of the Hermes Agent developer tutorial.",
+  "image": "https://hermesatlas.com/api/og?title=What+Hermes+Agent+Actually+Is&subtitle=An+agent+is+a+loop%2C+not+a+chatbot.&kind=handbook",
+  "datePublished": "2026-06-15T00:00:00Z",
+  "dateModified": "2026-06-15T00:00:00Z",
+  "author": { "@type": "Person", "name": "Kevin Simback", "url": "https://x.com/ksimback" },
+  "publisher": { "@type": "Organization", "name": "Hermes Atlas", "url": "https://hermesatlas.com" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://hermesatlas.com/dev/what-is-hermes-agent" }
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>jun·2026</span>
+    <span id="meta-count">95·repos</span>
+    <span id="meta-version">hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/guide/">handbook</a>
+    <a href="/dev/" class="active">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="/#newsletter">newsletter</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/dev/">dev</a><span class="sep">/</span>what hermes agent is
+</div>
+
+<main class="article" id="main">
+
+<header class="article-header">
+  <div class="article-badge">dev tutorial · module 1 of 7 · foundations</div>
+  <h1>What Hermes Agent actually is</h1>
+  <p class="subtitle">Before we touch a single file, here's the one idea that makes the whole codebase make sense: an agent is a loop, not a chatbot. Once that clicks, every folder in the repo has an obvious job.</p>
+  <p class="meta">Hermes Atlas dev tutorial · ~12 min · for builders, no CS degree assumed</p>
+</header>
+
+<blockquote><strong>In this module</strong> — the 30-second definition, the one idea (an agent is a loop), what makes Hermes different, the design rule that explains everything, and getting it running in five minutes.</blockquote>
+
+<h2>The 30-second definition</h2>
+
+<p><strong>Hermes Agent</strong> is an open-source, self-hosted AI agent built by <a href="https://nousresearch.com" target="_blank" rel="noopener">Nous Research</a>. You run it yourself — on your laptop, a $5 VPS, or serverless infra — point it at <em>any</em> language model you like, and it can use tools, remember you across sessions, run on a schedule, and live inside Telegram or Discord instead of being trapped in one chat window.</p>
+
+<p>It's released under the <strong>MIT license</strong> (see <code>LICENSE</code> in the <a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener">repo</a>), which is the permissive kind: you can read it, fork it, build a product on it, and ship that product commercially. That's the whole reason this tutorial exists — it's genuinely yours to build on.</p>
+
+<blockquote><strong>If you've used these…</strong> Think of the tools you already know. <strong>ChatGPT</strong> is a model behind a chat box. <strong>Claude Code / Cursor</strong> are agents wired to your code editor. Hermes Agent is closest to those coding agents — a model in a loop with tools — but it's <em>provider-neutral</em>, <em>self-hosted</em>, and built to live anywhere you do, not just in an IDE. (We compare it to Claude Code in detail <a href="/guide/vs-claude-code/">in the handbook</a>.)</blockquote>
+
+<h2>The one idea: an agent is a loop</h2>
+
+<p>A plain chatbot does one thing: you send text, it sends text back. Done. An <strong>agent</strong> adds a loop. The model can <em>call a tool</em> (run a command, read a file, search the web), see the <em>result</em>, and then decide what to do next — over and over — until the job is finished. <em>Then</em> it talks to you.</p>
+
+<pre><code>You: "What changed in this repo today?"
+        |
+        v
+  +-------------------------------------------+
+  |  THE LOOP                                 |
+  |                                           |
+  |   model thinks  -->  calls a tool (git)   |
+  |       ^                      |            |
+  |       |     sees the result  <--          |
+  |       +------- loops again -------+       |
+  |                                           |
+  |   ...until it has the answer              |
+  +-------------------------------------------+
+        |
+        v
+Hermes: "3 commits today: ..."</code></pre>
+
+<p>That's it. That's the secret at the heart of every "AI agent." Everything else in the Hermes codebase — tools, skills, memory, the messaging gateway — is in service of making that loop more capable, safer, and able to remember. We trace the real loop line-by-line in <a href="/dev/agent-loop">Module 2</a>.</p>
+
+<blockquote><strong>Why this matters for you</strong> — when you want to <em>extend</em> Hermes, you're almost always doing one of two things: giving the loop a new tool to call, or giving the model better instructions (a skill) about when to call things. Hold that thought — it's the spine of Modules 3 and 4.</blockquote>
+
+<h2>What makes Hermes different</h2>
+
+<p>There are lots of agent frameworks. The repo's <a href="https://github.com/NousResearch/hermes-agent#readme" target="_blank" rel="noopener">README</a> leads with a few design choices that genuinely set Hermes apart — and each one is a thing you can build on:</p>
+
+<table>
+<thead><tr><th>Trait</th><th>What it means</th><th>Why a builder cares</th></tr></thead>
+<tbody>
+<tr><td><strong>Self-improving</strong></td><td>It writes its own <em>skills</em> from experience and improves them over time (a background "curator").</td><td>The most novel feature. The easiest extension point for non-coders (Module 4).</td></tr>
+<tr><td><strong>Model-neutral</strong></td><td>Use Nous Portal, OpenRouter (200+ models), OpenAI, local Ollama — switch with <code>hermes model</code>, no code change.</td><td>No lock-in. Build once, run on whatever model is cheapest or best.</td></tr>
+<tr><td><strong>Lives where you do</strong></td><td>One process serves Telegram, Discord, Slack, WhatsApp, Signal, Email + a terminal UI.</td><td>Ship an assistant to users on channels they already use (Module 6).</td></tr>
+<tr><td><strong>Runs anywhere</strong></td><td>Local, Docker, SSH, Modal, Daytona. Serverless backends hibernate when idle.</td><td>Cheap to operate; not chained to your laptop.</td></tr>
+<tr><td><strong>Remembers</strong></td><td>Persistent memory, a model of <em>you</em>, and full-text search over past conversations.</td><td>Stateful products instead of goldfish chatbots (Module 5).</td></tr>
+</tbody>
+</table>
+
+<h2>The most important design rule</h2>
+
+<p>Open the repo's <code>AGENTS.md</code> (its internal architecture bible) and you'll find a philosophy that will save you a lot of confusion. Paraphrased:</p>
+
+<blockquote><strong>The "narrow waist" principle</strong> — "The core is a narrow waist; capability lives at the edges. Hermes is extended primarily through <strong>plugins and skills</strong>, not by growing the core."</blockquote>
+
+<p>In plain terms: the central agent loop is meant to stay small and stable. New abilities are supposed to be added <em>around</em> it — as skills, CLI commands, plugins, or MCP servers — not by hacking the middle. There's even a "Footprint Ladder" for choosing the lightest way to add something, which is the entire subject of our <a href="/dev/building-on-hermes">final module</a>. For now, just internalize the vibe: <strong>you extend Hermes at the edges, and the edges are designed to be extended.</strong></p>
+
+<h2>Get it running (5 minutes)</h2>
+
+<p>You learn an agent by talking to it. Here's the officially documented install (<a href="https://hermes-agent.nousresearch.com/docs/getting-started/quickstart" target="_blank" rel="noopener">Quickstart docs</a>). Pick your OS.</p>
+
+<p><strong>macOS / Linux / WSL2:</strong></p>
+<pre><code>curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+source ~/.bashrc          # reload your shell (or ~/.zshrc)</code></pre>
+
+<p><strong>Windows (native, PowerShell):</strong></p>
+<pre><code>iex (irm https://hermes-agent.nousresearch.com/install.ps1)</code></pre>
+
+<p>The installer is self-contained — it brings its own Python 3.11, Node, ripgrep, ffmpeg, and (on Windows) a portable Git Bash, so it won't disturb anything you already have. Then:</p>
+
+<pre><code>hermes setup        # one-time wizard: pick a provider + model
+hermes              # start chatting in the terminal UI</code></pre>
+
+<blockquote><strong>Fastest path to a key</strong> — Hermes works with any provider, but collecting five separate API keys (model, search, images, TTS, browser) is annoying. <code>hermes setup --portal</code> logs you in to <a href="https://portal.nousresearch.com" target="_blank" rel="noopener">Nous Portal</a> via OAuth and covers all of them under one subscription. Or point it at a free local model with <a href="https://hermes-agent.nousresearch.com/docs/guides/local-ollama-setup" target="_blank" rel="noopener">Ollama</a> for zero API cost while you learn.</blockquote>
+
+<h3>Try these three things</h3>
+<p>Once you're in, you're not just chatting — you're driving the loop. Try:</p>
+<ul>
+<li><code>Summarize the files in my current folder</code> — watch it call a tool, read the result, then answer. <em>That's the loop.</em></li>
+<li><code>/tools</code> — see the toolbox the model is allowed to reach for (Module 3).</li>
+<li><code>/skills</code> — see the procedural knowledge it can load on demand (Module 4).</li>
+</ul>
+
+<h2>Where everything lives</h2>
+
+<p>Two locations matter, and keeping them straight prevents 90% of beginner confusion:</p>
+<table>
+<thead><tr><th>Location</th><th>What it is</th></tr></thead>
+<tbody>
+<tr><td>the repo (the clone)</td><td>The <strong>program</strong> — the agent's source code. You read this to understand how it works and to contribute changes upstream.</td></tr>
+<tr><td><code>~/.hermes/</code></td><td>Your <strong>data</strong> — config, secrets, memories, skills, scheduled jobs, conversation database. This is where <em>your</em> stuff lives and where most of your hand-authored extensions go.</td></tr>
+</tbody>
+</table>
+<p>Inside <code>~/.hermes/</code> you'll meet these again throughout the series: <code>config.yaml</code> (settings), <code>.env</code> (secrets), <code>memories/</code> (Module 5), <code>skills/</code> (Module 4), <code>cron/</code> (Module 6), and <code>state.db</code> (the SQLite database of every conversation).</p>
+
+<h2>Key takeaways</h2>
+<ul>
+<li>An <strong>agent is a loop</strong>: think → call a tool → see the result → repeat → answer.</li>
+<li>Hermes is <strong>self-hosted, model-neutral, MIT-licensed</strong>, and built to live on many platforms.</li>
+<li>Its standout trait is a <strong>self-improving learning loop</strong> (skills + memory).</li>
+<li>You extend it <strong>at the edges</strong> (skills, tools, plugins, MCP), not by growing the core.</li>
+<li><strong>The repo</strong> = the program; <strong>~/.hermes/</strong> = your data and your extensions.</li>
+</ul>
+
+<blockquote><strong>Quick check</strong> — A friend says "Hermes is just a wrapper around ChatGPT." What's the most important correction? <br><br><em>Answer:</em> Two things. (1) It's not tied to one model — it's provider-neutral and runs on local/open models with no code change. (2) More fundamentally, it's not a chat wrapper at all — it's a <em>loop</em> that calls tools and acts, with memory and scheduling. The chat box is just one of several ways to talk to it.</blockquote>
+
+<blockquote><strong>Pair with your AI</strong> — this whole tutorial assumes you'll be working alongside an AI assistant. Clone the repo and let it read the real files with you. Try: <em>"I cloned github.com/NousResearch/hermes-agent. Give me a guided tour of the top-level folders (agent/, tools/, skills/, gateway/, cron/) — one sentence each. I'm a product builder, keep it conceptual."</em></blockquote>
+
+<div class="article-footer">
+  <p class="star-cta">Next up: we open the hood and trace one real message through the loop.</p>
+  <a class="cta" href="/dev/agent-loop">Module 2 · The agent loop — the heartbeat →</a>
+  <p style="margin-top:1em;"><a class="back-link" href="/dev/">← back to the Dev tutorial index</a></p>
+</div>
+
+<aside class="email-cta email-cta--compact" id="newsletter" aria-label="Newsletter signup">
+  <div class="email-cta-kicker">newsletter · free · 1–2× / month</div>
+  <form class="email-cta-form" data-email-form novalidate>
+    <input type="email" name="email" class="email-cta-input" placeholder="you@domain.com" required autocomplete="email" aria-label="Email address">
+    <button type="submit" class="email-cta-button">subscribe</button>
+  </form>
+  <p class="email-cta-status" role="status" aria-live="polite"></p>
+  <p class="email-cta-foot">handled by beehiiv · <a href="/privacy">privacy</a></p>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.06</div>
+</footer>
+
+<script>
+  (function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();
+</script>
+<script src="/assets/js/email-capture.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+</body>
+</html>

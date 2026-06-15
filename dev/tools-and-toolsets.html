@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tools &amp; Toolsets — Hermes Agent Dev Tutorial (Module 3) | Hermes Atlas</title>
+<meta name="description" content="What a tool actually is in Hermes Agent, how the self-registering registry works, how toolsets compose, and the command-approval safety model — Module 3 of the Hermes Agent developer tutorial.">
+<link rel="canonical" href="https://hermesatlas.com/dev/tools-and-toolsets">
+<meta property="og:title" content="Tools &amp; Toolsets — Hermes Agent Dev Tutorial (Module 3)">
+<meta property="og:description" content="What a tool is, the self-registering registry, composable toolsets, and the command-approval safety model that keeps a tool-using agent from running rm -rf.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/dev/tools-and-toolsets">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="article:published_time" content="2026-06-15T00:00:00Z">
+<meta property="article:modified_time" content="2026-06-15T00:00:00Z">
+<meta property="article:author" content="https://x.com/ksimback">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=Tools+%26+Toolsets&amp;subtitle=The+self-registering+registry%2C+toolsets%2C+and+the+approval+safety+model.&amp;kind=handbook">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tools &amp; Toolsets — Hermes Agent Dev Tutorial">
+<meta name="twitter:description" content="What a tool is, the self-registering registry, composable toolsets, and the command-approval safety model.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=Tools+%26+Toolsets&amp;subtitle=The+self-registering+registry%2C+toolsets%2C+and+the+approval+safety+model.&amp;kind=handbook">
+<meta name="twitter:creator" content="@ksimback">
+<meta name="author" content="Kevin Simback">
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>
+  (function() {
+    try {
+      var stored = localStorage.getItem('theme');
+      var osLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      var theme = stored || (osLight ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Tools & Toolsets",
+  "description": "What a tool actually is in Hermes Agent, how the self-registering registry works, how toolsets compose, and the command-approval safety model. Module 3 of the Hermes Agent developer tutorial.",
+  "image": "https://hermesatlas.com/api/og?title=Tools+%26+Toolsets&subtitle=The+self-registering+registry%2C+toolsets%2C+and+the+approval+safety+model.&kind=handbook",
+  "datePublished": "2026-06-15T00:00:00Z",
+  "dateModified": "2026-06-15T00:00:00Z",
+  "author": { "@type": "Person", "name": "Kevin Simback", "url": "https://x.com/ksimback" },
+  "publisher": { "@type": "Organization", "name": "Hermes Atlas", "url": "https://hermesatlas.com" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://hermesatlas.com/dev/tools-and-toolsets" }
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span>jun·2026</span>
+    <span id="meta-count">95·repos</span>
+    <span id="meta-version">hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/guide/">handbook</a>
+    <a href="/dev/" class="active">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="/#newsletter">newsletter</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/dev/">dev</a><span class="sep">/</span>tools &amp; toolsets
+</div>
+
+<main class="article" id="main">
+
+<header class="article-header">
+  <div class="article-badge">dev tutorial · module 3 of 7 · the extension points</div>
+  <h1>Tools &amp; toolsets</h1>
+  <p class="subtitle">In Module 2 you watched the loop call a tool, see the result, and decide what to do next. Now we open the toolbox. A <strong>tool</strong> is the single most concrete thing you can add to Hermes — a capability the model is allowed to reach for — and by the end you'll know exactly what one is made of and how to add it.</p>
+  <p class="meta">Hermes Atlas dev tutorial · ~14 min · for builders, no CS degree assumed</p>
+</header>
+
+<blockquote><strong>In this module</strong> — what a tool actually is, the self-registering registry, a minimal real example, the <code>check_fn</code> availability gate, composable toolsets, the command-approval safety model, and a step-by-step recipe for adding your own.</blockquote>
+
+<h2>What a tool actually is</h2>
+<p>Strip away the jargon and a tool is just <strong>four things bundled together</strong>:</p>
+<ul>
+  <li>A <strong>name</strong> — like <code>web_search</code> or <code>read_file</code>. This is what the model "calls."</li>
+  <li>A <strong>JSON schema</strong> — a description of the tool and its inputs, written in OpenAI function-calling format. This is the <em>only</em> thing the model sees about your tool; it reads this to decide when and how to use it.</li>
+  <li>A <strong>handler</strong> — a plain Python function that does the actual work and returns a <strong>JSON string</strong> as the result.</li>
+  <li>Some <strong>metadata</strong> — which toolset it belongs to, an emoji for the UI, and an optional availability check (more on that below).</li>
+</ul>
+
+<blockquote><strong>Mental model</strong> — A tool's <strong>schema</strong> is a labeled button with a tooltip. The label and tooltip (name + description + parameters) are what the model reads to decide whether to press it. The <strong>handler</strong> is the wiring behind the button — what physically happens when it's pressed. The model only ever sees the label; it never sees your Python. So a vague, sloppy description is a button with no tooltip — the model won't know when to press it.</blockquote>
+
+<h2>The registry: tools that register themselves</h2>
+<p>Here's the elegant part. There is <strong>no central list of tools to edit</strong>. Every tool lives as its own file in <code>tools/</code>, and at the moment Python imports that file, the file calls <code>registry.register(...)</code> to announce itself. Drop a file in, and it's on the team.</p>
+<p>This machinery lives in <code>tools/registry.py</code>. On startup, <code>discover_builtin_tools()</code> scans the <code>tools/</code> folder, finds every module that contains a top-level <code>registry.register(...)</code> call, and imports them. Each registration creates a <code>ToolEntry</code> — a small record holding the name, schema, handler, and metadata. From then on the rest of the agent just asks the registry, "what tools do I have, and what are their schemas?"</p>
+
+<blockquote><strong>Why self-registration is a gift to you</strong> — It means adding a tool never requires editing some giant shared file that everyone else also edits (and that causes merge conflicts). Your new ability is fully described in <em>one</em> new file. This is the "narrow waist, capability at the edges" rule from <a href="/dev/what-is-hermes-agent">Module 1</a>, made literal.</blockquote>
+
+<h2>Anatomy of a tool (a real, minimal example)</h2>
+<p>Let's build the smallest possible tool so the four pieces are concrete. It greets someone by name. Notice the three sections — handler, schema, registration — and the two helpers <code>tool_result()</code> / <code>tool_error()</code> imported from the registry (they save you writing <code>json.dumps(...)</code> by hand):</p>
+
+<p><code>tools/hello_tool.py</code></p>
+<pre><code>from tools.registry import registry, tool_error, tool_result
+
+
+# 1. THE HANDLER — does the work, returns a JSON *string*.
+def handler(args, **kwargs) -&gt; str:
+    name = (args or {}).get("name", "").strip()
+    if not name:
+        return tool_error("name is required")
+    return tool_result(greeting=f"Hello, {name}!")
+
+
+# 2. THE SCHEMA — the labeled button the model reads.
+SCHEMA = {
+    "name": "hello_world",
+    "description": "Greet a person by name. Use when asked to say hello.",
+    "parameters": {
+        "type": "object",
+        "properties": {"name": {"type": "string", "description": "Who to greet"}},
+        "required": ["name"],
+    },
+}
+
+# 3. THE REGISTRATION — runs at import time; this *is* "joining the team".
+registry.register(
+    name="hello_world",
+    toolset="hello",
+    schema=SCHEMA,
+    handler=handler,
+    check_fn=None,        # always available (see below)
+    emoji="👋",
+)</code></pre>
+
+<p>That's a complete, working tool. The handler signature <code>def handler(args, **kwargs) -&gt; str</code> is the contract: <code>args</code> is the dict of inputs the model filled in (matching your schema), and you must hand back a JSON string. The <code>**kwargs</code> catches context the runtime may pass in; you can ignore it for simple tools.</p>
+
+<blockquote><strong>The one rule that trips up beginners</strong> — Your handler must return a <strong>string</strong> (specifically JSON), never a raw dict or a Python object. That's why <code>tool_result(...)</code> and <code>tool_error(...)</code> exist — they serialize for you and keep the error shape consistent (<code>{"error": "..."}</code>), which is exactly what the loop expects to read back.</blockquote>
+
+<h2>check_fn: the availability gate</h2>
+<p>That <code>check_fn</code> argument is quietly one of the most important ideas in the whole tool system. It's an <strong>optional function that returns <code>True</code> or <code>False</code></strong>, and it decides whether a tool is even <em>offered</em> to the model right now.</p>
+<p>Examples from the real codebase: the terminal tool's check probes whether Docker is installed; browser tools check for a Playwright binary; the smart-home tools only appear if a <code>HASS_TOKEN</code> is set. If the check returns <code>False</code>, the tool simply isn't in the schema the model receives — so the model can't try (and fail) to use something that isn't configured.</p>
+<p>For performance, <code>registry.py</code> caches each <code>check_fn</code> result for about <strong>30 seconds</strong> (probing Docker or a binary on every single turn would be wasteful). The upshot for you: when you flip something on with <code>hermes tools</code> or drop in an API key, your toolbox updates within a turn or two — no restart needed.</p>
+
+<blockquote><strong>Foreshadow</strong> — This "the toolbox changes based on what's configured" behavior is rung 3 of the <strong>Footprint Ladder</strong> we'll climb in <a href="/dev/building-on-hermes">Module 7</a>. For now, just know: a tool can be present in the code but absent from the model's view, and <code>check_fn</code> is the switch.</blockquote>
+
+<h2>Toolsets: bundles of tools</h2>
+<p>A <strong>toolset</strong> is just a named bundle of tools — and crucially, a bundle can include <em>other</em> bundles. They're defined in <code>toolsets.py</code>. When the agent needs the actual list of tools for a bundle, <code>resolve_toolset()</code> flattens it: it follows every <code>includes</code> reference recursively and returns the full, de-duplicated set of tool names.</p>
+<p>This composition is why you can say "give me the <code>coding</code> bundle" instead of listing twenty tools by hand. Some you'll meet often:</p>
+
+<table>
+  <thead><tr><th>Toolset</th><th>What's in it</th></tr></thead>
+  <tbody>
+    <tr><td><code>web</code></td><td>Web search + content extraction (<code>web_search</code>, <code>web_extract</code>).</td></tr>
+    <tr><td><code>file</code></td><td>Read, write, patch, and search files.</td></tr>
+    <tr><td><code>terminal</code></td><td>Run shell commands and manage processes.</td></tr>
+    <tr><td><code>browser</code></td><td>Headless-browser automation (navigate, click, type, snapshot).</td></tr>
+    <tr><td><code>coding</code></td><td>The composite a coding assistant wants — files + terminal + search, bundled.</td></tr>
+    <tr><td><code>safe</code></td><td>A constrained bundle that deliberately leaves out the terminal.</td></tr>
+    <tr><td><code>debugging</code></td><td>Tools geared toward inspecting and diagnosing.</td></tr>
+    <tr><td><code>hermes-cli</code>, <code>hermes-telegram</code></td><td>Platform bundles — the right toolset for the terminal UI vs. a Telegram bot.</td></tr>
+    <tr><td><code>all</code> / <code>*</code></td><td>The special "everything registered" bundle.</td></tr>
+  </tbody>
+</table>
+
+<p>You choose what's enabled with <code>hermes tools</code> at the command line, or <code>/tools</code> inside a session. Your choice persists to <code>config.yaml</code> in <code>~/.hermes/</code>, so it sticks across restarts. (Reference: <a href="https://hermes-agent.nousresearch.com/docs/reference/toolsets-reference" target="_blank" rel="noopener">toolsets reference</a>.)</p>
+
+<h2>The safety model: approvals before destruction</h2>
+<p>An agent that can run <code>terminal</code> can, in principle, run <code>rm -rf</code> or <code>DROP TABLE</code>. Hermes does not just trust the model here. Genuinely dangerous commands are gated by an <strong>approval system</strong> in <code>tools/approval.py</code>:</p>
+<ul>
+  <li>In the <strong>CLI</strong>, it pauses and asks <em>you</em> to approve before the command runs.</li>
+  <li>In the <strong>gateway</strong> (Telegram, Discord, etc.), it queues an approval request rather than silently executing.</li>
+  <li>Once you approve a pattern, it's remembered via an <strong>allowlist</strong>, so you're not nagged about the same safe command forever.</li>
+</ul>
+
+<blockquote><strong>Safety</strong> — There is an environment variable, <code>HERMES_YOLO_MODE</code>, that <strong>bypasses approvals entirely</strong> — every dangerous command runs without asking. It exists for sandboxes and automation (for example, the one-shot runner sets it because there's no human to prompt). It is read once at startup and frozen, specifically so prompt-injected text can't turn it on mid-conversation. On a <em>real</em> machine with your real files, turning this on is genuinely dangerous — an unlucky command can delete data with no confirmation. Treat it as "I am in a disposable container," nothing less.</blockquote>
+
+<h2>How to add your own tool</h2>
+<p>Putting it all together, here's the full path from nothing to an enabled tool. (Official walkthrough: <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/adding-tools" target="_blank" rel="noopener">adding tools</a>.)</p>
+
+<ol>
+  <li><strong>Create the file.</strong> Add <code>tools/my_tool.py</code>. That's the whole "where does it go" question — answered.</li>
+  <li><strong>Write the handler.</strong> A <code>def handler(args, **kwargs) -&gt; str</code> that does the work and returns a JSON string (use <code>tool_result()</code> / <code>tool_error()</code>).</li>
+  <li><strong>Define the schema.</strong> A dict with <code>name</code>, a crisp <code>description</code> (this is your tooltip — make it earn its place), and <code>parameters</code> describing the inputs.</li>
+  <li><strong>Add a <code>check_fn</code> (optional).</strong> If your tool needs a key or a binary, gate it so it only appears when usable.</li>
+  <li><strong>Register it.</strong> Call <code>registry.register(name=..., toolset=..., schema=..., handler=..., check_fn=..., emoji=...)</code> at the top level of the file.</li>
+  <li><strong>Put it in a toolset.</strong> Add the tool name to the relevant bundle in <code>toolsets.py</code> so it ships with a bundle people actually enable.</li>
+  <li><strong>Enable it.</strong> Run <code>hermes tools</code> (or <code>/tools</code>) to turn its toolset on, then ask the agent to use it and watch the loop call it.</li>
+</ol>
+
+<h2>An honest caveat: should you even add a tool?</h2>
+<p>Now the grown-up advice. Adding a core tool is the most powerful extension point — and, per the project's own guidance, usually <strong>not</strong> the right one. The architecture doc is blunt that <em>new core tools are rarely the answer</em>. Most new capability should be a <strong>skill</strong> (<a href="/dev/skills">Module 4</a>), a small <strong>CLI command + skill</strong>, a <strong>plugin</strong>, or an <strong>MCP server</strong> — all of which live at the edges without touching the core.</p>
+
+<blockquote><strong>When a tool genuinely is the right answer</strong> — Reach for a real tool when you're adding a <em>fundamentally new kind of action</em> the agent simply can't do today — a new I/O channel, a new external system it must call directly in the loop. And, honestly, building one is the best way to <em>understand</em> the system. Just don't reach for it reflexively when a skill would do. We give you the full decision tree (the Footprint Ladder) in <a href="/dev/building-on-hermes">Module 7</a>.</blockquote>
+
+<h2>Key takeaways</h2>
+<ul>
+  <li>A <strong>tool = name + JSON schema + handler + metadata</strong>. The model only ever sees the schema.</li>
+  <li>Tools <strong>self-register</strong> at import time via <code>registry.register(...)</code> — no central list to edit.</li>
+  <li>The handler must return a <strong>JSON string</strong>; use <code>tool_result()</code> / <code>tool_error()</code>.</li>
+  <li><code>check_fn</code> gates availability — that's why your toolbox changes with what's configured.</li>
+  <li><strong>Toolsets</strong> are composable bundles; <code>resolve_toolset()</code> flattens them. Enable with <code>hermes tools</code>.</li>
+  <li>Dangerous commands go through <code>tools/approval.py</code>; <code>HERMES_YOLO_MODE</code> bypasses it and is dangerous on real machines.</li>
+  <li>Adding a core tool is rarely the right move — prefer a skill, plugin, or MCP server (Module 7).</li>
+</ul>
+
+<blockquote><strong>Quick check</strong> — You add a perfectly working <code>handler</code> and call <code>registry.register(...)</code>, but the model never uses your tool. What are the two most likely causes?<br><br><em>Answer:</em> (1) Its toolset isn't <em>enabled</em> — registering a tool only makes it <em>available</em>; you still have to turn its toolset on with <code>hermes tools</code> / <code>/tools</code> (and add it to a bundle in <code>toolsets.py</code>). (2) Your <code>check_fn</code> is returning <code>False</code> (a missing key/binary), so the tool is filtered out of the schema the model sees. Bonus third cause: a thin, vague <code>description</code> means the model doesn't realize when to press the button.</blockquote>
+
+<blockquote><strong>Pair with your AI</strong> — make it concrete in the real repo. Try: <em>"In the hermes-agent repo, open tools/registry.py and one simple tool file (like tools/memory_tool.py). Walk me through, for that tool, exactly what its name, schema, handler, and check_fn are — and show me the line where it calls registry.register(). I'm learning how tools are wired, keep it concrete and point at line numbers."</em></blockquote>
+
+<div class="article-footer">
+  <p><a class="back-link" href="/dev/agent-loop">← Module 2 · The agent loop</a></p>
+  <a class="cta" href="/dev/skills">Module 4 · Skills — the self-improvement loop →</a>
+  <p style="margin-top:1em;"><a class="back-link" href="/dev/">↩ Dev tutorial index</a></p>
+</div>
+
+<aside class="email-cta email-cta--compact" id="newsletter" aria-label="Newsletter signup">
+  <div class="email-cta-kicker">newsletter · free · 1–2× / month</div>
+  <form class="email-cta-form" data-email-form novalidate>
+    <input type="email" name="email" class="email-cta-input" placeholder="you@domain.com" required autocomplete="email" aria-label="Email address">
+    <button type="submit" class="email-cta-button">subscribe</button>
+  </form>
+  <p class="email-cta-status" role="status" aria-live="polite"></p>
+  <p class="email-cta-foot">handled by beehiiv · <a href="/privacy">privacy</a></p>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.06</div>
+</footer>
+
+<script>
+  (function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();
+</script>
+<script src="/assets/js/email-capture.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+</body>
+</html>

@@ -191,6 +191,7 @@ function renderMasthead(activeNav) {
     { href: "/", label: "map", id: "map" },
     { href: "/#curated-lists", label: "lists", id: "lists" },
     { href: "/guide/", label: "handbook", id: "handbook" },
+    { href: "/dev/", label: "dev", id: "dev" },
     { href: "/reports/", label: "reports", id: "reports" },
     { href: "/#newsletter", label: "newsletter", id: "newsletter" },
     { href: "https://github.com/ksimback/hermes-ecosystem", label: "source", id: "source" },
@@ -489,6 +490,20 @@ Hermes Atlas tracks every open-source project in the Hermes Agent ecosystem acro
 - [Beginner's Guide to Hermes Agent](${SITE_URL}/guide/): Install, pick a model, ship your first workflow, with the best community tool for every step.
 - [Install Hermes Agent](${SITE_URL}/guide/install/): Step-by-step install for macOS, Linux, Windows, and WSL, with troubleshooting.
 - [Hermes Agent vs. Claude Code](${SITE_URL}/guide/vs-claude-code/): Feature-by-feature comparison for choosing between the two.
+
+## Dev Tutorial
+A hands-on developer tutorial for building on the Hermes Agent codebase, written for agentic developers (no CS degree assumed). Seven modules plus reference sheets.
+- [Build on Hermes Agent (index)](${SITE_URL}/dev/): The tutorial hub — 7 modules from mental model to shipping your own extension.
+- [What Hermes Agent actually is](${SITE_URL}/dev/what-is-hermes-agent): The mental model — an agent is a loop, not a chatbot.
+- [The agent loop](${SITE_URL}/dev/agent-loop): Tracing one message through think → call tool → see result → repeat.
+- [Tools & toolsets](${SITE_URL}/dev/tools-and-toolsets): What a tool is, the self-registering registry, and the approval safety model.
+- [Skills — the self-improvement loop](${SITE_URL}/dev/skills): Author a Markdown skill by hand; how the agent improves its own.
+- [Memory & cross-session recall](${SITE_URL}/dev/memory): MEMORY.md, the user profile, FTS5 session search, pluggable backends.
+- [MCP, the gateway & cron](${SITE_URL}/dev/mcp-gateway-cron): More tools (MCP), more places (gateway), more time (cron).
+- [Building on Hermes](${SITE_URL}/dev/building-on-hermes): The Footprint Ladder, embedding the agent as a Python library, subagents.
+- [Glossary](${SITE_URL}/dev/glossary): Plain-English definitions of every Hermes term.
+- [Codebase map & cheat sheet](${SITE_URL}/dev/codebase-map): Where to edit X — key files, the ~/.hermes data dir, and commands.
+- [Skill authoring template](${SITE_URL}/dev/skill-template): A copy-paste SKILL.md with annotated frontmatter.
 
 ## Top Projects
 ${topProjects.map((r) => `- [${r.owner}/${r.repo}](${SITE_URL}/projects/${r.owner}/${r.repo}): ${r.description} (${(r.stars || 0).toLocaleString()} stars${r.official ? ", official" : ""})`).join("\n")}
@@ -1011,6 +1026,15 @@ function generateSitemap(projectPages, listPages, reportPages = []) {
   urls += `  <url><loc>${SITE_URL}/guide/</loc><changefreq>monthly</changefreq><priority>0.9</priority><lastmod>${today}</lastmod></url>\n`;
   urls += `  <url><loc>${SITE_URL}/guide/vs-claude-code/</loc><changefreq>monthly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;
   urls += `  <url><loc>${SITE_URL}/guide/install/</loc><changefreq>monthly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;
+  const devPages = [
+    "what-is-hermes-agent", "agent-loop", "tools-and-toolsets", "skills",
+    "memory", "mcp-gateway-cron", "building-on-hermes",
+    "glossary", "codebase-map", "skill-template",
+  ];
+  urls += `  <url><loc>${SITE_URL}/dev/</loc><changefreq>monthly</changefreq><priority>0.9</priority><lastmod>${today}</lastmod></url>\n`;
+  for (const slug of devPages) {
+    urls += `  <url><loc>${SITE_URL}/dev/${slug}</loc><changefreq>monthly</changefreq><priority>0.7</priority><lastmod>${today}</lastmod></url>\n`;
+  }
   urls += `  <url><loc>${SITE_URL}/reports/</loc><changefreq>monthly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;
   for (const r of reportPages) {
     urls += `  <url><loc>${SITE_URL}/reports/${r.slug}</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>\n`;
