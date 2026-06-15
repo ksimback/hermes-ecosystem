@@ -138,6 +138,16 @@ if (fs.existsSync(reportsPath)) {
   reports.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
 }
 
+let latestHermesVersion = "v0.15.2";
+const latestReleasePath = path.join(ROOT, "data", "latest-release.json");
+if (fs.existsSync(latestReleasePath)) {
+  try {
+    latestHermesVersion = JSON.parse(fs.readFileSync(latestReleasePath, "utf-8")).version || latestHermesVersion;
+  } catch {
+    // Keep the fallback if the generated release metadata is temporarily malformed.
+  }
+}
+
 // fetchAllMetadata and fetchReadme imported from lib/github.js
 
 // ── Format star count ──
@@ -202,9 +212,8 @@ function renderMasthead(activeNav) {
   return `<header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span>apr·2026</span>
     <span id="meta-count">${repos.length}·repos</span>
-    <span id="meta-version">hermes·v0.10.0</span>
+    <span id="meta-version">hermes·${latestHermesVersion}</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -489,6 +498,7 @@ Hermes Atlas tracks every open-source project in the Hermes Agent ecosystem acro
 ## Guide
 - [Beginner's Guide to Hermes Agent](${SITE_URL}/guide/): Install, pick a model, ship your first workflow, with the best community tool for every step.
 - [Install Hermes Agent](${SITE_URL}/guide/install/): Step-by-step install for macOS, Linux, Windows, and WSL, with troubleshooting.
+- [The Hermes Agent Memory Guidebook](${SITE_URL}/guide/memory/): Kevin Simback's guide to native memory, MemoryProviders, and community memory plug-ins.
 - [Hermes Agent vs. Claude Code](${SITE_URL}/guide/vs-claude-code/): Feature-by-feature comparison for choosing between the two.
 
 ## Dev Tutorial
@@ -558,6 +568,11 @@ This file is the companion to ${SITE_URL}/llms.txt (the concise index).`);
     const installHtml = fs.readFileSync(path.join(ROOT, "guide", "install", "index.html"), "utf-8");
     const stripped = stripHtmlToText(installHtml);
     if (stripped) sections.push(`# Install Hermes Agent (/guide/install/)\n\nCanonical URL: ${SITE_URL}/guide/install/\n\n${stripped}`);
+  } catch {}
+
+  try {
+    const memoryDraft = fs.readFileSync(path.join(ROOT, "drafts", "guide-memory.md"), "utf-8");
+    sections.push(`# The Hermes Agent Memory Guidebook (/guide/memory/)\n\nCanonical URL: ${SITE_URL}/guide/memory/\n\n${memoryDraft}`);
   } catch {}
 
   try {
@@ -851,6 +866,7 @@ ${renderMasthead("lists")}
 <section class="list-page">
   <h1 class="list-title">${escapeHtml(list.title)}</h1>
   <p class="list-intro">${escapeHtml(list.description)}</p>
+  ${list.slug === "best-memory-providers" ? '<p class="list-intro">For the architecture behind these tools, read <a href="/guide/memory/">The Hermes Agent Memory Guidebook</a>.</p>' : ""}
 </section>
 
 <div class="list-table" aria-label="Ranked list">
@@ -1026,6 +1042,7 @@ function generateSitemap(projectPages, listPages, reportPages = []) {
   urls += `  <url><loc>${SITE_URL}/guide/</loc><changefreq>monthly</changefreq><priority>0.9</priority><lastmod>${today}</lastmod></url>\n`;
   urls += `  <url><loc>${SITE_URL}/guide/vs-claude-code/</loc><changefreq>monthly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;
   urls += `  <url><loc>${SITE_URL}/guide/install/</loc><changefreq>monthly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;
+  urls += `  <url><loc>${SITE_URL}/guide/memory/</loc><changefreq>monthly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;
   const devPages = [
     "what-is-hermes-agent", "agent-loop", "tools-and-toolsets", "skills",
     "memory", "mcp-gateway-cron", "building-on-hermes",

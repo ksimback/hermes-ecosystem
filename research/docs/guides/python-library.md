@@ -40,7 +40,7 @@ The simplest way to use Hermes is the `chat()` method — pass a message, get a 
 from run_agent import AIAgent
 
 agent = AIAgent(
-    model="anthropic/claude-sonnet-4",
+    model="anthropic/claude-sonnet-4.6",
     quiet_mode=True,
 )
 response = agent.chat("What is the capital of France?")
@@ -61,7 +61,7 @@ For more control over the conversation, use `run_conversation()` directly. It re
 
 ```
 agent = AIAgent(
-    model="anthropic/claude-sonnet-4",
+    model="anthropic/claude-sonnet-4.6",
     quiet_mode=True,
 )
 
@@ -99,14 +99,14 @@ Control which toolsets the agent has access to using `enabled_toolsets` or `disa
 ```
 # Only enable web tools (browsing, search)
 agent = AIAgent(
-    model="anthropic/claude-sonnet-4",
+    model="anthropic/claude-sonnet-4.6",
     enabled_toolsets=["web"],
     quiet_mode=True,
 )
 
 # Enable everything except terminal access
 agent = AIAgent(
-    model="anthropic/claude-sonnet-4",
+    model="anthropic/claude-sonnet-4.6",
     disabled_toolsets=["terminal"],
     quiet_mode=True,
 )
@@ -124,7 +124,7 @@ Maintain conversation state across multiple turns by passing the message history
 
 ```
 agent = AIAgent(
-    model="anthropic/claude-sonnet-4",
+    model="anthropic/claude-sonnet-4.6",
     quiet_mode=True,
 )
 
@@ -150,7 +150,7 @@ Enable trajectory saving to capture conversations in ShareGPT format — useful 
 
 ```
 agent = AIAgent(
-    model="anthropic/claude-sonnet-4",
+    model="anthropic/claude-sonnet-4.6",
     save_trajectories=True,
     quiet_mode=True,
 )
@@ -318,9 +318,9 @@ Description
 
 `str`
 
-`"anthropic/claude-opus-4.6"`
+`""`
 
-Model in OpenRouter format
+Model in OpenRouter format (defaults to empty; resolved from your hermes config at runtime)
 
 `quiet_mode`
 

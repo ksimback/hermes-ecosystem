@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/robbyczgw-cla/hermes-web-search-plus#software",
   "name": "hermes-web-search-plus",
-  "description": "Web-search-plus is a multi-provider search and URL extraction plugin for the Hermes Agent ecosystem. It uses a capability-based routing engine called Routing v2 to automatically select the best available search provider based on the user's configured API keys. The tool supports over a dozen backends including Serper, Tavily, and Exa, while offering clean content extraction through dedicated providers like Firecrawl and Linkup. It features a standalone setup wizard with presets to help users mana",
+  "description": "hermes-web-search-plus is a plugin for the Hermes Agent that provides multi-provider web search and URL extraction capabilities. It utilizes a class-aware auto-routing system (Routing v2) to select the best available provider based on the user's configured API keys. The plugin ensures cost control by capping provider work in research mode and offers flexible configuration via a standalone setup wizard.",
   "url": "https://hermesatlas.com/projects/robbyczgw-cla/hermes-web-search-plus",
   "codeRepository": "https://github.com/robbyczgw-cla/hermes-web-search-plus",
   "applicationCategory": "BrowserApplication",
@@ -47,13 +47,13 @@
     "name": "robbyczgw-cla",
     "url": "https://github.com/robbyczgw-cla"
   },
-  "dateModified": "2026-05-25T20:47:00.000Z",
+  "dateModified": "2026-06-09T19:57:53.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 195
+    "userInteractionCount": 277
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,8 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span>apr·2026</span>
-    <span id="meta-count">123·repos</span>
+    <span id="meta-count">172·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -113,11 +112,11 @@
   <p class="project-desc">Hermes Agent flagship plugin for multi-provider web search and extraction with intelligent routing, quality reports, and research mode.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 195</span>
+    <span class="stars">★ 277</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-05-25</span>
+    <span><span class="meta-label">updated</span>2026-06-09</span>
   </div>
 
   <div class="actions">
@@ -132,11 +131,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Web-search-plus is a multi-provider search and URL extraction plugin for the Hermes Agent ecosystem. It uses a capability-based routing engine called Routing v2 to automatically select the best available search provider based on the user's configured API keys. The tool supports over a dozen backends including Serper, Tavily, and Exa, while offering clean content extraction through dedicated providers like Firecrawl and Linkup. It features a standalone setup wizard with presets to help users manage multiple API keys and configure provider priorities without manual environment file editing.</p>
+    <p class="summary-text">hermes-web-search-plus is a plugin for the Hermes Agent that provides multi-provider web search and URL extraction capabilities. It utilizes a class-aware auto-routing system (Routing v2) to select the best available provider based on the user's configured API keys. The plugin ensures cost control by capping provider work in research mode and offers flexible configuration via a standalone setup wizard.</p>
     <ul class="summary-highlights">
-      <li>Adds web_search_plus and web_extract_plus tools to Hermes Agent</li>
-      <li>Auto-routes queries across Serper, Tavily, Exa, and You.com</li>
-      <li>Supports clean URL extraction via Linkup, Firecrawl, and Parallel</li>
+      <li>Routed search and extraction via multiple provider backends</li>
+      <li>Capability-based configuration with no global required key</li>
+      <li>Customizable routing priorities and provider-specific auto-allow gates</li>
     </ul>
   </div>
 </section>
@@ -201,8 +200,14 @@ python3 search.py --query &quot;Hermes Agent latest release&quot; --provider aut
 <ul>
 <li>Plugin install clones into <code>~/.hermes/plugins/web-search-plus</code>.</li>
 <li>Keys are written to the active Hermes environment file by the setup helper; they should never be committed to the repo.</li>
-<li>Python 3.8+ is required. Normal Hermes plugin installation handles runtime dependencies; manual development can use <code>python3 -m pip install -r requirements.txt</code> inside the Hermes/plugin environment.</li>
+<li>Python 3.8+ is required. Runtime code is stdlib-only; manual development can still run <code>python3 -m pip install -r requirements.txt</code> safely before installing dev tools like <code>pytest</code> and <code>ruff</code>.</li>
 </ul>
+<hr>
+<h3>Updating</h3>
+<p>Update an existing install with the Hermes plugin manager:</p>
+<pre><code class="language-bash">hermes plugins update web-search-plus
+</code></pre>
+<p>Restart Hermes, or run <code>/reset</code> in an existing session, so the updated plugin code and tool schemas are reloaded.</p>
 <hr>
 <h3>Documentation</h3>
 <ul>
@@ -258,7 +263,7 @@ python ~/.hermes/plugins/web-search-plus/setup.py config set-default you --dry-r
 <li><code>set-default &lt;provider&gt;</code> disables auto-routing and makes <code>--provider auto</code> resolve to that provider.</li>
 <li><code>set-routing on</code> restores query-based routing while keeping the saved default for later.</li>
 <li><code>set-priority</code> accepts comma-separated provider names, normalizes case/whitespace, and ignores duplicates with a warning.</li>
-<li><code>set-auto-allow &lt;provider&gt; off</code> keeps a configured provider available for explicit calls while preventing auto-routing/fallback from selecting it. Brave, SerpBase, Querit, Perplexity, and Kilo Perplexity default to <code>off</code> here.</li>
+<li><code>set-auto-allow &lt;provider&gt; off</code> keeps a configured provider available for explicit calls while preventing auto-routing/fallback from selecting it. Brave, SerpBase, Querit, Parallel, Perplexity, and Kilo Perplexity default to <code>off</code> here.</li>
 <li><code>setup.py --config-path /path/to/config.json</code> points the helper at a custom config; <code>WEB_SEARCH_PLUS_CONFIG=/path/to/config.json</code> points <code>search.py</code> at the same file.</li>
 <li><code>config reset --yes</code> backs up the existing file before writing fresh defaults.</li>
 </ul>
@@ -367,7 +372,7 @@ web_search_plus(query=&quot;best bookshelf speakers under 1000&quot;, quality_re
 <td><code>quality_report</code></td>
 <td>boolean</td>
 <td><code>false</code></td>
-<td>Include routing diagnostics, provider scores, result counts, and extraction recommendation</td>
+<td>Include routing diagnostics, provider scores, result counts, authority signals, and extraction recommendation</td>
 </tr>
 <tr>
 <td><code>mode</code></td>
@@ -570,6 +575,10 @@ python3 setup.py status
 python3 search.py --query &quot;Hermes Agent latest release&quot; --provider auto --quality-report --compact
 python3 search.py --query &quot;Hermes Agent latest release&quot; --provider brave --max-results 2 --compact
 </code></pre>
+<p>Compatibility shims in <code>search.py</code> intentionally preserve legacy imports and monkeypatch seams while the modular split settles. The public shim policy is available via <code>get_compatibility_shim_policy()</code> and must keep wrappers in place until the ProviderSpec registry has stabilized for a documented minor release window.</p>
+<p>Golden snapshot quality checks are offline/replayable and safe for CI. They assert source-quality expectations such as canonical-domain presence, blocked mirror domains, duplicate counts, and extracted-content substance without making live provider calls:</p>
+<pre><code class="language-bash">python3 scripts/golden_eval.py --snapshot-fixtures tests/fixtures/golden_snapshots.json --out /tmp/golden-quality.jsonl
+</code></pre>
 <hr>
 <h3>Project layout</h3>
 <pre><code class="language-text">__init__.py      Hermes plugin entry, tool schemas, handlers, answer/onboarding helpers
@@ -601,36 +610,36 @@ LICENSE          MIT license
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 152</div>
+        <div class="stars">★ 215</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
-        <div class="stars">★ 28</div>
+        <div class="stars">★ 33</div>
         <div class="name"><span class="org">FahrenheitResearch /</span> hermes-weather-plugin</div>
       </a>
       <a class="related-row" href="/projects/42-evey/evey-bridge-plugin">
-        <div class="stars">★ 12</div>
+        <div class="stars">★ 13</div>
         <div class="name"><span class="org">42-evey /</span> evey-bridge-plugin</div>
       </a>
       <a class="related-row" href="/projects/nativ3ai/hermes-payguard">
-        <div class="stars">★ 7</div>
+        <div class="stars">★ 12</div>
         <div class="name"><span class="org">nativ3ai /</span> hermes-payguard</div>
       </a>
       <a class="related-row" href="/projects/raulvidis/hermes-cloudflare">
-        <div class="stars">★ 20</div>
+        <div class="stars">★ 26</div>
         <div class="name"><span class="org">raulvidis /</span> hermes-cloudflare</div>
       </a>
+      <a class="related-row" href="/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server">
+        <div class="stars">★ 343</div>
+        <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
+      </a>
+      <a class="related-row" href="/projects/stainlu/hermes-labyrinth">
+        <div class="stars">★ 284</div>
+        <div class="name"><span class="org">stainlu /</span> hermes-labyrinth</div>
+      </a>
       <a class="related-row" href="/projects/clawshell/clawshell">
-        <div class="stars">★ 288</div>
+        <div class="stars">★ 294</div>
         <div class="name"><span class="org">clawshell /</span> clawshell</div>
-      </a>
-      <a class="related-row" href="/projects/briancaffey/hermes-otel">
-        <div class="stars">★ 19</div>
-        <div class="name"><span class="org">briancaffey /</span> hermes-otel</div>
-      </a>
-      <a class="related-row" href="/projects/335234131/agent-browser-mcp">
-        <div class="stars">★ 217</div>
-        <div class="name"><span class="org">335234131 /</span> agent-browser-mcp</div>
       </a>
     </div>
     

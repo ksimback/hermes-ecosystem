@@ -130,6 +130,12 @@ Smart home control via Home Assistant. Only available when `HASS_TOKEN` is set.
 
 Background macOS desktop control via cua-driver — does not steal cursor/focus. Works with any tool-capable model. macOS only; requires `cua-driver` on `$PATH`.
 
+`context_engine`
+
+(varies)
+
+Runtime tools exposed by the active context-engine plugin (empty until a plugin populates it).
+
 `image_gen`
 
 `image_generate`
@@ -146,7 +152,7 @@ Text-to-video and image-to-video via plugin-registered backends (xAI Grok-Imagin
 
 `kanban_block`, `kanban_comment`, `kanban_complete`, `kanban_create`, `kanban_heartbeat`, `kanban_link`, `kanban_list`, `kanban_show`, `kanban_unblock`
 
-Multi-agent coordination tools. Registered for dispatcher-spawned task workers (`HERMES_KANBAN_TASK`) and for profiles that explicitly enable the `kanban` toolset. Workers mark tasks done, block, heartbeat, comment, and create/link follow-up tasks; orchestrator profiles additionally get board-routing tools like list/unblock.
+Multi-agent coordination tools. Registered for dispatcher-spawned task workers (`HERMES_KANBAN_TASK`) and for profiles that explicitly list the `kanban` toolset by name (the `all`/`*` wildcard does **not** enable it). Workers mark tasks done, block, heartbeat, comment, and create/link follow-up tasks; orchestrator profiles additionally get board-routing tools like list/unblock.
 
 `memory`
 
@@ -387,6 +393,11 @@ custom_toolsets:
 ### Wildcards
 
 -   `all` or `*` — expands to every registered toolset (built-in + dynamic + plugin)
+
+A handful of tools have an additional availability check on top of toolset membership and are **not** turned on by `all`/`*` alone:
+
+-   **Capability-gated** tools (browser, `computer_use`, `code_execution`, Feishu, Home Assistant, cronjob) appear only when their backend/credential prerequisite is configured.
+-   **Workflow-gated** tools — the `kanban` toolset — are deliberately opt-in. `all`/`*` does **not** enable kanban; you must list `kanban` explicitly (or be a dispatcher-spawned worker with `HERMES_KANBAN_TASK` set). Kanban tools mutate shared board state, so they stay off by default even under `all`.
 
 ## Relationship to `hermes tools`
 

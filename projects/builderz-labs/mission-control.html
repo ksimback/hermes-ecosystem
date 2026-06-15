@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/builderz-labs/mission-control#software",
   "name": "mission-control",
-  "description": "Mission Control is a self-hosted dashboard designed to orchestrate and monitor fleets of AI agents. It utilizes a local-first architecture powered by SQLite and Next.js to coordinate multi-agent workflows, dispatch tasks, and track operational costs without external database dependencies. The platform features built-in quality gates for task approval, real-time telemetry via WebSockets, and a security framework that includes secret detection and trust scoring. It integrates with various agent fr",
+  "description": "Mission Control is an open-source dashboard designed to centralize the management and orchestration of AI agent fleets. It utilizes a self-hosted, SQLite-backed architecture to provide real-time telemetry and task dispatching without requiring external dependencies like Redis or Postgres. The platform supports multi-agent workflows with built-in quality gates and integrates with frameworks such as CrewAI, LangGraph, and AutoGen. Users can manage agent skills, monitor costs, and implement role-ba",
   "url": "https://hermesatlas.com/projects/builderz-labs/mission-control",
   "codeRepository": "https://github.com/builderz-labs/mission-control",
   "applicationCategory": "DeveloperApplication",
@@ -47,13 +47,13 @@
     "name": "builderz-labs",
     "url": "https://github.com/builderz-labs"
   },
-  "dateModified": "2026-05-20T21:54:55.000Z",
+  "dateModified": "2026-06-15T00:30:04.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 5023
+    "userInteractionCount": 5311
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,8 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span>apr·2026</span>
-    <span id="meta-count">123·repos</span>
+    <span id="meta-count">172·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -113,11 +112,11 @@
   <p class="project-desc">Self-hosted AI agent orchestration platform: dispatch tasks, run multi-agent workflows, monitor spend, and govern operations from one mission control dashboard.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 5.0K</span>
+    <span class="stars">★ 5.3K</span>
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-05-20</span>
+    <span><span class="meta-label">updated</span>2026-06-15</span>
   </div>
 
   <div class="actions">
@@ -132,11 +131,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Mission Control is a self-hosted dashboard designed to orchestrate and monitor fleets of AI agents. It utilizes a local-first architecture powered by SQLite and Next.js to coordinate multi-agent workflows, dispatch tasks, and track operational costs without external database dependencies. The platform features built-in quality gates for task approval, real-time telemetry via WebSockets, and a security framework that includes secret detection and trust scoring. It integrates with various agent frameworks like CrewAI and LangGraph, and provides a bridge for CLI tools such as Claude Code.</p>
+    <p class="summary-text">Mission Control is an open-source dashboard designed to centralize the management and orchestration of AI agent fleets. It utilizes a self-hosted, SQLite-backed architecture to provide real-time telemetry and task dispatching without requiring external dependencies like Redis or Postgres. The platform supports multi-agent workflows with built-in quality gates and integrates with frameworks such as CrewAI, LangGraph, and AutoGen. Users can manage agent skills, monitor costs, and implement role-based access control from a single interface.</p>
     <ul class="summary-highlights">
-      <li>Self-hosted orchestration using SQLite with zero external dependencies</li>
-      <li>Multi-gateway support for CrewAI, LangGraph, AutoGen, and Claude SDK</li>
-      <li>Built-in Aegis review system for human-in-the-loop task sign-off</li>
+      <li>Self-hosted SQLite stack with zero external dependencies</li>
+      <li>Multi-gateway support for CrewAI, LangGraph, and AutoGen</li>
+      <li>Built-in Aegis review system for task quality gates</li>
     </ul>
   </div>
 </section>
@@ -358,16 +357,27 @@ curl &quot;$MC_URL/api/tasks/queue?agent=scout&quot; \
 <p><img src="https://raw.githubusercontent.com/builderz-labs/mission-control/main/docs/mission-control-tasks.png" alt="Mission Control Tasks Panel"></p>
 <h4>Memory Knowledge Graph</h4>
 <p>Explore agent knowledge through the Memory Browser, filesystem-backed memory tree, and interactive relationship graph for sessions, memory chunks, and linked knowledge files.</p>
+<p><img src="https://raw.githubusercontent.com/builderz-labs/mission-control/main/docs/mission-control-memory-graph.png" alt="Mission Control Memory Graph"></p>
 <h4>Skills Hub</h4>
 <p>Browse, install, and manage agent skills from local directories and external registries (ClawdHub, skills.sh). Built-in security scanner checks for prompt injection, credential leaks, data exfiltration, obfuscated content, and dangerous shell commands before installation. Supports 5 skill roots across <code>~/.agents/skills</code>, <code>~/.codex/skills</code>, project-local directories, and <code>~/.openclaw/skills</code>.</p>
+<blockquote>
+<p>Screenshot refresh pending: temporarily removed outdated image to avoid showing incorrect UI.</p>
+</blockquote>
 <h4>Cost Tracking</h4>
 <p>Token usage dashboard with per-model breakdowns, trend charts, and cost analysis. Session-level granularity powered by Recharts.</p>
+<blockquote>
+<p>Screenshot refresh pending: temporarily removed outdated image to avoid showing incorrect UI.</p>
+</blockquote>
 <h4>Security Audit &amp; Agent Trust</h4>
 <p>Real-time posture scoring (0-100), secret detection across agent messages, MCP tool call auditing, injection attempt tracking, and per-agent trust scores. Hook profiles (minimal/standard/strict) let operators tune security strictness per deployment.</p>
+<blockquote>
+<p>Screenshot refresh pending: temporarily removed outdated image to avoid showing incorrect UI.</p>
+</blockquote>
 <h4>Agent Eval Framework</h4>
 <p>Four-layer evaluation: output evals (task completion scoring against golden datasets), trace evals (convergence/loop detection), component evals (tool reliability with p50/p95/p99 latency), and drift detection (10% threshold vs 4-week rolling baseline).</p>
 <h4>Natural Language Recurring Tasks</h4>
 <p>Create recurring tasks with natural language like &quot;every morning at 9am&quot; or &quot;every 2 hours&quot;. The built-in schedule parser converts expressions to cron and stores them in task metadata. A template-clone pattern keeps the original as a template and spawns dated child tasks on schedule.</p>
+<p><img src="https://raw.githubusercontent.com/builderz-labs/mission-control/main/docs/mission-control-cron.png" alt="Mission Control Cron Panel"></p>
 <h4>Claude Code Integration</h4>
 <ul>
 <li><strong>Session Tracking</strong> — Auto-discovers local Claude Code sessions from <code>~/.claude/projects/</code>, extracts token usage, model info, cost estimates, and active status.</li>
@@ -721,6 +731,105 @@ bash scripts/security-audit.sh     # Security configuration audit
 
 <h3>License</h3>
 <p><a href="LICENSE">MIT</a> © 2026 <a href="https://github.com/builderz-labs/mission-control">Builderz Labs</a></p>
+<h3>FAQ</h3>
+<h4>What is Mission Control?</h4>
+<p>Mission Control is an open-source dashboard for AI agent orchestration. Manage AI agent fleets, dispatch tasks, track costs, and coordinate multi-agent workflows — self-hosted, zero external dependencies, powered by SQLite.</p>
+<h4>Key Features</h4>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>32 Panels</strong></td>
+<td>Tasks, agents, skills, logs, tokens, memory, security, cron, alerts, webhooks, pipelines</td>
+</tr>
+<tr>
+<td><strong>Real-time Everything</strong></td>
+<td>WebSocket + SSE push updates with smart polling</td>
+</tr>
+<tr>
+<td><strong>Zero External Deps</strong></td>
+<td>SQLite database, single <code>pnpm start</code> to run. No Redis, no Postgres</td>
+</tr>
+<tr>
+<td><strong>Role-based Access</strong></td>
+<td>Viewer, operator, admin roles with session + API key auth</td>
+</tr>
+<tr>
+<td><strong>Quality Gates</strong></td>
+<td>Built-in Aegis review system that blocks task completion without sign-off</td>
+</tr>
+<tr>
+<td><strong>Skills Hub</strong></td>
+<td>Browse, install, security-scan agent skills from registries</td>
+</tr>
+<tr>
+<td><strong>Multi-gateway</strong></td>
+<td>Connect to multiple agent gateways simultaneously</td>
+</tr>
+<tr>
+<td><strong>Recurring Tasks</strong></td>
+<td>Natural language scheduling with cron-based template spawning</td>
+</tr>
+<tr>
+<td><strong>Claude Code Bridge</strong></td>
+<td>Read-only integration surfaces Claude Code team tasks/sessions</td>
+</tr>
+<tr>
+<td><strong>Agent Eval &amp; Security</strong></td>
+<td>Four-layer eval framework, trust scoring, secret detection</td>
+</tr>
+</tbody></table>
+<h4>Supported Frameworks</h4>
+<ul>
+<li>OpenClaw</li>
+<li>CrewAI</li>
+<li>LangGraph</li>
+<li>AutoGen</li>
+<li>Claude SDK</li>
+</ul>
+<h4>How to Install?</h4>
+<p><strong>One-Command Install:</strong></p>
+<pre><code class="language-bash">git clone https://github.com/builderz-labs/mission-control.git
+cd mission-control
+bash install.sh --local     # or: bash install.sh --docker
+</code></pre>
+<p><strong>Manual Setup:</strong></p>
+<pre><code class="language-bash">git clone https://github.com/builderz-labs/mission-control.git
+cd mission-control
+nvm use 22 &amp;&amp; pnpm install
+pnpm dev                    # http://localhost:3000/setup
+</code></pre>
+<p><strong>Docker Zero-Config:</strong></p>
+<pre><code class="language-bash">docker compose up           # auto-generates credentials, persists across restarts
+</code></pre>
+<h4>Why Choose Mission Control?</h4>
+<ol>
+<li><strong>Self-hosted</strong> - Full control over data, no external dependencies</li>
+<li><strong>Production-ready</strong> - extensive Vitest unit + Playwright E2E coverage</li>
+<li><strong>Security by default</strong> - RBAC, trust scoring, secret detection</li>
+<li><strong>Real-time dashboard</strong> - Zero stale data with WebSocket + SSE</li>
+<li><strong>Multi-gateway</strong> - Connect OpenClaw, CrewAI, LangGraph simultaneously</li>
+<li><strong>Quality gates</strong> - Aegis review system for task completion</li>
+</ol>
+<h4>Use Case Recipes</h4>
+<ol>
+<li><strong>Stand up local control center in 5 minutes</strong> - Run install.sh, open /setup, create agent</li>
+<li><strong>Run multi-agent workflows with quality gates</strong> - Register agents, enable orchestration rules</li>
+<li><strong>Operate production safely</strong> - Deploy hardened profile, configure TLS, monitor trust score</li>
+<li><strong>Integrate existing CLI agents</strong> - Connect Claude Code/Codex via CLI integration</li>
+</ol>
+<h4>License</h4>
+<p>MIT License</p>
+<h4>Help Resources</h4>
+<ul>
+<li><a href="https://github.com/builderz-labs/mission-control">Repository</a></li>
+<li><a href="https://github.com/builderz-labs/mission-control/tree/main/docs">Documentation</a></li>
+<li><a href="https://github.com/builderz-labs/mission-control/issues">Issues</a></li>
+</ul>
 
   </section>
 </details>
@@ -733,28 +842,36 @@ bash scripts/security-audit.sh     # Security configuration audit
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/swarmclawai/swarmclaw">
-        <div class="stars">★ 526</div>
+        <div class="stars">★ 581</div>
         <div class="name"><span class="org">swarmclawai /</span> swarmclaw</div>
       </a>
       <a class="related-row" href="/projects/howdymary/hermes-agent-metaharness">
-        <div class="stars">★ 86</div>
+        <div class="stars">★ 93</div>
         <div class="name"><span class="org">howdymary /</span> hermes-agent-metaharness</div>
       </a>
       <a class="related-row" href="/projects/runtimenoteslabs/gladiator">
-        <div class="stars">★ 50</div>
+        <div class="stars">★ 57</div>
         <div class="name"><span class="org">runtimenoteslabs /</span> gladiator</div>
       </a>
       <a class="related-row" href="/projects/1ilkhamov/opencode-hermes-multiagent">
-        <div class="stars">★ 115</div>
+        <div class="stars">★ 139</div>
         <div class="name"><span class="org">1ilkhamov /</span> opencode-hermes-multiagent</div>
       </a>
-      <a class="related-row" href="/projects/supermodeltools/bigiron">
-        <div class="stars">★ 11</div>
-        <div class="name"><span class="org">supermodeltools /</span> bigiron</div>
-      </a>
       <a class="related-row" href="/projects/Rainhoole/hermes-agent-acp-skill">
-        <div class="stars">★ 34</div>
+        <div class="stars">★ 42</div>
         <div class="name"><span class="org">Rainhoole /</span> hermes-agent-acp-skill</div>
+      </a>
+      <a class="related-row" href="/projects/linke-ai/hermes-agent-team">
+        <div class="stars">★ 149</div>
+        <div class="name"><span class="org">linke-ai /</span> hermes-agent-team</div>
+      </a>
+      <a class="related-row" href="/projects/Agent-3-7/minions">
+        <div class="stars">★ 577</div>
+        <div class="name"><span class="org">Agent-3-7 /</span> minions</div>
+      </a>
+      <a class="related-row" href="/projects/CryptoDmitry/hermes-agent-control-room">
+        <div class="stars">★ 837</div>
+        <div class="name"><span class="org">CryptoDmitry /</span> hermes-agent-control-room</div>
       </a>
     </div>
     <p class="list-link"><a href="/lists/multi-agent-frameworks">see all multi-agent &amp; orchestration →</a></p>

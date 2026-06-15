@@ -4,25 +4,49 @@
 
 The self-improving AI agent built by [Nous Research](https://nousresearch.com). The only agent with a built-in learning loop — it creates skills from experience, improves them during use, nudges itself to persist knowledge, and builds a deepening model of who you are across sessions.
 
-[Get Started →](/docs/getting-started/installation)[View on GitHub](https://github.com/NousResearch/hermes-agent)
+[
+
+Get Started →
+
+](/docs/getting-started/installation)[
+
+Download Desktop
+
+](https://hermes-agent.nousresearch.com/desktop)[
+
+View on GitHub
+
+](https://github.com/NousResearch/hermes-agent)
 
 ## Install
 
-**Linux / macOS / WSL2**
+### Windows or macOS
+
+To easily install the command-line and desktop applications, [download the Hermes Desktop installer](https://hermes-agent.nousresearch.com/desktop) from our website and run it.
+
+### Without Hermes Desktop:
+
+For a command-line only install without Hermes Desktop, run:
+
+#### Linux / macOS / WSL2 / Android (Termux)
 
 ```
-curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
 ```
 
-**Windows (native, PowerShell)** — _early beta, [details →](/docs/user-guide/windows-native)_
+#### Windows (native)
+
+Run in powershell:
 
 ```
-iex (irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1)
+iex (irm https://hermes-agent.nousresearch.com/install.ps1)
 ```
-
-**Android (Termux)** — same curl one-liner as Linux; the installer auto-detects Termux.
 
 See the full **[Installation Guide](/docs/getting-started/installation)** for what the installer does, the per-user vs root layout, and Windows-specific notes.
+
+Fastest path to a working agent
+
+After installing, run `hermes setup --portal` — one OAuth covers a model plus all four Tool Gateway tools (web search, image generation, TTS, browser). See [Nous Portal](/docs/integrations/nous-portal).
 
 ## What is Hermes Agent?
 
@@ -32,7 +56,7 @@ It's not a coding copilot tethered to an IDE or a chatbot wrapper around a singl
 
 🚀 **[Installation](/docs/getting-started/installation)**
 
-Install in 60 seconds on Linux, macOS, WSL2, or native Windows (early beta)
+Install in 60 seconds on Linux, macOS, WSL2, or native Windows
 
 📖 **[Quickstart Tutorial](/docs/getting-started/quickstart)**
 
@@ -52,7 +76,7 @@ Set up Telegram, Discord, Slack, WhatsApp, Teams, or more
 
 🔧 **[Tools & Toolsets](/docs/user-guide/features/tools)**
 
-70+ built-in tools and how to configure them
+60+ built-in tools and how to configure them
 
 🧠 **[Memory System](/docs/user-guide/features/memory)**
 
@@ -111,7 +135,7 @@ Common questions and solutions
 -   **Scheduled automations** — Built-in cron with delivery to any platform
 -   **Delegates & parallelizes** — Spawn isolated subagents for parallel workstreams. Programmatic Tool Calling via `execute_code` collapses multi-step pipelines into single inference calls
 -   **Open standard skills** — Compatible with [agentskills.io](https://agentskills.io). Skills are portable, shareable, and community-contributed via the Skills Hub
--   **Full web control** — Search, extract, browse, vision, image generation, TTS
+-   **Full web control** — Search, extract, browse, vision, image generation, TTS — one subscription via [Nous Portal](/docs/integrations/nous-portal) bundles all of them
 -   **MCP support** — Connect to any MCP server for extended tool capabilities
 -   **Research-ready** — Batch processing, trajectory export, RL training with Atropos. Built by [Nous Research](https://nousresearch.com) — the lab behind Hermes, Nomos, and Psyche models
 
@@ -119,7 +143,7 @@ Common questions and solutions
 
 Machine-readable entry points to this documentation:
 
--   **[`/llms.txt`](/docs/assets/files/llms-bcf65f79b33e57e6c0cce5b9627945d4.txt)** — curated index of every doc page with short descriptions. ~17 KB, safe to load into an LLM context.
--   **[`/llms-full.txt`](/docs/assets/files/llms-full-5ef55acbcec1661a112fb6e77a7c5ea5.txt)** — every doc page concatenated into a single markdown file for one-shot ingestion. ~1.8 MB.
+-   **[`/llms.txt`](/docs/assets/files/llms-d4972c57170916efd83766ae50c3bb3d.txt)** — curated index of every doc page with short descriptions. ~17 KB, safe to load into an LLM context.
+-   **[`/llms-full.txt`](/docs/assets/files/llms-full-1cd2516889aede523e735094ea21c0f4.txt)** — every doc page concatenated into a single markdown file for one-shot ingestion. ~1.8 MB.
 
 Both files also resolve at `/docs/llms.txt` and `/docs/llms-full.txt`. Generated fresh on every deploy.

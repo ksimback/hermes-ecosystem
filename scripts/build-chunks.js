@@ -12,6 +12,8 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { enrichChunkMetadata } from "../lib/rag-scoring.js";
+import { findLatestReleaseFromMarkdownFiles } from "../lib/latest-release.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -82,11 +84,16 @@ async function main() {
 
   console.log(`Found ${files.length} files to process`);
 
+  const markdownFiles = files.map((file) => ({
+    source: file.source,
+    content: fs.readFileSync(file.path, "utf-8"),
+  }));
+  writeLatestReleaseMetadata(markdownFiles);
+
   // Chunk all files
   const chunks = [];
-  for (const file of files) {
-    const content = fs.readFileSync(file.path, "utf-8");
-    const fileChunks = chunkText(content, file.source);
+  for (const file of markdownFiles) {
+    const fileChunks = chunkText(file.content, file.source);
     chunks.push(...fileChunks);
   }
 
@@ -120,6 +127,19 @@ async function main() {
   console.log(`\nWrote ${outputPath} (${sizeMB} MB)`);
 }
 
+function writeLatestReleaseMetadata(markdownFiles) {
+  const latestRelease = findLatestReleaseFromMarkdownFiles(markdownFiles);
+  if (!latestRelease) {
+    console.warn("No release markdown found; skipping data/latest-release.json");
+    return;
+  }
+
+  const outputPath = path.join(ROOT, "data", "latest-release.json");
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fs.writeFileSync(outputPath, `${JSON.stringify(latestRelease, null, 2)}\n`);
+  console.log(`Latest release metadata: ${latestRelease.version} (${latestRelease.tag || "no tag"})`);
+}
+
 function* walkMarkdown(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
@@ -137,12 +157,12 @@ function pushChunk(chunks, source, heading, text) {
   // Hard-split anything still oversized after paragraph splitting (mega
   // paragraphs with no blank lines, e.g. wall-of-links pages).
   for (const piece of hardSplitByLines(trimmed, MAX_CHUNK_CHARS)) {
-    chunks.push({
+    chunks.push(enrichChunkMetadata({
       id: `${source}:${chunks.length}`,
       text: piece.trim(),
       source,
       section: heading,
-    });
+    }));
   }
 }
 

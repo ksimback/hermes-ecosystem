@@ -41,7 +41,7 @@ Use the API server when you want the **agent** as a backend. Use the proxy when 
 ### 1\. Log into your provider (one-time)
 
 ```
-hermes login nous
+hermes portal
 ```
 
 This opens your browser for the Nous Portal OAuth flow. Hermes stores the refresh token in `~/.hermes/auth.json` — the same place all Hermes provider logins live.
@@ -79,7 +79,7 @@ The proxy ignores the `Authorization` header from your app and attaches your rea
 hermes proxy providers
 ```
 
-Currently shipped: `nous` (Nous Portal). More OAuth providers can be added by implementing the `UpstreamAdapter` interface in `hermes_cli/proxy/adapters/`.
+Currently shipped: `nous` (Nous Portal) and `xai` (xAI / Grok). More OAuth providers can be added by implementing the `UpstreamAdapter` interface in `hermes_cli/proxy/adapters/`.
 
 ## Check status
 
@@ -93,7 +93,7 @@ Hermes proxy upstream adapters
   [nous    ] Nous Portal — ready (bearer expires 2026-05-15T06:43:21Z)
 ```
 
-If you see `not logged in`, run `hermes login nous`. If you see `credentials need attention`, your refresh token was revoked (rare — happens if you signed out from the Portal web UI) — just re-run `hermes login nous`.
+If you see `not logged in`, run `hermes portal`. If you see `credentials need attention`, your refresh token was revoked (rare — happens if you signed out from the Portal web UI) — just re-run `hermes portal`.
 
 ## Allowed paths
 

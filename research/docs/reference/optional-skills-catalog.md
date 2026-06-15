@@ -29,13 +29,25 @@ Skill
 
 Description
 
+[**antigravity-cli**](/docs/user-guide/skills/optional/autonomous-ai-agents/autonomous-ai-agents-antigravity-cli)
+
+Operate the Antigravity CLI (agy): plugins, auth, sandbox.
+
 [**blackbox**](/docs/user-guide/skills/optional/autonomous-ai-agents/autonomous-ai-agents-blackbox)
 
 Delegate coding tasks to Blackbox AI CLI agent. Multi-model agent with built-in judge that runs tasks through multiple LLMs and picks the best result. Requires the blackbox CLI and a Blackbox AI API key.
 
+[**grok**](/docs/user-guide/skills/optional/autonomous-ai-agents/autonomous-ai-agents-grok)
+
+Delegate coding to xAI Grok Build CLI (features, PRs).
+
 [**honcho**](/docs/user-guide/skills/optional/autonomous-ai-agents/autonomous-ai-agents-honcho)
 
 Configure and use Honcho memory with Hermes -- cross-session user modeling, multi-profile peer isolation, observation config, dialectic reasoning, session summaries, and context budget enforcement. Use when setting up Honcho, troubleshoo...
+
+[**openhands**](/docs/user-guide/skills/optional/autonomous-ai-agents/autonomous-ai-agents-openhands)
+
+Delegate coding to OpenHands CLI (model-agnostic, LiteLLM).
 
 ## blockchain
 
@@ -71,6 +83,14 @@ Skill
 
 Description
 
+[**baoyu-article-illustrator**](/docs/user-guide/skills/optional/creative/creative-baoyu-article-illustrator)
+
+Article illustrations: type × style × palette consistency.
+
+[**baoyu-comic**](/docs/user-guide/skills/optional/creative/creative-baoyu-comic)
+
+Knowledge comics (知识漫画): educational, biography, tutorial.
+
 [**blender-mcp**](/docs/user-guide/skills/optional/creative/creative-blender-mcp)
 
 Control Blender directly from Hermes via socket connection to the blender-mcp addon. Create 3D objects, materials, animations, and run arbitrary Blender Python (bpy) code. Use when user wants to create or modify anything in Blender.
@@ -78,6 +98,10 @@ Control Blender directly from Hermes via socket connection to the blender-mcp ad
 [**concept-diagrams**](/docs/user-guide/skills/optional/creative/creative-concept-diagrams)
 
 Generate flat, minimal light/dark-aware SVG diagrams as standalone HTML files, using a unified educational visual language with 9 semantic color ramps, sentence-case typography, and automatic dark mode. Best suited for educational and no...
+
+[**ideation**](/docs/user-guide/skills/optional/creative/creative-creative-ideation)
+
+Generate project ideas via creative constraints.
 
 [**hyperframes**](/docs/user-guide/skills/optional/creative/creative-hyperframes)
 
@@ -90,6 +114,10 @@ Plan, set up, and monitor a multi-agent video production pipeline backed by Herm
 [**meme-generation**](/docs/user-guide/skills/optional/creative/creative-meme-generation)
 
 Generate real meme images by picking a template and overlaying text with Pillow. Produces actual .png meme files.
+
+[**pixel-art**](/docs/user-guide/skills/optional/creative/creative-pixel-art)
+
+Pixel art w/ era palettes (NES, Game Boy, PICO-8).
 
 ## devops
 
@@ -104,6 +132,10 @@ Run 150+ AI apps via inference.sh CLI (infsh) — image generation, video creati
 [**docker-management**](/docs/user-guide/skills/optional/devops/devops-docker-management)
 
 Manage Docker containers, images, volumes, networks, and Compose stacks — lifecycle ops, debugging, cleanup, and Dockerfile optimization.
+
+[**hermes-s6-container-supervision**](/docs/user-guide/skills/optional/devops/devops-hermes-s6-container-supervision)
+
+Modify, debug, or extend the s6-overlay supervision tree inside the Hermes Agent Docker image — adding new services, debugging profile gateways, understanding the Architecture B main-program pattern.
 
 [**pinggy-tunnel**](/docs/user-guide/skills/optional/devops/devops-pinggy-tunnel)
 
@@ -171,6 +203,20 @@ Build PowerPoint decks headless with python-pptx. Pairs with excel-author for mo
 
 Stock quotes, history, search, compare, crypto via Yahoo.
 
+## gaming
+
+Skill
+
+Description
+
+[**minecraft-modpack-server**](/docs/user-guide/skills/optional/gaming/gaming-minecraft-modpack-server)
+
+Host modded Minecraft servers (CurseForge, Modrinth).
+
+[**pokemon-player**](/docs/user-guide/skills/optional/gaming/gaming-pokemon-player)
+
+Play Pokemon via headless emulator + RAM reads.
+
 ## health
 
 Skill
@@ -231,6 +277,10 @@ Open-source embedding database for AI applications. Store embeddings and metadat
 
 OpenAI's model connecting vision and language. Enables zero-shot image classification, image-text matching, and cross-modal retrieval. Trained on 400M image-text pairs. Use for image search, content moderation, or vision-language tasks w...
 
+[**dspy**](/docs/user-guide/skills/optional/mlops/mlops-research-dspy)
+
+DSPy: declarative LM programs, auto-optimize prompts, RAG.
+
 [**faiss**](/docs/user-guide/skills/optional/mlops/mlops-faiss)
 
 Facebook's library for efficient similarity search and clustering of dense vectors. Supports billions of vectors, GPU acceleration, and various index types (Flat, IVF, HNSW). Use for fast k-NN search, large-scale vector retrieval, or whe...
@@ -266,6 +316,10 @@ Serverless GPU cloud platform for running ML workloads. Use when you need on-dem
 [**nemo-curator**](/docs/user-guide/skills/optional/mlops/mlops-nemo-curator)
 
 GPU-accelerated data curation for LLM training. Supports text/image/video/audio. Features fuzzy deduplication (16× faster), quality filtering (30+ heuristics), semantic deduplication, PII redaction, NSFW detection. Scales across GPUs wit...
+
+[**obliteratus**](/docs/user-guide/skills/optional/mlops/mlops-obliteratus)
+
+OBLITERATUS: abliterate LLM refusals (diff-in-means).
 
 [**outlines**](/docs/user-guide/skills/optional/mlops/mlops-inference-outlines)
 
@@ -421,6 +475,10 @@ Description
 
 Set up and use 1Password CLI (op). Use when installing the CLI, enabling desktop app integration, signing in, and reading/injecting secrets for commands.
 
+[**godmode**](/docs/user-guide/skills/optional/security/security-godmode)
+
+Jailbreak LLMs: Parseltongue, GODMODE, ULTRAPLINIAN.
+
 [**oss-forensics**](/docs/user-guide/skills/optional/security/security-oss-forensics)
 
 Supply chain investigation, evidence recovery, and forensic analysis for GitHub repositories. Covers deleted commit recovery, force-push detection, IOC extraction, multi-source evidence collection, hypothesis formation/validation, and st...
@@ -429,15 +487,27 @@ Supply chain investigation, evidence recovery, and forensic analysis for GitHub 
 
 OSINT username search across 400+ social networks. Hunt down social media accounts by username.
 
+[**web-pentest**](/docs/user-guide/skills/optional/security/security-web-pentest)
+
+Authorized web application penetration testing — reconnaissance, vulnerability analysis, proof-based exploitation, and professional reporting. Adapts Shannon's "No Exploit, No Report" methodology with hard guardrails for scope, authoriza...
+
 ## software-development
 
 Skill
 
 Description
 
+[**code-wiki**](/docs/user-guide/skills/optional/software-development/software-development-code-wiki)
+
+Generate wiki docs + Mermaid diagrams for any codebase.
+
 [**rest-graphql-debug**](/docs/user-guide/skills/optional/software-development/software-development-rest-graphql-debug)
 
 Debug REST/GraphQL APIs: status codes, auth, schemas, repro.
+
+[**subagent-driven-development**](/docs/user-guide/skills/optional/software-development/software-development-subagent-driven-development)
+
+Execute plans via delegate\_task subagents (2-stage review).
 
 ## web-development
 

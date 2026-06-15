@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/mem0ai/mem0#software",
   "name": "mem0",
-  "description": "Mem0 is a universal memory layer designed to provide AI agents and assistants with long-term context and personalization. It utilizes a multi-signal retrieval system that combines semantic search, BM25 keyword matching, and entity linking to store and recall user preferences and session history. The system features a single-pass extraction algorithm that accumulates memories without overwriting, enabling temporal reasoning for past, present, and future events. It is available as a self-hosted Ap",
+  "description": "Mem0 is an intelligent memory layer that provides AI agents with the ability to remember user preferences and adapt over time. It utilizes a multi-signal retrieval system combining semantic, BM25 keyword, and entity matching with temporal reasoning to rank dated instances. The system supports multi-level state retention across users, sessions, and agents through a flexible deployment model. It is available as a Python/npm library, a self-hosted server, or a managed cloud service.",
   "url": "https://hermesatlas.com/projects/mem0ai/mem0",
   "codeRepository": "https://github.com/mem0ai/mem0",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "mem0ai",
     "url": "https://github.com/mem0ai"
   },
-  "dateModified": "2026-05-27T04:35:34.000Z",
+  "dateModified": "2026-06-15T10:05:57.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 56848
+    "userInteractionCount": 58602
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,8 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span>apr·2026</span>
-    <span id="meta-count">123·repos</span>
+    <span id="meta-count">172·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -113,11 +112,11 @@
   <p class="project-desc">Universal memory layer for AI Agents</p>
 
   <div class="meta-row">
-    <span class="stars">★ 56.8K</span>
+    <span class="stars">★ 58.6K</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-05-27</span>
+    <span><span class="meta-label">updated</span>2026-06-15</span>
   </div>
 
   <div class="actions">
@@ -132,11 +131,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Mem0 is a universal memory layer designed to provide AI agents and assistants with long-term context and personalization. It utilizes a multi-signal retrieval system that combines semantic search, BM25 keyword matching, and entity linking to store and recall user preferences and session history. The system features a single-pass extraction algorithm that accumulates memories without overwriting, enabling temporal reasoning for past, present, and future events. It is available as a self-hosted Apache-2.0 library, a Docker-based server, or a managed cloud service.</p>
+    <p class="summary-text">Mem0 is an intelligent memory layer that provides AI agents with the ability to remember user preferences and adapt over time. It utilizes a multi-signal retrieval system combining semantic, BM25 keyword, and entity matching with temporal reasoning to rank dated instances. The system supports multi-level state retention across users, sessions, and agents through a flexible deployment model. It is available as a Python/npm library, a self-hosted server, or a managed cloud service.</p>
     <ul class="summary-highlights">
-      <li>Multi-level memory retention for users, sessions, and autonomous agents</li>
-      <li>Hybrid retrieval fusing semantic, keyword, and entity-based signals</li>
-      <li>Temporal reasoning for ranking memories by relevant dates and states</li>
+      <li>Multi-level memory for User, Session, and Agent state</li>
+      <li>Hybrid retrieval using semantic, keyword, and entity matching</li>
+      <li>Time-aware retrieval for current state and past events</li>
     </ul>
   </div>
 </section>
@@ -363,8 +362,9 @@ npx skills add https://github.com/mem0ai/mem0 --skill mem0-vercel-ai-sdk
 <p><strong>Pipeline skills — run on demand</strong> (execute an end-to-end workflow in an existing repo):</p>
 <pre><code class="language-bash">npx skills add https://github.com/mem0ai/mem0 --skill mem0-integrate
 npx skills add https://github.com/mem0ai/mem0 --skill mem0-test-integration
+npx skills add https://github.com/mem0ai/mem0 --skill mem0-oss-to-platform
 </code></pre>
-<p>Use <code>/mem0-integrate</code> to wire Mem0 into an existing repo via a test-first pipeline, then <code>/mem0-test-integration</code> to verify. See the <a href="./skills/">skills catalog</a> or <a href="https://docs.mem0.ai/vibecoding">Vibecoding with Mem0</a> for the full picture.</p>
+<p>Use <code>/mem0-integrate</code> to wire Mem0 into an existing repo via a test-first pipeline, then <code>/mem0-test-integration</code> to verify. Use <code>/mem0-oss-to-platform</code> to migrate an existing project from Mem0 OSS to the hosted Platform SDK. See the <a href="./skills/">skills catalog</a> or <a href="https://docs.mem0.ai/vibecoding">Vibecoding with Mem0</a> for the full picture.</p>
 <h4>Basic Usage</h4>
 <p>Mem0 requires an LLM to function, with <code>gpt-5-mini</code> from OpenAI as the default. However, it supports a variety of LLMs; for details, refer to our <a href="https://docs.mem0.ai/components/llms/overview">Supported LLMs documentation</a>.</p>
 <p>Mem0 uses <code>text-embedding-3-small</code> from OpenAI as the default embedding model. For best results with hybrid search (semantic + keyword + entity boosting), we recommend using at least <a href="https://huggingface.co/Alibaba-NLP/gte-Qwen2-1.5B-instruct">Qwen 600M</a> or a comparable embedding model. See <a href="https://docs.mem0.ai/components/embedders/overview">Supported Embeddings</a> for configuration details.</p>
@@ -441,36 +441,36 @@ if __name__ == &quot;__main__&quot;:
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 14.8K</div>
+        <div class="stars">★ 16.4K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
-        <div class="stars">★ 1.1K</div>
+        <div class="stars">★ 1.2K</div>
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 266</div>
+        <div class="stars">★ 303</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
-        <div class="stars">★ 176</div>
+        <div class="stars">★ 183</div>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
+      <a class="related-row" href="/projects/Signet-AI/signetai">
+        <div class="stars">★ 195</div>
+        <div class="name"><span class="org">Signet-AI /</span> signetai</div>
+      </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 140</div>
+        <div class="stars">★ 202</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
-        <div class="stars">★ 27</div>
+        <div class="stars">★ 33</div>
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
       <a class="related-row" href="/projects/garrytan/gbrain">
-        <div class="stars">★ 19.3K</div>
+        <div class="stars">★ 22.8K</div>
         <div class="name"><span class="org">garrytan /</span> gbrain</div>
-      </a>
-      <a class="related-row" href="/projects/stephenschoettler/hermes-lcm">
-        <div class="stars">★ 601</div>
-        <div class="name"><span class="org">stephenschoettler /</span> hermes-lcm</div>
       </a>
     </div>
     <p class="list-link"><a href="/lists/best-memory-providers">see all memory &amp; context →</a></p>

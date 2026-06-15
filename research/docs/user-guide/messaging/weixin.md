@@ -168,6 +168,18 @@ Group IDs allowed (when group\_policy=allowlist)
 
 When `true`, split multi-line replies into multiple chat messages (legacy behavior). When `false`, keep multi-line replies as one message unless they exceed the length limit.
 
+`text_batch_delay_seconds`
+
+`3.0`
+
+Quiet period (seconds) before a buffered burst of rapid text messages is flushed as one combined request. iLink delivers messages individually, so this debounce avoids one agent invocation per fragment. Set `0` to dispatch each message immediately.
+
+`text_batch_split_delay_seconds`
+
+`5.0`
+
+Extended flush delay used when the latest fragment is near the split threshold (long messages iLink may have chunked).
+
 ## Access Policies
 
 ### DM Policy
@@ -198,6 +210,17 @@ Pairing mode (for initial setup)
 WEIXIN_DM_POLICY=allowlist
 WEIXIN_ALLOWED_USERS=user_id_1,user_id_2
 ```
+
+`WEIXIN_ALLOWED_USERS` is an **inbound filter**, not an invitation system. QR login connects one iLink bot identity to Hermes. Other people do not scan the Hermes QR code with their own accounts; they must message the connected iLink bot/contact through WeChat, and Hermes will process the DM only if the sender's Weixin user ID is present in `WEIXIN_ALLOWED_USERS`.
+
+A practical setup flow is:
+
+1.  Pair Hermes once with `hermes gateway setup` and note the connected iLink bot account.
+2.  Have each allowed user send a direct message to that bot/contact.
+3.  Read the sender/user ID from the gateway logs or the inbound event payload.
+4.  Add those IDs to `WEIXIN_ALLOWED_USERS`, then restart the gateway.
+
+If only the account that scanned the QR code can talk to Hermes, verify that the other users are messaging the iLink bot identity itself, not the personal WeChat account that performed the QR login. The iLink bot is a separate identity, and ordinary WeChat contact/group routing can be limited by Tencent's iLink behavior.
 
 ### Group Policy
 

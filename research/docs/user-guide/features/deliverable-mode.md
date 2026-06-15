@@ -81,7 +81,7 @@ The agent doesn't reach for artifacts by default — it has to know to. Two ways
 
 **Per-session:** ask explicitly ("send me the comparison as a chart", "return the data as a CSV") or write your own custom-instructions / personality entry that biases toward artifact-style replies on messaging platforms.
 
-**Project-level:** add the bias to `AGENTS.md` / `CLAUDE.md` / `.cursorrules` in a project the agent works from, or to your global custom instructions in `~/.hermes/config.yaml` under `agent.custom_instructions`.
+**Project-level:** add the bias to `AGENTS.md` / `CLAUDE.md` / `.cursorrules` in a project the agent works from, to your global persona in `~/.hermes/SOUL.md`, or as a named preset under `agent.personalities` in `~/.hermes/config.yaml` (switchable per session via `/personality`).
 
 The mechanic the agent has to use is simple: render the file to an absolute path (e.g. `/tmp/q3-revenue.png`) and mention that path as plain text in the reply. The gateway does the rest. Paths inside fenced code blocks or backticks are ignored so code samples are never mutilated.
 

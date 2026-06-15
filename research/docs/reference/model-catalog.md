@@ -81,7 +81,7 @@ Cache location: `~/.hermes/cache/model_catalog.json`.
 model_catalog:
   enabled: true
   url: https://hermes-agent.nousresearch.com/docs/api/model-catalog.json
-  ttl_hours: 24
+  ttl_hours: 1
   providers: {}
 ```
 

@@ -4,6 +4,10 @@
 
 A quick-wins collection of practical tips that make you immediately more effective with Hermes Agent. Each section targets a different aspect — scan the headers and jump to what's relevant.
 
+Confused which model to pick?
+
+Run `hermes setup --portal` — you get 300+ models including Claude, GPT-5, and Gemini under one subscription. See [Nous Portal](/docs/integrations/nous-portal).
+
 * * *
 
 ## Getting the Best Results

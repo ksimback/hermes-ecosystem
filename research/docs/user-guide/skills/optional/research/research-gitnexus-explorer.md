@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`native-mcp`](/docs/user-guide/skills/bundled/mcp/mcp-native-mcp), [`codebase-inspection`](/docs/user-guide/skills/bundled/github/github-codebase-inspection)
+`native-mcp`, [`codebase-inspection`](/docs/user-guide/skills/bundled/github/github-codebase-inspection)
 
 ## Reference: full SKILL.md
 

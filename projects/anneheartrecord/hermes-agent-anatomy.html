@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hermes-agent-anatomy — Hermes Agent Guides &amp; Docs | Hermes Atlas</title>
+<meta name="description" content="hermes-agent源码解析">
+<link rel="canonical" href="https://hermesatlas.com/projects/anneheartrecord/hermes-agent-anatomy">
+<meta property="og:title" content="hermes-agent-anatomy — Hermes Atlas">
+<meta property="og:description" content="hermes-agent源码解析">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/anneheartrecord/hermes-agent-anatomy">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-agent-anatomy&amp;subtitle=hermes-agent%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90&amp;kind=project+%C2%B7+guides">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="hermes-agent-anatomy — Hermes Atlas">
+<meta name="twitter:description" content="hermes-agent源码解析">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-agent-anatomy&amp;subtitle=hermes-agent%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90&amp;kind=project+%C2%B7+guides">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "map", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "guides &amp; docs", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 3, "name": "hermes-agent-anatomy" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/anneheartrecord/hermes-agent-anatomy#software",
+  "name": "hermes-agent-anatomy",
+  "description": "This project provides a systematic technical decomposition and architectural analysis of the Hermes Agent source code. It breaks down the framework's 334,000 lines of Python code into modular guides covering the core agent loop, tool registration, and multi-provider adapters. The documentation includes visual technical illustrations and a 13-dimension comparative study against other frameworks like Claude Code and OpenClaw. Users can leverage these docs to understand complex features such as con",
+  "url": "https://hermesatlas.com/projects/anneheartrecord/hermes-agent-anatomy",
+  "codeRepository": "https://github.com/anneheartrecord/hermes-agent-anatomy",
+  "applicationCategory": "ReferenceApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "HTML",
+  "author": {
+    "@type": "Organization",
+    "name": "anneheartrecord",
+    "url": "https://github.com/anneheartrecord"
+  },
+  "dateModified": "2026-04-09T12:03:43.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 58
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">172·repos</span>
+    <span id="meta-version">hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/" class="active">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/guide/">handbook</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="/#newsletter">newsletter</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/">guides &amp; docs</a><span class="sep">/</span>hermes-agent-anatomy
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">anneheartrecord</span><span class="slash">/</span>hermes-agent-anatomy
+  </h1>
+  <p class="project-desc">hermes-agent源码解析</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 58</span>
+    <span><span class="meta-label">lang</span>HTML</span>
+    
+    
+    <span><span class="meta-label">updated</span>2026-04-09</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/anneheartrecord/hermes-agent-anatomy" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    
+  </div>
+</section>
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">This project provides a systematic technical decomposition and architectural analysis of the Hermes Agent source code. It breaks down the framework's 334,000 lines of Python code into modular guides covering the core agent loop, tool registration, and multi-provider adapters. The documentation includes visual technical illustrations and a 13-dimension comparative study against other frameworks like Claude Code and OpenClaw. Users can leverage these docs to understand complex features such as context compression, RL training data collection, and 11-platform message gateway integration.</p>
+    <ul class="summary-highlights">
+      <li>Detailed analysis of core agent cycles and iteration budget management</li>
+      <li>Deep dives into context compression and structured LLM summarization techniques</li>
+      <li>Technical breakdown of 8 memory backends and 11 message platform adapters</li>
+    </ul>
+  </div>
+</section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <p><a href="https://github.com/anneheartrecord/hermes-agent-anatomy/blob/main/README_EN.md">English</a></p>
+<h2>Hermes Agent 源码解剖</h2>
+<p><img src="https://img.shields.io/badge/license-MIT-green" alt="License">
+<img src="https://img.shields.io/badge/docs-8%20articles-blue" alt="Docs">
+<img src="https://img.shields.io/badge/language-中文-orange" alt="Language">
+<img src="https://img.shields.io/badge/analyzed-334K%20lines-red" alt="Lines">
+<img src="https://img.shields.io/badge/AI%20Powered-Claude%20Code-purple" alt="AI"></p>
+<blockquote>
+<p>📖 <strong>在线阅读：</strong> <a href="https://anneheartrecord.github.io/hermes-agent-anatomy/">https://anneheartrecord.github.io/hermes-agent-anatomy/</a></p>
+</blockquote>
+<p>NousResearch/hermes-agent 是一个 33 万行 Python 代码的开源 AI Agent 框架。从 CLI 交互到 11 平台消息网关到 RL 训练数据采集，全部内置在一个单体仓库里。</p>
+<p>这个仓库是对 hermes-agent 源码的系统化技术分析，逐模块拆解，配有大量手绘风格技术插图。最后一篇将 Hermes Agent、OpenClaw、Claude Code 三个框架放在一起做了 13 个维度的对比。</p>
+<p>姊妹篇：<a href="https://github.com/anneheartrecord/claude-code-docs">Claude Code 源码解剖</a></p>
+<h3>文档目录</h3>
+<h4>全景篇</h4>
+<table>
+<thead>
+<tr>
+<th>文档</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/anneheartrecord/hermes-agent-anatomy/blob/main/docs/01-%E5%85%A8%E6%99%AF%E5%9B%BE.md">01-全景图</a></td>
+<td>Nous Research 背景、整体架构、代码规模、定位分析</td>
+</tr>
+</tbody></table>
+<h4>核心模块篇</h4>
+<table>
+<thead>
+<tr>
+<th>文档</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/anneheartrecord/hermes-agent-anatomy/blob/main/docs/02-Agent%E6%A0%B8%E5%BF%83%E5%BE%AA%E7%8E%AF.md">02-Agent 核心循环</a></td>
+<td>AIAgent 类生命周期、IterationBudget、并行工具执行、消息清洗</td>
+</tr>
+<tr>
+<td><a href="https://github.com/anneheartrecord/hermes-agent-anatomy/blob/main/docs/03-Tool-Registry.md">03-Tool Registry</a></td>
+<td>ToolEntry 元数据、单例注册、异步桥接、handle_function_call 分发</td>
+</tr>
+<tr>
+<td><a href="https://github.com/anneheartrecord/hermes-agent-anatomy/blob/main/docs/04-%E5%A4%9AProvider%E9%80%82%E9%85%8D.md">04-多 Provider 适配</a></td>
+<td>统一消息格式、Anthropic 适配器、凭证池化、OAuth 认证</td>
+</tr>
+<tr>
+<td><a href="https://github.com/anneheartrecord/hermes-agent-anatomy/blob/main/docs/05-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%8E%8B%E7%BC%A9.md">05-上下文压缩</a></td>
+<td>头尾保护、LLM 结构化摘要、Session 分裂、轨迹压缩</td>
+</tr>
+<tr>
+<td><a href="https://github.com/anneheartrecord/hermes-agent-anatomy/blob/main/docs/06-%E6%B6%88%E6%81%AF%E7%BD%91%E5%85%B3.md">06-消息网关</a></td>
+<td>GatewayRunner、SessionStore、11 平台适配器、Hooks 系统</td>
+</tr>
+<tr>
+<td><a href="https://github.com/anneheartrecord/hermes-agent-anatomy/blob/main/docs/07-Memory%E4%B8%8ERL%E8%AE%AD%E7%BB%83.md">07-Memory 与 RL 训练</a></td>
+<td>8 种 Memory 后端、SQLite FTS5、批量轨迹生成、Skill 安全扫描</td>
+</tr>
+</tbody></table>
+<h4>对比篇</h4>
+<table>
+<thead>
+<tr>
+<th>文档</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/anneheartrecord/hermes-agent-anatomy/blob/main/docs/08-%E4%B8%89%E6%96%B9%E5%AF%B9%E6%AF%94.md">08-三方对比</a></td>
+<td>Hermes Agent vs OpenClaw vs Claude Code，13 个维度逐项拆解</td>
+</tr>
+</tbody></table>
+<h3>关键数据</h3>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>版本</td>
+<td>v0.8.0</td>
+</tr>
+<tr>
+<td>Python 文件</td>
+<td>744 个</td>
+</tr>
+<tr>
+<td>代码总量</td>
+<td>~334,661 行</td>
+</tr>
+<tr>
+<td>核心依赖</td>
+<td>openai / anthropic / httpx / rich / prompt_toolkit</td>
+</tr>
+<tr>
+<td>Agent 循环上限</td>
+<td>90 次迭代</td>
+</tr>
+<tr>
+<td>内置工具</td>
+<td>~25 个核心 + MCP/插件扩展</td>
+</tr>
+<tr>
+<td>消息平台</td>
+<td>11 个</td>
+</tr>
+<tr>
+<td>Memory 后端</td>
+<td>8 种插件</td>
+</tr>
+<tr>
+<td>凭证池策略</td>
+<td>4 种</td>
+</tr>
+</tbody></table>
+<h3>License</h3>
+<p>本仓库为技术分析文档，不包含 hermes-agent 源码本身。</p>
+<p>MIT</p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in guides &amp; docs</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/vectrocomputers/Hermes-Agent-Action-Plan">
+        <div class="stars">★ 16</div>
+        <div class="name"><span class="org">vectrocomputers /</span> Hermes-Agent-Action-Plan</div>
+      </a>
+      <a class="related-row" href="/projects/xiaonancs/hermes-agent-study">
+        <div class="stars">★ 22</div>
+        <div class="name"><span class="org">xiaonancs /</span> hermes-agent-study</div>
+      </a>
+      <a class="related-row" href="/projects/jefferyjob/awesome-hermes-agent-zh">
+        <div class="stars">★ 55</div>
+        <div class="name"><span class="org">jefferyjob /</span> awesome-hermes-agent-zh</div>
+      </a>
+      <a class="related-row" href="/projects/0xNyk/awesome-hermes-agent">
+        <div class="stars">★ 4.0K</div>
+        <div class="name"><span class="org">0xNyk /</span> awesome-hermes-agent</div>
+      </a>
+      <a class="related-row" href="/projects/alchaincyf/hermes-agent-orange-book">
+        <div class="stars">★ 4.4K</div>
+        <div class="name"><span class="org">alchaincyf /</span> hermes-agent-orange-book</div>
+      </a>
+      <a class="related-row" href="/projects/OnlyTerp/hermes-optimization-guide">
+        <div class="stars">★ 442</div>
+        <div class="name"><span class="org">OnlyTerp /</span> hermes-optimization-guide</div>
+      </a>
+      <a class="related-row" href="/projects/metantonio/hermes-wsl-ubuntu">
+        <div class="stars">★ 39</div>
+        <div class="name"><span class="org">metantonio /</span> hermes-wsl-ubuntu</div>
+      </a>
+      <a class="related-row" href="/projects/mudrii/hermes-agent-docs">
+        <div class="stars">★ 58</div>
+        <div class="name"><span class="org">mudrii /</span> hermes-agent-docs</div>
+      </a>
+    </div>
+    
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

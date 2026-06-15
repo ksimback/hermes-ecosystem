@@ -62,9 +62,9 @@ Remove the last user/assistant exchange
 
 Set a title for the current session (usage: /title My Session Name)
 
-`/compress [focus topic]`
+`/compress [here [N] | focus topic]`
 
-Manually compress conversation context (flush memories + summarize). Optional focus topic narrows what the summary preserves.
+Manually compress conversation context (flush memories + summarize). `/compress here [N]` summarizes everything except the most recent N exchanges (default 2), kept verbatim — pick your own compression boundary. A focus topic narrows what a full summary preserves.
 
 `/rollback`
 
@@ -98,9 +98,9 @@ Append a user-supplied criterion to the active goal mid-loop. The continuation p
 
 Resume a previously-named session
 
-`/sessions`
+`/sessions` (TUI alias: `/switch`)
 
-Browse and resume previous sessions in an interactive picker
+Classic CLI: browse and resume previous sessions in an interactive picker. TUI: open the live session switcher for currently open TUI sessions. Use `/sessions new` in the TUI to start another live session immediately.
 
 `/redraw`
 
@@ -178,7 +178,7 @@ Toggle YOLO mode — skip all dangerous command approval prompts.
 
 `/footer [on|off|status]`
 
-Toggle the gateway runtime-metadata footer on final replies (shows model, tool counts, timing).
+Toggle the gateway runtime-metadata footer on final replies (shows model, context %, and cwd).
 
 `/busy [queue|steer|interrupt|status]`
 
@@ -208,7 +208,15 @@ Manage a local Chromium-family CDP connection. `connect` attaches browser tools 
 
 `/skills`
 
-Search, install, inspect, or manage skills from online registries
+Search, install, inspect, or manage skills from online registries. Also the review surface for the skill write-approval gate: `/skills pending`, `/skills diff <id>`, `/skills approve <id>`, `/skills reject <id>`, `/skills approval on|off`. See [Gating agent skill writes](/docs/user-guide/features/skills#gating-agent-skill-writes-skillswrite_approval).
+
+`/memory [pending|approve|reject|approval]`
+
+Review pending memory writes staged by the write-approval gate (`memory.write_approval`) and toggle the gate. See [Controlling memory writes](/docs/user-guide/features/memory#controlling-memory-writes-write_approval).
+
+`/bundles`
+
+List configured skill bundles — `/<name>` slash aliases that preload several skills at once. Configure under `bundles:` in `~/.hermes/config.yaml`. See [Skill Bundles](/docs/user-guide/features/skills#skill-bundles).
 
 `/cron`
 
@@ -247,6 +255,10 @@ Description
 `/help`
 
 Show this help message
+
+`/version`
+
+Show Hermes Agent version, build, and environment info.
 
 `/usage`
 
@@ -296,7 +308,7 @@ Description
 
 `/quit`
 
-Exit the CLI (also: `/exit`). See note on `/q` under `/queue` above. Pass `--delete` (or `-d`) — e.g. `/exit --delete` — to also permanently remove the current session's SQLite history and on-disk transcripts before exiting. Useful for privacy-sensitive or one-off tasks.
+Exit the CLI (also: `/exit`).
 
 ### Dynamic CLI slash commands
 
@@ -383,6 +395,10 @@ Command
 
 Description
 
+`/start`
+
+Platform-protocol command. Many chat platforms (Telegram, Discord, …) send `/start` automatically the first time a user opens a bot conversation. Hermes acknowledges the ping silently — no agent reply, no session burn — so first-contact handshakes don't waste a turn. You can also send it explicitly to confirm the gateway is reachable.
+
 `/new`
 
 Start a new conversation.
@@ -427,9 +443,9 @@ Remove the last exchange.
 
 Mark the current chat as the platform home channel for deliveries.
 
-`/compress [focus topic]`
+`/compress [here [N] | focus topic]`
 
-Manually compress conversation context. Optional focus topic narrows what the summary preserves.
+Manually compress conversation context. `/compress here [N]` keeps the most recent N exchanges (default 2) verbatim and summarizes the rest. A focus topic narrows what a full summary preserves.
 
 `/topic [off|help|session-id]`
 
@@ -481,11 +497,19 @@ Set a standing goal Hermes works toward across turns — our take on the Ralph l
 
 `/footer [on|off|status]`
 
-Toggle the runtime-metadata footer on final replies (shows model, tool counts, timing).
+Toggle the runtime-metadata footer on final replies (shows model, context %, and cwd).
 
 `/curator [status|run|pin|archive]`
 
 Background skill maintenance controls.
+
+`/memory [pending|approve|reject|approval]`
+
+Review pending memory writes staged by the write-approval gate (`memory.write_approval`) — approve or reject them right in chat — and toggle the gate with `/memory approval on|off`. See [Controlling memory writes](/docs/user-guide/features/memory#controlling-memory-writes-write_approval).
+
+`/skills [pending|approve|reject|diff|approval]`
+
+Review pending **skill** writes staged by the write-approval gate (`skills.write_approval`). Shows a one-line gist per staged write; `/skills diff <id>` is truncated for chat — read the full diff on the CLI or in `~/.hermes/pending/skills/<id>.json`. Only appears when the gate is on (or staged writes remain); search/install stay CLI-only.
 
 `/kanban <action>`
 
@@ -533,11 +557,13 @@ Invoke any installed skill by name.
 
 ## Notes
 
--   `/skin`, `/snapshot`, `/gquota`, `/reload`, `/tools`, `/toolsets`, `/browser`, `/config`, `/cron`, `/skills`, `/platforms`, `/paste`, `/image`, `/statusbar`, `/plugins`, `/busy`, `/indicator`, `/redraw`, `/clear`, `/history`, `/save`, `/copy`, `/handoff`, and `/quit` are **CLI-only** commands.
+-   `/skin`, `/snapshot`, `/gquota`, `/reload`, `/tools`, `/toolsets`, `/browser`, `/config`, `/cron`, `/platforms`, `/paste`, `/image`, `/statusbar`, `/plugins`, `/busy`, `/indicator`, `/redraw`, `/clear`, `/history`, `/save`, `/copy`, `/handoff`, and `/quit` are **CLI-only** commands.
+-   `/skills` is **CLI-only for search/browse/install**; its write-approval review subcommands (`pending`, `approve`, `reject`, `diff`, `approval`) also work on messaging platforms when `skills.write_approval` is on. `/memory` works on **both** surfaces.
 -   `/verbose` is **CLI-only by default**, but can be enabled for messaging platforms by setting `display.tool_progress_command: true` in `config.yaml`. When enabled, it cycles the `display.tool_progress` mode and saves to config.
 -   `/sethome`, `/update`, `/restart`, `/approve`, `/deny`, `/topic`, and `/commands` are **messaging-only** commands.
--   `/status`, `/background`, `/queue`, `/steer`, `/voice`, `/reload-mcp`, `/reload-skills`, `/rollback`, `/debug`, `/fast`, `/footer`, `/curator`, `/kanban`, `/sessions`, and `/yolo` work in **both** the CLI and the messaging gateway.
+-   `/status`, `/version`, `/background`, `/queue`, `/steer`, `/voice`, `/reload-mcp`, `/reload-skills`, `/rollback`, `/debug`, `/fast`, `/footer`, `/curator`, `/kanban`, `/sessions`, and `/yolo` work in **both** the CLI and the messaging gateway.
 -   `/voice join`, `/voice channel`, and `/voice leave` are only meaningful on Discord.
+-   In the TUI, `/sessions` shows live sessions in the current TUI process. Use `/resume [name]` or `hermes --tui --resume <id-or-title>` for saved or closed transcripts.
 
 ## Confirmation prompts for destructive commands
 

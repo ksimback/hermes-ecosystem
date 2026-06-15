@@ -4,6 +4,10 @@
 
 `hermes claw migrate` imports your OpenClaw (or legacy Clawdbot/Moldbot) setup into Hermes. This guide covers exactly what gets migrated, the config key mappings, and what to verify after migration.
 
+tip
+
+If your OpenClaw setup was multi-provider, `hermes setup --portal` collapses it to one OAuth — 300+ models plus the Tool Gateway in a single login. See [Nous Portal](/docs/integrations/nous-portal).
+
 ## Quick start
 
 ```
@@ -547,7 +551,9 @@ Working directory
 
 `agents.defaults.workspace`
 
-`.env` → `MESSAGING_CWD`
+`config.yaml` → `terminal.cwd`
+
+Legacy migrations may still emit `MESSAGING_CWD` as a compatibility fallback
 
 ### Archived (no direct Hermes equivalent)
 
@@ -689,7 +695,7 @@ The migration resolves all three formats. For env templates and SecretRef object
     
 5.  **Test messaging** — if you migrated platform tokens, restart the gateway: `systemctl --user restart hermes-gateway`
     
-6.  **Check session policies** — verify `hermes config get session_reset` matches your expectations.
+6.  **Check session policies** — run `hermes config show` and verify the `session_reset` value matches your expectations.
     
 7.  **Re-pair WhatsApp** — WhatsApp uses QR code pairing (Baileys), not token migration. Run `hermes whatsapp` to pair.
     

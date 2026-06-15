@@ -5,9 +5,9 @@
 Hermes Agent includes two model-callable web tools backed by multiple providers:
 
 -   **`web_search`** — search the web and return ranked results
--   **`web_extract`** — fetch and extract readable content from one or more URLs (with built-in deep-crawl support when the backend provides it)
+-   **`web_extract`** — fetch and extract readable content from one or more URLs
 
-Both are configured through a single backend selection. Providers are chosen via `hermes tools` or set directly in `config.yaml`. Recursive crawling capabilities (Firecrawl/Tavily) are exposed through `web_extract` rather than as a separate `web_crawl` tool.
+Both are configured through a single backend selection. Providers are chosen via `hermes tools` or set directly in `config.yaml`.
 
 ## Backends
 
@@ -19,15 +19,11 @@ Search
 
 Extract
 
-Crawl
-
 Free tier
 
 **Firecrawl** (default)
 
 `FIRECRAWL_API_KEY`
-
-✔
 
 ✔
 
@@ -43,8 +39,6 @@ Free tier
 
 —
 
-—
-
 ✔ Free (self-hosted)
 
 **Brave Search (free tier)**
@@ -52,8 +46,6 @@ Free tier
 `BRAVE_SEARCH_API_KEY`
 
 ✔
-
-—
 
 —
 
@@ -67,15 +59,11 @@ Free tier
 
 —
 
-—
-
 ✔ Free
 
 **Tavily**
 
 `TAVILY_API_KEY`
-
-✔
 
 ✔
 
@@ -91,8 +79,6 @@ Free tier
 
 ✔
 
-—
-
 1 000 searches/mo
 
 **Parallel**
@@ -103,8 +89,6 @@ Free tier
 
 ✔
 
-—
-
 Paid
 
 **xAI (Grok)**
@@ -112,8 +96,6 @@ Paid
 `XAI_API_KEY` or `hermes auth login xai-oauth`
 
 ✔
-
-—
 
 —
 
@@ -151,7 +133,7 @@ Chunked: split into 100 k-char chunks, summarize each in parallel, then synthesi
 
 Over 2 000 000
 
-Refused with a hint to use `web_crawl` with focused extraction instructions or a more specific source
+Refused with a hint to use a more focused source URL
 
 The summary keeps quotes, code blocks, and key facts in their original formatting — it's a content compressor, not a paraphraser. If summarization fails or times out, Hermes falls back to the first ~5 000 chars of raw content rather than a useless error.
 
@@ -194,7 +176,7 @@ hermes tools
 
 ### Firecrawl (default)
 
-Full-featured search, extract, and crawl. Recommended for most users.
+Full-featured search and extract. Recommended for most users.
 
 ```
 # ~/.hermes/.env
@@ -218,7 +200,7 @@ When `FIRECRAWL_API_URL` is set, the API key is optional (disable server auth wi
 
 SearXNG is a privacy-respecting, open-source metasearch engine that aggregates results from 70+ search engines. **No API key required** — just point Hermes at a running SearXNG instance.
 
-SearXNG is **search-only** — `web_extract` (including its crawl modes) requires a separate extract provider.
+SearXNG is **search-only** — `web_extract` requires a separate extract provider.
 
 #### Option A — Self-host with Docker (recommended)
 
@@ -327,7 +309,7 @@ Public instances have rate limits, variable uptime, and may disable JSON format 
 
 #### Pair SearXNG with an extract provider
 
-SearXNG handles search; you need a separate provider for `web_extract` (including any deep-crawl modes). Use the per-capability keys:
+SearXNG handles search; you need a separate provider for `web_extract`. Use the per-capability keys:
 
 ```
 # ~/.hermes/config.yaml
@@ -342,7 +324,7 @@ With this config, Hermes uses SearXNG for all search queries and Firecrawl for U
 
 ### Tavily
 
-AI-optimised search, extract, and crawl with a generous free tier.
+AI-optimised search and extract with a generous free tier.
 
 ```
 # ~/.hermes/.env
@@ -446,7 +428,7 @@ Use different providers for search vs extract. This lets you combine free search
 # ~/.hermes/config.yaml
 web:
   search_backend: "searxng"     # used by web_search
-  extract_backend: "firecrawl"  # used by web_extract (and its deep-crawl modes)
+  extract_backend: "firecrawl"  # used by web_extract
 ```
 
 When per-capability keys are empty, both fall through to `web.backend`. When `web.backend` is also empty, the backend is auto-detected from whichever API key/URL is present.

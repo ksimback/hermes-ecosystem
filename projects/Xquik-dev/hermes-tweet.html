@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/Xquik-dev/hermes-tweet#software",
   "name": "hermes-tweet",
-  "description": "Hermes Tweet is a native plugin for the Hermes Agent ecosystem that enables automated interaction with X (formerly Twitter) via the Xquik API. It integrates 99 OpenAPI-generated endpoints into the agent's environment, allowing for structured social media tasks like searching, posting, and trend monitoring. The plugin utilizes a tiered security model that separates read-only operations from account actions, requiring explicit environment configuration to enable write-access tools. It includes a b",
+  "description": "Hermes Tweet is a native plugin that enables Hermes Agent to perform X (Twitter) automation via the Xquik API. It converts 99 OpenAPI-generated endpoints into structured tools for tasks such as posting tweets, reading trends, and managing direct messages. The plugin implements a least-privilege security model by splitting read and action tools, with write capabilities disabled by default. It is installable via PyPI and includes a bundled skill to provide usage guidance to the agent.",
   "url": "https://hermesatlas.com/projects/Xquik-dev/hermes-tweet",
   "codeRepository": "https://github.com/Xquik-dev/hermes-tweet",
   "applicationCategory": "BrowserApplication",
@@ -47,13 +47,13 @@
     "name": "Xquik-dev",
     "url": "https://github.com/Xquik-dev"
   },
-  "dateModified": "2026-05-27T00:57:36.000Z",
+  "dateModified": "2026-06-15T10:13:07.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 7
+    "userInteractionCount": 9
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,8 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span>apr·2026</span>
-    <span id="meta-count">123·repos</span>
+    <span id="meta-count">172·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -113,11 +112,11 @@
   <p class="project-desc">Native Hermes Agent plugin for X/Twitter automation through Xquik</p>
 
   <div class="meta-row">
-    <span class="stars">★ 7</span>
+    <span class="stars">★ 9</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-05-27</span>
+    <span><span class="meta-label">updated</span>2026-06-15</span>
   </div>
 
   <div class="actions">
@@ -132,11 +131,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Tweet is a native plugin for the Hermes Agent ecosystem that enables automated interaction with X (formerly Twitter) via the Xquik API. It integrates 99 OpenAPI-generated endpoints into the agent's environment, allowing for structured social media tasks like searching, posting, and trend monitoring. The plugin utilizes a tiered security model that separates read-only operations from account actions, requiring explicit environment configuration to enable write-access tools. It includes a bundled Hermes skill to provide agents with contextual guidance on how to navigate the available toolset.</p>
+    <p class="summary-text">Hermes Tweet is a native plugin that enables Hermes Agent to perform X (Twitter) automation via the Xquik API. It converts 99 OpenAPI-generated endpoints into structured tools for tasks such as posting tweets, reading trends, and managing direct messages. The plugin implements a least-privilege security model by splitting read and action tools, with write capabilities disabled by default. It is installable via PyPI and includes a bundled skill to provide usage guidance to the agent.</p>
     <ul class="summary-highlights">
-      <li>Provides 99 agent-callable Xquik endpoints for comprehensive X automation</li>
-      <li>Separates read and action tools for least-privilege security enforcement</li>
-      <li>Includes slash commands for quick account status and trend checks</li>
+      <li>99 agent-callable Xquik endpoints generated from OpenAPI</li>
+      <li>Least-privilege security with action endpoints disabled by default</li>
+      <li>Includes bundled Hermes skill for agent usage guidance</li>
     </ul>
   </div>
 </section>
@@ -175,6 +174,8 @@ media automation for agents, or a native Hermes toolset for X/Twitter.</p>
 <li>Action endpoints are disabled by default.</li>
 <li>Bundled Hermes skill for agent-facing usage guidance.</li>
 <li>Slash commands for account status and trends.</li>
+<li>Current guidance for Hermes Agent v0.16.0 Desktop, remote gateway, and
+dashboard credential workflows.</li>
 <li>Strict CI with formatting, linting, type checking, tests, coverage, security
 scan, dependency audit, and package build checks.</li>
 </ul>
@@ -182,6 +183,11 @@ scan, dependency audit, and package build checks.</li>
 <p>Recommended Hermes plugin install:</p>
 <pre><code class="language-bash">hermes plugins install Xquik-dev/hermes-tweet --enable
 </code></pre>
+<p>Hermes Agent treats third-party plugins as opt-in. Without <code>--enable</code>, the
+installer can discover Hermes Tweet, but it may leave the plugin in the
+<code>not enabled</code> state until you run <code>hermes plugins enable hermes-tweet</code> or toggle
+it in the interactive <code>hermes plugins</code> UI. Use <code>hermes plugins list</code> when a
+fresh install does not show the <code>hermes-tweet</code> toolset.</p>
 <p>Hermes will prompt for <code>XQUIK_API_KEY</code> during an interactive install and save it
 to <code>~/.hermes/.env</code>. In non-interactive installs the prompt is skipped; set the
 key through the environment or <code>~/.hermes/.env</code> before running <code>tweet_read</code>.
@@ -203,6 +209,16 @@ hermes plugins enable hermes-tweet
 <p>From a local checkout:</p>
 <pre><code class="language-bash">hermes plugins install file:///absolute/path/to/hermes-tweet --force --enable
 </code></pre>
+<p>If you are testing from a project-local <code>.hermes/plugins/</code> directory instead of
+installing the plugin into <code>~/.hermes/plugins/</code> or through the PyPI entry point,
+start Hermes with <code>HERMES_ENABLE_PROJECT_PLUGINS=true</code> only for trusted
+repositories.</p>
+<p>Hermes Agent v0.16.0 adds a native desktop app and remote gateway profiles.
+For a remote gateway profile, install and enable Hermes Tweet on the remote
+Hermes host because that is where plugin code executes and where
+<code>XQUIK_API_KEY</code> must be available. The desktop app is the chat surface; it
+should not receive or store the key unless it is also running the Hermes
+runtime locally.</p>
 <h3>Python Package</h3>
 <table>
 <thead>
@@ -249,7 +265,15 @@ hermes plugins enable hermes-tweet
 </tr>
 <tr>
 <td>Included assets</td>
-<td><code>plugin.yaml</code>, <code>catalog_data.json</code>, bundled Hermes skill</td>
+<td><code>plugin.yaml</code>, <code>catalog_data.json</code>, bundled Hermes skill, Codex/Claude manifests</td>
+</tr>
+<tr>
+<td>Claude plugin manifest</td>
+<td><a href="https://github.com/Xquik-dev/hermes-tweet/blob/main/.claude-plugin/plugin.json"><code>.claude-plugin/plugin.json</code></a></td>
+</tr>
+<tr>
+<td>Codex plugin manifest</td>
+<td><a href="https://github.com/Xquik-dev/hermes-tweet/blob/main/.codex-plugin/plugin.json"><code>.codex-plugin/plugin.json</code></a></td>
 </tr>
 <tr>
 <td>Registry skill path</td>
@@ -259,7 +283,22 @@ hermes plugins enable hermes-tweet
 <td>Context7 guide</td>
 <td><a href="https://github.com/Xquik-dev/hermes-tweet/blob/main/docs/CONTEXT7.md"><code>docs/CONTEXT7.md</code></a></td>
 </tr>
+<tr>
+<td>Hermes surface guide</td>
+<td><a href="https://github.com/Xquik-dev/hermes-tweet/blob/main/docs/HERMES_SURFACES.md"><code>docs/HERMES_SURFACES.md</code></a></td>
+</tr>
+<tr>
+<td>Integration patterns</td>
+<td><a href="https://github.com/Xquik-dev/hermes-tweet/blob/main/docs/INTEGRATION_PATTERNS.md"><code>docs/INTEGRATION_PATTERNS.md</code></a></td>
+</tr>
+<tr>
+<td>Submission readiness</td>
+<td><a href="https://github.com/Xquik-dev/hermes-tweet/blob/main/docs/SUBMISSION_READINESS.md"><code>docs/SUBMISSION_READINESS.md</code></a></td>
+</tr>
 </tbody></table>
+<p>Hermes Tweet also ships source-native <code>.codex-plugin</code> metadata, a root
+security policy, a local composer icon, and a HOL Plugin Scanner workflow for
+Codex plugin catalogs that require local validation evidence before listing.</p>
 <h3>Configure</h3>
 <p>Create an API key in the Xquik dashboard, then set:</p>
 <pre><code class="language-bash">export XQUIK_API_KEY=&quot;xq_...&quot;
@@ -301,14 +340,85 @@ and write-like endpoints go through <code>tweet_action</code>, which is hidden u
 </tr>
 </tbody></table>
 <p>Use <code>tweet_explore</code> first, then call <code>tweet_read</code> or <code>tweet_action</code> with a
-concrete <code>/api/v1/...</code> path.</p>
+concrete <code>/api/v1/...</code> path.
+Copied endpoint URLs are accepted, but Hermes Tweet matches only catalog-listed
+paths.</p>
+<h3>Hermes Agent Workflows</h3>
+<p>Hermes Tweet is best used as the X context layer for Hermes Agent workflows that
+need current public signal, authenticated account context, or approval-gated
+account actions:</p>
+<table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>Recommended Path</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Social listening</td>
+<td>Use <code>tweet_explore</code> to find search, user, trend, monitor, or radar routes, then use <code>tweet_read</code> for public reads.</td>
+</tr>
+<tr>
+<td>Launch monitoring</td>
+<td>Keep <code>tweet_action</code> disabled, schedule Hermes cron sessions around read-only trend, mention, and account checks.</td>
+</tr>
+<tr>
+<td>Support triage</td>
+<td>Read public mentions and user timelines, summarize issues in Hermes, then hand off account-changing responses for explicit approval.</td>
+</tr>
+<tr>
+<td>Creator or brand research</td>
+<td>Combine X search, user profile, follower, media, and trend reads before drafting content or campaign briefs.</td>
+</tr>
+<tr>
+<td>Giveaway and community audits</td>
+<td>Use read routes for tweet, reply, follower, list, draw, and export evidence before any action route.</td>
+</tr>
+<tr>
+<td>Controlled publishing</td>
+<td>Enable <code>HERMES_TWEET_ENABLE_ACTIONS=true</code> only in sessions that require posting, DMs, follows, webhooks, monitors, or media changes.</td>
+</tr>
+<tr>
+<td>Desktop operator sessions</td>
+<td>Use Hermes Desktop for interactive review, then keep action calls explicit and approval-gated.</td>
+</tr>
+<tr>
+<td>Remote gateway teams</td>
+<td>Install Hermes Tweet and set <code>XQUIK_API_KEY</code> on the remote gateway host, then connect Desktop profiles to that host.</td>
+</tr>
+<tr>
+<td>Dashboard-administered agents</td>
+<td>Use the dashboard for gateway and credential operations, but keep Hermes Tweet secrets in the runtime environment.</td>
+</tr>
+</tbody></table>
+<p>For marketing or user education, position Hermes Tweet as a native Hermes Agent
+plugin, not a generic API wrapper: it ships a PyPI entry point, a <code>plugin.yaml</code>
+manifest with interactive secret prompts, slash commands for quick diagnostics,
+and a bundled skill registered through Hermes&#39; plugin skill system.</p>
 <h3>Hermes Runtime Fit</h3>
 <p>Hermes Tweet registers a dedicated <code>hermes-tweet</code> plugin toolset. Hermes can
 show and manage those tools through its normal <code>hermes tools</code> and platform
 toolset flows, so teams can keep X automation available only where it belongs.
-For non-interactive smoke tests and CI-style diagnostics, use
+Current Hermes Agent releases discover third-party plugins but do not execute
+them until they are enabled in <code>plugins.enabled</code>, through <code>hermes plugins enable</code>,
+or by installing with <code>--enable</code>. This is expected safety behavior for user and
+PyPI entry-point plugins.</p>
+<p>Hermes Agent v0.16.0 expands the surfaces where the same toolset can appear:
+the native Desktop app, remote gateway profiles, the web dashboard, the TUI,
+and the CLI can all route work to the enabled runtime. Hermes Tweet does not
+need a different plugin entry point for those surfaces. It needs the same
+enabled plugin, the same runtime environment, and the same read/action split.</p>
+<p>The v0.16.0 Desktop command palette surfaces skills and quick-command slash
+commands. Treat <code>/xstatus</code> and <code>/xtrends</code> as interactive runtime commands for
+active CLI, TUI, Desktop, or gateway sessions; keep <code>hermes -z</code> for tool-call
+smoke tests.</p>
+<p>The v0.16.0 dashboard added broader administration and credential-management
+surfaces. Those are useful for gateway operations, but Hermes Tweet still reads
+<code>XQUIK_API_KEY</code> and <code>HERMES_TWEET_ENABLE_ACTIONS</code> from the runtime environment.
+Do not paste API keys into prompts, issue bodies, PR comments, or tool inputs.</p>
+<p>For non-interactive smoke tests and CI-style diagnostics, use
 <code>hermes tools list</code>; bare <code>hermes tools</code> opens the interactive tool UI and
-requires a TTY. In Hermes v0.12.0, <code>hermes tools list</code> reports plugin toolsets,
+requires a TTY. In current Hermes Agent releases, <code>hermes tools list</code> reports plugin toolsets,
 not every individual plugin tool name.</p>
 <p>Use the read-only path for social listening, trend research, account checks,
 giveaway audits, and draft planning. Keep <code>HERMES_TWEET_ENABLE_ACTIONS=false</code>
@@ -328,10 +438,10 @@ or cron process is restarted, <code>tweet_read</code> can read <code>/api/v1/acc
 <li><code>tweet_action</code> stays hidden or disabled unless <code>HERMES_TWEET_ENABLE_ACTIONS=true</code>.</li>
 <li><code>/xstatus</code> and <code>/xtrends</code> appear in the Hermes plugin command registry.</li>
 </ul>
-<p>Hermes v0.12.0 one-shot <code>hermes -z &quot;/xstatus&quot;</code> runs as a model prompt, not as
-the interactive slash-command dispatcher. Verify slash commands in an active CLI
-or gateway session, or through the plugin registry tests, and use <code>hermes -z</code>
-for tool-call probes.</p>
+<p>Hermes one-shot <code>hermes -z &quot;/xstatus&quot;</code> can run as a model prompt, not as the
+interactive slash-command dispatcher. Verify slash commands in an active CLI,
+TUI, Desktop, or gateway session, or through the plugin registry tests, and use
+<code>hermes -z</code> for tool-call probes.</p>
 <p>If <code>hermes plugins install</code> runs without a TTY, Hermes cannot safely prompt for
 secrets and will skip API-key storage. This is expected; set <code>XQUIK_API_KEY</code>
 in the process environment or <code>~/.hermes/.env</code>.</p>
@@ -401,36 +511,36 @@ Python plugin. Both use the same Xquik API contract.</p>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
-        <div class="stars">★ 195</div>
+        <div class="stars">★ 277</div>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 152</div>
+        <div class="stars">★ 215</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
-        <div class="stars">★ 28</div>
+        <div class="stars">★ 33</div>
         <div class="name"><span class="org">FahrenheitResearch /</span> hermes-weather-plugin</div>
       </a>
       <a class="related-row" href="/projects/42-evey/evey-bridge-plugin">
-        <div class="stars">★ 12</div>
+        <div class="stars">★ 13</div>
         <div class="name"><span class="org">42-evey /</span> evey-bridge-plugin</div>
       </a>
       <a class="related-row" href="/projects/nativ3ai/hermes-payguard">
-        <div class="stars">★ 7</div>
+        <div class="stars">★ 12</div>
         <div class="name"><span class="org">nativ3ai /</span> hermes-payguard</div>
       </a>
       <a class="related-row" href="/projects/raulvidis/hermes-cloudflare">
-        <div class="stars">★ 20</div>
+        <div class="stars">★ 26</div>
         <div class="name"><span class="org">raulvidis /</span> hermes-cloudflare</div>
       </a>
-      <a class="related-row" href="/projects/clawshell/clawshell">
-        <div class="stars">★ 288</div>
-        <div class="name"><span class="org">clawshell /</span> clawshell</div>
+      <a class="related-row" href="/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server">
+        <div class="stars">★ 343</div>
+        <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
       </a>
-      <a class="related-row" href="/projects/briancaffey/hermes-otel">
-        <div class="stars">★ 19</div>
-        <div class="name"><span class="org">briancaffey /</span> hermes-otel</div>
+      <a class="related-row" href="/projects/stainlu/hermes-labyrinth">
+        <div class="stars">★ 284</div>
+        <div class="name"><span class="org">stainlu /</span> hermes-labyrinth</div>
       </a>
     </div>
     

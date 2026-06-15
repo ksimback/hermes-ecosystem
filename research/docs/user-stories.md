@@ -4,11 +4,11 @@
 
 What the Hermes Agent community is actually building. Every tile below links to a real post, issue, video, or gist where someone describes how they use Hermes — scraped from X, GitHub, Reddit, Hacker News, YouTube, blogs, and podcasts.
 
-**237** stories**15** categories**11** sources
+**262** stories**15** categories**11** sources
 
-All237Dev Workflow60Personal Assistant40Integrations25Creative18Meta & Ecosystem18Business Ops13Cost Optimization11Content Creation10Enterprise9Research8Messaging8Privacy & Self-Hosted6General6Trading & Markets3Marketing2
+All262Dev Workflow65Personal Assistant44Integrations26Meta & Ecosystem21Creative19Business Ops16Cost Optimization13Content Creation11Research9Enterprise9Messaging8Privacy & Self-Hosted8General6Trading & Markets5Marketing2
 
-All sourcesX · Twitter34Hacker News4Reddit15GitHub38YouTube8Blog12Podcast2LinkedIn3GitHub Gist4Product Hunt1Discord116
+All sourcesX · Twitter42Hacker News4Reddit15GitHub38YouTube17Blog20Podcast2LinkedIn3GitHub Gist4Product Hunt1Discord116
 
 [
 
@@ -1906,6 +1906,206 @@ GitHubPersonal Assistant
 
 “Users treat their AI agent as a unified personal assistant across life domains: health tracking, software dev, financial planning, language learning. Multi-role auto-routing with named roles.”
 
-@OlegB333 · 2026↗](https://github.com/NousResearch/hermes-agent/issues/5143)
+@OlegB333 · 2026↗](https://github.com/NousResearch/hermes-agent/issues/5143)[
+
+X · TwitterCost Optimization
+
+### 24/7 agent on a Mac Mini for 2 months — $21/month
+
+“I've been running a 24/7 AI agent on a Mac Mini for 2 months. 18 cron jobs, 35 scripts, 6 custom skills, a structured context system that makes every session smarter than the last. Total cost: $21/month.”
+
+@witcheer · 2026-03-27↗](https://x.com/witcheer/status/2037530350763524482)[
+
+X · TwitterContent Creation
+
+### Automated TikTok slideshow factory that works while you sleep
+
+“Hermes Agent = automated TikTok slideshow factory. It researches the topic, writes the script, formats the slides, outputs in the exact dimensions TikTok needs. 10 slideshows a week manually takes 30-40 hours. With Hermes it takes the time to review and approve.”
+
+@cyrilXBT · 2026-05-13↗](https://x.com/cyrilXBT/status/2054611133911417266)[
+
+X · TwitterBusiness Ops
+
+### One isolated Hermes profile per client — sell AI ops to local businesses
+
+“Selling AI ops to local businesses: one Hermes profile per client, fully isolated — each gets their own SOUL.md, memory, cron. Charge $497/month per client to manage their workflows. 5 clients = $2,485/month recurring. Hermes runs the work, you keep the margin.”
+
+@IBuzovskyi · 2026-05-30↗](https://x.com/IBuzovskyi/status/2060773706574479754)[
+
+X · TwitterMeta & Ecosystem
+
+### The anatomy of the ~/.hermes folder — one folder controls everything
+
+“One folder controls everything your hermes agent knows, remembers, and can do. SOUL.md occupies slot #1 in the system prompt. state.db with FTS5 is what makes 'what did we discuss three weeks ago?' actually work across CLI and messaging.”
+
+@akshay\_pachaar · 2026-05-16↗](https://x.com/akshay_pachaar/status/2055629943891988719)[
+
+X · TwitterMeta & Ecosystem
+
+### Community admin: Hermes is the general agent, not a coding/research/automation agent
+
+“Someone posts a coding setup, someone posts an automation, someone posts an article they wrote with it. Same tool, different category, every day. Hermes is not a coding agent. Not a research agent. It is the general agent — one tool running every category of work a builder does.”
+
+@sudoingX · 2026-04-15↗](https://x.com/sudoingX/status/2044405911150829709)[
+
+X · TwitterBusiness Ops
+
+### PM competitive briefing went from 20 min to 8 min over 6 weeks — same prompt
+
+“Hermes just passed Claude Code in GitHub stars. The killer feature: it writes its own skills. My competitive briefing went from 20 min to 8 min over 6 weeks. Same prompt.”
+
+@aakashgupta · 2026-05-01↗](https://x.com/aakashgupta/status/2050349093969694825)[
+
+X · TwitterMeta & Ecosystem
+
+### Open-source web UI for Hermes with 1:1 terminal parity in the browser
+
+“This guy literally open sourced a full web UI for Hermes Agent. 1:1 terminal parity right in your browser, zero build steps, a sleek 3-panel layout for chat, sessions, and file browsing. 100% free and open-source.”
+
+@DataChaz · 2026-05-31↗](https://x.com/DataChaz/status/2061179421990740248)[
+
+X · TwitterPersonal Assistant
+
+### The real power is what it does every day without you prompting it
+
+“The real power of Hermes Agent is not what it does in a single session. It is what it does every single day without you prompting it. The first run of any workflow is the weakest version of it — after a month, briefings get sharper, shorter, more relevant without you changing anything.”
+
+@KanikaBK · 2026-05-13↗](https://x.com/KanikaBK/status/2054572674777797018)[
+
+BlogIntegrations
+
+### Deployed Hermes on Railway with Telegram — the 10 undocumented gotchas
+
+“Runs as a persistent Docker service on Railway with Telegram as the interface. Official docs don't cover Railway/Docker deployment — this guide fills the gap. There are 10 specific gotchas that will break your deploy if you don't anticipate them. Full working files included.”
+
+Tessa Kriesel · 2026-05-13↗](https://tessakriesel.com/how-i-deployed-hermes-agent-on-railway-with-telegram-and-every-gotcha-i-hit-along-the-way/)[
+
+BlogResearch
+
+### $200 and 30 skills later — training Hermes as a personal analyst
+
+“Hermes picks 15 of my X bookmarks, ranks by priority based on my investments and interests, summarizes, and proposes next steps. The Reflect skill synthesizes past info, connects relationships, detects patterns — Top 5 Daily Insights and why they matter.”
+
+0xJeff (Substack) · 2026-04-20↗](https://defi0xjeff.substack.com/p/hermes-200-and-30-skills-later-here)[
+
+BlogDev Workflow
+
+### After a 15-tool-call monitoring pipeline, Hermes wrote the skill unprompted
+
+“After a multi-step monitoring pipeline setup (Prometheus/Grafana/alerts) in ~15 tool calls, Hermes unprompted entered a reflection phase and generated a skill at ~/.hermes/skills/devops/monitoring-pipeline/SKILL.md — adjusting variables per new context, not just template reuse.”
+
+Jahangir (Stackademic) · 2026-05-13↗](https://blog.stackademic.com/forget-chatbots-hermes-agent-is-an-ai-that-actually-learns-from-you-d8d517be7b88)[
+
+BlogDev Workflow
+
+### Sr AI Architect: 40% less task time on domain-similar tasks after 20+ skills
+
+“Think of Hermes as an assistant who writes their own manual after finishing a task — so they do the job better next time. Cutting task time by 40% on domain-similar tasks after 20+ skills are accumulated.”
+
+Sathish Raju (Medium) · 2026-04-22↗](https://medium.com/@sathishkraju/i-switched-from-openclaw-to-hermes-agent-heres-what-nobody-told-me-5f33a746b6ca)[
+
+BlogDev Workflow
+
+### Three isolated agents — a programmer, a researcher, a designer — each with its own Telegram bot
+
+“Run three fully isolated agents — a programmer (uses Claude Code), a deep researcher, and a designer — each with its own personality, memory, skills, and Telegram bot. Hermes packages a gateway around a learning agent.”
+
+Avi Chawla · 2026-05-13↗](https://blog.dailydoseofds.com/p/hermes-agent-masterclass)[
+
+BlogCost Optimization
+
+### Compounding autonomy is a property you manage, not just enjoy
+
+“A skill is a cache for reasoning, not just data — re-derivation cost drops toward zero. But the same loop compounds cost drift, skill rot, and trust surface. One challenge entrant reported a $47 surprise bill from an overnight run. Skill-cached runs were ~63% cheaper than re-derivation.”
+
+chintanonweb (dev.to) · 2026-05-15↗](https://dev.to/chintanonweb/hermes-agent-gets-smarter-every-day-so-does-the-bill-4i8o)[
+
+BlogPrivacy & Self-Hosted
+
+### The self-improving agent you can actually run yourself — Termux included
+
+“A persistent agent that runs on your own infrastructure, reaches you across messaging platforms, and gets more capable with use. Supported platforms include Linux, macOS, WSL2, and Termux — start on your laptop, continue on Telegram.”
+
+emmanuelthecoder (dev.to) · 2026-05-15↗](https://dev.to/emmanuelthecoder/hermes-the-self-improving-agent-you-can-actually-run-yourself-555l)[
+
+BlogTrading & Markets
+
+### No-code Polymarket weather-trading bot driven by plain-English prompts
+
+“A weather trading agent that scans 20 cities across 4 continents and 3 forecast sources, with Expected Value and Kelly Criterion position sizing — set up by copy-pasting prompts to Hermes, which clones the repo, creates the wallet, and approves the contracts on-chain.”
+
+Moonsat (Medium) · 2026-04-20↗](https://moonsat.medium.com/hermes-agent-polymarket-how-i-built-self-learning-weather-trading-bot-100-5-000-guide-233fd4a008f2)[
+
+YouTubeDev Workflow
+
+### 18-agent fleet on the Kanban board that scouts pain points and auto-ships tools
+
+“18 agents working in parallel, 97 completed tasks. Scout agents hunt real pain points, an orchestrator scores against a rubric — anything under 65/100 gets shelved — then a builder+tester ship a working CLI tool. The system self-healed a broken deliverable on its own.”
+
+Tonbi's AI Garage (YouTube) · 2026-06-01↗](https://www.youtube.com/watch?v=EKVRqcpTT6s)[
+
+YouTubePrivacy & Self-Hosted
+
+### 24/7 cloud red-team 'AI hacking team' controlled from Telegram
+
+“C2 via Telegram: launch tasks from your phone. It autonomously researches SMS gateways, creates a custom SMS skill, deploys a tracking page that harvests GPS, and makes everything publicly accessible using a Cloudflare Quick Tunnel — for ethical red-team engagements.”
+
+zSecurity (YouTube) · 2026-05-01↗](https://www.youtube.com/watch?v=zwV5p1L0COI)[
+
+YouTubeBusiness Ops
+
+### Runs Hermes as a 'junior operator' across 5 money-making workflows
+
+“If I wanted Hermes to pay for itself, I'd treat it like a junior operator, not some magic money printer. Find 25 B2B companies that could benefit from a content system, capture name/site/why-they-need-it, draft three message variants for review.”
+
+Sharbel A. (YouTube) · 2026-05-25↗](https://www.youtube.com/watch?v=2WZAcWtwoDI)[
+
+YouTubeTrading & Markets
+
+### Polymarket movement-alert agent that researches but never trades
+
+“Monitor Polymarket categories for unusual movement: crypto, elections, AI, sports, macro. Do not place trades. When a market moves more than 8% in 24h or volume spikes, send me a brief with the link, price, possible reason, and related news.”
+
+Sharbel A. (YouTube) · 2026-05-25↗](https://www.youtube.com/watch?v=2WZAcWtwoDI)[
+
+YouTubePersonal Assistant
+
+### Telegram assistant recalled Japan-trip preferences while planning a France trip
+
+“In a new Telegram conversation I said 'help me plan a trip to France' and the agent referenced the past Japan conversation, recalling my preferences — nature, history, mid-range budget. That's the difference between a chatbot and a personal assistant.”
+
+Vivek Shetye (YouTube) · 2026-05-04↗](https://www.youtube.com/watch?v=PuNVmPGcffg)[
+
+YouTubePersonal Assistant
+
+### 7am filtered tech briefing + a check-in that spots tasks worth automating
+
+“Every day at 7am Hermes sends a tech/AI summary — not generic, filtered for being a software engineer and YouTube creator — and it says 'the thing you described doing manually every Thursday could be automated. Here's how.'”
+
+CodeHead (YouTube) · 2026-05-14↗](https://www.youtube.com/watch?v=8GjyOQy19so)[
+
+YouTubeDev Workflow
+
+### Scheduled Hermes to build a useful micro-app for him every night at 2am
+
+“I want you to schedule a task for yourself to do every single night at 2am. It should be a micro app, UI, or system that helps us get closer to my personal goals — save us time, make us more productive, or just be generally useful.”
+
+Alex Finn (YouTube) · 2026-05-10↗](https://www.youtube.com/watch?v=RoBD7Lc-0MI)[
+
+YouTubePersonal Assistant
+
+### A clickable 'memory wiki' of everything worked on, plus a 9am priority routine
+
+“Build a memory wiki — a site with all subjects we've talked about and daily logs. Every morning at 9am ask me what my number 1 priority is, then come up with tasks to help with that priority, then update your memories about me accordingly.”
+
+Alex Finn (YouTube) · 2026-05-22↗](https://www.youtube.com/watch?v=AQHlyGA2cZM)[
+
+YouTubeCreative
+
+### Recursively built a Supabase-backed CRM dashboard where each build reuses prior components
+
+“Used the Hermes Desktop App to recursively generate a CRM dashboard where each build reuses components from prior generations; it can also build full videos using official HyperFrame skills — HTML-native, full control over scenes, animations, and rendering.”
+
+WorldofAI (YouTube) · 2026-05-20↗](https://www.youtube.com/watch?v=YBp_PXBbe80)
 
 Built something with Hermes? [Add your story to this page](https://github.com/NousResearch/hermes-agent/edit/main/website/src/data/userStories.json) by editing `userStories.json`, or post it in the [Nous Research Discord](https://discord.gg/NousResearch) and we'll pick it up.

@@ -118,6 +118,8 @@ hermes model --manual-paste
 
 See [OAuth over SSH / Remote Hosts](/docs/guides/oauth-over-ssh#browser-only-remote-cloud-shell--codespaces--ec2-instance-connect) for the full walkthrough. Regression fix for [#26923](https://github.com/NousResearch/hermes-agent/issues/26923).
 
+If the consent page renders the authorization code directly on the page (xAI's current behavior on browser-based consoles) instead of redirecting to your `127.0.0.1:56121/callback`, paste **just the bare code value** at the `Callback URL:` prompt — Hermes accepts the full URL, a bare `?code=...&state=...` query fragment, or a bare code interchangeably.
+
 ## How the Login Works
 
 1.  Hermes opens your browser to `accounts.x.ai`.
@@ -242,7 +244,13 @@ Video
 
 `grok-imagine-video`
 
-Text-to-video and image-to-video; up to 7 reference images
+Text-to-video
+
+Video
+
+`grok-imagine-video-1.5-preview`
+
+Image-to-video; dated alias `grok-imagine-video-1.5-2026-05-30`
 
 TTS
 

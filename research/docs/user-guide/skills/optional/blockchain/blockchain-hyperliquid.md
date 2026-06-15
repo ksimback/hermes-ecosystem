@@ -62,7 +62,7 @@ Query Hyperliquid market and account data through the public `/info` endpoint. R
 
 Stdlib only — no external packages, no API key.
 
-The script reads `~/.hermes/.env` for two optional defaults:
+The script reads `${HERMES_HOME:-~/.hermes}/.env` for two optional defaults:
 
 -   `HYPERLIQUID_API_URL` — defaults to `https://api.hyperliquid.xyz`. Set to `https://api.hyperliquid-testnet.xyz` for testnet.
 -   `HYPERLIQUID_USER_ADDRESS` — default address for `state`, `spot-balances`, `fills`, `orders`, and `review`. If unset, pass the address as the first positional argument.
@@ -102,7 +102,7 @@ hyperliquid_client.py review [address] [--coin COIN] [--hours N] [--fills N]
 hyperliquid_client.py export <coin> [--interval 1h] [--hours N] [--output PATH]
 ```
 
-For `state`, `spot-balances`, `fills`, `orders`, and `review`, the address is optional when `HYPERLIQUID_USER_ADDRESS` is set in `~/.hermes/.env`.
+For `state`, `spot-balances`, `fills`, `orders`, and `review`, the address is optional when `HYPERLIQUID_USER_ADDRESS` is set in `${HERMES_HOME:-~/.hermes}/.env`.
 
 * * *
 

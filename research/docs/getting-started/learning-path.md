@@ -8,6 +8,10 @@ Start Here
 
 If you haven't installed Hermes Agent yet, begin with the [Installation guide](/docs/getting-started/installation) and then run through the [Quickstart](/docs/getting-started/quickstart). Everything below assumes you have a working installation.
 
+First-time provider setup
+
+First-time users almost always want `hermes setup --portal` — one OAuth covers a model plus the four Tool Gateway tools (search/image/TTS/browser). See [Nous Portal](/docs/integrations/nous-portal).
+
 ## How to Use This Page
 
 -   **Know your level?** Jump to the [experience-level table](#by-experience-level) and follow the reading order for your tier.
@@ -44,7 +48,7 @@ Set up messaging bots, use advanced features like memory, cron jobs, and skills
 
 Build custom tools, create skills, train models with RL, contribute to the project
 
-[Architecture](/docs/developer-guide/architecture) → [Adding Tools](/docs/developer-guide/adding-tools) → [Creating Skills](/docs/developer-guide/creating-skills) → [RL Training](/docs/user-guide/features/rl-training) → [Contributing](/docs/developer-guide/contributing)
+[Architecture](/docs/developer-guide/architecture) → [Adding Tools](/docs/developer-guide/adding-tools) → [Creating Skills](/docs/developer-guide/creating-skills) → [Contributing](/docs/developer-guide/contributing)
 
 ~4–6 hours
 
@@ -118,11 +122,11 @@ For most custom tool creation, start with plugins. The [Adding Tools](/docs/deve
 
 ### "I want to train models"
 
-Use reinforcement learning to fine-tune model behavior with Hermes Agent's built-in RL training pipeline.
+Use reinforcement learning to fine-tune model behavior with Hermes Agent's RL training pipeline (powered by [Atropos](https://github.com/NousResearch/atropos)).
 
 1.  [Quickstart](/docs/getting-started/quickstart)
 2.  [Configuration](/docs/user-guide/configuration)
-3.  [RL Training](/docs/user-guide/features/rl-training)
+3.  [Atropos RL Environments](https://github.com/NousResearch/atropos) (external)
 4.  [Provider Routing](/docs/user-guide/features/provider-routing)
 5.  [Architecture](/docs/developer-guide/architecture)
 
@@ -216,12 +220,6 @@ Event-driven callbacks and middleware
 Process multiple inputs in bulk
 
 [Batch Processing](/docs/user-guide/features/batch-processing)
-
-**RL Training**
-
-Fine-tune models with reinforcement learning
-
-[RL Training](/docs/user-guide/features/rl-training)
 
 **Provider Routing**
 

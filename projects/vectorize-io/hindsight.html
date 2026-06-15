@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/vectorize-io/hindsight#software",
   "name": "hindsight",
-  "description": "Hindsight is an agent memory system designed to enable long-term learning and information retention for autonomous AI agents. It utilizes a workflow of retain, recall, and reflect operations to move beyond simple conversation history and build persistent mental models. The system can be integrated via an LLM wrapper for automatic memory management or through direct SDK calls for granular control. It supports multi-user isolation through metadata filtering and is compatible with major LLM provide",
+  "description": "Hindsight is an agent memory system designed to enable AI agents to learn from experience rather than just recalling conversation history. It utilizes a retain, recall, and reflect workflow to manage long-term memory, offering an alternative to standard RAG and knowledge graph techniques. The system can be integrated via a simple LLM wrapper or a dedicated API and SDK. It is primarily used for personalizing chatbots and building autonomous AI employees that adapt behavior based on user feedback.",
   "url": "https://hermesatlas.com/projects/vectorize-io/hindsight",
   "codeRepository": "https://github.com/vectorize-io/hindsight",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "vectorize-io",
     "url": "https://github.com/vectorize-io"
   },
-  "dateModified": "2026-05-27T07:42:59.000Z",
+  "dateModified": "2026-06-15T10:17:16.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 14763
+    "userInteractionCount": 16412
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,8 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span>apr·2026</span>
-    <span id="meta-count">123·repos</span>
+    <span id="meta-count">172·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -113,11 +112,11 @@
   <p class="project-desc">Hindsight: Agent Memory That  Learns</p>
 
   <div class="meta-row">
-    <span class="stars">★ 14.8K</span>
+    <span class="stars">★ 16.4K</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     <span><span class="meta-label">maintainer</span>Nous Research</span>
-    <span><span class="meta-label">updated</span>2026-05-27</span>
+    <span><span class="meta-label">updated</span>2026-06-15</span>
   </div>
 
   <div class="actions">
@@ -137,11 +136,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hindsight is an agent memory system designed to enable long-term learning and information retention for autonomous AI agents. It utilizes a workflow of retain, recall, and reflect operations to move beyond simple conversation history and build persistent mental models. The system can be integrated via an LLM wrapper for automatic memory management or through direct SDK calls for granular control. It supports multi-user isolation through metadata filtering and is compatible with major LLM providers including OpenAI, Anthropic, and Ollama.</p>
+    <p class="summary-text">Hindsight is an agent memory system designed to enable AI agents to learn from experience rather than just recalling conversation history. It utilizes a retain, recall, and reflect workflow to manage long-term memory, offering an alternative to standard RAG and knowledge graph techniques. The system can be integrated via a simple LLM wrapper or a dedicated API and SDK. It is primarily used for personalizing chatbots and building autonomous AI employees that adapt behavior based on user feedback.</p>
     <ul class="summary-highlights">
-      <li>Implements retain, recall, and reflect workflows for long-term learning</li>
-      <li>Two-line LLM wrapper for automatic memory storage and retrieval</li>
-      <li>Supports PostgreSQL and Oracle AI Database for enterprise storage</li>
+      <li>Retain, recall, and reflect workflows for long-term learning</li>
+      <li>LLM wrapper for integration with two lines of code</li>
+      <li>Supports multiple providers including OpenAI, Anthropic, Gemini, and Ollama</li>
     </ul>
   </div>
 </section>
@@ -156,7 +155,6 @@
 <p><a href="https://github.com/vectorize-io/hindsight/actions/workflows/release.yml"><img src="https://github.com/vectorize-io/hindsight/actions/workflows/release.yml/badge.svg" alt="CI"></a>
 <a href="https://join.slack.com/t/hindsight-space/shared_invite/zt-3nhbm4w29-LeSJ5Ixi6j8PdiYOCPlOgg"><img src="https://img.shields.io/badge/Slack-Join%20Community-4A154B?logo=slack" alt="Slack Community"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
-<a href="https://gitcgr.com/vectorize-io/hindsight"><img src="https://gitcgr.com/badge/vectorize-io/hindsight.svg" alt="gitcgr"></a>
 <img src="https://img.shields.io/pypi/dm/hindsight-api?label=PyPI" alt="PyPI - Downloads">
 <img src="https://img.shields.io/npm/dm/%40vectorize-io%2Fhindsight-client?logoColor=orange&amp;label=NPM&amp;color=blue&amp;link=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40vectorize-io%2Fhindsight-client" alt="NPM Downloads">
 <br/></p>
@@ -189,9 +187,9 @@
 <h4>Docker (recommended)</h4>
 <pre><code class="language-bash">export OPENAI_API_KEY=sk-xxx
 
-docker run --rm -it --pull always -p 8888:8888 -p 9999:9999 \
+docker run -it --pull always --name hindsight --restart unless-stopped -p 8888:8888 -p 9999:9999 \
   -e HINDSIGHT_API_LLM_API_KEY=$OPENAI_API_KEY \
-  -v $HOME/.hindsight-docker:/home/hindsight/.pg0 \
+  -v hindsight-data:/home/hindsight/.pg0 \
   ghcr.io/vectorize-io/hindsight:latest
 </code></pre>
 <blockquote>
@@ -250,6 +248,7 @@ main();
 <h4>Python Embedded (no server required)</h4>
 <pre><code class="language-bash">pip install hindsight-all -U
 </code></pre>
+<p>On Intel (x86_64) Macs, install <code>hindsight-all-slim</code> instead — see <a href="#supported-platforms">Supported Platforms</a>.</p>
 <pre><code class="language-python">import os
 from hindsight import HindsightServer, HindsightClient
 
@@ -369,6 +368,43 @@ client.reflect(bank_id=&quot;my-bank&quot;, query=&quot;What should I know about
 <hr>
 <h3>Star History</h3>
 <h3><a href="https://www.star-history.com/#vectorize-io/hindsight&type=date&legend=top-left"><img src="https://api.star-history.com/svg?repos=vectorize-io/hindsight&amp;type=date&amp;legend=top-left" alt="Star History Chart"></a></h3>
+<h3>Supported Platforms</h3>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Docker</th>
+<th>Bare Metal (pip)</th>
+<th>Embedded DB (pg0)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Linux</strong> (x86_64, ARM64)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>macOS</strong> (Apple Silicon / arm64)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>macOS</strong> (Intel / x86_64)</td>
+<td>✅</td>
+<td>⚠️</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>Windows</strong> (x86_64)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<p>⚠️ Intel Macs: use <code>hindsight-all-slim</code> — see the <a href="https://docs.hindsight.vectorize.io/docs/developer/installation#supported-platforms">installation guide</a> for details.</p>
+<hr>
 <h3>Contributing</h3>
 <p>See <a href="https://github.com/vectorize-io/hindsight/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>.</p>
 <h3>License</h3>
@@ -388,36 +424,36 @@ client.reflect(bank_id=&quot;my-bank&quot;, query=&quot;What should I know about
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 56.8K</div>
+        <div class="stars">★ 58.6K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
-        <div class="stars">★ 1.1K</div>
+        <div class="stars">★ 1.2K</div>
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 266</div>
+        <div class="stars">★ 303</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
-        <div class="stars">★ 176</div>
+        <div class="stars">★ 183</div>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
+      <a class="related-row" href="/projects/Signet-AI/signetai">
+        <div class="stars">★ 195</div>
+        <div class="name"><span class="org">Signet-AI /</span> signetai</div>
+      </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 140</div>
+        <div class="stars">★ 202</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
-        <div class="stars">★ 27</div>
+        <div class="stars">★ 33</div>
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
       <a class="related-row" href="/projects/garrytan/gbrain">
-        <div class="stars">★ 19.3K</div>
+        <div class="stars">★ 22.8K</div>
         <div class="name"><span class="org">garrytan /</span> gbrain</div>
-      </a>
-      <a class="related-row" href="/projects/stephenschoettler/hermes-lcm">
-        <div class="stars">★ 601</div>
-        <div class="name"><span class="org">stephenschoettler /</span> hermes-lcm</div>
       </a>
     </div>
     <p class="list-link"><a href="/lists/best-memory-providers">see all memory &amp; context →</a></p>

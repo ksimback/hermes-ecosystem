@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/stephenschoettler/hermes-lcm#software",
   "name": "hermes-lcm",
-  "description": "Hermes-LCM is a context management plugin for the Hermes Agent that prevents information loss during long-running conversations. It replaces standard flat summarization with a hierarchical Directed Acyclic Graph (DAG) that compacts older messages while preserving raw data in a local SQLite store. The agent can use specialized tools like grep and expand to drill back into specific historical details without flooding the active context window. This approach ensures that even as the context window ",
+  "description": "Hermes-LCM is a context engine plugin for Hermes Agent that prevents the loss of detailed information during conversation compression. It replaces flat summaries with a hierarchical summary DAG and a SQLite message store to preserve raw history. The agent can use specialized tools to drill down into specific compacted material without flooding the active context. This approach improves retrieval quality and autonomy by making historical recall part of the active context engine.",
   "url": "https://hermesatlas.com/projects/stephenschoettler/hermes-lcm",
   "codeRepository": "https://github.com/stephenschoettler/hermes-lcm",
   "applicationCategory": "UtilitiesApplication",
@@ -46,13 +46,13 @@
     "name": "stephenschoettler",
     "url": "https://github.com/stephenschoettler"
   },
-  "dateModified": "2026-05-26T19:58:03.000Z",
+  "dateModified": "2026-06-14T14:33:56.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 601
+    "userInteractionCount": 731
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -80,8 +80,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span>apr·2026</span>
-    <span id="meta-count">123·repos</span>
+    <span id="meta-count">172·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -112,11 +111,11 @@
   <p class="project-desc">Lossless Context Management plugin for Hermes Agent — DAG-based context engine that never loses a message</p>
 
   <div class="meta-row">
-    <span class="stars">★ 601</span>
+    <span class="stars">★ 731</span>
     <span><span class="meta-label">lang</span>Python</span>
     
     
-    <span><span class="meta-label">updated</span>2026-05-26</span>
+    <span><span class="meta-label">updated</span>2026-06-14</span>
   </div>
 
   <div class="actions">
@@ -131,11 +130,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes-LCM is a context management plugin for the Hermes Agent that prevents information loss during long-running conversations. It replaces standard flat summarization with a hierarchical Directed Acyclic Graph (DAG) that compacts older messages while preserving raw data in a local SQLite store. The agent can use specialized tools like grep and expand to drill back into specific historical details without flooding the active context window. This approach ensures that even as the context window reaches its limit, the model retains a structured path to retrieve exact original content.</p>
+    <p class="summary-text">Hermes-LCM is a context engine plugin for Hermes Agent that prevents the loss of detailed information during conversation compression. It replaces flat summaries with a hierarchical summary DAG and a SQLite message store to preserve raw history. The agent can use specialized tools to drill down into specific compacted material without flooding the active context. This approach improves retrieval quality and autonomy by making historical recall part of the active context engine.</p>
     <ul class="summary-highlights">
-      <li>Hierarchical DAG structure for depth-aware context compaction</li>
-      <li>SQLite-backed message store for lossless raw data persistence</li>
-      <li>Agent tools for searching and expanding compacted conversation history</li>
+      <li>Hierarchical summary DAG for depth-aware context compaction</li>
+      <li>SQLite store for preserving raw messages and source lineage</li>
+      <li>Dedicated tools for grepping, expanding, and describing compacted context</li>
     </ul>
   </div>
 </section>
@@ -144,7 +143,7 @@
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
     <p align="center">
-  <img src="https://raw.githubusercontent.com/stephenschoettler/hermes-lcm/main/banner.png" alt="HERMES-LCM" width="800">
+  <img src="https://raw.githubusercontent.com/stephenschoettler/hermes-lcm/main/docs/banner.png" alt="HERMES-LCM" width="800">
 </p>
 
 <p><a href="https://github.com/stephenschoettler/hermes-lcm/actions/workflows/ci.yml"><img src="https://github.com/stephenschoettler/hermes-lcm/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
@@ -260,7 +259,7 @@ context:
 </ul>
 <p>Typical output:</p>
 <pre><code class="language-text">Plugins (1):
-  ✓ hermes-lcm v0.12.0 (7 tools)
+  ✓ hermes-lcm v0.17.0 (7 tools)
 
 Provider Plugins:
   Context Engine: lcm
@@ -290,13 +289,18 @@ environment variables:</p>
 </thead>
 <tbody><tr>
 <td><code>LCM_CONTEXT_THRESHOLD</code></td>
-<td><code>0.75</code></td>
+<td><code>0.35</code></td>
 <td>Fraction of the context window that triggers LCM compaction</td>
 </tr>
 <tr>
 <td><code>LCM_FRESH_TAIL_COUNT</code></td>
-<td><code>64</code></td>
+<td><code>32</code></td>
 <td>Recent messages protected from compaction</td>
+</tr>
+<tr>
+<td><code>LCM_INCREMENTAL_MAX_DEPTH</code></td>
+<td><code>3</code></td>
+<td>Max DAG condensation depth (<code>-1</code> = unlimited, <code>0</code> = leaf only); enables hierarchical summarization</td>
 </tr>
 <tr>
 <td><code>LCM_LEAF_CHUNK_TOKENS</code></td>
@@ -406,7 +410,12 @@ environment variables:</p>
 <tr>
 <td><code>LCM_DATABASE_PATH</code></td>
 <td>auto</td>
-<td>SQLite database path, profile-scoped by default</td>
+<td>SQLite database path. Empty config resolves to <code>HERMES_HOME/lcm.db</code>; plugin installs or operators may set this env var to another profile-scoped path such as <code>~/.hermes/hermes-lcm.db</code>.</td>
+</tr>
+<tr>
+<td><code>LCM_FTS_INTEGRITY_CHECK_INTERVAL_HOURS</code></td>
+<td><code>24</code></td>
+<td>Minimum hours between startup FTS5 deep integrity-checks (O(index size)). <code>0</code> checks every startup (previous behavior); a negative value never checks on startup. Structural checks always run regardless.</td>
 </tr>
 <tr>
 <td><code>LCM_ENABLE_SLASH_COMMAND</code></td>
@@ -417,6 +426,21 @@ environment variables:</p>
 <td><code>LCM_DOCTOR_CLEAN_APPLY_ENABLED</code></td>
 <td><code>false</code></td>
 <td>Permit destructive <code>/lcm doctor clean apply</code> in trusted operator contexts</td>
+</tr>
+<tr>
+<td><code>LCM_EMPTY_LIFECYCLE_GC_ENABLED</code></td>
+<td><code>true</code></td>
+<td>Master toggle for automatic pruning of lifecycle rows for sessions that never ingested any messages or summary nodes</td>
+</tr>
+<tr>
+<td><code>LCM_EMPTY_LIFECYCLE_GC_THRESHOLD</code></td>
+<td><code>200</code></td>
+<td>Number of lifecycle rows at which the GC pass fires (default 200 so fresh installs skip the work)</td>
+</tr>
+<tr>
+<td><code>LCM_EMPTY_LIFECYCLE_GC_MAX_AGE_HOURS</code></td>
+<td><code>24</code></td>
+<td>Automatic GC only deletes empty lifecycle rows at least this old; set <code>0</code> only in trusted/test environments that intentionally want immediate empty-row pruning</td>
 </tr>
 </tbody></table>
 <p>Advanced compaction, assembly, and extraction knobs are defined in <code>config.py</code>.</p>
@@ -468,8 +492,10 @@ session.</p>
 <p>Model-aware presets are inspectable, but they are not automatic live config
 mutations. With <code>LCM_ENABLE_SLASH_COMMAND=true</code>, use:</p>
 <pre><code class="language-text">/lcm preset show codex_gpt_long_context
+/lcm preset show codex_spark_context
 /lcm preset suggest
 /lcm preset apply codex_gpt_long_context --dry-run
+/lcm preset apply codex_spark_context --dry-run
 </code></pre>
 <p><code>/lcm preset show</code> reports the shipped preset metadata, benchmark provenance,
 policy file, policy version, and metric summary. <code>/lcm preset suggest</code> chooses a
@@ -480,13 +506,26 @@ settings only; it does not
 write files, change process state, or override explicit parseable
 preset-managed <code>LCM_*</code> environment variables. Invalid preset-managed env values
 are reported as invalid instead of being treated as active runtime overrides.</p>
-<p>The current <code>codex_gpt_long_context</code> dry-run preview is:</p>
-<pre><code class="language-text">LCM_CONTEXT_THRESHOLD=0.75
+<p>The current runtime preset dry-run previews are:</p>
+<pre><code class="language-text"># codex_gpt_long_context: near-272k GPT/Codex routes
+LCM_CONTEXT_THRESHOLD=0.75
 LCM_FRESH_TAIL_COUNT=24
+LCM_LEAF_CHUNK_TOKENS=8000
+
+# codex_spark_context: near-128k GPT-5.3 Codex Spark routes
+LCM_CONTEXT_THRESHOLD=0.75
+LCM_FRESH_TAIL_COUNT=16
 LCM_LEAF_CHUNK_TOKENS=8000
 </code></pre>
 <p><code>target_after_compaction=0.55</code> is still benchmark provenance, not a runtime
 setting, because the engine does not expose that live knob yet.</p>
+<p>For dashboards and agents, <code>lcm_status</code> also exposes the same information under
+<code>preset_suggestion</code> as read-only JSON: suggested preset name/family, selection
+reason, match confidence, provenance, explicit override diagnostics, invalid
+override diagnostics, unsupported benchmark-only fields, and the dry-run delta.
+This surface is safe to consume without scraping slash-command text; it does not
+write files, mutate process state, expose local benchmark run paths, or apply
+<code>LCM_*</code> environment changes.</p>
 <h4>FAQ: tuning LCM for large context windows</h4>
 <p>Long-context models change the tuning problem. A 1M-token model does not mean
 you always want to spend 750k prompt tokens before LCM starts compacting. Start
@@ -591,9 +630,10 @@ logs, media payloads, or raw JSON blobs dominate token pressure.</li>
 </ul>
 <p>Common questions:</p>
 <p><strong>Should I leave the default threshold on a 1M-token model?</strong></p>
-<p>Not always. The default <code>0.75</code> means compaction may wait until roughly <code>750000</code>
-prompt tokens on a true 1M effective window. That can be intentional if you want
-maximum live context, but it is expensive and delays DAG construction.</p>
+<p>Not always. The default <code>0.35</code> means compaction starts around <code>350000</code> prompt
+tokens on a true 1M effective window. That leaves far more headroom for new
+content but compacts more aggressively, which can shorten recall of older
+details.</p>
 <p><strong>Should I change leaf chunk settings first?</strong></p>
 <p>Usually no. Start with <code>LCM_CONTEXT_THRESHOLD</code>, <code>LCM_FRESH_TAIL_COUNT</code>, and large
 output externalization. Only tune leaf chunking after checking <code>lcm_status</code> and
@@ -800,6 +840,8 @@ contexts:</p>
 <li><code>/lcm doctor</code> - read-only health checks</li>
 <li><code>/lcm doctor clean</code> - read-only scan for obvious junk/noise session candidates</li>
 <li><code>/lcm doctor clean apply</code> - backup-first cleanup for safe pattern-matched candidates; requires <code>LCM_DOCTOR_CLEAN_APPLY_ENABLED=true</code></li>
+<li><code>/lcm doctor clean lifecycle</code> - read-only scan for lifecycle rows with zero messages/nodes</li>
+<li><code>/lcm doctor clean lifecycle apply</code> - backup-first cleanup of empty lifecycle rows; requires <code>LCM_DOCTOR_CLEAN_APPLY_ENABLED=true</code></li>
 <li><code>/lcm doctor repair</code> - read-only SQLite/FTS repair diagnostics</li>
 <li><code>/lcm doctor repair apply</code> - backup-first SQLite/FTS repair</li>
 <li><code>/lcm doctor source</code> - read-only scan for legacy blank-source rows</li>
@@ -902,36 +944,36 @@ See the <a href="https://github.com/stephenschoettler/hermes-lcm/releases">relea
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 56.8K</div>
+        <div class="stars">★ 58.6K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 14.8K</div>
+        <div class="stars">★ 16.4K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
-        <div class="stars">★ 1.1K</div>
+        <div class="stars">★ 1.2K</div>
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 266</div>
+        <div class="stars">★ 303</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
-        <div class="stars">★ 176</div>
+        <div class="stars">★ 183</div>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
+      <a class="related-row" href="/projects/Signet-AI/signetai">
+        <div class="stars">★ 195</div>
+        <div class="name"><span class="org">Signet-AI /</span> signetai</div>
+      </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 140</div>
+        <div class="stars">★ 202</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
-        <div class="stars">★ 27</div>
+        <div class="stars">★ 33</div>
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
-      </a>
-      <a class="related-row" href="/projects/garrytan/gbrain">
-        <div class="stars">★ 19.3K</div>
-        <div class="name"><span class="org">garrytan /</span> gbrain</div>
       </a>
     </div>
     <p class="list-link"><a href="/lists/best-memory-providers">see all memory &amp; context →</a></p>

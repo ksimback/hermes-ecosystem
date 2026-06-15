@@ -1,4 +1,6 @@
 import { kvIncr, kvExpireNx } from "../lib/redis.js";
+import { combinedRetrievalScore, enrichChunkMetadata } from "../lib/rag-scoring.js";
+import { buildLatestReleaseBlock, detectLatestReleaseQuery } from "../lib/latest-release.js";
 import { readFileSync } from "fs";
 import { join } from "path";
 
@@ -6,12 +8,13 @@ import { join } from "path";
 let chunks = null;
 let bm25Index = null;
 let reposData = null;
+let latestReleaseData = null;
 
 function loadChunks() {
   if (chunks) return chunks;
   try {
     const raw = readFileSync(join(process.cwd(), "data", "chunks.json"), "utf-8");
-    chunks = JSON.parse(raw);
+    chunks = JSON.parse(raw).map(enrichChunkMetadata);
     bm25Index = buildBM25Index(chunks);
     return chunks;
   } catch (e) {
@@ -29,6 +32,18 @@ function loadRepos() {
   } catch (e) {
     console.error("Failed to load repos.json:", e.message);
     return [];
+  }
+}
+
+function loadLatestRelease() {
+  if (latestReleaseData) return latestReleaseData;
+  try {
+    const raw = readFileSync(join(process.cwd(), "data", "latest-release.json"), "utf-8");
+    latestReleaseData = JSON.parse(raw);
+    return latestReleaseData;
+  } catch (e) {
+    console.error("Failed to load latest-release.json:", e.message);
+    return null;
   }
 }
 
@@ -324,9 +339,10 @@ export default async function handler(req, res) {
     // 3. Embed the rewritten query
     const queryEmbedding = await getEmbedding(searchQuery);
 
-    // 4. Hybrid search: combine BM25 (keyword) and cosine (semantic) scores
-    // Normalize both to 0-1 then weighted sum: 0.7 vector + 0.3 keyword
-    // Vector dominates for semantic understanding; BM25 boosts exact term matches.
+    // 4. Hybrid search: combine BM25 (keyword), cosine (semantic), and
+    // source-aware Atlas policy. Official docs are favored, catalog/generated
+    // pages are suppressed for broad questions, and query-specific boosts keep
+    // Skills Hub and TUI session docs available when explicitly relevant.
     const cosineScores = allChunks.map(c => cosineSimilarity(queryEmbedding, c.embedding));
     const bm25Scores = bm25Index ? bm25Score(searchQuery, bm25Index) : cosineScores.map(() => 0);
 
@@ -337,9 +353,16 @@ export default async function handler(req, res) {
     const candidates = allChunks
       .map((chunk, i) => ({
         ...chunk,
-        score: 0.7 * normCosine[i] + 0.3 * normBM25[i],
+        score: combinedRetrievalScore({
+          query: searchQuery,
+          chunk,
+          normCosine: normCosine[i],
+          normBM25: normBM25[i],
+        }),
         _cosine: cosineScores[i],
         _bm25: bm25Scores[i],
+        _authority: chunk.metadata?.authority,
+        _contentKind: chunk.metadata?.contentKind,
       }))
       .sort((a, b) => b.score - a.score)
       .slice(0, 20);
@@ -348,7 +371,7 @@ export default async function handler(req, res) {
     // Prevents returning 8 near-duplicate paragraphs from the same section
     const scored = mmrSelect(candidates, queryEmbedding, 8, 0.6);
 
-    console.log(`[RAG] Top result: ${scored[0]?.source} (cos=${scored[0]?._cosine.toFixed(3)}, bm25=${scored[0]?._bm25.toFixed(3)}); ${new Set(scored.map(s => s.source)).size} unique sources`);
+    console.log(`[RAG] Top result: ${scored[0]?.source} (${scored[0]?._authority}/${scored[0]?._contentKind}, cos=${scored[0]?._cosine.toFixed(3)}, bm25=${scored[0]?._bm25.toFixed(3)}); ${new Set(scored.map(s => s.source)).size} unique sources`);
 
     // 6. Detect ranking/comparison queries and inject repo metadata
     // This gives the LLM live star counts to actually rank/compare repos
@@ -362,11 +385,18 @@ export default async function handler(req, res) {
       }
     }
 
+    const needsLatestRelease = detectLatestReleaseQuery(`${message}\n${searchQuery}`);
+    const latestRelease = needsLatestRelease ? loadLatestRelease() : null;
+    const latestReleaseBlock = latestRelease ? `\n\n${buildLatestReleaseBlock(latestRelease)}\n` : "";
+    if (latestReleaseBlock) {
+      console.log(`[RAG] Injected latest release metadata (${latestRelease.version}/${latestRelease.tag || "no tag"})`);
+    }
+
     // 4. Build context: ALWAYS include baseline + retrieved chunks
     // This prevents vague queries from getting weak answers due to bad retrieval
     const baselineContext = `## CORE FACTS (always true)
 
-Hermes Agent is an open-source autonomous AI agent developed by Nous Research, released in February 2026 under MIT license. It currently has 83,000+ stars on GitHub (v0.9.0 released April 13, 2026).
+Hermes Agent is an open-source autonomous AI agent developed by Nous Research, released in February 2026 under MIT license.
 
 **What makes it unique:** Unlike stateless chatbots, Hermes has a built-in learning loop — it creates reusable skills from experience, remembers what it learns across sessions via persistent memory (MEMORY.md + USER.md + SQLite FTS5), and gets more capable the longer you use it. It's "the agent that grows with you."
 
@@ -378,8 +408,6 @@ Hermes Agent is an open-source autonomous AI agent developed by Nous Research, r
 - Autonomous skill creation following agentskills.io standard
 - Persistent cross-session memory with 8 pluggable memory providers
 
-**Latest release (v0.9.0, April 13 2026):** Local web dashboard, Fast Mode (/fast) for GPT-5.4/Codex/Claude, iMessage via BlueBubbles, WeChat + WeCom native support, Termux/Android native, background process monitoring (watch_patterns), pluggable context engine, xAI (Grok) + Xiaomi MiMo + Qwen native providers, unified proxy support, 16 security fixes. 487 commits, 269 PRs, 24 contributors.
-
 **Installation:** One-line install on Linux/macOS/WSL2:
 \`curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash\`
 Then run \`hermes\` to start. Only Git is required as a prerequisite — the installer handles Python, Node.js, ripgrep, and ffmpeg. Windows native not supported — use WSL2.
@@ -387,7 +415,7 @@ Then run \`hermes\` to start. Only Git is required as a prerequisite — the ins
 **Links:** https://github.com/NousResearch/hermes-agent | https://hermes-agent.nousresearch.com/docs`;
 
     const retrievedContext = scored
-      .map(c => `[Source: ${c.source}${c.section ? `, Section: "${c.section}"` : ""}]\n${c.text}`)
+      .map(c => `[Source: ${c.source}${c.section ? `, Section: "${c.section}"` : ""}${c.metadata?.authority ? `, Authority: ${c.metadata.authority}` : ""}${c.metadata?.contentKind ? `, Kind: ${c.metadata.contentKind}` : ""}]\n${c.text}`)
       .join("\n\n---\n\n");
 
     // 5. Build messages for LLM
@@ -396,8 +424,10 @@ Then run \`hermes\` to start. Only Git is required as a prerequisite — the ins
 ANSWER RULES:
 - Start with a direct, complete answer. NEVER say "I don't have details" or "specific details are not in the context" when the CORE FACTS or RETRIEVED CONTEXT sections contain relevant information. Always synthesize what you DO have.
 - Don't hedge with "based on the context" or "based on the available records."
-- Use the CORE FACTS section as your baseline — those are always true. The "Latest release" line in CORE FACTS contains headline features that you MUST use when asked about the latest or newest release.
+- Use the CORE FACTS section as your baseline — those are always true.
+- If a LATEST RELEASE section is present, treat it as authoritative for latest/newest/current release questions and prefer it over older retrieved release notes.
 - Use the RETRIEVED CONTEXT section for specific details, recent updates, and tool recommendations.
+- Prefer official_docs and curated_atlas sources when context conflicts. Treat catalog/generated pages as lookup sources, not broad product overviews, unless the user is asking about skills/catalogs.
 - For ranking/comparison/recommendation questions, use the REPO METADATA section for accurate star counts.
 - Cite sources from RETRIEVED CONTEXT using [Source: filename.md] format in brackets.
 - For "what is" questions, give a proper 2-3 sentence overview first, THEN details.
@@ -407,7 +437,7 @@ ANSWER RULES:
 - ALWAYS mention exact star counts from REPO METADATA when comparing or recommending repos.
 - If a question truly isn't covered by any of your sources, say so — but ONLY after checking CORE FACTS, RETRIEVED CONTEXT, and REPO METADATA. Do not give up prematurely.
 
-${baselineContext}
+${baselineContext}${latestReleaseBlock}
 
 ## RETRIEVED CONTEXT (relevant to this specific question)
 

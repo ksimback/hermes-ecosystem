@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin#software",
   "name": "yantrikdb-hermes-plugin",
-  "description": "yantrikdb-hermes-plugin is a self-maintaining memory provider for Hermes Agent that prevents context loss during long sessions. It utilizes a temporal context graph to manage memory lifecycles through canonicalization, contradiction tracking, and recency-aware ranking. The plugin features explainable retrieval by attaching a why_retrieved tag to every recalled memory and includes a native outcome ledger for agent-authored skills. It operates in an embedded, in-process mode by default, requiring ",
+  "description": "yantrikdb-hermes-plugin is a memory provider for Hermes Agent designed to prevent the loss of important constraints during long sessions. It utilizes a temporal context graph and a maintenance pass to manage memory lifecycles through promotion, demotion, and supersession. The plugin features an embedded in-process backend by default, eliminating the need for a separate server or GPU. It also enables agents to author and track the outcomes of their own skills natively within the database.",
   "url": "https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin",
   "codeRepository": "https://github.com/yantrikos/yantrikdb-hermes-plugin",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "yantrikos",
     "url": "https://github.com/yantrikos"
   },
-  "dateModified": "2026-05-23T04:40:44.000Z",
+  "dateModified": "2026-06-05T02:10:35.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 27
+    "userInteractionCount": 59
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,8 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span>apr·2026</span>
-    <span id="meta-count">123·repos</span>
+    <span id="meta-count">172·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -113,11 +112,11 @@
   <p class="project-desc">YantrikDB memory provider for NousResearch/hermes-agent — self-maintaining memory with canonicalization, contradiction tracking, recency ranking, and explainable recall.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 27</span>
+    <span class="stars">★ 59</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-05-23</span>
+    <span><span class="meta-label">updated</span>2026-06-05</span>
   </div>
 
   <div class="actions">
@@ -132,11 +131,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">yantrikdb-hermes-plugin is a self-maintaining memory provider for Hermes Agent that prevents context loss during long sessions. It utilizes a temporal context graph to manage memory lifecycles through canonicalization, contradiction tracking, and recency-aware ranking. The plugin features explainable retrieval by attaching a why_retrieved tag to every recalled memory and includes a native outcome ledger for agent-authored skills. It operates in an embedded, in-process mode by default, requiring no external server or GPU for deployment.</p>
+    <p class="summary-text">yantrikdb-hermes-plugin is a memory provider for Hermes Agent designed to prevent the loss of important constraints during long sessions. It utilizes a temporal context graph and a maintenance pass to manage memory lifecycles through promotion, demotion, and supersession. The plugin features an embedded in-process backend by default, eliminating the need for a separate server or GPU. It also enables agents to author and track the outcomes of their own skills natively within the database.</p>
     <ul class="summary-highlights">
-      <li>Surfaces contradictions and canonicalizes duplicate memories automatically.</li>
-      <li>Provides explainable recall with why_retrieved tags for every result.</li>
-      <li>Supports agent-authored skills with a native outcome ledger.</li>
+      <li>Explainable recall with why_retrieved tags for every result</li>
+      <li>First-class contradiction tracking and canonicalization of duplicates</li>
+      <li>Embedded in-process backend requiring no separate server or GPU</li>
     </ul>
   </div>
 </section>
@@ -205,6 +204,21 @@
 <td>HTTP backend for HA clusters</td>
 <td>✓ v0.5.0 (against yantrikdb-server)</td>
 <td>varies</td>
+</tr>
+<tr>
+<td>Reproducible recall benchmark (<code>benchmarks/run_recall_bench.py</code>)</td>
+<td>✓ v0.6.0 — recall@k / MRR / answer-containment, CI-guarded</td>
+<td>claims, rarely a runnable number</td>
+</tr>
+<tr>
+<td>Self-tuning recall (<code>recall(reinforce=[...])</code>)</td>
+<td>✓ v0.6.0 — reinforced memories climb over time, opt-in</td>
+<td>static ranking</td>
+</tr>
+<tr>
+<td>Proactive memory hygiene (<code>yantrikdb_hygiene</code>)</td>
+<td>✓ v0.6.0 — scan/apply consolidate-or-forget</td>
+<td>manual cleanup</td>
 </tr>
 </tbody></table>
 <h3>End-to-end demo — substrate growing through the skill lifecycle</h3>
@@ -361,6 +375,18 @@ EOF
 </tr>
 </tbody></table>
 <p>Twelve tools exposed to the agent by default: <code>yantrikdb_remember</code>, <code>_recall</code>, <code>_forget</code>, <code>_think</code>, <code>_conflicts</code>, <code>_resolve_conflict</code>, <code>_relate</code>, <code>_stats</code>, plus the trigger-lifecycle consumers <code>_pending_triggers</code>, <code>_acknowledge_trigger</code>, <code>_dismiss_trigger</code>, <code>_act_on_trigger</code> (v0.4.13+). Three additional <strong>opt-in</strong> skill tools (v0.3.0+): <code>_skill_search</code>, <code>_skill_define</code>, <code>_skill_outcome</code> — see <a href="#skills-opt-in-v030">Skills</a> below.</p>
+<h4>Tool response envelope (v0.4.16+)</h4>
+<p>Every tool response carries the same four envelope fields so an LLM later asked &quot;what did I just do?&quot; can&#39;t confabulate success on a silent failure:</p>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;ok&quot; | &quot;failed&quot;,
+  &quot;ok&quot;: true | false,
+  &quot;tool&quot;: &quot;yantrikdb_remember&quot;,
+  &quot;ts&quot;: 1748394801.42,
+  ...tool-specific keys preserved verbatim (rid, stored, results, ...)
+}
+</code></pre>
+<p>Failure responses additionally carry <code>error</code> (legacy key) and <code>reason</code> (alias). The envelope is purely additive — existing agent code that reads <code>rid</code> / <code>stored</code> / <code>results</code> / etc. continues working unchanged.</p>
+<p>Why this matters: tool failures used to be communicated as <code>{&quot;error&quot;: &quot;...&quot;}</code> only. When the agent&#39;s narrative LLM was later asked to summarize the session, it could confabulate plausible completion because the failure wasn&#39;t loudly present in machine-readable form. The new <code>status: &quot;failed&quot;</code> + <code>ok: false</code> are intentionally redundant — the word &quot;failed&quot; lands during narrative summarization, the boolean lands for programmatic consumers. Pattern documented by yantrikdb-agi after a real incident where the agent described a <code>telegram_send</code> that never happened.</p>
 <h4>Trigger lifecycle (v0.4.13+)</h4>
 <p><code>yantrikdb_think</code> flags redundancies, conflicts, and surprise cross-domain connections as <strong>triggers</strong> — substrate signals the agent can inspect and close out:</p>
 <ul>
@@ -579,6 +605,35 @@ EOF
 <p>Tier 1 (<code>with_default()</code>, ~8 MB) uses <a href="https://huggingface.co/minishlab/potion-base-2M"><code>potion-base-2M</code></a> via <a href="https://github.com/MinishLab/model2vec-rs"><code>model2vec-rs</code></a> — a pure-Rust static embedding (lookup table + mean-pool + L2-normalize), no transformer forward pass. Tier 2 (<code>potion-base-8M</code>, 28 MB) and Tier 3 (<code>potion-base-32M</code>, 121 MB) trade larger model files for higher recall and live behind <code>set_embedder_named()</code> (downloaded on first use, cached under user data dir).</p>
 <p><strong>Quality numbers cited in this README are R@5 vs <code>sentence-transformers/all-MiniLM-L6-v2</code> (dim=384) on the upstream <a href="https://github.com/yantrikos/yantrikdb/blob/main/scratch/eval_potion_2m.py">evaluation corpus</a>.</strong> The &quot;~89% / ~92% / ~95% of MiniLM&quot; approximations are from that specific eval; your mileage will vary on a different corpus or task. Semantic separation is also corpus-size dependent — at 3 records all vectors look similar (top score ~0.58); at 8+ with real diversity the score range opens up (top score ~0.84). If you&#39;re evaluating, run against your own data.</p>
 <p>CI runs ruff + mypy + pytest on Python 3.11 / 3.12 / 3.13 / 3.14 on every push.</p>
+<h3>Benchmarks (recall quality, v0.6.0+)</h3>
+<p>&quot;Best in class&quot; is only worth saying if you can reproduce it. <code>benchmarks/run_recall_bench.py</code> spins up a real embedded YantrikDB, ingests a curated MIT-clean memory-QA corpus (<code>benchmarks/dataset.json</code> — 40 memories, 37 queries across preferences / architecture / people / work / infra), runs the real provider recall path, and scores it:</p>
+<pre><code class="language-bash">python benchmarks/run_recall_bench.py            # baseline
+python benchmarks/run_recall_bench.py --reinforce  # + self-tuning lift
+</code></pre>
+<p>Current run (bundled <code>potion-2M</code> embedder, deterministic):</p>
+<table>
+<thead>
+<tr>
+<th>metric</th>
+<th>@1</th>
+<th>@3</th>
+<th>@5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>recall</td>
+<td>0.865</td>
+<td>1.000</td>
+<td>1.000</td>
+</tr>
+<tr>
+<td>answer-containment</td>
+<td>0.865</td>
+<td>1.000</td>
+<td>1.000</td>
+</tr>
+</tbody></table>
+<p><strong>MRR 0.928.</strong> With <code>--reinforce</code>, reinforcing each query&#39;s gold memory lifts recall@1 to 0.865 and MRR to 0.928 — a measurable self-tuning gain that the loop produces on its own. <code>tests/test_recall_benchmark.py</code> asserts conservative floors so a ranking regression fails CI (it skips when the native engine wheel isn&#39;t installed). Extend the corpus to benchmark against your own data. Details: <strong><a href="https://github.com/yantrikos/yantrikdb-hermes-plugin/blob/main/benchmarks/README.md">benchmarks/README.md</a></strong>.</p>
 <h3>Running the tests</h3>
 <pre><code class="language-bash">python -m pytest tests/                          # unit tests
 YANTRIKDB_INTEGRATION_URL=http://localhost:7438 \
@@ -661,36 +716,36 @@ YANTRIKDB_INTEGRATION_TOKEN=ydb_... \
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 56.8K</div>
+        <div class="stars">★ 58.6K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 14.8K</div>
+        <div class="stars">★ 16.4K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
-        <div class="stars">★ 1.1K</div>
+        <div class="stars">★ 1.2K</div>
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 266</div>
+        <div class="stars">★ 303</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
-        <div class="stars">★ 176</div>
+        <div class="stars">★ 183</div>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
+      <a class="related-row" href="/projects/Signet-AI/signetai">
+        <div class="stars">★ 195</div>
+        <div class="name"><span class="org">Signet-AI /</span> signetai</div>
+      </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 140</div>
+        <div class="stars">★ 202</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
-        <div class="stars">★ 27</div>
+        <div class="stars">★ 33</div>
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
-      </a>
-      <a class="related-row" href="/projects/garrytan/gbrain">
-        <div class="stars">★ 19.3K</div>
-        <div class="name"><span class="org">garrytan /</span> gbrain</div>
       </a>
     </div>
     <p class="list-link"><a href="/lists/best-memory-providers">see all memory &amp; context →</a></p>

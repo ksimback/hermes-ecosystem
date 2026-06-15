@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`obsidian`](/docs/user-guide/skills/bundled/note-taking/note-taking-obsidian), [`native-mcp`](/docs/user-guide/skills/bundled/mcp/mcp-native-mcp), [`arxiv`](/docs/user-guide/skills/bundled/research/research-arxiv)
+[`obsidian`](/docs/user-guide/skills/bundled/note-taking/note-taking-obsidian), `native-mcp`, [`arxiv`](/docs/user-guide/skills/bundled/research/research-arxiv)
 
 ## Reference: full SKILL.md
 

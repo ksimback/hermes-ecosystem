@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/OnlyTerp/hermes-optimization-guide#software",
   "name": "hermes-optimization-guide",
-  "description": "The Hermes Optimization Guide is a comprehensive documentation and resource repository designed to help users deploy and scale Hermes Agent in production environments. It provides a 24-part instructional series alongside runnable artifacts like VPS bootstrap scripts, opinionated configuration templates, and pre-configured skills. The project enables users to implement advanced features such as multi-platform orchestration, MCP server integration, and cost-optimized model routing across 22+ commu",
+  "description": "This project is a comprehensive performance optimization and deployment guide for Hermes Agent. It provides a structured 24-part tutorial combined with runnable artifacts, including configuration templates, installable skills, and a one-command VPS bootstrap script. The guide enables users to deploy Hermes across 22+ platforms while integrating MCP servers, remote sandboxes, and observability tools like Langfuse. It offers specific paths for various use cases, ranging from cost-optimized setups ",
   "url": "https://hermesatlas.com/projects/OnlyTerp/hermes-optimization-guide",
   "codeRepository": "https://github.com/OnlyTerp/hermes-optimization-guide",
   "applicationCategory": "ReferenceApplication",
@@ -47,13 +47,13 @@
     "name": "OnlyTerp",
     "url": "https://github.com/OnlyTerp"
   },
-  "dateModified": "2026-05-25T08:54:19.000Z",
+  "dateModified": "2026-06-03T19:29:51.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 355
+    "userInteractionCount": 442
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,8 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span>apr·2026</span>
-    <span id="meta-count">123·repos</span>
+    <span id="meta-count">172·repos</span>
     <span id="meta-version">hermes·v0.10.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -113,11 +112,11 @@
   <p class="project-desc">Hermes Agent setup, migration, LightRAG, Telegram, and skill creation guide</p>
 
   <div class="meta-row">
-    <span class="stars">★ 355</span>
+    <span class="stars">★ 442</span>
     <span><span class="meta-label">lang</span>Shell</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-05-25</span>
+    <span><span class="meta-label">updated</span>2026-06-03</span>
   </div>
 
   <div class="actions">
@@ -132,11 +131,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">The Hermes Optimization Guide is a comprehensive documentation and resource repository designed to help users deploy and scale Hermes Agent in production environments. It provides a 24-part instructional series alongside runnable artifacts like VPS bootstrap scripts, opinionated configuration templates, and pre-configured skills. The project enables users to implement advanced features such as multi-platform orchestration, MCP server integration, and cost-optimized model routing across 22+ communication channels. By utilizing reference architectures and security playbooks, it bridges the gap between a basic installation and a hardened, observable agent deployment.</p>
+    <p class="summary-text">This project is a comprehensive performance optimization and deployment guide for Hermes Agent. It provides a structured 24-part tutorial combined with runnable artifacts, including configuration templates, installable skills, and a one-command VPS bootstrap script. The guide enables users to deploy Hermes across 22+ platforms while integrating MCP servers, remote sandboxes, and observability tools like Langfuse. It offers specific paths for various use cases, ranging from cost-optimized setups to high-capability agent configurations.</p>
     <ul class="summary-highlights">
-      <li>One-command VPS bootstrap script for automated production-ready deployment.</li>
-      <li>Thirteen installable skills and five opinionated configuration templates.</li>
-      <li>Cost-optimized routing across 12 models with context compression strategies.</li>
+      <li>One-command VPS bootstrap for production-ready Debian/Ubuntu deployments</li>
+      <li>13 installable skills and 5 opinionated configuration templates</li>
+      <li>Integration guides for MCP servers, coding agents, and remote sandboxes</li>
     </ul>
   </div>
 </section>
@@ -640,11 +639,11 @@ hermes             # Start chatting!
 </code></pre>
 <p>This opens an interactive menu to add API keys for each provider. Keys are stored in <code>~/.hermes/.env</code> — never committed to git.</p>
 <blockquote>
-<p><strong>Tip:</strong> You can also set keys manually:</p>
-<pre><code class="language-bash">echo &quot;ANTHROPIC_API_KEY=&lt;your-key-here&gt;&quot; &gt;&gt; ~/.hermes/.env
+<p><strong>Tip:</strong> You can also set keys manually using a text editor:</p>
+<pre><code class="language-bash">nano ~/.hermes/.env    # Add: ANTHROPIC_API_KEY=&lt;your-key-here&gt;
 chmod 600 ~/.hermes/.env   # Restrict access to your user only
 </code></pre>
-<p><strong>Important:</strong> Always run <code>chmod 600 ~/.hermes/.env</code> to prevent other users on the system from reading your API keys.</p>
+<p><strong>Avoid using <code>echo</code> to append secrets</strong> — the command (including the key) is saved in your shell history (<code>~/.bash_history</code>). Use an editor or <code>hermes auth</code> instead. Always run <code>chmod 600 ~/.hermes/.env</code> to prevent other users on the system from reading your API keys.</p>
 </blockquote>
 <h4>3. Configure Toolsets</h4>
 <pre><code class="language-bash">hermes tools
@@ -767,6 +766,11 @@ hermes config set context_compression.enabled true
 </code></pre>
 <blockquote>
 <p><strong>Important:</strong> <code>SOUL.md</code> is injected into every message. Keep it under 1 KB. Every byte costs latency and tokens.</p>
+</blockquote>
+<blockquote>
+<p><strong>Security:</strong> The <code>.env</code> file contains your API keys. Restrict its permissions so only you can read it:</p>
+<pre><code class="language-bash">chmod 600 ~/.hermes/.env
+</code></pre>
 </blockquote>
 <hr>
 <h3>Verify Your Setup</h3>
@@ -1158,8 +1162,8 @@ nano ~/.hermes/memories/MEMORY.md
 <h4>Prerequisites</h4>
 <ul>
 <li>Python 3.11+</li>
-<li>An LLM API key (for entity extraction during ingestion — OpenAI, Anthropic, or any OpenAI-compatible provider)</li>
-<li>An embedding API key (Fireworks recommended for high-quality 4096-dim embeddings, or use local Ollama)</li>
+<li>An LLM API key for entity extraction during ingestion — <strong>Kimi K2.6</strong> (quality), <strong>Cerebras GPT OSS 120B</strong> (speed), or any OpenAI-compatible provider</li>
+<li>An embedding API key — <strong>Fireworks + Qwen3-Embedding-8B</strong> for high-quality 4096-dim embeddings, or local <strong>Ollama + nomic-embed-text</strong> for free</li>
 </ul>
 <h4>Install LightRAG</h4>
 <pre><code class="language-bash"># Create a dedicated directory
@@ -1175,22 +1179,46 @@ pip install -e &quot;.[api]&quot;
 </code></pre>
 <h4>Set Up Environment</h4>
 <p>Create <code>~/.hermes/lightrag/.env</code>:</p>
+<p><strong>Option A — Kimi K2.6 + Fireworks (quality default):</strong></p>
 <pre><code class="language-bash"># LLM for entity extraction (during ingestion)
 LLM_BINDING=openai
-LLM_MODEL=kimi-2.5                    # What we actually use — great quality/cost ratio
-LLM_BINDING_API_KEY=&lt;your-api-key&gt;
+LLM_MODEL=kimi-k2.6
+LLM_BINDING_HOST=https://api.moonshot.ai/v1
+LLM_BINDING_API_KEY=&lt;your-moonshot-api-key&gt;
 
 # Embedding model (for vector storage)
 EMBEDDING_BINDING=fireworks
 EMBEDDING_MODEL=accounts/fireworks/models/qwen3-embedding-8b
 EMBEDDING_API_KEY=&lt;your-fireworks-api-key&gt;
+</code></pre>
+<p><strong>Option B — Cerebras GPT OSS 120B + Fireworks (speed default):</strong></p>
+<pre><code class="language-bash"># LLM for entity extraction (during ingestion)
+LLM_BINDING=openai
+LLM_MODEL=gpt-oss-120b
+LLM_BINDING_HOST=https://api.cerebras.ai/v1
+LLM_BINDING_API_KEY=&lt;your-cerebras-api-key&gt;
 
-# Or use local Ollama (free, no API key needed):
-# EMBEDDING_BINDING=ollama
-# EMBEDDING_MODEL=nomic-embed-text
+# Embedding model (for vector storage)
+EMBEDDING_BINDING=fireworks
+EMBEDDING_MODEL=accounts/fireworks/models/qwen3-embedding-8b
+EMBEDDING_API_KEY=&lt;your-fireworks-api-key&gt;
+</code></pre>
+<p><strong>Option C — local Ollama (free, quality varies):</strong></p>
+<pre><code class="language-bash"># LLM for entity extraction
+LLM_BINDING=ollama
+LLM_MODEL=qwen3:32b
+LLM_BINDING_HOST=http://localhost:11434
+
+# Embedding model
+EMBEDDING_BINDING=ollama
+EMBEDDING_BINDING_HOST=http://localhost:11434
+EMBEDDING_MODEL=nomic-embed-text
 </code></pre>
 <blockquote>
 <p><strong>Security tip:</strong> Set restrictive permissions on this file: <code>chmod 600 ~/.hermes/lightrag/.env</code></p>
+</blockquote>
+<blockquote>
+<p><strong>Where to get API keys:</strong> Kimi/Moonshot uses <a href="https://platform.kimi.ai">platform.kimi.ai</a> and the international base URL <code>https://api.moonshot.ai/v1</code>; Cerebras uses <a href="https://cloud.cerebras.ai">cloud.cerebras.ai</a>; Fireworks uses <a href="https://fireworks.ai">fireworks.ai</a>.</p>
 </blockquote>
 <h4>Entity Extraction Model — What to Use</h4>
 <p>This is the LLM that reads your documents and pulls out entities and relationships during ingestion. Quality here directly determines how good your knowledge graph is.</p>
@@ -1205,44 +1233,41 @@ EMBEDDING_API_KEY=&lt;your-fireworks-api-key&gt;
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>Kimi 2.5</strong></td>
+<td><strong>Kimi K2.6</strong></td>
 <td>Fast</td>
 <td>Excellent</td>
 <td>Cheap</td>
-<td><strong>What we use.</strong> Great balance of quality, speed, and cost for entity extraction</td>
+<td>Best quality/cost default for entity extraction via Moonshot&#39;s OpenAI-compatible API</td>
 </tr>
 <tr>
-<td><strong>Cerebras + Qwen 3</strong></td>
+<td><strong>Cerebras GPT OSS 120B</strong></td>
 <td>Blazing fast</td>
 <td>Very good</td>
 <td>Very cheap</td>
-<td><strong>Fastest option in the world.</strong> Cerebras inference at 2000+ tok/s makes bulk ingestion fly</td>
+<td>Fastest current Cerebras production default; use when bulk ingestion speed matters most</td>
 </tr>
 <tr>
 <td>Gemini 3.1 Flash</td>
 <td>Fast</td>
 <td>Good</td>
 <td>Cheap</td>
-<td>Solid fallback, huge context</td>
+<td>Solid fallback with huge context</td>
 </tr>
 <tr>
-<td>Claude Sonnet 4</td>
+<td>Claude Sonnet 5</td>
 <td>Medium</td>
 <td>Excellent</td>
-<td>Mid-range</td>
-<td>Overkill for ingestion but works great</td>
+<td>Mid/high</td>
+<td>Overkill for ingestion but useful for very messy documents</td>
 </tr>
 <tr>
 <td><strong>Ollama local</strong></td>
 <td>Depends on GPU</td>
 <td>Unpredictable</td>
 <td>Free</td>
-<td>Untested for this use case — might mess up entity extraction quality. Use at your own risk</td>
+<td>Viable for private/local ingestion; validate graph quality before trusting it</td>
 </tr>
 </tbody></table>
-<blockquote>
-<p><strong>Our recommendation:</strong> Kimi 2.5 for quality, Cerebras + Qwen 3 if you&#39;re ingesting a lot of documents and speed matters. Both are cheap and reliable. We haven&#39;t tested local Ollama for entity extraction — it&#39;s free but the extraction quality is unverified and you might get a messy graph.</p>
-</blockquote>
 <blockquote>
 <p><strong>Embedding quality matters.</strong> If you have a GPU with 8GB+ VRAM, run <code>nomic-embed-text</code> locally via Ollama for free. If you want the best quality, use Fireworks&#39; Qwen3-Embedding-8B (4096 dimensions) — the search accuracy difference is dramatic.</p>
 </blockquote>
@@ -1261,7 +1286,7 @@ lightrag-server --host 127.0.0.1 --port 9623
 <li><strong>Health check</strong> at <code>http://localhost:9623/health</code></li>
 </ul>
 <blockquote>
-<p><strong>Security warning:</strong> The LightRAG REST API has <strong>no built-in authentication</strong>. Always bind to <code>127.0.0.1</code> (localhost only) — never <code>0.0.0.0</code>. If you need remote access, put it behind a reverse proxy (nginx, Caddy) with authentication, or use SSH tunneling. Anyone who can reach this port can query, ingest, or delete your knowledge graph data.</p>
+<p><strong>Security warning:</strong> The LightRAG REST API has <strong>no built-in authentication</strong>. Always bind to <code>127.0.0.1</code> (localhost only) — never <code>0.0.0.0</code>. If you need remote access, put it behind a reverse proxy (nginx, Caddy) with authentication, or use SSH tunneling / Tailscale / WireGuard. Anyone who can reach this port can query, ingest, or delete your entire knowledge graph.</p>
 </blockquote>
 <h4>Run as a Background Service</h4>
 <pre><code class="language-bash"># Using nohup
@@ -1366,40 +1391,7 @@ curl -X POST http://localhost:9623/query \
 curl -X POST http://localhost:9623/query \
   -H &quot;Content-Type: application/json&quot; \
   -d &#39;{
-    &quot;query&quot;: &quot;Tell me about the 5090 PC setup&quot;,
-    &quot;mode&quot;: &quot;local&quot;
-  }&#39;
-
-# Global mode — relationship discovery
-curl -X POST http://localhost:9623/query \
-  -H &quot;Content-Type: application/json&quot; \
-  -d &#39;{
-    &quot;query&quot;: &quot;How do the different projects relate to each other?&quot;,
-    &quot;mode&quot;: &quot;global&quot;
-  }&#39;
-</code></pre>
-<h4>Get Just the Context (for your own LLM)</h4>
-<pre><code class="language-bash">curl -X POST http://localhost:9623/query \
-  -H &quot;Content-Type: application/json&quot; \
-  -d &#39;{
-    &quot;query&quot;: &quot;What models are running on what hardware?&quot;,
-    &quot;mode&quot;: &quot;hybrid&quot;,
-    &quot;only_need_context&quot;: true
-  }&#39;
-</code></pre>
-<p>This returns the raw context chunks without generating an answer — useful for feeding into your own pipeline or Hermes&#39; LLM.</p>
-<hr>
-<h3>Integrating With Hermes</h3>
-<h4>Create a LightRAG Skill</h4>
-<p>Create <code>~/.hermes/skills/research/lightrag/SKILL.md</code>:</p>
-<pre><code class="language-markdown">---
-name: lightrag
-description: Query the LightRAG knowledge graph for past decisions, infrastructure, projects, and lessons learned. Use before saying &quot;I don&#39;t remember.&quot;
----
-
-# LightRAG Knowledge Graph
-
-Query the LightRAG knowledge graph for past decisions, infrastructure, projects, and l
+    &quot;query&quot;: &quot;Tell me about the 5
 
 ---
 
@@ -1416,37 +1408,37 @@ Query the LightRAG knowledge graph for past decisions, infrastructure, projects,
   </div>
   <div>
     <div class="related-list">
+      <a class="related-row" href="/projects/vectrocomputers/Hermes-Agent-Action-Plan">
+        <div class="stars">★ 16</div>
+        <div class="name"><span class="org">vectrocomputers /</span> Hermes-Agent-Action-Plan</div>
+      </a>
+      <a class="related-row" href="/projects/xiaonancs/hermes-agent-study">
+        <div class="stars">★ 22</div>
+        <div class="name"><span class="org">xiaonancs /</span> hermes-agent-study</div>
+      </a>
+      <a class="related-row" href="/projects/jefferyjob/awesome-hermes-agent-zh">
+        <div class="stars">★ 55</div>
+        <div class="name"><span class="org">jefferyjob /</span> awesome-hermes-agent-zh</div>
+      </a>
+      <a class="related-row" href="/projects/anneheartrecord/hermes-agent-anatomy">
+        <div class="stars">★ 58</div>
+        <div class="name"><span class="org">anneheartrecord /</span> hermes-agent-anatomy</div>
+      </a>
       <a class="related-row" href="/projects/0xNyk/awesome-hermes-agent">
-        <div class="stars">★ 3.5K</div>
+        <div class="stars">★ 4.0K</div>
         <div class="name"><span class="org">0xNyk /</span> awesome-hermes-agent</div>
       </a>
       <a class="related-row" href="/projects/alchaincyf/hermes-agent-orange-book">
-        <div class="stars">★ 3.9K</div>
+        <div class="stars">★ 4.4K</div>
         <div class="name"><span class="org">alchaincyf /</span> hermes-agent-orange-book</div>
       </a>
       <a class="related-row" href="/projects/metantonio/hermes-wsl-ubuntu">
-        <div class="stars">★ 35</div>
+        <div class="stars">★ 39</div>
         <div class="name"><span class="org">metantonio /</span> hermes-wsl-ubuntu</div>
       </a>
       <a class="related-row" href="/projects/mudrii/hermes-agent-docs">
-        <div class="stars">★ 48</div>
+        <div class="stars">★ 58</div>
         <div class="name"><span class="org">mudrii /</span> hermes-agent-docs</div>
-      </a>
-      <a class="related-row" href="/projects/martymcenroe/HermesWiki">
-        <div class="stars">★ 13</div>
-        <div class="name"><span class="org">martymcenroe /</span> HermesWiki</div>
-      </a>
-      <a class="related-row" href="/projects/ksimback/hermes-ecosystem">
-        <div class="stars">★ 898</div>
-        <div class="name"><span class="org">ksimback /</span> hermes-ecosystem</div>
-      </a>
-      <a class="related-row" href="/projects/jwangkun/hermes-agent-guide">
-        <div class="stars">★ 265</div>
-        <div class="name"><span class="org">jwangkun /</span> hermes-agent-guide</div>
-      </a>
-      <a class="related-row" href="/projects/longyunfeigu/learn-hermes-agent">
-        <div class="stars">★ 125</div>
-        <div class="name"><span class="org">longyunfeigu /</span> learn-hermes-agent</div>
       </a>
     </div>
     

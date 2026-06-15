@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClawPhone — Hermes Agent Deployment &amp; Infra | Hermes Atlas</title>
+<meta name="description" content="Scripts and Tweaks for running agents like OpenClaw, Claude Code, Codex, Hermes Agent, and more on an Android smartphone">
+<link rel="canonical" href="https://hermesatlas.com/projects/marshallrichards/ClawPhone">
+<meta property="og:title" content="ClawPhone — Hermes Atlas">
+<meta property="og:description" content="Scripts and Tweaks for running agents like OpenClaw, Claude Code, Codex, Hermes Agent, and more on an Android smartphone">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/marshallrichards/ClawPhone">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=ClawPhone&amp;subtitle=Scripts+and+Tweaks+for+running+agents+like+OpenClaw%2C+Claude+Code%2C+Codex%2C+Hermes+Agent%2C+and+more+on+an+Android+smartphone&amp;kind=project+%C2%B7+deployment">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ClawPhone — Hermes Atlas">
+<meta name="twitter:description" content="Scripts and Tweaks for running agents like OpenClaw, Claude Code, Codex, Hermes Agent, and more on an Android smartphone">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=ClawPhone&amp;subtitle=Scripts+and+Tweaks+for+running+agents+like+OpenClaw%2C+Claude+Code%2C+Codex%2C+Hermes+Agent%2C+and+more+on+an+Android+smartphone&amp;kind=project+%C2%B7+deployment">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "map", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "deployment &amp; infra", "item": "https://hermesatlas.com/lists/deployment-options" },
+    { "@type": "ListItem", "position": 3, "name": "clawphone" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/marshallrichards/ClawPhone#software",
+  "name": "ClawPhone",
+  "description": "ClawPhone provides scripts and configuration guides for deploying agent CLIs on Android devices. It leverages Termux to run these agents natively, utilizing proot or compatibility layers only when necessary. The project includes a streamlined installer for Google's Antigravity CLI and detailed implementation notes for running OpenClaw. This setup allows agents to operate in the background with potential access to phone hardware via Termux:API and Termux:GUI.",
+  "url": "https://hermesatlas.com/projects/marshallrichards/ClawPhone",
+  "codeRepository": "https://github.com/marshallrichards/ClawPhone",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Shell",
+  "author": {
+    "@type": "Organization",
+    "name": "marshallrichards",
+    "url": "https://github.com/marshallrichards"
+  },
+  "dateModified": "2026-05-25T03:10:28.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 536
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">172·repos</span>
+    <span id="meta-version">hermes·v0.10.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/" class="active">map</a>
+    <a href="/#curated-lists">lists</a>
+    <a href="/guide/">handbook</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="/#newsletter">newsletter</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/lists/deployment-options">deployment &amp; infra</a><span class="sep">/</span>clawphone
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">marshallrichards</span><span class="slash">/</span>ClawPhone
+  </h1>
+  <p class="project-desc">Scripts and Tweaks for running agents like OpenClaw, Claude Code, Codex, Hermes Agent, and more on an Android smartphone</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 536</span>
+    <span><span class="meta-label">lang</span>Shell</span>
+    
+    
+    <span><span class="meta-label">updated</span>2026-05-25</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/marshallrichards/ClawPhone" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    
+  </div>
+</section>
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">ClawPhone provides scripts and configuration guides for deploying agent CLIs on Android devices. It leverages Termux to run these agents natively, utilizing proot or compatibility layers only when necessary. The project includes a streamlined installer for Google's Antigravity CLI and detailed implementation notes for running OpenClaw. This setup allows agents to operate in the background with potential access to phone hardware via Termux:API and Termux:GUI.</p>
+    <ul class="summary-highlights">
+      <li>Automated installer for Antigravity CLI on ARM64 Android</li>
+      <li>Configuration guides for running OpenClaw in Termux</li>
+      <li>Hardware and UI access via Termux:API and Termux:GUI</li>
+    </ul>
+  </div>
+</section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h2>ClawPhone | AgentPhone</h2>
+<p>Scripts, tweaks, and notes for running agent CLIs on Android phones through Termux.</p>
+<p>The goal is to keep things as native to Termux as possible, only using <code>proot</code> or heavier compatibility layers when Android&#39;s userspace makes that unavoidable.</p>
+<h3>Antigravity CLI on Termux</h3>
+<p>The first packaged script is an installer for Google&#39;s Antigravity CLI (<code>agy</code>) on ARM64 Android/Termux. It installs/checks dependencies, installs the official Linux ARM64 binary, patches the TCMalloc VA assumptions for common Android devices, creates a glibc wrapper, adds shell shortcuts, and supports uninstall.</p>
+<p>Shoutout to <a href="https://github.com/Brajesh2022">Brajesh</a> for figuring out and sharing the <a href="https://gist.github.com/Brajesh2022/e42160d29b55417db6c18c52dd1d6d37">original working Termux setup</a> this is based on. This repo turns those steps into one script so it is easier for people to install, update, and uninstall.</p>
+<pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/marshallrichards/ClawPhone/main/scripts/install-antigravity-termux.sh | bash
+source ~/.bashrc
+agy --version
+</code></pre>
+<p>Details: <a href="https://github.com/marshallrichards/ClawPhone/blob/main/docs/antigravity-termux.md"><code>docs/antigravity-termux.md</code></a></p>
+<h3>OpenClaw Notes</h3>
+<p>I started running OpenClaw on a cheap Android smartphone as an isolated sandbox for OpenClaw agents with access to phone hardware. It runs in the background inside Termux in a <code>tmux</code> session, and I can interact with it over Discord like a normal OpenClaw agent.</p>
+<p>You can use a cheap prepaid Android phone or any old Android 8+ phone you have lying around.</p>
+<p>Things to note:</p>
+<ol>
+<li>Install Termux. I recommend <code>tmux</code>, a text editor like <code>nvim</code>, <code>nodejs-lts</code>, and <code>python</code>. Also install Termux:API and Termux:GUI if you want hardware and UI access.</li>
+<li>Install OpenClaw with <code>npm install -g openclaw@latest</code>, not the bash installer, since the bash installer can fail on Android.</li>
+<li>If dependencies fail during install, install the missing packages with <code>pkg</code> and rerun the OpenClaw install.</li>
+<li><code>llama.cpp</code> may compile from source because Termux lacks normal desktop glibc behavior. This can take 15-30 minutes.</li>
+<li>Errors about missing <code>systemd</code> are expected. Run the OpenClaw Gateway in the foreground or inside <code>tmux</code>.</li>
+<li>OpenClaw expects <code>/tmp/openclaw</code>, but raw Termux should use <code>$PREFIX/tmp</code>. Add this to <code>~/.bashrc</code>:</li>
+</ol>
+<pre><code class="language-bash">export TMPDIR=&quot;$PREFIX/tmp&quot;
+export TMP=&quot;$TMPDIR&quot;
+export TEMP=&quot;$TMPDIR&quot;
+</code></pre>
+<ol start="7">
+<li>Add Termux-friendly logging to <code>openclaw.json</code>:</li>
+</ol>
+<pre><code class="language-json">&quot;logging&quot;: {
+  &quot;level&quot;: &quot;info&quot;,
+  &quot;file&quot;: &quot;/data/data/com.termux/files/usr/tmp/openclaw/openclaw-YYYY-MM-DD.log&quot;
+}
+</code></pre>
+<ol start="8">
+<li>Create the temp directory:</li>
+</ol>
+<pre><code class="language-bash">mkdir -p /data/data/com.termux/files/usr/tmp/openclaw
+</code></pre>
+<ol start="9">
+<li>Run <code>source ~/.bashrc</code>, then <code>openclaw gateway</code>.</li>
+<li>Run <code>openclaw onboard</code> and add your model token.</li>
+<li>Set <code>gateway.bind</code> to <code>lan</code> so the dashboard listens on <code>0.0.0.0</code> and can be reached from the phone&#39;s LAN IP.</li>
+<li>Tell OpenClaw it is running inside Termux on Android, and that Termux:API and Termux:GUI are installed if you want it to use phone hardware.</li>
+</ol>
+<p>You can also let OpenClaw write overlays on the screen. Install the Termux:GUI app, run <code>pkg install termux-gui</code>, start <code>overlay_daemon.py</code> in another <code>tmux</code> pane/window, and tell OpenClaw it can use that daemon when it needs to display something to the user.</p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in deployment &amp; infra</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/AbuZar-Ansarii/Hermes-Agent-On-Android">
+        <div class="stars">★ 107</div>
+        <div class="name"><span class="org">AbuZar-Ansarii /</span> Hermes-Agent-On-Android</div>
+      </a>
+      <a class="related-row" href="/projects/ultraworkers/hermes-agent-helm-chart">
+        <div class="stars">★ 97</div>
+        <div class="name"><span class="org">ultraworkers /</span> hermes-agent-helm-chart</div>
+      </a>
+      <a class="related-row" href="/projects/numtide/llm-agents.nix">
+        <div class="stars">★ 1.4K</div>
+        <div class="name"><span class="org">numtide /</span> llm-agents.nix</div>
+      </a>
+      <a class="related-row" href="/projects/TheAiSingularity/hermesclaw">
+        <div class="stars">★ 53</div>
+        <div class="name"><span class="org">TheAiSingularity /</span> hermesclaw</div>
+      </a>
+      <a class="related-row" href="/projects/0xrsydn/nix-hermes-agent">
+        <div class="stars">★ 24</div>
+        <div class="name"><span class="org">0xrsydn /</span> nix-hermes-agent</div>
+      </a>
+      <a class="related-row" href="/projects/rookiemann/portable-hermes-agent">
+        <div class="stars">★ 168</div>
+        <div class="name"><span class="org">rookiemann /</span> portable-hermes-agent</div>
+      </a>
+      <a class="related-row" href="/projects/xmbshwll/hermes-agent-docker">
+        <div class="stars">★ 42</div>
+        <div class="name"><span class="org">xmbshwll /</span> hermes-agent-docker</div>
+      </a>
+      <a class="related-row" href="/projects/JackTheGit/hermes-autonomous-server">
+        <div class="stars">★ 13</div>
+        <div class="name"><span class="org">JackTheGit /</span> hermes-autonomous-server</div>
+      </a>
+    </div>
+    <p class="list-link"><a href="/lists/deployment-options">see all deployment &amp; infra →</a></p>
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script>(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();</script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

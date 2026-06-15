@@ -28,6 +28,10 @@ Set the active (default) profile.
 
 Create a new profile.
 
+`describe`
+
+Read or set a profile's description (used by the kanban orchestrator for routing).
+
 `delete`
 
 Delete a profile.
@@ -125,15 +129,15 @@ Name for the new profile. Must be a valid directory name (alphanumeric, hyphens,
 
 `--clone`
 
-Copy `config.yaml`, `.env`, and `SOUL.md` from the current profile.
+Copy `config.yaml`, `.env`, `SOUL.md`, and skills from the current profile.
 
 `--clone-all`
 
-Copy everything (config, memories, skills, sessions, state) from the current profile.
+Copy everything (config, memories, skills, cron, plugins) from the current profile. Excludes per-profile history: sessions, `state.db`, backups, state-snapshots, checkpoints.
 
 `--clone-from <profile>`
 
-Clone from a specific profile instead of the current one. Used with `--clone` or `--clone-all`.
+Clone config/skills/SOUL from a specific profile instead of the current one. Implies `--clone` unless paired with `--clone-all`.
 
 `--no-alias`
 
@@ -145,7 +149,7 @@ One- or two-sentence description of what this profile is good at. Used by the ka
 
 `--no-skills`
 
-Create an **empty** profile with zero bundled skills enabled. Writes a `.no-skills` marker into the profile so future `hermes update` runs won't re-seed the bundled set, and refuses to combine with `--clone` / `--clone-all` (which would copy skills in anyway). Useful for narrow orchestrator profiles or sandbox profiles that should not inherit the full skill catalog.
+Create an **empty** profile with zero bundled skills enabled. Writes a `.no-bundled-skills` marker into the profile so future `hermes update` runs won't re-seed the bundled set, and refuses to combine with `--clone`, `--clone-from`, or `--clone-all` (which would copy skills in anyway). Useful for narrow orchestrator profiles or sandbox profiles that should not inherit the full skill catalog. To toggle this on an already-created profile (including the default `~/.hermes`), use `hermes skills opt-out` / `hermes skills opt-in`.
 
 Creating a profile does **not** make that profile directory the default project/workspace directory for terminal commands. If you want a profile to start in a specific project, set `terminal.cwd` in that profile's `config.yaml`.
 
@@ -162,7 +166,10 @@ hermes profile create work --clone
 hermes profile create backup --clone-all
 
 # Clone config from a specific profile
-hermes profile create work2 --clone --clone-from work
+hermes profile create work2 --clone-from work
+
+# Clone everything from a specific profile
+hermes profile create work2-backup --clone-from work --clone-all
 ```
 
 ## `hermes profile describe`

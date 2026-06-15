@@ -96,6 +96,38 @@ remindctl add --title "Call mom" --list Personal --due tomorrow
 remindctl add --title "Meeting prep" --due "2026-02-15 09:00"
 ```
 
+### Due Time vs Alarm / Early Nudge
+
+`--due` and `--alarm` are different fields:
+
+-   `--due` sets the reminder's due date/time.
+-   `--alarm` sets the EventKit alarm/notification trigger. Timed due reminders may default to an alarm at the due time, but pass `--alarm` explicitly when the user asks for an earlier nudge.
+
+For a reminder due at 2:00 PM with a notification 30 minutes earlier:
+
+```
+remindctl add --title "Hairdresser" --due "2026-05-15 14:00" --alarm "2026-05-15 13:30"
+```
+
+To edit an existing reminder:
+
+```
+remindctl edit 87354 --due "2026-05-15 14:00" --alarm "2026-05-15 13:30"
+```
+
+The Reminders UI may show or group the item by the alarm time because that is when the notification fires. Verify with JSON instead of assuming the due time moved:
+
+```
+remindctl today --json
+```
+
+Expected shape:
+
+-   `dueDate`: actual due time
+-   `alarmDate`: notification / early nudge time
+
+Apple's public `EKReminder` docs list only reminder-specific properties. Alarm support comes from inherited `EKCalendarItem` behavior exposed by remindctl's `--alarm` flag.
+
 ### Complete / Delete
 
 ```

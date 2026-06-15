@@ -2,7 +2,7 @@
 
 **Source:** https://hermes-agent.nousresearch.com/docs/user-guide/features/image-generation
 
-Hermes Agent generates images from text prompts via FAL.ai. Nine models are supported out of the box, each with different speed, quality, and cost tradeoffs. The active model is user-configurable via `hermes tools` and persists in `config.yaml`.
+Hermes Agent generates images from text prompts via FAL.ai. Eleven models are supported out of the box, each with different speed, quality, and cost tradeoffs. The active model is user-configurable via `hermes tools` and persists in `config.yaml`.
 
 ## Supported Models
 
@@ -85,6 +85,22 @@ $0.25/image
 LLM-based, complex text
 
 $0.02/MP
+
+`fal-ai/krea/v2/medium/text-to-image`
+
+~15-25s
+
+Illustration, anime, painting, expressive/artistic styles
+
+$0.030–0.035/image
+
+`fal-ai/krea/v2/large/text-to-image`
+
+~25-60s
+
+Photorealism, raw textured looks (motion blur, grain, film)
+
+$0.060–0.065/image
 
 Prices are FAL's pricing at time of writing; check [fal.ai](https://fal.ai/) for current numbers.
 
