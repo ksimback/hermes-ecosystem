@@ -15,8 +15,14 @@ import { githubHeaders } from "../lib/github.js";
 
 const TOKEN = process.env.GITHUB_TOKEN;
 if (!TOKEN) {
-  console.error("GITHUB_TOKEN required");
-  process.exit(1);
+  console.warn(
+    "GITHUB_TOKEN not set; skipping live dead-repo check. " +
+    "Set GITHUB_TOKEN to audit GitHub repo availability."
+  );
+  // Keep CI fail-loud if this script is wired into automation without auth,
+  // but let local developers run it during smoke/audit sessions without a
+  // hard failure that looks like repo health failed.
+  process.exit(process.env.CI ? 1 : 0);
 }
 
 const repos = JSON.parse(await fs.readFile("data/repos.json", "utf8"));

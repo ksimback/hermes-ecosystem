@@ -1131,8 +1131,11 @@ function syncHomepageRepos(repos) {
   }
 
   const missingByCategory = {};
+  const queuedMissing = new Set();
   for (const r of repos) {
-    if (!onPage.has(`${r.owner}/${r.repo}`)) {
+    const key = `${r.owner}/${r.repo}`;
+    if (!onPage.has(key) && !queuedMissing.has(key)) {
+      queuedMissing.add(key);
       (missingByCategory[r.category] = missingByCategory[r.category] || []).push(r);
     }
   }
@@ -1169,22 +1172,27 @@ function syncHomepageRepos(repos) {
     }
   }
 
-  // Refresh per-category counts. Use ACTUAL rendered repo-rows in each
-  // section, not repos.json category totals — the homepage convention is
-  // that featured repos (NousResearch/hermes-agent) appear in the hero
-  // section, not as a category row, so counting repos.json would over-count.
+  // Refresh per-category counts from repos.json, which is the public source
+  // of truth used by smoke-test-prod.js and external consumers. Some homepage
+  // sections intentionally omit or retain hand-curated rows (for example the
+  // featured Hermes Agent hero), so rendered row counts are not reliable
+  // catalog counts.
+  const categoryTotals = repos.reduce((acc, r) => {
+    acc.set(r.category, (acc.get(r.category) || 0) + 1);
+    return acc;
+  }, new Map());
   const sectionRe = /<section class="cat" data-category="([^"]+)">([\s\S]*?)<\/section>/g;
   let sm;
   while ((sm = sectionRe.exec(html)) !== null) {
     const category = sm[1];
     const sectionContent = sm[2];
-    const renderedCount = (sectionContent.match(/<a class="repo-row"/g) || []).length;
+    const expectedCount = categoryTotals.get(category) || 0;
     const countMatch = sectionContent.match(/<span class="cat-count-n">(\d+)<\/span>/);
-    if (countMatch && parseInt(countMatch[1], 10) !== renderedCount) {
+    if (countMatch && parseInt(countMatch[1], 10) !== expectedCount) {
       const absoluteIdx = sm.index + sm[0].indexOf(countMatch[0]);
       html =
         html.slice(0, absoluteIdx) +
-        `<span class="cat-count-n">${renderedCount}</span>` +
+        `<span class="cat-count-n">${expectedCount}</span>` +
         html.slice(absoluteIdx + countMatch[0].length);
       // Re-prime the regex to re-scan from current position since string length changed
       sectionRe.lastIndex = absoluteIdx;
@@ -1227,9 +1235,11 @@ async function main() {
     }
     if (starsRefreshed > 0) {
       const reposPath = path.join(ROOT, "data", "repos.json");
-      // Preserve CRLF + trailing newline so the diff is stars-only and
-      // doesn't churn the whole file on every build.
-      const body = JSON.stringify(repos, null, 2).replace(/\n/g, "\r\n") + "\r\n";
+      const existingReposText = fs.readFileSync(reposPath, "utf-8");
+      const eol = existingReposText.includes("\r\n") ? "\r\n" : "\n";
+      // Preserve the repo file's existing line endings + trailing newline so
+      // star refreshes do not churn the entire generated-data diff.
+      const body = JSON.stringify(repos, null, 2).replace(/\n/g, eol) + eol;
       fs.writeFileSync(reposPath, body);
       console.log(`  Refreshed stars on ${starsRefreshed} repos in data/repos.json\n`);
     }

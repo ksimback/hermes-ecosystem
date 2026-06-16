@@ -12,7 +12,14 @@
     var button = form.querySelector("button");
     var status = form.parentElement.querySelector(".email-cta-status");
     var email = (input.value || "").trim();
-    if (!email) return;
+    if (!email || !isValidEmail(email)) {
+      status.setAttribute("data-status", "error");
+      status.textContent = "enter a valid email.";
+      input.setAttribute("aria-invalid", "true");
+      input.focus();
+      return;
+    }
+    input.removeAttribute("aria-invalid");
 
     button.disabled = true;
     button.dataset.label = button.dataset.label || button.textContent;
@@ -48,5 +55,9 @@
         button.disabled = false;
         button.textContent = button.dataset.label;
       });
+  }
+
+  function isValidEmail(email) {
+    return /^[a-zA-Z0-9._'+\-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/.test(email) && email.length <= 254;
   }
 })();

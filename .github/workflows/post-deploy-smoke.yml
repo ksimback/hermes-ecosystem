@@ -106,22 +106,8 @@ jobs:
             }
             core.setFailed(`Timed out waiting for Vercel deploy (10min)`);
 
-      # Known-broken-but-deferred check IDs go here. Each entry is a substring
-      # match against the failing check name. When a smoke check matches one of
-      # these, the failure becomes a WARN instead of a FAIL (still reported,
-      # doesn't fail the job). Audit and prune this list quarterly - issues
-      # acknowledged here should become tracked bugs to fix, not permanent.
-      #
-      # Current entries (audit before extending):
-      #   /lists/                 - /lists/ index page returns 404; only /lists/<slug>
-      #                             pages exist. Decide: build an index or remove from test.
-      #   Core & Official count   - homepage shows 5 in Core & Official but
-      #                             repos.json has 6 entries. Fix is a single
-      #                             character in index.html. Track separately.
       - name: Run smoke test
         id: smoke
-        env:
-          SMOKE_ALLOW_FAILURES: '/lists/,Core & Official count'
         run: |
           node scripts/smoke-test-prod.js \
             --base "${{ inputs.base || 'https://hermesatlas.com' }}" \
