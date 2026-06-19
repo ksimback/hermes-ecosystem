@@ -64,11 +64,19 @@ export default async function handler(req, res) {
     // render live Hermes version without staleness. We pull both the tagName
     // (dated, e.g. "v2026.4.16") and the release name (which contains the
     // numeric version, e.g. "Hermes Agent v0.10.0 (v2026.4.16)").
+    // Use GraphQL variables (not string interpolation) for owner/repo so values
+    // from data/repos.json can never alter query structure. owner/repo are
+    // declared as typed variables and passed in the `variables` map.
+    const varDecls = [];
+    const variables = {};
     const repoQueries = repoList.map((r, i) => {
+      varDecls.push(`$owner${i}: String!`, `$name${i}: String!`);
+      variables[`owner${i}`] = r.owner;
+      variables[`name${i}`] = r.repo;
       const releaseField = (r.owner === "NousResearch" && r.repo === "hermes-agent")
         ? "latestRelease { tagName name publishedAt }"
         : "";
-      return `repo${i}: repository(owner: "${r.owner}", name: "${r.repo}") {
+      return `repo${i}: repository(owner: $owner${i}, name: $name${i}) {
         stargazerCount
         updatedAt
         pushedAt
@@ -76,8 +84,9 @@ export default async function handler(req, res) {
       }`;
     }).join("\n");
 
-    // Also fetch the Hermes Atlas repo's own star count for the masthead CTA
-    const query = `query { ${repoQueries}
+    // Also fetch the Hermes Atlas repo's own star count for the masthead CTA.
+    // (Constant, repo-owned identifiers — safe as literals.)
+    const query = `query (${varDecls.join(", ")}) { ${repoQueries}
       atlas: repository(owner: "ksimback", name: "hermes-ecosystem") {
         stargazerCount
       }
@@ -90,7 +99,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/json",
         "User-Agent": "hermes-ecosystem"
       },
-      body: JSON.stringify({ query })
+      body: JSON.stringify({ query, variables })
     });
 
     if (!ghRes.ok) {

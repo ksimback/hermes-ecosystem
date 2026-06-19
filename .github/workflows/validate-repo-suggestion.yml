@@ -101,10 +101,16 @@ jobs:
         if: steps.gate.outputs.should_run == 'true'
         id: metadata
         uses: actions/github-script@v7
+        env:
+          # Pass via env (not `${{ }}` interpolated into the script body) so an
+          # issue-derived value can never be injected as code. Matches the
+          # pattern used by the validate/create-PR steps below.
+          REPO_OWNER: ${{ steps.extract.outputs.owner }}
+          REPO_NAME: ${{ steps.extract.outputs.repo }}
         with:
           script: |
-            const owner = '${{ steps.extract.outputs.owner }}';
-            const repo = '${{ steps.extract.outputs.repo }}';
+            const owner = process.env.REPO_OWNER;
+            const repo = process.env.REPO_NAME;
 
             try {
               const { data } = await github.rest.repos.get({ owner, repo });

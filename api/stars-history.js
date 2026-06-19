@@ -1,8 +1,26 @@
-import { kvGet } from "../lib/redis.js";
+import { kvGet, rateLimit } from "../lib/redis.js";
+
+const MAX_DAYS = 365;
+// Per-IP limit. This is the most expensive unauthenticated route (it fans out
+// one Redis read per requested day), so cap how often a single IP can hit it.
+const RATE_LIMIT = parseInt(process.env.STARS_HISTORY_RATE_LIMIT || "60", 10); // per minute per IP
 
 export default async function handler(req, res) {
   try {
-    const days = parseInt(req.query.days) || 30;
+    const ip =
+      req.headers["x-real-ip"]?.trim() ||
+      req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+      "unknown";
+    const { allowed } = await rateLimit(`stars-history:ip:${ip}`, RATE_LIMIT, 60);
+    if (!allowed) {
+      return res.status(429).json({ days: 0, history: [], error: "Rate limit reached. Try again shortly." });
+    }
+
+    // Clamp the window. Without an upper bound, a request like ?days=1000000
+    // would build a million date keys and fan them ALL out to Redis at once
+    // (Promise.all), exhausting the function and the shared Redis instance.
+    // parseInt(_, 10) also avoids accepting junk like "30abc" as a larger value.
+    const days = Math.min(Math.max(parseInt(req.query.days, 10) || 30, 1), MAX_DAYS);
 
     // Build date keys for the last N days
     const keys = [];
