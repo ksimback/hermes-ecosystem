@@ -369,9 +369,9 @@ Cron jobs
 
 ✔ (cron agents inherit configured fallback providers)
 
-Auxiliary tasks (vision, compression)
+Auxiliary tasks on `provider: auto`
 
-✘ (use their own provider chain — see below)
+✔ (try per-task fallback, then the main fallback chain before built-in aux discovery)
 
 tip
 
@@ -441,23 +441,30 @@ Triage Specifier
 
 ### Auto-Detection Chain
 
-When a task's provider is set to `"auto"` (the default), Hermes tries providers in order until one works:
+When a task's provider is set to `"auto"` (the default), Hermes first tries the main provider + main model for that auxiliary task. If that route is unavailable or later fails with a capacity-style error, Hermes now honors user-configured fallback policy before using the built-in discovery chain:
 
-**For text tasks (compression, web extract, etc.):**
+```
+Main provider + main model → auxiliary.<task>.fallback_chain →
+fallback_providers / fallback_model → built-in auxiliary discovery chain
+```
+
+The task-specific chain is most precise and wins when present. The top-level `fallback_providers` chain is the same policy the main agent uses, so free-only or same-provider fallback rules apply to auxiliary tasks on `auto` as well.
+
+**Built-in text discovery chain (compression, web extract, title generation, etc.):**
 
 ```
 OpenRouter → Nous Portal → Custom endpoint → Codex OAuth →
 API-key providers (z.ai, Kimi, MiniMax, Xiaomi MiMo, Hugging Face, Anthropic) → give up
 ```
 
-**For vision tasks:**
+**Built-in vision discovery chain:**
 
 ```
 Main provider (if vision-capable) → OpenRouter → Nous Portal →
 Codex OAuth → Anthropic → Custom endpoint → give up
 ```
 
-If the resolved provider fails at call time, Hermes also has an internal retry: if the provider is not OpenRouter and no explicit `base_url` is set, it tries OpenRouter as a last-resort fallback.
+Those built-in chains are a convenience fallback for users who have not declared a task-specific or main fallback policy.
 
 ### Configuring Auxiliary Providers
 
@@ -478,6 +485,9 @@ auxiliary:
   compression:
     provider: "auto"
     model: ""
+    fallback_chain:              # optional, task-specific fallback policy
+      - provider: openrouter
+        model: inclusionai/ring-2.6-1t:free
 
   skills_hub:
     provider: "auto"
@@ -488,7 +498,9 @@ auxiliary:
     model: ""
 ```
 
-Every task above follows the same **provider / model / base\_url** pattern. Context compression is configured under `auxiliary.compression`:
+Every task above follows the same **provider / model / base\_url** pattern. Each task can also declare its own `fallback_chain`; if omitted, `provider: auto` uses the top-level `fallback_providers` chain before Hermes' built-in auxiliary discovery chain.
+
+Context compression is configured under `auxiliary.compression`:
 
 ```
 auxiliary:

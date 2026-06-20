@@ -1006,6 +1006,8 @@ Check whether the cron scheduler is running.
 
 Run due jobs once and exit.
 
+The cron **trigger** is pluggable via the `cron.provider` config key. Empty (the default) uses the built-in in-process ticker. Set it to `chronos` (the NAS-managed provider for scale-to-zero hosted gateways) — configured via the `cron.chronos.*` keys (`portal_url`, `callback_url`, `expected_audience`, `nas_jwks_url`) — or name a custom provider under `plugins/cron/<name>/` or `$HERMES_HOME/plugins/<name>/`. An unknown or unavailable provider falls back to the built-in, so cron is never left without a trigger. See the [cron internals](/docs/developer-guide/cron-internals#gateway-integration) doc.
+
 ## `hermes kanban`
 
 ```
@@ -1377,7 +1379,7 @@ Paste expiry in days (default: 7).
 
 Print the report locally instead of uploading.
 
-The report includes system info (OS, Python version, Hermes version), recent agent and gateway logs (512 KB limit per file), and redacted API key status. Keys are always redacted — no secrets are uploaded.
+The report includes system info (OS, Python version, Hermes version), recent agent, gateway, GUI/dashboard, and desktop logs (512 KB limit per file), and redacted API key status. Keys are always redacted — no secrets are uploaded.
 
 Paste services tried in order: paste.rs, dpaste.com.
 

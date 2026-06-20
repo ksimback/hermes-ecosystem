@@ -99,9 +99,9 @@ Control Blender directly from Hermes via socket connection to the blender-mcp ad
 
 Generate flat, minimal light/dark-aware SVG diagrams as standalone HTML files, using a unified educational visual language with 9 semantic color ramps, sentence-case typography, and automatic dark mode. Best suited for educational and no...
 
-[**ideation**](/docs/user-guide/skills/optional/creative/creative-creative-ideation)
+[**creative-ideation**](/docs/user-guide/skills/optional/creative/creative-creative-ideation)
 
-Generate project ideas via creative constraints.
+Generate ideas via named methods from creative practice.
 
 [**hyperframes**](/docs/user-guide/skills/optional/creative/creative-hyperframes)
 
@@ -381,6 +381,24 @@ Unsloth: 2-5x faster LoRA/QLoRA fine-tuning, less VRAM.
 
 OpenAI's general-purpose speech recognition model. Supports 99 languages, transcription, translation to English, and language identification. Six model sizes from tiny (39M params) to large (1550M params). Use for speech-to-text, podcast...
 
+## payments
+
+Skill
+
+Description
+
+[**mpp-agent**](/docs/user-guide/skills/optional/payments/payments-mpp-agent)
+
+Pay HTTP 402 APIs via Machine Payments Protocol (MPP).
+
+[**stripe-link-cli**](/docs/user-guide/skills/optional/payments/payments-stripe-link-cli)
+
+Agent payments via Stripe Link — cards, SPT, approvals.
+
+[**stripe-projects**](/docs/user-guide/skills/optional/payments/payments-stripe-projects)
+
+Provision SaaS services + sync creds via Stripe Projects.
+
 ## productivity
 
 Skill
@@ -399,9 +417,9 @@ Publish static sites to {slug}.here.now and store private files in cloud Drives 
 
 Spaced-repetition flashcard system. Create cards from facts or text, chat with flashcards using free-text answers graded by the agent, generate quizzes from YouTube transcripts, review due cards with adaptive scheduling, and export/impor...
 
-[**shop-app**](/docs/user-guide/skills/optional/productivity/productivity-shop-app)
+[**shop**](/docs/user-guide/skills/optional/productivity/productivity-shop)
 
-Shop.app: product search, order tracking, returns, reorder.
+Shop catalog search, checkout, order tracking, returns.
 
 [**shopify**](/docs/user-guide/skills/optional/productivity/productivity-shopify)
 

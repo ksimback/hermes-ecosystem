@@ -380,6 +380,22 @@ ntfy
 
 —
 
+Raft
+
+—
+
+—
+
+—
+
+—
+
+—
+
+—
+
+—
+
 **Voice** = TTS audio replies and/or voice message transcription. **Images** = send/receive images. **Files** = send/receive file attachments. **Threads** = threaded conversations. **Reactions** = emoji reactions on messages. **Typing** = typing indicator while processing. **Streaming** = progressive message updates via editing.
 
 ## Architecture
@@ -691,7 +707,24 @@ Control how much tool activity is displayed in `~/.hermes/config.yaml`:
 display:
   tool_progress: all    # off | new | all | verbose
   tool_progress_command: false  # set to true to enable /verbose in messaging
+  # How progress is grouped on platforms that support message editing:
+  #   accumulate (default) — edit one bubble in place as tools run
+  #   separate             — send one message per tool (pre-v0.9 style; noisier)
+  # Only applies where tool_progress is already enabled.
+  tool_progress_grouping: accumulate   # accumulate | separate
 ```
+
+### Message timestamps in model context
+
+Off by default. When enabled, Hermes prepends a human-readable timestamp (e.g. `[Tue 2026-04-28 13:40:53 CEST]`) onto each **user** message _in the model's context_ so the agent knows when messages were sent — useful for temporal reasoning ("you asked this morning…", noticing a long gap). It is **not** added to assistant messages or the system prompt.
+
+```
+gateway:
+  message_timestamps:
+    enabled: false   # set true to show send-times to the model
+```
+
+Persisted transcripts always stay clean — the timestamp is stored as message metadata regardless of this toggle, so enabling it later also surfaces send-times for past messages, and replay never accumulates duplicate prefixes.
 
 When enabled, the bot sends status messages as it works:
 
@@ -996,6 +1029,12 @@ Webhooks
 
 Full tools including terminal
 
+Raft
+
+`hermes-raft`
+
+Wake-only channel; agent uses Raft CLI for message I/O
+
 ## Operating a multi-platform gateway
 
 A gateway typically runs several adapters at once (Telegram + Discord + Slack, etc.). The sections below cover day-2 operations that span all platforms.
@@ -1123,4 +1162,5 @@ Defaults to `false`. Only platforms whose adapter implements `delete_message` ho
 -   [Microsoft Teams Setup](/docs/user-guide/messaging/teams)
 -   [Teams Meetings Pipeline](/docs/user-guide/messaging/teams-meetings)
 -   [Open WebUI + API Server](/docs/user-guide/messaging/open-webui)
+-   [Raft Setup](/docs/user-guide/messaging/raft)
 -   [Webhooks](/docs/user-guide/messaging/webhooks)

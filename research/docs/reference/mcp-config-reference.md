@@ -126,7 +126,7 @@ number
 
 both
 
-Tool call timeout
+Tool call timeout in seconds (default: `300`)
 
 `connect_timeout`
 
@@ -134,7 +134,7 @@ number
 
 both
 
-Initial connection timeout
+Initial connection timeout in seconds (default: `60`)
 
 `supports_parallel_tool_calls`
 

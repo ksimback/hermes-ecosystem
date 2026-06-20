@@ -2138,6 +2138,10 @@ Path to a JSON file of ephemeral prefill messages injected at API-call time.
 
 Optional directory prefix that restricts `write_file`/`patch` writes; paths outside require approval.
 
+`HERMES_DISABLE_LAZY_INSTALLS`
+
+Internal bridge var set automatically in the official Docker image to prevent runtime dependency installs into the immutable `/opt/hermes` tree. The user-facing equivalent is `security.allow_lazy_installs: false` in `config.yaml`; do not set this in `.env`.
+
 `HERMES_DISABLE_FILE_STATE_GUARD`
 
 Set to `1` to turn off the "file changed since you read it" guard on `patch`/`write_file`.
@@ -2288,7 +2292,7 @@ For task-specific direct endpoints, Hermes uses the task's configured API key or
 
 ## Fallback Providers (config.yaml only)
 
-The primary model fallback chain is configured exclusively through `config.yaml` — there are no environment variables for it. Add a top-level `fallback_providers` list with `provider` and `model` keys to enable automatic failover when your main model encounters errors.
+The primary model fallback chain is configured exclusively through `config.yaml` — there are no environment variables for it. Add a top-level `fallback_providers` list with `provider` and `model` keys to enable automatic failover when your main model encounters errors. Auxiliary tasks whose provider is `auto` also consult this chain before Hermes' built-in auxiliary discovery chain.
 
 ```
 fallback_providers:
@@ -2296,7 +2300,7 @@ fallback_providers:
     model: anthropic/claude-sonnet-4
 ```
 
-The older top-level `fallback_model` single-provider shape is still read for backward compatibility, but new configuration should use `fallback_providers`.
+The older top-level `fallback_model` single-provider shape is still read for backward compatibility, but new configuration should use `fallback_providers`. For task-specific auxiliary policy, use `auxiliary.<task>.fallback_chain` in `config.yaml`; there is no environment variable equivalent.
 
 See [Fallback Providers](/docs/user-guide/features/fallback-providers) for full details.
 

@@ -12,7 +12,7 @@ Get Started →
 
 Download Desktop
 
-](https://hermes-agent.nousresearch.com/desktop)[
+](https://hermes-agent.nousresearch.com/)[
 
 View on GitHub
 
@@ -22,7 +22,7 @@ View on GitHub
 
 ### Windows or macOS
 
-To easily install the command-line and desktop applications, [download the Hermes Desktop installer](https://hermes-agent.nousresearch.com/desktop) from our website and run it.
+To easily install the command-line and desktop applications, [download the Hermes Desktop installer](https://hermes-agent.nousresearch.com/) from our website and run it.
 
 ### Without Hermes Desktop:
 
@@ -143,7 +143,7 @@ Common questions and solutions
 
 Machine-readable entry points to this documentation:
 
--   **[`/llms.txt`](/docs/assets/files/llms-d4972c57170916efd83766ae50c3bb3d.txt)** — curated index of every doc page with short descriptions. ~17 KB, safe to load into an LLM context.
--   **[`/llms-full.txt`](/docs/assets/files/llms-full-1cd2516889aede523e735094ea21c0f4.txt)** — every doc page concatenated into a single markdown file for one-shot ingestion. ~1.8 MB.
+-   **[`/llms.txt`](/docs/assets/files/llms-c03199c2b1721b8eb2141fff54dcfad5.txt)** — curated index of every doc page with short descriptions. ~17 KB, safe to load into an LLM context.
+-   **[`/llms-full.txt`](/docs/assets/files/llms-full-0fe36c343c4249932fd0fcdf54924bc6.txt)** — every doc page concatenated into a single markdown file for one-shot ingestion. ~1.8 MB.
 
 Both files also resolve at `/docs/llms.txt` and `/docs/llms-full.txt`. Generated fresh on every deploy.

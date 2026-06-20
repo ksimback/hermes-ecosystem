@@ -16,14 +16,10 @@ If you have ever wanted Hermes to use a tool that already exists somewhere else,
 
 ## Quick start
 
-1.  Install MCP support (already included if you used the standard install script):
-
-```
-cd ~/.hermes/hermes-agent
-uv pip install -e ".[mcp]"
-```
-
+1.  MCP support ships with the standard install — no extra step needed.
+    
 2.  Add an MCP server to `~/.hermes/config.yaml`:
+    
 
 ```
 mcp_servers:
@@ -101,7 +97,7 @@ Submit the checklist with ENTER. Only the checked tools end up in `mcp_servers.<
 
 Installing a catalog entry runs whatever the manifest specifies — `git clone`, the entry's `bootstrap` commands (`pip install`, `npm install`, etc.), and ultimately the MCP server's own code. Manifests are gated by PR review into the hermes-agent repo, so Nous has reviewed each entry before it shipped — **but you should still read the manifest before installing**, especially the `source:` field's repository, the `install.bootstrap:` commands, and any `transport.command:` invocation.
 
-Manifests live at [`optional-mcps/<name>/manifest.yaml`](https://github.com/NousResearch/hermes-agent/tree/main/optional-mcps) on GitHub. The picker also prints the manifest's `source:` URL at install time so you can quickly verify the upstream repo.
+Manifests live at [`optional-mcps/<name>/manifest.yaml`](https://github.com/NousResearch/hermes-agent/tree/main/optional-mcps) on GitHub. The picker also prints the manifest's `source:` URL at install time so you can quickly verify the upstream repo. The web dashboard's MCP page surfaces the same detail per catalog entry — transport, auth type, the endpoint URL (HTTP) or command + args (stdio), the git install source/ref and bootstrap commands, and setup notes — with the `source:` rendered as a clickable link, so you can inspect exactly what an entry connects to or runs before clicking Install.
 
 ### Manifest version compatibility
 

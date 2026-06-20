@@ -51,7 +51,7 @@ Click **Show auxiliary** to reveal the 11 task slots:
 
 ![Auxiliary panel expanded](/docs/assets/images/auxiliary-expanded-bc717f35df24e9d19ca45d5086688b56.png)
 
-Every auxiliary task defaults to `auto` — meaning Hermes uses your main model for that job too. Override a specific task when you want a cheaper or faster model for a side-job.
+Every auxiliary task defaults to `auto` — meaning Hermes tries your main model for that job too. If that route is unavailable or hits a capacity-style failure, `auto` follows any task-specific `auxiliary.<task>.fallback_chain`, then the main `fallback_providers` / `fallback_model` chain, then Hermes' built-in auxiliary discovery chain. Override a specific task when you want a cheaper or faster model for a side-job.
 
 ### Common override patterns
 
@@ -164,7 +164,21 @@ auxiliary:
     # ... other fields unchanged
 ```
 
-`provider: auto` with `model: ''` tells Hermes to use the main model for that task.
+`provider: auto` with `model: ''` tells Hermes to use the main model for that task, while still honoring fallback policy if the main route cannot serve the auxiliary call.
+
+Optional task-specific fallback chains live under the same auxiliary task:
+
+```
+auxiliary:
+  title_generation:
+    provider: auto
+    model: ''
+    fallback_chain:
+      - provider: openrouter
+        model: inclusionai/ring-2.6-1t:free
+```
+
+When `fallback_chain` is absent, `auto` uses the top-level `fallback_providers` chain before the built-in auxiliary discovery chain.
 
 ## When does it take effect?
 

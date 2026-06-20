@@ -298,9 +298,9 @@ Requires environment
 
 `image_generate`
 
-Generate high-quality images from text prompts using FAL.ai. The underlying model is user-configured (default: FLUX 2 Klein 9B, sub-1s generation) and is not selectable by the agent. Returns a single image URL. Display it using…
+Generate images from text prompts (text-to-image) or edit/transform an existing image (image-to-image) via the user-configured backend (FAL.ai, OpenAI, xAI, Krea). Pass `image_url` to edit an image and `reference_image_urls` for style references; omit both for text-to-image. The model is user-configured and not selectable by the agent. Returns a single image URL or local path.
 
-FAL\_KEY
+FAL\_KEY / OPENAI\_API\_KEY / xAI OAuth / KREA\_API\_KEY
 
 ## `kanban` toolset
 

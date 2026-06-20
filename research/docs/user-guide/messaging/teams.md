@@ -30,6 +30,14 @@ Teams delivers @mentions as regular messages with `<at>BotName</at>` tags, which
 
 * * *
 
+For source or local installs, include the Teams extra so the bundled adapter can import the Microsoft Teams SDK:
+
+```
+uv sync --extra teams
+# or, for editable installs:
+uv pip install -e ".[teams]"
+```
+
 ## Step 1: Install the Teams CLI
 
 The `@microsoft/teams.cli` automates bot registration — no Azure portal needed.
