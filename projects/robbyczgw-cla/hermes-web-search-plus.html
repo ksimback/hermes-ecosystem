@@ -47,13 +47,13 @@
     "name": "robbyczgw-cla",
     "url": "https://github.com/robbyczgw-cla"
   },
-  "dateModified": "2026-06-25T15:52:31.000Z",
+  "dateModified": "2026-06-26T11:29:10.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 316
+    "userInteractionCount": 315
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">175·repos</span>
+    <span id="meta-count">174·repos</span>
     <span id="meta-version">hermes·v0.15.2</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -112,11 +112,11 @@
   <p class="project-desc">Hermes Agent flagship plugin for multi-provider web search and extraction with intelligent routing, quality reports, and research mode.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 316</span>
+    <span class="stars">★ 315</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-06-25</span>
+    <span><span class="meta-label">updated</span>2026-06-26</span>
   </div>
 
   <div class="actions">
@@ -267,6 +267,16 @@ python ~/.hermes/plugins/web-search-plus/setup.py config set-default you --dry-r
 <li><code>setup.py --config-path /path/to/config.json</code> points the helper at a custom config; <code>WEB_SEARCH_PLUS_CONFIG=/path/to/config.json</code> points <code>search.py</code> at the same file.</li>
 <li><code>config reset --yes</code> backs up the existing file before writing fresh defaults.</li>
 </ul>
+<h4>GroktoCrawl / local Firecrawl-compatible backends</h4>
+<p>The Firecrawl provider can target a local Firecrawl-v2-compatible backend by overriding its search and scrape URLs in <code>config.json</code>. For example, a local <a href="https://github.com/groktopus/groktocrawl">GroktoCrawl</a> instance listening on <code>127.0.0.1:8080</code> can be used without adding a separate provider:</p>
+<pre><code class="language-json">{
+  &quot;firecrawl&quot;: {
+    &quot;api_url&quot;: &quot;http://127.0.0.1:8080/v2/search&quot;,
+    &quot;scrape_url&quot;: &quot;http://127.0.0.1:8080/v2/scrape&quot;
+  }
+}
+</code></pre>
+<p>Keep <code>FIRECRAWL_API_KEY</code> configured if your backend enforces bearer authentication; local development instances may ignore the header. This recipe has been smoke-tested for Firecrawl-style search and URL scrape responses, including GitHub repository extraction through GroktoCrawl&#39;s adapter layer. It does not make GroktoCrawl the default, and it does not claim coverage for every Firecrawl endpoint, pagination edge case, or provider-specific error shape.</p>
 <hr>
 <h3>Capability model</h3>
 <table>
@@ -280,12 +290,12 @@ python ~/.hermes/plugins/web-search-plus/setup.py config set-default you --dry-r
 <tbody><tr>
 <td>Search</td>
 <td><code>web_search_plus</code></td>
-<td>Brave, Serper, Tavily, Exa, Linkup, Firecrawl, Parallel, Perplexity, Kilo Perplexity, You.com, SearXNG, SerpBase, or Querit</td>
+<td>Brave, Serper, Tavily, Exa, Linkup, Firecrawl, Parallel, Perplexity, Kilo Perplexity, You.com, SearXNG, SerpBase, Querit, or Keenable</td>
 </tr>
 <tr>
 <td>Extraction</td>
 <td><code>web_extract_plus</code></td>
-<td>Linkup, Firecrawl, Tavily, Exa, Parallel, or You.com</td>
+<td>Linkup, Firecrawl, Tavily, Exa, Parallel, You.com, or Keenable</td>
 </tr>
 <tr>
 <td>Best starter</td>
@@ -336,7 +346,7 @@ web_search_plus(query=&quot;best bookshelf speakers under 1000&quot;, quality_re
 <td><code>provider</code></td>
 <td>string</td>
 <td><code>&quot;auto&quot;</code></td>
-<td><code>auto</code>, <code>serper</code>, <code>brave</code>, <code>tavily</code>, <code>exa</code>, <code>linkup</code>, <code>firecrawl</code>, <code>parallel</code>, <code>perplexity</code>, <code>kilo-perplexity</code>, <code>you</code>, <code>searxng</code>, <code>serpbase</code>, <code>querit</code></td>
+<td><code>auto</code>, <code>serper</code>, <code>brave</code>, <code>tavily</code>, <code>exa</code>, <code>linkup</code>, <code>firecrawl</code>, <code>parallel</code>, <code>perplexity</code>, <code>kilo-perplexity</code>, <code>you</code>, <code>searxng</code>, <code>serpbase</code>, <code>querit</code>, <code>keenable</code></td>
 </tr>
 <tr>
 <td><code>depth</code></td>
@@ -395,7 +405,7 @@ web_search_plus(query=&quot;best bookshelf speakers under 1000&quot;, quality_re
 web_extract_plus(urls=[&quot;https://docs.linkup.so&quot;], provider=&quot;linkup&quot;, render_js=False)
 # → Linkup fetch endpoint
 </code></pre>
-<p>Auto extraction currently tries Tavily, then Exa, Linkup, Parallel, Firecrawl, and You.com when keys are available. Tavily is the fast reliable default; Exa is the fast docs/academic backup; Linkup stays the clean long-form/RAG fallback; Parallel is the excerpt-heavy LLM-ready backup; Firecrawl remains the robust scraper safety net; You.com is the final fallback.</p>
+<p>Auto extraction currently tries Tavily, then Exa, Linkup, Parallel, Firecrawl, and You.com when keys are available, then Keenable as the last resort <strong>only if it is configured</strong> (a <code>KEENABLE_API_KEY</code>, or the opted-in keyless public endpoint). Tavily is the fast reliable default; Exa is the fast docs/academic backup; Linkup stays the clean long-form/RAG fallback; Parallel is the excerpt-heavy LLM-ready backup; Firecrawl remains the robust scraper safety net; You.com is a fallback; Keenable is the lowest-priority fallback. The keyless public tier is off by default — see <a href="#keenable-keyless-public-access">Keenable keyless public access</a> — so <code>web_extract_plus</code> is available only when at least one extraction provider is configured.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -515,6 +525,12 @@ web_extract_plus(urls=[&quot;https://docs.linkup.so&quot;], provider=&quot;linku
 <td>Privacy-focused self-hosted metasearch</td>
 </tr>
 <tr>
+<td>Keenable</td>
+<td align="right">✅</td>
+<td align="right">✅</td>
+<td>Independent web index; key via <code>KEENABLE_API_KEY</code>, or opt-in keyless public tier (off by default); lowest-priority fallback</td>
+</tr>
+<tr>
 <td>SerpBase</td>
 <td align="right">✅</td>
 <td align="right">—</td>
@@ -547,6 +563,7 @@ FIRECRAWL_API_KEY=***     # https://firecrawl.dev — search + extraction
 PERPLEXITY_API_KEY=***    # https://perplexity.ai/settings/api
 YOU_API_KEY=***           # https://api.you.com — search + extraction
 SEARXNG_INSTANCE_URL=https://your-instance.example.com
+KEENABLE_API_KEY=***      # https://keenable.ai — search + extraction (or opt into the keyless public tier, off by default)
 SERPBASE_API_KEY=***      # https://www.serpbase.dev — explicit/fallback-only Google-like SERP search
 PARALLEL_API_KEY=***      # https://platform.parallel.ai — explicit/guarded LLM-ready search + extraction
 QUERIT_API_KEY=***        # https://querit.ai — explicit/fallback-only by default
@@ -554,6 +571,13 @@ QUERIT_API_KEY=***        # https://querit.ai — explicit/fallback-only by defa
 # Kilo gateway alternate provider (`provider=&quot;kilo-perplexity&quot;`)
 KILOCODE_API_KEY=***
 </code></pre>
+<h4>Keenable keyless public access</h4>
+<p>Keenable also exposes keyless <code>/public</code> endpoints, but they are <strong>opt-in and off by default</strong>. With a <code>KEENABLE_API_KEY</code> set, requests always use the authenticated endpoints. Without a key, Keenable is treated as unconfigured (it won&#39;t auto-route, fall back, or enable <code>web_extract_plus</code>) unless you explicitly enable the public tier:</p>
+<pre><code class="language-json">// config.json
+{ &quot;keenable&quot;: { &quot;allow_public&quot;: true } }
+</code></pre>
+<p>or via environment: <code>KEENABLE_ALLOW_PUBLIC=1</code>.</p>
+<p>When enabled, queries and fetched URLs are sent to an <strong>unauthenticated</strong> public service. The limits are <strong>per IP</strong> with <strong>no SLA</strong> — roughly <strong>1,000 requests/hour</strong> and <strong>10 requests/second</strong> — so treat the public tier as a best-effort last resort, not a dependable provider. The first request that uses the public endpoint logs a one-time warning so the egress is visible. <code>web-search-plus doctor</code> reports keyless providers as <code>key=no</code> with a separate <code>keyless=on/off</code> badge so key status stays truthful.</p>
 <hr>
 <h3>Result quality and adaptive routing</h3>
 <ul>
@@ -617,7 +641,7 @@ LICENSE          MIT license
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 246</div>
+        <div class="stars">★ 247</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
@@ -641,7 +665,7 @@ LICENSE          MIT license
         <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
       </a>
       <a class="related-row" href="/projects/stainlu/hermes-labyrinth">
-        <div class="stars">★ 290</div>
+        <div class="stars">★ 291</div>
         <div class="name"><span class="org">stainlu /</span> hermes-labyrinth</div>
       </a>
       <a class="related-row" href="/projects/clawshell/clawshell">

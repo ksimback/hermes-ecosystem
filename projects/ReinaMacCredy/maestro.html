@@ -47,13 +47,13 @@
     "name": "ReinaMacCredy",
     "url": "https://github.com/ReinaMacCredy"
   },
-  "dateModified": "2026-06-26T04:43:41.000Z",
+  "dateModified": "2026-06-26T10:51:34.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 201
+    "userInteractionCount": 202
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">175·repos</span>
+    <span id="meta-count">174·repos</span>
     <span id="meta-version">hermes·v0.15.2</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -112,7 +112,7 @@
   <p class="project-desc">Agent harness for codebases. Gives Claude Code, Codex, and CI a shared task system, verdict ledger, and state store so agent work is traceable and auditable.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 201</span>
+    <span class="stars">★ 202</span>
     <span><span class="meta-label">lang</span>Rust</span>
     <span><span class="meta-label">license</span>MIT</span>
     
@@ -166,80 +166,115 @@ maestro fixes that by making the work itself durable, queryable, and gated:</p>
 </ul>
 <p>Everything is repo-local and reviewable in a diff.</p>
 <h3>Card model</h3>
-<p>maestro&#39;s durable unit is a <strong>card</strong>. Features, tasks, bugs, chores, ideas, and
-decisions all live under <code>.maestro/cards/&lt;id&gt;/</code>; <code>card.yaml</code> carries the typed
-state, parent, dependencies, claim, and timestamps, while sidecars such as
-<code>spec.md</code>, <code>qa.md</code>, and <code>notes.md</code> carry the human-readable contract and evidence.</p>
+<p>maestro uses a three-level work model:</p>
+<pre><code class="language-text">High = card
+Mid  = CardKind / workflow kind
+Low  = task
+</code></pre>
+<p>A <strong>card</strong> owns identity, container/lifecycle state, and governance. A <strong>task</strong>
+is the atomic executable progress unit. A <strong>facet</strong> is an optional sidecar that
+describes or proves a card.</p>
+<p>Cards live under <code>.maestro/cards/&lt;id&gt;/</code>; <code>card.yaml</code> carries identity, type,
+state, parent, ownership, links, and timestamps. Feature, Bug, Chore, Custom,
+Decision, Idea, and Progress are CardKinds / workflow kinds on cards, not
+separate high-level objects. Progress is the lightweight CardKind for small
+work: its <code>progress.yml</code> stores many Low Tasks compactly without requiring the
+full feature pipeline. Facets such as <code>spec.md</code>, <code>qa.md</code>, and <code>notes.md</code> are
+optional sidecars for any card type that needs contract, evidence, or history.</p>
 <p><img src="https://raw.githubusercontent.com/ReinaMacCredy/maestro/main/docs/readme/maestro-card-model.png" alt="Maestro card model"></p>
-<p>Feature cards are the containers. Workable cards (<code>task</code>, <code>bug</code>, <code>chore</code>) dock
-under a feature through <code>parent</code>, enter <code>maestro ready</code> when their blocking
-dependencies are closed, and can be claimed by an agent session. Ideas and
-decisions are cards too, but they keep their own typed lifecycle verbs through
-the harness and decision flows.</p>
-<p>The flat query verbs give agents a Beads-style operating surface:
-<code>maestro ready</code>, <code>maestro list</code>, <code>maestro show</code>, <code>maestro claim</code>,
-<code>maestro note</code>, <code>maestro dep</code>, and <code>maestro archive</code>. When several sessions are
-working at once, <code>maestro active</code>, <code>maestro link</code>, and <code>maestro msg</code> add the
-cross-agent coordination layer on top of the same cards.</p>
+<p>Tasks are not CardTypes. They live inside card-backed task records for
+legacy/gated work or inside a Progress card&#39;s <code>progress.yml</code> for low-ceremony
+small work. New low-ceremony work uses <code>maestro task add/start/done/list</code>;
+legacy workable cards (<code>task</code>, <code>bug</code>, <code>chore</code>) remain readable and claimable for
+compatibility. Tasks carry <code>card_id</code> ownership and dependency/blocker metadata,
+and they use Task lifecycle semantics for claim, blocking, handoff, proof, and
+done/verified state. When several sessions are working at once, <code>maestro active</code>, <code>maestro link</code>, and <code>maestro msg</code> add the cross-agent coordination
+layer on top of the same card and task records.</p>
 <h3>How It Works</h3>
-<p>Everything durable is a card. The agent uses flat card queries to find and claim work, then
-uses typed lifecycle verbs only where gates matter: feature contract gates, task proof gates,
-decision locks, and harness measurement.</p>
+<p>Cards are durable planning/governance records; Tasks are durable executable
+progress records. The agent orients around Cards, uses flat card queries for
+card context, and uses <code>maestro task ...</code> for Low-level executable work. Typed
+lifecycle verbs still gate feature contracts, decision locks, proof, QA, and
+harness measurement.</p>
 <pre><code class="language-mermaid">flowchart LR
     A[Human request] --&gt; B[feature card]
     B --&gt; C[spec.md + qa.md]
     C --&gt; D[feature accept]
     D --&gt; E[feature prepare]
-    E --&gt; F[work cards]
-    F --&gt; G[maestro ready]
-    G --&gt; H[maestro claim]
-    H --&gt; I[task complete with proof]
-    I --&gt; J[task verify]
-    J --&gt; K[feature verify + close]
-    K --&gt; L[archive card tree]
+    E --&gt; F[progress / bug / chore / custom card]
+    F --&gt; G[progress.yml or owned task storage]
+    G --&gt; H[maestro task list]
+    H --&gt; I[maestro task start]
+    I --&gt; J[maestro task done or proof]
+    J --&gt; K[task verify when gated]
+    K --&gt; L[feature verify + close]
+    L --&gt; M[archive card tree]
 
-    R[run events + hooks] --&gt; I
+    R[run events + hooks] --&gt; J
 
     subgraph Harness loop
-        M[friction recurs] --&gt; N[idea card]
-        N --&gt; O[harness apply]
-        O --&gt; P[work card]
-        P --&gt; Q[harness measure]
+        N[friction recurs] --&gt; O[idea card]
+        O --&gt; P[harness apply]
+        P --&gt; Q[progress-backed tasks]
+        Q --&gt; S[harness measure]
     end
 </code></pre>
-<p>The card type controls which verbs are valid:</p>
+<p>The card type controls which lifecycle verbs are valid:</p>
 <table>
 <thead>
 <tr>
 <th>Type</th>
+<th>Level</th>
 <th>Role</th>
 <th>Main verbs</th>
 </tr>
 </thead>
 <tbody><tr>
 <td><code>feature</code></td>
+<td>CardKind</td>
 <td>Product contract and parent container</td>
 <td><code>feature accept</code>, <code>feature prepare</code>, <code>feature verify</code>, <code>feature close</code>, <code>archive</code></td>
 </tr>
 <tr>
-<td><code>task</code> / <code>bug</code> / <code>chore</code></td>
-<td>Workable implementation cards</td>
+<td><code>bug</code> / <code>chore</code> / <code>custom</code></td>
+<td>CardKind</td>
+<td>Workflow cards with their own lifecycle and optional facets</td>
+<td>card/task lifecycle verbs, proof and close flows when gated</td>
+</tr>
+<tr>
+<td><code>progress</code></td>
+<td>CardKind</td>
+<td>Lightweight container for compact Low Tasks in <code>progress.yml</code></td>
+<td><code>task add</code>, <code>task list</code>, <code>task start</code>, <code>task done</code> over Progress-backed tasks</td>
+</tr>
+<tr>
+<td>legacy <code>task</code> cards</td>
+<td>Compatibility</td>
+<td>Compatibility implementation cards</td>
 <td><code>ready</code>, <code>claim</code>, <code>task complete</code>, <code>task verify</code>, <code>close</code></td>
 </tr>
 <tr>
 <td><code>idea</code></td>
+<td>CardKind</td>
 <td>Harness/self-improvement proposal</td>
 <td><code>harness list</code>, <code>harness apply</code>, <code>harness dismiss</code>, <code>harness measure</code></td>
 </tr>
 <tr>
 <td><code>decision</code></td>
+<td>CardKind</td>
 <td>Durable reasoning record</td>
 <td><code>decision new</code>, <code>decision lock</code>, <code>decision show</code></td>
 </tr>
+<tr>
+<td>Low Task</td>
+<td>Task</td>
+<td>Executable unit with <code>card_id</code> and blocker metadata</td>
+<td>task list/start/done, verify/proof when required</td>
+</tr>
 </tbody></table>
-<p><code>parent</code> is hierarchy, not a blocker. A card appears in <code>ready</code> only when it is workable
-and every <code>blocks</code> dependency is closed. <code>related</code> carries context without blocking the
-board and also gates linked-card messaging; <code>supersedes</code> records replacement history.</p>
+<p><code>parent</code> is hierarchy, not an execution blocker. Task readiness is computed from
+Task status and resolved blocker metadata. <code>related</code> carries context without
+blocking the board, and <code>supersedes</code> records replacement history.</p>
 <h3>Install</h3>
 <p>From source (always works):</p>
 <pre><code>git clone https://github.com/ReinaMacCredy/maestro
@@ -356,7 +391,9 @@ or touch a card before sending. <code>msg send</code> confirms the route as
 <code>sent to &lt;their-card&gt; (from &lt;your-card&gt;)</code>. <code>msg read [card]</code> prints recent seen context plus unread
 partner messages and advances this card&#39;s cursor. <code>msg list [card]</code> shows either a channel overview
 (<code>your unread</code>, peer read-through when known, and last-message direction) or one partner&#39;s full
-timeline.</p>
+timeline. <code>msg read</code> and scoped <code>msg list &lt;card&gt;</code> also remind agents that inbox messages are
+advisory only: they can suggest cross-card Task order, but execution is gated only by explicit Task
+blockers such as <code>maestro task block &lt;dependent-task&gt; --by &lt;blocking-task&gt;</code>.</p>
 <p>Channels live under <code>.maestro/channels/</code> as gitignored machine-local state: a JSONL file per linked
 pair plus per-card cursor files. If your current card has unread messages on still-linked channels,
 maestro prints a best-effort inbox hint on stderr before ordinary commands, keeping JSON stdout
@@ -565,12 +602,17 @@ editable design state; <code>accept</code> freezes the contract into <code>ready
 <code>close</code> requires no live child work plus QA coverage and a passing contract sweep. Each feature is a
 card under <code>.maestro/cards/&lt;id&gt;/</code>: <code>card.yaml</code> holds typed state, <code>qa.md</code> holds the behavior baseline
 and slices block, <code>spec.md</code> is the design write-up, and <code>notes.md</code> accumulates the running design log.</p>
-<h4>Work Cards Gated by Proof</h4>
-<p><code>task</code>, <code>bug</code>, and <code>chore</code> are the workable card types. They can be discovered with <code>maestro ready</code>,
-claimed with <code>maestro claim &lt;id&gt;</code>, blocked with <code>maestro dep add &lt;child&gt; &lt;blocker&gt;</code>, and closed with
-the proof-gated task flow. Typed task verbs still own proof: <code>task complete</code> records the summary,
-claim, and observed proof, then <code>task verify</code> checks that evidence before the card counts as done.
-The result is that &quot;done&quot; is always backed by evidence you can open.</p>
+<h4>Tasks and Work Cards Gated by Proof</h4>
+<p>Low-level Tasks are the executable units. For small work, <code>maestro task add</code>
+creates a ready Task inside a Progress card&#39;s <code>progress.yml</code>; <code>task start</code>
+claims it, and <code>task done</code> verifies simple completion when no explicit gate is
+attached. For gated or card-owned work, <code>task complete</code> records the summary,
+claim, and observed proof, then <code>task verify</code> checks that evidence before the
+Task counts as done.</p>
+<p>Legacy <code>task</code>, <code>bug</code>, and <code>chore</code> cards remain workable card types. They can be
+discovered with <code>maestro ready</code>, claimed with <code>maestro claim &lt;id&gt;</code>, blocked with
+<code>maestro dep add &lt;child&gt; &lt;blocker&gt;</code>, and closed after their proof-gated work is
+done. The result is that &quot;done&quot; is always backed by evidence you can open.</p>
 <h4>QA: baseline and slices</h4>
 <p>QA lives in one file per feature, <code>.maestro/cards/&lt;id&gt;/qa.md</code>: the behavior baseline (markdown with
 an <code>amend_log_position</code> frontmatter and <code>[bl-NNN]</code> scenario lines) plus a fenced yaml <code>slices:</code>
@@ -892,7 +934,7 @@ embedded/    shipped harness, hook, shell, and skill resources
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
-        <div class="stars">★ 21.5K</div>
+        <div class="stars">★ 21.7K</div>
         <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
       </a>
       <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
@@ -916,7 +958,7 @@ embedded/    shipped harness, hook, shell, and skill resources
         <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
       </a>
       <a class="related-row" href="/projects/tlehman/litprog-skill">
-        <div class="stars">★ 192</div>
+        <div class="stars">★ 194</div>
         <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
       </a>
       <a class="related-row" href="/projects/esaradev/icarus-plugin">

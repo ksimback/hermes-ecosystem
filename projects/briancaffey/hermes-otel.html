@@ -47,13 +47,13 @@
     "name": "briancaffey",
     "url": "https://github.com/briancaffey"
   },
-  "dateModified": "2026-06-26T04:46:46.000Z",
+  "dateModified": "2026-06-26T14:14:46.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 30
+    "userInteractionCount": 31
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">175·repos</span>
+    <span id="meta-count">174·repos</span>
     <span id="meta-version">hermes·v0.15.2</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -112,7 +112,7 @@
   <p class="project-desc">OTel Plugin for Hermes Agent</p>
 
   <div class="meta-row">
-    <span class="stars">★ 30</span>
+    <span class="stars">★ 31</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
@@ -628,10 +628,12 @@ headers:                        # merged onto outgoing OTLP requests
 <h3>How it works</h3>
 <p>Hermes fires lifecycle hooks. This plugin maps them to OTel spans:</p>
 <pre><code>Turn 1:
-  session.{platform} / cron (root, when session hooks are available)
+  agent / cron (root, when session hooks are available)
   └── LLM span
       └── API span (first call → stop or tool_calls)
           └── Tool span(s) (if tools called)
+      ├── subagent.{role} span (when delegate_task is used)
+      │   └── agent (child run rejoins the trace) → its own LLM/API/tool spans
       └── API span (second call → final response)
 </code></pre>
 <h4>Span hierarchy</h4>
@@ -644,9 +646,9 @@ headers:                        # merged onto outgoing OTLP requests
 </tr>
 </thead>
 <tbody><tr>
-<td><code>session.{platform}</code> / <code>cron</code></td>
-<td>GENERAL</td>
-<td>Session metadata, completion/interruption status</td>
+<td><code>agent</code> / <code>cron</code></td>
+<td>AGENT</td>
+<td>Session metadata, completion/interruption status, turn summary</td>
 </tr>
 <tr>
 <td><code>llm.{model}</code></td>
@@ -656,14 +658,21 @@ headers:                        # merged onto outgoing OTLP requests
 <tr>
 <td><code>api.{model}</code></td>
 <td>LLM</td>
-<td>Token counts (prompt + completion), duration, finish reason, cache tokens</td>
+<td>Token counts (prompt + completion), duration, finish reason, cache tokens. On failure: <code>ERROR</code> status + recorded exception + retry metadata</td>
 </tr>
 <tr>
 <td><code>tool.{name}</code></td>
 <td>TOOL</td>
 <td>Tool name, arguments (input), result (output), error status</td>
 </tr>
+<tr>
+<td><code>subagent.{role}</code></td>
+<td>AGENT</td>
+<td>Delegated child agent — role, goal, status, duration, summary; the child&#39;s own run nests beneath it so a multi-agent run is <strong>one connected trace</strong></td>
+</tr>
 </tbody></table>
+<p><strong>Sub-agent delegation:</strong> when the agent calls <code>delegate_task</code>, the plugin opens a <code>subagent.{role}</code> span in the parent trace (via the <code>subagent_start</code> / <code>subagent_stop</code> hooks) and rejoins the delegated child&#39;s own root span underneath it. Without this, child agents export as dozens of disconnected traces. See <a href="https://github.com/briancaffey/hermes-otel/blob/main/website/docs/architecture/span-hierarchy.md">Span hierarchy → <code>subagent.*</code></a> and the <code>hermes.subagent.count</code> / <code>hermes.subagent.duration</code> metrics.</p>
+<p><strong>API errors &amp; retries:</strong> failed provider requests (rate limits, timeouts, 5xx, network errors) close the <code>api.{model}</code> span as <code>ERROR</code> with an <code>exception</code> event and retry metadata (<code>error.type</code>, status code, <code>hermes.retry.count</code>, <code>hermes.retryable</code>), via the <code>api_request_error</code> hook — previously these ended <code>OK</code> and were invisible. Emits <code>hermes.api.error.count{error_type,status_class,retryable}</code> and <code>hermes.retry.count</code>.</p>
 <h4>Attribute conventions</h4>
 <p>The plugin emits <strong>dual-convention</strong> attributes so both backends work:</p>
 <table>
@@ -722,7 +731,7 @@ traceparent = get_current_traceparent(session_id)   # &quot;00-&lt;trace&gt;-&lt
 </tr>
 <tr>
 <td><code>__init__.py</code></td>
-<td>Entry point — initializes tracer, registers core hooks (+ session hooks when supported)</td>
+<td>Entry point — initializes tracer, registers core hooks (+ session and sub-agent hooks when supported)</td>
 </tr>
 <tr>
 <td><code>tracer.py</code></td>
@@ -892,11 +901,11 @@ traceparent = get_current_traceparent(session_id)   # &quot;00-&lt;trace&gt;-&lt
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
-        <div class="stars">★ 316</div>
+        <div class="stars">★ 315</div>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 246</div>
+        <div class="stars">★ 247</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
@@ -920,7 +929,7 @@ traceparent = get_current_traceparent(session_id)   # &quot;00-&lt;trace&gt;-&lt
         <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
       </a>
       <a class="related-row" href="/projects/stainlu/hermes-labyrinth">
-        <div class="stars">★ 290</div>
+        <div class="stars">★ 291</div>
         <div class="name"><span class="org">stainlu /</span> hermes-labyrinth</div>
       </a>
     </div>
