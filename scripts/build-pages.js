@@ -15,6 +15,8 @@ import path from "path";
 import { execSync } from "child_process";
 import { fileURLToPath } from "url";
 import { marked } from "marked";
+import { JSDOM } from "jsdom";
+import createDOMPurify from "dompurify";
 import { githubHeaders, fetchReadme, fetchAllMetadata } from "../lib/github.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -118,6 +120,20 @@ marked.setOptions({
   breaks: false,
   renderer,
 });
+
+// ── Sanitize untrusted README HTML (contributor READMEs can carry raw
+// <script>/<iframe>/onerror=.../javascript: payloads → stored XSS). ──
+const DOMPurify = createDOMPurify(new JSDOM("").window);
+function sanitizeReadmeHtml(html) {
+  if (!html) return html;
+  return DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
+}
+
+// ── Emit JSON-LD with `<` escaped so a `</script>` inside any user-supplied
+// string (repo description, summary) can't break out of the block. ──
+function ldJson(node) {
+  return `<script type="application/ld+json">\n${JSON.stringify(node, null, 2).replace(/</g, "\\u003c")}\n</script>`;
+}
 
 // ── Load data ──
 const repos = JSON.parse(
@@ -293,7 +309,7 @@ function renderSoftwareApplicationLD(repo, meta, summary) {
     isPartOf: { "@id": "https://hermesatlas.com/#website" },
   };
 
-  return `<script type="application/ld+json">\n${JSON.stringify(node, null, 2)}\n</script>`;
+  return ldJson(node);
 }
 
 // ── GEO: CollectionPage + ItemList JSON-LD for a list page ──
@@ -322,7 +338,7 @@ function renderCollectionPageLD(list, matchedRepos) {
     },
   };
 
-  return `<script type="application/ld+json">\n${JSON.stringify(node, null, 2)}\n</script>`;
+  return ldJson(node);
 }
 
 // ── GEO: FAQPage JSON-LD (consumed by reports/other hand-authored pages) ──
@@ -336,7 +352,7 @@ function renderFAQPageLD(faqs) {
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
   };
-  return `<script type="application/ld+json">\n${JSON.stringify(node, null, 2)}\n</script>`;
+  return ldJson(node);
 }
 
 // ── GEO: explicit multi-bot robots.txt with wildcard default closer ──
@@ -977,10 +993,10 @@ function renderReportsIndex(reports) {
 <meta name="twitter:title" content="${escapeHtml(ogTitle)}">
 <meta name="twitter:image" content="${escapeHtml(ogImageUrl({ title: ogTitle, subtitle: ogSubtitle, kind: "reports" }))}">
 <script type="application/ld+json">
-${JSON.stringify(breadcrumbLD, null, 2)}
+${JSON.stringify(breadcrumbLD, null, 2).replace(/</g, "\u003c")}
 </script>
 <script type="application/ld+json">
-${JSON.stringify(itemListLD, null, 2)}
+${JSON.stringify(itemListLD, null, 2).replace(/</g, "\u003c")}
 </script>
 <link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 ${FAVICON}
@@ -1293,7 +1309,7 @@ async function main() {
         try {
           currentRawBase = `https://raw.githubusercontent.com/${repo.owner}/${repo.repo}/main/`;
           const readmeFixed = rewriteRelativeUrls(readmeRaw, repo.owner, repo.repo);
-          readmeHtml = marked.parse(readmeFixed);
+          readmeHtml = sanitizeReadmeHtml(marked.parse(readmeFixed));
         } catch (e) {
           console.warn(`  Markdown parse error for ${key}: ${e.message}`);
         }
@@ -1308,13 +1324,13 @@ async function main() {
           const existing = fs.readFileSync(existingPath, "utf-8");
           const match = existing.match(/<section class="readme"[^>]*>([\s\S]*?)<\/section>/);
           if (match && !match[1].includes("no-readme")) {
-            readmeHtml = match[1]
+            readmeHtml = sanitizeReadmeHtml(match[1]
               .replace(/<(\/?)h5(\s|>)/g, "<$1h6$2")
               .replace(/<(\/?)h4(\s|>)/g, "<$1h5$2")
               .replace(/<(\/?)h3(\s|>)/g, "<$1h4$2")
               .replace(/<(\/?)h2(\s|>)/g, "<$1h3$2")
               .replace(/<(\/?)h1(\s|>)/g, "<$1h2$2")
-              .trim();
+              .trim());
           }
         } catch {}
       }
