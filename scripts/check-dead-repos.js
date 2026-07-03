@@ -68,6 +68,28 @@ for (const err of data.errors || []) {
 
 console.log(`Checked ${repos.length} repos: ${dead.length} dead`);
 
+// ECOSYSTEM.md drift: it mirrors the catalog and is bundled into llms-full.txt
+// + the RAG chunks, so repo rows left behind after a catalog removal quietly
+// pollute LLM retrieval. Flag any ECOSYSTEM.md repo link not in data/repos.json.
+let ecoDrift = [];
+try {
+  const eco = await fs.readFile("ECOSYSTEM.md", "utf8");
+  const inCatalog = new Set(repos.map((r) => `${r.owner}/${r.repo}`.toLowerCase()));
+  const linked = [
+    ...new Set(
+      [...eco.matchAll(/github\.com\/([\w.-]+\/[\w.-]+)/g)].map((m) =>
+        m[1].replace(/\.git$/, "").toLowerCase()
+      )
+    ),
+  ];
+  ecoDrift = linked.filter(
+    (k) => !inCatalog.has(k) && !k.startsWith("nousresearch/hermes-agent")
+  );
+  console.log(`ECOSYSTEM.md: ${ecoDrift.length} repo rows not in catalog`);
+} catch (e) {
+  console.warn(`Could not read ECOSYSTEM.md for drift check: ${e.message}`);
+}
+
 let body = "";
 if (dead.length > 0) {
   body =
@@ -81,8 +103,22 @@ if (dead.length > 0) {
   }
   body +=
     `\n## Fix\n\nRemove each entry from \`data/repos.json\` and merge. ` +
-    `See PR #148 (Web3CZ removal) and a4e906e (iamagenius00/hermes-a2a removal) for prior examples.\n\n` +
-    `_Auto-detected by \`scripts/check-dead-repos.js\` via \`audit-summaries.yml\`. This issue updates in place; it auto-closes when the list goes empty._\n`;
+    `See PR #148 (Web3CZ removal) and a4e906e (iamagenius00/hermes-a2a removal) for prior examples.\n\n`;
+}
+
+if (ecoDrift.length > 0) {
+  body +=
+    `## ECOSYSTEM.md drift (${ecoDrift.length})\n\n` +
+    `These repos are linked in \`ECOSYSTEM.md\` but are no longer in \`data/repos.json\`. ` +
+    `\`ECOSYSTEM.md\` is bundled into \`llms-full.txt\` and the RAG chunks, so these stale rows ` +
+    `pollute LLM retrieval.\n\n`;
+  for (const k of ecoDrift) body += `- \`${k}\`\n`;
+  body += `\n**Fix**: remove each stale row from \`ECOSYSTEM.md\` (or re-add the repo to the catalog).\n\n`;
+}
+
+if (body) {
+  body +=
+    `_Auto-detected by \`scripts/check-dead-repos.js\` via \`audit-summaries.yml\`. This issue updates in place; it auto-closes when the lists go empty._\n`;
 }
 
 await fs.writeFile("dead-repos.md", body);

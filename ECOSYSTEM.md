@@ -107,7 +107,6 @@ Plugins extend Hermes with new tools, data sources, or behaviors at the framewor
 | [FahrenheitResearch/hermes-weather-plugin](https://github.com/FahrenheitResearch/hermes-weather-plugin) | Professional weather data with NWS imagery and forecasts | — | Beta |
 | [nativ3ai/hermes-payguard](https://github.com/nativ3ai/hermes-payguard) | Safe USDC and x402 payment handling for agents | — | Experimental |
 | [raulvidis/hermes-cloudflare](https://github.com/raulvidis/hermes-cloudflare) | Headless browsing via Cloudflare Workers | — | Experimental |
-| [anpicasso/hermes-plugin-chrome-profiles](https://github.com/anpicasso/hermes-plugin-chrome-profiles) | Multi-account Chrome profile switching for browser tool | — | Experimental |
 
 ---
 
@@ -134,7 +133,6 @@ Frameworks for running multiple Hermes agents or coordinating agent swarms.
 |:-----------|:------------|------:|:---------|
 | [builderz-labs/mission-control](https://github.com/builderz-labs/mission-control) | Self-hosted AI agent orchestration — dispatch tasks, run multi-agent workflows, monitor spend | 3,875 | Beta |
 | [swarmclawai/swarmclaw](https://github.com/swarmclawai/swarmclaw) | Build autonomous AI agent swarms with orchestration, skills, and multiple model providers | 285 | Beta |
-| [supermodeltools/bigiron](https://github.com/supermodeltools/bigiron) | AI-native SDLC — Hermes Agent + Supermodel code graph, graph-gated at every phase | 7 | Experimental |
 | [1ilkhamov/opencode-hermes-multiagent](https://github.com/1ilkhamov/opencode-hermes-multiagent) | 17 specialized agents with structured communication protocols | — | Beta |
 | [Rainhoole/hermes-agent-acp-skill](https://github.com/Rainhoole/hermes-agent-acp-skill) | Multi-agent delegation routing via ACP | — | Beta |
 | [Abruptive/Ankh.md](https://github.com/Abruptive/Ankh.md) | TAW Agent × Hermes swarm framework for multi-agent collaboration | 25 | Experimental |
@@ -148,7 +146,6 @@ Docker images, deployment templates, and infrastructure tooling for running Herm
 
 | Repository | Description | Stars | Maturity |
 |:-----------|:------------|------:|:---------|
-| [Crustocean/hermes-agent-template](https://github.com/Crustocean/hermes-agent-template) | Production-ready Docker template for cloud deployment | — | Beta |
 | [xmbshwll/hermes-agent-docker](https://github.com/xmbshwll/hermes-agent-docker) | Minimal Docker sandbox image for Hermes | — | Beta |
 | [0xrsydn/nix-hermes-agent](https://github.com/0xrsydn/nix-hermes-agent) | Nix package and NixOS module for reproducible Hermes deployment | — | Beta |
 | [numtide/llm-agents.nix](https://github.com/numtide/llm-agents.nix) | Nix packages for AI coding agents including Hermes | 967 | Production |
@@ -168,8 +165,6 @@ Connect Hermes to external platforms, services, and ecosystems.
 | [raulvidis/hermes-android](https://github.com/raulvidis/hermes-android) | Android device bridge with Python toolset for mobile automation | — | Beta |
 | [gizdusum/hermes-blockchain-oracle](https://github.com/gizdusum/hermes-blockchain-oracle) | Solana on-chain analytics MCP server for Hermes | — | Experimental |
 | [Ridwannurudeen/hermes-council](https://github.com/Ridwannurudeen/hermes-council) | Adversarial multi-perspective MCP server for decision-making | — | Experimental |
-| [Hmbown/NemoHermes](https://github.com/Hmbown/NemoHermes) | NVIDIA capability registry and GPU routing for Hermes | — | Experimental |
-| [marlandoj/zouroboros-swarm-executors](https://github.com/marlandoj/zouroboros-swarm-executors) | Claude Code ↔ Hermes task handoff and swarm execution | — | Experimental |
 
 ---
 
@@ -205,8 +200,6 @@ Purpose-built agents and workflows powered by Hermes for specific use cases.
 | [hxsteric/mercury](https://github.com/hxsteric/mercury) | Multi-chain blockchain cash flow analyzer | — | Beta |
 | [Lethe044/hermes-incident-commander](https://github.com/Lethe044/hermes-incident-commander) | Production incident detection and self-healing workflows | — | Beta |
 | [bryercowan/hermes-embodied](https://github.com/bryercowan/hermes-embodied) | Self-improving robotics via VLA model fine-tuning | — | Experimental |
-| [Lethe044/hermes-legal](https://github.com/Lethe044/hermes-legal) | Contract risk analysis and legal document review | — | Experimental |
-| [Snehal707/Hermes-mars-rover](https://github.com/Snehal707/Hermes-mars-rover) | Mars rover simulator with ROS2 and Gazebo integration | — | Experimental |
 
 ---
 
@@ -265,7 +258,6 @@ Notable forks that add significant functionality beyond the base Hermes agent.
 |:-----------|:------------|------:|:---------|
 | [nativ3ai/hermes-agent-camel](https://github.com/nativ3ai/hermes-agent-camel) | Hermes with integrated CaMeL trust boundaries for safer autonomous execution | 12 | Beta |
 | [kaminocorp/hermes-alpha](https://github.com/kaminocorp/hermes-alpha) | Cloud-deployed Hermes with pre-configured templates and managed infrastructure | — | Beta |
-| [jasperan/orahermes-agent](https://github.com/jasperan/orahermes-agent) | Oracle Cloud (OCI) GenAI and Oracle 26ai database integration | — | Experimental |
 | [beardthelion/hermes-skill-distillation](https://github.com/beardthelion/hermes-skill-distillation) | Fine-tuning trajectory generation from Hermes skill executions | — | Experimental |
 
 ---
