@@ -266,7 +266,19 @@ export default async function handler(req, res) {
     if (!m || typeof m.content !== "string" || m.content.length > 2000) {
       return res.status(400).json({ error: "Invalid history message" });
     }
+    // Whitelist roles. Without this a client can inject {role:"system"}
+    // messages that append attacker instructions after the real system prompt
+    // and hijack the bot's behavior under Hermes Atlas branding.
+    if (m.role !== "user" && m.role !== "assistant") {
+      return res.status(400).json({ error: "Invalid history message role" });
+    }
   }
+
+  // Abort the upstream LLM call (and query-rewrite call) if the client
+  // disconnects mid-stream. Otherwise the full completion keeps running and
+  // billing tokens nobody will read, up to the function's maxDuration.
+  const ac = new AbortController();
+  res.on("close", () => ac.abort());
 
   // Rate limiting — per-IP (hour + day) and global (hour + day).
   // Use x-real-ip (set by Vercel's edge, not client-spoofable). Fall back
@@ -331,7 +343,7 @@ export default async function handler(req, res) {
     // 2. Rewrite query using conversation history (if history exists)
     // This transforms "how do I install it?" → "how do I install Hermes Agent?"
     const searchQuery = history.length > 0
-      ? await rewriteQuery(message, history)
+      ? await rewriteQuery(message, history, ac.signal)
       : message;
 
     console.log(`[RAG] Original: "${message}" → Search: "${searchQuery}"`);
@@ -461,6 +473,7 @@ ${retrievedContext}${repoMetadataBlock}`;
         "HTTP-Referer": "https://hermesatlas.com",
         "X-Title": "Hermes Atlas",
       },
+      signal: ac.signal,
       body: JSON.stringify({
         // OpenRouter native fallback — pass ONLY `models` array (no `model` field)
         // It will try each in order until one succeeds
@@ -482,9 +495,9 @@ ${retrievedContext}${repoMetadataBlock}`;
         const parsed = JSON.parse(err);
         if (parsed.error?.code === 429) {
           userMsg = "All available AI models are rate-limited right now. Please try again in a minute.";
-        } else if (parsed.error?.message) {
-          userMsg = parsed.error.message;
         }
+        // Do not echo parsed.error.message — never forward an upstream provider's
+        // error text to the client; the full error is logged server-side above.
       } catch {}
       res.write(userMsg);
       return res.end();
@@ -551,6 +564,12 @@ ${retrievedContext}${repoMetadataBlock}`;
 
     res.end();
   } catch (err) {
+    // Client disconnected mid-stream — expected, not an error worth logging or
+    // writing (the socket is already gone).
+    if (ac.signal.aborted || err?.name === "AbortError") {
+      try { res.end(); } catch {}
+      return;
+    }
     console.error("Chat error:", err);
     // Headers are already sent, write error inline and end
     try {
@@ -562,7 +581,7 @@ ${retrievedContext}${repoMetadataBlock}`;
 
 // Rewrite a follow-up question as a standalone query using conversation history.
 // Uses few-shot examples for reliable pronoun resolution and context expansion.
-async function rewriteQuery(message, history) {
+async function rewriteQuery(message, history, signal) {
   try {
     // Build a minimal history for the rewriter
     const historyText = history
@@ -626,6 +645,7 @@ Rewritten:`;
 
     const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
+      signal,
       headers: {
         Authorization: `Bearer ${OPENROUTER_KEY}`,
         "Content-Type": "application/json",

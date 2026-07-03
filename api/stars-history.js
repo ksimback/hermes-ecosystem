@@ -49,6 +49,9 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     console.error("Stars history error:", err);
-    return res.status(200).json({ days: 0, history: [], error: err.message });
+    // Don't cache the error response (vercel.json /api/(.*) sets s-maxage=3600)
+    // and don't leak err.message to the client.
+    res.setHeader("Cache-Control", "no-store");
+    return res.status(200).json({ days: 0, history: [] });
   }
 }

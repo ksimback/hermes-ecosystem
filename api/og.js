@@ -1,6 +1,7 @@
 import { ImageResponse } from "@vercel/og";
 import fs from "node:fs";
 import path from "node:path";
+import { rateLimit } from "../lib/redis.js";
 
 const MAX_TITLE = 120;
 const MAX_SUBTITLE = 180;
@@ -20,6 +21,23 @@ function loadFonts() {
 }
 
 export default async function handler(req, res) {
+  if (req.method !== "GET" && req.method !== "HEAD") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  // Satori rendering is CPU-heavy and the immutable CDN cache is keyed by the
+  // full query string, so ?title=<random> bypasses the cache on every request
+  // — a cheap compute-burn vector. Rate-limit per IP (fails open if Redis is
+  // down; OG cards are non-critical).
+  const ip =
+    req.headers["x-real-ip"]?.trim() ||
+    req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+    "unknown";
+  const { allowed } = await rateLimit(`og:ip:${ip}`, 60, 60);
+  if (!allowed) {
+    return res.status(429).json({ error: "Too many requests" });
+  }
+
   try {
     const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
     const title = (url.searchParams.get("title") || "Hermes Atlas").slice(0, MAX_TITLE);

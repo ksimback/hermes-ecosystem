@@ -148,7 +148,9 @@ export default async function handler(req, res) {
     const snapshot = Object.fromEntries(
       starData.map(r => [`${r.owner}/${r.repo}`, r.stars])
     );
-    await kvSet(historyKey, snapshot);
+    // 366-day TTL: stars-history only ever reads back 365 days, so without an
+    // expiry these daily keys accumulate in Redis forever.
+    await kvSet(historyKey, snapshot, { ex: 366 * 86400 });
 
     return res.status(200).json(response);
   } catch (err) {
@@ -161,7 +163,12 @@ export default async function handler(req, res) {
       stars: r.stars,
       updatedAt: null
     })));
-    return res.status(200).json({ ...fallback, error: err.message });
+    // Serve the static fallback but never let this error response get cached
+    // by the CDN (the /api/(.*) rule in vercel.json sets s-maxage=3600, which
+    // would pin a transient GitHub/Redis failure as the "good" answer for an
+    // hour). Do not leak err.message to the client — it's logged above.
+    res.setHeader("Cache-Control", "no-store");
+    return res.status(200).json(fallback);
   }
 }
 
