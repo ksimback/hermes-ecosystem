@@ -244,7 +244,14 @@ jobs:
             // mutation still fails for a reason other than the race.
             let autoMergeEnabled = false;
             let mergeState = 'UNKNOWN';
-            for (let i = 0; i < 12; i++) {
+            // Poll until a TERMINAL merge state. The earlier fix broke on the
+            // first non-UNKNOWN reading, but UNSTABLE (checks still running) is
+            // non-UNKNOWN — enabling auto-merge during UNSTABLE is exactly what
+            // GitHub rejects with "Pull request is in unstable status", the
+            // recurring #332/#396/#450 failure. UNKNOWN/UNSTABLE/BEHIND are
+            // transient; wait for one of these terminal states or time out.
+            const TERMINAL = new Set(['CLEAN', 'HAS_HOOKS', 'BLOCKED', 'DIRTY']);
+            for (let i = 0; i < 24; i++) {
               const { repository } = await github.graphql(
                 `query($owner: String!, $repo: String!, $num: Int!) {
                   repository(owner: $owner, name: $repo) {
@@ -254,31 +261,43 @@ jobs:
                 { owner: context.repo.owner, repo: context.repo.repo, num: pr.number }
               );
               mergeState = repository.pullRequest.mergeStateStatus;
-              if (mergeState && mergeState !== 'UNKNOWN') break;
+              if (mergeState && TERMINAL.has(mergeState)) break;
               await new Promise(r => setTimeout(r, 5000));
             }
             console.log(`PR #${pr.number} mergeStateStatus settled to ${mergeState}`);
 
-            try {
-              await github.graphql(
-                `mutation($pullRequestId: ID!) {
-                  enablePullRequestAutoMerge(input: {
-                    pullRequestId: $pullRequestId,
-                    mergeMethod: MERGE
-                  }) {
-                    pullRequest { autoMergeRequest { enabledAt } }
-                  }
-                }`,
-                { pullRequestId: pr.node_id }
-              );
-              autoMergeEnabled = true;
-              console.log(`Auto-merge enabled on PR #${pr.number}`);
-            } catch (e) {
+            // Enable auto-merge, retrying the mutation on the transient
+            // "unstable status" rejection with backoff — the state can still
+            // flip to UNSTABLE between the poll and the mutation.
+            let lastErr = null;
+            for (let attempt = 0; attempt < 4; attempt++) {
+              try {
+                await github.graphql(
+                  `mutation($pullRequestId: ID!) {
+                    enablePullRequestAutoMerge(input: {
+                      pullRequestId: $pullRequestId,
+                      mergeMethod: MERGE
+                    }) {
+                      pullRequest { autoMergeRequest { enabledAt } }
+                    }
+                  }`,
+                  { pullRequestId: pr.node_id }
+                );
+                autoMergeEnabled = true;
+                console.log(`Auto-merge enabled on PR #${pr.number}`);
+                break;
+              } catch (e) {
+                lastErr = e;
+                if (!/unstable/i.test(e.message) || attempt === 3) break;
+                await new Promise(r => setTimeout(r, 10000 * (attempt + 1)));
+              }
+            }
+            if (!autoMergeEnabled) {
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 title: `[Workflow] Auto-merge failed on release PR #${pr.number}`,
-                body: `Could not enable auto-merge on release-notes PR #${pr.number} for ${tag}.\n\n**Merge state at attempt:** \`${mergeState}\`\n**Error:** \`${e.message}\`\n\n**Action:** review and merge the PR manually.`,
+                body: `Could not enable auto-merge on release-notes PR #${pr.number} for ${tag}.\n\n**Merge state at attempt:** \`${mergeState}\`\n**Error:** \`${lastErr && lastErr.message}\`\n\n**Action:** review and merge the PR manually.`,
                 labels: ['workflow-issue']
               });
               core.warning(`Auto-merge failed on PR #${pr.number} (mergeState=${mergeState}); tracking issue opened.`);
