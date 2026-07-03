@@ -11,6 +11,7 @@
 
 import fs from "fs";
 import path from "path";
+import crypto from "node:crypto";
 import { fileURLToPath } from "url";
 import { enrichChunkMetadata } from "../lib/rag-scoring.js";
 import { findLatestReleaseFromMarkdownFiles } from "../lib/latest-release.js";
@@ -99,11 +100,55 @@ async function main() {
 
   console.log(`Created ${chunks.length} chunks\n`);
 
-  // Compute embeddings in batches
-  console.log("Computing embeddings...");
+  // Reuse embeddings for unchanged chunks. rebuild-chunks fires on every
+  // release-notes merge and repo add — usually a one-file diff — but without a
+  // cache every run re-embeds all ~6.5k chunks from scratch (real, recurring
+  // OpenRouter spend that grows with the corpus). Key each chunk by
+  // sha256(model + dims + text) so a config change (model/dimensions) correctly
+  // invalidates the cache.
+  const outputPath = path.join(ROOT, "data", "chunks.json");
+  const embedKey = (text) =>
+    crypto
+      .createHash("sha256")
+      .update(`text-embedding-3-small:${EMBED_DIMENSIONS}:${text}`)
+      .digest("hex");
+
+  const embedCache = new Map();
+  if (fs.existsSync(outputPath)) {
+    try {
+      const prev = JSON.parse(fs.readFileSync(outputPath, "utf-8"));
+      if (Array.isArray(prev)) {
+        for (const c of prev) {
+          if (c && typeof c.text === "string" && Array.isArray(c.embedding)) {
+            embedCache.set(embedKey(c.text), c.embedding);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn(`  Could not read previous chunks.json for cache: ${e.message}`);
+    }
+  }
+
+  // Assign cached embeddings; collect only the chunks that still need one.
+  const toEmbed = [];
+  let cacheHits = 0;
+  for (const c of chunks) {
+    const cached = embedCache.get(embedKey(c.text));
+    if (cached) {
+      c.embedding = cached;
+      cacheHits++;
+    } else {
+      toEmbed.push(c);
+    }
+  }
+  console.log(
+    `Embedding cache: ${cacheHits} reused, ${toEmbed.length} to compute (of ${chunks.length})`
+  );
+
+  // Compute embeddings in batches (only for new/changed chunks)
   const batchSize = 20;
-  for (let i = 0; i < chunks.length; i += batchSize) {
-    const batch = chunks.slice(i, i + batchSize);
+  for (let i = 0; i < toEmbed.length; i += batchSize) {
+    const batch = toEmbed.slice(i, i + batchSize);
     const texts = batch.map(c => c.text);
 
     const embeddings = await getEmbeddings(texts);
@@ -112,14 +157,13 @@ async function main() {
       batch[j].embedding = embeddings[j];
     }
 
-    const pct = Math.min(100, Math.round(((i + batch.length) / chunks.length) * 100));
-    process.stdout.write(`  ${pct}% (${i + batch.length}/${chunks.length})\r`);
+    const pct = Math.min(100, Math.round(((i + batch.length) / toEmbed.length) * 100));
+    process.stdout.write(`  ${pct}% (${i + batch.length}/${toEmbed.length})\r`);
   }
 
-  console.log(`\nEmbeddings computed for all ${chunks.length} chunks`);
+  console.log(`\nEmbeddings ready for all ${chunks.length} chunks (${cacheHits} cached, ${toEmbed.length} freshly computed)`);
 
   // Write output
-  const outputPath = path.join(ROOT, "data", "chunks.json");
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, JSON.stringify(chunks, null, 0));
 
