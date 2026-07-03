@@ -276,6 +276,22 @@
 
 <!-- ═══ Category Sections ═══ -->
 
+<!-- Catalog search + sort. Progressive enhancement: hidden by default and
+     revealed + wired by initCatalogControls(); with JS off, the full
+     categorized list below stays fully browsable. -->
+<div class="catalog-controls" id="catalog-controls" hidden>
+  <input type="search" id="catalog-search" class="catalog-search" placeholder="filter projects by name or description…" aria-label="Filter projects">
+  <label class="catalog-sort-wrap">
+    <span class="catalog-sort-label">sort</span>
+    <select id="catalog-sort" class="catalog-sort" aria-label="Sort projects">
+      <option value="stars">most stars</option>
+      <option value="name">name a–z</option>
+      <option value="active">recently active</option>
+    </select>
+  </label>
+  <span class="catalog-result-count" id="catalog-result-count" aria-live="polite"></span>
+</div>
+
 <section class="cat" data-category="Core & Official">
   <div class="cat-meta">
     <div class="cat-num">§01</div>
@@ -2143,8 +2159,67 @@
     return String(n);
   }
 
+  // Catalog search + sort (progressive enhancement). Reveals the controls
+  // (hidden by default so no-JS users get the full browsable list) and wires
+  // live text filtering + within-category sorting over the existing repo rows.
+  function initCatalogControls() {
+    const controls = document.getElementById('catalog-controls');
+    if (!controls) return;
+    const search = document.getElementById('catalog-search');
+    const sortSel = document.getElementById('catalog-sort');
+    const countEl = document.getElementById('catalog-result-count');
+    const sections = Array.from(document.querySelectorAll('section.cat'));
+    const rows = [];
+    sections.forEach(sec => {
+      sec.querySelectorAll('.repo-row').forEach(row => {
+        const slug = (row.getAttribute('href') || '').replace('/projects/', '').toLowerCase();
+        const desc = (row.getAttribute('data-desc') || '').toLowerCase();
+        rows.push({ row, sec, hay: slug + ' ' + desc });
+      });
+    });
+    const starsOf = row => {
+      const attr = row.getAttribute('data-stars');
+      if (attr) return parseInt(attr, 10) || 0;
+      const el = row.querySelector('.repo-stars');
+      return el ? parseInt(el.textContent.replace(/[^0-9]/g, ''), 10) || 0 : 0;
+    };
+    const nameOf = row => (row.getAttribute('href') || '').toLowerCase();
+    const updatedOf = row => row.getAttribute('data-updated') || '';
+    function applyFilter() {
+      const q = search.value.trim().toLowerCase();
+      let visible = 0;
+      rows.forEach(({ row, hay }) => {
+        const show = !q || hay.indexOf(q) !== -1;
+        row.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      sections.forEach(sec => {
+        const any = Array.from(sec.querySelectorAll('.repo-row')).some(r => r.style.display !== 'none');
+        sec.style.display = any ? '' : 'none';
+      });
+      countEl.textContent = q ? visible + ' match' + (visible === 1 ? '' : 'es') : '';
+    }
+    function applySort() {
+      const key = sortSel.value;
+      document.querySelectorAll('.cat-list').forEach(list => {
+        Array.from(list.querySelectorAll('.repo-row'))
+          .sort((a, b) => {
+            if (key === 'name') return nameOf(a).localeCompare(nameOf(b));
+            if (key === 'active') return updatedOf(b).localeCompare(updatedOf(a));
+            return starsOf(b) - starsOf(a);
+          })
+          .forEach(it => list.appendChild(it));
+      });
+    }
+    search.addEventListener('input', applyFilter);
+    sortSel.addEventListener('change', applySort);
+    controls.hidden = false;
+    applySort();
+  }
+
   fetchStars();
   fetchVersion();
+  initCatalogControls();
 
   // ── Search ──
   const searchInput = document.getElementById('search-input');
