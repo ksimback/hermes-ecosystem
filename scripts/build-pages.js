@@ -1119,6 +1119,35 @@ function syncHomepageRepos(repos) {
   let html = fs.readFileSync(indexPath, "utf-8");
   const NL = html.includes("\r\n") ? "\r\n" : "\n";
 
+  // Prune stale repo-rows before syncing. The append-only add logic below never
+  // removes rows, so entries pruned from data/repos.json (dead/renamed repos)
+  // and any duplicate rows left behind by double-submission linger as broken
+  // links. Drop any repo-row whose owner/repo is not in repos.json, and collapse
+  // duplicate rows to the first occurrence. Only touches <a class="repo-row">
+  // anchors — the hand-curated featured hero uses different markup.
+  const validKeys = new Set(repos.map((r) => `${r.owner}/${r.repo}`));
+  const seenRows = new Set();
+  let removedInvalid = 0;
+  let removedDup = 0;
+  html = html.replace(
+    /\n[ \t]*<a class="repo-row" href="\/projects\/([^"]+)"[\s\S]*?<\/a>/g,
+    (block, key) => {
+      if (!validKeys.has(key)) {
+        removedInvalid++;
+        return "";
+      }
+      if (seenRows.has(key)) {
+        removedDup++;
+        return "";
+      }
+      seenRows.add(key);
+      return block;
+    }
+  );
+  if (removedInvalid || removedDup) {
+    console.log(`  Pruned ${removedInvalid} dead + ${removedDup} duplicate repo-rows`);
+  }
+
   const onPage = new Set(
     [...html.matchAll(/href="\/projects\/([^"]+)"/g)].map((m) => m[1])
   );

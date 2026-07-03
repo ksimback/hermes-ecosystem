@@ -27,6 +27,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Full history so computeAddedDates() in build-pages.js can walk the
+          # git log of data/repos.json for per-repo first-seen dates. A shallow
+          # clone (default depth 1) collapses every RSS <pubDate> to the latest
+          # commit time.
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4

@@ -239,6 +239,20 @@ async function main() {
     await sleep(DELAY_MS);
   }
 
+  // Prune orphaned summaries for repos no longer in the catalog. Without this
+  // the file accumulates dead entries (removed/renamed repos), which then leak
+  // into llms-full.txt (built by bundling summary content). Removal-only — no
+  // generated content, so no hallucination risk.
+  const validKeys = new Set(repos.map((r) => `${r.owner}/${r.repo}`));
+  let pruned = 0;
+  for (const key of Object.keys(summaries)) {
+    if (!validKeys.has(key)) {
+      delete summaries[key];
+      pruned++;
+    }
+  }
+  if (pruned) console.log(`Pruned ${pruned} orphaned summaries (not in repos.json)`);
+
   // Write summaries
   fs.writeFileSync(summariesPath, JSON.stringify(summaries, null, 2) + "\n", "utf-8");
   console.log(
