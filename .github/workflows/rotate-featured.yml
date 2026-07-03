@@ -1,0 +1,80 @@
+name: Rotate featured pick
+
+# Weekly auto-rotation of the homepage "Featured this week" community pick.
+# scripts/rotate-featured.js --auto cycles through Hermes-native community tools
+# (see the picker's star-band + name filter). Kevin can override any week by
+# running `node scripts/rotate-featured.js <owner>/<repo>` locally, or curate by
+# adjusting the picker's band.
+
+concurrency:
+  group: main-bot-push
+  cancel-in-progress: false
+
+on:
+  schedule:
+    - cron: '0 10 * * 1' # Mondays 10:00 UTC (after the daily + Monday-audit cluster)
+  workflow_dispatch: {}
+
+jobs:
+  rotate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Rotate featured pick
+        run: node scripts/rotate-featured.js --auto
+
+      - name: Commit + push if changed
+        run: |
+          git config user.name "Hermes Atlas Bot"
+          git config user.email "bot@hermesatlas.com"
+          git add index.html data/featured.json
+          if git diff --cached --quiet; then
+            echo "No featured change to commit"
+            exit 0
+          fi
+          git commit -m "Rotate featured community pick"
+          # main can move during the run (other bot workflows); mirror the
+          # rebase-retry pattern used by the other pushing workflows.
+          for attempt in 1 2 3; do
+            if git push; then
+              echo "Pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt) — pulling --rebase and retrying"
+            git pull --rebase origin main || { echo "Rebase failed — aborting"; exit 1; }
+          done
+          echo "Push failed after 3 attempts"
+          exit 1
+
+      - name: Escalate on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const wf = 'rotate-featured';
+            const title = `[Workflow] ${wf} failed`;
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = `The **${wf}** workflow failed.\n\n**Run:** ${runUrl}\n\nCheck the run log (picker found no eligible repo, or the push-retry loop).`;
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'workflow-issue'
+            });
+            const match = existing.data.find(i => i.title === title);
+            if (match) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo, issue_number: match.number, body
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo, title, body, labels: ['workflow-issue']
+              });
+            }

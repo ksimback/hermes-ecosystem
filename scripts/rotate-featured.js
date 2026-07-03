@@ -85,21 +85,79 @@ function renderFeaturedSection(pick, repo, summary, weekStart) {
 <!-- END featured-week -->`;
 }
 
+// Deterministic auto-pick for the weekly "featured community pick".
+//
+// The slot spotlights Hermes-native community tools (prior picks: gbrain,
+// hermes-workspace). A naive highest-star pick surfaces off-target mega-repos
+// (mem0, cc-switch) that merely mention Hermes, so the pool is scoped to repos
+// with "hermes" in the OWNER/REPO name, non-official, in the community-tool star
+// band (excludes both toy repos and mega general projects). Among those, pick
+// the highest-star one not featured in the recent window — cycling through the
+// top on-brand tools week over week. Deterministic (no randomness).
+// Kevin can always override with an explicit <owner>/<repo>.
+const RECENT_WINDOW = 12; // weeks of history to exclude from re-featuring
+const MIN_STARS = 15;
+const MAX_STARS = 3000; // above this = general mega-repo, not a "community pick"
+function isHermesNative(r) {
+  return /hermes/i.test(`${r.owner} ${r.repo}`);
+}
+function inBand(r) {
+  const s = r.stars || 0;
+  return !r.official && isHermesNative(r) && s >= MIN_STARS && s <= MAX_STARS;
+}
+function pickAuto(repos, featured) {
+  const recent = new Set(
+    featured.slice(0, RECENT_WINDOW).map((e) => e.slug.toLowerCase())
+  );
+  const byRank = (a, b) =>
+    (b.stars || 0) - (a.stars || 0) ||
+    `${a.owner}/${a.repo}`.localeCompare(`${b.owner}/${b.repo}`);
+  let eligible = repos
+    .filter(inBand)
+    .filter((r) => !recent.has(`${r.owner}/${r.repo}`.toLowerCase()))
+    .sort(byRank);
+  // If the whole on-brand pool was featured recently, relax the recency filter.
+  if (eligible.length === 0) {
+    eligible = repos.filter(inBand).sort(byRank);
+  }
+  return eligible[0] || null;
+}
+
 function main() {
   const arg = process.argv[2];
-  if (!arg || !arg.includes("/")) {
-    console.error("Usage: node scripts/rotate-featured.js <owner>/<repo>");
+  if (!arg || (arg !== "--auto" && !arg.includes("/"))) {
+    console.error("Usage: node scripts/rotate-featured.js <owner>/<repo> | --auto");
     process.exit(1);
   }
-  const [owner, repoName] = arg.split("/", 2);
 
   // Load repos
   const repos = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "repos.json"), "utf-8"));
-  const repo = repos.find((r) => r.owner === owner && r.repo === repoName);
-  if (!repo) {
-    console.error(`✗ ${arg} not found in data/repos.json`);
-    process.exit(1);
+
+  // Load featured history early — --auto needs it to avoid re-picking recent picks.
+  const featuredPath = path.join(ROOT, "data", "featured.json");
+  let featured = [];
+  if (fs.existsSync(featuredPath)) {
+    featured = JSON.parse(fs.readFileSync(featuredPath, "utf-8"));
   }
+
+  let repo;
+  if (arg === "--auto") {
+    repo = pickAuto(repos, featured);
+    if (!repo) {
+      console.error("✗ --auto found no eligible repo to feature");
+      process.exit(1);
+    }
+    console.log(`--auto selected ${repo.owner}/${repo.repo} (★ ${repo.stars})`);
+  } else {
+    const [owner, repoName] = arg.split("/", 2);
+    repo = repos.find((r) => r.owner === owner && r.repo === repoName);
+    if (!repo) {
+      console.error(`✗ ${arg} not found in data/repos.json`);
+      process.exit(1);
+    }
+  }
+  const owner = repo.owner;
+  const repoName = repo.repo;
 
   // Load summary (optional)
   let summary = null;
@@ -111,12 +169,7 @@ function main() {
     console.warn(`⚠ No generated summary for ${arg} — falling back to repo.description`);
   }
 
-  // Load + update featured.json
-  const featuredPath = path.join(ROOT, "data", "featured.json");
-  let featured = [];
-  if (fs.existsSync(featuredPath)) {
-    featured = JSON.parse(fs.readFileSync(featuredPath, "utf-8"));
-  }
+  // Update featured.json (loaded above)
   const weekStart = mondayOf(new Date());
   const slug = `${owner}/${repoName}`;
   // Drop any existing entry for this same week (re-running same week shouldn't
