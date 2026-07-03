@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 export const CANONICAL_CATEGORIES = [
   "Core & Official",
@@ -159,6 +159,9 @@ function main() {
   console.log(`data/repos.json validation passed (${parsed.length} repos)`);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Windows-safe entry check: `file://${argv[1]}` mismatches import.meta.url on
+// Windows (drive letters + backslashes), silently no-op'ing the validator
+// locally so bad data only surfaces in CI. pathToFileURL normalizes both.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main();
 }
