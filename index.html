@@ -2094,8 +2094,8 @@
       const metaCount = document.getElementById('meta-count');
       if (metaCount && data.totals?.count) metaCount.textContent = data.totals.count + '·repos';
 
-      const metaVersion = document.getElementById('meta-version');
-      if (metaVersion && data.hermes?.version) metaVersion.textContent = 'hermes·' + data.hermes.version;
+      // Version is set by fetchVersion() from the authoritative release notes,
+      // not from /api/stars (whose GraphQL release field can null out / cache-lag).
 
       const metaAtlas = document.getElementById('meta-atlas');
       if (metaAtlas && data.atlas?.stars) {
@@ -2111,12 +2111,30 @@
       if (heroStars && data.repos?.['NousResearch/hermes-agent']) {
         heroStars.textContent = formatStars(data.repos['NousResearch/hermes-agent'].stars);
       }
-      const heroVersion = document.getElementById('hero-version');
-      if (heroVersion && data.hermes?.version) heroVersion.textContent = data.hermes.version;
-      const heroVersionTag = document.getElementById('hero-version-tag');
-      if (heroVersionTag && data.hermes?.tag) heroVersionTag.textContent = data.hermes.tag;
+      // hero version is set by fetchVersion() (authoritative release notes).
     } catch (e) {
       console.log('Stars API unavailable, using static counts', e);
+    }
+  }
+
+  // Hermes version, sourced from the authoritative release notes
+  // (data/latest-release.json) — a small static file that's always fresh and
+  // independent of the /api/stars GraphQL/cache path that stranded the version
+  // at a stale value. Static baked spans are the pre-JS fallback.
+  async function fetchVersion() {
+    try {
+      const res = await fetch('/data/latest-release.json');
+      if (!res.ok) return;
+      const r = await res.json();
+      if (!r || !r.version) return;
+      const mv = document.getElementById('meta-version');
+      if (mv) mv.textContent = 'hermes·' + r.version;
+      const hv = document.getElementById('hero-version');
+      if (hv) hv.textContent = r.version;
+      const ht = document.getElementById('hero-version-tag');
+      if (ht && r.tag) ht.textContent = r.tag;
+    } catch (e) {
+      console.log('Version unavailable', e);
     }
   }
 
@@ -2126,6 +2144,7 @@
   }
 
   fetchStars();
+  fetchVersion();
 
   // ── Search ──
   const searchInput = document.getElementById('search-input');
