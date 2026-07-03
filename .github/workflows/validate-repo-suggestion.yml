@@ -371,6 +371,32 @@ jobs:
               Buffer.from(file.content, 'base64').toString('utf-8')
             );
 
+            // Guard against duplicates before writing. The fresh-from-main
+            // fetch above prevents dropping concurrent adds, but without this
+            // check a repo already in the catalog (a resubmission, or the
+            // Issue-Forms opened+labeled double-webhook firing two runs) gets
+            // appended a second time — the source of the #442/#443, #446/#447
+            // duplicate pairs. Serialized concurrency means the second run sees
+            // the first run's merged entry here and stops.
+            const dupKey = `${owner}/${repo}`.toLowerCase();
+            if (repos.some(r => `${r.owner}/${r.repo}`.toLowerCase() === dupKey)) {
+              console.log(`${owner}/${repo} is already in repos.json — skipping PR creation.`);
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: `[${owner}/${repo}](${htmlUrl}) is already in the Atlas ecosystem — no PR needed. Closing.`
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                state: 'closed',
+                state_reason: 'completed'
+              });
+              return;
+            }
+
             // Add new repo
             const newRepo = {
               owner,
@@ -498,7 +524,21 @@ jobs:
                 ? `${contexts.length - blocking.length}/${contexts.length} passing`
                 : 'no check contexts yet';
 
-              console.log(`PR #${pr.number}: mergeState=${mergeState}, mergeable=${pull.mergeable}, checks=${checkSummary}`);
+              // Require the data-integrity gates to have actually run and passed
+              // before merging. The old gate merged as soon as ANY context was
+              // green with none blocking — so a PR whose only posted check was
+              // the fast Vercel status merged in ~30s, before `validate`
+              // (repos.json schema + duplicate/category checks) and `smoke`
+              // even registered. That is how the duplicate + bad-category
+              // entries slipped in. Wait for both named CheckRuns to complete
+              // SUCCESS.
+              const REQUIRED = ['validate', 'smoke'];
+              const requiredGreen = REQUIRED.every(name => {
+                const c = contexts.find(x => x.__typename === 'CheckRun' && x.name === name);
+                return c && c.status === 'COMPLETED' && ['SUCCESS', 'SKIPPED', 'NEUTRAL'].includes(c.conclusion);
+              });
+
+              console.log(`PR #${pr.number}: mergeState=${mergeState}, mergeable=${pull.mergeable}, checks=${checkSummary}, requiredGreen=${requiredGreen}`);
 
               if (pull.isDraft) {
                 blockerReason = 'PR is draft';
@@ -508,7 +548,7 @@ jobs:
                 blockerReason = 'PR is dirty/conflicted';
                 break;
               }
-              if (contexts.length > 0 && blocking.length === 0 && ['CLEAN', 'HAS_HOOKS', 'UNSTABLE'].includes(mergeState)) {
+              if (requiredGreen && blocking.length === 0 && ['CLEAN', 'HAS_HOOKS'].includes(mergeState)) {
                 try {
                   await github.rest.pulls.merge({
                     owner: context.repo.owner,
