@@ -1255,6 +1255,30 @@ function syncHomepageRepos(repos) {
     }
   }
 
+  // Bake the current Hermes version into the static homepage spans from the
+  // authoritative release notes (data/latest-release.json). Keeps the pre-JS
+  // fallback fresh — the /api/stars fetch still live-updates it in the browser,
+  // but without this the baked value drifts stale (it was stuck at v0.10.0 while
+  // the API's live release field was returning null). No-op when unchanged.
+  try {
+    const lr = JSON.parse(
+      fs.readFileSync(path.join(ROOT, "data", "latest-release.json"), "utf-8")
+    );
+    if (lr && lr.version) {
+      html = html
+        .replace(/(<span id="meta-version">)hermes·[^<]*(<\/span>)/, `$1hermes·${lr.version}$2`)
+        .replace(/(<span[^>]*id="hero-version">)[^<]*(<\/span>)/, `$1${lr.version}$2`);
+      if (lr.tag) {
+        html = html.replace(
+          /(<span[^>]*id="hero-version-tag">)[^<]*(<\/span>)/,
+          `$1${lr.tag}$2`
+        );
+      }
+    }
+  } catch (e) {
+    console.warn(`  Could not bake Hermes version into index.html: ${e.message}`);
+  }
+
   if (missingCount > 0) {
     fs.writeFileSync(indexPath, html, "utf-8");
     console.log(`  ✓ Wrote index.html (+${missingCount} new rows)`);

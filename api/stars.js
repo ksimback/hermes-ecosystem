@@ -19,6 +19,27 @@ function loadRepos() {
   }
 }
 
+// Authoritative Hermes release, built deterministically from the merged release
+// notes (data/latest-release.json). Used as a fallback when the batched GitHub
+// GraphQL query returns a null `latestRelease` — which it has been doing in
+// production for the hermes-agent field while per-repo star counts still resolve,
+// leaving the homepage stuck on a stale baked version. undefined = not loaded.
+let latestReleaseCache;
+function loadLatestRelease() {
+  if (latestReleaseCache !== undefined) return latestReleaseCache;
+  try {
+    const raw = readFileSync(join(process.cwd(), "data", "latest-release.json"), "utf-8");
+    const r = JSON.parse(raw);
+    latestReleaseCache = r?.version
+      ? { version: r.version, tag: r.tag, name: r.name, publishedAt: r.publishedAt }
+      : null;
+  } catch (e) {
+    console.error("Failed to load latest-release.json:", e.message);
+    latestReleaseCache = null;
+  }
+  return latestReleaseCache;
+}
+
 export default async function handler(req, res) {
   try {
     const repoList = loadRepos();
@@ -136,7 +157,27 @@ export default async function handler(req, res) {
       };
     });
 
-    const atlasStars = ghData.data?.atlas?.stargazerCount ?? null;
+    // Fall back to the authoritative release notes when GraphQL's latestRelease
+    // comes back null (see loadLatestRelease). Keeps the homepage version live
+    // and correct regardless of the GraphQL field flaking out.
+    if (!hermesRelease) {
+      hermesRelease = loadLatestRelease();
+      if (hermesRelease) {
+        console.warn("stars: GraphQL latestRelease null — using data/latest-release.json fallback");
+      }
+    }
+
+    // Atlas star count for the masthead CTA. GraphQL's dedicated `atlas` block
+    // has also been returning null in production; ksimback/hermes-ecosystem is
+    // in the catalog, so fall back to its live entry in the star map.
+    let atlasStars = ghData.data?.atlas?.stargazerCount ?? null;
+    if (atlasStars == null) {
+      const self = starData.find(
+        (r) => r.owner === "ksimback" && r.repo === "hermes-ecosystem"
+      );
+      atlasStars = self?.stars ?? null;
+    }
+
     const response = buildResponse(starData, hermesRelease, atlasStars);
 
     // Cache the result
