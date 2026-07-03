@@ -104,7 +104,9 @@ renderer.image = function ({ href, title, text }) {
     src = currentRawBase + cleanRelativePath(src);
   }
   const titleAttr = title ? ` title="${escapeHtml(title)}"` : "";
-  return `<img src="${escapeHtml(src)}" alt="${escapeHtml(text || "")}"${titleAttr}>`;
+  // README images sit below the fold on project pages — lazy-load + async-decode
+  // to cut initial payload and avoid layout jank.
+  return `<img src="${escapeHtml(src)}" alt="${escapeHtml(text || "")}"${titleAttr} loading="lazy" decoding="async">`;
 };
 
 // Demote README heading levels so each page has a single <h1> (DESIGN.md §11).
@@ -133,6 +135,17 @@ function sanitizeReadmeHtml(html) {
 // string (repo description, summary) can't break out of the block. ──
 function ldJson(node) {
   return `<script type="application/ld+json">\n${JSON.stringify(node, null, 2).replace(/</g, "\\u003c")}\n</script>`;
+}
+
+// Truncate at a word boundary + ellipsis so meta descriptions and feed blurbs
+// don't cut off mid-word ("...these tools e"). Null-safe; returns unchanged if
+// already within the limit.
+function truncate(str, max) {
+  const s = String(str || "");
+  if (s.length <= max) return s;
+  const cut = s.slice(0, max);
+  const lastSpace = cut.lastIndexOf(" ");
+  return (lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).trimEnd() + "…";
 }
 
 // ── Load data ──
@@ -636,9 +649,7 @@ This file is the companion to ${SITE_URL}/llms.txt (the concise index).`);
 // ── Project page template ──
 function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary, handbookMention) {
   const title = `${repo.name} — Hermes Agent ${repo.category} | Hermes Atlas`;
-  const desc = escapeHtml(
-    (meta.description || repo.description).slice(0, 160)
-  );
+  const desc = escapeHtml(truncate(meta.description || repo.description, 160));
   const canonicalUrl = `${SITE_URL}/projects/${repo.owner}/${repo.repo}`;
   const stars = meta.stars || repo.stars;
   const listSlug = categoryToListSlug[repo.category];
@@ -786,7 +797,7 @@ ${PAGE_FOOTER}
 // ── List page template ──
 function renderListPage(list, matchedRepos, listSummaryEntries) {
   const title = `${list.title} | Hermes Atlas`;
-  const desc = escapeHtml(list.description.slice(0, 160));
+  const desc = escapeHtml(truncate(list.description, 160));
   const canonicalUrl = `${SITE_URL}/lists/${list.slug}`;
 
   const sorted = matchedRepos.slice().sort((a, b) => (b.meta?.stars || b.stars) - (a.meta?.stars || a.stars));
