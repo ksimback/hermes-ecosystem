@@ -108,10 +108,15 @@ jobs:
 
       - name: Run smoke test
         id: smoke
+        # Pass dispatch inputs via env, never interpolated straight into the
+        # shell command (a crafted `base`/`sample` could otherwise inject shell).
+        env:
+          SMOKE_BASE: ${{ inputs.base || 'https://hermesatlas.com' }}
+          SMOKE_SAMPLE: ${{ inputs.sample || '25' }}
         run: |
           node scripts/smoke-test-prod.js \
-            --base "${{ inputs.base || 'https://hermesatlas.com' }}" \
-            --sample "${{ inputs.sample || '25' }}" \
+            --base "$SMOKE_BASE" \
+            --sample "$SMOKE_SAMPLE" \
             --continue \
             | tee smoke-output.txt
 

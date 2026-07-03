@@ -97,9 +97,13 @@ jobs:
 
       - name: Run smoke test against preview
         id: smoke
+        # Pass the preview URL via env, never interpolated straight into the
+        # shell command.
+        env:
+          SMOKE_BASE: ${{ steps.vercel.outputs.base_url }}
         run: |
           node scripts/smoke-test-prod.js \
-            --base "${{ steps.vercel.outputs.base_url }}" \
+            --base "$SMOKE_BASE" \
             --sample "25" \
             --continue \
             | tee smoke-output.txt
