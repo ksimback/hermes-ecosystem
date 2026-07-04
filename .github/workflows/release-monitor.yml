@@ -353,10 +353,15 @@ jobs:
 
       - name: Create issue for docs update
         if: steps.docs_check.outputs.docs_updated == 'true'
+        env:
+          # Read from env to avoid JS string-injection issues with quote
+          # characters etc. in the upstream commit message (same pattern as
+          # the release-notes steps above).
+          COMMIT_MSG: ${{ steps.docs_check.outputs.commit_msg }}
         uses: actions/github-script@v7
         with:
           script: |
-            const msg = '${{ steps.docs_check.outputs.commit_msg }}';
+            const msg = process.env.COMMIT_MSG || '';
             const today = new Date().toISOString().slice(0, 10);
 
             // Get all open docs-update issues. These are informational only —

@@ -163,13 +163,17 @@ jobs:
 
             // Find or open the tracking issue. We keep one issue open at a time
             // so successive failures comment on the same thread instead of
-            // spamming N separate issues.
+            // spamming N separate issues. Uses the repo-standard workflow-issue
+            // label + exact-title dedup (same pattern as build-pages et al.);
+            // the old smoke-test-failure label was never created in the repo.
+            const title = 'Smoke test failure on production';
             const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
-              labels: 'smoke-test-failure',
+              labels: 'workflow-issue',
             });
+            const match = issues.data.find(i => i.title === title);
             const body = [
               context.eventName === 'schedule'
                 ? 'Daily production smoke test failed.'
@@ -182,19 +186,19 @@ jobs:
               '```',
             ].join('\n');
 
-            if (issues.data.length > 0) {
+            if (match) {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: issues.data[0].number,
+                issue_number: match.number,
                 body,
               });
             } else {
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: 'Smoke test failure on production',
+                title,
                 body,
-                labels: ['smoke-test-failure'],
+                labels: ['workflow-issue'],
               });
             }
