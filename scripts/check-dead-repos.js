@@ -27,12 +27,29 @@ if (!TOKEN) {
 
 const repos = JSON.parse(await fs.readFile("data/repos.json", "utf8"));
 
+// Guard the string interpolation below: owner/repo are validated to this
+// charset by validate-repos-json.js, but skip-and-warn here too so a bad
+// entry can never inject into the GraphQL document. Aliases keep the
+// ORIGINAL array index so the repos[idx] lookup in error handling stays
+// correct even when entries are skipped.
+const SAFE_NAME_RE = /^[A-Za-z0-9_.-]+$/;
 const repoQueries = repos
-  .map(
-    (r, i) =>
-      `repo${i}: repository(owner: "${r.owner}", name: "${r.repo}") { nameWithOwner }`
-  )
+  .map((r, i) => {
+    if (!SAFE_NAME_RE.test(r.owner ?? "") || !SAFE_NAME_RE.test(r.repo ?? "")) {
+      console.warn(
+        `Skipping entry ${i} with unsafe owner/repo: ${JSON.stringify(r.owner)}/${JSON.stringify(r.repo)}`
+      );
+      return null;
+    }
+    return `repo${i}: repository(owner: "${r.owner}", name: "${r.repo}") { nameWithOwner }`;
+  })
+  .filter(Boolean)
   .join("\n");
+
+if (!repoQueries) {
+  console.error("No valid repo entries to check; aborting.");
+  process.exit(1);
+}
 
 const res = await fetch("https://api.github.com/graphql", {
   method: "POST",

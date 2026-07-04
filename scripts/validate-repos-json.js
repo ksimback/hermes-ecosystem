@@ -37,6 +37,12 @@ function isNonEmptyString(value) {
   return typeof value === "string" && value.trim().length > 0;
 }
 
+// Same charset the repo-suggestion workflow enforces on intake
+// (validate-repo-suggestion.yml). Re-checked here so hand-edited catalog
+// PRs can't land names that break downstream string interpolation
+// (e.g. the GraphQL query built in check-dead-repos.js).
+const GITHUB_NAME_RE = /^[A-Za-z0-9_.-]+$/;
+
 export function validateRepos(repos) {
   const errors = [];
 
@@ -62,10 +68,18 @@ export function validateRepos(repos) {
 
     if ("owner" in entry && !isNonEmptyString(entry.owner)) {
       errors.push(`${label} owner must be a non-empty string`);
+    } else if ("owner" in entry && !GITHUB_NAME_RE.test(entry.owner)) {
+      errors.push(
+        `${label} owner contains characters outside [A-Za-z0-9_.-]: ${entry.owner}`,
+      );
     }
 
     if ("repo" in entry && !isNonEmptyString(entry.repo)) {
       errors.push(`${label} repo must be a non-empty string`);
+    } else if ("repo" in entry && !GITHUB_NAME_RE.test(entry.repo)) {
+      errors.push(
+        `${label} repo contains characters outside [A-Za-z0-9_.-]: ${entry.repo}`,
+      );
     }
 
     if ("name" in entry && !isNonEmptyString(entry.name)) {
