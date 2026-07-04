@@ -349,7 +349,7 @@ export default async function handler(req, res) {
     console.log(`[RAG] Original: "${message}" → Search: "${searchQuery}"`);
 
     // 3. Embed the rewritten query
-    const queryEmbedding = await getEmbedding(searchQuery);
+    const queryEmbedding = await getEmbedding(searchQuery, ac.signal);
 
     // 4. Hybrid search: combine BM25 (keyword), cosine (semantic), and
     // source-aware Atlas policy. Official docs are favored, catalog/generated
@@ -698,7 +698,7 @@ Rewritten:`;
   }
 }
 
-async function getEmbedding(text) {
+async function getEmbedding(text, signal) {
   // Match the corpus dim. build-chunks.js may emit reduced-dim vectors
   // (e.g. 512) to keep chunks.json under GitHub's 100MB limit. Reading the
   // dim from the loaded corpus means there's never a query/corpus mismatch
@@ -718,6 +718,7 @@ async function getEmbedding(text) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
+    signal,
   });
 
   if (!res.ok) throw new Error(`Embedding error: ${res.status}`);

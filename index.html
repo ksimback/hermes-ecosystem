@@ -216,21 +216,6 @@
   <p class="email-cta-status" role="status" aria-live="polite"></p>
 </aside>
 
-<!-- Controls -->
-<div class="controls" role="search">
-  <label class="search-wrap">
-    <span class="sr-only">Search repos</span>
-    <input type="text" id="search-input" placeholder="search repos by name or description..." autocomplete="off" aria-label="Search repos">
-  </label>
-  <div class="sort-btns" role="group" aria-label="Sort by">
-    <span class="lbl">sort</span>
-    <button class="sort-btn active" data-sort="stars">stars</button>
-    <button class="sort-btn" data-sort="name">name</button>
-    <button class="sort-btn" data-sort="updated">recent</button>
-  </div>
-  <span id="result-count" aria-live="polite"></span>
-</div>
-
 <!-- Tooltip (single shared element, positioned via JS) -->
 <div class="tooltip" id="tooltip" role="tooltip">
   <div class="tt-name" id="tt-name"></div>
@@ -2217,75 +2202,9 @@
     applySort();
   }
 
-  fetchStars();
-  fetchVersion();
-  initCatalogControls();
-
-  // ── Search ──
-  const searchInput = document.getElementById('search-input');
-  const sortBtns = document.querySelectorAll('.sort-btn');
-  const categories = document.querySelectorAll('.cat');
-
-  if (searchInput) {
-    searchInput.addEventListener('input', () => {
-      const q = searchInput.value.toLowerCase().trim();
-      let totalVisible = 0;
-
-      categories.forEach(cat => {
-        const items = cat.querySelectorAll('.repo-row');
-        let catVisible = 0;
-
-        items.forEach(item => {
-          const name = (item.getAttribute('data-repo') || item.textContent).toLowerCase();
-          const desc = (item.getAttribute('data-desc') || '').toLowerCase();
-          const match = !q || name.includes(q) || desc.includes(q);
-          item.style.display = match ? '' : 'none';
-          if (match) catVisible++;
-        });
-
-        cat.style.display = catVisible > 0 ? '' : 'none';
-        totalVisible += catVisible;
-
-        const countEl = cat.querySelector('.cat-count-n');
-        if (countEl && q) countEl.textContent = catVisible;
-      });
-
-      const resultCount = document.getElementById('result-count');
-      if (resultCount) resultCount.textContent = q ? totalVisible + ' results' : '';
-    });
-  }
-
-  // ── Sort ──
-  sortBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      sortBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const mode = btn.getAttribute('data-sort');
-      sortItems(mode);
-    });
-  });
-
-  function sortItems(mode) {
-    categories.forEach(cat => {
-      const container = cat.querySelector('.cat-list');
-      if (!container) return;
-      const items = Array.from(container.querySelectorAll('.repo-row'));
-
-      items.sort((a, b) => {
-        if (mode === 'stars') {
-          return (parseInt(b.getAttribute('data-stars')) || 0) - (parseInt(a.getAttribute('data-stars')) || 0);
-        } else if (mode === 'name') {
-          return (a.getAttribute('data-repo') || '').localeCompare(b.getAttribute('data-repo') || '');
-        } else if (mode === 'updated') {
-          return (b.getAttribute('data-updated') || '').localeCompare(a.getAttribute('data-updated') || '');
-        }
-        return 0;
-      });
-      items.forEach(item => container.appendChild(item));
-    });
-  }
-
-  // Initialize data-stars from current star text
+  // Initialize data-stars from current star text. Must run before
+  // initCatalogControls(): its initial sort reads data-stars, and its
+  // text-parsing fallback can't handle "1.2K"-style abbreviations.
   document.querySelectorAll('.repo-row').forEach(item => {
     const starsEl = item.querySelector('.repo-stars');
     if (starsEl && !item.getAttribute('data-stars')) {
@@ -2296,6 +2215,10 @@
       item.setAttribute('data-stars', val);
     }
   });
+
+  fetchStars();
+  fetchVersion();
+  initCatalogControls();
 
   // ── Chat Widget ──
   const chatBtn = document.getElementById('chat-btn');
