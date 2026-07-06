@@ -13,20 +13,11 @@ import fs from "fs";
 import path from "path";
 import crypto from "node:crypto";
 import { fileURLToPath } from "url";
-import { enrichChunkMetadata } from "../lib/rag-scoring.js";
+import { chunkText } from "../lib/chunk-text.js";
 import { findLatestReleaseFromMarkdownFiles } from "../lib/latest-release.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
-
-const CHUNK_SIZE = 500; // target tokens (~4 chars per token)
-const CHUNK_CHARS = CHUNK_SIZE * 4;
-const OVERLAP_CHARS = 200;
-// Hard ceiling per chunk — text-embedding-3-small caps input at 8192 tokens
-// (~32k chars). The paragraph splitter doesn't break inside a single paragraph,
-// so a wall-of-links page (e.g. user-stories) can otherwise produce a 30k+
-// char chunk that crashes the embedding call.
-const MAX_CHUNK_CHARS = 6000;
 // Embedding dimensions. Default for text-embedding-3-small is 1536, but the
 // model supports truncation via `dimensions`. At ~5k chunks, 1536-dim vectors
 // blow chunks.json past GitHub's 100MB file limit (147MB observed). 512-dim
@@ -193,74 +184,6 @@ function* walkMarkdown(dir) {
       yield full;
     }
   }
-}
-
-function pushChunk(chunks, source, heading, text) {
-  const trimmed = text.trim();
-  if (trimmed.length <= 50) return;
-  // Hard-split anything still oversized after paragraph splitting (mega
-  // paragraphs with no blank lines, e.g. wall-of-links pages).
-  for (const piece of hardSplitByLines(trimmed, MAX_CHUNK_CHARS)) {
-    chunks.push(enrichChunkMetadata({
-      id: `${source}:${chunks.length}`,
-      text: piece.trim(),
-      source,
-      section: heading,
-    }));
-  }
-}
-
-function hardSplitByLines(text, maxChars) {
-  if (text.length <= maxChars) return [text];
-  const pieces = [];
-  let i = 0;
-  while (i < text.length) {
-    let end = Math.min(i + maxChars, text.length);
-    if (end < text.length) {
-      // Prefer a line-break boundary in the back half of the window
-      const nl = text.lastIndexOf("\n", end);
-      if (nl > i + maxChars / 2) end = nl;
-    }
-    pieces.push(text.slice(i, end));
-    i = end;
-  }
-  return pieces;
-}
-
-function chunkText(text, source) {
-  const chunks = [];
-
-  // Split by sections (## headings)
-  const sections = text.split(/(?=^## )/m);
-
-  for (const section of sections) {
-    const headingMatch = section.match(/^## (.+)/);
-    const heading = headingMatch ? headingMatch[1].trim() : "";
-
-    // If section is small enough, keep as one chunk
-    if (section.length <= CHUNK_CHARS) {
-      pushChunk(chunks, source, heading, section);
-      continue;
-    }
-
-    // Split large sections by paragraphs
-    const paragraphs = section.split(/\n\n+/);
-    let current = "";
-
-    for (const para of paragraphs) {
-      if ((current + "\n\n" + para).length > CHUNK_CHARS && current.length > 50) {
-        pushChunk(chunks, source, heading, current);
-        // Overlap: keep last portion
-        current = current.slice(-OVERLAP_CHARS) + "\n\n" + para;
-      } else {
-        current = current ? current + "\n\n" + para : para;
-      }
-    }
-
-    pushChunk(chunks, source, heading, current);
-  }
-
-  return chunks;
 }
 
 async function getEmbeddings(texts) {
