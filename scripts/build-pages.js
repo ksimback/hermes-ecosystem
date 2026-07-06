@@ -124,11 +124,14 @@ marked.setOptions({
 });
 
 // ── Sanitize untrusted README HTML (contributor READMEs can carry raw
-// <script>/<iframe>/onerror=.../javascript: payloads → stored XSS). ──
+// <script>/<iframe>/onerror=.../javascript: payloads → stored XSS).
+// `style` is stripped too: the site CSP has no style-src 'unsafe-inline'
+// (#487), so browsers ignore inline styles anyway — emitting them would just
+// be dead markup and CSP-report noise. README images are sized by page.css. ──
 const DOMPurify = createDOMPurify(new JSDOM("").window);
 function sanitizeReadmeHtml(html) {
   if (!html) return html;
-  return DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
+  return DOMPurify.sanitize(html, { USE_PROFILES: { html: true }, FORBID_ATTR: ["style"] });
 }
 
 // ── Emit JSON-LD with `<` escaped so a `</script>` inside any user-supplied
