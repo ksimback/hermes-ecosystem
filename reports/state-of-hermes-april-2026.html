@@ -110,18 +110,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
-<script>
-  (function() {
-    try {
-      var stored = localStorage.getItem('theme');
-      var osLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-      var theme = stored || (osLight ? 'light' : 'dark');
-      document.documentElement.setAttribute('data-theme', theme);
-    } catch (e) {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    }
-  })();
-</script>
+<script src="/assets/js/theme-init.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
@@ -335,20 +324,20 @@
 <p>Here's the breakdown of what the community has built around Hermes Agent in six weeks. Numbers reflect star counts as of April 11, 2026.</p>
 
 <table>
-<thead><tr><th>Category</th><th style="text-align:right">Count</th><th>Top project (stars)</th></tr></thead>
+<thead><tr><th>Category</th><th class="text-right">Count</th><th>Top project (stars)</th></tr></thead>
 <tbody>
-<tr><td>Core & Official</td><td style="text-align:right">6</td><td>hermes-agent (57.2K)</td></tr>
-<tr><td>Skills & Registries</td><td style="text-align:right">17</td><td>Anthropic-Cybersecurity-Skills (4.1K)</td></tr>
-<tr><td>Memory & Context</td><td style="text-align:right">6</td><td>hindsight (8.4K)</td></tr>
-<tr><td>Multi-Agent & Orchestration</td><td style="text-align:right">7</td><td>mission-control (3.9K)</td></tr>
-<tr><td>Workspaces & GUIs</td><td style="text-align:right">4</td><td>hermes-workspace (830)</td></tr>
-<tr><td>Plugins & Extensions</td><td style="text-align:right">6</td><td>hermes-web-search-plus (21)</td></tr>
-<tr><td>Deployment & Infra</td><td style="text-align:right">7</td><td>llm-agents.nix (967)</td></tr>
-<tr><td>Integrations & Bridges</td><td style="text-align:right">5</td><td>hermes-android (38)</td></tr>
-<tr><td>Developer Tools</td><td style="text-align:right">9</td><td>tokscale (1.7K)</td></tr>
-<tr><td>Domain Applications</td><td style="text-align:right">8</td><td>DashClaw (204)</td></tr>
-<tr><td>Guides & Docs</td><td style="text-align:right">5</td><td>awesome-hermes-agent (898)</td></tr>
-<tr><td>Forks & Derivatives</td><td style="text-align:right">3</td><td>hermes-agent-camel (12)</td></tr>
+<tr><td>Core & Official</td><td class="text-right">6</td><td>hermes-agent (57.2K)</td></tr>
+<tr><td>Skills & Registries</td><td class="text-right">17</td><td>Anthropic-Cybersecurity-Skills (4.1K)</td></tr>
+<tr><td>Memory & Context</td><td class="text-right">6</td><td>hindsight (8.4K)</td></tr>
+<tr><td>Multi-Agent & Orchestration</td><td class="text-right">7</td><td>mission-control (3.9K)</td></tr>
+<tr><td>Workspaces & GUIs</td><td class="text-right">4</td><td>hermes-workspace (830)</td></tr>
+<tr><td>Plugins & Extensions</td><td class="text-right">6</td><td>hermes-web-search-plus (21)</td></tr>
+<tr><td>Deployment & Infra</td><td class="text-right">7</td><td>llm-agents.nix (967)</td></tr>
+<tr><td>Integrations & Bridges</td><td class="text-right">5</td><td>hermes-android (38)</td></tr>
+<tr><td>Developer Tools</td><td class="text-right">9</td><td>tokscale (1.7K)</td></tr>
+<tr><td>Domain Applications</td><td class="text-right">8</td><td>DashClaw (204)</td></tr>
+<tr><td>Guides & Docs</td><td class="text-right">5</td><td>awesome-hermes-agent (898)</td></tr>
+<tr><td>Forks & Derivatives</td><td class="text-right">3</td><td>hermes-agent-camel (12)</td></tr>
 </tbody>
 </table>
 
@@ -402,37 +391,8 @@
   <div>v2 · 2026.04</div>
 </footer>
 
-<script>
-  (function(){
-    var t = document.getElementById('theme-toggle');
-    if (!t) return;
-    function render() {
-      var c = document.documentElement.getAttribute('data-theme');
-      t.querySelector('.tt-light').classList.toggle('tt-active', c === 'light');
-      t.querySelector('.tt-dark').classList.toggle('tt-active', c !== 'light');
-    }
-    render();
-    t.addEventListener('click', function() {
-      var c = document.documentElement.getAttribute('data-theme');
-      var n = c === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', n);
-      try { localStorage.setItem('theme', n); } catch (e) {}
-      render();
-    });
-  })();
-</script>
+<script src="/assets/js/theme-toggle.js" defer></script>
 
-<script>
-  (function(){
-    fetch('/api/stars').then(function(r){ return r.ok && r.json(); }).then(function(d){
-      if (!d) return;
-      var el = document.getElementById('meta-atlas');
-      if (el && d.atlas && d.atlas.stars) el.textContent = '★ ' + d.atlas.stars + ' · star this repo';
-      var c = document.getElementById('meta-count');
-      if (c && d.totals && d.totals.count) c.textContent = d.totals.count + '·repos';
-    }).catch(function(){});
-  })();
-</script>
 
 <script src="/assets/js/masthead-fetch.js" defer></script>
 <!-- Cloudflare Web Analytics -->

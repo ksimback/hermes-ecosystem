@@ -12,9 +12,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
-<script>
-  (function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();
-</script>
+<script src="/assets/js/theme-init.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
@@ -63,36 +61,7 @@
   <div>v2 · 2026.04</div>
 </footer>
 
-<script>
-  (function(){
-    var t = document.getElementById('theme-toggle');
-    if (!t) return;
-    function render() {
-      var c = document.documentElement.getAttribute('data-theme');
-      t.querySelector('.tt-light').classList.toggle('tt-active', c === 'light');
-      t.querySelector('.tt-dark').classList.toggle('tt-active', c !== 'light');
-    }
-    render();
-    t.addEventListener('click', function() {
-      var c = document.documentElement.getAttribute('data-theme');
-      var n = c === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', n);
-      try { localStorage.setItem('theme', n); } catch (e) {}
-      render();
-    });
-  })();
-</script>
-<script>
-  (function(){
-    fetch('/api/stars').then(function(r){ return r.ok && r.json(); }).then(function(d){
-      if (!d) return;
-      var el = document.getElementById('meta-atlas');
-      if (el && d.atlas && d.atlas.stars) el.textContent = '★ ' + d.atlas.stars + ' · star this repo';
-      var c = document.getElementById('meta-count');
-      if (c && d.totals && d.totals.count) c.textContent = d.totals.count + '·repos';
-    }).catch(function(){});
-  })();
-</script>
+<script src="/assets/js/theme-toggle.js" defer></script>
 <script src="/assets/js/masthead-fetch.js" defer></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"

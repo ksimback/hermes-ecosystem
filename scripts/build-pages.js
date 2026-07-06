@@ -219,11 +219,6 @@ const FAVICON = `<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">`;
 
-// ── Shared theme init + toggle script ──
-const THEME_INIT = `(function(){try{var s=localStorage.getItem('theme');var o=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;var t=s||(o?'light':'dark');document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();`;
-
-const THEME_TOGGLE_SCRIPT = `(function(){var t=document.getElementById('theme-toggle');if(!t)return;function render(){var c=document.documentElement.getAttribute('data-theme');t.querySelector('.tt-light').classList.toggle('tt-active',c==='light');t.querySelector('.tt-dark').classList.toggle('tt-active',c!=='light');}render();t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme');var n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}render();});})();`;
-
 // ── Shared masthead ──
 function renderMasthead(activeNav) {
   const nav = [
@@ -702,7 +697,7 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary, handbo
 ${renderSoftwareApplicationLD(repo, meta, summary)}
 <link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 ${FAVICON}
-<script>${THEME_INIT}</script>
+<script src="/assets/js/theme-init.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
@@ -784,7 +779,7 @@ ${summary ? `
 
 ${PAGE_FOOTER}
 
-<script>${THEME_TOGGLE_SCRIPT}</script>
+<script src="/assets/js/theme-toggle.js" defer></script>
 <script src="/assets/js/masthead-fetch.js" defer></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
@@ -870,7 +865,7 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
 ${renderCollectionPageLD(list, matchedRepos)}
 <link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 ${FAVICON}
-<script>${THEME_INIT}</script>
+<script src="/assets/js/theme-init.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
@@ -900,7 +895,7 @@ ${renderMasthead("lists")}
   <div class="list-table-head">
     <div>#</div>
     <div>project</div>
-    <div style="text-align:right">stars</div>
+    <div class="text-right">stars</div>
   </div>
   ${repoRows}
 </div>
@@ -912,7 +907,7 @@ ${listicleHtml}
 
 ${PAGE_FOOTER}
 
-<script>${THEME_TOGGLE_SCRIPT}</script>
+<script src="/assets/js/theme-toggle.js" defer></script>
 <script src="/assets/js/masthead-fetch.js" defer></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
@@ -1011,7 +1006,7 @@ ${JSON.stringify(itemListLD, null, 2).replace(/</g, "\u003c")}
 </script>
 <link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
 ${FAVICON}
-<script>${THEME_INIT}</script>
+<script src="/assets/js/theme-init.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
@@ -1040,7 +1035,7 @@ ${renderMasthead("reports")}
   <div class="list-table-head">
     <div>#</div>
     <div>report</div>
-    <div style="text-align:right">published</div>
+    <div class="text-right">published</div>
   </div>
   ${reportRows}
 </div>
@@ -1051,7 +1046,7 @@ ${renderMasthead("reports")}
 
 ${PAGE_FOOTER}
 
-<script>${THEME_TOGGLE_SCRIPT}</script>
+<script src="/assets/js/theme-toggle.js" defer></script>
 <script src="/assets/js/masthead-fetch.js" defer></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"

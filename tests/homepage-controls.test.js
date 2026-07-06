@@ -13,17 +13,33 @@ import { JSDOM } from "jsdom";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+// The homepage app was externalized (CSP stage A: no inline scripts). jsdom
+// does not fetch external <script src> tags, so we read the app bundle and run
+// it manually via window.eval() after construction. The DOM is fully parsed by
+// then, which matches the `defer` semantics the real page relies on.
+const appJs = fs.readFileSync(
+  path.join(__dirname, "..", "assets", "js", "homepage.js"),
+  "utf8",
+);
 
 function loadHomepage({ runScripts = true } = {}) {
-  return new JSDOM(html, {
+  const window = new JSDOM(html, {
     url: "https://hermesatlas.com/",
-    ...(runScripts ? { runScripts: "dangerously" } : {}),
+    // Always "dangerously" so window.eval is available and the src-only theme
+    // scripts parse cleanly (they don't fetch — fine). No inline scripts remain
+    // in the page, so nothing executes on its own; the app runs only when we
+    // eval it below.
+    runScripts: "dangerously",
     beforeParse(window) {
       // API calls (stars, version) are irrelevant here and both callers
       // catch failures; keep the test hermetic.
       window.fetch = () => Promise.reject(new Error("network disabled in test"));
     },
   }).window;
+  if (runScripts) {
+    window.eval(appJs);
+  }
+  return window;
 }
 
 test("old header search/sort controls stay absent (removed in #476)", () => {
