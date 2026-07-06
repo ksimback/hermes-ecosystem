@@ -37,6 +37,34 @@ test("rejects duplicate owner/repo pairs case-insensitively", () => {
   ]);
 });
 
+test("rejects owner/repo names outside the GitHub-safe charset", () => {
+  const injectionOwner = {
+    ...validRepo,
+    owner: 'evil"){ hacked }',
+    url: 'https://github.com/evil"){ hacked }/hermes-example',
+  };
+  const injectionRepo = {
+    ...validRepo,
+    repo: "hermes`example${x}",
+    url: "https://github.com/example/hermes`example${x}",
+  };
+  const traversalRepo = {
+    ...validRepo,
+    repo: "a/b",
+    url: "https://github.com/example/a/b",
+  };
+
+  assert.deepEqual(validateRepos([injectionOwner]), [
+    '[0] owner contains characters outside [A-Za-z0-9_.-]: evil"){ hacked }',
+  ]);
+  assert.deepEqual(validateRepos([injectionRepo]), [
+    "[0] repo contains characters outside [A-Za-z0-9_.-]: hermes`example${x}",
+  ]);
+  assert.deepEqual(validateRepos([traversalRepo]), [
+    "[0] repo contains characters outside [A-Za-z0-9_.-]: a/b",
+  ]);
+});
+
 test("rejects invalid category, URL, official, and stars values", () => {
   const badRepo = {
     ...validRepo,
