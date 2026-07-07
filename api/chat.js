@@ -1,11 +1,13 @@
 import { kvIncr, kvExpireNx } from "../lib/redis.js";
 import { combinedRetrievalScore, enrichChunkMetadata } from "../lib/rag-scoring.js";
 import { buildLatestReleaseBlock, detectLatestReleaseQuery } from "../lib/latest-release.js";
+import { parseChunkStore } from "../lib/chunk-store.js";
 import { readFileSync } from "fs";
 import { join } from "path";
 
 // Load chunks at module level (cached across invocations in same lambda)
 let chunks = null;
+let corpusDimensions = null;
 let bm25Index = null;
 let reposData = null;
 let latestReleaseData = null;
@@ -13,12 +15,19 @@ let latestReleaseData = null;
 function loadChunks() {
   if (chunks) return chunks;
   try {
-    const raw = readFileSync(join(process.cwd(), "data", "chunks.json"), "utf-8");
-    chunks = JSON.parse(raw).map(enrichChunkMetadata);
+    // Keep both reads as literal join(process.cwd(), ...) calls — Vercel's
+    // file tracer resolves this pattern statically and bundles the files
+    // into the function; an indirect read via lib/ would not get traced.
+    const store = parseChunkStore(
+      readFileSync(join(process.cwd(), "data", "chunks-meta.json"), "utf-8"),
+      readFileSync(join(process.cwd(), "data", "embeddings.bin"))
+    );
+    corpusDimensions = store.dimensions;
+    chunks = store.chunks.map(enrichChunkMetadata);
     bm25Index = buildBM25Index(chunks);
     return chunks;
   } catch (e) {
-    console.error("Failed to load chunks.json:", e.message);
+    console.error("Failed to load chunk store:", e.message);
     return [];
   }
 }
@@ -700,11 +709,10 @@ Rewritten:`;
 
 async function getEmbedding(text, signal) {
   // Match the corpus dim. build-chunks.js may emit reduced-dim vectors
-  // (e.g. 512) to keep chunks.json under GitHub's 100MB limit. Reading the
-  // dim from the loaded corpus means there's never a query/corpus mismatch
-  // during a dim-change rollout — old chunks.json keeps working with old
-  // dim until the new chunks.json lands.
-  const corpusDim = chunks?.[0]?.embedding?.length;
+  // (e.g. 512). Reading the dim from the loaded store means there's never a
+  // query/corpus mismatch during a dim-change rollout — the old store keeps
+  // working with its old dim until the new store lands.
+  const corpusDim = corpusDimensions || chunks?.[0]?.embedding?.length;
   const body = {
     model: "openai/text-embedding-3-small",
     input: [text],

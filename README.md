@@ -64,8 +64,9 @@ hermes/
 ├── lib/
 │   └── redis.js            # Shared Redis client helper
 ├── data/
-│   ├── repos.json          # 84 quality-filtered repos (single source of truth)
-│   └── chunks.json         # Pre-computed text embeddings (~7MB, 283 chunks)
+│   ├── repos.json          # Quality-filtered repos (single source of truth)
+│   ├── chunks-meta.json    # KB chunk text + metadata (see lib/chunk-store.js)
+│   └── embeddings.bin      # Pre-computed embeddings (float32, ~14MB)
 ├── scripts/
 │   ├── build-chunks.js     # Splits research/ into chunks + embeds them
 │   └── test-rag.js         # Local RAG quality tests (27/27 passing)

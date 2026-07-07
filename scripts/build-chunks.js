@@ -4,7 +4,8 @@
  *
  * Reads all markdown files from research/, repos/, and ECOSYSTEM.md,
  * splits them into ~500-token chunks with metadata, computes embeddings
- * via OpenRouter, and outputs data/chunks.json.
+ * via OpenRouter, and outputs the chunk store (data/chunks-meta.json +
+ * data/embeddings.bin — see lib/chunk-store.js).
  *
  * Usage: OPENROUTER_API_KEY=... node scripts/build-chunks.js
  */
@@ -14,18 +15,19 @@ import path from "path";
 import crypto from "node:crypto";
 import { fileURLToPath } from "url";
 import { chunkText } from "../lib/chunk-text.js";
+import { loadChunkStore, writeChunkStore } from "../lib/chunk-store.js";
 import { findLatestReleaseFromMarkdownFiles } from "../lib/latest-release.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 // Embedding dimensions. Default for text-embedding-3-small is 1536, but the
-// model supports truncation via `dimensions`. At ~5k chunks, 1536-dim vectors
-// blow chunks.json past GitHub's 100MB file limit (147MB observed). 512-dim
-// is ~33% the size and OpenAI's own benchmarks show v3-small at 512 dims
-// still beats v2 at full 1536 dims — quality cost is minimal.
+// model supports truncation via `dimensions`. 512-dim is ~33% the size and
+// OpenAI's own benchmarks show v3-small at 512 dims still beats v2 at full
+// 1536 dims — quality cost is minimal.
 // Query side (api/chat.js, scripts/test-rag.js) reads this dim from the
-// loaded chunks at runtime, so changing it here propagates after the next
-// rebuild lands.
+// loaded chunk store at runtime, so changing it here propagates after the
+// next rebuild lands.
+const EMBED_MODEL = "openai/text-embedding-3-small";
 const EMBED_DIMENSIONS = 512;
 
 const API_KEY = process.env.OPENROUTER_API_KEY;
@@ -96,28 +98,27 @@ async function main() {
   // cache every run re-embeds all ~6.5k chunks from scratch (real, recurring
   // OpenRouter spend that grows with the corpus). Key each chunk by
   // sha256(model + dims + text) so a config change (model/dimensions) correctly
-  // invalidates the cache.
-  const outputPath = path.join(ROOT, "data", "chunks.json");
+  // invalidates the cache. Float32 round-trips losslessly through the .bin,
+  // so cached vectors stay byte-stable across rebuilds.
+  const dataDir = path.join(ROOT, "data");
   const embedKey = (text) =>
     crypto
       .createHash("sha256")
-      .update(`text-embedding-3-small:${EMBED_DIMENSIONS}:${text}`)
+      .update(`${EMBED_MODEL}:${EMBED_DIMENSIONS}:${text}`)
       .digest("hex");
 
   const embedCache = new Map();
-  if (fs.existsSync(outputPath)) {
-    try {
-      const prev = JSON.parse(fs.readFileSync(outputPath, "utf-8"));
-      if (Array.isArray(prev)) {
-        for (const c of prev) {
-          if (c && typeof c.text === "string" && Array.isArray(c.embedding)) {
-            embedCache.set(embedKey(c.text), c.embedding);
-          }
+  try {
+    const prev = loadChunkStore(dataDir);
+    if (prev.model === EMBED_MODEL && prev.dimensions === EMBED_DIMENSIONS) {
+      for (const c of prev.chunks) {
+        if (c && typeof c.text === "string") {
+          embedCache.set(embedKey(c.text), c.embedding);
         }
       }
-    } catch (e) {
-      console.warn(`  Could not read previous chunks.json for cache: ${e.message}`);
     }
+  } catch (e) {
+    console.warn(`  Could not read previous chunk store for cache: ${e.message}`);
   }
 
   // Assign cached embeddings; collect only the chunks that still need one.
@@ -155,11 +156,12 @@ async function main() {
   console.log(`\nEmbeddings ready for all ${chunks.length} chunks (${cacheHits} cached, ${toEmbed.length} freshly computed)`);
 
   // Write output
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, JSON.stringify(chunks, null, 0));
+  writeChunkStore(dataDir, chunks, { model: EMBED_MODEL, dimensions: EMBED_DIMENSIONS });
 
-  const sizeMB = (fs.statSync(outputPath).size / 1024 / 1024).toFixed(1);
-  console.log(`\nWrote ${outputPath} (${sizeMB} MB)`);
+  for (const f of ["chunks-meta.json", "embeddings.bin"]) {
+    const sizeMB = (fs.statSync(path.join(dataDir, f)).size / 1024 / 1024).toFixed(1);
+    console.log(`Wrote data/${f} (${sizeMB} MB)`);
+  }
 }
 
 function writeLatestReleaseMetadata(markdownFiles) {
@@ -203,7 +205,7 @@ async function getEmbeddings(texts) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "openai/text-embedding-3-small",
+          model: EMBED_MODEL,
           input: texts,
           dimensions: EMBED_DIMENSIONS,
         }),

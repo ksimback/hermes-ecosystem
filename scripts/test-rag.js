@@ -12,6 +12,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { combinedRetrievalScore, enrichChunkMetadata } from "../lib/rag-scoring.js";
+import { loadChunkStore, META_FILENAME } from "../lib/chunk-store.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -341,14 +342,13 @@ async function runRetrievalTests() {
   console.log("=".repeat(60));
   console.log();
 
-  const chunksPath = path.join(ROOT, "data", "chunks.json");
-  if (!fs.existsSync(chunksPath)) {
-    console.error("chunks.json not found — run build-chunks.js first");
+  if (!fs.existsSync(path.join(ROOT, "data", META_FILENAME))) {
+    console.error(`${META_FILENAME} not found — run build-chunks.js first`);
     return { passed: 0, failed: 1 };
   }
 
   console.log("Loading chunks...");
-  const chunks = JSON.parse(fs.readFileSync(chunksPath, "utf-8")).map(enrichChunkMetadata);
+  const chunks = loadChunkStore(path.join(ROOT, "data")).chunks.map(enrichChunkMetadata);
   console.log(`  Loaded ${chunks.length} chunks`);
 
   console.log("Building BM25 index...");
@@ -534,8 +534,7 @@ async function runMmrTests() {
   console.log("=".repeat(60));
   console.log();
 
-  const chunksPath = path.join(ROOT, "data", "chunks.json");
-  const chunks = JSON.parse(fs.readFileSync(chunksPath, "utf-8")).map(enrichChunkMetadata);
+  const chunks = loadChunkStore(path.join(ROOT, "data")).chunks.map(enrichChunkMetadata);
   const bm25Index = buildBM25Index(chunks);
 
   // Queries known to retrieve near-duplicate chunks (community sentiment, broad topics)
