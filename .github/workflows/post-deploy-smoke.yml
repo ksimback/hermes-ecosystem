@@ -110,10 +110,16 @@ jobs:
         id: smoke
         # Pass dispatch inputs via env, never interpolated straight into the
         # shell command (a crafted `base`/`sample` could otherwise inject shell).
+        #
+        # `set -o pipefail`: GitHub's default run shell is `bash -e` WITHOUT
+        # pipefail, so `node ... | tee` otherwise reports tee's exit code and a
+        # failing smoke run becomes a green check (bit the PR-preview gate for
+        # weeks before being caught on 2026-07-07).
         env:
           SMOKE_BASE: ${{ inputs.base || 'https://hermesatlas.com' }}
           SMOKE_SAMPLE: ${{ inputs.sample || '25' }}
         run: |
+          set -o pipefail
           node scripts/smoke-test-prod.js \
             --base "$SMOKE_BASE" \
             --sample "$SMOKE_SAMPLE" \

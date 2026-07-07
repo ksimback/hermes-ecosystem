@@ -37,6 +37,15 @@
  *   node scripts/smoke-test-prod.js --sample 50
  *   node scripts/smoke-test-prod.js --continue   # don't stop on first failure
  *   node scripts/smoke-test-prod.js --verbose
+ *   node scripts/smoke-test-prod.js --preview    # deployment is the same commit
+ *       as this checkout: repos.json entries whose projects/<owner>/<repo>.html
+ *       hasn't been generated yet (added by this PR; built post-merge) are
+ *       excluded from page/sitemap/link expectations, with the skip count
+ *       logged. Never use on prod — there every entry must have a page.
+ *
+ * Vercel deployment protection: if VERCEL_AUTOMATION_BYPASS_SECRET is set in
+ * the environment, it's sent as the x-vercel-protection-bypass header on every
+ * request so the test can reach auth-protected preview deployments.
  *
  * Acknowledging known-broken checks (downgrade FAIL → WARN, exit stays 0):
  *   SMOKE_ALLOW_FAILURES='/lists/,Core & Official count' node scripts/smoke-test-prod.js
@@ -77,7 +86,9 @@ const CONCURRENCY = parseInt(opt("concurrency", "10"), 10);
 const TIMEOUT_MS = parseInt(opt("timeout", "15000"), 10);
 const CONTINUE_ON_FAIL = flag("continue");
 const VERBOSE = flag("verbose");
+const PREVIEW_MODE = flag("preview");
 const USER_AGENT = "HermesAtlas-SmokeTest/1.0";
+const BYPASS_SECRET = process.env.VERCEL_AUTOMATION_BYPASS_SECRET || "";
 
 // Acknowledged failures: substring-matched against the `check` name. Anything
 // matched becomes a WARN instead of a FAIL (still printed, doesn't affect exit
@@ -139,7 +150,11 @@ async function fetchWithTimeout(url, opts = {}) {
       ...opts,
       signal: controller.signal,
       redirect: "follow",
-      headers: { "User-Agent": USER_AGENT, ...(opts.headers || {}) },
+      headers: {
+        "User-Agent": USER_AGENT,
+        ...(BYPASS_SECRET ? { "x-vercel-protection-bypass": BYPASS_SECRET } : {}),
+        ...(opts.headers || {}),
+      },
     });
     return res;
   } finally {
@@ -190,11 +205,44 @@ const repos = JSON.parse(
   await fs.readFile(path.join(ROOT, "data/repos.json"), "utf8")
 );
 
+// Preview mode: a preview deploy serves exactly this commit, so an entry
+// whose project page hasn't been generated yet (a repo-add PR; build-pages
+// runs post-merge) will 404 there legitimately. Compute that set from the
+// local checkout and exclude it from page/sitemap/link expectations. The
+// skip is always logged loudly — a silent cap here would recreate the exact
+// class of fake-green this script exists to prevent.
+const pendingProjectPaths = new Set();
+if (PREVIEW_MODE) {
+  for (const r of repos) {
+    try {
+      await fs.access(path.join(ROOT, "projects", r.owner, `${r.repo}.html`));
+    } catch {
+      pendingProjectPaths.add(`/projects/${r.owner}/${r.repo}`);
+    }
+  }
+}
+function isPending(repo) {
+  return pendingProjectPaths.has(`/projects/${repo.owner}/${repo.repo}`);
+}
+
 // ---------- Section runners ----------
 
 console.log(c.bold(`\nHermes Atlas smoke test`));
 console.log(c.dim(`  base: ${BASE}`));
 console.log(c.dim(`  repos.json entries: ${repos.length}`));
+if (PREVIEW_MODE) {
+  console.log(c.dim(`  preview mode: on (deployment == this checkout)`));
+  if (pendingProjectPaths.size > 0) {
+    console.log(
+      c.yellow(
+        `  ${pendingProjectPaths.size} entries have no generated project page yet ` +
+          `(added by this PR, built post-merge) — excluded from page/sitemap/link checks:`
+      )
+    );
+    for (const p of pendingProjectPaths) console.log(c.yellow(`    - ${p}`));
+  }
+}
+if (BYPASS_SECRET) console.log(c.dim(`  deployment-protection bypass: header set`));
 console.log(c.dim(`  sample size: ${SAMPLE_SIZE} (plus all entries newer than ${RECENT_DAYS}d in repos.json if dated)`));
 console.log("");
 
@@ -303,12 +351,17 @@ await section("3. Project pages return 2xx (sample + recent)", async () => {
     return Number.isFinite(d) && d >= recentCutoff;
   });
 
+  const eligible = repos.filter((r) => !isPending(r));
   const randomSlice = sample(
-    repos.filter((r) => !recent.includes(r)),
+    eligible.filter((r) => !recent.includes(r)),
     Math.max(0, SAMPLE_SIZE - recent.length)
   );
-  const checkSet = [...recent, ...randomSlice];
-  info(`testing ${checkSet.length} project pages (${recent.length} recent + ${randomSlice.length} random)`);
+  const checkSet = [...recent.filter((r) => !isPending(r)), ...randomSlice];
+  info(
+    `testing ${checkSet.length} project pages (${recent.length} recent + ${randomSlice.length} random` +
+      (pendingProjectPaths.size > 0 ? `; ${pendingProjectPaths.size} pending-page entries skipped` : "") +
+      `)`
+  );
 
   const checked = await pool(checkSet, CONCURRENCY, async (repo) => {
     const url = `${BASE}/projects/${repo.owner}/${repo.repo}`;
@@ -353,7 +406,12 @@ await section("4. Sitemap covers every /projects/<owner>/<repo> in repos.json", 
       .filter((p) => p && p.startsWith("/projects/"))
   );
 
-  const expected = repos.map((r) => `/projects/${r.owner}/${r.repo}`);
+  const expected = repos
+    .filter((r) => !isPending(r))
+    .map((r) => `/projects/${r.owner}/${r.repo}`);
+  if (pendingProjectPaths.size > 0) {
+    info(`${pendingProjectPaths.size} pending-page entries excluded from sitemap expectation`);
+  }
   const missing = expected.filter((p) => !projectLocs.has(p));
 
   if (missing.length === 0) {
@@ -405,9 +463,14 @@ await section("6. Sample of internal links from homepage resolve", async () => {
     const href = a.getAttribute("href") || "";
     if (href.startsWith("/") && !href.startsWith("//")) internal.add(href.split("#")[0].split("?")[0]);
   }
-  const list = Array.from(internal).filter(Boolean);
+  const list = Array.from(internal)
+    .filter(Boolean)
+    .filter((p) => !pendingProjectPaths.has(p.replace(/\/$/, "")));
   const checked = sample(list, Math.min(SAMPLE_SIZE, list.length));
-  info(`sampling ${checked.length}/${list.length} internal links`);
+  info(
+    `sampling ${checked.length}/${list.length} internal links` +
+      (pendingProjectPaths.size > 0 ? ` (pending-page links excluded)` : "")
+  );
 
   const results = await pool(checked, CONCURRENCY, async (p) => {
     const url = `${BASE}${p}`;

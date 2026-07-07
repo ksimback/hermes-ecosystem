@@ -52,42 +52,46 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            // Use the GitHub Deployments API, NOT the 'Vercel' commit status:
+            // the status's target_url points at the vercel.com dashboard, not
+            // the deployment. Probing the dashboard 404s on every path — which
+            // is exactly how this gate passed vacuously for weeks (the 404s
+            // "failed" but the exit code was masked downstream; see pipefail
+            // note on the run step). The deployment status's environment_url
+            // is the real, fetchable preview origin.
             const sha = context.payload.pull_request.head.sha;
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const MAX_WAIT_MS = 10 * 60 * 1000;
             const INTERVAL_MS = 15 * 1000;
             const start = Date.now();
-            let lastState = null;
 
-            core.info(`Polling Vercel preview status for PR #${context.payload.pull_request.number} @ ${sha}`);
+            core.info(`Polling Vercel preview deployment for PR #${context.payload.pull_request.number} @ ${sha}`);
 
             while (Date.now() - start < MAX_WAIT_MS) {
-              const { data } = await github.rest.repos.getCombinedStatusForRef({
-                owner,
-                repo,
-                ref: sha,
+              const { data: deployments } = await github.rest.repos.listDeployments({
+                owner, repo, sha, per_page: 10,
               });
-              const vercel = data.statuses.find((status) => status.context === 'Vercel');
-              const state = vercel ? vercel.state : 'no-status-yet';
-              if (state !== lastState) {
-                core.info(`Vercel status: ${state}`);
-                lastState = state;
-              }
+              const previews = deployments.filter((d) => /preview/i.test(d.environment || ''));
 
-              if (state === 'success') {
-                if (!vercel.target_url) {
-                  core.setFailed('Vercel status succeeded but did not expose a preview URL');
+              for (const dep of previews) {
+                const { data: statuses } = await github.rest.repos.listDeploymentStatuses({
+                  owner, repo, deployment_id: dep.id, per_page: 5,
+                });
+                const done = statuses.find((s) => s.state === 'success' && s.environment_url);
+                if (done) {
+                  if (!/^https:\/\//.test(done.environment_url) || done.environment_url.includes('vercel.com/')) {
+                    core.setFailed(`environment_url does not look like a deployment origin: ${done.environment_url}`);
+                    return;
+                  }
+                  core.setOutput('base_url', done.environment_url);
+                  core.info(`Vercel preview ready: ${done.environment_url}`);
                   return;
                 }
-                core.setOutput('base_url', vercel.target_url);
-                core.info(`Vercel preview ready: ${vercel.target_url}`);
-                return;
-              }
-
-              if (state === 'failure' || state === 'error') {
-                core.setFailed(`Vercel preview failed for ${sha}; smoke test skipped`);
-                return;
+                if (statuses.find((s) => s.state === 'failure' || s.state === 'error')) {
+                  core.setFailed(`Vercel preview deployment failed for ${sha}; smoke test cannot run`);
+                  return;
+                }
               }
 
               await new Promise((resolve) => setTimeout(resolve, INTERVAL_MS));
@@ -99,12 +103,32 @@ jobs:
         id: smoke
         # Pass the preview URL via env, never interpolated straight into the
         # shell command.
+        #
+        # VERCEL_AUTOMATION_BYPASS_SECRET: preview deployments sit behind
+        # Vercel Authentication; the script sends the secret as the
+        # x-vercel-protection-bypass header. Guarded loudly below — without it
+        # every probe would 401 and the failure cause would be unobvious.
+        # NOTE: secrets are not available to PRs from forks, so fork-submitted
+        # PRs fail here by design (fork previews also require manual
+        # authorization on Vercel) — a maintainer reviews and merges those by
+        # hand.
+        #
+        # `set -o pipefail`: without it, `node ... | tee` reports tee's exit
+        # code and a failing smoke run turns into a green check — the silent
+        # failure that let this gate pass while probing the wrong host.
         env:
           SMOKE_BASE: ${{ steps.vercel.outputs.base_url }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: |
+          set -o pipefail
+          if [ -z "$VERCEL_AUTOMATION_BYPASS_SECRET" ]; then
+            echo "::error::VERCEL_AUTOMATION_BYPASS_SECRET is not set (repo secret missing, or this is a fork PR — secrets are withheld from forks). Preview probes would all 401."
+            exit 1
+          fi
           node scripts/smoke-test-prod.js \
             --base "$SMOKE_BASE" \
             --sample "25" \
+            --preview \
             --continue \
             | tee smoke-output.txt
 
