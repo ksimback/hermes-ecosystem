@@ -151,6 +151,57 @@ function truncate(str, max) {
   return (lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).trimEnd() + "…";
 }
 
+// ── Change-aware page writer ──
+// Skips the write when the generated content is byte-identical to what's on
+// disk, and records every path that actually changed this build. The sitemap
+// uses this set for honest <lastmod> values: changed-this-build pages get
+// today, everything else keeps its last real change date from git history.
+const changedPages = new Set();
+function writePage(absPath, content) {
+  const rel = path.relative(ROOT, absPath).split(path.sep).join("/");
+  let existing = null;
+  try {
+    existing = fs.readFileSync(absPath, "utf-8");
+  } catch {}
+  if (existing === content) return false;
+  fs.writeFileSync(absPath, content, "utf-8");
+  changedPages.add(rel);
+  return true;
+}
+
+// ── Last-commit date per file (one git-log pass, cached) ──
+let gitLastmodCache = null;
+function gitLastmod(relPath) {
+  if (!gitLastmodCache) {
+    gitLastmodCache = new Map();
+    try {
+      const out = execSync("git log --format=%x01%cs --name-only", {
+        cwd: ROOT,
+        encoding: "utf-8",
+        maxBuffer: 128 * 1024 * 1024,
+      });
+      let date = null;
+      for (const line of out.split("\n")) {
+        if (line.charCodeAt(0) === 1) {
+          date = line.slice(1).trim();
+        } else {
+          const f = line.trim();
+          if (f && date && !gitLastmodCache.has(f)) gitLastmodCache.set(f, date);
+        }
+      }
+    } catch (e) {
+      console.warn("  gitLastmod: git log failed (non-fatal):", e.message);
+    }
+  }
+  return gitLastmodCache.get(relPath) || null;
+}
+
+function lastmodFor(relPath) {
+  const today = new Date().toISOString().slice(0, 10);
+  if (changedPages.has(relPath)) return today;
+  return gitLastmod(relPath) || today;
+}
+
 // ── Load data ──
 const repos = JSON.parse(
   fs.readFileSync(path.join(ROOT, "data", "repos.json"), "utf-8")
@@ -226,7 +277,7 @@ const FAVICON = `<link rel="icon" href="/favicon.ico" sizes="any">
 function renderMasthead(activeNav) {
   const nav = [
     { href: "/", label: "map", id: "map" },
-    { href: "/#curated-lists", label: "lists", id: "lists" },
+    { href: "/lists/", label: "lists", id: "lists" },
     { href: "/guide/", label: "handbook", id: "handbook" },
     { href: "/dev/", label: "dev", id: "dev" },
     { href: "/reports/", label: "reports", id: "reports" },
@@ -646,8 +697,14 @@ This file is the companion to ${SITE_URL}/llms.txt (the concise index).`);
 
 // ── Project page template ──
 function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary, handbookMention) {
-  const title = `${repo.name} — Hermes Agent ${repo.category} | Hermes Atlas`;
-  const desc = escapeHtml(truncate(meta.description || repo.description, 160));
+  // Owner-qualified title: several catalog entries share a bare repo name
+  // (hermes-desktop, hermes-webui, ...) — without the owner the pairs emit
+  // byte-identical <title> tags on different URLs, a duplicate-content signal.
+  const titleName = repo.name.includes("/") ? repo.name : `${repo.owner}/${repo.name}`;
+  const title = `${titleName} — Hermes Agent ${repo.category} | Hermes Atlas`;
+  // Prefer the AI summary for the meta description: it's always English prose
+  // (GitHub descriptions can be non-English) and richer than one-line taglines.
+  const desc = escapeHtml(truncate(summary?.summary || meta.description || repo.description, 160));
   const canonicalUrl = `${SITE_URL}/projects/${repo.owner}/${repo.repo}`;
   const stars = meta.stars || repo.stars;
   const listSlug = categoryToListSlug[repo.category];
@@ -674,7 +731,7 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary, handbo
 <title>${escapeHtml(title)}</title>
 <meta name="description" content="${desc}">
 <link rel="canonical" href="${canonicalUrl}">
-<meta property="og:title" content="${escapeHtml(repo.name)} — Hermes Atlas">
+<meta property="og:title" content="${escapeHtml(titleName)} — Hermes Atlas">
 <meta property="og:description" content="${desc}">
 <meta property="og:type" content="article">
 <meta property="og:url" content="${canonicalUrl}">
@@ -683,7 +740,7 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary, handbo
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="${escapeHtml(repo.name)} — Hermes Atlas">
+<meta name="twitter:title" content="${escapeHtml(titleName)} — Hermes Atlas">
 <meta name="twitter:description" content="${desc}">
 <meta name="twitter:image" content="${escapeHtml(ogImageUrl({ title: repo.name, subtitle: meta.description || repo.description, kind: "project · " + repo.category.toLowerCase().split("&")[0].trim() }))}">
 <script type="application/ld+json">
@@ -860,7 +917,7 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
   "@type": "BreadcrumbList",
   "itemListElement": [
     { "@type": "ListItem", "position": 1, "name": "map", "item": "https://hermesatlas.com/" },
-    { "@type": "ListItem", "position": 2, "name": "lists", "item": "https://hermesatlas.com/#curated-lists" },
+    { "@type": "ListItem", "position": 2, "name": "lists", "item": "https://hermesatlas.com/lists/" },
     { "@type": "ListItem", "position": 3, "name": "${escapeHtml(list.slug)}" }
   ]
 }
@@ -883,7 +940,7 @@ ${FAVICON}
 ${renderMasthead("lists")}
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span><a href="/#curated-lists">lists</a><span class="sep">/</span>${escapeHtml(list.slug)}
+  <a href="/">map</a><span class="sep">/</span><a href="/lists/">lists</a><span class="sep">/</span>${escapeHtml(list.slug)}
 </div>
 
 <main id="main">
@@ -903,6 +960,135 @@ ${renderMasthead("lists")}
   ${repoRows}
 </div>
 ${listicleHtml}
+
+<div class="back-link"><a href="/">← back to the map</a></div>
+
+</main>
+
+${PAGE_FOOTER}
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>`;
+}
+
+// ── Lists index (/lists/) ──
+// Replaces the old hand-authored, off-template orphan page: this one carries
+// the shared masthead/footer, JSON-LD, and is linked from every page's nav —
+// it's the hub for the directory-intent queries the list pages target.
+function renderListsIndex(lists, repos) {
+  const title = "Curated Lists — the best Hermes Agent tools by use case | Hermes Atlas";
+  const desc = "Curated lists of the best Hermes Agent skills, memory providers, workspaces & GUIs, deployment options, developer tools, and multi-agent frameworks.";
+  const canonicalUrl = `${SITE_URL}/lists/`;
+  const ogTitle = "Curated Lists — Hermes Atlas";
+  const ogSubtitle = "The best Hermes Agent tools by use case, ranked by GitHub stars.";
+
+  const countFor = (list) =>
+    list.filter?.category ? repos.filter((r) => r.category === list.filter.category).length : 0;
+
+  const collectionLD = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": canonicalUrl,
+    name: "Curated Lists — Hermes Agent tools by use case",
+    description: desc,
+    url: canonicalUrl,
+    isPartOf: { "@id": "https://hermesatlas.com/#website" },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: lists.length,
+      itemListElement: lists.map((l, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${SITE_URL}/lists/${l.slug}`,
+        name: l.title,
+      })),
+    },
+  };
+
+  const breadcrumbLD = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "map", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 2, name: "lists" },
+    ],
+  };
+
+  const listRows = lists.map((l, i) => {
+    const rank = String(i + 1).padStart(2, "0");
+    const count = countFor(l);
+    return `<a class="list-row" href="/lists/${escapeHtml(l.slug)}">
+    <div class="list-rank">${rank}</div>
+    <div class="list-cell-body">
+      <div class="list-cell-name">${escapeHtml(l.title)}</div>
+      <div class="list-cell-desc">${escapeHtml(truncate(l.description, 140))}</div>
+    </div>
+    <div class="list-cell-stars">${count} projects</div>
+  </a>`;
+  }).join("\n  ");
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtml(title)}</title>
+<meta name="description" content="${escapeHtml(desc)}">
+<link rel="canonical" href="${canonicalUrl}">
+<meta property="og:title" content="${escapeHtml(ogTitle)}">
+<meta property="og:description" content="${escapeHtml(desc)}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="${canonicalUrl}">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="${escapeHtml(ogImageUrl({ title: ogTitle, subtitle: ogSubtitle, kind: "lists" }))}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${escapeHtml(ogTitle)}">
+<meta name="twitter:image" content="${escapeHtml(ogImageUrl({ title: ogTitle, subtitle: ogSubtitle, kind: "lists" }))}">
+${ldJson(breadcrumbLD)}
+${ldJson(collectionLD)}
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+${FAVICON}
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+${renderMasthead("lists")}
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span>lists
+</div>
+
+<main id="main">
+
+<section class="list-page">
+  <h1 class="list-title">Curated Lists</h1>
+  <p class="list-intro">The best Hermes Agent tools by use case — skills, memory providers, workspaces &amp; GUIs, deployment options, developer tools, and multi-agent frameworks. Every list is ranked by GitHub stars and refreshed with live data.</p>
+</section>
+
+<div class="list-table" aria-label="Curated lists">
+  <div class="list-table-head">
+    <div>#</div>
+    <div>list</div>
+    <div class="text-right">size</div>
+  </div>
+  ${listRows}
+</div>
 
 <div class="back-link"><a href="/">← back to the map</a></div>
 
@@ -1060,35 +1246,47 @@ ${PAGE_FOOTER}
 }
 
 // ── Generate sitemap.xml ──
+// Guide/dev entries are discovered from disk (a new page reaches the sitemap
+// without touching this function), and <lastmod> is the file's real last
+// change: today if this build rewrote it, otherwise its last git commit date.
+// Stamping everything "today" trains crawlers to ignore the signal entirely.
 function generateSitemap(projectPages, listPages, reportPages = []) {
-  const today = new Date().toISOString().slice(0, 10);
+  const entry = (urlPath, relFile, changefreq, priority) =>
+    `  <url><loc>${SITE_URL}${urlPath}</loc><changefreq>${changefreq}</changefreq><priority>${priority}</priority><lastmod>${lastmodFor(relFile)}</lastmod></url>\n`;
 
-  let urls = `  <url><loc>${SITE_URL}/</loc><changefreq>daily</changefreq><priority>1.0</priority><lastmod>${today}</lastmod></url>\n`;
-  urls += `  <url><loc>${SITE_URL}/guide/</loc><changefreq>monthly</changefreq><priority>0.9</priority><lastmod>${today}</lastmod></url>\n`;
-  urls += `  <url><loc>${SITE_URL}/guide/vs-claude-code/</loc><changefreq>monthly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;
-  urls += `  <url><loc>${SITE_URL}/guide/install/</loc><changefreq>monthly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;
-  urls += `  <url><loc>${SITE_URL}/guide/memory/</loc><changefreq>monthly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;
-  const devPages = [
-    "what-is-hermes-agent", "agent-loop", "tools-and-toolsets", "skills",
-    "memory", "mcp-gateway-cron", "building-on-hermes",
-    "glossary", "codebase-map", "skill-template",
-  ];
-  urls += `  <url><loc>${SITE_URL}/dev/</loc><changefreq>monthly</changefreq><priority>0.9</priority><lastmod>${today}</lastmod></url>\n`;
-  for (const slug of devPages) {
-    urls += `  <url><loc>${SITE_URL}/dev/${slug}</loc><changefreq>monthly</changefreq><priority>0.7</priority><lastmod>${today}</lastmod></url>\n`;
+  let urls = entry("/", "index.html", "daily", "1.0");
+
+  urls += entry("/guide/", "guide/index.html", "monthly", "0.9");
+  const guideSlugs = fs.readdirSync(path.join(ROOT, "guide"), { withFileTypes: true })
+    .filter((d) => d.isDirectory() && fs.existsSync(path.join(ROOT, "guide", d.name, "index.html")))
+    .map((d) => d.name)
+    .sort();
+  for (const slug of guideSlugs) {
+    urls += entry(`/guide/${slug}/`, `guide/${slug}/index.html`, "monthly", "0.8");
   }
-  urls += `  <url><loc>${SITE_URL}/reports/</loc><changefreq>monthly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;
+
+  urls += entry("/dev/", "dev/index.html", "monthly", "0.9");
+  const devSlugs = fs.readdirSync(path.join(ROOT, "dev"))
+    .filter((f) => f.endsWith(".html") && f !== "index.html")
+    .map((f) => f.replace(/\.html$/, ""))
+    .sort();
+  for (const slug of devSlugs) {
+    urls += entry(`/dev/${slug}`, `dev/${slug}.html`, "monthly", "0.7");
+  }
+
+  urls += entry("/reports/", "reports/index.html", "monthly", "0.8");
   for (const r of reportPages) {
-    urls += `  <url><loc>${SITE_URL}/reports/${r.slug}</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>\n`;
+    urls += entry(`/reports/${r.slug}`, `reports/${r.slug}.html`, "monthly", "0.7");
   }
-  urls += `  <url><loc>${SITE_URL}/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>\n`;
+  urls += entry("/privacy", "privacy/index.html", "yearly", "0.3");
 
   for (const page of projectPages) {
-    urls += `  <url><loc>${SITE_URL}/projects/${page.owner}/${page.repo}</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>${today}</lastmod></url>\n`;
+    urls += entry(`/projects/${page.owner}/${page.repo}`, `projects/${page.owner}/${page.repo}.html`, "weekly", "0.8");
   }
 
+  urls += entry("/lists/", "lists/index.html", "weekly", "0.7");
   for (const list of listPages) {
-    urls += `  <url><loc>${SITE_URL}/lists/${list.slug}</loc><changefreq>weekly</changefreq><priority>0.6</priority><lastmod>${today}</lastmod></url>\n`;
+    urls += entry(`/lists/${list.slug}`, `lists/${list.slug}.html`, "weekly", "0.6");
   }
 
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}</urlset>\n`;
@@ -1277,12 +1475,138 @@ function syncHomepageRepos(repos) {
     console.warn(`  Could not bake Hermes version into index.html: ${e.message}`);
   }
 
-  if (missingCount > 0) {
-    fs.writeFileSync(indexPath, html, "utf-8");
-    console.log(`  ✓ Wrote index.html (+${missingCount} new rows)`);
-  } else {
-    // Still write back if counts changed
-    fs.writeFileSync(indexPath, html, "utf-8");
+  // Bake catalog-derived counters into the static homepage. masthead-fetch.js /
+  // homepage.js live-update these spans in the browser, but non-JS crawlers
+  // (GPTBot, ClaudeBot, PerplexityBot) index the baked values — which otherwise
+  // sit frozen at whatever count the page had when the span was hand-authored.
+  const roundedCount = Math.floor(repos.length / 10) * 10;
+  html = html
+    .replace(/(<span id="meta-count">)[^<]*(<\/span>)/, `$1${repos.length}·repos$2`)
+    .replace(/(<span class="n" id="stat-total-repos">)[^<]*(<\/span>)/, `$1${repos.length}$2`)
+    .replace(/(<span id="hero-sub-count">)[^<]*(<\/span>)/, `$1${roundedCount}$2`)
+    .replace(/\b\d{2,3}\+ open-source tools/g, `${roundedCount}+ open-source tools`)
+    .replace(/\(\d{2,3}\+ tools\)/g, `(${roundedCount}+ tools)`)
+    .replace(/\b\d{2,3}\+ projects across/g, `${roundedCount}+ projects across`);
+
+  const flagship = repos.find((r) => r.owner === "NousResearch" && r.repo === "hermes-agent");
+  if (flagship && typeof flagship.stars === "number") {
+    html = html.replace(
+      /(<span class="big star" id="hero-stars">)[^<]*(<\/span>)/,
+      `$1${formatStars(flagship.stars)}$2`
+    );
+  }
+
+  if (writePage(indexPath, html)) {
+    console.log(`  ✓ Wrote index.html${missingCount > 0 ? ` (+${missingCount} new rows)` : ""}`);
+  }
+}
+
+// ── Freshness pass over hand-authored guide pages + their markdown drafts ──
+//
+// The guide pages are written by hand, so "current release is vX" / star-count
+// facts baked into their titles, meta descriptions, JSON-LD, and body copy
+// drift stale between manual rewrites (the flagship guide sat 3 months and 8
+// minor versions behind — exactly the fields search snippets are built from).
+// Every build, anchored patterns re-stamp those facts from the same data the
+// generated pages use (data/latest-release.json, data/repos.json). Date-stamp
+// fields (dateModified, "Updated ...") bump only when a fact actually changed,
+// so untouched builds don't fake freshness.
+function refreshHandAuthoredPages(repos) {
+  const today = new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const monthShort = `${MONTHS[now.getUTCMonth()].slice(0, 3)} ${now.getUTCFullYear()}`;
+  const monthLong = `${MONTHS[now.getUTCMonth()]} ${now.getUTCFullYear()}`;
+
+  const version = latestHermesVersion;
+  let releaseDate = today;
+  try {
+    const lr = JSON.parse(fs.readFileSync(latestReleasePath, "utf-8"));
+    if (lr.publishedAt) releaseDate = lr.publishedAt.slice(0, 10);
+  } catch {}
+  const flagship = repos.find((r) => r.owner === "NousResearch" && r.repo === "hermes-agent");
+  const stars = flagship && typeof flagship.stars === "number"
+    ? flagship.stars.toLocaleString("en-US")
+    : null;
+
+  const factRules = [
+    [/hermes·v[\d.]+/g, `hermes·${version}`],
+    [/<span id="meta-version">hermes<\/span>/g, `<span id="meta-version">hermes·${version}</span>`],
+    [/Hermes Agent v[\d.]+: The Complete Beginner's Guide \([A-Za-z]{3,9} \d{4}\)/g,
+      `Hermes Agent ${version}: The Complete Beginner's Guide (${monthShort})`],
+    [/Hermes Agent: The Complete Beginner's Guide \([A-Za-z]{3,9} \d{4}\)/g,
+      `Hermes Agent: The Complete Beginner's Guide (${monthShort})`],
+    [/Hermes Agent v[\d.]+ \(latest release, [A-Za-z]+ \d{4}\)/g,
+      `Hermes Agent ${version} (latest release, ${monthLong})`],
+    [/Hermes Agent v[\d.]+ \(latest release\)/g, `Hermes Agent ${version} (latest release)`],
+    [/Current release is v[\d.]+ \(as of \d{4}-\d{2}-\d{2}\)/g,
+      `Current release is ${version} (as of ${releaseDate})`],
+    [/self-improving AI agent, v[\d.]+\)/g, `self-improving AI agent, ${version})`],
+    [/Install Hermes Agent v[\d.]+ /g, `Install Hermes Agent ${version} `],
+    [/This guide covers Hermes Agent <strong>v[\d.]+<\/strong>/g,
+      `This guide covers Hermes Agent <strong>${version}</strong>`],
+    [/This guide covers Hermes Agent \*\*v[\d.]+\*\*/g,
+      `This guide covers Hermes Agent **${version}**`],
+    [/prints v[\d.]+ \(or newer\)/g, `prints ${version} (or newer)`],
+    [/Supported OSes<\/strong> \(as of v[\d.]+\)/g, `Supported OSes</strong> (as of ${version})`],
+    [/Supported OSes\*\* \(as of v[\d.]+\)/g, `Supported OSes** (as of ${version})`],
+    [/\d+\+ projects in the Hermes Atlas \(as of \d{4}-\d{2}-\d{2}\)/g,
+      `${repos.length}+ projects in the Hermes Atlas (as of ${today})`],
+    [/real community usage as of [A-Za-z]+ \d{4}\./g, `real community usage as of ${monthLong}.`],
+    [/Updated [A-Za-z]+ \d{4}\./g, `Updated ${monthLong}.`],
+    [/As of [A-Za-z]+ \d{4}\. Based on/g, `As of ${monthLong}. Based on`],
+    [/all \d+\+ projects in the Atlas/g, `all ${repos.length}+ projects in the Atlas`],
+    [/Browse all \d+\+ projects/g, `Browse all ${repos.length}+ projects`],
+    [/current release<\/a> as of [A-Za-z]+ \d{4};/g, `current release</a> as of ${monthLong};`],
+    [/current release\]\(([^)]+)\) as of [A-Za-z]+ \d{4};/g, `current release]($1) as of ${monthLong};`],
+    [/Hermes Agent v[\d.]+ — <a href="https:\/\/github\.com\/NousResearch\/hermes-agent\/releases"/g,
+      `Hermes Agent ${version} — <a href="https://github.com/NousResearch/hermes-agent/releases"`],
+  ];
+  if (stars) {
+    factRules.push(
+      [/[\d,]+ GitHub stars \(as of \d{4}-\d{2}-\d{2}\)/g, `${stars} GitHub stars (as of ${today})`],
+      [/[\d,]+ GitHub stars as of \d{4}-\d{2}-\d{2}/g, `${stars} GitHub stars as of ${today}`],
+      [/[\d,]+ stars \(as of \d{4}-\d{2}-\d{2}\)/g, `${stars} stars (as of ${today})`],
+      [/[\d,]+ stars as of \d{4}-\d{2}-\d{2}/g, `${stars} stars as of ${today}`],
+      [/As of \d{4}-\d{2}-\d{2}, yes, with caveats\. [\d,]+ GitHub stars/g,
+        `As of ${today}, yes, with caveats. ${stars} GitHub stars`]
+    );
+  }
+
+  const dateRules = [
+    [/"dateModified": "\d{4}-\d{2}-\d{2}T[0-9:]+Z"/g, `"dateModified": "${today}T00:00:00Z"`],
+    [/(property="article:modified_time" content=")\d{4}-\d{2}-\d{2}T[0-9:]+Z(")/g, `$1${today}T00:00:00Z$2`],
+    [/Updated \d{4}-\d{2}-\d{2} ·/g, `Updated ${today} ·`],
+    [/Last updated:<\/strong> \d{4}-\d{2}-\d{2}/g, `Last updated:</strong> ${today}`],
+    [/\*\*Last updated:\*\* \d{4}-\d{2}-\d{2}/g, `**Last updated:** ${today}`],
+  ];
+
+  const targets = [
+    "guide/index.html",
+    "guide/install/index.html",
+    "guide/memory/index.html",
+    "guide/vs-claude-code/index.html",
+    "drafts/handbook-hub.md",
+    "drafts/handbook-vs-claude-code.md",
+    "drafts/guide-memory.md",
+  ];
+
+  console.log("\nRefreshing hand-authored guide pages...");
+  for (const rel of targets) {
+    const abs = path.join(ROOT, rel);
+    if (!fs.existsSync(abs)) continue;
+    const original = fs.readFileSync(abs, "utf-8");
+    let content = original;
+    for (const [re, replacement] of factRules) {
+      content = content.replace(re, replacement);
+    }
+    if (content !== original) {
+      for (const [re, replacement] of dateRules) {
+        content = content.replace(re, replacement);
+      }
+      writePage(abs, content);
+      console.log(`  refreshed ${rel}`);
+    }
   }
 }
 
@@ -1416,7 +1740,7 @@ async function main() {
     // Write file
     const ownerDir = path.join(projectsDir, repo.owner);
     fs.mkdirSync(ownerDir, { recursive: true });
-    fs.writeFileSync(path.join(ownerDir, `${repo.repo}.html`), html, "utf-8");
+    writePage(path.join(ownerDir, `${repo.repo}.html`), html);
 
     generated++;
     process.stdout.write(`  ${generated}/${repos.length} ${key}\r`);
@@ -1460,6 +1784,11 @@ async function main() {
   // data/repos.json; index.html drifts unless this catches missing entries)
   syncHomepageRepos(repos);
 
+  // Re-stamp version/star/date facts in hand-authored guide pages + drafts.
+  // Must run before writeLlmsFiles (which bundles the drafts and guide HTML)
+  // and before generateSitemap (so refreshed pages get today's lastmod).
+  refreshHandAuthoredPages(repos);
+
   // Generate list pages
   console.log("Generating list pages...");
   for (const list of lists) {
@@ -1474,16 +1803,20 @@ async function main() {
       }));
 
     const html = renderListPage(list, matchedRepos, listSummaries[list.slug]?.entries || {});
-    fs.writeFileSync(path.join(listsDir, `${list.slug}.html`), html, "utf-8");
+    writePage(path.join(listsDir, `${list.slug}.html`), html);
     console.log(`  ${list.slug} (${matchedRepos.length} repos)`);
   }
+
+  // Generate the lists index page (/lists/)
+  writePage(path.join(listsDir, "index.html"), renderListsIndex(lists, repos));
+  console.log(`  index (${lists.length} lists)`);
 
   // Generate reports index page
   if (reports.length > 0) {
     console.log("\nGenerating reports index...");
     const reportsDir = path.join(ROOT, "reports");
     fs.mkdirSync(reportsDir, { recursive: true });
-    fs.writeFileSync(path.join(reportsDir, "index.html"), renderReportsIndex(reports), "utf-8");
+    writePage(path.join(reportsDir, "index.html"), renderReportsIndex(reports));
     console.log(`  reports/index.html (${reports.length} reports)`);
   }
 
@@ -1491,7 +1824,7 @@ async function main() {
   console.log("\nGenerating sitemap.xml...");
   const sitemap = generateSitemap(repos, lists, reports);
   fs.writeFileSync(path.join(ROOT, "sitemap.xml"), sitemap, "utf-8");
-  console.log(`  ${repos.length + lists.length + reports.length + 3} URLs`);
+  console.log(`  ${(sitemap.match(/<url>/g) || []).length} URLs (${changedPages.size} pages changed this build)`);
 
   // Generate robots.txt (explicit multi-bot allowlist + wildcard default)
   fs.writeFileSync(path.join(ROOT, "robots.txt"), buildRobotsTxt(), "utf-8");
