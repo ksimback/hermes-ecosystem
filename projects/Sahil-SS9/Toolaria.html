@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Toolaria — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="Rescue oversized tool results before they flood context. SHA256-addressed blob store with per-session indexes">
+<title>Sahil-SS9/Toolaria — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
+<meta name="description" content="Toolaria is a Hermes Agent plugin designed to prevent oversized tool outputs from flooding the model's context window. It intercepts large results, stores them…">
 <link rel="canonical" href="https://hermesatlas.com/projects/Sahil-SS9/Toolaria">
-<meta property="og:title" content="Toolaria — Hermes Atlas">
-<meta property="og:description" content="Rescue oversized tool results before they flood context. SHA256-addressed blob store with per-session indexes">
+<meta property="og:title" content="Sahil-SS9/Toolaria — Hermes Atlas">
+<meta property="og:description" content="Toolaria is a Hermes Agent plugin designed to prevent oversized tool outputs from flooding the model's context window. It intercepts large results, stores them…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/Sahil-SS9/Toolaria">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -15,8 +15,8 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Toolaria — Hermes Atlas">
-<meta name="twitter:description" content="Rescue oversized tool results before they flood context. SHA256-addressed blob store with per-session indexes">
+<meta name="twitter:title" content="Sahil-SS9/Toolaria — Hermes Atlas">
+<meta name="twitter:description" content="Toolaria is a Hermes Agent plugin designed to prevent oversized tool outputs from flooding the model's context window. It intercepts large results, stores them…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=Toolaria&amp;subtitle=Rescue+oversized+tool+results+before+they+flood+context.+SHA256-addressed+blob+store+with+per-session+indexes&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -40,14 +40,11 @@
   "codeRepository": "https://github.com/Sahil-SS9/Toolaria",
   "applicationCategory": "BrowserApplication",
   "operatingSystem": "Cross-platform",
-  "programmingLanguage": "Python",
-  "license": "https://spdx.org/licenses/MIT.html",
   "author": {
     "@type": "Organization",
     "name": "Sahil-SS9",
     "url": "https://github.com/Sahil-SS9"
   },
-  "dateModified": "2026-06-24T19:26:59.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -87,7 +84,7 @@
   </div>
   <nav class="mast-nav" aria-label="Primary">
     <a href="/" class="active">map</a>
-    <a href="/#curated-lists">lists</a>
+    <a href="/lists/">lists</a>
     <a href="/guide/">handbook</a>
     <a href="/dev/">dev</a>
     <a href="/reports/">reports</a>
@@ -113,10 +110,10 @@
 
   <div class="meta-row">
     <span class="stars">★ 12</span>
-    <span><span class="meta-label">lang</span>Python</span>
-    <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-06-24</span>
+    
+    
+    
   </div>
 
   <div class="actions">
@@ -146,7 +143,7 @@
     <img width="1254" height="1254" alt="Toolaria" src="https://github.com/user-attachments/assets/6510e5ef-3c09-4961-a5f2-c87da63a1c22">
 
 
-<h2>Toolaria: rescue oversized tool results before they flood context</h2>
+<h4>Toolaria: rescue oversized tool results before they flood context</h4>
 <p>Toolaria is the spill-to-disk pattern, packaged as a single-purpose, zero-config
 Hermes Agent plugin. When an MCP or web tool returns a result too large for the
 context window, Toolaria stores the full output in a SHA256-addressed blob store
@@ -167,7 +164,7 @@ Toolaria expands it to the full content before that tool runs, so a 200k
 result flows tool to tool and never re-enters the context window.</li>
 </ul>
 <hr>
-<h3>Proof</h3>
+<h5>Proof</h5>
 <p>A real <code>web_extract</code> returning 2,000 transaction records, run through Toolaria:</p>
 <table>
 <thead>
@@ -218,7 +215,7 @@ elements: objects (sampled 1000):
 end-to-end stress suite (<code>tests/</code>), which also cover cross-session denial,
 ReDoS-bounded grep, size-cap eviction, and single-line (minified JSON) search.</p>
 <hr>
-<h3>60-second Quickstart</h3>
+<h5>60-second Quickstart</h5>
 <pre><code class="language-bash"># Clone into Hermes plugins directory
 git clone https://github.com/Sahil-SS9/Toolaria.git ~/.hermes/plugins/toolaria
 
@@ -246,7 +243,7 @@ not, Toolaria logs a warning at load; add <code>rescuer</code> to those sessions
 worse than no rescue, so Toolaria never fails this silently.</p>
 </blockquote>
 <hr>
-<h3>Prior art</h3>
+<h5>Prior art</h5>
 <p>Spill-to-disk is a well-established pattern, not a Toolaria invention. Toolaria's
 contribution is packaging, not the idea.</p>
 <ul>
@@ -274,7 +271,7 @@ run Toolaria alongside lcm or alongside Hermes core.</li>
 <p>Toolaria positions against Hermes core's default behaviour (MCP/web results
 bypass the standard truncation), not against lcm.</p>
 <hr>
-<h3>How it works</h3>
+<h5>How it works</h5>
 <pre><code class="language-mermaid">sequenceDiagram
     participant Model
     participant Toolaria as Toolaria (transform_tool_result)
@@ -295,7 +292,7 @@ bypass the standard truncation), not against lcm.</p>
 full output, because the documented failure mode of this pattern is a model
 treating the preview as complete.</p>
 <hr>
-<h3>Configuration</h3>
+<h5>Configuration</h5>
 <p>All keys in <code>config.yaml</code> with defaults:</p>
 <table>
 <thead>
@@ -442,7 +439,7 @@ treating the preview as complete.</p>
 </tr>
 </tbody></table>
 <hr>
-<h3>What gets rescued</h3>
+<h5>What gets rescued</h5>
 <p>Only MCP server tool results and specific built-in tools:</p>
 <ul>
 <li><code>web_extract</code>, <code>web_search</code></li>
@@ -452,7 +449,7 @@ treating the preview as complete.</p>
 hook fires. Tools like <code>delegate_task</code>, <code>session_search</code>, <code>cronjob</code>, and
 memory tools are explicitly excluded and never intercepted.</p>
 <hr>
-<h3>Commands</h3>
+<h5>Commands</h5>
 <table>
 <thead>
 <tr>
@@ -465,7 +462,7 @@ memory tools are explicitly excluded and never intercepted.</p>
 <td>Show status: blob count, total size, sessions tracked</td>
 </tr>
 </tbody></table>
-<h3>Tool: <code>rescuer_fetch</code></h3>
+<h5>Tool: <code>rescuer_fetch</code></h5>
 <p>The model-facing tool to retrieve slices of a rescued result.</p>
 <table>
 <thead>
@@ -509,7 +506,7 @@ memory tools are explicitly excluded and never intercepted.</p>
 <p>If a blob has been swept after its retention window, <code>rescuer_fetch</code> returns a
 short message naming the source tool and advising the model to re-run it, rather
 than a bare error.</p>
-<h3>Pass-by-reference</h3>
+<h5>Pass-by-reference</h5>
 <p>A rescued result can be handed to another tool without the model reading it.
 The rescue handle tells the model: to feed the whole result into a downstream
 tool, pass <code>tla:&lt;id&gt;</code> as that tool's argument. A <code>tool_request</code> middleware
@@ -521,7 +518,7 @@ model-emitted args), expansion is <strong>denied by default for exec and exfil s
 setups, set <code>passref_allowed_tools</code> to a strict allowlist. Per-token and
 per-call size caps bound how much content one tool call can pull in.</p>
 <hr>
-<h3>Limitations</h3>
+<h5>Limitations</h5>
 <ul>
 <li><strong>Round-trip blindness, mostly addressed.</strong> The model only sees the excerpt
 inline, so anything the excerpt heuristics drop is invisible unless it fetches
@@ -565,9 +562,8 @@ supported.</li>
 fetch it; ids are content-derived and only revealed in the rescuing session's
 handle. Swept-blob guidance is scoped to the owning session.</li>
 </ul>
-<h3>License</h3>
+<h5>License</h5>
 <p>MIT, see <code>LICENSE</code>.</p>
-
   </section>
 </details>
 

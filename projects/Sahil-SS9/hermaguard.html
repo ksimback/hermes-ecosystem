@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>hermaguard — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
-<meta name="description" content="Adversarial bug-hunting code review for AI agents. 3 parallel subagents attack code from different angles, then a consolidator merges and triages findings.…">
+<title>Sahil-SS9/hermaguard — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
+<meta name="description" content="HermaGuard is an adversarial code review skill for AI agents designed to identify vulnerabilities and logic bugs without modifying source code. It utilizes a…">
 <link rel="canonical" href="https://hermesatlas.com/projects/Sahil-SS9/hermaguard">
-<meta property="og:title" content="hermaguard — Hermes Atlas">
-<meta property="og:description" content="Adversarial bug-hunting code review for AI agents. 3 parallel subagents attack code from different angles, then a consolidator merges and triages findings.…">
+<meta property="og:title" content="Sahil-SS9/hermaguard — Hermes Atlas">
+<meta property="og:description" content="HermaGuard is an adversarial code review skill for AI agents designed to identify vulnerabilities and logic bugs without modifying source code. It utilizes a…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/Sahil-SS9/hermaguard">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -15,8 +15,8 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="hermaguard — Hermes Atlas">
-<meta name="twitter:description" content="Adversarial bug-hunting code review for AI agents. 3 parallel subagents attack code from different angles, then a consolidator merges and triages findings.…">
+<meta name="twitter:title" content="Sahil-SS9/hermaguard — Hermes Atlas">
+<meta name="twitter:description" content="HermaGuard is an adversarial code review skill for AI agents designed to identify vulnerabilities and logic bugs without modifying source code. It utilizes a…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermaguard&amp;subtitle=Adversarial+bug-hunting+code+review+for+AI+agents.+3+parallel+subagents+attack+code+from+different+angles%2C+then+a+consolidator+merges+and+triages+findings.+Read-only+%E2%80%94+finds+proble&amp;kind=project+%C2%B7+skills">
 <script type="application/ld+json">
 {
@@ -40,14 +40,11 @@
   "codeRepository": "https://github.com/Sahil-SS9/hermaguard",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Cross-platform",
-  "programmingLanguage": "Python",
-  "license": "https://spdx.org/licenses/MIT.html",
   "author": {
     "@type": "Organization",
     "name": "Sahil-SS9",
     "url": "https://github.com/Sahil-SS9"
   },
-  "dateModified": "2026-06-15T01:20:00.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -87,7 +84,7 @@
   </div>
   <nav class="mast-nav" aria-label="Primary">
     <a href="/" class="active">map</a>
-    <a href="/#curated-lists">lists</a>
+    <a href="/lists/">lists</a>
     <a href="/guide/">handbook</a>
     <a href="/dev/">dev</a>
     <a href="/reports/">reports</a>
@@ -113,10 +110,10 @@
 
   <div class="meta-row">
     <span class="stars">★ 13</span>
-    <span><span class="meta-label">lang</span>Python</span>
-    <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-06-15</span>
+    
+    
+    
   </div>
 
   <div class="actions">
@@ -143,7 +140,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h2>HermaGuard v2.0.0</h2>
+    <h4>HermaGuard v2.0.0</h4>
 <p>Adversarial bug-hunting code review for AI agents. Deterministic pre-scan + 3 parallel subagents attack your code changes from different angles, then a consolidator merges and triages the findings. Read-only — finds problems, doesn't touch your code.</p>
 <pre><code>                   ┌──────────────────────────────┐
                    │   Phase 0: Deterministic      │
@@ -174,7 +171,7 @@
                      │ JSON)        │
                      └──────────────┘
 </code></pre>
-<h3>What's new in v2.0.0</h3>
+<h5>What's new in v2.0.0</h5>
 <ul>
 <li><strong>Deterministic pre-scan layer:</strong> Runs semgrep, bandit, eslint, gosec, and ruff on your diff BEFORE the LLM agents. Catches SQL injection, unsafe deserialisation, hardcoded secrets, and other patterns that language scanners find. Agents then investigate exploitability instead of guessing from scratch.</li>
 <li><strong>JSON output mode:</strong> <code>--json</code> flag writes structured machine-readable findings alongside the markdown report. Enables CI integration, dashboards, and precision tracking.</li>
@@ -185,14 +182,14 @@
 <li><strong>Suppression rules:</strong> Dismiss a pattern 3 times → it becomes a rule that future runs skip. Reduces false positive noise.</li>
 <li><strong>AGENTS.md linter:</strong> A regex keyword/structure heuristic inspired by (not derived from) the Instructions-as-Code criteria. A high score is necessary, not sufficient.</li>
 </ul>
-<h3>What it does</h3>
+<h5>What it does</h5>
 <ul>
 <li><strong>Agent 1 (Edge Case Hunter):</strong> Exhaustive path tracer. Walks every branching path and boundary condition in the diff — null/empty, off-by-one, type coercion, async gaps, race conditions. Reports only unhandled paths.</li>
 <li><strong>Agent 2 (Adversarial Reviewer):</strong> Investigates exploitability of pre-scan findings and hunts additional vulnerabilities. 9 attack surfaces: auth, data integrity, race conditions, rollback safety, schema drift, error handling, observability, input validation, return value integrity.</li>
 <li><strong>Agent 3 (Blast Radius + Integration):</strong> Traces every caller and callee. Maps config coupling, migration safety, API contract changes. Answers: "what else breaks if this ships?"</li>
 <li><strong>Consolidator:</strong> Merges, de-duplicates, triages by risk tier (CRITICAL/HIGH/MEDIUM/LOW), writes structured markdown + JSON report.</li>
 </ul>
-<h3>Project structure</h3>
+<h5>Project structure</h5>
 <pre><code>hermaguard/
 ├── SKILL.md                          # The skill (Hermes/Claude/Codex/any harness)
 ├── README.md                         # This file
@@ -217,7 +214,7 @@
 │       └── server.py
 └── data/                             # Runtime data (gitignored)
 </code></pre>
-<h3>Quick start</h3>
+<h5>Quick start</h5>
 <p>Drop <code>SKILL.md</code> into your agent's skills directory. On Hermes Agent:</p>
 <pre><code class="language-bash">cp SKILL.md ~/.hermes/skills/software-development/hermaguard/SKILL.md
 </code></pre>
@@ -233,18 +230,18 @@ sudo ln -sf $(pwd)/tools/hermaguard-prescan/hermaguard-prescan.py /usr/local/bin
 </code></pre>
 <p>Supported flags: <code>--focus edge</code> (Edge Case Hunter only), <code>--file path/to/file.ts</code> (scope to one file), <code>--since HEAD~3</code> (scope to recent commits), <code>--json</code> (write JSON report), <code>--no-prescan</code> (skip static analysis).</p>
 <p>Also works with Claude Code, Codex CLI, or any agent framework with subagent capabilities.</p>
-<h3>Run tests</h3>
+<h5>Run tests</h5>
 <pre><code class="language-bash">python3 -m pytest test_tools.py -q     # or: python3 -m unittest test_tools.py -v
 # 46 tests. Every test imports the module and calls real functions —
 # delete a tool and its tests error rather than pass.
 </code></pre>
-<h3>Benchmark</h3>
+<h5>Benchmark</h5>
 <p>Score-only: your harness emits a <code>--json</code> report per bug, this scores it against a seeded corpus's ground truth. It does not run the skill itself.</p>
 <pre><code class="language-bash">python3 tools/hermaguard-benchmark/benchmark.py \
   --bugs tools/hermaguard-benchmark/bugs --results tools/hermaguard-benchmark/results
 </code></pre>
 <p>Run it yourself to get precision/recall/F1 for your harness.</p>
-<h3>Integration with CI</h3>
+<h5>Integration with CI</h5>
 <p>Copy <code>.github/workflows/hermaguard.yml</code> using the provided action:</p>
 <pre><code class="language-yaml">- uses: Sahil-SS9/hermaguard@v2
   with:
@@ -252,19 +249,18 @@ sudo ln -sf $(pwd)/tools/hermaguard-prescan/hermaguard-prescan.py /usr/local/bin
     comment_mode: inline
 </code></pre>
 <p>Pre-scan runs automatically. Full LLM review runs interactively (<code>/hermaguard</code>).</p>
-<h3>Why it exists</h3>
+<h5>Why it exists</h5>
 <p>Existing code review tools fall into two camps: security scanners (narrow to auth/crypto, miss logic bugs) and general review tools (mix bug hunting with style checks, diluting focus). HermaGuard is the first skill where ALL agents are purely adversarial — every subagent is trying to break the code, not validate it. With v2.0.0, it adds a deterministic floor (static analysis) underneath the LLM ceiling, closing the gap on both false positives and missed bugs.</p>
 <p>Built by synthesising 8 implementations: Trail of Bits <code>differential-review</code>, BMAD <code>edge-case-hunter</code> and <code>adversarial-general</code>, BMAD <code>bmad-code-review</code>, dementev-dev <code>adversarial-review</code>, Anthropic <code>claude-code-security-review</code>, Anthropic Claude Code Review Plugin, and the adversarial prompt pattern from r/ClaudeAI.</p>
 <p>v2.0.0 extensions based on findings from TRACE (runtime enforcement), HyperTool (composite calls), OrchRM (orchestration reward modeling), Agents-K1 (knowledge graphs), Agentic PR Rejection (failure mode analysis), Instructions-as-Code (instruction file effectiveness), and RAH (harness recursion measurement).</p>
-<h3>Related</h3>
+<h5>Related</h5>
 <ul>
 <li><strong>Benchmark and GitHub Action:</strong> in-repo under <code>tools/hermaguard-benchmark/</code> and <code>integrations/github-action/</code> (not separate repos).</li>
 <li><strong>Author:</strong> Sahil Saghir (<a href="https://github.com/Sahil-SS9">@Sahil-SS9</a>)</li>
 <li><strong>License:</strong> MIT</li>
 </ul>
-<h3>Contributing</h3>
+<h5>Contributing</h5>
 <p>Open an issue or PR. Bug reports with reproduction steps appreciated. Feature ideas for additional agents (e.g., performance regression hunter, accessibility auditor) welcome. Run <code>python3 -m pytest test_tools.py -q</code> before submitting PRs.</p>
-
   </section>
 </details>
 
