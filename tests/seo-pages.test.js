@@ -76,6 +76,7 @@ test("homepage baked counters match the catalog", () => {
 test("sitemap covers lists index + all projects, with lastmod on every URL", () => {
   const sitemap = read("sitemap.xml");
   assert.ok(sitemap.includes("<loc>https://hermesatlas.com/lists/</loc>"), "/lists/ in sitemap");
+  assert.ok(sitemap.includes("<loc>https://hermesatlas.com/masterclass/</loc>"), "/masterclass/ in sitemap");
   for (const r of repos) {
     assert.ok(
       sitemap.includes(`<loc>https://hermesatlas.com/projects/${r.owner}/${r.repo}</loc>`),

@@ -6,19 +6,37 @@
    Source of truth: DESIGN.md §5 and mock-a-brutalist.html
    ================================================================= */
 
-/* ─── Theme toggle (text-based, inline in masthead per DESIGN.md §13) ── */
+/* ─── Compact icon theme control ───────────────────────────── */
 #theme-toggle {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
   color: var(--ink-soft);
-  padding: 2px 0;
-  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--rule);
+  background: var(--bg-offset);
+  transition: border-color 0.2s, background 0.2s;
 }
-#theme-toggle .tt-active { color: var(--ink); }
-#theme-toggle .tt-sep { color: var(--rule-strong); margin: 0 6px; }
-#theme-toggle:hover { color: var(--ink); }
+#theme-toggle:hover { border-color: var(--rule-strong); }
+#theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+#theme-toggle .tt-icon {
+  width: 23px;
+  height: 21px;
+  display: grid;
+  place-items: center;
+  color: var(--ink-mute);
+  transition: color 0.2s, background 0.2s;
+}
+#theme-toggle .tt-icon svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+#theme-toggle .tt-icon.tt-active { color: var(--bg); background: var(--accent); }
 
 /* ─── Masthead ─────────────────────────────────────────────── */
 .masthead {
@@ -762,7 +780,7 @@
 #chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* ─── Responsive ───────────────────────────────────────────── */
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .masthead {
     grid-template-columns: 1fr;
     gap: 12px;

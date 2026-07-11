@@ -7,6 +7,8 @@
     const isLight = current === 'light';
     toggle.querySelector('.tt-light').classList.toggle('tt-active', isLight);
     toggle.querySelector('.tt-dark').classList.toggle('tt-active', !isLight);
+    toggle.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
+    toggle.setAttribute('title', isLight ? 'Switch to dark theme' : 'Switch to light theme');
   }
   renderThemeToggle();
 

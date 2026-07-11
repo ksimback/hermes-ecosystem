@@ -8,6 +8,8 @@
     var c = document.documentElement.getAttribute('data-theme');
     t.querySelector('.tt-light').classList.toggle('tt-active', c === 'light');
     t.querySelector('.tt-dark').classList.toggle('tt-active', c !== 'light');
+    t.setAttribute('aria-label', c === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
+    t.setAttribute('title', c === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
   }
   render();
   t.addEventListener('click', function () {

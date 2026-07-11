@@ -12,7 +12,7 @@
 
 import fs from "fs";
 import path from "path";
-import { execSync } from "child_process";
+import { execFileSync, execSync } from "child_process";
 import { fileURLToPath } from "url";
 import { marked } from "marked";
 import { JSDOM } from "jsdom";
@@ -279,6 +279,7 @@ function renderMasthead(activeNav) {
     { href: "/", label: "map", id: "map" },
     { href: "/lists/", label: "lists", id: "lists" },
     { href: "/guide/", label: "handbook", id: "handbook" },
+    { href: "/masterclass/", label: "masterclass", id: "masterclass" },
     { href: "/dev/", label: "dev", id: "dev" },
     { href: "/reports/", label: "reports", id: "reports" },
     { href: "/#newsletter", label: "newsletter", id: "newsletter" },
@@ -298,7 +299,12 @@ function renderMasthead(activeNav) {
     ${navHtml}
   </nav>
   <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
-    <span class="tt-light">light</span><span class="tt-sep">/</span><span class="tt-dark">dark</span>
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
   </button>
 </header>`;
 }
@@ -308,6 +314,48 @@ const PAGE_FOOTER = `<footer class="page-footer">
   <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
   <div>v2 · 2026.04</div>
 </footer>`;
+
+// Keep the hand-authored surfaces on the same static masthead as generated
+// project/list pages. The site deploys plain HTML, so navigation must be in the
+// document itself (not injected client-side) for keyboard users and crawlers.
+function refreshSiteChrome() {
+  const targets = ["index.html", "404.html"];
+  const roots = ["guide", "dev", "reports", "privacy", "masterclass"];
+
+  const collect = (relDir) => {
+    const absDir = path.join(ROOT, relDir);
+    if (!fs.existsSync(absDir)) return;
+    for (const entry of fs.readdirSync(absDir, { withFileTypes: true })) {
+      const rel = `${relDir}/${entry.name}`;
+      if (entry.isDirectory()) collect(rel);
+      else if (entry.name.endsWith(".html")) targets.push(rel);
+    }
+  };
+  for (const relDir of roots) collect(relDir);
+
+  const activeFor = (rel) => {
+    if (rel === "index.html") return "map";
+    if (rel.startsWith("guide/")) return "handbook";
+    if (rel.startsWith("masterclass/")) return "masterclass";
+    if (rel.startsWith("dev/")) return "dev";
+    if (rel.startsWith("reports/")) return "reports";
+    return null;
+  };
+
+  let refreshed = 0;
+  for (const rel of [...new Set(targets)]) {
+    const abs = path.join(ROOT, rel);
+    if (!fs.existsSync(abs)) continue;
+    const original = fs.readFileSync(abs, "utf-8");
+    if (!/<header class="masthead">/.test(original)) continue;
+    const next = original.replace(
+      /<header class="masthead">[\s\S]*?<\/header>/,
+      renderMasthead(activeFor(rel)),
+    );
+    if (next !== original && writePage(abs, next)) refreshed++;
+  }
+  console.log(`  refreshed shared masthead on ${refreshed} hand-authored page(s)`);
+}
 
 // ── Split owner/repo for display ──
 function splitName(full) {
@@ -463,6 +511,7 @@ function stripHtmlToText(html) {
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
     .replace(/[ \t]+/g, " ")
+    .replace(/[ \t]+(?=\r?\n)/g, "")
     .replace(/\n\s*\n\s*\n+/g, "\n\n")
     .trim();
 }
@@ -579,6 +628,9 @@ Hermes Atlas tracks every open-source project in the Hermes Agent ecosystem acro
 - [The Hermes Agent Memory Guidebook](${SITE_URL}/guide/memory/): Kevin Simback's guide to native memory, MemoryProviders, and community memory plug-ins.
 - [Hermes Agent vs. Claude Code](${SITE_URL}/guide/vs-claude-code/): Feature-by-feature comparison for choosing between the two.
 
+## Masterclass
+- [Tonbi's Hermes Agent Masterclass](${SITE_URL}/masterclass/): Ten video modules covering setup, deployment, memory, skills, models, tools, automation, subagents, profiles, Kanban, and security, with transcript-derived field notes and timestamp links.
+
 ## Dev Tutorial
 A hands-on developer tutorial for building on the Hermes Agent codebase, written for agentic developers (no CS degree assumed). Seven modules plus reference sheets.
 - [Build on Hermes Agent (index)](${SITE_URL}/dev/): The tutorial hub — 7 modules from mental model to shipping your own extension.
@@ -651,6 +703,12 @@ This file is the companion to ${SITE_URL}/llms.txt (the concise index).`);
   try {
     const memoryDraft = fs.readFileSync(path.join(ROOT, "drafts", "guide-memory.md"), "utf-8");
     sections.push(`# The Hermes Agent Memory Guidebook (/guide/memory/)\n\nCanonical URL: ${SITE_URL}/guide/memory/\n\n${memoryDraft}`);
+  } catch {}
+
+  try {
+    const masterclassHtml = fs.readFileSync(path.join(ROOT, "masterclass", "index.html"), "utf-8");
+    const stripped = stripHtmlToText(masterclassHtml);
+    if (stripped) sections.push(`# Tonbi's Hermes Agent Masterclass (/masterclass/)\n\nCanonical URL: ${SITE_URL}/masterclass/\n\n${stripped}`);
   } catch {}
 
   try {
@@ -1265,6 +1323,8 @@ function generateSitemap(projectPages, listPages, reportPages = []) {
     urls += entry(`/guide/${slug}/`, `guide/${slug}/index.html`, "monthly", "0.8");
   }
 
+  urls += entry("/masterclass/", "masterclass/index.html", "monthly", "0.9");
+
   urls += entry("/dev/", "dev/index.html", "monthly", "0.9");
   const devSlugs = fs.readdirSync(path.join(ROOT, "dev"))
     .filter((f) => f.endsWith(".html") && f !== "index.html")
@@ -1701,22 +1761,28 @@ async function main() {
         }
       }
     } else {
-      // Offline: reuse the README HTML already baked into the existing page.
-      // Demote heading levels (h1→h2, ..., h5→h6) so the page has one <h1>,
-      // matching what the online `marked` renderer emits.
+      // Offline: reuse the README HTML already baked into the committed page.
+      // The online renderer has already demoted its headings exactly once; doing
+      // that again on every local build progressively collapses h2→h3→...→h6.
+      // Prefer HEAD so an in-progress generated-page diff cannot become the next
+      // build's input. Fall back to disk for a brand-new, not-yet-committed page.
       const existingPath = path.join(projectsDir, repo.owner, `${repo.repo}.html`);
       if (fs.existsSync(existingPath)) {
         try {
-          const existing = fs.readFileSync(existingPath, "utf-8");
+          const rel = path.relative(ROOT, existingPath).split(path.sep).join("/");
+          let existing;
+          try {
+            existing = execFileSync("git", ["show", `HEAD:${rel}`], {
+              cwd: ROOT,
+              encoding: "utf-8",
+              stdio: ["ignore", "pipe", "ignore"],
+            });
+          } catch {
+            existing = fs.readFileSync(existingPath, "utf-8");
+          }
           const match = existing.match(/<section class="readme"[^>]*>([\s\S]*?)<\/section>/);
           if (match && !match[1].includes("no-readme")) {
-            readmeHtml = sanitizeReadmeHtml(match[1]
-              .replace(/<(\/?)h5(\s|>)/g, "<$1h6$2")
-              .replace(/<(\/?)h4(\s|>)/g, "<$1h5$2")
-              .replace(/<(\/?)h3(\s|>)/g, "<$1h4$2")
-              .replace(/<(\/?)h2(\s|>)/g, "<$1h3$2")
-              .replace(/<(\/?)h1(\s|>)/g, "<$1h2$2")
-              .trim());
+            readmeHtml = sanitizeReadmeHtml(match[1].trim());
           }
         } catch {}
       }
@@ -1788,6 +1854,10 @@ async function main() {
   // Must run before writeLlmsFiles (which bundles the drafts and guide HTML)
   // and before generateSitemap (so refreshed pages get today's lastmod).
   refreshHandAuthoredPages(repos);
+
+  // Apply the canonical navigation + compact icon theme control to every
+  // hand-authored surface after its content freshness pass.
+  refreshSiteChrome();
 
   // Generate list pages
   console.log("Generating list pages...");
