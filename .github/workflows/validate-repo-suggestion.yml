@@ -12,6 +12,9 @@ env:
 on:
   issues:
     types: [opened, edited, labeled]
+  schedule:
+    - cron: '15 5 * * *'
+  workflow_dispatch:
 
 # Serialize validation runs. Without this, two concurrent submissions create
 # PRs that both branch from the same main SHA; merging the first leaves the
@@ -23,8 +26,10 @@ concurrency:
 
 jobs:
   validate:
+    if: github.event_name == 'issues'
     runs-on: ubuntu-latest
     permissions:
+      actions: write
       issues: write
       contents: write
       pull-requests: write
@@ -351,6 +356,15 @@ jobs:
             if (!category || category === 'Not sure') {
               category = process.env.INFERRED_CATEGORY || 'Developer Tools';
             }
+            const { pathToFileURL } = require('url');
+            const validatorUrl = pathToFileURL(
+              `${process.env.GITHUB_WORKSPACE}/scripts/validate-repos-json.js`
+            ).href;
+            const { CANONICAL_CATEGORIES, validateRepos } = await import(validatorUrl);
+            if (!CANONICAL_CATEGORIES.includes(category)) {
+              console.log(`Ignoring non-canonical suggested category "${category}"; using inferred category.`);
+              category = process.env.INFERRED_CATEGORY || 'Developer Tools';
+            }
 
             // Always source repos.json from the LATEST main via API, not from
             // the workflow's local checkout. The checkout happens at the start
@@ -411,6 +425,14 @@ jobs:
 
             repos.push(newRepo);
 
+            // GITHUB_TOKEN-authored PRs do not fire pull_request workflows,
+            // so validate the exact candidate catalog before writing a branch.
+            const validationErrors = validateRepos(repos);
+            if (validationErrors.length > 0) {
+              core.setFailed(`Candidate repos.json is invalid:\n${validationErrors.join('\n')}`);
+              return;
+            }
+
             // Write updated repos.json
             const branch = `add-repo-${owner}-${repo}`.toLowerCase().replace(/[^a-z0-9-]/g, '-');
 
@@ -464,22 +486,16 @@ jobs:
               base: 'main'
             });
 
-            // Merge the validator PR inside this serialized workflow instead
-            // of delegating to native auto-merge immediately after PR creation.
-            // Native auto-merge has repeatedly rejected fresh validator PRs as
-            // "unstable" while preview/check contexts are still materializing;
-            // the job then exits, the next queued submission branches from the
-            // same main, and the open PR stack becomes DIRTY once any earlier
-            // add-repo PR lands. Keeping this workflow alive until checks are
-            // successful preserves the serialization invariant: the next repo
-            // submission only reads main after this one has either merged or
-            // produced a single deduped blocker issue.
+            // Merge inside this serialized workflow. The exact candidate was
+            // validated above; external contexts may still settle while
+            // GitHub computes mergeability, but bot-created PRs cannot launch
+            // a second GitHub Actions workflow through pull_request events.
             let mergedByWorkflow = false;
             let mergeState = 'UNKNOWN';
             let checkSummary = 'pending';
             let blockerReason = '';
 
-            for (let i = 0; i < 60; i++) {
+            for (let i = 0; i < 24; i++) {
               const { repository } = await github.graphql(
                 `query($owner: String!, $repo: String!, $num: Int!) {
                   repository(owner: $owner, name: $repo) {
@@ -524,19 +540,12 @@ jobs:
                 ? `${contexts.length - blocking.length}/${contexts.length} passing`
                 : 'no check contexts yet';
 
-              // Require the data-integrity gates to have actually run and passed
-              // before merging. The old gate merged as soon as ANY context was
-              // green with none blocking — so a PR whose only posted check was
-              // the fast Vercel status merged in ~30s, before `validate`
-              // (repos.json schema + duplicate/category checks) and `smoke`
-              // even registered. That is how the duplicate + bad-category
-              // entries slipped in. Wait for both named CheckRuns to complete
-              // SUCCESS.
-              const REQUIRED = ['validate', 'smoke'];
-              const requiredGreen = REQUIRED.every(name => {
-                const c = contexts.find(x => x.__typename === 'CheckRun' && x.name === name);
-                return c && c.status === 'COMPLETED' && ['SUCCESS', 'SKIPPED', 'NEUTRAL'].includes(c.conclusion);
-              });
+              // Bot-authored pull requests cannot emit the pull_request event,
+              // so `validate` and `smoke` CheckRuns will never appear. The
+              // exact candidate catalog was validated in-process before the
+              // branch was written; external contexts (for example Vercel)
+              // still must not be pending or failed.
+              const requiredGreen = true;
 
               console.log(`PR #${pr.number}: mergeState=${mergeState}, mergeable=${pull.mergeable}, checks=${checkSummary}, requiredGreen=${requiredGreen}`);
 
@@ -548,17 +557,18 @@ jobs:
                 blockerReason = 'PR is dirty/conflicted';
                 break;
               }
-              if (requiredGreen && blocking.length === 0 && ['CLEAN', 'HAS_HOOKS'].includes(mergeState)) {
+              if (requiredGreen && blocking.length === 0 && ['CLEAN', 'HAS_HOOKS', 'UNSTABLE'].includes(mergeState)) {
                 try {
-                  await github.rest.pulls.merge({
+                  const { data: merge } = await github.rest.pulls.merge({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
                     pull_number: pr.number,
                     merge_method: 'squash',
                     commit_title: `Add ${owner}/${repo} to Atlas ecosystem (#${pr.number})`
                   });
+                  if (!merge.merged) throw new Error(merge.message || 'GitHub declined the merge');
                   mergedByWorkflow = true;
-                  console.log(`Merged PR #${pr.number} after checks passed.`);
+                  console.log(`Merged PR #${pr.number} after candidate validation.`);
                   break;
                 } catch (e) {
                   blockerReason = `Merge API failed: ${e.message}`;
@@ -566,12 +576,12 @@ jobs:
                 }
               }
 
-              await new Promise(r => setTimeout(r, 30000));
+              await new Promise(r => setTimeout(r, 5000));
             }
 
             if (!mergedByWorkflow) {
               if (!blockerReason) {
-                blockerReason = `Timed out waiting for mergeable green PR; mergeState=${mergeState}, checks=${checkSummary}`;
+                blockerReason = `Timed out waiting for a mergeable PR; mergeState=${mergeState}, checks=${checkSummary}`;
               }
 
               const issueTitle = `[Workflow] Validator PR #${pr.number} needs manual review`;
@@ -596,12 +606,24 @@ jobs:
                   body: `Still blocked.\n\n${body}`
                 });
               }
-              core.warning(`PR #${pr.number} did not auto-merge: ${blockerReason}`);
+              core.setFailed(`PR #${pr.number} did not auto-merge: ${blockerReason}`);
+            }
+
+            if (mergedByWorkflow) {
+              // A merge made with GITHUB_TOKEN does not fire a push-triggered
+              // workflow. Start the deterministic site refresh explicitly.
+              await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'build-pages.yml',
+                ref: 'main'
+              });
+              console.log('Dispatched build-pages.yml after repo merge');
             }
 
             // Comment on the source issue with the PR link and outcome.
             const mergeNote = mergedByWorkflow
-              ? '\n\nThe validator workflow merged the PR after checks passed.'
+              ? '\n\nThe validator workflow validated and merged the PR, then dispatched the site rebuild.'
               : '\n\nThe PR was created, but did not auto-merge; a deduped workflow issue tracks manual review.';
             await github.rest.issues.createComment({
               owner: context.repo.owner,
@@ -609,3 +631,26 @@ jobs:
               issue_number: context.issue.number,
               body: `PR created: #${pr.number}\n\nOnce merged, this repo will appear in the ecosystem map.${mergeNote}`
             });
+
+  recover-open-prs:
+    if: github.event_name != 'issues'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Refresh and merge stuck repo-submission PRs sequentially
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/recover-repo-submissions.js
