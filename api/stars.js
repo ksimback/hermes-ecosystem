@@ -1,238 +1,261 @@
-import { kvGet, kvSet } from "../lib/redis.js";
 import { readFileSync } from "fs";
 import { join } from "path";
+import { fetchGitHubStars, validateStarSnapshot } from "../lib/github-stars.js";
+import { kvGet, kvSet } from "../lib/redis.js";
 
-const CACHE_KEY = "stars:current";
-const CACHE_TTL = 3600; // 1 hour
+export const STAR_KEYS = {
+  current: "stars:current",
+  lastGood: "stars:last-good",
+};
+export const CACHE_TTL_SECONDS = 8 * 60 * 60;
+const HISTORY_TTL_SECONDS = 366 * 24 * 60 * 60;
 
-// Load repos at module level (cached across invocations in same lambda)
-let repos = null;
+let reposCache;
 function loadRepos() {
-  if (repos) return repos;
-  try {
-    const raw = readFileSync(join(process.cwd(), "data", "repos.json"), "utf-8");
-    repos = JSON.parse(raw);
-    return repos;
-  } catch (e) {
-    console.error("Failed to load repos.json:", e.message);
-    return [];
-  }
+  if (reposCache) return reposCache;
+  reposCache = JSON.parse(readFileSync(join(process.cwd(), "data", "repos.json"), "utf8"));
+  return reposCache;
 }
 
-// Authoritative Hermes release, built deterministically from the merged release
-// notes (data/latest-release.json). Used as a fallback when the batched GitHub
-// GraphQL query returns a null `latestRelease` — which it has been doing in
-// production for the hermes-agent field while per-repo star counts still resolve,
-// leaving the homepage stuck on a stale baked version. undefined = not loaded.
 let latestReleaseCache;
 function loadLatestRelease() {
   if (latestReleaseCache !== undefined) return latestReleaseCache;
   try {
-    const raw = readFileSync(join(process.cwd(), "data", "latest-release.json"), "utf-8");
-    const r = JSON.parse(raw);
-    latestReleaseCache = r?.version
-      ? { version: r.version, tag: r.tag, name: r.name, publishedAt: r.publishedAt }
+    const release = JSON.parse(
+      readFileSync(join(process.cwd(), "data", "latest-release.json"), "utf8"),
+    );
+    latestReleaseCache = release?.version
+      ? {
+          version: release.version,
+          tag: release.tag,
+          name: release.name,
+          publishedAt: release.publishedAt,
+        }
       : null;
-  } catch (e) {
-    console.error("Failed to load latest-release.json:", e.message);
+  } catch (error) {
+    console.error("Failed to load latest-release.json:", error.message);
     latestReleaseCache = null;
   }
   return latestReleaseCache;
 }
 
-export default async function handler(req, res) {
+function isAuthorized(req, env) {
+  const expected = env.CRON_SECRET ? `Bearer ${env.CRON_SECRET}` : null;
+  return Boolean(expected && req.headers.authorization === expected);
+}
+
+function wantsRefresh(req) {
+  return req.query?.cron === "true" || req.query?.cron === "1";
+}
+
+function staticSnapshot(repoList) {
+  return repoList.map((repo) => ({
+    owner: repo.owner,
+    repo: repo.repo,
+    stars: repo.stars,
+    updatedAt: null,
+  }));
+}
+
+export function buildStarsResponse({
+  starData,
+  hermesRelease = null,
+  atlasStars = null,
+  fetchedAt = null,
+  source,
+  stale,
+  degradedReason = null,
+  complete = true,
+  unavailableRepos = [],
+}) {
+  const repos = Object.fromEntries(
+    starData.map((item) => [
+      `${item.owner}/${item.repo}`,
+      { stars: item.stars, updatedAt: item.updatedAt },
+    ]),
+  );
+  return {
+    source,
+    stale,
+    complete,
+    unavailableRepos,
+    fetchedAt,
+    degradedReason:
+      degradedReason ||
+      (complete ? null : `${unavailableRepos.length} catalog repositories were unavailable`),
+    repos,
+    totals: {
+      stars: starData.reduce((total, item) => total + item.stars, 0),
+      count: starData.length,
+      updated: fetchedAt,
+    },
+    hermes: hermesRelease,
+    atlas: { stars: atlasStars },
+  };
+}
+
+function storedResponseIsValid(value, repoList) {
+  if (!value || typeof value !== "object" || !value.repos) return false;
+  const starData = Object.entries(value.repos).map(([key, item]) => {
+    const separator = key.indexOf("/");
+    return {
+      owner: key.slice(0, separator),
+      repo: key.slice(separator + 1),
+      stars: item?.stars,
+      updatedAt: item?.updatedAt,
+    };
+  });
   try {
-    const repoList = loadRepos();
-    if (repoList.length === 0) {
-      return res.status(500).json({ error: "Repo list unavailable" });
-    }
-
-    // Cache-bypass is reserved for Vercel Cron. Vercel attaches
-    // Authorization: Bearer ${CRON_SECRET} automatically when CRON_SECRET
-    // is set as an env var. Without this check, anyone could call
-    // /api/stars?cron=true to bypass the cache and burn GitHub API quota.
-    const wantsBypass = req.query.cron === "true" || req.query.cron === "1";
-    if (wantsBypass) {
-      const expected = process.env.CRON_SECRET
-        ? `Bearer ${process.env.CRON_SECRET}`
-        : null;
-      if (!expected || req.headers.authorization !== expected) {
-        return res.status(401).json({ error: "Unauthorized" });
-      }
-    }
-
-    // Check cache first
-    const cached = await kvGet(CACHE_KEY);
-    if (cached && !wantsBypass) {
-      return res.status(200).json(cached);
-    }
-
-    // Build GitHub GraphQL query batching all repos
-    const token = process.env.GITHUB_TOKEN;
-    if (!token) {
-      // No token — return static data from repos.json
-      const fallback = buildResponse(repoList.map(r => ({
-        owner: r.owner,
-        repo: r.repo,
-        stars: r.stars,
-        updatedAt: null
-      })));
-      return res.status(200).json(fallback);
-    }
-
-    // Batch all repos into one GraphQL query.
-    // For NousResearch/hermes-agent, also pull latestRelease so the site can
-    // render live Hermes version without staleness. We pull both the tagName
-    // (dated, e.g. "v2026.4.16") and the release name (which contains the
-    // numeric version, e.g. "Hermes Agent v0.10.0 (v2026.4.16)").
-    // Use GraphQL variables (not string interpolation) for owner/repo so values
-    // from data/repos.json can never alter query structure. owner/repo are
-    // declared as typed variables and passed in the `variables` map.
-    const varDecls = [];
-    const variables = {};
-    const repoQueries = repoList.map((r, i) => {
-      varDecls.push(`$owner${i}: String!`, `$name${i}: String!`);
-      variables[`owner${i}`] = r.owner;
-      variables[`name${i}`] = r.repo;
-      const releaseField = (r.owner === "NousResearch" && r.repo === "hermes-agent")
-        ? "latestRelease { tagName name publishedAt }"
-        : "";
-      return `repo${i}: repository(owner: $owner${i}, name: $name${i}) {
-        stargazerCount
-        updatedAt
-        pushedAt
-        ${releaseField}
-      }`;
-    }).join("\n");
-
-    // Also fetch the Hermes Atlas repo's own star count for the masthead CTA.
-    // (Constant, repo-owned identifiers — safe as literals.)
-    const query = `query (${varDecls.join(", ")}) { ${repoQueries}
-      atlas: repository(owner: "ksimback", name: "hermes-ecosystem") {
-        stargazerCount
-      }
-    }`;
-
-    const ghRes = await fetch("https://api.github.com/graphql", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        "User-Agent": "hermes-ecosystem"
-      },
-      body: JSON.stringify({ query, variables })
-    });
-
-    if (!ghRes.ok) {
-      throw new Error(`GitHub API error: ${ghRes.status}`);
-    }
-
-    const ghData = await ghRes.json();
-
-    if (ghData.errors) {
-      console.error("GraphQL errors:", ghData.errors);
-    }
-
-    // Map results back to repos
-    let hermesRelease = null;
-    const starData = repoList.map((r, i) => {
-      const node = ghData.data?.[`repo${i}`];
-      if (r.owner === "NousResearch" && r.repo === "hermes-agent" && node?.latestRelease) {
-        // Parse numeric version (e.g. "v0.10.0") from the release name,
-        // falling back to the tagName if the name doesn't match the pattern.
-        const name = node.latestRelease.name || "";
-        const numericMatch = name.match(/v\d+\.\d+\.\d+/);
-        hermesRelease = {
-          version: numericMatch ? numericMatch[0] : node.latestRelease.tagName,
-          tag: node.latestRelease.tagName,
-          name: node.latestRelease.name,
-          publishedAt: node.latestRelease.publishedAt
-        };
-      }
-      return {
-        owner: r.owner,
-        repo: r.repo,
-        stars: node?.stargazerCount ?? r.stars,
-        updatedAt: node?.pushedAt ?? node?.updatedAt ?? null
-      };
-    });
-
-    // Fall back to the authoritative release notes when GraphQL's latestRelease
-    // comes back null (see loadLatestRelease). Keeps the homepage version live
-    // and correct regardless of the GraphQL field flaking out.
-    if (!hermesRelease) {
-      hermesRelease = loadLatestRelease();
-      if (hermesRelease) {
-        console.warn("stars: GraphQL latestRelease null — using data/latest-release.json fallback");
-      }
-    }
-
-    // Atlas star count for the masthead CTA. GraphQL's dedicated `atlas` block
-    // has also been returning null in production; ksimback/hermes-ecosystem is
-    // in the catalog, so fall back to its live entry in the star map.
-    let atlasStars = ghData.data?.atlas?.stargazerCount ?? null;
-    if (atlasStars == null) {
-      const self = starData.find(
-        (r) => r.owner === "ksimback" && r.repo === "hermes-ecosystem"
-      );
-      atlasStars = self?.stars ?? null;
-    }
-
-    const response = buildResponse(starData, hermesRelease, atlasStars);
-
-    // Cache the result
-    await kvSet(CACHE_KEY, response, { ex: CACHE_TTL });
-
-    // Save daily snapshot for history
-    const today = new Date().toISOString().slice(0, 10);
-    const historyKey = `stars:history:${today}`;
-    const snapshot = Object.fromEntries(
-      starData.map(r => [`${r.owner}/${r.repo}`, r.stars])
-    );
-    // 366-day TTL: stars-history only ever reads back 365 days, so without an
-    // expiry these daily keys accumulate in Redis forever.
-    await kvSet(historyKey, snapshot, { ex: 366 * 86400 });
-
-    return res.status(200).json(response);
-  } catch (err) {
-    console.error("Stars API error:", err);
-    // Fallback to static data
-    const repoList = loadRepos();
-    const fallback = buildResponse(repoList.map(r => ({
-      owner: r.owner,
-      repo: r.repo,
-      stars: r.stars,
-      updatedAt: null
-    })));
-    // Serve the static fallback but never let this error response get cached
-    // by the CDN (the /api/(.*) rule in vercel.json sets s-maxage=3600, which
-    // would pin a transient GitHub/Redis failure as the "good" answer for an
-    // hour). Do not leak err.message to the client — it's logged above.
-    res.setHeader("Cache-Control", "no-store");
-    return res.status(200).json(fallback);
+    validateStarSnapshot({
+      starData,
+      atlasStars: value.atlas?.stars,
+      complete: value.complete,
+      unavailableRepos: value.unavailableRepos,
+    }, repoList);
+    return Boolean(value.fetchedAt && !Number.isNaN(Date.parse(value.fetchedAt)));
+  } catch {
+    return false;
   }
 }
 
-function buildResponse(starData, hermesRelease = null, atlasStars = null) {
-  const totalStars = starData.reduce((sum, r) => sum + r.stars, 0);
-
-  // Build a lookup map
-  const repoMap = {};
-  starData.forEach(r => {
-    repoMap[`${r.owner}/${r.repo}`] = {
-      stars: r.stars,
-      updatedAt: r.updatedAt
-    };
-  });
-
+function markFallback(value, reason) {
   return {
-    repos: repoMap,
-    totals: {
-      stars: totalStars,
-      count: starData.length,
-      updated: new Date().toISOString()
-    },
-    hermes: hermesRelease,
-    atlas: { stars: atlasStars }
+    ...value,
+    source: "last-good",
+    stale: true,
+    degradedReason: reason,
   };
 }
+
+export function createStarsHandler({
+  kvGetImpl = kvGet,
+  kvSetImpl = kvSet,
+  fetchImpl = fetch,
+  loadReposImpl = loadRepos,
+  loadLatestReleaseImpl = loadLatestRelease,
+  env = process.env,
+  now = () => new Date(),
+} = {}) {
+  async function persistSnapshot(repoList, snapshot, source) {
+    const normalizedSnapshot = {
+      ...snapshot,
+      complete: snapshot.complete ?? (snapshot.unavailableRepos || []).length === 0,
+      unavailableRepos: snapshot.unavailableRepos || [],
+    };
+    validateStarSnapshot(normalizedSnapshot, repoList);
+    const fetchedAt = now().toISOString();
+    const response = buildStarsResponse({
+      ...normalizedSnapshot,
+      hermesRelease: normalizedSnapshot.hermesRelease || loadLatestReleaseImpl(),
+      fetchedAt,
+      source,
+      stale: false,
+    });
+    const history = {
+      fetchedAt,
+      data: Object.fromEntries(
+        normalizedSnapshot.starData.map((item) => [`${item.owner}/${item.repo}`, item.stars]),
+      ),
+    };
+    const historyKey = `stars:history:${fetchedAt.slice(0, 10)}`;
+    const writes = await Promise.all([
+      kvSetImpl(STAR_KEYS.current, response, { ex: CACHE_TTL_SECONDS }),
+      kvSetImpl(STAR_KEYS.lastGood, response),
+      kvSetImpl(historyKey, history, { ex: HISTORY_TTL_SECONDS }),
+    ]);
+    if (writes.some((written) => written !== true)) {
+      throw new Error("Star snapshot persistence failed");
+    }
+    return response;
+  }
+
+  return async function starsHandler(req, res) {
+    let repoList;
+    try {
+      repoList = loadReposImpl();
+      if (!Array.isArray(repoList) || repoList.length === 0) {
+        throw new Error("Repo list unavailable");
+      }
+
+      const refresh = wantsRefresh(req);
+      if ((refresh || req.method === "POST") && !isAuthorized(req, env)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      if (req.method === "POST") {
+        if (!refresh) return res.status(400).json({ error: "Missing cron refresh flag" });
+        const snapshot = req.body;
+        if (!snapshot || typeof snapshot !== "object") {
+          return res.status(400).json({ error: "Invalid star snapshot" });
+        }
+        const response = await persistSnapshot(repoList, snapshot, "github-actions");
+        res.setHeader("Cache-Control", "no-store");
+        return res.status(200).json(response);
+      }
+
+      if (req.method && req.method !== "GET") {
+        res.setHeader("Allow", "GET, POST");
+        return res.status(405).json({ error: "Method not allowed" });
+      }
+
+      const cached = await kvGetImpl(STAR_KEYS.current);
+      if (!refresh && storedResponseIsValid(cached, repoList)) {
+        return res.status(200).json(cached);
+      }
+
+      if (env.GITHUB_TOKEN) {
+        try {
+          const snapshot = await fetchGitHubStars({
+            repoList,
+            token: env.GITHUB_TOKEN,
+            fetchImpl,
+          });
+          const response = await persistSnapshot(repoList, snapshot, "github-api");
+          return res.status(200).json(response);
+        } catch (error) {
+          console.error("Live star refresh failed:", error.message);
+          if (refresh) {
+            res.setHeader("Cache-Control", "no-store");
+            return res.status(503).json({ error: "Star refresh failed", stale: true });
+          }
+        }
+      } else if (refresh) {
+        res.setHeader("Cache-Control", "no-store");
+        return res.status(503).json({ error: "GitHub token unavailable", stale: true });
+      }
+
+      const lastGood = await kvGetImpl(STAR_KEYS.lastGood);
+      if (storedResponseIsValid(lastGood, repoList)) {
+        res.setHeader("Cache-Control", "no-store");
+        return res.status(200).json(markFallback(lastGood, "Live refresh unavailable"));
+      }
+
+      res.setHeader("Cache-Control", "no-store");
+      return res.status(200).json(
+        buildStarsResponse({
+          starData: staticSnapshot(repoList),
+          hermesRelease: loadLatestReleaseImpl(),
+          atlasStars:
+            repoList.find(
+              (repo) => repo.owner === "ksimback" && repo.repo === "hermes-ecosystem",
+            )?.stars ?? null,
+          source: "static",
+          stale: true,
+          complete: false,
+          unavailableRepos: repoList.map((repo) => ({
+            owner: repo.owner,
+            repo: repo.repo,
+            reason: "No live star snapshot is available",
+          })),
+          degradedReason: "No live star snapshot is available",
+        }),
+      );
+    } catch (error) {
+      console.error("Stars API error:", error);
+      res.setHeader("Cache-Control", "no-store");
+      return res.status(503).json({ error: "Stars service unavailable", stale: true });
+    }
+  };
+}
+
+export default createStarsHandler();

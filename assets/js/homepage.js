@@ -90,13 +90,19 @@
       const data = await starsRes.json();
 
       let history = null;
+      let historyIsFresh = false;
       if (historyRes && historyRes.ok) {
         const histData = await historyRes.json();
         history = histData.history || [];
+        historyIsFresh = histData.stale === false;
+      }
+
+      if (data.stale) {
+        console.warn('[stars] displaying a stale snapshot:', data.degradedReason || data.source);
       }
 
       const timeSeries = {};
-      if (history && history.length > 0) {
+      if (historyIsFresh && history && history.length > 0) {
         for (const snapshot of history) {
           for (const [key, stars] of Object.entries(snapshot.data || {})) {
             if (!timeSeries[key]) timeSeries[key] = [];
