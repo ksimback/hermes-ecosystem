@@ -40,17 +40,20 @@
   "codeRepository": "https://github.com/AaronWong1999/hermesclaw",
   "applicationCategory": "CommunicationApplication",
   "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
   "author": {
     "@type": "Organization",
     "name": "AaronWong1999",
     "url": "https://github.com/AaronWong1999"
   },
+  "dateModified": "2026-06-15T11:50:53.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 675
+    "userInteractionCount": 681
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -78,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">185·repos</span>
+    <span id="meta-count">184·repos</span>
     <span id="meta-version">hermes·v0.18.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -115,11 +118,11 @@
   <p class="project-desc">Run Hermes Agent and OpenClaw on the same WeChat account</p>
 
   <div class="meta-row">
-    <span class="stars">★ 675</span>
+    <span class="stars">★ 681</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-06-15</span>
   </div>
 
   <div class="actions">
@@ -146,7 +149,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>HermesClaw</h4>
+    <h2>HermesClaw</h2>
 <p><strong>Run <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>, <a href="https://github.com/openclaw/openclaw">OpenClaw</a>, and <a href="https://github.com/sst/opencode">OpenCode</a> on the same WeChat account. One command to install.</strong></p>
 <p><strong>在同一个微信账号上同时多开 <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>、<a href="https://github.com/openclaw/openclaw">OpenClaw</a> 和 <a href="https://github.com/sst/opencode">OpenCode</a>。一条命令安装。</strong></p>
 <p align="center">
@@ -164,14 +167,14 @@
 </p>
 
 <hr>
-<h5>Why HermesClaw</h5>
+<h3>Why HermesClaw</h3>
 <p>Both Hermes Agent and OpenClaw now support WeChat natively — <strong>but you can't run both on the same account.</strong> Each gateway exclusively locks the iLink connection. If you start both, one gets 403 errors and drops messages. OpenCode adds a third AI brain via its ACP subprocess protocol.</p>
 <p>HermesClaw solves this by becoming the <strong>sole iLink poller</strong>, then running two local proxy servers (for Hermes and OpenClaw) plus a direct ACP bridge (for OpenCode). Each gateway believes it's talking to the real iLink API.</p>
 <p>The new OpenCode support also lets you <strong>Vibe Code via WeChat voice messages</strong> — just speak and OpenCode handles it, backed by four free models including MiniMax M2.5 Free. You can also use it alongside the other two agents to complement each other — fixing their issues, tracing bugs, or inspecting the local environment.</p>
 <p>现在 Hermes 和 OpenClaw 都原生支持微信了——<strong>但你不能在同一个账号上双开。</strong> 每个 Gateway 会独占 iLink 连接。HermesClaw 解决这个问题：它作为唯一的 iLink 轮询者，运行两个本地代理，让两个 Gateway 各连各的。</p>
 <p>新版还增加了 OpenCode 支持，现在你可以用微信语音直接进行 <strong>Vibe Coding</strong> 了，调用的就是 OpenCode 中包含 MiniMax M2.5 Free 在内的四个免费模型。你也可以用它和另外两个 Agent 互相补充使用，比如帮它们修问题、查 bug、看本机环境。</p>
 <hr>
-<h5>Special Thanks</h5>
+<h3>Special Thanks</h3>
 <p>Special thanks to the <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> team at Nous Research for recognizing and recommending <strong>HermesClaw</strong> in the <code>Community</code> section of their official GitHub README.</p>
 <p>特别感谢 Nous Research 的 <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> 团队，在其 GitHub 官方 README 的 <code>Community</code> 区收录并推荐 <strong>HermesClaw</strong>。</p>
 <p align="center">
@@ -183,7 +186,7 @@
 <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent README - Community</a></p>
 </blockquote>
 <hr>
-<h5>Before / After</h5>
+<h3>Before / After</h3>
 <table>
 <thead>
 <tr>
@@ -234,7 +237,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h5>Architecture</h5>
+<h3>Architecture</h3>
 <pre><code>                    ┌────────── iLink API ──────────┐
                     │  ilinkai.weixin.qq.com        │
                     └──────────┬────────────────────┘
@@ -267,7 +270,7 @@
 <p>HermesClaw is a thin Python proxy (~500 lines). It does <strong>not</strong> process media, call agent APIs, or touch agent memory. It just queues and forwards raw iLink protocol messages. Each gateway handles its own media decryption, markdown formatting, and AI interaction natively.</p>
 <p>HermesClaw 只是一个轻量转发代理（~500 行），不处理媒体、不调 Agent API、不动记忆。每个 Gateway 原生处理自己的媒体解密和 AI 交互。</p>
 <hr>
-<h5>Prerequisites</h5>
+<h3>Prerequisites</h3>
 <p>Before installing HermesClaw, you need <strong>at least one</strong> of:</p>
 <ol>
 <li><strong>OpenClaw + clawbot</strong> (<code>openclaw-weixin</code>) — installed and logged into WeChat</li>
@@ -276,7 +279,7 @@
 <p>Both installed = full dual-open. One installed = single-agent mode with the option to add the other later.</p>
 <p>安装 HermesClaw 前，需要至少安装以下其中一个：OpenClaw 的 clawbot，或者 Hermes 的微信 Gateway。</p>
 <hr>
-<h5>Quick Install</h5>
+<h3>Quick Install</h3>
 <pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/AaronWong1999/hermesclaw/main/install.sh | bash
 </code></pre>
 <p>For <strong>non-interactive / automated</strong> installs (skips all confirmation prompts):</p>
@@ -296,7 +299,7 @@ bash install.sh -y
 <li>Set up the <code>hermesclaw</code> systemd service</li>
 </ol>
 <p>After install, restart your gateways and send <code>/whoami</code> in WeChat.</p>
-<h6>AI-assisted install</h6>
+<h4>AI-assisted install</h4>
 <p>Drop this into any AI agent on the target machine:</p>
 <pre><code class="language-text">Run: curl -fsSL https://raw.githubusercontent.com/AaronWong1999/hermesclaw/main/install.sh | bash
 
@@ -321,7 +324,7 @@ by paragraphs.  The fix script is at fix_hermes_splitting.sh.
 Restart gateways.  Verify /whoami works in WeChat.
 </code></pre>
 <hr>
-<h5>Commands</h5>
+<h3>Commands</h3>
 <table>
 <thead>
 <tr>
@@ -359,13 +362,13 @@ Restart gateways.  Verify /whoami works in WeChat.
 </tr>
 </tbody></table>
 <p>Default route is <strong>Hermes</strong>. In <code>/both</code> and <code>/three</code> modes, proxy replies are prefixed with <code>[Hermes Agent]</code> / <code>[OpenClaw]</code> / <code>[OpenCode]</code> for attribution.</p>
-<h6>OpenCode setup</h6>
+<h4>OpenCode setup</h4>
 <p>OpenCode connects via its native ACP subprocess protocol — no proxy port needed. Install it first:</p>
 <pre><code class="language-bash">npm install -g opencode-ai
 </code></pre>
 <p>Then set <code>OPENCODE_CMD</code> in <code>.env</code> (the installer auto-detects it). Use <code>/opencode</code> or <code>/three</code> once OpenCode is installed.</p>
 <hr>
-<h5>Project layout</h5>
+<h3>Project layout</h3>
 <pre><code class="language-text">hermesclaw.py             # ~870 lines. Triple-proxy router + ACP bridge.
 install.sh                # Smart auto-detecting installer (-y for non-interactive).
 fix_hermes_splitting.sh   # Patch Hermes weixin.py (optional, recommended).
@@ -375,7 +378,7 @@ LICENSE
 docs/                     # Screenshots and media.
 </code></pre>
 <hr>
-<h5>Media handling</h5>
+<h3>Media handling</h3>
 <p>HermesClaw forwards <strong>raw iLink protocol messages</strong> to each gateway. This means:</p>
 <ul>
 <li><strong>Text</strong> — forwarded as-is</li>
@@ -384,13 +387,13 @@ docs/                     # Screenshots and media.
 </ul>
 <p>HermesClaw does <strong>not</strong> do AES decryption, CDN downloads, or media re-encoding. That's each gateway's job.</p>
 <hr>
-<h5>Uninstall</h5>
-<h6>AI-assisted</h6>
+<h3>Uninstall</h3>
+<h4>AI-assisted</h4>
 <pre><code class="language-text">Stop and disable the hermesclaw systemd service.  Restore openclaw-weixin
 account .bak files.  Remove WEIXIN_BASE_URL override from ~/.hermes/.env
 (or restore .bak).  Optionally remove ~/hermesclaw directory.
 </code></pre>
-<h6>Manual</h6>
+<h4>Manual</h4>
 <pre><code class="language-bash">sudo systemctl stop hermesclaw
 sudo systemctl disable hermesclaw
 sudo rm -f /etc/systemd/system/hermesclaw.service
@@ -406,25 +409,25 @@ find "$HOME" -maxdepth 5 -name "*.json.bak" -path "*/openclaw-weixin/accounts/*"
 rm -rf "$HOME/hermesclaw"
 </code></pre>
 <hr>
-<h5>Star History</h5>
+<h3>Star History</h3>
 <a href="https://www.star-history.com/#AaronWong1999/hermesclaw&amp;Date">
   <img src="https://api.star-history.com/svg?repos=AaronWong1999/hermesclaw&amp;type=Date" alt="Star History Chart" width="600">
 </a>
 
 <hr>
-<h5>Changelog</h5>
-<h6>v0.4.0</h6>
+<h3>Changelog</h3>
+<h4>v0.4.0</h4>
 <ul>
 <li><strong>Feature: Native macOS support</strong> — The <code>install.sh</code> script now supports macOS (<code>Darwin</code>) out-of-the-box by leveraging <code>launchd</code> instead of failing on the missing <code>systemctl</code>. It automatically creates, loads, and manages the background service via <code>~/Library/LaunchAgents/com.hermesclaw.plist</code> (Thanks <a href="https://github.com/unliftedq">@unliftedq</a> for the feature request).</li>
 </ul>
-<h6>v0.3.6</h6>
+<h4>v0.3.6</h4>
 <ul>
 <li><strong>Fix: macOS install failure — <code>mapfile: command not found</code></strong> — macOS ships with bash 3.2 which lacks the <code>mapfile</code> builtin (added in bash 4). All 3 occurrences replaced with portable <code>while IFS= read -r</code> loops, making the installer work on macOS out of the box.</li>
 <li><strong>Fix: <code>curl | bash</code> silent abort</strong> — With <code>set -euo pipefail</code>, bare <code>read</code> calls returned non-zero on EOF when stdin was a pipe, causing the installer to exit before any <code>${REPLY:-Y}</code> default was evaluated. The installer now detects a non-tty stdin and redirects interactive prompts to <code>/dev/tty</code> so users can still answer them; if <code>/dev/tty</code> is also unavailable (CI / Docker) it falls back to auto-yes. All three prompt calls also have <code>|| VAR=""</code> guards as defence-in-depth.</li>
 <li><strong>5 new regression tests</strong> — <code>tests/test_install_sh.py</code> covers mapfile absence, bash syntax, read guards, tty detection, and non-interactive stdin.</li>
 <li>Thanks to <a href="https://github.com/ShxxxNewBee">@ShxxxNewBee</a>, <a href="https://github.com/siasbaily">@siasbaily</a>, and <a href="https://github.com/csloz">@csloz</a> for reporting and diagnosing these issues 🙏</li>
 </ul>
-<h6>v0.3.0</h6>
+<h4>v0.3.0</h4>
 <ul>
 <li><strong>OpenCode ACP bridge</strong> — New <code>OpenCodeBridge</code> + <code>ACPSession</code> classes implement JSON-RPC 2.0 over NDJSON for <code>opencode acp</code> subprocess. Per-user sessions with automatic reconnect.</li>
 <li><strong><code>/opencode</code> command</strong> — Route messages to OpenCode only.</li>
@@ -438,11 +441,11 @@ rm -rf "$HOME/hermesclaw"
 <li><strong>Installer git pull</strong> — Re-running install.sh on an existing install now pulls the latest code before continuing.</li>
 <li><strong>117 tests</strong> — Expanded route matrix covers every command route across text, voice, image, video, and file payloads, plus ACP permissions, OpenCode media prompts, dead-subprocess recovery, and THREE mode.</li>
 </ul>
-<h6>v0.2.1 (2026-04-12)</h6>
+<h4>v0.2.1 (2026-04-12)</h4>
 <ul>
 <li><strong>Fix: Hermes message splitting</strong> — The installer now offers to patch Hermes Agent's <code>weixin.py</code> to disable newline-based message splitting during installation (recommended, default Yes). This ensures long replies are sent as single messages instead of being split by paragraphs. Existing users can run <code>bash fix_hermes_splitting.sh</code> manually.</li>
 </ul>
-<h6>v0.2.0</h6>
+<h4>v0.2.0</h4>
 <ul>
 <li><strong>Complete rewrite</strong>: dual-proxy gateway architecture.</li>
 <li>Removed ~400 lines of AES/CDN media processing.</li>
@@ -453,16 +456,17 @@ rm -rf "$HOME/hermesclaw"
 <li><strong>Improved error handling</strong> — <code>BrokenPipeError</code> now caught and logged as DEBUG.</li>
 </ul>
 <hr>
-<h5>License</h5>
+<h3>License</h3>
 <p><a href="LICENSE">MIT</a> — by <a href="https://github.com/AaronWong1999">@AaronWong1999</a> · <a href="https://x.com/AaronYonW">X @AaronYonW</a></p>
 <hr>
-<h5>Credits</h5>
+<h3>Credits</h3>
 <ul>
 <li><a href="https://github.com/NousResearch/hermes-agent">NousResearch/hermes-agent</a> — the agent that grows with you.</li>
 <li><a href="https://github.com/openclaw/openclaw">openclaw/openclaw</a> — your own personal AI assistant. The lobster way. 🦞</li>
 <li>The Clawbot / openclaw-weixin maintainers for the iLink WeChat bridge.</li>
 </ul>
 <p>HermesClaw is a community bridge. It is not affiliated with NousResearch or OpenClaw.</p>
+
   </section>
 </details>
 
@@ -474,11 +478,11 @@ rm -rf "$HOME/hermesclaw"
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/raulvidis/hermes-android">
-        <div class="stars">★ 379</div>
+        <div class="stars">★ 396</div>
         <div class="name"><span class="org">raulvidis /</span> hermes-android</div>
       </a>
       <a class="related-row" href="/projects/teknium1/hermes-miniverse">
-        <div class="stars">★ 49</div>
+        <div class="stars">★ 51</div>
         <div class="name"><span class="org">teknium1 /</span> hermes-miniverse</div>
       </a>
       <a class="related-row" href="/projects/Ridwannurudeen/hermes-council">
@@ -494,7 +498,7 @@ rm -rf "$HOME/hermesclaw"
         <div class="name"><span class="org">kevinmarmstrong /</span> hermes-claude-code-rc</div>
       </a>
       <a class="related-row" href="/projects/Codename-11/hermes-relay">
-        <div class="stars">★ 55</div>
+        <div class="stars">★ 59</div>
         <div class="name"><span class="org">Codename-11 /</span> hermes-relay</div>
       </a>
       <a class="related-row" href="/projects/kfa-ai/hermes-timetree-sync">

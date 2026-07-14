@@ -99,7 +99,6 @@
 |------|-------|---------|----------|-------------|
 | xmbshwll/hermes-agent-docker | ? | ? | ? | Minimal Docker sandbox |
 | Crustocean/hermes-agent-template | ? | ? | ? | Production Docker for cloud |
-| ellickjohnson/portainer-stack-hermes | ? | ? | ? | Docker Compose with Portainer |
 | JackTheGit/hermes-autonomous-server | ? | ? | ? | Headless systemd deployment |
 | amazinglvxw/enso-os | 35 | 2026-03-29 | Shell | ? |
 

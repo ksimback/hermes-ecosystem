@@ -40,11 +40,14 @@
   "codeRepository": "https://github.com/Cyber-Yichen/hermes-feishu-group-context",
   "applicationCategory": "BrowserApplication",
   "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
   "author": {
     "@type": "Organization",
     "name": "Cyber-Yichen",
     "url": "https://github.com/Cyber-Yichen"
   },
+  "dateModified": "2026-07-01T03:21:03.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -78,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">185·repos</span>
+    <span id="meta-count">184·repos</span>
     <span id="meta-version">hermes·v0.18.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -116,10 +119,10 @@
 
   <div class="meta-row">
     <span class="stars">★ 1</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-07-01</span>
   </div>
 
   <div class="actions">
@@ -151,7 +154,7 @@
 <strong>AI Agent / Coding Agent：请先阅读 <a href="https://github.com/Cyber-Yichen/hermes-feishu-group-context/blob/main/AGENTS.md">AGENTS.md</a>。</strong>
 该文档包含架构约束、数据流、测试方法和修改规则。不要只根据 README 猜测实现。</p>
 </blockquote>
-<h4>Hermes Feishu Group Context</h4>
+<h2>Hermes Feishu Group Context</h2>
 <p>为 <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> 提供飞书 / Lark 群聊本地归档、按时间范围检索和按需上下文能力。</p>
 <p>这个项目解决一个很具体的问题：</p>
 <ul>
@@ -167,7 +170,7 @@
 <p>[!WARNING]
 本项目会在本机以明文 SQLite 数据库保存群聊内容。请确认你有权保存相关群成员的消息，并妥善保护 Hermes 数据目录。</p>
 </blockquote>
-<h5>功能概览</h5>
+<h3>功能概览</h3>
 <table>
 <thead>
 <tr>
@@ -223,7 +226,7 @@
 <li>安装前自动备份 Hermes Feishu 适配器；</li>
 <li>补丁器可重复运行，不会重复插入代码。</li>
 </ul>
-<h5>技术栈</h5>
+<h3>技术栈</h3>
 <table>
 <thead>
 <tr>
@@ -288,7 +291,7 @@
 <li>单独安装 Python 依赖。</li>
 </ul>
 <p>运行时主体仍然是 Hermes Gateway。本项目只是一个用户插件，加上三处受控的适配器 Hook。</p>
-<h5>工作原理</h5>
+<h3>工作原理</h3>
 <pre><code class="language-mermaid">flowchart TD
     A["飞书群消息事件"] --&gt; B["Hermes Feishu Adapter"]
     B --&gt; C["过滤前归档 Hook"]
@@ -322,7 +325,7 @@
 </ul>
 </li>
 </ol>
-<h5>环境要求</h5>
+<h3>环境要求</h3>
 <ul>
 <li>Windows 10 / Windows 11；</li>
 <li>已安装并可运行 Hermes Agent；</li>
@@ -337,7 +340,7 @@
 Hermes Repo: D:\env\hermes\hermes-agent
 </code></pre>
 <p>如果你的 Hermes 位于其他目录，请在安装时通过 <code>-HermesHome</code> 指定。</p>
-<h5>飞书权限</h5>
+<h3>飞书权限</h3>
 <p>为了接收和回填群聊消息，飞书应用通常需要以下应用身份权限：</p>
 <ul>
 <li><code>im:message.group_msg</code>：获取群组中所有消息；</li>
@@ -349,13 +352,13 @@ Hermes Repo: D:\env\hermes\hermes-agent
 <pre><code class="language-text">im.message.receive_v1
 </code></pre>
 <p><code>im:message.group_msg</code> 属于敏感权限，可能需要管理员审核。修改权限或事件订阅后，需要发布新的飞书应用版本才会生效。</p>
-<h5>安装</h5>
-<h6>1. 克隆仓库</h6>
+<h3>安装</h3>
+<h4>1. 克隆仓库</h4>
 <pre><code class="language-powershell">Set-Location E:\Git
 git clone https://github.com/Cyber-Yichen/hermes-feishu-group-context.git
 Set-Location .\hermes-feishu-group-context
 </code></pre>
-<h6>2. 确认 Hermes 已连接飞书</h6>
+<h4>2. 确认 Hermes 已连接飞书</h4>
 <p>Hermes 的 <code>.env</code> 中应已经存在：</p>
 <pre><code class="language-dotenv">FEISHU_APP_ID=你的应用ID
 FEISHU_APP_SECRET=你的应用密钥
@@ -363,7 +366,7 @@ FEISHU_CONNECTION_MODE=websocket
 </code></pre>
 <p>不要把真实 <code>.env</code>、App Secret 或访问令牌提交到本仓库。
 仓库中的 <a href="./.env.example"><code>.env.example</code></a> 可以作为字段参考，但真实值必须保存在 <code>HERMES_HOME\.env</code>。</p>
-<h6>3. 执行安装</h6>
+<h4>3. 执行安装</h4>
 <pre><code class="language-powershell">Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 .\install.ps1 -HermesHome D:\env\hermes
 </code></pre>
@@ -385,7 +388,7 @@ D:\env\hermes\hermes-agent\venv\Scripts\hermes.exe gateway status
 <p>预期能看到：</p>
 <pre><code class="language-text">enabled  user  1.2.0  feishu-context-archive
 </code></pre>
-<h5>回填已有群聊记录</h5>
+<h3>回填已有群聊记录</h3>
 <p>插件安装后会自动记录新消息。若要导入安装前的历史消息，可运行：</p>
 <pre><code class="language-powershell">D:\env\hermes\hermes-agent\venv\Scripts\python.exe `
   .\scripts\backfill_history.py `
@@ -411,14 +414,14 @@ D:\env\hermes\hermes-agent\venv\Scripts\hermes.exe gateway status
   --end-time 1782748800
 </code></pre>
 <p>回填操作以 <code>message_id</code> 去重，可以安全地重复执行。</p>
-<h5>使用方法</h5>
-<h6>普通群聊</h6>
+<h3>使用方法</h3>
+<h4>普通群聊</h4>
 <p>没有 @机器人的消息只会进入本地归档，不会调用模型，也不会回复。</p>
-<h6>正常 @机器人</h6>
+<h4>正常 @机器人</h4>
 <pre><code class="language-text">@机器人 帮我解释一下这个问题
 </code></pre>
 <p>按照普通 Hermes 请求处理，不会自动附加全部群聊历史。</p>
-<h6>纯 @机器人</h6>
+<h4>纯 @机器人</h4>
 <pre><code class="language-text">@机器人
 </code></pre>
 <p>当消息中只有一个 @，没有其他文字时，插件会：</p>
@@ -430,7 +433,7 @@ D:\env\hermes\hermes-agent\venv\Scripts\hermes.exe gateway status
 <li>如果意图仍不明确，只问一个简短的澄清问题。</li>
 </ol>
 <p>默认 N 为 20。</p>
-<h6>按范围复盘</h6>
+<h4>按范围复盘</h4>
 <p>可以自然地提出：</p>
 <pre><code class="language-text">@机器人 复盘我们今天聊了什么
 @机器人 总结昨天的群聊
@@ -445,7 +448,7 @@ D:\env\hermes\hermes-agent\venv\Scripts\hermes.exe gateway status
 <li><code>recent</code></li>
 <li><code>custom</code></li>
 </ul>
-<h5>修改上下文与保留设置</h5>
+<h3>修改上下文与保留设置</h3>
 <p>设置按群保存。指令需要在群里 @机器人：</p>
 <pre><code class="language-text">@机器人 /group-context
 @机器人 /group-context status
@@ -509,7 +512,7 @@ D:\env\hermes\hermes-agent\venv\Scripts\hermes.exe gateway status
 <p>两类上下文均可设置为 <code>0</code> 到 <code>100</code> 条，<code>0</code> 表示不读取。保留天数可设置为 <code>0</code> 到 <code>3650</code> 天，<code>0</code> 表示不自动删除。</p>
 <p>过期清理在新消息归档时每个群最多每 6 小时执行一次。修改保留天数或恢复默认设置时，会立即尝试清理当前群的过期记录。</p>
 <p>@并附带内容时，插件先执行轻量相关性判断。当前消息包含“上面”“刚才”“继续”等承接词，或与近期消息存在共同的中英文关键词时，才会注入上下文。若候选消息全部曾经 @机器人，则直接忽略历史。该判断用于降低无关 Token 消耗，不是语义检索模型。</p>
-<h5>数据与备份位置</h5>
+<h3>数据与备份位置</h3>
 <p>默认归档数据库：</p>
 <pre><code class="language-text">D:\env\hermes\archives\feishu_group_messages.sqlite3
 </code></pre>
@@ -525,7 +528,7 @@ feishu_group_messages.sqlite3-wal
 feishu_group_messages.sqlite3-shm
 </code></pre>
 <p>这是 SQLite 的正常行为。</p>
-<h5>更新</h5>
+<h3>更新</h3>
 <pre><code class="language-powershell">Set-Location E:\Git\hermes-feishu-group-context
 git pull
 .\install.ps1 -HermesHome D:\env\hermes
@@ -537,7 +540,7 @@ git pull
 <li>更新插件前会备份旧插件；</li>
 <li>修改适配器前会创建带时间戳的备份。</li>
 </ul>
-<h5>停用与恢复</h5>
+<h3>停用与恢复</h3>
 <p>先停用插件：</p>
 <pre><code class="language-powershell">$env:HERMES_HOME = 'D:\env\hermes'
 D:\env\hermes\hermes-agent\venv\Scripts\hermes.exe plugins disable feishu-context-archive
@@ -553,7 +556,7 @@ D:\env\hermes\hermes-agent\venv\Scripts\hermes.exe gateway restart
 <li>重新启动 Gateway。</li>
 </ol>
 <p>不要未经核对就恢复最旧或最新备份，因为 Hermes 适配器可能还包含其他本地修改。</p>
-<h5>隐私与安全</h5>
+<h3>隐私与安全</h3>
 <ul>
 <li>群聊记录保存在本机，不会由本插件上传到第三方服务；</li>
 <li>只有进入模型上下文的选定记录会发送给当前配置的模型服务；</li>
@@ -563,8 +566,8 @@ D:\env\hermes\hermes-agent\venv\Scripts\hermes.exe gateway restart
 <li>公开部署前，应向群成员说明消息归档行为；</li>
 <li>请通过磁盘权限、BitLocker 或其他系统级措施保护 Hermes 数据目录。</li>
 </ul>
-<h5>故障排查</h5>
-<h6>普通群消息没有进入归档</h6>
+<h3>故障排查</h3>
+<h4>普通群消息没有进入归档</h4>
 <p>检查：</p>
 <ol>
 <li>机器人是否已加入群；</li>
@@ -574,7 +577,7 @@ D:\env\hermes\hermes-agent\venv\Scripts\hermes.exe gateway restart
 <li>插件是否为 <code>enabled</code>；</li>
 <li>Gateway 是否使用正确的 <code>HERMES_HOME</code>。</li>
 </ol>
-<h6>纯 @ 没有回复</h6>
+<h4>纯 @ 没有回复</h4>
 <p>检查日志中是否出现：</p>
 <pre><code class="language-text">[Feishu] Pure group mention expanded with archived context
 </code></pre>
@@ -585,13 +588,13 @@ D:\env\hermes\hermes-agent\venv\Scripts\hermes.exe gateway restart
 <li>确认机器人身份能被 Hermes 正确识别；</li>
 <li>运行 <code>/group-context status</code> 检查是否被关闭。</li>
 </ul>
-<h6>回填报权限错误</h6>
+<h4>回填报权限错误</h4>
 <p>确认机器人仍在群内，并检查：</p>
 <ul>
 <li><code>im:message.group_msg</code></li>
 <li><code>im:message:readonly</code> 或 <code>im:message</code></li>
 </ul>
-<h6>Hermes 更新后补丁检查失败</h6>
+<h4>Hermes 更新后补丁检查失败</h4>
 <p>不要强制字符串替换。Hermes 上游可能修改了适配器结构。请：</p>
 <ol>
 <li>保留当前错误输出；</li>
@@ -599,7 +602,7 @@ D:\env\hermes\hermes-agent\venv\Scripts\hermes.exe gateway restart
 <li>更新 <code>scripts/patch_adapter.py</code> 的插入点；</li>
 <li>重新运行语法和功能测试。</li>
 </ol>
-<h5>开发验证</h5>
+<h3>开发验证</h3>
 <p>Python 语法检查：</p>
 <pre><code class="language-powershell">D:\env\hermes\hermes-agent\venv\Scripts\python.exe -m py_compile `
   .\plugin\__init__.py `
@@ -631,7 +634,7 @@ D:\env\hermes\hermes-agent\venv\Scripts\python.exe -m unittest discover -s tests
     └── patch_adapter.py
 </code></pre>
 <p>代码以 Python 标准库为主，不提供 <code>requirements.txt</code>，因为插件不会引入额外的 PyPI 依赖。</p>
-<h5>已知限制</h5>
+<h3>已知限制</h3>
 <ul>
 <li>当前安装脚本面向 Windows PowerShell；</li>
 <li>本地数据库未加密；</li>
@@ -641,11 +644,12 @@ D:\env\hermes\hermes-agent\venv\Scripts\python.exe -m unittest discover -s tests
 <li>Hermes 上游大幅修改 Feishu 适配器后，补丁插入点可能需要更新；</li>
 <li>纯 @ 只能读取消息发送之前的记录，不可能读取未来消息。</li>
 </ul>
-<h5>许可证</h5>
+<h3>许可证</h3>
 <p>本项目采用 <a href="./LICENSE">MIT License</a>。</p>
-<h5>项目状态</h5>
+<h3>项目状态</h3>
 <p>当前插件版本：<code>1.2.0</code></p>
 <p>本项目是社区扩展，不隶属于 NousResearch、Hermes Agent、飞书或字节跳动。</p>
+
   </section>
 </details>
 
@@ -657,15 +661,15 @@ D:\env\hermes\hermes-agent\venv\Scripts\python.exe -m unittest discover -s tests
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
-        <div class="stars">★ 330</div>
+        <div class="stars">★ 336</div>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 265</div>
+        <div class="stars">★ 272</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
-        <div class="stars">★ 41</div>
+        <div class="stars">★ 42</div>
         <div class="name"><span class="org">FahrenheitResearch /</span> hermes-weather-plugin</div>
       </a>
       <a class="related-row" href="/projects/42-evey/evey-bridge-plugin">
@@ -677,15 +681,15 @@ D:\env\hermes\hermes-agent\venv\Scripts\python.exe -m unittest discover -s tests
         <div class="name"><span class="org">nativ3ai /</span> hermes-payguard</div>
       </a>
       <a class="related-row" href="/projects/raulvidis/hermes-cloudflare">
-        <div class="stars">★ 37</div>
+        <div class="stars">★ 40</div>
         <div class="name"><span class="org">raulvidis /</span> hermes-cloudflare</div>
       </a>
       <a class="related-row" href="/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server">
-        <div class="stars">★ 355</div>
+        <div class="stars">★ 356</div>
         <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
       </a>
       <a class="related-row" href="/projects/stainlu/hermes-labyrinth">
-        <div class="stars">★ 295</div>
+        <div class="stars">★ 297</div>
         <div class="name"><span class="org">stainlu /</span> hermes-labyrinth</div>
       </a>
     </div>

@@ -40,17 +40,20 @@
   "codeRepository": "https://github.com/Sahil-SS9/Toolaria",
   "applicationCategory": "BrowserApplication",
   "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
   "author": {
     "@type": "Organization",
     "name": "Sahil-SS9",
     "url": "https://github.com/Sahil-SS9"
   },
+  "dateModified": "2026-06-24T19:26:59.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 12
+    "userInteractionCount": 13
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -78,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">185·repos</span>
+    <span id="meta-count">184·repos</span>
     <span id="meta-version">hermes·v0.18.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -115,11 +118,11 @@
   <p class="project-desc">Rescue oversized tool results before they flood context. SHA256-addressed blob store with per-session indexes</p>
 
   <div class="meta-row">
-    <span class="stars">★ 12</span>
+    <span class="stars">★ 13</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-06-24</span>
   </div>
 
   <div class="actions">
@@ -149,7 +152,7 @@
     <img width="1254" height="1254" alt="Toolaria" src="https://github.com/user-attachments/assets/6510e5ef-3c09-4961-a5f2-c87da63a1c22">
 
 
-<h4>Toolaria: rescue oversized tool results before they flood context</h4>
+<h2>Toolaria: rescue oversized tool results before they flood context</h2>
 <p>Toolaria is the spill-to-disk pattern, packaged as a single-purpose, zero-config
 Hermes Agent plugin. When an MCP or web tool returns a result too large for the
 context window, Toolaria stores the full output in a SHA256-addressed blob store
@@ -170,7 +173,7 @@ Toolaria expands it to the full content before that tool runs, so a 200k
 result flows tool to tool and never re-enters the context window.</li>
 </ul>
 <hr>
-<h5>Proof</h5>
+<h3>Proof</h3>
 <p>A real <code>web_extract</code> returning 2,000 transaction records, run through Toolaria:</p>
 <table>
 <thead>
@@ -221,7 +224,7 @@ elements: objects (sampled 1000):
 end-to-end stress suite (<code>tests/</code>), which also cover cross-session denial,
 ReDoS-bounded grep, size-cap eviction, and single-line (minified JSON) search.</p>
 <hr>
-<h5>60-second Quickstart</h5>
+<h3>60-second Quickstart</h3>
 <pre><code class="language-bash"># Clone into Hermes plugins directory
 git clone https://github.com/Sahil-SS9/Toolaria.git ~/.hermes/plugins/toolaria
 
@@ -249,7 +252,7 @@ not, Toolaria logs a warning at load; add <code>rescuer</code> to those sessions
 worse than no rescue, so Toolaria never fails this silently.</p>
 </blockquote>
 <hr>
-<h5>Prior art</h5>
+<h3>Prior art</h3>
 <p>Spill-to-disk is a well-established pattern, not a Toolaria invention. Toolaria's
 contribution is packaging, not the idea.</p>
 <ul>
@@ -277,7 +280,7 @@ run Toolaria alongside lcm or alongside Hermes core.</li>
 <p>Toolaria positions against Hermes core's default behaviour (MCP/web results
 bypass the standard truncation), not against lcm.</p>
 <hr>
-<h5>How it works</h5>
+<h3>How it works</h3>
 <pre><code class="language-mermaid">sequenceDiagram
     participant Model
     participant Toolaria as Toolaria (transform_tool_result)
@@ -298,7 +301,7 @@ bypass the standard truncation), not against lcm.</p>
 full output, because the documented failure mode of this pattern is a model
 treating the preview as complete.</p>
 <hr>
-<h5>Configuration</h5>
+<h3>Configuration</h3>
 <p>All keys in <code>config.yaml</code> with defaults:</p>
 <table>
 <thead>
@@ -445,7 +448,7 @@ treating the preview as complete.</p>
 </tr>
 </tbody></table>
 <hr>
-<h5>What gets rescued</h5>
+<h3>What gets rescued</h3>
 <p>Only MCP server tool results and specific built-in tools:</p>
 <ul>
 <li><code>web_extract</code>, <code>web_search</code></li>
@@ -455,7 +458,7 @@ treating the preview as complete.</p>
 hook fires. Tools like <code>delegate_task</code>, <code>session_search</code>, <code>cronjob</code>, and
 memory tools are explicitly excluded and never intercepted.</p>
 <hr>
-<h5>Commands</h5>
+<h3>Commands</h3>
 <table>
 <thead>
 <tr>
@@ -468,7 +471,7 @@ memory tools are explicitly excluded and never intercepted.</p>
 <td>Show status: blob count, total size, sessions tracked</td>
 </tr>
 </tbody></table>
-<h5>Tool: <code>rescuer_fetch</code></h5>
+<h3>Tool: <code>rescuer_fetch</code></h3>
 <p>The model-facing tool to retrieve slices of a rescued result.</p>
 <table>
 <thead>
@@ -512,7 +515,7 @@ memory tools are explicitly excluded and never intercepted.</p>
 <p>If a blob has been swept after its retention window, <code>rescuer_fetch</code> returns a
 short message naming the source tool and advising the model to re-run it, rather
 than a bare error.</p>
-<h5>Pass-by-reference</h5>
+<h3>Pass-by-reference</h3>
 <p>A rescued result can be handed to another tool without the model reading it.
 The rescue handle tells the model: to feed the whole result into a downstream
 tool, pass <code>tla:&lt;id&gt;</code> as that tool's argument. A <code>tool_request</code> middleware
@@ -524,7 +527,7 @@ model-emitted args), expansion is <strong>denied by default for exec and exfil s
 setups, set <code>passref_allowed_tools</code> to a strict allowlist. Per-token and
 per-call size caps bound how much content one tool call can pull in.</p>
 <hr>
-<h5>Limitations</h5>
+<h3>Limitations</h3>
 <ul>
 <li><strong>Round-trip blindness, mostly addressed.</strong> The model only sees the excerpt
 inline, so anything the excerpt heuristics drop is invisible unless it fetches
@@ -568,8 +571,9 @@ supported.</li>
 fetch it; ids are content-derived and only revealed in the rescuing session's
 handle. Swept-blob guidance is scoped to the owning session.</li>
 </ul>
-<h5>License</h5>
+<h3>License</h3>
 <p>MIT, see <code>LICENSE</code>.</p>
+
   </section>
 </details>
 
@@ -581,15 +585,15 @@ handle. Swept-blob guidance is scoped to the owning session.</li>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
-        <div class="stars">★ 330</div>
+        <div class="stars">★ 336</div>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 265</div>
+        <div class="stars">★ 272</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
-        <div class="stars">★ 41</div>
+        <div class="stars">★ 42</div>
         <div class="name"><span class="org">FahrenheitResearch /</span> hermes-weather-plugin</div>
       </a>
       <a class="related-row" href="/projects/42-evey/evey-bridge-plugin">
@@ -601,15 +605,15 @@ handle. Swept-blob guidance is scoped to the owning session.</li>
         <div class="name"><span class="org">nativ3ai /</span> hermes-payguard</div>
       </a>
       <a class="related-row" href="/projects/raulvidis/hermes-cloudflare">
-        <div class="stars">★ 37</div>
+        <div class="stars">★ 40</div>
         <div class="name"><span class="org">raulvidis /</span> hermes-cloudflare</div>
       </a>
       <a class="related-row" href="/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server">
-        <div class="stars">★ 355</div>
+        <div class="stars">★ 356</div>
         <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
       </a>
       <a class="related-row" href="/projects/stainlu/hermes-labyrinth">
-        <div class="stars">★ 295</div>
+        <div class="stars">★ 297</div>
         <div class="name"><span class="org">stainlu /</span> hermes-labyrinth</div>
       </a>
     </div>

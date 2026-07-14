@@ -40,11 +40,14 @@
   "codeRepository": "https://github.com/kevinmarmstrong/hermes-claude-code-rc",
   "applicationCategory": "CommunicationApplication",
   "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
   "author": {
     "@type": "Organization",
     "name": "kevinmarmstrong",
     "url": "https://github.com/kevinmarmstrong"
   },
+  "dateModified": "2026-04-15T02:12:37.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -78,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">185·repos</span>
+    <span id="meta-count">184·repos</span>
     <span id="meta-version">hermes·v0.18.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -116,10 +119,10 @@
 
   <div class="meta-row">
     <span class="stars">★ 2</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-04-15</span>
   </div>
 
   <div class="actions">
@@ -146,10 +149,10 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>hermes-claude-code-rc</h4>
+    <h2>hermes-claude-code-rc</h2>
 <p>A <a href="https://github.com/hermes-agent/hermes-agent">Hermes Agent</a> plugin that lets you remotely control <a href="https://claude.ai/code">Claude Code</a> sessions from Telegram (or any Hermes-connected platform).</p>
 <p>Start a Claude Code remote session from your phone, run headless commands, execute shell commands on your machine, and manage everything through simple <code>/cc</code> slash commands.</p>
-<h5>Where This Fits</h5>
+<h3>Where This Fits</h3>
 <p>As of April 2026, Claude Code offers several ways to work remotely:</p>
 <table>
 <thead>
@@ -194,13 +197,13 @@
 <p>Cloud sessions (iOS app, web, Routines) are great for GitHub-connected work, but they can't access your local filesystem, local MCP servers, local databases, or any tools installed on your machine.</p>
 <p><strong>Remote Control</strong> is the only option that runs on your machine with full local access — but it requires a terminal to start the session.</p>
 <p><strong>This plugin bridges that gap.</strong> Message your Hermes Telegram bot from anywhere, it starts the Remote Control session on your machine, and sends you the URL to open in the Claude app. Full bidirectional control over your local environment from your phone.</p>
-<h6>Three tiers of remote access</h6>
+<h4>Three tiers of remote access</h4>
 <ol>
 <li><strong>Quick cloud task</strong> — Open the Claude iOS app, describe the task, done. No setup needed. But no local machine access.</li>
 <li><strong>Local session from phone</strong> — <code>/cc start my-feature</code> via Telegram, open the URL in Claude app. Full local access. <strong>(This is what this plugin enables.)</strong></li>
 <li><strong>Automated/scheduled</strong> — Routines (cloud) for recurring tasks, or <code>/cc run</code> (local) for one-shot commands on your machine.</li>
 </ol>
-<h5>Commands</h5>
+<h3>Commands</h3>
 <table>
 <thead>
 <tr>
@@ -233,14 +236,14 @@
 <td>List all available subcommands</td>
 </tr>
 </tbody></table>
-<h5>Prerequisites</h5>
+<h3>Prerequisites</h3>
 <ul>
 <li><a href="https://github.com/hermes-agent/hermes-agent">Hermes Agent</a> with Telegram configured</li>
 <li><a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code CLI</a> installed and authenticated (<code>claude auth login</code>)</li>
 <li>Claude Pro/Max/Team/Enterprise subscription (required for Remote Control)</li>
 </ul>
-<h5>Installation</h5>
-<h6>1. Apply the Hermes patch</h6>
+<h3>Installation</h3>
+<h4>1. Apply the Hermes patch</h4>
 <p>This plugin uses <code>register_command()</code> which requires a small patch to <code>hermes_cli/plugins.py</code>. This patch adds gateway slash command support to the Hermes plugin system.</p>
 <pre><code class="language-bash">cd ~/.hermes/hermes-agent
 git apply /path/to/hermes-claude-code-rc/hermes-plugin-commands.patch
@@ -251,23 +254,23 @@ git apply /path/to/hermes-claude-code-rc/hermes-plugin-commands.patch
 <li><code>_commands</code> dict on <code>PluginManager</code></li>
 <li><code>get_plugin_command_handler()</code> module-level function</li>
 </ul>
-<h6>2. Install the plugin</h6>
+<h4>2. Install the plugin</h4>
 <pre><code class="language-bash"># Clone or copy into your Hermes plugins directory
 cp -r hermes-claude-code-rc ~/.hermes/plugins/claude-code-rc
 </code></pre>
 <p>Or symlink for development:</p>
 <pre><code class="language-bash">ln -s /path/to/hermes-claude-code-rc ~/.hermes/plugins/claude-code-rc
 </code></pre>
-<h6>3. Restart Hermes</h6>
+<h4>3. Restart Hermes</h4>
 <pre><code class="language-bash"># macOS (launchd)
 launchctl kickstart -k gui/$(id -u)/ai.hermes.gateway
 
 # Or manually
 hermes gateway restart
 </code></pre>
-<h6>4. Verify</h6>
+<h4>4. Verify</h4>
 <p>Send <code>/cc help</code> to your Hermes Telegram bot. You should see the command listing.</p>
-<h5>Configuration</h5>
+<h3>Configuration</h3>
 <p>All configuration is via environment variables (set in <code>~/.hermes/.env</code> or your launchd plist):</p>
 <table>
 <thead>
@@ -303,16 +306,16 @@ hermes gateway restart
 <td>Timeout waiting for session URL (seconds)</td>
 </tr>
 </tbody></table>
-<h5>Usage</h5>
-<h6>Start a remote session</h6>
+<h3>Usage</h3>
+<h4>Start a remote session</h4>
 <pre><code>/cc start my-feature
 </code></pre>
 <p>Returns a <code>claude.ai/code/...</code> URL. Tap it on your phone to open in the Claude iOS app with full bidirectional control.</p>
-<h6>Run a quick command</h6>
+<h4>Run a quick command</h4>
 <pre><code>/cc run check if the tests pass in ~/projects/myapp
 </code></pre>
 <p>Runs Claude Code headless (<code>claude -p</code>) and returns the result.</p>
-<h6>Run a shell command</h6>
+<h4>Run a shell command</h4>
 <pre><code>/cc shell ls -la ~/Desktop
 /cc shell df -h
 /cc shell brew update
@@ -320,18 +323,18 @@ hermes gateway restart
 <p>Dangerous commands (rm -rf, sudo, mkfs, etc.) are blocked with a warning. To force-execute:</p>
 <pre><code>/cc shell ! sudo brew services restart nginx
 </code></pre>
-<h6>Check status</h6>
+<h4>Check status</h4>
 <pre><code>/cc status
 </code></pre>
 <p>Shows active sessions, system uptime, disk usage, and any orphaned Claude processes.</p>
-<h5>Adding New Commands</h5>
+<h3>Adding New Commands</h3>
 <p>Adding a subcommand is two steps:</p>
-<h6>1. Write the handler function</h6>
+<h4>1. Write the handler function</h4>
 <pre><code class="language-python">def _handle_ping(args):
     """Check if the bot is alive."""
     return f"pong ({int(time.time())})"
 </code></pre>
-<h6>2. Add it to the routing table</h6>
+<h4>2. Add it to the routing table</h4>
 <pre><code class="language-python">SUBCOMMANDS = {
     "start": _handle_start,
     "run": _handle_run,
@@ -343,7 +346,7 @@ hermes gateway restart
 }
 </code></pre>
 <p>Restart Hermes and <code>/cc ping</code> is live.</p>
-<h5>Safety</h5>
+<h3>Safety</h3>
 <ul>
 <li><strong>Auth</strong>: Hermes enforces <code>TELEGRAM_ALLOWED_USERS</code> at the gateway level — only authorized users can invoke <code>/cc</code> commands</li>
 <li><strong>Shell safety</strong>: Dangerous patterns (rm -rf, mkfs, fork bombs, sudo, etc.) are blocked by default with a force-bypass option</li>
@@ -351,7 +354,7 @@ hermes gateway restart
 <li><strong>Timeouts</strong>: All commands have configurable timeouts to prevent hangs</li>
 <li><strong>No secrets in code</strong>: Configuration is via environment variables only</li>
 </ul>
-<h5>Architecture</h5>
+<h3>Architecture</h3>
 <pre><code>Phone (Telegram) --&gt; Hermes Gateway --&gt; /cc plugin --&gt; claude remote-control
                                                           |
                                                           v
@@ -365,7 +368,7 @@ Phone (Claude app) &lt;-- claude.ai session URL &lt;-- stdout scan
 <li>A background thread scans stdout for the session URL</li>
 <li>The URL is sent back to the user via Telegram</li>
 </ol>
-<h5>How Remote Control Works</h5>
+<h3>How Remote Control Works</h3>
 <p>Claude Code's Remote Control feature (<code>claude remote-control</code>) starts a local server that:</p>
 <ul>
 <li>Keeps your machine as the execution environment (nothing moves to the cloud)</li>
@@ -373,8 +376,9 @@ Phone (Claude app) &lt;-- claude.ai session URL &lt;-- stdout scan
 <li>Supports full bidirectional control (send prompts, see results, approve tool use)</li>
 <li>Uses TLS over the Anthropic API (no inbound ports needed)</li>
 </ul>
-<h5>License</h5>
+<h3>License</h3>
 <p>MIT</p>
+
   </section>
 </details>
 
@@ -386,11 +390,11 @@ Phone (Claude app) &lt;-- claude.ai session URL &lt;-- stdout scan
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/raulvidis/hermes-android">
-        <div class="stars">★ 379</div>
+        <div class="stars">★ 396</div>
         <div class="name"><span class="org">raulvidis /</span> hermes-android</div>
       </a>
       <a class="related-row" href="/projects/teknium1/hermes-miniverse">
-        <div class="stars">★ 49</div>
+        <div class="stars">★ 51</div>
         <div class="name"><span class="org">teknium1 /</span> hermes-miniverse</div>
       </a>
       <a class="related-row" href="/projects/Ridwannurudeen/hermes-council">
@@ -402,11 +406,11 @@ Phone (Claude app) &lt;-- claude.ai session URL &lt;-- stdout scan
         <div class="name"><span class="org">gizdusum /</span> hermes-blockchain-oracle</div>
       </a>
       <a class="related-row" href="/projects/AaronWong1999/hermesclaw">
-        <div class="stars">★ 675</div>
+        <div class="stars">★ 681</div>
         <div class="name"><span class="org">AaronWong1999 /</span> hermesclaw</div>
       </a>
       <a class="related-row" href="/projects/Codename-11/hermes-relay">
-        <div class="stars">★ 55</div>
+        <div class="stars">★ 59</div>
         <div class="name"><span class="org">Codename-11 /</span> hermes-relay</div>
       </a>
       <a class="related-row" href="/projects/kfa-ai/hermes-timetree-sync">

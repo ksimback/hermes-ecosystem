@@ -40,11 +40,14 @@
   "codeRepository": "https://github.com/Sahil-SS9/hermaguard",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
   "author": {
     "@type": "Organization",
     "name": "Sahil-SS9",
     "url": "https://github.com/Sahil-SS9"
   },
+  "dateModified": "2026-06-15T01:20:00.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -78,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">185·repos</span>
+    <span id="meta-count">184·repos</span>
     <span id="meta-version">hermes·v0.18.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -116,10 +119,10 @@
 
   <div class="meta-row">
     <span class="stars">★ 13</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-06-15</span>
   </div>
 
   <div class="actions">
@@ -146,7 +149,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>HermaGuard v2.0.0</h4>
+    <h2>HermaGuard v2.0.0</h2>
 <p>Adversarial bug-hunting code review for AI agents. Deterministic pre-scan + 3 parallel subagents attack your code changes from different angles, then a consolidator merges and triages the findings. Read-only — finds problems, doesn't touch your code.</p>
 <pre><code>                   ┌──────────────────────────────┐
                    │   Phase 0: Deterministic      │
@@ -177,7 +180,7 @@
                      │ JSON)        │
                      └──────────────┘
 </code></pre>
-<h5>What's new in v2.0.0</h5>
+<h3>What's new in v2.0.0</h3>
 <ul>
 <li><strong>Deterministic pre-scan layer:</strong> Runs semgrep, bandit, eslint, gosec, and ruff on your diff BEFORE the LLM agents. Catches SQL injection, unsafe deserialisation, hardcoded secrets, and other patterns that language scanners find. Agents then investigate exploitability instead of guessing from scratch.</li>
 <li><strong>JSON output mode:</strong> <code>--json</code> flag writes structured machine-readable findings alongside the markdown report. Enables CI integration, dashboards, and precision tracking.</li>
@@ -188,14 +191,14 @@
 <li><strong>Suppression rules:</strong> Dismiss a pattern 3 times → it becomes a rule that future runs skip. Reduces false positive noise.</li>
 <li><strong>AGENTS.md linter:</strong> A regex keyword/structure heuristic inspired by (not derived from) the Instructions-as-Code criteria. A high score is necessary, not sufficient.</li>
 </ul>
-<h5>What it does</h5>
+<h3>What it does</h3>
 <ul>
 <li><strong>Agent 1 (Edge Case Hunter):</strong> Exhaustive path tracer. Walks every branching path and boundary condition in the diff — null/empty, off-by-one, type coercion, async gaps, race conditions. Reports only unhandled paths.</li>
 <li><strong>Agent 2 (Adversarial Reviewer):</strong> Investigates exploitability of pre-scan findings and hunts additional vulnerabilities. 9 attack surfaces: auth, data integrity, race conditions, rollback safety, schema drift, error handling, observability, input validation, return value integrity.</li>
 <li><strong>Agent 3 (Blast Radius + Integration):</strong> Traces every caller and callee. Maps config coupling, migration safety, API contract changes. Answers: "what else breaks if this ships?"</li>
 <li><strong>Consolidator:</strong> Merges, de-duplicates, triages by risk tier (CRITICAL/HIGH/MEDIUM/LOW), writes structured markdown + JSON report.</li>
 </ul>
-<h5>Project structure</h5>
+<h3>Project structure</h3>
 <pre><code>hermaguard/
 ├── SKILL.md                          # The skill (Hermes/Claude/Codex/any harness)
 ├── README.md                         # This file
@@ -220,7 +223,7 @@
 │       └── server.py
 └── data/                             # Runtime data (gitignored)
 </code></pre>
-<h5>Quick start</h5>
+<h3>Quick start</h3>
 <p>Drop <code>SKILL.md</code> into your agent's skills directory. On Hermes Agent:</p>
 <pre><code class="language-bash">cp SKILL.md ~/.hermes/skills/software-development/hermaguard/SKILL.md
 </code></pre>
@@ -236,18 +239,18 @@ sudo ln -sf $(pwd)/tools/hermaguard-prescan/hermaguard-prescan.py /usr/local/bin
 </code></pre>
 <p>Supported flags: <code>--focus edge</code> (Edge Case Hunter only), <code>--file path/to/file.ts</code> (scope to one file), <code>--since HEAD~3</code> (scope to recent commits), <code>--json</code> (write JSON report), <code>--no-prescan</code> (skip static analysis).</p>
 <p>Also works with Claude Code, Codex CLI, or any agent framework with subagent capabilities.</p>
-<h5>Run tests</h5>
+<h3>Run tests</h3>
 <pre><code class="language-bash">python3 -m pytest test_tools.py -q     # or: python3 -m unittest test_tools.py -v
 # 46 tests. Every test imports the module and calls real functions —
 # delete a tool and its tests error rather than pass.
 </code></pre>
-<h5>Benchmark</h5>
+<h3>Benchmark</h3>
 <p>Score-only: your harness emits a <code>--json</code> report per bug, this scores it against a seeded corpus's ground truth. It does not run the skill itself.</p>
 <pre><code class="language-bash">python3 tools/hermaguard-benchmark/benchmark.py \
   --bugs tools/hermaguard-benchmark/bugs --results tools/hermaguard-benchmark/results
 </code></pre>
 <p>Run it yourself to get precision/recall/F1 for your harness.</p>
-<h5>Integration with CI</h5>
+<h3>Integration with CI</h3>
 <p>Copy <code>.github/workflows/hermaguard.yml</code> using the provided action:</p>
 <pre><code class="language-yaml">- uses: Sahil-SS9/hermaguard@v2
   with:
@@ -255,18 +258,19 @@ sudo ln -sf $(pwd)/tools/hermaguard-prescan/hermaguard-prescan.py /usr/local/bin
     comment_mode: inline
 </code></pre>
 <p>Pre-scan runs automatically. Full LLM review runs interactively (<code>/hermaguard</code>).</p>
-<h5>Why it exists</h5>
+<h3>Why it exists</h3>
 <p>Existing code review tools fall into two camps: security scanners (narrow to auth/crypto, miss logic bugs) and general review tools (mix bug hunting with style checks, diluting focus). HermaGuard is the first skill where ALL agents are purely adversarial — every subagent is trying to break the code, not validate it. With v2.0.0, it adds a deterministic floor (static analysis) underneath the LLM ceiling, closing the gap on both false positives and missed bugs.</p>
 <p>Built by synthesising 8 implementations: Trail of Bits <code>differential-review</code>, BMAD <code>edge-case-hunter</code> and <code>adversarial-general</code>, BMAD <code>bmad-code-review</code>, dementev-dev <code>adversarial-review</code>, Anthropic <code>claude-code-security-review</code>, Anthropic Claude Code Review Plugin, and the adversarial prompt pattern from r/ClaudeAI.</p>
 <p>v2.0.0 extensions based on findings from TRACE (runtime enforcement), HyperTool (composite calls), OrchRM (orchestration reward modeling), Agents-K1 (knowledge graphs), Agentic PR Rejection (failure mode analysis), Instructions-as-Code (instruction file effectiveness), and RAH (harness recursion measurement).</p>
-<h5>Related</h5>
+<h3>Related</h3>
 <ul>
 <li><strong>Benchmark and GitHub Action:</strong> in-repo under <code>tools/hermaguard-benchmark/</code> and <code>integrations/github-action/</code> (not separate repos).</li>
 <li><strong>Author:</strong> Sahil Saghir (<a href="https://github.com/Sahil-SS9">@Sahil-SS9</a>)</li>
 <li><strong>License:</strong> MIT</li>
 </ul>
-<h5>Contributing</h5>
+<h3>Contributing</h3>
 <p>Open an issue or PR. Bug reports with reproduction steps appreciated. Feature ideas for additional agents (e.g., performance regression hunter, accessibility auditor) welcome. Run <code>python3 -m pytest test_tools.py -q</code> before submitting PRs.</p>
+
   </section>
 </details>
 
@@ -278,11 +282,11 @@ sudo ln -sf $(pwd)/tools/hermaguard-prescan/hermaguard-prescan.py /usr/local/bin
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
-        <div class="stars">★ 25.0K</div>
+        <div class="stars">★ 25.6K</div>
         <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
       </a>
       <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
-        <div class="stars">★ 2.2K</div>
+        <div class="stars">★ 2.4K</div>
         <div class="name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
       </a>
       <a class="related-row" href="/projects/wondelai/skills">
@@ -290,19 +294,19 @@ sudo ln -sf $(pwd)/tools/hermaguard-prescan/hermaguard-prescan.py /usr/local/bin
         <div class="name"><span class="org">wondelai /</span> skills</div>
       </a>
       <a class="related-row" href="/projects/DougTrajano/pydantic-ai-skills">
-        <div class="stars">★ 333</div>
+        <div class="stars">★ 341</div>
         <div class="name"><span class="org">DougTrajano /</span> pydantic-ai-skills</div>
       </a>
       <a class="related-row" href="/projects/Agents365-ai/drawio-skill">
-        <div class="stars">★ 5.5K</div>
+        <div class="stars">★ 5.8K</div>
         <div class="name"><span class="org">Agents365-ai /</span> drawio-skill</div>
       </a>
       <a class="related-row" href="/projects/smartcontractkit/chainlink-agent-skills">
-        <div class="stars">★ 117</div>
+        <div class="stars">★ 118</div>
         <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
       </a>
       <a class="related-row" href="/projects/tlehman/litprog-skill">
-        <div class="stars">★ 204</div>
+        <div class="stars">★ 209</div>
         <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
       </a>
       <a class="related-row" href="/projects/esaradev/icarus-plugin">

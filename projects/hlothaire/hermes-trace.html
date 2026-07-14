@@ -40,17 +40,20 @@
   "codeRepository": "https://github.com/hlothaire/hermes-trace",
   "applicationCategory": "BrowserApplication",
   "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
   "author": {
     "@type": "Organization",
     "name": "hlothaire",
     "url": "https://github.com/hlothaire"
   },
+  "dateModified": "2026-06-18T11:41:26.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 1
+    "userInteractionCount": 2
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -78,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">185·repos</span>
+    <span id="meta-count">184·repos</span>
     <span id="meta-version">hermes·v0.18.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -115,11 +118,11 @@
   <p class="project-desc">A Hermes Agent plugin that builds execution trace graphs using agent lifecycle hooks.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 1</span>
+    <span class="stars">★ 2</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-06-18</span>
   </div>
 
   <div class="actions">
@@ -146,12 +149,12 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>Hermes Trace</h4>
+    <h2>Hermes Trace</h2>
 <p>A Hermes Agent plugin that builds <strong>execution trace graphs</strong> — capturing every
 turn, LLM call, tool call, subagent spawn, and approval request as a structured
 directed graph.  View traces interactively with <code>/trace</code>, export them as JSON
 or Mermaid diagrams, or query them from the terminal with <code>hermes trace</code>.</p>
-<h5>Features</h5>
+<h3>Features</h3>
 <ul>
 <li><p><strong>18 lifecycle hooks</strong> — automatic tracing of every agent event: sessions,
 turns, API requests, tool calls, subagents, approvals, gateway dispatch,
@@ -196,26 +199,26 @@ even after context compression.</p>
 <li><p><strong>Zero runtime dependencies</strong> — pure Python stdlib.</p>
 </li>
 </ul>
-<h5>Installation</h5>
-<h6>hermes plugins install (recommended)</h6>
+<h3>Installation</h3>
+<h4>hermes plugins install (recommended)</h4>
 <pre><code class="language-bash">hermes plugins install hlothaire/hermes-trace
 hermes plugins enable hermes-trace
 </code></pre>
 <p>This is the official Hermes plugin distribution mechanism — no pip, no PyPI,
 no additional tooling needed.</p>
-<h6>pip (alternative)</h6>
+<h4>pip (alternative)</h4>
 <pre><code class="language-bash">pip install hermes-trace
 </code></pre>
 <p>Hermes auto-discovers the plugin via the <code>hermes_agent.plugins</code> entry point.
 Then enable it:</p>
 <pre><code class="language-bash">hermes plugins enable hermes-trace
 </code></pre>
-<h6>Manual (development)</h6>
+<h4>Manual (development)</h4>
 <pre><code class="language-bash">git clone https://github.com/hlothaire/hermes-trace
 ln -s "$PWD/hermes-trace/hermes_trace" ~/.hermes/plugins/hermes-trace/
 hermes plugins enable hermes-trace
 </code></pre>
-<h5>Architecture</h5>
+<h3>Architecture</h3>
 <pre><code>Session
   └── Turn 1
   │     ├── User message
@@ -228,7 +231,7 @@ hermes plugins enable hermes-trace
   └── Subagents
         └── child_session_id (goal, status, duration)
 </code></pre>
-<h6>Source files</h6>
+<h4>Source files</h4>
 <table>
 <thead>
 <tr>
@@ -253,7 +256,7 @@ hermes plugins enable hermes-trace
 <td><code>hermes trace</code> subcommand handlers (list, view, stats, clean)</td>
 </tr>
 </tbody></table>
-<h6>Hooks</h6>
+<h4>Hooks</h4>
 <table>
 <thead>
 <tr>
@@ -334,8 +337,8 @@ hermes plugins enable hermes-trace
 <td>Inbound gateway message (logged)</td>
 </tr>
 </tbody></table>
-<h5>Usage</h5>
-<h6>In a session</h6>
+<h3>Usage</h3>
+<h4>In a session</h4>
 <pre><code>/trace                 # show current trace as text tree
 /trace view &lt;id&gt;       # view a specific session
 /trace list            # list active traces
@@ -345,21 +348,21 @@ hermes plugins enable hermes-trace
 /trace mermaid         # output Mermaid flowchart
 /trace clear           # remove in-memory trace
 </code></pre>
-<h6>From the terminal</h6>
+<h4>From the terminal</h4>
 <pre><code>hermes trace list                    # table of all saved traces
 hermes trace view 20260608_101004   # text tree (supports prefix matching)
 hermes trace stats 20260608_101004  # aggregate statistics
 hermes trace gantt 20260608_101004  # ASCII Gantt timeline
 hermes trace clean --keep 20        # keep the 20 most recent, delete the rest
 </code></pre>
-<h6>Output files</h6>
+<h4>Output files</h4>
 <p>Traces are saved to <code>~/.hermes/traces/</code>:</p>
 <pre><code>~/.hermes/traces/
 ├── 20260609_203712_a15113.json   # full trace graph
 ├── 20260609_203712_a15113.mmd    # Mermaid flowchart
 └── ...
 </code></pre>
-<h5>Example trace</h5>
+<h3>Example trace</h3>
 <pre><code>Trace: 20260609_203712_a15113
 ├── Model: deepseek-v4-pro | Platform: cli | Duration: 720.9s
 ├── Turns: 5
@@ -381,7 +384,7 @@ Tokens: 48,250 in / 7,894 out
 Slowest LLM: #19 (71.8s)
 Slowest tool: execute_code (300.0s)
 </code></pre>
-<h5>Development</h5>
+<h3>Development</h3>
 <pre><code class="language-bash"># Install dev dependencies
 pip install -e ".[dev]"
 
@@ -396,8 +399,9 @@ ruff format hermes_trace/
 </code></pre>
 <p>Python 3.12+ required.  Zero runtime dependencies — only <code>pytest</code> and <code>ruff</code> for
 development.</p>
-<h5>License</h5>
+<h3>License</h3>
 <p>MIT</p>
+
   </section>
 </details>
 
@@ -409,15 +413,15 @@ development.</p>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
-        <div class="stars">★ 330</div>
+        <div class="stars">★ 336</div>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 265</div>
+        <div class="stars">★ 272</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
-        <div class="stars">★ 41</div>
+        <div class="stars">★ 42</div>
         <div class="name"><span class="org">FahrenheitResearch /</span> hermes-weather-plugin</div>
       </a>
       <a class="related-row" href="/projects/42-evey/evey-bridge-plugin">
@@ -429,15 +433,15 @@ development.</p>
         <div class="name"><span class="org">nativ3ai /</span> hermes-payguard</div>
       </a>
       <a class="related-row" href="/projects/raulvidis/hermes-cloudflare">
-        <div class="stars">★ 37</div>
+        <div class="stars">★ 40</div>
         <div class="name"><span class="org">raulvidis /</span> hermes-cloudflare</div>
       </a>
       <a class="related-row" href="/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server">
-        <div class="stars">★ 355</div>
+        <div class="stars">★ 356</div>
         <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
       </a>
       <a class="related-row" href="/projects/stainlu/hermes-labyrinth">
-        <div class="stars">★ 295</div>
+        <div class="stars">★ 297</div>
         <div class="name"><span class="org">stainlu /</span> hermes-labyrinth</div>
       </a>
     </div>

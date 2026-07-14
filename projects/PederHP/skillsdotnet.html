@@ -11,13 +11,13 @@
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/PederHP/skillsdotnet">
 <meta property="og:site_name" content="Hermes Atlas">
-<meta property="og:image" content="https://hermesatlas.com/api/og?title=skillsdotnet&amp;subtitle=C%23+%2F+.NET+implementation+of+agentskills.io+with+MCP+integration&amp;kind=project+%C2%B7+skills">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=skillsdotnet&amp;subtitle=C%23+implementation+of+agent+skills+%28agentskills.io%29+with+MCP+integration+and+convenience.&amp;kind=project+%C2%B7+skills">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="PederHP/skillsdotnet — Hermes Atlas">
 <meta name="twitter:description" content="SkillsDotNet is a C#/.NET implementation of the agentskills.io standard designed to integrate agent skills into the Model Context Protocol (MCP). It uses a…">
-<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=skillsdotnet&amp;subtitle=C%23+%2F+.NET+implementation+of+agentskills.io+with+MCP+integration&amp;kind=project+%C2%B7+skills">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=skillsdotnet&amp;subtitle=C%23+implementation+of+agent+skills+%28agentskills.io%29+with+MCP+integration+and+convenience.&amp;kind=project+%C2%B7+skills">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -40,11 +40,13 @@
   "codeRepository": "https://github.com/PederHP/skillsdotnet",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Cross-platform",
+  "programmingLanguage": "C#",
   "author": {
     "@type": "Organization",
     "name": "PederHP",
     "url": "https://github.com/PederHP"
   },
+  "dateModified": "2026-05-09T15:06:10.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -78,7 +80,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">185·repos</span>
+    <span id="meta-count">184·repos</span>
     <span id="meta-version">hermes·v0.18.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -112,14 +114,14 @@
   <h1 class="project-name">
     <span class="org">PederHP</span><span class="slash">/</span>skillsdotnet
   </h1>
-  <p class="project-desc">C# / .NET implementation of agentskills.io with MCP integration</p>
+  <p class="project-desc">C# implementation of agent skills (agentskills.io) with MCP integration and convenience.</p>
 
   <div class="meta-row">
     <span class="stars">★ 12</span>
+    <span><span class="meta-label">lang</span>C#</span>
     
     
-    
-    
+    <span><span class="meta-label">updated</span>2026-05-09</span>
   </div>
 
   <div class="actions">
@@ -146,7 +148,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>SkillsDotNet</h4>
+    <h2>SkillsDotNet</h2>
 <p><a href="https://www.nuget.org/packages/SkillsDotNet"><img src="https://img.shields.io/nuget/v/SkillsDotNet.svg" alt="NuGet" loading="lazy" decoding="async"></a>
 <a href="https://www.nuget.org/packages/SkillsDotNet.Mcp"><img src="https://img.shields.io/nuget/v/SkillsDotNet.Mcp.svg" alt="NuGet" loading="lazy" decoding="async"></a></p>
 <p>Agent skills (<a href="https://agentskills.io">agentskills.io</a>) for the C# MCP SDK.</p>
@@ -154,26 +156,26 @@
 <p><strong>Experimental:</strong> This package is under active development and its API is subject to change.</p>
 </blockquote>
 <p>Skills provide "context-as-progressive-disclosure" via <code>SKILL.md</code> files. This library uses a <code>skill://</code> URI convention to distribute skills as MCP resources -- clients can load frontmatter for discovery (~50-100 tokens), full SKILL.md on demand, and supporting files as needed.</p>
-<h5>Installation</h5>
+<h3>Installation</h3>
 <pre><code>dotnet add package SkillsDotNet.Mcp
 </code></pre>
 <p>Requires the official <a href="https://github.com/modelcontextprotocol/csharp-sdk">C# MCP SDK</a> (<code>ModelContextProtocol</code> package).</p>
 <p>If you only need the core skill types (parsing, validation, scanning) without the MCP transport layer:</p>
 <pre><code>dotnet add package SkillsDotNet
 </code></pre>
-<h5>Server-Side Usage</h5>
-<h6>Register a single skill directory</h6>
+<h3>Server-Side Usage</h3>
+<h4>Register a single skill directory</h4>
 <pre><code class="language-csharp">builder.Services
     .AddMcpServer()
     .WithSkill("/path/to/my-skill");
 </code></pre>
-<h6>Register all skills from a directory</h6>
+<h4>Register all skills from a directory</h4>
 <p>Each subdirectory containing a <code>SKILL.md</code> is registered as a skill:</p>
 <pre><code class="language-csharp">builder.Services
     .AddMcpServer()
     .WithSkillsDirectory("/path/to/skills");
 </code></pre>
-<h6>Vendor shortcuts</h6>
+<h4>Vendor shortcuts</h4>
 <p>Register skills from well-known agent directories:</p>
 <pre><code class="language-csharp">builder.Services
     .AddMcpServer()
@@ -185,7 +187,7 @@
     .WithGooseSkills()     // ~/.config/agents/skills/
     .WithOpenCodeSkills(); // ~/.config/opencode/skills/
 </code></pre>
-<h6>Options</h6>
+<h4>Options</h4>
 <pre><code class="language-csharp">builder.Services
     .AddMcpServer()
     .WithSkillsDirectory("/path/to/skills", new SkillOptions
@@ -197,28 +199,28 @@
         MainFileName = "SKILL.md"
     });
 </code></pre>
-<h5>Client-Side Usage</h5>
-<h6>Discover skills on a server</h6>
+<h3>Client-Side Usage</h3>
+<h4>Discover skills on a server</h4>
 <pre><code class="language-csharp">var skills = await client.ListSkillsAsync();
 foreach (var skill in skills)
 {
     Console.WriteLine($"{skill.Name}: {skill.Description}");
 }
 </code></pre>
-<h6>Read a skill's manifest</h6>
+<h4>Read a skill's manifest</h4>
 <pre><code class="language-csharp">var manifest = await client.GetSkillManifestAsync("code-review");
 foreach (var file in manifest.Files)
 {
     Console.WriteLine($"  {file.Path} ({file.Size} bytes, {file.Hash})");
 }
 </code></pre>
-<h6>Download a skill locally</h6>
+<h4>Download a skill locally</h4>
 <pre><code class="language-csharp">var path = await client.DownloadSkillAsync("code-review", targetDirectory: "./skills");
 </code></pre>
-<h6>Sync all skills from a server</h6>
+<h4>Sync all skills from a server</h4>
 <pre><code class="language-csharp">var paths = await client.SyncSkillsAsync(targetDirectory: "./skills");
 </code></pre>
-<h6>Using skills with <code>IChatClient</code></h6>
+<h4>Using skills with <code>IChatClient</code></h4>
 <p><code>SkillCatalog</code> discovers skills from one or more MCP servers and provides two things for use with <a href="https://learn.microsoft.com/en-us/dotnet/ai/microsoft-extensions-ai"><code>Microsoft.Extensions.AI</code></a>: context blocks (frontmatter summaries for the system prompt) and a <code>load_skill</code> tool the model can call to load a skill's full content on demand.</p>
 <pre><code class="language-csharp">// Build a catalog from one or more MCP servers
 var catalog = new SkillCatalog();
@@ -250,7 +252,7 @@ var response = await chatClient.GetResponseAsync(messages, options);
 <p>If a server disconnects, remove its skills from the catalog:</p>
 <pre><code class="language-csharp">catalog.RemoveClient(mcpClient1);
 </code></pre>
-<h6>Handling skill dependencies</h6>
+<h4>Handling skill dependencies</h4>
 <p>Skills can declare MCP server dependencies in their frontmatter:</p>
 <pre><code class="language-markdown">---
 name: explore-everything
@@ -276,7 +278,7 @@ dependencies: [everything-server]
 </code></pre>
 <p>The callback receives a <code>SkillDependencyRequest</code> with the skill name and the list of required server names. Return <code>true</code> when all servers are connected, or <code>false</code> to abort (which causes <code>LoadSkillAsync</code> to throw <code>InvalidOperationException</code>). If the callback is not set, skills with dependencies load silently without notification.</p>
 <p>See the <a href="samples/DynamicMcpServers/">DynamicMcpServers sample</a> for a complete example.</p>
-<h6>Unloading skills</h6>
+<h4>Unloading skills</h4>
 <p>Progressive disclosure shouldn't become progressive accumulation. Once at least one skill is loaded, <code>SkillCatalog.UnloadSkillTool</code> becomes available alongside <code>load_skill</code> — the model is told about it via a short postscript appended to each <code>load_skill</code> response, and can call it to free a skill's context when finished. The <code>unload_skill</code> AIFunction and its accompanying guidance only appear while at least one skill is currently loaded.</p>
 <p>The <code>OnSkillUnloaded</code> callback fires every time a skill is unloaded. The host wires it to do two things:</p>
 <ol>
@@ -300,7 +302,7 @@ foreach (var skillName in pendingScrubs)
 pendingScrubs.Clear();
 </code></pre>
 <p>The scrub itself is a simple predicate over the messages list — match <code>FunctionCallContent</code> whose <code>Name == "load_skill"</code> and <code>Arguments["skillName"]</code> equals the unloaded skill, then drop those calls and the matching <code>FunctionResultContent</code>. See <a href="samples/DynamicMcpServers/Program.cs">DynamicMcpServers/Program.cs</a> for the complete implementation.</p>
-<h5>URI Convention</h5>
+<h3>URI Convention</h3>
 <p>Each skill exposes three resources following the <a href="https://github.com/jlowin/fastmcp">FastMCP</a> convention:</p>
 <table>
 <thead>
@@ -326,7 +328,7 @@ pendingScrubs.Clear();
 <td>Supporting files on demand</td>
 </tr>
 </tbody></table>
-<h6>Manifest format</h6>
+<h4>Manifest format</h4>
 <pre><code class="language-json">{
   "skill": "code-review",
   "files": [
@@ -335,7 +337,7 @@ pendingScrubs.Clear();
   ]
 }
 </code></pre>
-<h5>Writing a Skill</h5>
+<h3>Writing a Skill</h3>
 <p>A skill is a directory containing a <code>SKILL.md</code> file with YAML frontmatter:</p>
 <pre><code>my-skill/
   SKILL.md
@@ -356,7 +358,7 @@ metadata:
 
 Instructions for the agent go here.
 </code></pre>
-<h6>Frontmatter fields</h6>
+<h4>Frontmatter fields</h4>
 <table>
 <thead>
 <tr>
@@ -401,7 +403,7 @@ Instructions for the agent go here.
 <td>Arbitrary key-value pairs for client-specific data</td>
 </tr>
 </tbody></table>
-<h6>Name rules</h6>
+<h4>Name rules</h4>
 <p>Per the <a href="https://agentskills.io">agentskills.io spec</a>:</p>
 <ul>
 <li>Lowercase letters, digits, and hyphens only</li>
@@ -409,7 +411,7 @@ Instructions for the agent go here.
 <li>NFKC normalized, max 64 characters</li>
 <li>Must match the directory name</li>
 </ul>
-<h5>Packages</h5>
+<h3>Packages</h3>
 <table>
 <thead>
 <tr>
@@ -426,16 +428,17 @@ Instructions for the agent go here.
 <td>MCP transport layer: <code>SkillResourceFactory</code>, <code>SkillCatalog</code>, builder extensions, client extensions. Depends on <code>SkillsDotNet</code> and <code>ModelContextProtocol</code>.</td>
 </tr>
 </tbody></table>
-<h5>Target Frameworks</h5>
+<h3>Target Frameworks</h3>
 <ul>
 <li>.NET 10</li>
 <li>.NET 9</li>
 <li>.NET 8</li>
 </ul>
-<h5>Acknowledgements</h5>
+<h3>Acknowledgements</h3>
 <p>Many conventions and especially the server-side resource implementations in this library are inspired by <a href="https://github.com/jlowin/fastmcp">FastMCP 3.0</a>. We've tried to align with FastMCP whenever possible.</p>
-<h5>License</h5>
+<h3>License</h3>
 <p>MIT</p>
+
   </section>
 </details>
 
@@ -447,11 +450,11 @@ Instructions for the agent go here.
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
-        <div class="stars">★ 25.0K</div>
+        <div class="stars">★ 25.6K</div>
         <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
       </a>
       <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
-        <div class="stars">★ 2.2K</div>
+        <div class="stars">★ 2.4K</div>
         <div class="name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
       </a>
       <a class="related-row" href="/projects/wondelai/skills">
@@ -459,19 +462,19 @@ Instructions for the agent go here.
         <div class="name"><span class="org">wondelai /</span> skills</div>
       </a>
       <a class="related-row" href="/projects/DougTrajano/pydantic-ai-skills">
-        <div class="stars">★ 333</div>
+        <div class="stars">★ 341</div>
         <div class="name"><span class="org">DougTrajano /</span> pydantic-ai-skills</div>
       </a>
       <a class="related-row" href="/projects/Agents365-ai/drawio-skill">
-        <div class="stars">★ 5.5K</div>
+        <div class="stars">★ 5.8K</div>
         <div class="name"><span class="org">Agents365-ai /</span> drawio-skill</div>
       </a>
       <a class="related-row" href="/projects/smartcontractkit/chainlink-agent-skills">
-        <div class="stars">★ 117</div>
+        <div class="stars">★ 118</div>
         <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
       </a>
       <a class="related-row" href="/projects/tlehman/litprog-skill">
-        <div class="stars">★ 204</div>
+        <div class="stars">★ 209</div>
         <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
       </a>
       <a class="related-row" href="/projects/esaradev/icarus-plugin">

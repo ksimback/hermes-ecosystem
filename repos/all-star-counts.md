@@ -38,7 +38,6 @@
 | martymcenroe/HermesWiki | 2 | Wiki for Hermes -- autonomous AI email agent | https://github.com/martymcenroe/HermesWiki |
 | raulvidis/hermes-cloudflare | 1 | Cloudflare Browser Rendering plugin for hermes-agent -- crawl, scrape, extract content from web pages | https://github.com/raulvidis/hermes-cloudflare |
 | Crustocean/hermes-agent-template | 1 | Generic Docker image for cloud Hermes agents on Crustocean | https://github.com/Crustocean/hermes-agent-template |
-| ellickjohnson/portainer-stack-hermes | 1 | Hermes Agent deployment with ttyd web terminal | https://github.com/ellickjohnson/portainer-stack-hermes |
 | beardthelion/hermes-skill-distillation | 1 | Hermes Agent Hackathon: RealWorldTaskEnv -- generate agentic training trajectories from real-world tasks for Hermes 4 fine-tuning | https://github.com/beardthelion/hermes-skill-distillation |
 | anpicasso/hermes-plugin-chrome-profiles | 0 | Hermes Agent plugin -- switch browser tools between Chrome profiles via CDP | https://github.com/anpicasso/hermes-plugin-chrome-profiles |
 | Hmbown/NemoHermes | 0 | NVIDIA capability registry and Spark-aware routing layer for Hermes Agent and NemoClaw users | https://github.com/Hmbown/NemoHermes |

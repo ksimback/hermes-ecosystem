@@ -150,7 +150,6 @@ Docker images, deployment templates, and infrastructure tooling for running Herm
 | [0xrsydn/nix-hermes-agent](https://github.com/0xrsydn/nix-hermes-agent) | Nix package and NixOS module for reproducible Hermes deployment | — | Beta |
 | [numtide/llm-agents.nix](https://github.com/numtide/llm-agents.nix) | Nix packages for AI coding agents including Hermes | 967 | Production |
 | [JackTheGit/hermes-autonomous-server](https://github.com/JackTheGit/hermes-autonomous-server) | Headless systemd deployment for always-on Hermes | — | Experimental |
-| [ellickjohnson/portainer-stack-hermes](https://github.com/ellickjohnson/portainer-stack-hermes) | Docker Compose stack with Portainer UI and web terminal | — | Experimental |
 | [TheAiSingularity/hermesclaw](https://github.com/TheAiSingularity/hermesclaw) | Hermes Agent sandboxed with hardware-level enforcement | 16 | Experimental |
 
 ---

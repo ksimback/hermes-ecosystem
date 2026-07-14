@@ -40,11 +40,14 @@
   "codeRepository": "https://github.com/Cyber-Yichen/hermes-xiaomi-mimo-tts",
   "applicationCategory": "BrowserApplication",
   "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
   "author": {
     "@type": "Organization",
     "name": "Cyber-Yichen",
     "url": "https://github.com/Cyber-Yichen"
   },
+  "dateModified": "2026-06-30T08:58:24.000Z",
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
   }
@@ -71,7 +74,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">185·repos</span>
+    <span id="meta-count">184·repos</span>
     <span id="meta-version">hermes·v0.18.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -109,10 +112,10 @@
 
   <div class="meta-row">
     <span class="stars">★ 0</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
     
-    
-    
-    
+    <span><span class="meta-label">updated</span>2026-06-30</span>
   </div>
 
   <div class="actions">
@@ -144,7 +147,7 @@
 <strong>AI Agent / Coding Agent：修改本项目之前，请先阅读 <a href="https://github.com/Cyber-Yichen/hermes-xiaomi-mimo-tts/blob/main/AGENTS.md">AGENTS.md</a>。</strong>
 其中记录了插件接口、音频格式约束、凭据优先级、测试方法和发布规则。</p>
 </blockquote>
-<h4>Hermes Xiaomi MiMo TTS</h4>
+<h2>Hermes Xiaomi MiMo TTS</h2>
 <p>将小米 MiMo V2.5 TTS 接入 <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>，并把生成的语音转换为飞书 / Lark 可直接播放的 OGG/Opus 语音条。</p>
 <p>这个插件解决三个问题：</p>
 <ol>
@@ -153,7 +156,7 @@
 <li>旧的 command provider 方案依赖批处理脚本、Python SDK 和路径配置，容易出现“文件名是 <code>.ogg</code>，内容实际仍是 MP3”的伪转码。</li>
 </ol>
 <p>插件使用 Hermes 原生 <code>TTSProvider</code> 接口，无需修改 Hermes 源码，也不依赖 OpenAI SDK。</p>
-<h5>功能</h5>
+<h3>功能</h3>
 <ul>
 <li>注册 <code>xiaomi-mimo</code> Hermes TTS provider；</li>
 <li>支持标准 MiMo API 和 Token Plan API；</li>
@@ -167,7 +170,7 @@
 <li>安装前备份 Hermes 配置和旧插件；</li>
 <li>不保存、上传或提交 API Key。</li>
 </ul>
-<h5>技术栈</h5>
+<h3>技术栈</h3>
 <table>
 <thead>
 <tr>
@@ -214,7 +217,7 @@
 <li>修改 Hermes Feishu Adapter；</li>
 <li>将 API Key 写入仓库。</li>
 </ul>
-<h5>工作原理</h5>
+<h3>工作原理</h3>
 <pre><code class="language-mermaid">flowchart LR
     A["Hermes text_to_speech"] --&gt; B["xiaomi-mimo Provider"]
     B --&gt; C["MiMo /chat/completions"]
@@ -234,7 +237,7 @@
 <li>音频从 <code>choices[0].message.audio.data</code> 读取；</li>
 <li>插件不会把正文或 API Key 写入日志。</li>
 </ul>
-<h5>环境要求</h5>
+<h3>环境要求</h3>
 <ul>
 <li>Windows 10 / 11；</li>
 <li>Hermes Agent <code>0.15.0</code> 或更新版本；</li>
@@ -243,7 +246,7 @@
 <li>ffmpeg 包含 <code>libopus</code> 编码器，语音条功能才可用。</li>
 </ul>
 <p>没有 ffmpeg 时，TTS 仍然可用，只会作为普通 MP3 音频附件发送。</p>
-<h5>安装</h5>
+<h3>安装</h3>
 <pre><code class="language-powershell">git clone https://github.com/Cyber-Yichen/hermes-xiaomi-mimo-tts.git
 Set-Location .\hermes-xiaomi-mimo-tts
 .\install.ps1
@@ -266,17 +269,17 @@ Set-Location .\hermes-xiaomi-mimo-tts
 <li>设置默认模型、音色和 <code>ogg</code> 输出；</li>
 <li>重启 Hermes Gateway。</li>
 </ol>
-<h5>配置凭据</h5>
+<h3>配置凭据</h3>
 <p>将凭据写入 <code>HERMES_HOME\.env</code>。不要写进仓库或 <code>config.yaml</code>。</p>
-<h6>独立 TTS 凭据</h6>
+<h4>独立 TTS 凭据</h4>
 <pre><code class="language-dotenv">MIMO_TTS_API_KEY=你的密钥
 MIMO_TTS_BASE_URL=https://api.xiaomimimo.com/v1
 </code></pre>
-<h6>Token Plan</h6>
+<h4>Token Plan</h4>
 <pre><code class="language-dotenv">XIAOMI_TOKEN_PLAN_API_KEY=你的Token Plan密钥
 XIAOMI_TOKEN_PLAN_BASE_URL=https://token-plan-cn.xiaomimimo.com/v1
 </code></pre>
-<h6>复用已有小米配置</h6>
+<h4>复用已有小米配置</h4>
 <pre><code class="language-dotenv">XIAOMI_API_KEY=你已有的小米API密钥
 XIAOMI_BASE_URL=https://api.xiaomimimo.com/v1
 </code></pre>
@@ -287,7 +290,7 @@ XIAOMI_BASE_URL=https://api.xiaomimimo.com/v1
 <li><code>XIAOMI_API_KEY</code></li>
 </ol>
 <p>插件只使用与命中密钥配套的 Base URL。</p>
-<h5>Hermes 配置</h5>
+<h3>Hermes 配置</h3>
 <p>安装后的核心配置：</p>
 <pre><code class="language-yaml">tts:
   provider: xiaomi-mimo
@@ -303,7 +306,7 @@ MIMO_TTS_TIMEOUT=120
 MIMO_TTS_FFMPEG=D:\env\hermes\bin\ffmpeg.exe
 </code></pre>
 <p>Hermes <code>config.yaml</code> 中的 <code>tts.voice</code> 和 <code>tts.model</code> 优先于插件环境变量。</p>
-<h5>可用音色</h5>
+<h3>可用音色</h3>
 <table>
 <thead>
 <tr>
@@ -327,13 +330,13 @@ MIMO_TTS_FFMPEG=D:\env\hermes\bin\ffmpeg.exe
 <pre><code class="language-powershell">hermes config set tts.voice 茉莉
 hermes gateway restart
 </code></pre>
-<h5>使用</h5>
+<h3>使用</h3>
 <p>在飞书中让 Hermes：</p>
 <pre><code class="language-text">用语音回复我：你好，这是小米 MiMo TTS。
 </code></pre>
 <p>Hermes 会调用 <code>text_to_speech</code>，结果正常时返回 OGG/Opus 语音条。</p>
 <p>CLI 中也可以通过 Hermes 的 TTS 工具调用。输出文件默认保存在 Hermes 的语音缓存目录。</p>
-<h5>从旧 command provider 迁移</h5>
+<h3>从旧 command provider 迁移</h3>
 <p>旧配置通常类似：</p>
 <pre><code class="language-yaml">tts:
   provider: mimo
@@ -345,7 +348,7 @@ hermes gateway restart
 </code></pre>
 <p>本插件使用不同的 provider 名称 <code>xiaomi-mimo</code>，因此旧配置可以暂时保留，不会覆盖插件。确认插件运行正常后，再手动删除旧的 <code>tts.providers.mimo</code> 和旧脚本。</p>
 <p>不要继续使用“请求 MP3 后直接保存成 <code>.ogg</code>”的旧脚本。飞书根据扩展名按 Opus 上传，但文件内部并不是 Opus，可能导致播放失败或兼容性问题。</p>
-<h5>验证音频</h5>
+<h3>验证音频</h3>
 <pre><code class="language-powershell">ffmpeg -hide_banner -i .\voice.ogg
 </code></pre>
 <p>正确的输出应包含：</p>
@@ -353,35 +356,35 @@ hermes gateway restart
 Audio: opus
 </code></pre>
 <p>仅仅看到文件名以 <code>.ogg</code> 结尾并不能证明转码成功。</p>
-<h5>测试</h5>
+<h3>测试</h3>
 <p>使用 Hermes 自带 Python：</p>
 <pre><code class="language-powershell">$python = Join-Path $env:HERMES_HOME 'hermes-agent\venv\Scripts\python.exe'
 &amp; $python -B -m unittest discover -s tests -v
 </code></pre>
 <p>测试不会访问真实 MiMo API，也不需要 API Key。</p>
-<h5>故障排查</h5>
-<h6>Provider 不可用</h6>
+<h3>故障排查</h3>
+<h4>Provider 不可用</h4>
 <p>确认插件和配置：</p>
 <pre><code class="language-powershell">hermes plugins list
 hermes config get tts
 </code></pre>
 <p>检查 <code>.env</code> 中至少存在一个支持的密钥名称，但不要把密钥值粘贴到 Issue。</p>
-<h6>收到音频附件而不是语音条</h6>
+<h4>收到音频附件而不是语音条</h4>
 <p>这通常表示 ffmpeg 不可用或不包含 <code>libopus</code>：</p>
 <pre><code class="language-powershell">ffmpeg -encoders | Select-String opus
 </code></pre>
 <p>重新安装时使用 <code>-FfmpegPath</code>，然后重启 Gateway。</p>
-<h6>HTTP 402</h6>
+<h4>HTTP 402</h4>
 <p>标准 API 账户余额不足。配置 Token Plan 凭据，或为当前账户充值。</p>
-<h6>HTTP 400 <code>Unsupported audio format</code></h6>
+<h4>HTTP 400 <code>Unsupported audio format</code></h4>
 <p>MiMo API 不直接支持 <code>ogg</code> 或 <code>opus</code>。这是预期行为。插件会先请求 MP3，再由 ffmpeg 转码。</p>
-<h6>旧 command provider 仍在运行</h6>
+<h4>旧 command provider 仍在运行</h4>
 <p>确认：</p>
 <pre><code class="language-yaml">tts:
   provider: xiaomi-mimo
 </code></pre>
 <p>Hermes 的 command provider 会优先于同名 Python 插件，但本项目使用独立名称避免了该冲突。</p>
-<h5>安全与隐私</h5>
+<h3>安全与隐私</h3>
 <ul>
 <li>API Key 仅从环境变量或 <code>HERMES_HOME\.env</code> 读取；</li>
 <li>HTTP 错误不会打印 Authorization Header；</li>
@@ -390,7 +393,7 @@ hermes config get tts
 <li>需要合成的文本会发送给小米 MiMo API；</li>
 <li>语音文件保存在本机 Hermes 缓存目录。</li>
 </ul>
-<h5>已知限制</h5>
+<h3>已知限制</h3>
 <ul>
 <li>当前发布只支持 <code>mimo-v2.5-tts</code>；</li>
 <li>Voice Design 和 Voice Clone 使用不同请求结构，尚未作为稳定功能开放；</li>
@@ -398,7 +401,7 @@ hermes config get tts
 <li>安装脚本目前面向 Windows；</li>
 <li>飞书语音发送由 Hermes Feishu Adapter 提供，本插件不直接持有飞书凭据。</li>
 </ul>
-<h5>项目结构</h5>
+<h3>项目结构</h3>
 <pre><code class="language-text">.
 ├── .env.example
 ├── AGENTS.md
@@ -413,7 +416,7 @@ hermes config get tts
 └── tests
     └── test_provider.py
 </code></pre>
-<h5>参考</h5>
+<h3>参考</h3>
 <ul>
 <li><a href="https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/features/tts.md">Hermes Agent Voice &amp; TTS</a></li>
 <li><a href="https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/features/plugins.md">Hermes Agent Plugin Guide</a></li>
@@ -421,8 +424,9 @@ hermes config get tts
 <li><a href="https://open.feishu.cn/document/server-docs/im-v1/file/create">Feishu file upload API</a></li>
 <li><a href="https://open.feishu.cn/document/server-docs/im-v1/message/create">Feishu message create API</a></li>
 </ul>
-<h5>许可证</h5>
+<h3>许可证</h3>
 <p><a href="./LICENSE">MIT License</a></p>
+
   </section>
 </details>
 
@@ -434,15 +438,15 @@ hermes config get tts
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
-        <div class="stars">★ 330</div>
+        <div class="stars">★ 336</div>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 265</div>
+        <div class="stars">★ 272</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
-        <div class="stars">★ 41</div>
+        <div class="stars">★ 42</div>
         <div class="name"><span class="org">FahrenheitResearch /</span> hermes-weather-plugin</div>
       </a>
       <a class="related-row" href="/projects/42-evey/evey-bridge-plugin">
@@ -454,15 +458,15 @@ hermes config get tts
         <div class="name"><span class="org">nativ3ai /</span> hermes-payguard</div>
       </a>
       <a class="related-row" href="/projects/raulvidis/hermes-cloudflare">
-        <div class="stars">★ 37</div>
+        <div class="stars">★ 40</div>
         <div class="name"><span class="org">raulvidis /</span> hermes-cloudflare</div>
       </a>
       <a class="related-row" href="/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server">
-        <div class="stars">★ 355</div>
+        <div class="stars">★ 356</div>
         <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
       </a>
       <a class="related-row" href="/projects/stainlu/hermes-labyrinth">
-        <div class="stars">★ 295</div>
+        <div class="stars">★ 297</div>
         <div class="name"><span class="org">stainlu /</span> hermes-labyrinth</div>
       </a>
     </div>

@@ -19,6 +19,13 @@ import crypto from "crypto";
 import { fileURLToPath } from "url";
 import { githubHeaders, fetchReadme } from "../lib/github.js";
 import { callOpenRouterJSON } from "../lib/openrouter.js";
+import {
+  listSummaryNeedsRegeneration,
+  pruneObjectKeys,
+  validateListEntries,
+} from "../lib/summary-pruning.js";
+import { writeJsonCheckpoint } from "../lib/json-checkpoint.js";
+import { mapWithConcurrency } from "../lib/bounded-concurrency.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -41,6 +48,10 @@ const GITHUB_HEADERS = githubHeaders(GITHUB_TOKEN);
 const SUMMARY_VERSION = 1;
 
 const DELAY_MS = 1500; // Delay between LLM calls to respect rate limits
+const SUMMARY_CONCURRENCY = Math.min(
+  Math.max(parseInt(process.env.SUMMARY_CONCURRENCY || "3", 10) || 3, 1),
+  6,
+);
 
 // ── Load data ──
 const repos = JSON.parse(
@@ -110,7 +121,7 @@ function factCheck(summary, readme) {
 }
 
 // ── Project summary generation ──
-const SYSTEM_PROMPT = `You are a technical writer for Hermes Atlas, a community ecosystem map for Hermes Agent by Nous Research. Write concise, original summaries of open-source projects. Your summaries must be factually grounded in the README — do NOT invent features, numbers, or capabilities not mentioned in the source material.`;
+const SYSTEM_PROMPT = `You are a precision technical writer for Hermes Atlas. Write concise summaries of open-source projects using ONLY claims explicitly supported by the supplied README. If a feature, integration, architecture detail, number, or use case is not stated in the README, omit it. Prefer cautious, concrete wording over broad claims. Never infer a technology from file names, badges, dependencies, or a project's category.`;
 
 function buildProjectPrompt(repo, readme) {
   const readmeTruncated = readme.slice(0, 8000);
@@ -121,14 +132,18 @@ GitHub description: ${repo.description}
 Category: ${repo.category}
 Stars: ${repo.stars}
 
-README content (source of truth — do NOT include claims not supported by this):
+README content (the only factual source — metadata above is context only and must not be repeated unless the README confirms it):
 ---
 ${readmeTruncated}
 ---
 
+${repo.audit === "flagged" ? `Previous draft failed factual audit. Do not repeat any of these unsupported claims:
+${repo.auditNotes || "Use only directly stated README claims."}
+` : ""}
+
 Output a JSON object with exactly these fields:
-- "summary": A 3-5 sentence plain-language summary. First sentence: what the project IS and what problem it solves. Second sentence: how it works (key technical approach). Remaining sentences: notable benefits, integrations, or use cases. Do NOT repeat the GitHub description verbatim. Do NOT use marketing superlatives like "revolutionary" or "cutting-edge".
-- "highlights": An array of exactly 3 short bullet points (under 12 words each) capturing the most important capabilities.
+- "summary": A 2-3 sentence plain-language summary. State only what the README directly supports. Do not use marketing superlatives.
+- "highlights": An array of 1-3 short factual bullet points (under 12 words each). Use fewer bullets if the README is sparse.
 
 Respond with ONLY the JSON object, no markdown fences, no explanation.`;
 }
@@ -167,7 +182,17 @@ async function main() {
   let failed = 0;
   const changedRepoKeys = new Set();
 
-  for (const repo of repos) {
+  // Prune first and checkpoint immediately. Previously this ran only after
+  // every network/LLM call, so a timeout could leave deleted repos in the
+  // generated summary store indefinitely.
+  const validKeys = new Set(repos.map((r) => `${r.owner}/${r.repo}`));
+  const prunedKeys = pruneObjectKeys(summaries, validKeys);
+  if (prunedKeys.length > 0) {
+    writeJsonCheckpoint(summariesPath, summaries);
+    console.log(`Pruned ${prunedKeys.length} orphaned summaries (not in repos.json)`);
+  }
+
+  await mapWithConcurrency(repos, SUMMARY_CONCURRENCY, async (repo) => {
     const key = `${repo.owner}/${repo.repo}`;
     const existing = summaries[key];
 
@@ -176,7 +201,7 @@ async function main() {
     if (!readmeRaw) {
       console.log(`  ${key}: no README, skipping`);
       skipped++;
-      continue;
+      return;
     }
 
     // Check if regeneration is needed
@@ -187,7 +212,7 @@ async function main() {
       existing.version === SUMMARY_VERSION
     ) {
       skipped++;
-      continue;
+      return;
     }
 
     // Generate summary
@@ -195,7 +220,10 @@ async function main() {
     try {
       const result = await callOpenRouterJSON({
         system: SYSTEM_PROMPT,
-        user: buildProjectPrompt(repo, readmeRaw),
+        user: buildProjectPrompt(
+          { ...repo, audit: existing?.audit, auditNotes: existing?.auditNotes },
+          readmeRaw,
+        ),
         apiKey: OPENROUTER_KEY,
         maxTokens: 600,
       });
@@ -228,6 +256,10 @@ async function main() {
         audit: "pass",
       };
 
+      // Checkpoint every successful item so a runner timeout or transient
+      // provider outage can resume instead of discarding an entire long run.
+      writeJsonCheckpoint(summariesPath, summaries);
+
       changedRepoKeys.add(key);
       generated++;
     } catch (e) {
@@ -237,24 +269,14 @@ async function main() {
 
     // Rate limit delay
     await sleep(DELAY_MS);
-  }
+  });
 
   // Prune orphaned summaries for repos no longer in the catalog. Without this
   // the file accumulates dead entries (removed/renamed repos), which then leak
   // into llms-full.txt (built by bundling summary content). Removal-only — no
   // generated content, so no hallucination risk.
-  const validKeys = new Set(repos.map((r) => `${r.owner}/${r.repo}`));
-  let pruned = 0;
-  for (const key of Object.keys(summaries)) {
-    if (!validKeys.has(key)) {
-      delete summaries[key];
-      pruned++;
-    }
-  }
-  if (pruned) console.log(`Pruned ${pruned} orphaned summaries (not in repos.json)`);
-
   // Write summaries
-  fs.writeFileSync(summariesPath, JSON.stringify(summaries, null, 2) + "\n", "utf-8");
+  writeJsonCheckpoint(summariesPath, summaries);
   console.log(
     `\nProject summaries: ${generated} generated, ${skipped} skipped, ${failed} failed\n`
   );
@@ -262,6 +284,7 @@ async function main() {
   // ── List summaries ──
   console.log("Generating list summaries...");
   let listsGenerated = 0;
+  let listsFailed = 0;
 
   for (const list of lists) {
     const memberRepos = repos.filter((r) => {
@@ -271,11 +294,24 @@ async function main() {
 
     if (memberRepos.length === 0) continue;
 
+    // List summaries are keyed by member repo. Prune removals without an LLM
+    // call so a dead catalog entry cannot linger in list prose or generated
+    // pages after it has been removed from data/repos.json.
+    const memberKeys = new Set(memberRepos.map((r) => `${r.owner}/${r.repo}`));
+    const listEntries = listSummaries[list.slug]?.entries;
+    const removedEntries = pruneObjectKeys(listEntries, memberKeys);
+    if (removedEntries.length > 0) {
+      console.log(`  ${list.slug}: pruned ${removedEntries.length} orphaned entries`);
+    }
+
     // Check if any member repo's summary changed
-    const needsRegen =
-      !listSummaries[list.slug] ||
-      listSummaries[list.slug].version !== SUMMARY_VERSION ||
-      memberRepos.some((r) => changedRepoKeys.has(`${r.owner}/${r.repo}`));
+    const needsRegen = listSummaryNeedsRegeneration({
+      listSummary: listSummaries[list.slug],
+      memberKeys,
+      summaries,
+      version: SUMMARY_VERSION,
+      changedKeys: changedRepoKeys,
+    });
 
     if (!needsRegen) {
       console.log(`  ${list.slug}: up to date, skipping`);
@@ -288,8 +324,10 @@ async function main() {
         system: SYSTEM_PROMPT,
         user: buildListPrompt(list, memberRepos, summaries),
         apiKey: OPENROUTER_KEY,
-        maxTokens: 1200,
+        maxTokens: 3200,
       });
+
+      validateListEntries(entries, memberKeys);
 
       listSummaries[list.slug] = {
         entries: entries,
@@ -297,21 +335,26 @@ async function main() {
         version: SUMMARY_VERSION,
       };
 
+      writeJsonCheckpoint(listSummariesPath, listSummaries);
+
       listsGenerated++;
     } catch (e) {
       console.error(`    FAILED ${list.slug}: ${e.message}`);
+      listsFailed++;
     }
 
     await sleep(DELAY_MS);
   }
 
   // Write list summaries
-  fs.writeFileSync(
-    listSummariesPath,
-    JSON.stringify(listSummaries, null, 2) + "\n",
-    "utf-8"
-  );
+  writeJsonCheckpoint(listSummariesPath, listSummaries);
   console.log(`List summaries: ${listsGenerated} generated\n`);
+
+  if (failed > 0 || listsFailed > 0) {
+    throw new Error(
+      `Summary generation failed: ${failed} project failures, ${listsFailed} list failures`,
+    );
+  }
 
   console.log("Done!");
 }

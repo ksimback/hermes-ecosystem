@@ -40,11 +40,13 @@
   "codeRepository": "https://github.com/kfa-ai/hermes-timetree-sync",
   "applicationCategory": "CommunicationApplication",
   "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
   "author": {
     "@type": "Organization",
     "name": "kfa-ai",
     "url": "https://github.com/kfa-ai"
   },
+  "dateModified": "2026-05-22T21:29:05.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -78,7 +80,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">185·repos</span>
+    <span id="meta-count">184·repos</span>
     <span id="meta-version">hermes·v0.18.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -116,15 +118,15 @@
 
   <div class="meta-row">
     <span class="stars">★ 1</span>
+    <span><span class="meta-label">lang</span>Python</span>
     
     
-    
-    
+    <span><span class="meta-label">updated</span>2026-05-22</span>
   </div>
 
   <div class="actions">
     <a href="https://github.com/kfa-ai/hermes-timetree-sync" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
-    
+    <a href="https://github.com/kfa-ai/hermes-timetree-sync" target="_blank" rel="noopener" class="btn-secondary">homepage</a>
   </div>
 </section>
 
@@ -146,7 +148,7 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h4>hermes-timetree-sync</h4>
+    <h2>hermes-timetree-sync</h2>
 <p align="center">
   <strong>Private TimeTree bridge for Hermes Agent calendar automation.</strong>
 </p>
@@ -162,13 +164,13 @@
 
 <p><code>hermes-timetree-sync</code> is a small Python CLI and client library that lets Hermes create and sync TimeTree calendar events without asking a chat user to open TimeTree.</p>
 <p>TimeTree discontinued its official third-party API in December 2023. This project therefore uses TimeTree's current web endpoints through a deliberately narrow, tested client boundary. It is an internal bridge, not an official TimeTree integration; upstream web-app changes may require maintenance.</p>
-<h5>Why this exists</h5>
+<h3>Why this exists</h3>
 <p>The target interaction is simple:</p>
 <blockquote>
 <p>“Add Day off on May 18.”</p>
 </blockquote>
 <p>Hermes should translate that request into a TimeTree write using locally stored credentials. No browser, TimeTree UI, cookie copying, or OAuth prompt should appear during normal chat usage.</p>
-<h5>Capabilities</h5>
+<h3>Capabilities</h3>
 <table>
 <thead>
 <tr>
@@ -205,7 +207,7 @@
 <td>Redacted docs/tests, low-volume API usage, mocked HTTP coverage</td>
 </tr>
 </tbody></table>
-<h5>Installation</h5>
+<h3>Installation</h3>
 <pre><code class="language-bash">git clone git@github.com:kfa-ai/hermes-timetree-sync.git
 cd hermes-timetree-sync
 uv sync --dev
@@ -214,7 +216,7 @@ uv sync --dev
 <pre><code class="language-bash">uv run pytest
 uv run ruff check .
 </code></pre>
-<h5>Configuration</h5>
+<h3>Configuration</h3>
 <p>Provide runtime configuration via <code>.env</code> or environment variables:</p>
 <pre><code class="language-env">TIMETREE_SESSION_COOKIE=...
 TIMETREE_CALENDAR_ID=...
@@ -230,7 +232,7 @@ TIMETREE_PASSWORD=...
 <pre><code class="language-bash">uv run hermes-timetree-sync sign-in
 </code></pre>
 <p>Direct sign-in may fail depending on TimeTree's browser/session checks. Production Hermes usage should rely on a stored, locally refreshed session cookie. See <a href="https://github.com/kfa-ai/hermes-timetree-sync/blob/main/docs/authentication.md"><code>docs/authentication.md</code></a>.</p>
-<h5>CLI quickstart</h5>
+<h3>CLI quickstart</h3>
 <p>Check configuration:</p>
 <pre><code class="language-bash">uv run hermes-timetree-sync doctor
 </code></pre>
@@ -254,7 +256,7 @@ TIMETREE_PASSWORD=...
   --category lynsey
 </code></pre>
 <p><code>create-timed</code> requires Safari to already be logged into TimeTree with Develop → Allow JavaScript from Apple Events enabled. It opens the target TimeTree calendar, posts a timed <code>all_day: false</code> event with browser <code>credentials: include</code>, then verifies the created event through <code>/events/sync</code>. This path exists because direct non-browser writes with only <code>_session_id</code> can return HTTP 422 even when browser-context writes succeed.</p>
-<h5>Hermes integration model</h5>
+<h3>Hermes integration model</h3>
 <p>This package is intentionally UI-free at runtime:</p>
 <ol>
 <li>A local setup/bootstrap step stores or refreshes <code>TIMETREE_SESSION_COOKIE</code> and <code>TIMETREE_CALENDAR_ID</code> outside chat.</li>
@@ -263,7 +265,7 @@ TIMETREE_PASSWORD=...
 <li>For all-day events, the TimeTree UI is not opened during the user request. Timed events currently use Safari page-context execution because the direct replay path is unreliable for writes.</li>
 </ol>
 <p>For multiple requested all-day events, Hermes-facing wrappers should prefer <code>create-all-day-batch</code> so the current TimeTree user is fetched once and reused for all event attendees. For timed events, wrappers should prefer <code>create-timed</code> rather than embedding Safari JavaScript locally.</p>
-<h5>Label policy</h5>
+<h3>Label policy</h3>
 <p>Create/update helpers can set <code>label_id</code> from a local YAML policy instead of hard-coding calendar-specific terms in source code.</p>
 <pre><code class="language-bash">cp timetree-labels.yaml.example timetree-labels.yaml
 </code></pre>
@@ -271,7 +273,7 @@ TIMETREE_PASSWORD=...
 <p>To use a different policy file:</p>
 <pre><code class="language-bash">export TIMETREE_LABEL_POLICY_FILE=/path/to/timetree-labels.yaml
 </code></pre>
-<h5>Security</h5>
+<h3>Security</h3>
 <p>Never commit or paste into chat:</p>
 <ul>
 <li>TimeTree passwords;</li>
@@ -280,14 +282,14 @@ TIMETREE_PASSWORD=...
 <li>Google OAuth tokens or other downstream calendar credentials.</li>
 </ul>
 <p>Local <code>.env</code> files are for development/runtime configuration only. Keep examples, docs, tests, logs, and issue comments sanitized.</p>
-<h5>Documentation</h5>
+<h3>Documentation</h3>
 <ul>
 <li><a href="https://github.com/kfa-ai/hermes-timetree-sync/blob/main/docs/authentication.md"><code>docs/authentication.md</code></a> — session-cookie, sign-in, and non-interactive runtime guidance.</li>
 <li><a href="https://github.com/kfa-ai/hermes-timetree-sync/blob/main/docs/reverse-engineered-api.md"><code>docs/reverse-engineered-api.md</code></a> — observed TimeTree web endpoints and payload notes.</li>
 <li><a href="https://github.com/kfa-ai/hermes-timetree-sync/blob/main/docs/roadmap.md"><code>docs/roadmap.md</code></a> — likely next steps and maintenance considerations.</li>
 <li><a href="https://github.com/kfa-ai/hermes-timetree-sync/blob/main/CHANGELOG.md"><code>CHANGELOG.md</code></a> — release history.</li>
 </ul>
-<h5>Development notes</h5>
+<h3>Development notes</h3>
 <p>When adding endpoint coverage:</p>
 <ul>
 <li>keep TimeTree-specific behavior behind <code>TimeTreeClient</code> or narrow CLI helpers;</li>
@@ -295,8 +297,9 @@ TIMETREE_PASSWORD=...
 <li>redact <code>_session_id</code>, passwords, cookies, and raw private calendar data;</li>
 <li>run <code>uv run pytest</code> and <code>uv run ruff check .</code> before publishing changes.</li>
 </ul>
-<h5>License</h5>
+<h3>License</h3>
 <p>Private/internal project unless a license is added later.</p>
+
   </section>
 </details>
 
@@ -308,11 +311,11 @@ TIMETREE_PASSWORD=...
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/raulvidis/hermes-android">
-        <div class="stars">★ 379</div>
+        <div class="stars">★ 396</div>
         <div class="name"><span class="org">raulvidis /</span> hermes-android</div>
       </a>
       <a class="related-row" href="/projects/teknium1/hermes-miniverse">
-        <div class="stars">★ 49</div>
+        <div class="stars">★ 51</div>
         <div class="name"><span class="org">teknium1 /</span> hermes-miniverse</div>
       </a>
       <a class="related-row" href="/projects/Ridwannurudeen/hermes-council">
@@ -328,11 +331,11 @@ TIMETREE_PASSWORD=...
         <div class="name"><span class="org">kevinmarmstrong /</span> hermes-claude-code-rc</div>
       </a>
       <a class="related-row" href="/projects/AaronWong1999/hermesclaw">
-        <div class="stars">★ 675</div>
+        <div class="stars">★ 681</div>
         <div class="name"><span class="org">AaronWong1999 /</span> hermesclaw</div>
       </a>
       <a class="related-row" href="/projects/Codename-11/hermes-relay">
-        <div class="stars">★ 55</div>
+        <div class="stars">★ 59</div>
         <div class="name"><span class="org">Codename-11 /</span> hermes-relay</div>
       </a>
       <a class="related-row" href="/projects/BORT-AGENTS/hermes-bort">
