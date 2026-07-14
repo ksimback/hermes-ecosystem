@@ -25,6 +25,7 @@ jobs:
   rebuild:
     runs-on: ubuntu-latest
     permissions:
+      actions: write
       contents: write
       issues: write
 
@@ -90,6 +91,22 @@ jobs:
           done
           echo "Push failed after 3 attempts"
           exit 1
+
+      # Commits made with GITHUB_TOKEN do not trigger another workflow from a
+      # push event. Dispatch the page build explicitly so latest-release.json
+      # reaches the static homepage instead of stopping at the RAG artifact.
+      - name: Dispatch page rebuild
+        if: steps.diff.outputs.changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'build-pages.yml',
+              ref: 'main'
+            });
+            console.log('Dispatched build-pages.yml after knowledge data update');
 
       # Escalate silent failures — this workflow rebuilds the RAG knowledge base
       # that Ask the Atlas answers from; a failed run was previously only a red X.

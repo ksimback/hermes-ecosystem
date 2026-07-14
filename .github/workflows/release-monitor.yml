@@ -5,14 +5,14 @@ env:
 
 on:
   schedule:
-    # Run daily at 06:00 UTC (checks releases + docs changes)
     - cron: '0 6 * * *'
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
 
 jobs:
   check-releases:
     runs-on: ubuntu-latest
     permissions:
+      actions: write
       contents: write
       pull-requests: write
       issues: write
@@ -21,314 +21,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Check for new Hermes Agent releases
-        id: check
-        uses: actions/github-script@v7
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          script: |
-            const fs = require('fs');
+          node-version: '22'
 
-            // Get latest release from NousResearch/hermes-agent
-            let latestRelease;
-            try {
-              const { data } = await github.rest.repos.getLatestRelease({
-                owner: 'NousResearch',
-                repo: 'hermes-agent'
-              });
-              latestRelease = data;
-            } catch (e) {
-              console.log('No releases found or API error:', e.message);
-              core.setOutput('new_release', 'false');
-              return;
-            }
-
-            const tag = latestRelease.tag_name;
-            const releaseName = latestRelease.name || tag;
-            const publishedAt = latestRelease.published_at;
-            const body = latestRelease.body || '';
-
-            console.log(`Latest release: ${releaseName} (${tag}) published ${publishedAt}`);
-
-            // Check if we already have this release documented
-            const researchDir = 'research';
-            const existingFiles = fs.readdirSync(researchDir);
-
-            // Look for the version number in existing research files
-            const versionClean = tag.replace(/^v/, '').replace(/[^0-9.]/g, '');
-            const alreadyTracked = existingFiles.some(f => {
-              if (!f.endsWith('.md')) return false;
-              const content = fs.readFileSync(`${researchDir}/${f}`, 'utf-8');
-              return content.includes(tag) || content.includes(versionClean);
-            });
-
-            if (alreadyTracked) {
-              console.log(`Release ${tag} already tracked in research files`);
-              core.setOutput('new_release', 'false');
-              return;
-            }
-
-            console.log(`New release found: ${tag} — not yet in research files`);
-            core.setOutput('new_release', 'true');
-            core.setOutput('tag', tag);
-            core.setOutput('release_name', releaseName);
-            core.setOutput('published_at', publishedAt);
-            core.setOutput('body', body);
-
-      - name: Fetch full release notes from repo
-        if: steps.check.outputs.new_release == 'true'
-        id: notes
+      - name: Synchronize every missing Hermes Agent release
+        id: releases
         env:
-          RELEASE_TAG: ${{ steps.check.outputs.tag }}
-          RELEASE_BODY: ${{ steps.check.outputs.body }}
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const tag = process.env.RELEASE_TAG || '';
-            const versionClean = tag.replace(/^v/, '').replace(/[^0-9.]/g, '');
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/sync-releases.js
 
-            // Try to fetch the RELEASE_vX.Y.Z.md file from the repo
-            let releaseNotes = '';
-            const filenames = [
-              `RELEASE_v${versionClean}.md`,
-              `RELEASE_${tag}.md`,
-              `CHANGELOG.md`
-            ];
-
-            for (const filename of filenames) {
-              try {
-                const { data } = await github.rest.repos.getContent({
-                  owner: 'NousResearch',
-                  repo: 'hermes-agent',
-                  path: filename,
-                  ref: 'main'
-                });
-                releaseNotes = Buffer.from(data.content, 'base64').toString('utf-8');
-                console.log(`Found release notes in ${filename} (${releaseNotes.length} chars)`);
-                break;
-              } catch {
-                console.log(`${filename} not found, trying next...`);
-              }
-            }
-
-            // Fall back to the release body from GitHub Releases.
-            // Read from env to avoid JS string-injection issues with backticks,
-            // ${} template syntax, and quote characters in the release body.
-            if (!releaseNotes) {
-              releaseNotes = process.env.RELEASE_BODY || '';
-              console.log(`Using GitHub Release body (${releaseNotes.length} chars)`);
-            }
-
-            // Only truncate truly massive files (200K+). We want FULL release notes
-            // in the KB so the chatbot can answer detailed questions.
-            if (releaseNotes.length > 200000) {
-              releaseNotes = releaseNotes.slice(0, 200000) + '\n\n[Truncated — see full release notes on GitHub]';
-            }
-
-            core.setOutput('content', releaseNotes);
-            core.setOutput('has_notes', releaseNotes.length > 100 ? 'true' : 'false');
-
-      - name: Create research file and open PR
-        if: steps.check.outputs.new_release == 'true' && steps.notes.outputs.has_notes == 'true'
-        env:
-          RELEASE_TAG: ${{ steps.check.outputs.tag }}
-          RELEASE_NAME: ${{ steps.check.outputs.release_name }}
-          PUBLISHED_AT: ${{ steps.check.outputs.published_at }}
-          RELEASE_CONTENT: ${{ steps.notes.outputs.content }}
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const tag = process.env.RELEASE_TAG || '';
-            const releaseName = process.env.RELEASE_NAME || tag;
-            const publishedAt = process.env.PUBLISHED_AT || '';
-            const content = process.env.RELEASE_CONTENT || '';
-            const versionClean = tag.replace(/^v/, '').replace(/[^0-9.]/g, '');
-
-            // Build the research file content (inline to keep YAML block
-            // scalar indentation valid — literal newlines that dedent to
-            // column 0 break YAML parsing).
-            const fileContent = [
-              `# Hermes Agent ${tag} Release Notes`,
-              '',
-              `**Version:** ${tag}`,
-              `**Published:** ${publishedAt}`,
-              `**Source:** https://github.com/NousResearch/hermes-agent/releases/tag/${tag}`,
-              '',
-              content,
-              ''
-            ].join('\n');
-
-            // Determine filename (increment from existing)
-            const fs = require('fs');
-            const existing = fs.readdirSync('research')
-              .filter(f => f.match(/^\d+-/))
-              .sort()
-              .pop();
-            const nextNum = existing ? parseInt(existing.split('-')[0]) + 1 : 30;
-            const filename = `research/${nextNum}-release-${versionClean.replace(/\./g, '-')}.md`;
-
-            // Create branch and PR
-            const branch = `release-notes-${versionClean}`;
-
-            // Idempotency: if an open PR already exists for this version,
-            // skip cleanly (don't disturb the existing PR or branch).
-            const { data: openPrs } = await github.rest.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head: `${context.repo.owner}:${branch}`,
-              state: 'open'
-            });
-            if (openPrs.length > 0) {
-              console.log(`PR already open for ${tag}: #${openPrs[0].number} — skipping.`);
-              return;
-            }
-
-            const { data: ref } = await github.rest.git.getRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'heads/main'
-            });
-
-            // Clean up any stale branch from a prior failed run
-            // (no open PR points at it, so it's safe to delete).
-            try {
-              await github.rest.git.deleteRef({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: `heads/${branch}`
-              });
-              console.log(`Deleted stale branch ${branch}`);
-            } catch (e) {
-              // Branch didn't exist — that's fine
-            }
-
-            await github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: `refs/heads/${branch}`,
-              sha: ref.object.sha
-            });
-
-            await github.rest.repos.createOrUpdateFileContents({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              path: filename,
-              message: `Add ${tag} release notes to knowledge base`,
-              content: Buffer.from(fileContent).toString('base64'),
-              branch
-            });
-
-            const { data: pr } = await github.rest.pulls.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `New release: Hermes Agent ${tag}`,
-              body: `Hermes Agent ${releaseName} was published on ${publishedAt}.\n\nThis PR adds the release notes to the research knowledge base at \`${filename}\`.\n\nAfter merge, the chunks rebuild action will automatically update the chatbot's knowledge.\n\n[View release on GitHub](https://github.com/NousResearch/hermes-agent/releases/tag/${tag})`,
-              head: branch,
-              base: 'main'
-            });
-
-            console.log(`PR #${pr.number} created for ${tag}`);
-
-            // Enable native auto-merge so the PR lands without a manual click.
-            // Content is copied verbatim from upstream RELEASE_v*.md (or the
-            // GitHub release body) — not LLM-generated — so the human review
-            // checkpoint here was guarding against zero hallucination risk.
-            //
-            // GitHub returns "Pull request is in unstable status" when
-            // enablePullRequestAutoMerge is called immediately after PR
-            // creation because mergeStateStatus is still UNKNOWN (merge
-            // state hasn't computed yet). This is exactly what kept PR #173
-            // (v0.13.0) and the 2026-05-17 burst orphan for hours behind a
-            // silent warning. Fix: poll for a non-UNKNOWN merge state
-            // before enabling, with a short max wait so we don't burn time.
-            // Tracking issue only opens if the state never settles OR the
-            // mutation still fails for a reason other than the race.
-            let autoMergeEnabled = false;
-            let mergeState = 'UNKNOWN';
-            // Poll until a TERMINAL merge state. The earlier fix broke on the
-            // first non-UNKNOWN reading, but UNSTABLE (checks still running) is
-            // non-UNKNOWN — enabling auto-merge during UNSTABLE is exactly what
-            // GitHub rejects with "Pull request is in unstable status", the
-            // recurring #332/#396/#450 failure. UNKNOWN/UNSTABLE/BEHIND are
-            // transient; wait for one of these terminal states or time out.
-            const TERMINAL = new Set(['CLEAN', 'HAS_HOOKS', 'BLOCKED', 'DIRTY']);
-            for (let i = 0; i < 24; i++) {
-              const { repository } = await github.graphql(
-                `query($owner: String!, $repo: String!, $num: Int!) {
-                  repository(owner: $owner, name: $repo) {
-                    pullRequest(number: $num) { mergeStateStatus }
-                  }
-                }`,
-                { owner: context.repo.owner, repo: context.repo.repo, num: pr.number }
-              );
-              mergeState = repository.pullRequest.mergeStateStatus;
-              if (mergeState && TERMINAL.has(mergeState)) break;
-              await new Promise(r => setTimeout(r, 5000));
-            }
-            console.log(`PR #${pr.number} mergeStateStatus settled to ${mergeState}`);
-
-            // Enable auto-merge, retrying the mutation on the transient
-            // "unstable status" rejection with backoff — the state can still
-            // flip to UNSTABLE between the poll and the mutation.
-            let lastErr = null;
-            for (let attempt = 0; attempt < 4; attempt++) {
-              try {
-                await github.graphql(
-                  `mutation($pullRequestId: ID!) {
-                    enablePullRequestAutoMerge(input: {
-                      pullRequestId: $pullRequestId,
-                      mergeMethod: MERGE
-                    }) {
-                      pullRequest { autoMergeRequest { enabledAt } }
-                    }
-                  }`,
-                  { pullRequestId: pr.node_id }
-                );
-                autoMergeEnabled = true;
-                console.log(`Auto-merge enabled on PR #${pr.number}`);
-                break;
-              } catch (e) {
-                lastErr = e;
-                if (!/unstable/i.test(e.message) || attempt === 3) break;
-                await new Promise(r => setTimeout(r, 10000 * (attempt + 1)));
-              }
-            }
-            if (!autoMergeEnabled) {
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: `[Workflow] Auto-merge failed on release PR #${pr.number}`,
-                body: `Could not enable auto-merge on release-notes PR #${pr.number} for ${tag}.\n\n**Merge state at attempt:** \`${mergeState}\`\n**Error:** \`${lastErr && lastErr.message}\`\n\n**Action:** review and merge the PR manually.`,
-                labels: ['workflow-issue']
-              });
-              core.warning(`Auto-merge failed on PR #${pr.number} (mergeState=${mergeState}); tracking issue opened.`);
-            }
-
-      - name: Bust stars API cache so site shows new version immediately
-        if: steps.check.outputs.new_release == 'true'
+      - name: Bust stars API cache after a release merge
+        if: steps.releases.outputs.merged == 'true'
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
-          # The /api/stars endpoint caches GitHub results in Redis with a 1hr
-          # TTL. Passing ?cron=1 bypasses the cache read and writes a fresh
-          # snapshot — so the masthead "Latest" stat picks up the new version
-          # on the next site visit rather than waiting up to an hour.
-          # Cache-bypass is now auth-gated; we send the same Bearer token
-          # that Vercel Cron sends on its scheduled invocations.
-          code=$(curl -s -o /dev/null -w "%{http_code}" \
+          code=$(curl --fail-with-body --silent --show-error -o /dev/null -w "%{http_code}" \
             -H "Authorization: Bearer ${CRON_SECRET}" \
             "https://hermesatlas.com/api/stars?cron=1")
           echo "Cache refresh returned HTTP $code"
-          if [ "$code" != "200" ]; then
-            echo "::warning::Cache bust returned non-200; site may briefly show stale version"
-          fi
+          test "$code" = "200"
 
       - name: Check for new official docs changes
         id: docs_check
         uses: actions/github-script@v7
         with:
           script: |
-            // Check if the docs website has been updated recently
-            // by looking at the website/ directory's last commit
             try {
               const { data: commits } = await github.rest.repos.listCommits({
                 owner: 'NousResearch',
@@ -339,35 +58,25 @@ jobs:
               });
 
               if (commits.length > 0) {
-                console.log(`Docs updated in last 24h: ${commits[0].sha.slice(0,7)} — "${commits[0].commit.message.split('\n')[0]}"`);
+                console.log(`Docs updated: ${commits[0].sha.slice(0, 7)} — ${commits[0].commit.message.split('\n')[0]}`);
                 core.setOutput('docs_updated', 'true');
                 core.setOutput('commit_msg', commits[0].commit.message.split('\n')[0]);
               } else {
-                console.log('No docs changes in last 24h');
                 core.setOutput('docs_updated', 'false');
               }
-            } catch (e) {
-              console.log('Could not check docs:', e.message);
-              core.setOutput('docs_updated', 'false');
+            } catch (error) {
+              core.setFailed(`Could not check official docs: ${error.message}`);
             }
 
       - name: Create issue for docs update
         if: steps.docs_check.outputs.docs_updated == 'true'
         env:
-          # Read from env to avoid JS string-injection issues with quote
-          # characters etc. in the upstream commit message (same pattern as
-          # the release-notes steps above).
           COMMIT_MSG: ${{ steps.docs_check.outputs.commit_msg }}
         uses: actions/github-script@v7
         with:
           script: |
             const msg = process.env.COMMIT_MSG || '';
             const today = new Date().toISOString().slice(0, 10);
-
-            // Get all open docs-update issues. These are informational only —
-            // a fresh one each day used to pile up (8 stale ones bulk-closed
-            // during 2026-05-01 triage). Now we close prior ones when we
-            // create today's, so at most one is open at a time.
             const { data: openIssues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -376,42 +85,90 @@ jobs:
               per_page: 100
             });
 
-            // If today's already exists, leave it alone.
-            const todaysExists = openIssues.find(i => i.title.includes(today));
-            if (todaysExists) {
-              console.log(`Docs update issue already exists for today: #${todaysExists.number}`);
-              return;
-            }
+            if (openIssues.some(issue => issue.title.includes(today))) return;
 
-            // Close any prior open docs-update issues — this prevents the
-            // every-day pileup. Best-effort: a single close failure shouldn't
-            // block creating today's issue.
             for (const issue of openIssues) {
-              try {
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: issue.number,
-                  body: `Auto-closed — superseded by today's docs-update check. Daily docs-update issues are informational only.`
-                });
-                await github.rest.issues.update({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: issue.number,
-                  state: 'closed',
-                  state_reason: 'not_planned'
-                });
-                console.log(`Auto-closed prior docs-update issue #${issue.number}`);
-              } catch (e) {
-                console.log(`Could not close #${issue.number}: ${e.message}`);
-              }
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `Auto-closed — superseded by the ${today} docs-update check.`
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed',
+                state_reason: 'not_planned'
+              });
             }
 
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `[Docs] Official documentation updated (${today})`,
-              body: `The Hermes Agent official documentation was updated in the last 24 hours.\n\nLatest commit: "${msg}"\n\n**Action needed:** Review the changes at https://hermes-agent.nousresearch.com/docs and update the relevant research files if the changes are significant.\n\nSource: https://github.com/NousResearch/hermes-agent/tree/main/website/docs`,
+              body: `The official Hermes Agent documentation changed in the last 24 hours.\n\nLatest commit: "${msg}"\n\nSource: https://github.com/NousResearch/hermes-agent/tree/main/website/docs`,
               labels: ['docs-update']
             });
-            console.log('Created docs update issue');
+
+      - name: Close release-monitor alert after recovery
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '[Workflow] release-monitor failed';
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'workflow-issue',
+              per_page: 100
+            });
+            const issue = issues.find(item => item.title === title);
+            if (!issue) return;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `Recovered in ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}.`
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              state: 'closed',
+              state_reason: 'completed'
+            });
+
+      - name: Escalate release-monitor failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '[Workflow] release-monitor failed';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = `Release ingestion failed and may be stale.\n\nRun: ${runUrl}\n\nThe workflow now fails on upstream API errors, unusable release notes, an unmergeable release PR, cache refresh failure, or downstream dispatch failure.`;
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'workflow-issue',
+              per_page: 100
+            });
+            const issue = issues.find(item => item.title === title);
+            if (issue) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['workflow-issue']
+              });
+            }
