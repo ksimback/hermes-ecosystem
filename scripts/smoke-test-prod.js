@@ -10,17 +10,22 @@
  *
  *   1. Critical pages return 2xx (homepage + guide + lists + reports + privacy
  *      + sitemap.xml + rss.xml).
- *   2. Homepage category counts match the live `data/repos.json` grouping
+ *   2. Public API contracts are semantically healthy: Ask the Atlas responds,
+ *      stars are fresh and complete, history has a recent snapshot, and both
+ *      regular and Twitterbot OG requests return an image.
+ *   3. Generated discovery artifacts are current: sitemap dates are recent
+ *      and llms.txt states this checkout's catalog size.
+ *   4. Homepage category counts match the live `data/repos.json` grouping
  *      (catches the "I bumped repos.json but forgot to bump <span class=
  *      'cat-count-n'>" drift that hit PR #231).
- *   3. Statistical sample of project pages return 2xx. Covers the worst
+ *   5. Statistical sample of project pages return 2xx. Covers the worst
  *      failure mode: build-pages.js skipped an entry and the project page
  *      404s on prod. Defaults to 25 random + 100% of entries added in the
  *      last 14 days (whichever is larger).
- *   4. Sitemap.xml lists every /projects/<owner>/<repo> URL in repos.json.
+ *   6. Sitemap.xml lists every /projects/<owner>/<repo> URL in repos.json.
  *      Catches build-pages.js / generate-sitemap drift.
- *   5. RSS feed parses as valid XML.
- *   6. Sample of internal links on the homepage resolve (no 404 anchors
+ *   7. RSS feed parses as valid XML.
+ *   8. Sample of internal links on the homepage resolve (no 404 anchors
  *      pointing at renamed/deleted projects).
  *
  * Each check prints a single-line PASS/FAIL with a count. Failures get
@@ -84,6 +89,7 @@ const SAMPLE_SIZE = parseInt(opt("sample", "25"), 10);
 const RECENT_DAYS = parseInt(opt("recent-days", "14"), 10);
 const CONCURRENCY = parseInt(opt("concurrency", "10"), 10);
 const TIMEOUT_MS = parseInt(opt("timeout", "15000"), 10);
+const MAX_GENERATED_AGE_DAYS = parseInt(opt("max-generated-age", "30"), 10);
 const CONTINUE_ON_FAIL = flag("continue");
 const VERBOSE = flag("verbose");
 const PREVIEW_MODE = flag("preview");
@@ -173,6 +179,20 @@ async function head(url) {
   } catch (e) {
     return { ok: false, status: 0, statusText: e.message };
   }
+}
+
+async function readJson(response, check) {
+  try {
+    return await response.json();
+  } catch (error) {
+    fail(check, "response is not valid JSON", error.message);
+    return null;
+  }
+}
+
+function isFreshTimestamp(value, maxAgeMs) {
+  const timestamp = Date.parse(value || "");
+  return Number.isFinite(timestamp) && Date.now() - timestamp <= maxAgeMs;
 }
 
 // Run N async tasks with bounded concurrency
@@ -288,8 +308,106 @@ await section("1. Critical pages return 2xx", async () => {
   }
 });
 
-// 2. Homepage category counts match repos.json
-await section("2. Homepage category counts match data/repos.json", async () => {
+// 2. User-facing API contracts
+await section("2. Public API contracts are semantically healthy", async () => {
+  const chat = await fetchWithTimeout(`${BASE}/api/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: "What is Hermes Agent?" }),
+  });
+  const chatBody = chat.ok ? await chat.text() : "";
+  if (chat.ok && chatBody.trim().length > 0) {
+    pass("Ask the Atlas", `HTTP ${chat.status}, non-empty response`);
+  } else {
+    fail("Ask the Atlas", `HTTP ${chat.status}${chat.ok ? ", empty response" : ""}`, `${BASE}/api/chat`);
+  }
+
+  const stars = await fetchWithTimeout(`${BASE}/api/stars`);
+  if (!stars.ok) {
+    fail("stars API", `HTTP ${stars.status}`, `${BASE}/api/stars`);
+  } else {
+    const data = await readJson(stars, "stars API");
+    if (data) {
+      const actualCount = data.repos && typeof data.repos === "object" ? Object.keys(data.repos).length : 0;
+      const snapshotFresh = isFreshTimestamp(data.fetchedAt, 36 * 60 * 60 * 1000);
+      if (data.stale === false && data.complete === true && actualCount === repos.length &&
+          data.totals?.count === repos.length && snapshotFresh &&
+          Array.isArray(data.unavailableRepos) && data.unavailableRepos.length === 0) {
+        pass("stars freshness", `${actualCount} repos, fresh complete snapshot`);
+      } else {
+        fail(
+          "stars freshness",
+          `expected fresh complete ${repos.length}-repo snapshot; got ${actualCount} repos, stale=${data.stale}, complete=${data.complete}`,
+          `${BASE}/api/stars`,
+        );
+      }
+    }
+  }
+
+  const history = await fetchWithTimeout(`${BASE}/api/stars-history?days=7`);
+  if (!history.ok) {
+    fail("stars history", `HTTP ${history.status}`, `${BASE}/api/stars-history?days=7`);
+  } else {
+    const data = await readJson(history, "stars history");
+    if (data) {
+      if (data.stale === false && data.days >= 1 && Array.isArray(data.history) &&
+          isFreshTimestamp(data.latestSnapshotAt, 36 * 60 * 60 * 1000)) {
+        pass("stars history", `${data.days} snapshot day${data.days === 1 ? "" : "s"}, fresh`);
+      } else {
+        fail("stars history", "no current non-stale snapshot", `${BASE}/api/stars-history?days=7`);
+      }
+    }
+  }
+
+  for (const [label, headers] of [
+    ["OG image", {}],
+    ["OG image (Twitterbot)", { "User-Agent": "Twitterbot/1.0" }],
+  ]) {
+    const image = await fetchWithTimeout(`${BASE}/api/og`, { headers });
+    const contentType = image.headers?.get?.("content-type") || "";
+    const bytes = image.ok ? (await image.arrayBuffer()).byteLength : 0;
+    if (image.ok && /^image\//i.test(contentType) && bytes > 0) {
+      pass(label, `HTTP ${image.status}, ${contentType}, ${bytes} bytes`);
+    } else {
+      fail(label, `HTTP ${image.status}, ${contentType || "missing content type"}, ${bytes} bytes`, `${BASE}/api/og`);
+    }
+  }
+});
+
+// 3. Generated discovery artifacts
+await section("3. Generated discovery artifacts are current", async () => {
+  const sitemap = await fetchWithTimeout(`${BASE}/sitemap.xml`);
+  if (!sitemap.ok) {
+    fail("sitemap freshness", `HTTP ${sitemap.status}`, `${BASE}/sitemap.xml`);
+  } else {
+    const xml = await sitemap.text();
+    const dates = Array.from(xml.matchAll(/<lastmod>([^<]+)<\/lastmod>/g))
+      .map((match) => Date.parse(match[1]))
+      .filter(Number.isFinite);
+    const newest = dates.length > 0 ? Math.max(...dates) : NaN;
+    if (Number.isFinite(newest) && Date.now() - newest <= MAX_GENERATED_AGE_DAYS * 24 * 60 * 60 * 1000) {
+      pass("sitemap freshness", `latest lastmod ${new Date(newest).toISOString().slice(0, 10)}`);
+    } else {
+      fail("sitemap freshness", `no lastmod within ${MAX_GENERATED_AGE_DAYS} days`, `${BASE}/sitemap.xml`);
+    }
+  }
+
+  const llms = await fetchWithTimeout(`${BASE}/llms.txt`);
+  if (!llms.ok) {
+    fail("llms.txt freshness", `HTTP ${llms.status}`, `${BASE}/llms.txt`);
+  } else {
+    const text = await llms.text();
+    const catalogCount = new RegExp(`\\b${repos.length}\\+?\\s+(?:tools|projects|repos)\\b`, "i");
+    if (catalogCount.test(text)) {
+      pass("llms.txt freshness", `states ${repos.length}-project catalog`);
+    } else {
+      fail("llms.txt freshness", `does not state this checkout's ${repos.length}-project catalog`, `${BASE}/llms.txt`);
+    }
+  }
+});
+
+// 4. Homepage category counts match repos.json
+await section("4. Homepage category counts match data/repos.json", async () => {
   const r = await fetchWithTimeout(`${BASE}/`);
   if (!r.ok) {
     fail("homepage fetch", `HTTP ${r.status}`, `${BASE}/`);
@@ -341,8 +459,8 @@ await section("2. Homepage category counts match data/repos.json", async () => {
   }
 });
 
-// 3. Project-page coverage
-await section("3. Project pages return 2xx (sample + recent)", async () => {
+// 5. Project-page coverage
+await section("5. Project pages return 2xx (sample + recent)", async () => {
   // Use ingested_at / created_at if present; else fall back to pure random sample.
   const dated = repos.filter((r) => r.added_at || r.first_seen);
   const recentCutoff = Date.now() - RECENT_DAYS * 24 * 3600 * 1000;
@@ -383,8 +501,8 @@ await section("3. Project pages return 2xx (sample + recent)", async () => {
   }
 });
 
-// 4. Sitemap covers every project
-await section("4. Sitemap covers every /projects/<owner>/<repo> in repos.json", async () => {
+// 6. Sitemap covers every project
+await section("6. Sitemap covers every /projects/<owner>/<repo> in repos.json", async () => {
   const r = await fetchWithTimeout(`${BASE}/sitemap.xml`);
   if (!r.ok) {
     fail("sitemap fetch", `HTTP ${r.status}`, `${BASE}/sitemap.xml`);
@@ -426,8 +544,8 @@ await section("4. Sitemap covers every /projects/<owner>/<repo> in repos.json", 
   }
 });
 
-// 5. RSS feed parses
-await section("5. RSS feed is well-formed", async () => {
+// 7. RSS feed parses
+await section("7. RSS feed is well-formed", async () => {
   const r = await fetchWithTimeout(`${BASE}/rss.xml`);
   if (!r.ok) {
     fail("rss fetch", `HTTP ${r.status}`, `${BASE}/rss.xml`);
@@ -448,8 +566,8 @@ await section("5. RSS feed is well-formed", async () => {
   pass("rss.xml", `well-formed, ${opens} items`);
 });
 
-// 6. Internal link integrity (homepage anchors)
-await section("6. Sample of internal links from homepage resolve", async () => {
+// 8. Internal link integrity (homepage anchors)
+await section("8. Sample of internal links from homepage resolve", async () => {
   const r = await fetchWithTimeout(`${BASE}/`);
   if (!r.ok) {
     fail("homepage fetch (links check)", `HTTP ${r.status}`);
