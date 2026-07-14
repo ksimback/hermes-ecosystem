@@ -3,6 +3,7 @@ import { test } from "node:test";
 
 import {
   GENERATED_ARTIFACT_PATHS,
+  REFRESHED_CONTENT_PATHS,
   assertNoUnstagedChanges,
   parsePorcelainStatus,
 } from "../lib/build-artifacts.js";
@@ -10,6 +11,11 @@ import {
 test("generated artifact manifest covers current build outputs", () => {
   assert.deepEqual(GENERATED_ARTIFACT_PATHS, [
     "index.html",
+    "404.html",
+    ...REFRESHED_CONTENT_PATHS,
+    "dev/",
+    "privacy/",
+    "masterclass/",
     "projects/",
     "lists/",
     "reports/",
@@ -23,6 +29,15 @@ test("generated artifact manifest covers current build outputs", () => {
     "data/list-summaries.json",
     "data/latest-release.json",
   ]);
+});
+
+test("every hand-authored page refreshed by the build is staged", () => {
+  for (const outputPath of REFRESHED_CONTENT_PATHS) {
+    assert.ok(
+      GENERATED_ARTIFACT_PATHS.includes(outputPath),
+      `${outputPath} is missing from the generated artifact manifest`
+    );
+  }
 });
 
 test("porcelain parser identifies unstaged modified and untracked files", () => {

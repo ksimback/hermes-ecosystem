@@ -18,6 +18,7 @@ import { marked } from "marked";
 import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
 import { githubHeaders, fetchReadme, fetchAllMetadata } from "../lib/github.js";
+import { REFRESHED_CONTENT_PATHS } from "../lib/build-artifacts.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -1641,18 +1642,8 @@ function refreshHandAuthoredPages(repos) {
     [/\*\*Last updated:\*\* \d{4}-\d{2}-\d{2}/g, `**Last updated:** ${today}`],
   ];
 
-  const targets = [
-    "guide/index.html",
-    "guide/install/index.html",
-    "guide/memory/index.html",
-    "guide/vs-claude-code/index.html",
-    "drafts/handbook-hub.md",
-    "drafts/handbook-vs-claude-code.md",
-    "drafts/guide-memory.md",
-  ];
-
   console.log("\nRefreshing hand-authored guide pages...");
-  for (const rel of targets) {
+  for (const rel of REFRESHED_CONTENT_PATHS) {
     const abs = path.join(ROOT, rel);
     if (!fs.existsSync(abs)) continue;
     const original = fs.readFileSync(abs, "utf-8");
