@@ -86,6 +86,7 @@ test("release monitor retries transient GitHub API failures", () => {
   assert.equal(githubScriptSteps.length, 5);
   assert.equal(retrySettings.length, githubScriptSteps.length);
   assert.equal(retryExemptions.length, githubScriptSteps.length);
+  assert.match(monitor, /cron: '17 \*\/6 \* \* \*'/);
 });
 
 test("recoverable workflow alerts close after a green run", () => {
