@@ -59,17 +59,19 @@ test("docs mirror explicitly dispatches RAG ingestion after bot-authored pushes"
   assert.match(workflow, /if: steps\.diff\.outputs\.changed == 'true'/);
 });
 
-test("daily docs detection triggers ingestion and resolves its notification", () => {
+test("daily monitor dispatches docs ingestion independently and resolves its notification", () => {
   const monitor = fs.readFileSync(".github/workflows/release-monitor.yml", "utf-8");
   const refresh = fs.readFileSync(".github/workflows/refresh-docs.yml", "utf-8");
 
   assert.match(monitor, /Dispatch docs mirror refresh/);
   assert.match(monitor, /gh workflow run refresh-docs\.yml --ref main/);
-  assert.match(monitor, /if: steps\.docs_check\.outputs\.docs_updated == 'true'/);
   assert.ok(
-    monitor.indexOf("Dispatch docs mirror refresh") < monitor.indexOf("Create issue for docs update"),
-    "docs ingestion must not wait on informational issue creation",
+    monitor.indexOf("Dispatch docs mirror refresh") < monitor.indexOf("Check for new official docs changes"),
+    "docs ingestion must not wait on release-independent API checks",
   );
+  assert.match(monitor, /id: releases\s+continue-on-error: true/);
+  assert.match(monitor, /Preserve release synchronization failure/);
+  assert.match(monitor, /if: steps\.releases\.outcome == 'failure'/);
   assert.match(refresh, /Close processed docs-update notifications/);
   assert.match(refresh, /--label docs-update/);
   assert.match(refresh, /Official docs mirror is current after workflow run/);
