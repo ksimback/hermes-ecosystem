@@ -6,7 +6,7 @@ import {
   findSubmissionCandidate,
   mergeSubmissionCandidate,
 } from "../lib/repo-submission.js";
-import { recoverRepoSubmissions } from "../scripts/recover-repo-submissions.js";
+import { GitHubClient, recoverRepoSubmissions } from "../scripts/recover-repo-submissions.js";
 
 const repo = (owner, name, category = "Developer Tools") => ({
   owner,
@@ -27,6 +27,22 @@ test("findSubmissionCandidate isolates the one branch-only repo", () => {
   assert.throws(
     () => findSubmissionCandidate([existing], [existing, candidate, repo("example", "second")]),
     /Expected one repo addition/,
+  );
+});
+
+test("GitHubClient preserves HTTP status for recovery decisions", async () => {
+  const client = new GitHubClient({
+    token: "test",
+    fetchImpl: async () => ({
+      ok: false,
+      status: 404,
+      async text() { return JSON.stringify({ message: "Not Found" }); },
+    }),
+  });
+
+  await assert.rejects(
+    client.request("GET", "/repos/example/deleted"),
+    (error) => error.status === 404 && /Not Found/.test(error.message),
   );
 });
 

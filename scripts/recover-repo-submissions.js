@@ -29,7 +29,9 @@ export class GitHubClient {
     const text = await response.text();
     const data = text ? JSON.parse(text) : null;
     if (!response.ok) {
-      throw new Error(`${method} ${apiPath} failed (${response.status}): ${data?.message || text}`);
+      const error = new Error(`${method} ${apiPath} failed (${response.status}): ${data?.message || text}`);
+      error.status = response.status;
+      throw error;
     }
     return data;
   }
