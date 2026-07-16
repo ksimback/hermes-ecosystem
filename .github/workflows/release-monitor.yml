@@ -59,6 +59,14 @@ jobs:
               core.setFailed(`Could not check official docs: ${error.message}`);
             }
 
+      # Ingestion is the critical path. Dispatch it before the informational
+      # issue so a transient Issues API failure cannot leave the RAG corpus stale.
+      - name: Dispatch docs mirror refresh
+        if: steps.docs_check.outputs.docs_updated == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run refresh-docs.yml --ref main
+
       - name: Create issue for docs update
         if: steps.docs_check.outputs.docs_updated == 'true'
         env:
@@ -103,12 +111,6 @@ jobs:
               body: `The official Hermes Agent documentation changed in the last 24 hours.\n\nLatest commit: "${msg}"\n\nSource: https://github.com/NousResearch/hermes-agent/tree/main/website/docs`,
               labels: ['docs-update']
             });
-
-      - name: Dispatch docs mirror refresh
-        if: steps.docs_check.outputs.docs_updated == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run refresh-docs.yml --ref main
 
       - name: Close resolved legacy release alerts
         if: success()
