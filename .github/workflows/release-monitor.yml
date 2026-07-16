@@ -28,9 +28,18 @@ jobs:
 
       - name: Synchronize every missing Hermes Agent release
         id: releases
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/sync-releases.js
+
+      # The mirror is idempotent and owns its own change detection. Dispatch it
+      # before API-based notifications so release or Issues API outages cannot
+      # block official docs from reaching the RAG corpus.
+      - name: Dispatch docs mirror refresh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run refresh-docs.yml --ref main
 
       - name: Check for new official docs changes
         id: docs_check
@@ -58,14 +67,6 @@ jobs:
             } catch (error) {
               core.setFailed(`Could not check official docs: ${error.message}`);
             }
-
-      # Ingestion is the critical path. Dispatch it before the informational
-      # issue so a transient Issues API failure cannot leave the RAG corpus stale.
-      - name: Dispatch docs mirror refresh
-        if: steps.docs_check.outputs.docs_updated == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run refresh-docs.yml --ref main
 
       - name: Create issue for docs update
         if: steps.docs_check.outputs.docs_updated == 'true'
@@ -113,7 +114,7 @@ jobs:
             });
 
       - name: Close resolved legacy release alerts
-        if: success()
+        if: steps.releases.outcome == 'success' && success()
         uses: actions/github-script@v7
         with:
           retries: 3
@@ -151,7 +152,7 @@ jobs:
             }
 
       - name: Close release-monitor alert after recovery
-        if: success()
+        if: steps.releases.outcome == 'success' && success()
         uses: actions/github-script@v7
         with:
           retries: 3
@@ -180,6 +181,12 @@ jobs:
               state: 'closed',
               state_reason: 'completed'
             });
+
+      - name: Preserve release synchronization failure
+        if: steps.releases.outcome == 'failure'
+        run: |
+          echo "Release synchronization failed; docs refresh was dispatched independently."
+          exit 1
 
       - name: Escalate release-monitor failure
         if: failure()
