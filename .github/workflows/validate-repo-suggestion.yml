@@ -164,6 +164,12 @@ jobs:
             try {
               const { data } = await github.rest.repos.get({ owner, repo });
 
+              // GitHub follows repository transfers. Carry the canonical
+              // owner/name through validation and catalog creation so a
+              // suggestion using an old URL cannot produce a mismatched
+              // owner/repo/html_url entry.
+              core.setOutput('canonical_owner', data.owner.login);
+              core.setOutput('canonical_repo', data.name);
               core.setOutput('stars', data.stargazers_count);
               core.setOutput('description', data.description || 'No description');
               core.setOutput('language', data.language || 'Unknown');
@@ -243,8 +249,8 @@ jobs:
         id: validate
         uses: actions/github-script@v7
         env:
-          REPO_OWNER: ${{ steps.extract.outputs.owner }}
-          REPO_NAME: ${{ steps.extract.outputs.repo }}
+          REPO_OWNER: ${{ steps.metadata.outputs.canonical_owner }}
+          REPO_NAME: ${{ steps.metadata.outputs.canonical_repo }}
           REPO_STARS: ${{ steps.metadata.outputs.stars }}
           REPO_CREATED: ${{ steps.metadata.outputs.created_at }}
           REPO_UPDATED: ${{ steps.metadata.outputs.updated_at }}
@@ -381,8 +387,8 @@ jobs:
         if: steps.validate.outputs.passed == 'true'
         uses: actions/github-script@v7
         env:
-          REPO_OWNER: ${{ steps.extract.outputs.owner }}
-          REPO_NAME: ${{ steps.extract.outputs.repo }}
+          REPO_OWNER: ${{ steps.metadata.outputs.canonical_owner }}
+          REPO_NAME: ${{ steps.metadata.outputs.canonical_repo }}
           REPO_STARS: ${{ steps.metadata.outputs.stars }}
           REPO_DESC: ${{ steps.metadata.outputs.description }}
           REPO_HTML_URL: ${{ steps.metadata.outputs.html_url }}
