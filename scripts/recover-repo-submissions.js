@@ -64,6 +64,40 @@ function trackerTitle(pullNumber) {
   return `[Workflow] Validator PR #${pullNumber} needs manual review`;
 }
 
+async function refreshSubmissionBranch({
+  client,
+  repository,
+  pull,
+  mainSha,
+  mainTreeSha,
+  nextRepos,
+}) {
+  const blob = await client.request("POST", `/repos/${repository}/git/blobs`, {
+    content: `${JSON.stringify(nextRepos, null, 2)}\n`,
+    encoding: "utf-8",
+  });
+  const tree = await client.request("POST", `/repos/${repository}/git/trees`, {
+    base_tree: mainTreeSha,
+    tree: [{
+      path: "data/repos.json",
+      mode: "100644",
+      type: "blob",
+      sha: blob.sha,
+    }],
+  });
+  const commit = await client.request("POST", `/repos/${repository}/git/commits`, {
+    message: `Refresh validator PR #${pull.number} onto latest main`,
+    tree: tree.sha,
+    parents: [mainSha],
+  });
+  await client.request(
+    "PATCH",
+    `/repos/${repository}/git/refs/heads/${pull.head.ref}`,
+    { sha: commit.sha, force: true },
+  );
+  return commit.sha;
+}
+
 function expectedRepoKey(pull) {
   const match = String(pull.body || "").match(
     /https:\/\/github\.com\/([a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+)/,
@@ -122,8 +156,11 @@ export async function recoverRepoSubmissions({ client, repository }) {
         throw new Error(`PR changes unexpected files: ${files.map((file) => file.filename).join(", ")}`);
       }
 
-      const [mainFile, branchFile] = await Promise.all([
-        getReposFile(client, repository, "main"),
+      const mainRef = await client.request("GET", `/repos/${repository}/git/ref/heads/main`);
+      const mainSha = mainRef.object.sha;
+      const [mainCommit, mainFile, branchFile] = await Promise.all([
+        client.request("GET", `/repos/${repository}/git/commits/${mainSha}`),
+        getReposFile(client, repository, mainSha),
         getReposFile(client, repository, pull.head.ref),
       ]);
       const mainRepos = decodeJsonFile(mainFile);
@@ -147,11 +184,13 @@ export async function recoverRepoSubmissions({ client, repository }) {
       }
 
       const nextRepos = mergeSubmissionCandidate(mainRepos, candidate);
-      await client.request("PUT", `/repos/${repository}/contents/data/repos.json`, {
-        message: `Refresh validator PR #${pull.number} onto latest main`,
-        content: Buffer.from(`${JSON.stringify(nextRepos, null, 2)}\n`).toString("base64"),
-        sha: branchFile.sha,
-        branch: pull.head.ref,
+      await refreshSubmissionBranch({
+        client,
+        repository,
+        pull,
+        mainSha,
+        mainTreeSha: mainCommit.tree.sha,
+        nextRepos,
       });
 
       const mergeable = await waitForMergeability(client, repository, pull.number);

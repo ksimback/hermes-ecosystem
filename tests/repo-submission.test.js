@@ -81,11 +81,16 @@ test("recoverRepoSubmissions refreshes a stale PR onto main before merging", asy
       if (apiPath.endsWith("/pulls?state=open&per_page=100")) return [pull];
       if (apiPath.endsWith("/issues?state=open&labels=workflow-issue&per_page=100")) return [];
       if (apiPath.endsWith("/pulls/516/files?per_page=100")) return [{ filename: "data/repos.json" }];
-      if (apiPath.endsWith("contents/data/repos.json?ref=main")) return { content: encoded(mainRepos), sha: "main-file" };
+      if (apiPath.endsWith("/git/ref/heads/main")) return { object: { sha: "main-sha" } };
+      if (apiPath.endsWith("/git/commits/main-sha")) return { tree: { sha: "main-tree" } };
+      if (apiPath.endsWith("contents/data/repos.json?ref=main-sha")) return { content: encoded(mainRepos), sha: "main-file" };
       if (apiPath.endsWith("contents/data/repos.json?ref=add-repo-example-candidate")) {
         return { content: encoded(branchRepos), sha: "branch-file" };
       }
-      if (method === "PUT" && apiPath.endsWith("/contents/data/repos.json")) return {};
+      if (method === "POST" && apiPath.endsWith("/git/blobs")) return { sha: "catalog-blob" };
+      if (method === "POST" && apiPath.endsWith("/git/trees")) return { sha: "refreshed-tree" };
+      if (method === "POST" && apiPath.endsWith("/git/commits")) return { sha: "refreshed-sha" };
+      if (method === "PATCH" && apiPath.endsWith("/git/refs/heads/add-repo-example-candidate")) return {};
       if (method === "GET" && apiPath.endsWith("/pulls/516")) {
         return { ...pull, mergeable: true, mergeable_state: "unstable", head: { ...pull.head, sha: "refreshed-sha" } };
       }
@@ -97,9 +102,13 @@ test("recoverRepoSubmissions refreshes a stale PR onto main before merging", asy
 
   const result = await recoverRepoSubmissions({ client, repository: "ksimback/hermes-ecosystem" });
   assert.equal(result.mergedCount, 1);
-  const update = calls.find((call) => call.method === "PUT" && call.apiPath.endsWith("/contents/data/repos.json"));
-  const refreshed = JSON.parse(Buffer.from(update.body.content, "base64").toString("utf-8"));
+  const update = calls.find((call) => call.method === "POST" && call.apiPath.endsWith("/git/blobs"));
+  const refreshed = JSON.parse(update.body.content);
   assert.deepEqual(refreshed.map((item) => item.repo), ["first", "newer-main", "candidate"]);
+  const commit = calls.find((call) => call.method === "POST" && call.apiPath.endsWith("/git/commits"));
+  assert.deepEqual(commit.body.parents, ["main-sha"]);
+  const refUpdate = calls.find((call) => call.method === "PATCH" && call.apiPath.includes("/git/refs/heads/"));
+  assert.deepEqual(refUpdate.body, { sha: "refreshed-sha", force: true });
   assert.ok(calls.some((call) => call.apiPath.endsWith("/pulls/516/merge")));
   assert.ok(calls.some((call) => call.apiPath.endsWith("/actions/workflows/build-pages.yml/dispatches")));
 });
