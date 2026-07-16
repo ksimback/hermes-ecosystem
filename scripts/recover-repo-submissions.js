@@ -107,6 +107,17 @@ function repoKeyFromText(text) {
   return match ? match[1].replace(/\/$/, "").toLowerCase() : "";
 }
 
+export function isUnprocessedSuggestion(issue) {
+  if (!issue || issue.pull_request || issue.state === "closed") return false;
+  const labels = (issue.labels || []).map((label) =>
+    typeof label === "string" ? label : label.name,
+  );
+  if (labels.includes("repo-suggestion")) return false;
+  const titleMatches = /^\s*(?:\[(?:repo|submission|suggest a repo)\]|suggest(?:ion)?\b|add\b)/i
+    .test(String(issue.title || ""));
+  return titleMatches && Boolean(repoKeyFromText(issue.body));
+}
+
 function expectedRepoKey(pull) {
   const key = repoKeyFromText(pull.body);
   if (!key) {
@@ -183,10 +194,11 @@ async function ensureTracker(client, repository, trackers, pull, reason) {
 }
 
 export async function recoverRepoSubmissions({ client, repository }) {
-  const [allPulls, issueList, suggestionIssues] = await Promise.all([
+  const [allPulls, issueList, suggestionIssues, allOpenIssues] = await Promise.all([
     client.request("GET", `/repos/${repository}/pulls?state=open&per_page=100`),
     client.request("GET", `/repos/${repository}/issues?state=open&labels=workflow-issue&per_page=100`),
     client.request("GET", `/repos/${repository}/issues?state=open&labels=repo-suggestion&per_page=100`),
+    client.request("GET", `/repos/${repository}/issues?state=open&per_page=100`),
   ]);
   const pulls = allPulls
     .filter((pull) => pull.head?.ref?.startsWith("add-repo-"))
@@ -274,6 +286,26 @@ export async function recoverRepoSubmissions({ client, repository }) {
 
   await reconcileSuggestionIssues(client, repository, suggestionIssues);
 
+  // Issue events can be missed, and older issue templates used titles such as
+  // "Suggest ..." or "Add ..." without applying repo-suggestion. Dispatch one
+  // oldest stranded submission per scheduled recovery. The shared workflow
+  // concurrency queue runs the child validation after this recovery finishes,
+  // while the next daily run provides bounded retry behavior.
+  const stranded = allOpenIssues
+    .filter(isUnprocessedSuggestion)
+    .sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at))[0];
+  if (stranded) {
+    await client.request(
+      "POST",
+      `/repos/${repository}/actions/workflows/validate-repo-suggestion.yml/dispatches`,
+      { ref: "main", inputs: { issue_number: String(stranded.number) } },
+    );
+    await client.request("POST", `/repos/${repository}/issues/${stranded.number}/labels`, {
+      labels: ["repo-suggestion"],
+    });
+    console.log(`Dispatched validation recovery for stranded issue #${stranded.number}`);
+  }
+
   if (mergedCount > 0) {
     await client.request(
       "POST",
@@ -286,7 +318,7 @@ export async function recoverRepoSubmissions({ client, repository }) {
   }
 
   console.log(`Repo-submission recovery complete: ${mergedCount} merged`);
-  return { mergedCount };
+  return { mergedCount, dispatchedIssue: stranded?.number || null };
 }
 
 async function main() {

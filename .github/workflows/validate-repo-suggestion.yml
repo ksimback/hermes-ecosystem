@@ -15,6 +15,11 @@ on:
   schedule:
     - cron: '15 5 * * *'
   workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Specific repo-suggestion issue to validate (leave blank to run recovery)'
+        required: false
+        type: string
 
 # Serialize validation runs. Without this, two concurrent submissions create
 # PRs that both branch from the same main SHA; merging the first leaves the
@@ -26,7 +31,7 @@ concurrency:
 
 jobs:
   validate:
-    if: github.event_name == 'issues'
+    if: github.event_name == 'issues' || (github.event_name == 'workflow_dispatch' && inputs.issue_number != '')
     runs-on: ubuntu-latest
     permissions:
       actions: write
@@ -35,20 +40,59 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Load source issue
+        uses: actions/github-script@v7
+        env:
+          REQUESTED_ISSUE_NUMBER: ${{ inputs.issue_number }}
+        with:
+          script: |
+            let issue = context.payload.issue;
+            const requested = (process.env.REQUESTED_ISSUE_NUMBER || '').trim();
+
+            if (!issue && requested) {
+              const issueNumber = Number(requested);
+              if (!Number.isInteger(issueNumber) || issueNumber <= 0) {
+                core.setFailed(`Invalid issue_number input: ${requested}`);
+                return;
+              }
+              const response = await github.rest.issues.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber
+              });
+              issue = response.data;
+            }
+
+            if (!issue || issue.pull_request) {
+              core.setFailed('A repository issue is required');
+              return;
+            }
+
+            core.exportVariable('SOURCE_ISSUE_NUMBER', String(issue.number));
+            core.exportVariable('SOURCE_ISSUE_TITLE', issue.title || '');
+            core.exportVariable('SOURCE_ISSUE_BODY', issue.body || '');
+            core.exportVariable(
+              'SOURCE_ISSUE_LABELS',
+              JSON.stringify((issue.labels || []).map(label => typeof label === 'string' ? label : label.name))
+            );
+            console.log(`Loaded issue #${issue.number}: ${issue.title}`);
+
       - name: Decide whether this issue is a repo submission
         id: gate
         uses: actions/github-script@v7
         with:
           script: |
-            const title = context.payload.issue.title || '';
-            const labels = (context.payload.issue.labels || []).map(l => l.name);
-            const titleMatches = title.startsWith('[Repo]') || title.startsWith('[Submission]');
+            const title = process.env.SOURCE_ISSUE_TITLE || '';
+            const body = process.env.SOURCE_ISSUE_BODY || '';
+            const labels = JSON.parse(process.env.SOURCE_ISSUE_LABELS || '[]');
+            const titleMatches = /^\s*(?:\[(?:repo|submission|suggest a repo)\]|suggest(?:ion)?\b|add\b)/i.test(title);
+            const hasGitHubRepo = /https:\/\/github\.com\/[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+/.test(body);
             const labelMatches = labels.includes('repo-suggestion');
-            const shouldRun = titleMatches || labelMatches;
+            const shouldRun = labelMatches || (titleMatches && hasGitHubRepo);
 
             core.setOutput('should_run', shouldRun ? 'true' : 'false');
             core.setOutput('has_label', labelMatches ? 'true' : 'false');
-            console.log(`title=${title}, titleMatches=${titleMatches}, labelMatches=${labelMatches}, shouldRun=${shouldRun}`);
+            console.log(`title=${title}, titleMatches=${titleMatches}, hasGitHubRepo=${hasGitHubRepo}, labelMatches=${labelMatches}, shouldRun=${shouldRun}`);
 
       - name: Ensure repo-suggestion label is present
         if: steps.gate.outputs.should_run == 'true' && steps.gate.outputs.has_label != 'true'
@@ -58,10 +102,10 @@ jobs:
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.payload.issue.number,
+              issue_number: Number(process.env.SOURCE_ISSUE_NUMBER),
               labels: ['repo-suggestion']
             });
-            console.log(`Labeled #${context.payload.issue.number} as repo-suggestion`);
+            console.log(`Labeled #${process.env.SOURCE_ISSUE_NUMBER} as repo-suggestion`);
 
       - name: Checkout
         if: steps.gate.outputs.should_run == 'true'
@@ -79,7 +123,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const body = context.payload.issue.body || '';
+            const body = process.env.SOURCE_ISSUE_BODY || '';
 
             // Extract GitHub URL from the issue body
             const urlMatch = body.match(/https:\/\/github\.com\/([a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+)/);
@@ -310,7 +354,7 @@ jobs:
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.issue.number,
+              issue_number: Number(process.env.SOURCE_ISSUE_NUMBER),
               body: report
             });
 
@@ -322,14 +366,14 @@ jobs:
             await github.rest.issues.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.issue.number,
+              issue_number: Number(process.env.SOURCE_ISSUE_NUMBER),
               state: 'closed',
               state_reason: 'not_planned'
             });
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.issue.number,
+              issue_number: Number(process.env.SOURCE_ISSUE_NUMBER),
               body: 'Auto-closing — this repo is already in the ecosystem map. Reopen if you believe this is a mistake.'
             });
 
@@ -398,13 +442,13 @@ jobs:
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: context.issue.number,
+                issue_number: Number(process.env.SOURCE_ISSUE_NUMBER),
                 body: `[${owner}/${repo}](${htmlUrl}) is already in the Atlas ecosystem — no PR needed. Closing.`
               });
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: context.issue.number,
+                issue_number: Number(process.env.SOURCE_ISSUE_NUMBER),
                 state: 'closed',
                 state_reason: 'completed'
               });
@@ -470,7 +514,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               path: 'data/repos.json',
-              message: `Add ${owner}/${repo} to ecosystem map\n\nSuggested in #${context.issue.number}`,
+              message: `Add ${owner}/${repo} to ecosystem map\n\nSuggested in #${process.env.SOURCE_ISSUE_NUMBER}`,
               content: Buffer.from(JSON.stringify(repos, null, 2) + '\n').toString('base64'),
               sha: file.sha,
               branch
@@ -481,7 +525,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `Add ${owner}/${repo} (${stars} stars) to ${category}`,
-              body: `Adds [${owner}/${repo}](${htmlUrl}) to the ecosystem map.\n\n**Stars:** ${stars}\n**Category:** ${category}\n**Description:** ${description}\n\nCloses #${context.issue.number}\n\n> Note: This PR only updates repos.json. The HTML map will need a manual update to include the new chip, or will be picked up in the next full refresh.`,
+              body: `Adds [${owner}/${repo}](${htmlUrl}) to the ecosystem map.\n\n**Stars:** ${stars}\n**Category:** ${category}\n**Description:** ${description}\n\nCloses #${process.env.SOURCE_ISSUE_NUMBER}\n\n> Note: This PR only updates repos.json. The HTML map will need a manual update to include the new chip, or will be picked up in the next full refresh.`,
               head: branch,
               base: 'main'
             });
@@ -628,12 +672,12 @@ jobs:
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.issue.number,
+              issue_number: Number(process.env.SOURCE_ISSUE_NUMBER),
               body: `PR created: #${pr.number}\n\nOnce merged, this repo will appear in the ecosystem map.${mergeNote}`
             });
 
   recover-open-prs:
-    if: github.event_name != 'issues'
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.issue_number == '')
     runs-on: ubuntu-latest
     permissions:
       actions: write

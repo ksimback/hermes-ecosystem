@@ -6,7 +6,11 @@ import {
   findSubmissionCandidate,
   mergeSubmissionCandidate,
 } from "../lib/repo-submission.js";
-import { GitHubClient, recoverRepoSubmissions } from "../scripts/recover-repo-submissions.js";
+import {
+  GitHubClient,
+  isUnprocessedSuggestion,
+  recoverRepoSubmissions,
+} from "../scripts/recover-repo-submissions.js";
 
 const repo = (owner, name, category = "Developer Tools") => ({
   owner,
@@ -61,6 +65,27 @@ test("findSubmissionCandidate selects the PR-owned repo when a stale branch has 
   );
 });
 
+test("isUnprocessedSuggestion recognizes legacy repo titles without sweeping unrelated issues", () => {
+  const issue = (title, body, labels = []) => ({
+    number: 293,
+    state: "open",
+    title,
+    body,
+    labels,
+  });
+  const url = "https://github.com/obra/superpowers";
+
+  assert.equal(isUnprocessedSuggestion(issue("Add obra/superpowers", url)), true);
+  assert.equal(isUnprocessedSuggestion(issue("Suggest a Hermes plugin", url)), true);
+  assert.equal(isUnprocessedSuggestion(issue("[Suggest a Repo] agentcairn", url)), true);
+  assert.equal(isUnprocessedSuggestion(issue("Content newsletter", url)), false);
+  assert.equal(isUnprocessedSuggestion(issue("Add content newsletter", "No repository URL")), false);
+  assert.equal(
+    isUnprocessedSuggestion(issue("Add obra/superpowers", url, [{ name: "repo-suggestion" }])),
+    false,
+  );
+});
+
 test("mergeSubmissionCandidate preserves current main and validates the candidate", () => {
   const main = [repo("example", "first"), repo("example", "second")];
   const next = mergeSubmissionCandidate(main, repo("example", "third"));
@@ -97,6 +122,7 @@ test("recoverRepoSubmissions refreshes a stale PR onto main before merging", asy
       if (apiPath.endsWith("/pulls?state=open&per_page=100")) return [pull];
       if (apiPath.endsWith("/issues?state=open&labels=workflow-issue&per_page=100")) return [];
       if (apiPath.endsWith("/issues?state=open&labels=repo-suggestion&per_page=100")) return [];
+      if (apiPath.endsWith("/issues?state=open&per_page=100")) return [];
       if (apiPath.endsWith("/pulls/516/files?per_page=100")) return [{ filename: "data/repos.json" }];
       if (apiPath.endsWith("/git/ref/heads/main")) return { object: { sha: "main-sha" } };
       if (apiPath.endsWith("/git/commits/main-sha")) return { tree: { sha: "main-tree" } };
@@ -144,6 +170,7 @@ test("recoverRepoSubmissions closes cataloged and deleted suggestion issues", as
       if (apiPath.endsWith("/pulls?state=open&per_page=100")) return [];
       if (apiPath.endsWith("/issues?state=open&labels=workflow-issue&per_page=100")) return [];
       if (apiPath.endsWith("/issues?state=open&labels=repo-suggestion&per_page=100")) return suggestions;
+      if (apiPath.endsWith("/issues?state=open&per_page=100")) return [];
       if (apiPath.endsWith("contents/data/repos.json?ref=main")) return { content: encoded(catalog) };
       if (method === "GET" && apiPath.endsWith("/repos/example/deleted")) {
         const error = new Error("Not Found");
@@ -162,11 +189,52 @@ test("recoverRepoSubmissions closes cataloged and deleted suggestion issues", as
   assert.deepEqual(closures.map((call) => call.body.state_reason), ["completed", "not_planned"]);
 });
 
+test("recoverRepoSubmissions dispatches the oldest stranded suggestion", async () => {
+  const calls = [];
+  const oldIssue = {
+    number: 293,
+    state: "open",
+    created_at: "2026-05-01T00:00:00Z",
+    title: "Add obra/superpowers",
+    body: "https://github.com/obra/superpowers",
+    labels: [],
+  };
+  const newerIssue = {
+    ...oldIssue,
+    number: 326,
+    created_at: "2026-05-02T00:00:00Z",
+    title: "Add zero-sq/space0-mcp",
+    body: "https://github.com/zero-sq/space0-mcp",
+  };
+  const client = {
+    async request(method, apiPath, body) {
+      calls.push({ method, apiPath, body });
+      if (apiPath.endsWith("/pulls?state=open&per_page=100")) return [];
+      if (apiPath.endsWith("/issues?state=open&labels=workflow-issue&per_page=100")) return [];
+      if (apiPath.endsWith("/issues?state=open&labels=repo-suggestion&per_page=100")) return [];
+      if (apiPath.endsWith("/issues?state=open&per_page=100")) return [newerIssue, oldIssue];
+      if (method === "POST" && apiPath.endsWith("/actions/workflows/validate-repo-suggestion.yml/dispatches")) return null;
+      if (method === "POST" && apiPath.endsWith("/issues/293/labels")) return [];
+      throw new Error(`Unexpected request: ${method} ${apiPath}`);
+    },
+  };
+
+  const result = await recoverRepoSubmissions({ client, repository: "ksimback/hermes-ecosystem" });
+  assert.equal(result.dispatchedIssue, 293);
+  const dispatch = calls.find((call) => call.apiPath.endsWith("/dispatches"));
+  assert.deepEqual(dispatch.body.inputs, { issue_number: "293" });
+  assert.ok(calls.some((call) => call.apiPath.endsWith("/issues/293/labels")));
+  assert.ok(!calls.some((call) => call.apiPath.endsWith("/issues/326/labels")));
+});
+
 test("validator workflow does not wait for impossible bot-triggered CheckRuns", () => {
   const workflow = fs.readFileSync(".github/workflows/validate-repo-suggestion.yml", "utf-8");
   assert.match(workflow, /CANONICAL_CATEGORIES, validateRepos \} = await import/);
   assert.match(workflow, /\['CLEAN', 'HAS_HOOKS', 'UNSTABLE'\]/);
   assert.match(workflow, /createWorkflowDispatch/);
   assert.match(workflow, /recover-open-prs:/);
+  assert.match(workflow, /issue_number:/);
+  assert.match(workflow, /SOURCE_ISSUE_NUMBER/);
+  assert.match(workflow, /titleMatches && hasGitHubRepo/);
   assert.doesNotMatch(workflow, /const REQUIRED = \['validate', 'smoke'\]/);
 });
