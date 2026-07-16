@@ -36,6 +36,8 @@ jobs:
         id: docs_check
         uses: actions/github-script@v7
         with:
+          retries: 3
+          retry-exempt-status-codes: 400,401,403,404,422
           script: |
             try {
               const { data: commits } = await github.rest.repos.listCommits({
@@ -63,6 +65,8 @@ jobs:
           COMMIT_MSG: ${{ steps.docs_check.outputs.commit_msg }}
         uses: actions/github-script@v7
         with:
+          retries: 3
+          retry-exempt-status-codes: 400,401,403,404,422
           script: |
             const msg = process.env.COMMIT_MSG || '';
             const today = new Date().toISOString().slice(0, 10);
@@ -110,6 +114,8 @@ jobs:
         if: success()
         uses: actions/github-script@v7
         with:
+          retries: 3
+          retry-exempt-status-codes: 400,401,403,404,422
           script: |
             const { data: issues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -146,6 +152,8 @@ jobs:
         if: success()
         uses: actions/github-script@v7
         with:
+          retries: 3
+          retry-exempt-status-codes: 400,401,403,404,422
           script: |
             const title = '[Workflow] release-monitor failed';
             const { data: issues } = await github.rest.issues.listForRepo({
@@ -175,6 +183,8 @@ jobs:
         if: failure()
         uses: actions/github-script@v7
         with:
+          retries: 3
+          retry-exempt-status-codes: 400,401,403,404,422
           script: |
             const title = '[Workflow] release-monitor failed';
             const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
