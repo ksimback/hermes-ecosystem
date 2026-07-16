@@ -9,7 +9,7 @@ import {
   releaseTagFromPrTitle,
   renderReleaseMarkdown,
 } from "../lib/release-sync.js";
-import { GitHubApiError, GitHubClient, syncReleases } from "../scripts/sync-releases.js";
+import { GitHubApiError, GitHubClient, listOpenPulls, syncReleases } from "../scripts/sync-releases.js";
 
 const release = (tag, publishedAt, version) => ({
   tag_name: tag,
@@ -73,6 +73,38 @@ test("GitHubClient does not blindly retry mutating requests", async () => {
     (error) => error instanceof GitHubApiError && error.status === 503,
   );
   assert.equal(calls, 1);
+});
+
+test("release sync falls back to GraphQL when REST pull listing is unavailable", async () => {
+  const calls = [];
+  const client = {
+    async request(method, apiPath, body, options) {
+      calls.push({ method, apiPath, body, options });
+      if (method === "GET") {
+        throw new GitHubApiError("REST unavailable", 503, "<html>Unicorn</html>");
+      }
+      return {
+        data: {
+          repository: {
+            pullRequests: {
+              nodes: [{ number: 498, title: "Contributor PR", state: "OPEN", headRefName: "feature" }],
+            },
+          },
+        },
+      };
+    },
+  };
+
+  const pulls = await listOpenPulls(client, "ksimback/hermes-ecosystem");
+
+  assert.deepEqual(pulls, [{
+    number: 498,
+    title: "Contributor PR",
+    state: "open",
+    head: { ref: "feature" },
+  }]);
+  assert.equal(calls[1].apiPath, "/graphql");
+  assert.equal(calls[1].options.retryableRead, true);
 });
 
 test("extractTrackedReleaseTags reads exact release metadata and source URLs", () => {
