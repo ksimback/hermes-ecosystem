@@ -30,6 +30,21 @@ test("findSubmissionCandidate isolates the one branch-only repo", () => {
   );
 });
 
+test("findSubmissionCandidate selects the PR-owned repo when a stale branch has extra history", () => {
+  const main = [repo("example", "existing")];
+  const removedFromMain = repo("example", "removed-later");
+  const candidate = repo("example", "candidate");
+
+  assert.deepEqual(
+    findSubmissionCandidate(
+      main,
+      [main[0], removedFromMain, candidate],
+      "example/candidate",
+    ),
+    candidate,
+  );
+});
+
 test("mergeSubmissionCandidate preserves current main and validates the candidate", () => {
   const main = [repo("example", "first"), repo("example", "second")];
   const next = mergeSubmissionCandidate(main, repo("example", "third"));
@@ -52,6 +67,7 @@ test("recoverRepoSubmissions refreshes a stale PR onto main before merging", asy
   const pull = {
     number: 516,
     created_at: "2026-07-12T00:00:00Z",
+    body: "Adds [example/candidate](https://github.com/example/candidate) to the ecosystem map.",
     head: {
       ref: "add-repo-example-candidate",
       repo: { full_name: "ksimback/hermes-ecosystem" },

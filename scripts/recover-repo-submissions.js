@@ -64,6 +64,16 @@ function trackerTitle(pullNumber) {
   return `[Workflow] Validator PR #${pullNumber} needs manual review`;
 }
 
+function expectedRepoKey(pull) {
+  const match = String(pull.body || "").match(
+    /https:\/\/github\.com\/([a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+)/,
+  );
+  if (!match) {
+    throw new Error("Could not identify the submitted repository from the PR body");
+  }
+  return match[1].replace(/\/$/, "").toLowerCase();
+}
+
 async function closeTracker(client, repository, tracker) {
   if (!tracker) return;
   await comment(client, repository, tracker.number, "Recovered automatically; the validator PR is no longer blocked.");
@@ -118,7 +128,16 @@ export async function recoverRepoSubmissions({ client, repository }) {
       ]);
       const mainRepos = decodeJsonFile(mainFile);
       const branchRepos = decodeJsonFile(branchFile);
-      const candidate = findSubmissionCandidate(mainRepos, branchRepos);
+      // Old validator branches can contain a legitimate entry that was later
+      // removed from main. That makes a raw branch-vs-main diff contain more
+      // than one addition. Select the repository named by the bot-authored PR
+      // body, then rebuild the branch from current main so historical baggage
+      // cannot be reintroduced.
+      const candidate = findSubmissionCandidate(
+        mainRepos,
+        branchRepos,
+        expectedRepoKey(pull),
+      );
 
       if (!candidate) {
         await comment(client, repository, pull.number, "Auto-closing: this repo is already present on main.");
