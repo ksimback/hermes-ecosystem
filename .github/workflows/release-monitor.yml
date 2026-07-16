@@ -5,7 +5,9 @@ env:
 
 on:
   schedule:
-    - cron: '0 6 * * *'
+    # Idempotent reconciliation every six hours. This bounds recovery time when
+    # GitHub's API is temporarily unavailable during one scheduled run.
+    - cron: '17 */6 * * *'
   workflow_dispatch:
 
 jobs:
