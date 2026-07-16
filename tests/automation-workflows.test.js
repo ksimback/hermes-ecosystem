@@ -66,6 +66,10 @@ test("daily docs detection triggers ingestion and resolves its notification", ()
   assert.match(monitor, /Dispatch docs mirror refresh/);
   assert.match(monitor, /gh workflow run refresh-docs\.yml --ref main/);
   assert.match(monitor, /if: steps\.docs_check\.outputs\.docs_updated == 'true'/);
+  assert.ok(
+    monitor.indexOf("Dispatch docs mirror refresh") < monitor.indexOf("Create issue for docs update"),
+    "docs ingestion must not wait on informational issue creation",
+  );
   assert.match(refresh, /Close processed docs-update notifications/);
   assert.match(refresh, /--label docs-update/);
   assert.match(refresh, /Official docs mirror is current after workflow run/);
