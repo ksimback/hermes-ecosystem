@@ -51,6 +51,14 @@ test("bot-authored page builds dispatch smoke for the exact deployed commit", ()
   assert.match(smoke, /github\.event_name == 'push' \|\| inputs\.target_sha != ''/);
 });
 
+test("docs mirror explicitly dispatches RAG ingestion after bot-authored pushes", () => {
+  const workflow = fs.readFileSync(".github/workflows/refresh-docs.yml", "utf-8");
+  assert.match(workflow, /actions: write/);
+  assert.match(workflow, /Dispatch knowledge-base rebuild/);
+  assert.match(workflow, /gh workflow run rebuild-chunks\.yml --ref main/);
+  assert.match(workflow, /if: steps\.diff\.outputs\.changed == 'true'/);
+});
+
 test("recoverable workflow alerts close after a green run", () => {
   for (const file of [
     ".github/workflows/build-pages.yml",

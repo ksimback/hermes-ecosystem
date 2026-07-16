@@ -23,6 +23,7 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     permissions:
+      actions: write
       contents: write
       issues: write
 
@@ -72,6 +73,15 @@ jobs:
           done
           echo "Push failed after 3 attempts"
           exit 1
+
+      # GITHUB_TOKEN-authored pushes do not emit the rebuild workflow's push
+      # event. Start ingestion explicitly after the refreshed mirror is safely
+      # on main so new official documentation reaches the RAG corpus.
+      - name: Dispatch knowledge-base rebuild
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run rebuild-chunks.yml --ref main
 
       - name: Close prior failure alert after recovery
         if: success()
