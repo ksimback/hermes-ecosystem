@@ -676,6 +676,21 @@ jobs:
               body: `PR created: #${pr.number}\n\nOnce merged, this repo will appear in the ecosystem map.${mergeNote}`
             });
 
+            // GitHub does not reliably apply `Closes #...` from PR bodies when
+            // a GITHUB_TOKEN-authored PR is squash-merged by the same token.
+            // Close the source issue explicitly after the merge succeeds so
+            // the public backlog reflects the actual catalog state promptly.
+            if (mergedByWorkflow) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: Number(process.env.SOURCE_ISSUE_NUMBER),
+                state: 'closed',
+                state_reason: 'completed'
+              });
+              console.log(`Closed source issue #${process.env.SOURCE_ISSUE_NUMBER}`);
+            }
+
   recover-open-prs:
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.issue_number == '')
     runs-on: ubuntu-latest

@@ -236,5 +236,7 @@ test("validator workflow does not wait for impossible bot-triggered CheckRuns", 
   assert.match(workflow, /issue_number:/);
   assert.match(workflow, /SOURCE_ISSUE_NUMBER/);
   assert.match(workflow, /titleMatches && hasGitHubRepo/);
+  assert.match(workflow, /Closed source issue/);
+  assert.match(workflow, /state_reason: 'completed'/);
   assert.doesNotMatch(workflow, /const REQUIRED = \['validate', 'smoke'\]/);
 });
