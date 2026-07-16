@@ -5,8 +5,8 @@ env:
 
 # Pulls the latest content from hermes-agent.nousresearch.com/docs into
 # research/docs/. Idempotent: only files whose upstream content changed are
-# rewritten. The push then triggers rebuild-chunks.yml downstream, so the
-# embedded knowledge base stays in sync without manual intervention.
+# rewritten. Changed mirrors explicitly dispatch rebuild-chunks.yml downstream,
+# so the embedded knowledge base stays in sync without manual intervention.
 
 concurrency:
   group: refresh-docs
@@ -82,6 +82,16 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run rebuild-chunks.yml --ref main
+
+      - name: Close processed docs-update notifications
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue list --state open --label docs-update --json number --jq '.[].number' |
+            while read issue; do
+              gh issue close "$issue" --comment "Official docs mirror is current after workflow run ${GITHUB_RUN_ID}."
+            done
 
       - name: Close prior failure alert after recovery
         if: success()
