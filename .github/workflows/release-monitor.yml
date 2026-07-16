@@ -100,6 +100,42 @@ jobs:
               labels: ['docs-update']
             });
 
+      - name: Close resolved legacy release alerts
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'workflow-issue',
+              per_page: 100
+            });
+            for (const issue of issues) {
+              const pullNumber = Number(issue.title.match(/^\[Workflow\] Auto-merge failed on release PR #(\d+)$/)?.[1]);
+              if (!pullNumber) continue;
+              const { data: pull } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pullNumber
+              });
+              if (pull.state === 'open') continue;
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `Auto-closed: release PR #${pullNumber} is ${pull.state}.`
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed',
+                state_reason: 'completed'
+              });
+            }
+
       - name: Close release-monitor alert after recovery
         if: success()
         uses: actions/github-script@v7

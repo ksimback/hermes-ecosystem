@@ -80,6 +80,7 @@ test("recoverRepoSubmissions refreshes a stale PR onto main before merging", asy
       calls.push({ method, apiPath, body });
       if (apiPath.endsWith("/pulls?state=open&per_page=100")) return [pull];
       if (apiPath.endsWith("/issues?state=open&labels=workflow-issue&per_page=100")) return [];
+      if (apiPath.endsWith("/issues?state=open&labels=repo-suggestion&per_page=100")) return [];
       if (apiPath.endsWith("/pulls/516/files?per_page=100")) return [{ filename: "data/repos.json" }];
       if (apiPath.endsWith("/git/ref/heads/main")) return { object: { sha: "main-sha" } };
       if (apiPath.endsWith("/git/commits/main-sha")) return { tree: { sha: "main-tree" } };
@@ -111,6 +112,38 @@ test("recoverRepoSubmissions refreshes a stale PR onto main before merging", asy
   assert.deepEqual(refUpdate.body, { sha: "refreshed-sha", force: true });
   assert.ok(calls.some((call) => call.apiPath.endsWith("/pulls/516/merge")));
   assert.ok(calls.some((call) => call.apiPath.endsWith("/actions/workflows/build-pages.yml/dispatches")));
+});
+
+test("recoverRepoSubmissions closes cataloged and deleted suggestion issues", async () => {
+  const catalog = [repo("example", "cataloged")];
+  const suggestions = [
+    { number: 100, body: "Repo: https://github.com/example/cataloged" },
+    { number: 101, body: "Repo: https://github.com/example/deleted" },
+  ];
+  const calls = [];
+  const encoded = (value) => Buffer.from(JSON.stringify(value)).toString("base64");
+  const client = {
+    async request(method, apiPath, body) {
+      calls.push({ method, apiPath, body });
+      if (apiPath.endsWith("/pulls?state=open&per_page=100")) return [];
+      if (apiPath.endsWith("/issues?state=open&labels=workflow-issue&per_page=100")) return [];
+      if (apiPath.endsWith("/issues?state=open&labels=repo-suggestion&per_page=100")) return suggestions;
+      if (apiPath.endsWith("contents/data/repos.json?ref=main")) return { content: encoded(catalog) };
+      if (method === "GET" && apiPath.endsWith("/repos/example/deleted")) {
+        const error = new Error("Not Found");
+        error.status = 404;
+        throw error;
+      }
+      if (method === "POST" && apiPath.match(/\/issues\/10[01]\/comments$/)) return {};
+      if (method === "PATCH" && apiPath.match(/\/issues\/10[01]$/)) return {};
+      throw new Error(`Unexpected request: ${method} ${apiPath}`);
+    },
+  };
+
+  const result = await recoverRepoSubmissions({ client, repository: "ksimback/hermes-ecosystem" });
+  assert.equal(result.mergedCount, 0);
+  const closures = calls.filter((call) => call.method === "PATCH" && call.apiPath.match(/\/issues\/10[01]$/));
+  assert.deepEqual(closures.map((call) => call.body.state_reason), ["completed", "not_planned"]);
 });
 
 test("validator workflow does not wait for impossible bot-triggered CheckRuns", () => {

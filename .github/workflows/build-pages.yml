@@ -111,6 +111,16 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         run: node scripts/indexnow-ping.js
 
+      - name: Close prior failure alert after recovery
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue list --state open --label workflow-issue --search '"[Workflow] build-pages failed" in:title' --json number --jq '.[].number' |
+            while read issue; do
+              gh issue close "$issue" --comment "Recovered in workflow run ${GITHUB_RUN_ID}."
+            done
+
       # Escalate silent failures. This workflow runs daily and gates what is live
       # on hermesatlas.com; without this a failed run was only a red X in the
       # Actions tab. Opens (or comments on a deduped) workflow-issue.

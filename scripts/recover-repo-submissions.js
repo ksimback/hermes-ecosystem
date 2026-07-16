@@ -98,14 +98,61 @@ async function refreshSubmissionBranch({
   return commit.sha;
 }
 
-function expectedRepoKey(pull) {
-  const match = String(pull.body || "").match(
+function repoKeyFromText(text) {
+  const match = String(text || "").match(
     /https:\/\/github\.com\/([a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+)/,
   );
-  if (!match) {
+  return match ? match[1].replace(/\/$/, "").toLowerCase() : "";
+}
+
+function expectedRepoKey(pull) {
+  const key = repoKeyFromText(pull.body);
+  if (!key) {
     throw new Error("Could not identify the submitted repository from the PR body");
   }
-  return match[1].replace(/\/$/, "").toLowerCase();
+  return key;
+}
+
+async function closeSuggestion(client, repository, issue, body, stateReason) {
+  await comment(client, repository, issue.number, body);
+  await client.request("PATCH", `/repos/${repository}/issues/${issue.number}`, {
+    state: "closed",
+    state_reason: stateReason,
+  });
+}
+
+async function reconcileSuggestionIssues(client, repository, suggestionIssues) {
+  if (suggestionIssues.length === 0) return;
+  const mainFile = await getReposFile(client, repository, "main");
+  const catalogKeys = new Set(decodeJsonFile(mainFile).map(repoKey));
+
+  for (const issue of suggestionIssues) {
+    const key = repoKeyFromText(issue.body);
+    if (!key) continue;
+    if (catalogKeys.has(key)) {
+      await closeSuggestion(
+        client,
+        repository,
+        issue,
+        `Auto-closed: ${key} is present in the current Atlas catalog.`,
+        "completed",
+      );
+      continue;
+    }
+
+    try {
+      await client.request("GET", `/repos/${key}`);
+    } catch (error) {
+      if (error.status !== 404) throw error;
+      await closeSuggestion(
+        client,
+        repository,
+        issue,
+        `Auto-closed: https://github.com/${key} no longer exists (GitHub returned 404).`,
+        "not_planned",
+      );
+    }
+  }
 }
 
 async function closeTracker(client, repository, tracker) {
@@ -134,9 +181,10 @@ async function ensureTracker(client, repository, trackers, pull, reason) {
 }
 
 export async function recoverRepoSubmissions({ client, repository }) {
-  const [allPulls, issueList] = await Promise.all([
+  const [allPulls, issueList, suggestionIssues] = await Promise.all([
     client.request("GET", `/repos/${repository}/pulls?state=open&per_page=100`),
     client.request("GET", `/repos/${repository}/issues?state=open&labels=workflow-issue&per_page=100`),
+    client.request("GET", `/repos/${repository}/issues?state=open&labels=repo-suggestion&per_page=100`),
   ]);
   const pulls = allPulls
     .filter((pull) => pull.head?.ref?.startsWith("add-repo-"))
@@ -221,6 +269,8 @@ export async function recoverRepoSubmissions({ client, repository }) {
       await closeTracker(client, repository, issue);
     }
   }
+
+  await reconcileSuggestionIssues(client, repository, suggestionIssues);
 
   if (mergedCount > 0) {
     await client.request(

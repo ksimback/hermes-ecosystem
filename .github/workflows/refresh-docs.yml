@@ -73,6 +73,16 @@ jobs:
           echo "Push failed after 3 attempts"
           exit 1
 
+      - name: Close prior failure alert after recovery
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue list --state open --label workflow-issue --search '"[Workflow] refresh-docs failed" in:title' --json number --jq '.[].number' |
+            while read issue; do
+              gh issue close "$issue" --comment "Recovered in workflow run ${GITHUB_RUN_ID}."
+            done
+
       # Escalate silent failures — this workflow mirrors the official Hermes docs
       # into the KB; a failed run was previously only a red X in the Actions tab.
       - name: Escalate on failure

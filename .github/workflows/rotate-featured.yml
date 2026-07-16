@@ -56,6 +56,16 @@ jobs:
           echo "Push failed after 3 attempts"
           exit 1
 
+      - name: Close prior failure alert after recovery
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue list --state open --label workflow-issue --search '"[Workflow] rotate-featured failed" in:title' --json number --jq '.[].number' |
+            while read issue; do
+              gh issue close "$issue" --comment "Recovered in workflow run ${GITHUB_RUN_ID}."
+            done
+
       - name: Escalate on failure
         if: failure()
         uses: actions/github-script@v7
