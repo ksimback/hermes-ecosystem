@@ -59,6 +59,18 @@ test("docs mirror explicitly dispatches RAG ingestion after bot-authored pushes"
   assert.match(workflow, /if: steps\.diff\.outputs\.changed == 'true'/);
 });
 
+test("daily docs detection triggers ingestion and resolves its notification", () => {
+  const monitor = fs.readFileSync(".github/workflows/release-monitor.yml", "utf-8");
+  const refresh = fs.readFileSync(".github/workflows/refresh-docs.yml", "utf-8");
+
+  assert.match(monitor, /Dispatch docs mirror refresh/);
+  assert.match(monitor, /gh workflow run refresh-docs\.yml --ref main/);
+  assert.match(monitor, /if: steps\.docs_check\.outputs\.docs_updated == 'true'/);
+  assert.match(refresh, /Close processed docs-update notifications/);
+  assert.match(refresh, /--label docs-update/);
+  assert.match(refresh, /Official docs mirror is current after workflow run/);
+});
+
 test("recoverable workflow alerts close after a green run", () => {
   for (const file of [
     ".github/workflows/build-pages.yml",
