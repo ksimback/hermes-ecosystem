@@ -38,9 +38,9 @@ export class GitHubClient {
     this.retryDelayMs = retryDelayMs;
   }
 
-  async request(method, apiPath, body) {
+  async request(method, apiPath, body, { retryableRead = false } = {}) {
     const normalizedMethod = method.toUpperCase();
-    const attempts = normalizedMethod === "GET" ? this.maxReadAttempts : 1;
+    const attempts = normalizedMethod === "GET" || retryableRead ? this.maxReadAttempts : 1;
 
     for (let attempt = 1; attempt <= attempts; attempt++) {
       let response;
@@ -143,8 +143,36 @@ async function listAllReleases(client) {
   return releases;
 }
 
-async function listOpenPulls(client, repository) {
-  return client.request("GET", `/repos/${repository}/pulls?state=open&per_page=100`);
+export async function listOpenPulls(client, repository) {
+  try {
+    return await client.request("GET", `/repos/${repository}/pulls?state=open&per_page=100`);
+  } catch (error) {
+    if (!(error instanceof GitHubApiError) || error.status < 500) throw error;
+  }
+
+  console.warn("GitHub REST pull listing is unavailable — falling back to GraphQL");
+  const [owner, name] = repository.split("/");
+  const result = await client.request(
+    "POST",
+    "/graphql",
+    {
+      query: `query OpenPulls($owner: String!, $name: String!) {
+        repository(owner: $owner, name: $name) {
+          pullRequests(states: OPEN, first: 100) {
+            nodes { number title state headRefName }
+          }
+        }
+      }`,
+      variables: { owner, name },
+    },
+    { retryableRead: true },
+  );
+  return (result?.data?.repository?.pullRequests?.nodes || []).map((pull) => ({
+    number: pull.number,
+    title: pull.title,
+    state: pull.state?.toLowerCase(),
+    head: { ref: pull.headRefName },
+  }));
 }
 
 async function closeTrackedReleasePrs(client, repository, trackedTags, { excludeNumber } = {}) {
