@@ -23,6 +23,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
+      actions: write
       contents: write
       issues: write
 
@@ -115,6 +116,18 @@ jobs:
       - name: Ping IndexNow with changed URLs
         if: steps.diff.outputs.changed == 'true'
         run: node scripts/indexnow-ping.js
+
+      # GITHUB_TOKEN-authored pushes do not emit another workflow's `push`
+      # event. Dispatch smoke explicitly with the exact generated commit so it
+      # can wait for that Vercel deployment before checking production.
+      - name: Dispatch post-deploy smoke
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run post-deploy-smoke.yml \
+            --ref main \
+            -f target_sha="$(git rev-parse HEAD)"
 
       - name: Close prior failure alert after recovery
         if: success()

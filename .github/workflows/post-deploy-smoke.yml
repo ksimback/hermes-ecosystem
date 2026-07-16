@@ -50,6 +50,10 @@ on:
         description: 'Number of project pages to sample'
         required: false
         default: '25'
+      target_sha:
+        description: 'Commit SHA whose Vercel deployment must be ready before smoke'
+        required: false
+        default: ''
 
 # Serialize - we don't want two smoke runs racing each other against the same
 # deploy. Cancel pending duplicate runs since only the latest deploy matters.
@@ -79,11 +83,13 @@ jobs:
       # completes. Poll for it. On workflow_dispatch we skip the wait because
       # the user-supplied base URL might already be live.
       - name: Wait for Vercel deploy to be ready
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || inputs.target_sha != ''
         uses: actions/github-script@v7
+        env:
+          TARGET_SHA: ${{ inputs.target_sha }}
         with:
           script: |
-            const sha = context.sha;
+            const sha = process.env.TARGET_SHA || context.sha;
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const MAX_WAIT_MS = 10 * 60 * 1000; // 10 minutes
@@ -120,7 +126,7 @@ jobs:
       # before checking the semantic `stale`/`complete` contract, rather than
       # waiting up to six hours for the scheduled refresh.
       - name: Seed stars snapshot before semantic smoke
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || inputs.target_sha != ''
         env:
           GITHUB_TOKEN: ${{ github.token }}
           CRON_SECRET: ${{ secrets.CRON_SECRET }}

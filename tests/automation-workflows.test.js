@@ -39,6 +39,18 @@ test("page build regenerates from latest main after a rejected push", () => {
   assert.doesNotMatch(workflow, /git pull --rebase origin main/);
 });
 
+test("bot-authored page builds dispatch smoke for the exact deployed commit", () => {
+  const build = fs.readFileSync(".github/workflows/build-pages.yml", "utf-8");
+  const smoke = fs.readFileSync(".github/workflows/post-deploy-smoke.yml", "utf-8");
+
+  assert.match(build, /actions: write/);
+  assert.match(build, /Dispatch post-deploy smoke/);
+  assert.match(build, /-f target_sha="\$\(git rev-parse HEAD\)"/);
+  assert.match(smoke, /target_sha:/);
+  assert.match(smoke, /process\.env\.TARGET_SHA \|\| context\.sha/);
+  assert.match(smoke, /github\.event_name == 'push' \|\| inputs\.target_sha != ''/);
+});
+
 test("recoverable workflow alerts close after a green run", () => {
   for (const file of [
     ".github/workflows/build-pages.yml",
