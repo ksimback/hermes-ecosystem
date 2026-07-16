@@ -9,7 +9,7 @@ import {
   releaseTagFromPrTitle,
   renderReleaseMarkdown,
 } from "../lib/release-sync.js";
-import { syncReleases } from "../scripts/sync-releases.js";
+import { GitHubApiError, GitHubClient, syncReleases } from "../scripts/sync-releases.js";
 
 const release = (tag, publishedAt, version) => ({
   tag_name: tag,
@@ -18,6 +18,61 @@ const release = (tag, publishedAt, version) => ({
   body: `# Hermes Agent ${version} (${tag})\n\n${"Authoritative release notes. ".repeat(5)}`,
   draft: false,
   prerelease: false,
+});
+
+test("GitHubClient retries transient read failures including non-JSON 503 bodies", async () => {
+  const responses = [
+    {
+      ok: false,
+      status: 503,
+      headers: { get: () => null },
+      text: async () => "<html><title>Unicorn!</title></html>",
+    },
+    {
+      ok: true,
+      status: 200,
+      headers: { get: () => null },
+      text: async () => JSON.stringify([{ tag_name: "v2026.7.7.2" }]),
+    },
+  ];
+  const delays = [];
+  let calls = 0;
+  const client = new GitHubClient({
+    token: "test-token",
+    fetchImpl: async () => responses[calls++],
+    sleepImpl: async (delay) => delays.push(delay),
+    retryDelayMs: 25,
+  });
+
+  const result = await client.request("GET", "/repos/NousResearch/hermes-agent/releases");
+
+  assert.deepEqual(result, [{ tag_name: "v2026.7.7.2" }]);
+  assert.equal(calls, 2);
+  assert.deepEqual(delays, [25]);
+});
+
+test("GitHubClient does not blindly retry mutating requests", async () => {
+  let calls = 0;
+  const client = new GitHubClient({
+    token: "test-token",
+    fetchImpl: async () => {
+      calls++;
+      return {
+        ok: false,
+        status: 503,
+        headers: { get: () => null },
+        text: async () => "<html><title>Unicorn!</title></html>",
+      };
+    },
+    sleepImpl: async () => assert.fail("mutation retry must not sleep"),
+    retryDelayMs: 0,
+  });
+
+  await assert.rejects(
+    client.request("POST", "/repos/ksimback/hermes-ecosystem/issues", { title: "test" }),
+    (error) => error instanceof GitHubApiError && error.status === 503,
+  );
+  assert.equal(calls, 1);
 });
 
 test("extractTrackedReleaseTags reads exact release metadata and source URLs", () => {
