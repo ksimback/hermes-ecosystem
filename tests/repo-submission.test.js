@@ -78,6 +78,10 @@ test("isUnprocessedSuggestion recognizes legacy repo titles without sweeping unr
   assert.equal(isUnprocessedSuggestion(issue("Add obra/superpowers", url)), true);
   assert.equal(isUnprocessedSuggestion(issue("Suggest a Hermes plugin", url)), true);
   assert.equal(isUnprocessedSuggestion(issue("[Suggest a Repo] agentcairn", url)), true);
+  assert.equal(
+    isUnprocessedSuggestion(issue("Three Hermes plugins", `${url}\nhttps://github.com/example/two`)),
+    true,
+  );
   assert.equal(isUnprocessedSuggestion(issue("Content newsletter", url)), false);
   assert.equal(isUnprocessedSuggestion(issue("Add content newsletter", "No repository URL")), false);
   assert.equal(
@@ -227,6 +231,33 @@ test("recoverRepoSubmissions dispatches the oldest stranded suggestion", async (
   assert.ok(!calls.some((call) => call.apiPath.endsWith("/issues/326/labels")));
 });
 
+test("recoverRepoSubmissions leaves multi-repo parents unlabeled for the splitter", async () => {
+  const calls = [];
+  const multi = {
+    number: 435,
+    state: "open",
+    created_at: "2026-06-01T00:00:00Z",
+    title: "Three Hermes plugins",
+    body: "https://github.com/example/one\nhttps://github.com/example/two",
+    labels: [],
+  };
+  const client = {
+    async request(method, apiPath, body) {
+      calls.push({ method, apiPath, body });
+      if (apiPath.endsWith("/pulls?state=open&per_page=100")) return [];
+      if (apiPath.endsWith("/issues?state=open&labels=workflow-issue&per_page=100")) return [];
+      if (apiPath.endsWith("/issues?state=open&labels=repo-suggestion&per_page=100")) return [];
+      if (apiPath.endsWith("/issues?state=open&per_page=100")) return [multi];
+      if (method === "POST" && apiPath.endsWith("/actions/workflows/validate-repo-suggestion.yml/dispatches")) return null;
+      throw new Error(`Unexpected request: ${method} ${apiPath}`);
+    },
+  };
+
+  const result = await recoverRepoSubmissions({ client, repository: "ksimback/hermes-ecosystem" });
+  assert.equal(result.dispatchedIssue, 435);
+  assert.ok(!calls.some((call) => call.apiPath.endsWith("/issues/435/labels")));
+});
+
 test("validator workflow does not wait for impossible bot-triggered CheckRuns", () => {
   const workflow = fs.readFileSync(".github/workflows/validate-repo-suggestion.yml", "utf-8");
   assert.match(workflow, /CANONICAL_CATEGORIES, validateRepos \} = await import/);
@@ -240,5 +271,6 @@ test("validator workflow does not wait for impossible bot-triggered CheckRuns", 
   assert.match(workflow, /state_reason: 'completed'/);
   assert.match(workflow, /canonical_owner/);
   assert.match(workflow, /steps\.metadata\.outputs\.canonical_owner/);
+  assert.match(workflow, /Split multi-repo suggestion into atomic issues/);
   assert.doesNotMatch(workflow, /const REQUIRED = \['validate', 'smoke'\]/);
 });

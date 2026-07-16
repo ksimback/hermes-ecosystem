@@ -101,10 +101,15 @@ async function refreshSubmissionBranch({
 }
 
 function repoKeyFromText(text) {
-  const match = String(text || "").match(
-    /https:\/\/github\.com\/([a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+)/,
-  );
-  return match ? match[1].replace(/\/$/, "").toLowerCase() : "";
+  return repoKeysFromText(text)[0] || "";
+}
+
+function repoKeysFromText(text) {
+  return [...new Set(
+    [...String(text || "").matchAll(
+      /https:\/\/github\.com\/([a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+)/g,
+    )].map((match) => match[1].replace(/\/$/, "").toLowerCase()),
+  )];
 }
 
 export function isUnprocessedSuggestion(issue) {
@@ -113,9 +118,10 @@ export function isUnprocessedSuggestion(issue) {
     typeof label === "string" ? label : label.name,
   );
   if (labels.includes("repo-suggestion")) return false;
+  const repoKeys = repoKeysFromText(issue.body);
   const titleMatches = /^\s*(?:\[(?:repo|submission|suggest a repo)\]|suggest(?:ion)?\b|add\b)/i
     .test(String(issue.title || ""));
-  return titleMatches && Boolean(repoKeyFromText(issue.body));
+  return repoKeys.length > 1 || (titleMatches && repoKeys.length === 1);
 }
 
 function expectedRepoKey(pull) {
@@ -300,9 +306,11 @@ export async function recoverRepoSubmissions({ client, repository }) {
       `/repos/${repository}/actions/workflows/validate-repo-suggestion.yml/dispatches`,
       { ref: "main", inputs: { issue_number: String(stranded.number) } },
     );
-    await client.request("POST", `/repos/${repository}/issues/${stranded.number}/labels`, {
-      labels: ["repo-suggestion"],
-    });
+    if (repoKeysFromText(stranded.body).length === 1) {
+      await client.request("POST", `/repos/${repository}/issues/${stranded.number}/labels`, {
+        labels: ["repo-suggestion"],
+      });
+    }
     console.log(`Dispatched validation recovery for stranded issue #${stranded.number}`);
   }
 
