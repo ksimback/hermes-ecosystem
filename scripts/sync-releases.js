@@ -232,9 +232,16 @@ export async function syncReleases({
   const plan = planReleaseBatch({ upstreamReleases, researchFiles });
   const upstreamLatest = latestStableRelease(upstreamReleases);
 
-  await closeTrackedReleasePrs(client, repository, plan.trackedTags);
-
   if (plan.documents.length === 0) {
+    try {
+      await closeTrackedReleasePrs(client, repository, plan.trackedTags);
+    } catch (error) {
+      if (!(error instanceof GitHubApiError) || error.status < 500) throw error;
+      console.warn(
+        "Release corpus is current, but superseded release PR cleanup is temporarily unavailable; " +
+        "deferring cleanup to the next reconciliation",
+      );
+    }
     console.log(`No missing releases (${plan.trackedTags.size} tags already tracked)`);
     const artifactTag = String(latestReleaseData?.tag || "");
     const artifactStale = upstreamLatest && artifactTag !== upstreamLatest.tag_name;
@@ -251,6 +258,8 @@ export async function syncReleases({
     setOutput("latest_tag", upstreamLatest?.tag_name || "");
     return { merged: false, documents: [], rebuildDispatched: Boolean(artifactStale) };
   }
+
+  await closeTrackedReleasePrs(client, repository, plan.trackedTags);
 
   const tags = plan.documents.map((document) => document.release.tag_name);
   const latestTag = tags.at(-1);
