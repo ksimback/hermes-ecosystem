@@ -75,34 +75,39 @@ jobs:
 
       - name: Commit updated pages
         if: steps.diff.outputs.changed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
           git config user.name "Hermes Atlas Bot"
           git config user.email "bot@hermesatlas.com"
           git commit -m "Rebuild project pages (${{ steps.diff.outputs.pages }} projects, ${{ steps.diff.outputs.lists }} lists)"
 
           # main can move during a multi-minute build (PR merge, another
-          # bot workflow committing) — vanilla `git push` then fails with
-          # `! [rejected] main -> main (fetch first)`. Retry up to 3 times,
-          # rebasing onto the new remote tip between attempts.
-          #
-          # Stash any unstaged working-tree changes before the rebase. Without
-          # this, the rebase aborts with "cannot pull with rebase: You have
-          # unstaged changes" if any build step writes a file outside the
-          # staged set — and the entire build's work gets thrown away silently
-          # (this is what cancelled all 5 burst-merge builds on 2026-05-15).
+          # bot workflow committing). Generated pages should never be rebased:
+          # almost every artifact changes together, so a new generated commit
+          # on main produces hundreds of conflicts. On rejection, discard only
+          # this ephemeral runner's generated commit, reset to the latest main,
+          # and deterministically regenerate from that complete input state.
           for attempt in 1 2 3; do
             if git push; then
               echo "Pushed on attempt $attempt"
               exit 0
             fi
-            echo "Push rejected (attempt $attempt) — rebasing onto new remote tip"
-            git stash --include-untracked --quiet || true
-            if ! git pull --rebase origin main; then
-              echo "Rebase failed — aborting"
-              git stash pop --quiet 2>/dev/null || true
-              exit 1
+            echo "Push rejected (attempt $attempt) — regenerating from latest main"
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
+            node scripts/generate-summaries.js
+            node scripts/build-pages.js
+            node scripts/stage-build-artifacts.js
+            if git diff --cached --quiet; then
+              echo "Latest main already contains the generated artifacts"
+              exit 0
             fi
-            git stash pop --quiet 2>/dev/null || true
+            PAGES=$(find projects -name '*.html' | wc -l)
+            LISTS=$(find lists -name '*.html' | wc -l)
+            git commit -m "Rebuild project pages ($PAGES projects, $LISTS lists)"
           done
           echo "Push failed after 3 attempts"
           exit 1

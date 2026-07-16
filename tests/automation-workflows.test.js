@@ -28,6 +28,17 @@ test("knowledge rebuild has a scheduled reconciliation path", () => {
   assert.match(workflow, /workflow_dispatch:/);
 });
 
+test("page build regenerates from latest main after a rejected push", () => {
+  const workflow = fs.readFileSync(".github/workflows/build-pages.yml", "utf-8");
+  assert.match(workflow, /Push rejected \(attempt \$attempt\).*regenerating from latest main/);
+  assert.match(workflow, /git reset --hard origin\/main/);
+  assert.match(workflow, /git clean -fd/);
+  assert.match(workflow, /node scripts\/generate-summaries\.js/);
+  assert.match(workflow, /node scripts\/build-pages\.js/);
+  assert.match(workflow, /node scripts\/stage-build-artifacts\.js/);
+  assert.doesNotMatch(workflow, /git pull --rebase origin main/);
+});
+
 test("recoverable workflow alerts close after a green run", () => {
   for (const file of [
     ".github/workflows/build-pages.yml",
