@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   extractTrackedReleaseTags,
+  latestStableRelease,
   planReleaseBatch,
   releaseBranchName,
   releaseTagFromPrTitle,
@@ -69,6 +70,22 @@ function readResearchFiles(root = ROOT) {
     path: path.relative(root, absolute).split(path.sep).join("/"),
     content: fs.readFileSync(absolute, "utf-8"),
   }));
+}
+
+function readLatestRelease(root = ROOT) {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(root, "data", "latest-release.json"), "utf-8"));
+  } catch {
+    return null;
+  }
+}
+
+async function dispatchRebuild(client, repository) {
+  await client.request(
+    "POST",
+    `/repos/${repository}/actions/workflows/rebuild-chunks.yml/dispatches`,
+    { ref: "main" },
+  );
 }
 
 async function listAllReleases(client) {
@@ -139,17 +156,30 @@ export async function syncReleases({
   client,
   repository,
   researchFiles = readResearchFiles(),
+  latestReleaseData = readLatestRelease(),
 }) {
   const upstreamReleases = await listAllReleases(client);
   const plan = planReleaseBatch({ upstreamReleases, researchFiles });
+  const upstreamLatest = latestStableRelease(upstreamReleases);
 
   await closeTrackedReleasePrs(client, repository, plan.trackedTags);
 
   if (plan.documents.length === 0) {
     console.log(`No missing releases (${plan.trackedTags.size} tags already tracked)`);
+    const artifactTag = String(latestReleaseData?.tag || "");
+    const artifactStale = upstreamLatest && artifactTag !== upstreamLatest.tag_name;
+    if (artifactStale) {
+      console.log(
+        `Release corpus is current but latest-release.json is stale ` +
+        `(${artifactTag || "missing"} != ${upstreamLatest.tag_name}); dispatching rebuild`,
+      );
+      await dispatchRebuild(client, repository);
+    }
     setOutput("new_release", "false");
     setOutput("merged", "false");
-    return { merged: false, documents: [] };
+    setOutput("rebuild_dispatched", artifactStale ? "true" : "false");
+    setOutput("latest_tag", upstreamLatest?.tag_name || "");
+    return { merged: false, documents: [], rebuildDispatched: Boolean(artifactStale) };
   }
 
   const tags = plan.documents.map((document) => document.release.tag_name);
@@ -226,14 +256,11 @@ export async function syncReleases({
   const nowTracked = new Set([...plan.trackedTags, ...tags]);
   await closeTrackedReleasePrs(client, repository, nowTracked, { excludeNumber: pull.number });
 
-  await client.request(
-    "POST",
-    `/repos/${repository}/actions/workflows/rebuild-chunks.yml/dispatches`,
-    { ref: "main" },
-  );
+  await dispatchRebuild(client, repository);
 
   setOutput("new_release", "true");
   setOutput("merged", "true");
+  setOutput("rebuild_dispatched", "true");
   setOutput("latest_tag", latestTag);
   setOutput("pull_number", pull.number);
   return { merged: true, documents: plan.documents, pullNumber: pull.number };

@@ -29,7 +29,10 @@ function runSmoke(base) {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [
       "scripts/smoke-test-prod.js", "--base", base, "--sample", "0", "--recent-days", "-1", "--concurrency", "1", "--timeout", "2000", "--continue",
-    ], { cwd: ROOT });
+    ], {
+      cwd: ROOT,
+      env: { ...process.env, HERMES_RELEASES_URL: `${base}/upstream-releases` },
+    });
     let output = "";
     child.stdout.on("data", (data) => { output += data; });
     child.stderr.on("data", (data) => { output += data; });
@@ -38,7 +41,7 @@ function runSmoke(base) {
   });
 }
 
-async function withAtlasFixture({ stars = {} } = {}) {
+async function withAtlasFixture({ stars = {}, releaseTag = "v2026.7.7.2" } = {}) {
   const seenTwitterbot = [];
   const server = createServer((req, res) => {
     const base = `http://${req.headers.host}`;
@@ -53,6 +56,20 @@ async function withAtlasFixture({ stars = {} } = {}) {
     if (url.pathname === "/sitemap.xml") return send(200, "application/xml", sitemap(base));
     if (url.pathname === "/rss.xml") return send(200, "application/xml", "<rss><channel><item>ok</item></channel></rss>");
     if (url.pathname === "/llms.txt") return send(200, "text/plain", `Hermes Atlas has ${repos.length}+ tools.`);
+    if (url.pathname === "/data/latest-release.json") {
+      return send(200, "application/json", JSON.stringify({
+        version: releaseTag === "v2026.7.7.2" ? "v0.18.2" : "v0.18.0",
+        tag: releaseTag,
+      }));
+    }
+    if (url.pathname === "/upstream-releases") {
+      return send(200, "application/json", JSON.stringify([{
+        tag_name: "v2026.7.7.2",
+        published_at: "2026-07-08T03:11:22Z",
+        draft: false,
+        prerelease: false,
+      }]));
+    }
     if (url.pathname === "/api/chat") return send(200, "text/event-stream", "data: Hermes Agent is ready.\n\n");
     if (url.pathname === "/api/stars") {
       const response = {
@@ -109,4 +126,11 @@ test("production smoke rejects a stale stars response even when HTTP is 200", as
   });
   assert.equal(code, 1, output);
   assert.match(output, /FAIL\s+stars freshness/);
+});
+
+test("production smoke rejects a stale release artifact even when HTTP is 200", async () => {
+  const { code, output } = await withAtlasFixture({ releaseTag: "v2026.7.1" });
+  assert.equal(code, 1, output);
+  assert.match(output, /FAIL\s+latest release freshness/);
+  assert.match(output, /production has v2026\.7\.1; upstream has v2026\.7\.7\.2/);
 });

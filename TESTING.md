@@ -10,7 +10,7 @@ deploy).
 | When | What runs | What it catches |
 |---|---|---|
 | Pre-merge | Existing workflows (`audit-repos`, `validate-repo-suggestion`, Vercel preview build) | Schema errors, dead repos, build failures, bad submissions |
-| Post-deploy | `post-deploy-smoke.yml` ← **new** | Drift between `data/repos.json` and rendered HTML, missing project pages, broken sitemap/RSS, 404s on critical pages, broken internal links |
+| Post-deploy | `post-deploy-smoke.yml` | Stale release data, unhealthy chat/stars/OG contracts, drift between `data/repos.json` and rendered HTML, missing project pages, broken sitemap/RSS, 404s, and broken internal links |
 
 The post-deploy smoke test runs automatically on every push to `main` that
 touches site-affecting files. Results show up as a commit status next to
@@ -55,6 +55,15 @@ Hits `/`, `/guide/`, `/lists/`, `/reports/`, `/privacy/`, `/sitemap.xml`,
 - A build skipping a top-level page
 - Vercel routing config (`vercel.json`) regressing
 - A page rename that wasn't propagated to the menu
+
+### Public API and release contracts are semantically healthy
+
+Checks Ask the Atlas, stars, star history, and OG image responses rather than
+accepting HTTP 200 alone. On production it also compares
+`/data/latest-release.json` with the latest stable calendar-tagged release from
+`NousResearch/hermes-agent`; preview runs compare the deployed artifact with the
+PR checkout. This catches a release that reached `research/` but never reached
+the RAG artifact or generated site.
 
 ### 2. Homepage category counts match `data/repos.json`
 
@@ -141,7 +150,7 @@ These run on PRs and pushes:
 | `audit-repos.yml` | Periodic dead-repo check (GraphQL against GitHub) |
 | `audit-summaries.yml` | Weekly LLM audit of generated summaries against current READMEs |
 | `build-pages.yml` | Rebuilds project pages on push to `main` |
-| `rebuild-chunks.yml` | Rebuilds the RAG chunks corpus |
+| `rebuild-chunks.yml` | Rebuilds the RAG chunks corpus on source changes/dispatch and reconciles daily at 06:20 UTC |
 | Vercel preview build | Catches build/deploy failures on PRs before merge |
 
 ## Recommended next-step hardening

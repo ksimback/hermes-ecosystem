@@ -4,10 +4,14 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 concurrency:
-  group: main-bot-push
+  group: rebuild-chunks
   cancel-in-progress: false
 
 on:
+  schedule:
+    # Daily reconciliation after release-monitor. Push/dispatch events remain
+    # the fast path; this catches a missed or externally cancelled event.
+    - cron: '20 6 * * *'
   push:
     branches: [main]
     paths:

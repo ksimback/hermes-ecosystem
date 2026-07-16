@@ -95,6 +95,8 @@ const VERBOSE = flag("verbose");
 const PREVIEW_MODE = flag("preview");
 const USER_AGENT = "HermesAtlas-SmokeTest/1.0";
 const BYPASS_SECRET = process.env.VERCEL_AUTOMATION_BYPASS_SECRET || "";
+const HERMES_RELEASES_URL = process.env.HERMES_RELEASES_URL ||
+  "https://api.github.com/repos/NousResearch/hermes-agent/releases?per_page=20";
 
 // Acknowledged failures: substring-matched against the `check` name. Anything
 // matched becomes a WARN instead of a FAIL (still printed, doesn't affect exit
@@ -224,6 +226,9 @@ function sample(arr, n) {
 const repos = JSON.parse(
   await fs.readFile(path.join(ROOT, "data/repos.json"), "utf8")
 );
+const checkoutLatestRelease = JSON.parse(
+  await fs.readFile(path.join(ROOT, "data/latest-release.json"), "utf8")
+);
 
 // Preview mode: a preview deploy serves exactly this commit, so an entry
 // whose project page hasn't been generated yet (a repo-add PR; build-pages
@@ -320,6 +325,52 @@ await section("2. Public API contracts are semantically healthy", async () => {
     pass("Ask the Atlas", `HTTP ${chat.status}, non-empty response`);
   } else {
     fail("Ask the Atlas", `HTTP ${chat.status}${chat.ok ? ", empty response" : ""}`, `${BASE}/api/chat`);
+  }
+
+  const releaseArtifactResponse = await fetchWithTimeout(`${BASE}/data/latest-release.json`);
+  if (!releaseArtifactResponse.ok) {
+    fail("latest release freshness", `artifact HTTP ${releaseArtifactResponse.status}`, `${BASE}/data/latest-release.json`);
+  } else {
+    const releaseArtifact = await readJson(releaseArtifactResponse, "latest release freshness");
+    if (releaseArtifact) {
+      if (PREVIEW_MODE) {
+        if (releaseArtifact.tag === checkoutLatestRelease.tag) {
+          pass("latest release freshness", `preview matches checkout ${releaseArtifact.tag}`);
+        } else {
+          fail(
+            "latest release freshness",
+            `preview has ${releaseArtifact.tag || "no tag"}; checkout has ${checkoutLatestRelease.tag || "no tag"}`,
+            `${BASE}/data/latest-release.json`,
+          );
+        }
+      } else {
+        const upstreamResponse = await fetchWithTimeout(HERMES_RELEASES_URL, {
+          headers: { Accept: "application/vnd.github+json" },
+        });
+        if (!upstreamResponse.ok) {
+          fail("latest release freshness", `upstream HTTP ${upstreamResponse.status}`, HERMES_RELEASES_URL);
+        } else {
+          const upstreamReleases = await readJson(upstreamResponse, "latest release freshness");
+          const upstreamLatest = Array.isArray(upstreamReleases)
+            ? upstreamReleases
+              .filter((release) => !release.draft && !release.prerelease)
+              .filter((release) => /^v20\d{2}(?:\.\d+){2,}$/i.test(String(release.tag_name || "")))
+              .sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at))[0]
+            : null;
+          if (!upstreamLatest) {
+            fail("latest release freshness", "upstream returned no stable calendar-tagged release", HERMES_RELEASES_URL);
+          } else if (releaseArtifact.tag === upstreamLatest.tag_name) {
+            pass("latest release freshness", `${releaseArtifact.version} (${releaseArtifact.tag})`);
+          } else {
+            fail(
+              "latest release freshness",
+              `production has ${releaseArtifact.tag || "no tag"}; upstream has ${upstreamLatest.tag_name}`,
+              `${BASE}/data/latest-release.json`,
+            );
+          }
+        }
+      }
+    }
   }
 
   const stars = await fetchWithTimeout(`${BASE}/api/stars`);

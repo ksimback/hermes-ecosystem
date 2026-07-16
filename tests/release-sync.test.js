@@ -3,6 +3,7 @@ import { test } from "node:test";
 
 import {
   extractTrackedReleaseTags,
+  latestStableRelease,
   planReleaseBatch,
   releaseBranchName,
   releaseTagFromPrTitle,
@@ -65,6 +66,51 @@ test("planReleaseBatch is idempotent when all tags are already tracked", () => {
     }],
   });
   assert.equal(plan.documents.length, 0);
+});
+
+test("latestStableRelease ignores drafts and prereleases", () => {
+  const stable = release("v2026.7.7.2", "2026-07-08T03:11:22Z", "v0.18.2");
+  assert.equal(latestStableRelease([
+    { ...release("v2026.7.8", "2026-07-09T00:00:00Z", "v0.19.0"), prerelease: true },
+    { ...release("v2026.7.9", "2026-07-10T00:00:00Z", "v0.19.1"), draft: true },
+    stable,
+  ]), stable);
+});
+
+test("syncReleases dispatches a rebuild when the corpus is current but the release artifact is stale", async () => {
+  const upstream = release("v2026.7.7.2", "2026-07-08T03:11:22Z", "v0.18.2");
+  const stalePull = {
+    number: 494,
+    title: "New release: Hermes Agent v2026.7.7.2",
+    head: { ref: "release-notes-2026.7.7.2" },
+  };
+  const calls = [];
+  const client = {
+    async request(method, apiPath, body) {
+      calls.push({ method, apiPath, body });
+      if (apiPath.includes("/releases?")) return [upstream];
+      if (apiPath.endsWith("/pulls?state=open&per_page=100")) return [stalePull];
+      if (method === "POST" && apiPath.endsWith("/issues/494/comments")) return {};
+      if (method === "PATCH" && apiPath.endsWith("/pulls/494")) return {};
+      if (apiPath.endsWith("/actions/workflows/rebuild-chunks.yml/dispatches")) return null;
+      throw new Error(`Unexpected request: ${method} ${apiPath}`);
+    },
+  };
+
+  const result = await syncReleases({
+    client,
+    repository: "ksimback/hermes-ecosystem",
+    researchFiles: [{
+      path: "research/50-release-2026-7-7-2.md",
+      content: renderReleaseMarkdown(upstream),
+    }],
+    latestReleaseData: { tag: "v2026.7.1" },
+  });
+
+  assert.equal(result.merged, false);
+  assert.equal(result.rebuildDispatched, true);
+  assert.ok(calls.some((call) => call.apiPath.endsWith("/actions/workflows/rebuild-chunks.yml/dispatches")));
+  assert.ok(calls.some((call) => call.method === "PATCH" && call.apiPath.endsWith("/pulls/494")));
 });
 
 test("planReleaseBatch does not backfill intentional gaps before the watermark", () => {
