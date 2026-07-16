@@ -89,6 +89,27 @@ test("release monitor retries transient GitHub API failures", () => {
   assert.match(monitor, /cron: '17 \*\/6 \* \* \*'/);
 });
 
+test("release monitor does not fail freshness on optional notification outages", () => {
+  const monitor = fs.readFileSync(".github/workflows/release-monitor.yml", "utf-8");
+  for (const step of [
+    "Check for new official docs changes",
+    "Create issue for docs update",
+    "Close resolved legacy release alerts",
+    "Close release-monitor alert after recovery",
+  ]) {
+    const start = monitor.indexOf(`- name: ${step}`);
+    const next = monitor.indexOf("\n      - name:", start + 1);
+    const block = monitor.slice(start, next === -1 ? undefined : next);
+    assert.ok(start >= 0, `${step} exists`);
+    assert.match(block, /continue-on-error: true/, `${step} is informational housekeeping`);
+  }
+  assert.match(
+    monitor,
+    /- name: Escalate release-monitor failure\s+if: steps\.releases\.outcome == 'failure'/,
+  );
+  assert.doesNotMatch(monitor, /- name: Escalate release-monitor failure\s+if: failure\(\)/);
+});
+
 test("recoverable workflow alerts close after a green run", () => {
   for (const file of [
     ".github/workflows/build-pages.yml",
