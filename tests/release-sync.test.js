@@ -200,6 +200,34 @@ test("syncReleases dispatches a rebuild when the corpus is current but the relea
   assert.ok(calls.some((call) => call.method === "PATCH" && call.apiPath.endsWith("/pulls/494")));
 });
 
+test("syncReleases defers PR cleanup when the current release corpus is healthy", async () => {
+  const upstream = release("v2026.7.7.2", "2026-07-08T03:11:22Z", "v0.18.2");
+  const calls = [];
+  const client = {
+    async request(method, apiPath) {
+      calls.push({ method, apiPath });
+      if (apiPath.includes("/releases?")) return [upstream];
+      if (apiPath.endsWith("/pulls?state=open&per_page=100") || apiPath === "/graphql") {
+        throw new GitHubApiError("GitHub unavailable", 503, "<html>Unicorn</html>");
+      }
+      throw new Error(`Unexpected request: ${method} ${apiPath}`);
+    },
+  };
+
+  const result = await syncReleases({
+    client,
+    repository: "ksimback/hermes-ecosystem",
+    researchFiles: [{
+      path: "research/50-release-2026-7-7-2.md",
+      content: renderReleaseMarkdown(upstream),
+    }],
+    latestReleaseData: { tag: "v2026.7.7.2" },
+  });
+
+  assert.deepEqual(result, { merged: false, documents: [], rebuildDispatched: false });
+  assert.equal(calls.some((call) => call.apiPath === "/graphql"), true);
+});
+
 test("planReleaseBatch does not backfill intentional gaps before the watermark", () => {
   const plan = planReleaseBatch({
     upstreamReleases: [
