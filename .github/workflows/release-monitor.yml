@@ -45,6 +45,7 @@ jobs:
 
       - name: Check for new official docs changes
         id: docs_check
+        continue-on-error: true
         uses: actions/github-script@v7
         with:
           retries: 3
@@ -71,6 +72,7 @@ jobs:
             }
 
       - name: Create issue for docs update
+        continue-on-error: true
         if: steps.docs_check.outputs.docs_updated == 'true'
         env:
           COMMIT_MSG: ${{ steps.docs_check.outputs.commit_msg }}
@@ -116,6 +118,7 @@ jobs:
             });
 
       - name: Close resolved legacy release alerts
+        continue-on-error: true
         if: steps.releases.outcome == 'success' && success()
         uses: actions/github-script@v7
         with:
@@ -154,6 +157,7 @@ jobs:
             }
 
       - name: Close release-monitor alert after recovery
+        continue-on-error: true
         if: steps.releases.outcome == 'success' && success()
         uses: actions/github-script@v7
         with:
@@ -191,7 +195,7 @@ jobs:
           exit 1
 
       - name: Escalate release-monitor failure
-        if: failure()
+        if: steps.releases.outcome == 'failure'
         uses: actions/github-script@v7
         with:
           retries: 3
