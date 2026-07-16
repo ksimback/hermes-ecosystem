@@ -24,34 +24,76 @@ export class GitHubApiError extends Error {
 }
 
 export class GitHubClient {
-  constructor({ token, fetchImpl = fetch }) {
+  constructor({
+    token,
+    fetchImpl = fetch,
+    sleepImpl = (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+    maxReadAttempts = 4,
+    retryDelayMs = 1000,
+  }) {
     this.token = token;
     this.fetchImpl = fetchImpl;
+    this.sleepImpl = sleepImpl;
+    this.maxReadAttempts = maxReadAttempts;
+    this.retryDelayMs = retryDelayMs;
   }
 
   async request(method, apiPath, body) {
-    const response = await this.fetchImpl(`https://api.github.com${apiPath}`, {
-      method,
-      headers: {
-        Accept: "application/vnd.github+json",
-        Authorization: `Bearer ${this.token}`,
-        "Content-Type": "application/json",
-        "User-Agent": "hermes-atlas-release-sync",
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-      body: body === undefined ? undefined : JSON.stringify(body),
-    });
+    const normalizedMethod = method.toUpperCase();
+    const attempts = normalizedMethod === "GET" ? this.maxReadAttempts : 1;
 
-    const text = await response.text();
-    const data = text ? JSON.parse(text) : null;
-    if (!response.ok) {
-      throw new GitHubApiError(
-        `${method} ${apiPath} failed (${response.status}): ${data?.message || text}`,
+    for (let attempt = 1; attempt <= attempts; attempt++) {
+      let response;
+      try {
+        response = await this.fetchImpl(`https://api.github.com${apiPath}`, {
+          method: normalizedMethod,
+          headers: {
+            Accept: "application/vnd.github+json",
+            Authorization: `Bearer ${this.token}`,
+            "Content-Type": "application/json",
+            "User-Agent": "hermes-atlas-release-sync",
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+          body: body === undefined ? undefined : JSON.stringify(body),
+        });
+      } catch (error) {
+        if (attempt >= attempts) throw error;
+        const delay = this.retryDelayMs * attempt;
+        console.warn(`GitHub read failed — retrying in ${delay}ms (attempt ${attempt + 1}/${attempts})`);
+        await this.sleepImpl(delay);
+        continue;
+      }
+
+      const text = await response.text();
+      let data = null;
+      if (text) {
+        try {
+          data = JSON.parse(text);
+        } catch {
+          data = text;
+        }
+      }
+      if (response.ok) return data;
+
+      const message = data && typeof data === "object" ? data.message : text;
+      const error = new GitHubApiError(
+        `${normalizedMethod} ${apiPath} failed (${response.status}): ${message}`,
         response.status,
         data,
       );
+      const retryable = response.status === 429 || response.status >= 500;
+      if (!retryable || attempt >= attempts) throw error;
+
+      const retryAfterSeconds = Number(response.headers?.get?.("retry-after"));
+      const delay = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
+        ? retryAfterSeconds * 1000
+        : this.retryDelayMs * attempt;
+      console.warn(
+        `GitHub returned ${response.status} — retrying read in ${delay}ms ` +
+        `(attempt ${attempt + 1}/${attempts})`,
+      );
+      await this.sleepImpl(delay);
     }
-    return data;
   }
 }
 
