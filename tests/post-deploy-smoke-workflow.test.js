@@ -18,3 +18,11 @@ test("post-deploy smoke seeds stars before enforcing semantic freshness", () => 
   assert.ok(smoke > seed, "snapshot seed must complete before semantic smoke starts");
   assert.match(workflow, /if: github\.event_name == 'push'[\s\S]*?GITHUB_TOKEN: \$\{\{ github\.token \}\}[\s\S]*?CRON_SECRET: \$\{\{ secrets\.CRON_SECRET \}\}[\s\S]*?node scripts\/push-stars-snapshot\.js/);
 });
+
+test("post-deploy smoke closes the one active alert after recovery", () => {
+  const smoke = workflow.indexOf("- name: Run smoke test");
+  const recovery = workflow.indexOf("Close smoke alert after recovery");
+
+  assert.ok(recovery > smoke, "recovery close must run only after smoke succeeds");
+  assert.match(workflow, /if: success\(\)[\s\S]*?title = 'Smoke test failure on production'[\s\S]*?labels: 'workflow-issue'[\s\S]*?state: 'closed'[\s\S]*?state_reason: 'completed'/);
+});
