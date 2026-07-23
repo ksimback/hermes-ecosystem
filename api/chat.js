@@ -1,4 +1,4 @@
-import { kvIncr, kvExpireNx } from "../lib/redis.js";
+import { kvIncr, kvIncrBy, kvExpireNx } from "../lib/redis.js";
 import { combinedRetrievalScore, enrichChunkMetadata } from "../lib/rag-scoring.js";
 import { buildLatestReleaseBlock, detectLatestReleaseQuery } from "../lib/latest-release.js";
 import { parseChunkStore } from "../lib/chunk-store.js";
@@ -493,6 +493,10 @@ ${retrievedContext}${repoMetadataBlock}`;
         stream: true,
         max_tokens: MAX_TOKENS,
         temperature: 0.3,
+        // Ask OpenRouter to include token usage (and cost) in the final SSE
+        // chunk. That chunk may carry an empty choices array — the parser below
+        // tolerates it (it only reads choices[0] optionally).
+        usage: { include: true },
       }),
     });
 
@@ -517,6 +521,7 @@ ${retrievedContext}${repoMetadataBlock}`;
     let buffer = "";
     let totalContent = "";
     let actualModel = null; // Captured from OpenRouter SSE chunks
+    let usage = null; // Token usage from the final SSE chunk (usage.include)
 
     while (true) {
       const { done, value } = await reader.read();
@@ -548,6 +553,13 @@ ${retrievedContext}${repoMetadataBlock}`;
             actualModel = parsed.model;
           }
 
+          // Capture token usage — OpenRouter emits it on the final chunk (the
+          // one that may have an empty choices array). Overwrite so we keep the
+          // last/most-complete usage object seen.
+          if (parsed.usage) {
+            usage = parsed.usage;
+          }
+
           const content = parsed.choices?.[0]?.delta?.content;
           if (content) {
             totalContent += content;
@@ -572,6 +584,13 @@ ${retrievedContext}${repoMetadataBlock}`;
     }
 
     res.end();
+
+    // Observability — runs AFTER res.end() so it can never break or delay the
+    // user's response. recordChatUsage swallows all errors internally, so a
+    // Redis hiccup is non-fatal by construction (unlike the fail-closed rate
+    // limiter above). We await it so the writes finish before the lambda
+    // freezes, but nothing it does can throw into the response path.
+    await recordChatUsage(actualModel, usage);
   } catch (err) {
     // Client disconnected mid-stream — expected, not an error worth logging or
     // writing (the socket is already gone).
@@ -585,6 +604,54 @@ ${retrievedContext}${repoMetadataBlock}`;
       res.write("\n\n[Error: " + (err.message || "Internal error") + "]");
       res.end();
     } catch {}
+  }
+}
+
+// Lightweight, fully non-fatal observability for a completed chat request.
+// Emits one structured log line and bumps two Redis counters (serving-mix +
+// token totals) so production model drift and token spend are visible. NEVER
+// throws: every failure is swallowed here so it can't affect the response,
+// which has already been flushed via res.end() before this runs.
+async function recordChatUsage(actualModel, usage) {
+  try {
+    if (!actualModel) return; // Nothing to attribute the request to.
+
+    const promptTokens = usage?.prompt_tokens ?? null;
+    const completionTokens = usage?.completion_tokens ?? null;
+    const cost = usage?.cost; // OpenRouter-provided; may be undefined.
+
+    // One structured log line. No message content, no PII — Vercel captures
+    // function logs. Cost is included only when OpenRouter provided it.
+    const logPayload = {
+      model: actualModel,
+      prompt_tokens: promptTokens,
+      completion_tokens: completionTokens,
+    };
+    if (typeof cost === "number") logPayload.cost = cost;
+    console.log(`[chat-usage] ${JSON.stringify(logPayload)}`);
+
+    // Serving-mix + token counters in Redis. TTL ~45 days so the daily keys
+    // self-expire. All writes are non-fatal (helpers return null on error).
+    const today = new Date().toISOString().slice(0, 10);
+    const TTL_45_DAYS = 45 * 86400;
+
+    // chat:model:{today}:{model} — one per completed request (serving mix).
+    const modelKey = `chat:model:${today}:${actualModel}`;
+    if ((await kvIncr(modelKey)) !== null) {
+      await kvExpireNx(modelKey, TTL_45_DAYS);
+    }
+
+    // chat:tokens:{today}:{model} — total prompt+completion tokens.
+    const totalTokens = (promptTokens || 0) + (completionTokens || 0);
+    if (totalTokens > 0) {
+      const tokensKey = `chat:tokens:${today}:${actualModel}`;
+      if ((await kvIncrBy(tokensKey, totalTokens)) !== null) {
+        await kvExpireNx(tokensKey, TTL_45_DAYS);
+      }
+    }
+  } catch (err) {
+    // Observability must never affect the request. Log and move on.
+    console.error("[chat-usage] recording error:", err.message);
   }
 }
 
