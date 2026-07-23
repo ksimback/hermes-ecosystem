@@ -224,10 +224,16 @@ const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
 // Model config — supports primary + fallback via OpenRouter's native routing.
 // OpenRouter caps the models array at 3 total.
 //
-// IMPORTANT: Only use NON-REASONING models here. Reasoning models (GLM-4.7-Flash,
-// Nemotron 3 Super) either stream to `delta.reasoning` instead of `delta.content`
-// (returning empty content to our parser) or leak reasoning text into their
-// content output.
+// IMPORTANT: Our SSE parser reads ONLY `delta.content`. Reasoning models
+// (GLM-4.7-Flash, Nemotron 3 Super) either stream to `delta.reasoning` instead
+// of `delta.content` (returning empty content to our parser) or leak reasoning
+// text into their content output. deepseek-v4-flash (current primary) is
+// itself REASONING-CAPABLE and is only safe in this waterfall because the chat
+// request body explicitly sends `reasoning: { enabled: false }` (added in
+// PR #626). That param MUST NEVER be removed while a reasoning-capable model is
+// in the waterfall — doing so would either blank the answer or burn the whole
+// token budget on hidden thinking. Any purely NON-reasoning model can be added
+// without that constraint, but the param is now load-bearing regardless.
 //
 // PAID DEFAULTS (2026-07-23): the chat waterfall deliberately excludes free-tier
 // models. The free gemma-4-31b:free either failed ~91% of calls (mid-July) or,
@@ -237,15 +243,22 @@ const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
 // batch summaries (a cost tradeoff, hallucination-audited) — keep the two in sync
 // in awareness of each other.
 //
+// EVAL EVIDENCE (decision 2026-07-23): deepseek-v4-flash promoted to primary
+// over gemini-3-flash-preview. Through the identical production RAG pipeline,
+// deepseek scored 8.96 vs gemini's 9.14 (a statistical tie within judge noise)
+// at ~6x lower cost ($0.71 vs $4.21 per 1k questions). gemini stays as the
+// reliable fallback; the max-3 waterfall is preserved.
+//
 // PIN NOTE (2026-07-23): OpenRouter exposes no separately-routable dated variant
-// of gemini-3-flash-preview (the dated form appears only as canonical_slug
-// metadata), so we use the unpinned alias. Unpinned preview aliases inherit
-// provider updates silently — mid-July an identical config scored 8.16 → 9.14
+// of deepseek-v4-flash or gemini-3-flash-preview (the dated forms —
+// deepseek-v4-flash-20260423, etc. — appear only as canonical_slug metadata),
+// so we use the unpinned aliases. Unpinned preview aliases inherit provider
+// updates silently — mid-July an identical gemini config scored 8.16 → 9.14
 // after an unannounced provider revision. Re-pin here if a dated slug is listed.
-const PRIMARY_MODEL = process.env.OPENROUTER_MODEL || "google/gemini-3-flash-preview";
+const PRIMARY_MODEL = process.env.OPENROUTER_MODEL || "deepseek/deepseek-v4-flash";
 const FALLBACK_MODELS = (process.env.OPENROUTER_FALLBACK_MODELS ||
-  "google/gemini-3.1-flash-lite-preview," +
-  "mistralai/mistral-small-2603"
+  "google/gemini-3-flash-preview," +
+  "google/gemini-3.1-flash-lite-preview"
 ).split(",").map(s => s.trim()).filter(Boolean).slice(0, 2);
 
 const MAX_TOKENS = parseInt(process.env.CHAT_MAX_TOKENS || "1200");
