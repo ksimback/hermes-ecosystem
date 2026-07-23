@@ -248,7 +248,7 @@ const FALLBACK_MODELS = (process.env.OPENROUTER_FALLBACK_MODELS ||
   "mistralai/mistral-small-2603"
 ).split(",").map(s => s.trim()).filter(Boolean).slice(0, 2);
 
-const MAX_TOKENS = parseInt(process.env.CHAT_MAX_TOKENS || "800");
+const MAX_TOKENS = parseInt(process.env.CHAT_MAX_TOKENS || "1200");
 
 // Per-IP rate limits
 const RATE_LIMIT_HOUR = parseInt(process.env.CHAT_RATE_LIMIT || "15"); // per hour per IP
@@ -507,6 +507,14 @@ ${retrievedContext}${repoMetadataBlock}`;
         stream: true,
         max_tokens: MAX_TOKENS,
         temperature: 0.3,
+        // Force reasoning OFF. Our SSE parser reads only delta.content; a
+        // reasoning-capable model streams to delta.reasoning (empty answer to
+        // us) or burns the whole token budget on hidden thinking. `enabled:
+        // false` stops the generation entirely — unlike `exclude: true`, which
+        // only hides reasoning from the response while still billing for it.
+        // Also insures against the unpinned preview alias silently shipping a
+        // reasoning-on provider revision.
+        reasoning: { enabled: false },
       }),
     });
 
