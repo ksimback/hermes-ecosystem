@@ -26,6 +26,13 @@ import {
 } from "../lib/summary-pruning.js";
 import { writeJsonCheckpoint } from "../lib/json-checkpoint.js";
 import { mapWithConcurrency } from "../lib/bounded-concurrency.js";
+import {
+  LIST_CHUNK_SIZE,
+  chunkList,
+  mergeEntryMaps,
+  findMissingEntries,
+  buildListPrompt,
+} from "../lib/list-summary-batching.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -148,28 +155,8 @@ Output a JSON object with exactly these fields:
 Respond with ONLY the JSON object, no markdown fences, no explanation.`;
 }
 
-// ── List summary generation ──
-function buildListPrompt(list, memberRepos, summariesData) {
-  const projectLines = memberRepos
-    .sort((a, b) => (b.stars || 0) - (a.stars || 0))
-    .map((r) => {
-      const key = `${r.owner}/${r.repo}`;
-      const s = summariesData[key];
-      const highlights = s?.highlights?.join("; ") || "No highlights available";
-      return `- ${key} (${r.stars} stars): ${r.description}\n  Key highlights: ${highlights}`;
-    })
-    .join("\n");
-
-  return `You are writing a listicle section for "${list.title}" on Hermes Atlas.
-
-For each project below, write a 2-3 sentence description that explains what it does and why it belongs in this list. Differentiate each project from the others — avoid repetitive phrasing. Ground your descriptions in the highlights provided.
-
-Projects (ranked by stars):
-${projectLines}
-
-Output a JSON object mapping "owner/repo" to a string (the 2-3 sentence description).
-Respond with ONLY the JSON object, no markdown fences.`;
-}
+// buildListPrompt + batch chunk/merge helpers now live in
+// lib/list-summary-batching.js so they can be unit-tested in isolation.
 
 // ── Main ──
 async function main() {
@@ -320,12 +307,38 @@ async function main() {
 
     console.log(`  ${list.slug}: generating (${memberRepos.length} projects)...`);
     try {
-      const entries = await callOpenRouterJSON({
-        system: SYSTEM_PROMPT,
-        user: buildListPrompt(list, memberRepos, summaries),
-        apiKey: OPENROUTER_KEY,
-        maxTokens: 3200,
-      });
+      // Rank by stars across the whole list, THEN chunk, so chunk membership
+      // follows the global star order the single-call prompt used to present.
+      // A single call for a large list (e.g. top-skills at 34 repos) asks for
+      // more JSON than maxTokens 3200 can emit, truncating the response
+      // mid-string; batching keeps every call well under the cap.
+      const rankedMembers = memberRepos
+        .slice()
+        .sort((a, b) => (b.stars || 0) - (a.stars || 0));
+      const chunks = chunkList(rankedMembers, LIST_CHUNK_SIZE);
+      const chunkMaps = [];
+      for (const chunk of chunks) {
+        const chunkEntries = await callOpenRouterJSON({
+          system: SYSTEM_PROMPT,
+          user: buildListPrompt(list, chunk, summaries),
+          apiKey: OPENROUTER_KEY,
+          maxTokens: 3200,
+        });
+        chunkMaps.push(chunkEntries);
+        if (chunks.length > 1) await sleep(DELAY_MS);
+      }
+      const entries = mergeEntryMaps(chunkMaps);
+
+      // Fail loud if any member lost its description in a chunk (e.g. a chunk
+      // still truncated, or a model dropped a key). Same failure path as a
+      // single-call failure: throw -> caught below -> listsFailed++ -> the run
+      // throws at the end. The cache is not half-written.
+      const missing = findMissingEntries(entries, memberKeys);
+      if (missing.length > 0) {
+        throw new Error(
+          `Missing list descriptions after batching: ${missing.join(", ")}`,
+        );
+      }
 
       validateListEntries(entries, memberKeys);
 
