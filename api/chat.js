@@ -415,23 +415,26 @@ export default async function handler(req, res) {
 
     // 4. Build context: ALWAYS include baseline + retrieved chunks
     // This prevents vague queries from getting weak answers due to bad retrieval
+    //
+    // CORE FACTS last verified against the official docs on 2026-07-23
+    // (platform-support, installation, tools, and messaging pages).
+    // Volatile counts (built-in tools, messaging platforms, LLM providers,
+    // execution backends, memory providers) are INTENTIONALLY EXCLUDED here —
+    // the docs self-contradict on these and they drift release-to-release, so
+    // retrieval owns anything that changes. Keep only genuinely stable facts.
     const baselineContext = `## CORE FACTS (always true)
 
-Hermes Agent is an open-source autonomous AI agent developed by Nous Research, released in February 2026 under MIT license.
+Hermes Agent is an open-source autonomous AI agent developed by Nous Research, released in February 2026 under the MIT license.
 
 **What makes it unique:** Unlike stateless chatbots, Hermes has a built-in learning loop — it creates reusable skills from experience, remembers what it learns across sessions via persistent memory (MEMORY.md + USER.md + SQLite FTS5), and gets more capable the longer you use it. It's "the agent that grows with you."
 
-**Core capabilities:**
-- 47 built-in tools (terminal, files, browser, code execution, image gen, voice, etc.)
-- 16 messaging platforms (Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Feishu, iMessage, WeChat, etc.)
-- 20+ LLM providers (OpenRouter, Nous Portal, Anthropic, OpenAI, local via Ollama, etc.)
-- 6 execution backends (local, Docker, SSH, Singularity, Modal, Daytona)
-- Autonomous skill creation following agentskills.io standard
-- Persistent cross-session memory with 8 pluggable memory providers
+**Core capabilities:** dozens of built-in tools (terminal, files, browser, code execution, image generation, voice, and more); messaging across many chat platforms (Telegram, Discord, Slack, WhatsApp, Signal, and others); a wide range of LLM providers (OpenRouter, Nous Portal, Anthropic, OpenAI, local via Ollama, etc.); multiple execution backends (local, Docker, SSH, and more); autonomous skill creation following the agentskills.io standard; and persistent cross-session memory with pluggable memory providers. For exact counts, defer to the RETRIEVED CONTEXT and official docs — they own the current numbers.
 
-**Installation:** One-line install on Linux/macOS/WSL2:
-\`curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash\`
-Then run \`hermes\` to start. Only Git is required as a prerequisite — the installer handles Python, Node.js, ripgrep, and ffmpeg. Windows native not supported — use WSL2.
+**Installation:** One-line install on Linux, macOS, and WSL2:
+\`curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash\`
+Windows 10 and 11 are natively supported (Tier 1) via PowerShell:
+\`iex (irm https://hermes-agent.nousresearch.com/install.ps1)\`
+Then run \`hermes\` to start. Only Git is required as a prerequisite — the installer handles the remaining dependencies.
 
 **Links:** https://github.com/NousResearch/hermes-agent | https://hermes-agent.nousresearch.com/docs`;
 
@@ -623,7 +626,7 @@ Rewritten: How do I create a Hermes skill?
 
 History:
 User: What tools come with Hermes?
-Assistant: Hermes has 47 built-in tools including terminal, browser, files, etc.
+Assistant: Hermes ships with a broad set of built-in tools including terminal, browser, files, etc.
 Latest: what are they?
 Rewritten: What are the built-in tools in Hermes Agent?
 
@@ -635,7 +638,7 @@ Rewritten: How do I set up the Telegram integration in Hermes?
 
 History:
 User: What memory providers does Hermes support?
-Assistant: Hermes supports 8 providers including Honcho, Mem0, Supermemory, Hindsight.
+Assistant: Hermes supports several pluggable memory providers including Honcho, Mem0, Supermemory, Hindsight.
 Latest: which one is best?
 Rewritten: Which memory provider is best for Hermes Agent?
 
