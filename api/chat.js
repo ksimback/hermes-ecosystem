@@ -228,10 +228,24 @@ const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
 // Nemotron 3 Super) either stream to `delta.reasoning` instead of `delta.content`
 // (returning empty content to our parser) or leak reasoning text into their
 // content output.
-const PRIMARY_MODEL = process.env.OPENROUTER_MODEL || "google/gemma-4-31b-it:free";
+//
+// PAID DEFAULTS (2026-07-23): the chat waterfall deliberately excludes free-tier
+// models. The free gemma-4-31b:free either failed ~91% of calls (mid-July) or,
+// once recovered, served ~91% of traffic at a measured ~0.86-pt quality cost
+// (8.28 vs 9.14 on a 100-question graded eval) because it refuses answerable
+// long-tail questions. lib/openrouter.js keeps a SEPARATE free-tier waterfall for
+// batch summaries (a cost tradeoff, hallucination-audited) — keep the two in sync
+// in awareness of each other.
+//
+// PIN NOTE (2026-07-23): OpenRouter exposes no separately-routable dated variant
+// of gemini-3-flash-preview (the dated form appears only as canonical_slug
+// metadata), so we use the unpinned alias. Unpinned preview aliases inherit
+// provider updates silently — mid-July an identical config scored 8.16 → 9.14
+// after an unannounced provider revision. Re-pin here if a dated slug is listed.
+const PRIMARY_MODEL = process.env.OPENROUTER_MODEL || "google/gemini-3-flash-preview";
 const FALLBACK_MODELS = (process.env.OPENROUTER_FALLBACK_MODELS ||
-  "google/gemma-4-26b-a4b-it:free," +
-  "google/gemini-3-flash-preview"
+  "google/gemini-3.1-flash-lite-preview," +
+  "mistralai/mistral-small-2603"
 ).split(",").map(s => s.trim()).filter(Boolean).slice(0, 2);
 
 const MAX_TOKENS = parseInt(process.env.CHAT_MAX_TOKENS || "800");

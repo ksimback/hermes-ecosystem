@@ -103,8 +103,8 @@ OPENROUTER_API_KEY=sk-or-... node scripts/test-rag.js
 | `GITHUB_TOKEN` | Fine-grained PAT, public repos read-only | For 5000/hr rate limit (60/hr without) |
 | `OPENROUTER_API_KEY` | LLM API key for chat | Yes |
 | `REDIS_URL` | Redis Cloud connection string | Yes (for cache + history) |
-| `OPENROUTER_MODEL` | Override primary LLM model | No (default: `google/gemma-4-31b-it:free`) |
-| `OPENROUTER_FALLBACK_MODELS` | Comma-separated fallback chain | No |
+| `OPENROUTER_MODEL` | Override primary LLM model | No (default: `google/gemini-3-flash-preview`) |
+| `OPENROUTER_FALLBACK_MODELS` | Comma-separated fallback chain | No (default: `google/gemini-3.1-flash-lite-preview,mistralai/mistral-small-2603`) |
 
 ## Contributing
 
