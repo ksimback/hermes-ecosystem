@@ -366,7 +366,7 @@ Run Hermes in production for a team. Docker, systemd, managed cloud templates, K
 
 ### Bookmark the Atlas
 
-The handbook teaches you the fundamentals. The Atlas is where you find the specific tool you need for a specific job, ranked, filtered, and security-reviewed. **[Browse all 207+ projects →](/)**.
+The handbook teaches you the fundamentals. The Atlas is where you find the specific tool you need for a specific job, ranked, filtered, and security-reviewed. **[Browse all 206+ projects →](/)**.
 
 And if you want the broader picture of where Hermes is right now — stars, PRs, key launches, what's next — read the quarterly report: **[The State of Hermes Agent — April 2026 →](/reports/state-of-hermes-april-2026)**.
 
@@ -438,7 +438,7 @@ If something is wrong, unclear, or out of date, open an issue on [the Atlas repo
 
 **Cited stats:**
 - 221,833 GitHub stars (as of 2026-07-28) — source: `api.github.com/repos/NousResearch/hermes-agent`
-- 207+ projects in the Hermes Atlas (as of 2026-07-28)
+- 206+ projects in the Hermes Atlas (as of 2026-07-28)
 - 643 skills in the community Hub (as of 2026-04-19)
 
 **Corrections and feedback:** [open an issue](https://github.com/ksimback/hermes-ecosystem/issues/new) or message on X.
