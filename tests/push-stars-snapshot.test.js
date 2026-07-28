@@ -1,7 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "fs/promises";
-import { pushStarsSnapshot } from "../scripts/push-stars-snapshot.js";
+import {
+  formatUnavailableReport,
+  pushStarsSnapshot,
+} from "../scripts/push-stars-snapshot.js";
 
 const repos = [{ owner: "example", repo: "tool", stars: 6 }];
 
@@ -152,4 +155,95 @@ test("refresh workflow owns scheduling, authentication, and alert recovery", asy
   assert.match(workflow, /push-stars-snapshot\.js/);
   assert.match(workflow, /GitHub stars refresh failed/);
   assert.equal(vercel.crons, undefined);
+});
+
+test("partial-snapshot error carries the unavailable repos for the alert body", async () => {
+  let call = 0;
+  await assert.rejects(
+    pushStarsSnapshot({
+      githubToken: "github-token",
+      cronSecret: "cron-secret",
+      repoList: repos,
+      fetchImpl: async () => {
+        call += 1;
+        if (call === 1) {
+          return {
+            ok: true,
+            status: 200,
+            async json() {
+              return {
+                data: { repo0: null, atlas: { stargazerCount: 42 } },
+                errors: [{ message: "repository deleted", path: ["repo0"] }],
+              };
+            },
+          };
+        }
+        return {
+          ok: true,
+          status: 200,
+          async json() {
+            return {
+              source: "github-actions",
+              stale: false,
+              complete: false,
+              unavailableRepos: [{
+                owner: "ndesv21",
+                repo: "socialclaw",
+                reason: "Could not resolve to a Repository",
+              }],
+            };
+          },
+        };
+      },
+    }),
+    // Without this the workflow can only say "something failed" and a human has
+    // to open the run log to learn which entry broke the catalog.
+    (error) => {
+      assert.deepEqual(error.unavailableRepos, [{
+        owner: "ndesv21",
+        repo: "socialclaw",
+        reason: "Could not resolve to a Repository",
+      }]);
+      return true;
+    },
+  );
+});
+
+test("unavailable report names each repo, its reason, and the recovery steps", () => {
+  const report = formatUnavailableReport([
+    { owner: "ndesv21", repo: "socialclaw", reason: "Could not resolve to a Repository" },
+    { owner: "example", repo: "gone" },
+  ]);
+
+  assert.match(report, /Unavailable catalog repositories \(2\)/);
+  assert.match(report, /`ndesv21\/socialclaw` — https:\/\/github\.com\/ndesv21\/socialclaw — Could not resolve/);
+  // A missing reason must not render as "undefined" next to the repo name.
+  assert.match(report, /`example\/gone` — https:\/\/github\.com\/example\/gone\n/);
+  assert.doesNotMatch(report, /undefined/);
+  // The alert has to state the blast radius and the republish step, because
+  // merging the removal alone leaves the live snapshot degraded.
+  assert.match(report, /post-deploy smoke test/);
+  assert.match(report, /data\/summaries\.json/);
+  assert.match(report, /Refresh GitHub Stars/);
+});
+
+test("stars alert names the dead repos and does not repeat an unchanged diagnosis", async () => {
+  const workflow = await readFile(new URL("../.github/workflows/refresh-stars.yml", import.meta.url), "utf8");
+  // The alert must consume the report the script writes, or it degrades back
+  // to the generic "workflow failed" body that started this incident.
+  assert.match(workflow, /stars-unavailable\.md/);
+  assert.match(workflow, /listComments/);
+  assert.match(workflow, /not re-commenting/);
+  // Run URLs differ every run; comparing them would defeat the dedupe.
+  assert.match(workflow, /withoutRunUrl/);
+});
+
+test("dead-repo sweep runs daily while the billed summary audit stays weekly", async () => {
+  const workflow = await readFile(new URL("../.github/workflows/audit-summaries.yml", import.meta.url), "utf8");
+  assert.match(workflow, /cron: '0 8 \* \* 1'/);
+  assert.match(workflow, /cron: '0 8 \* \* \*'/);
+  // A weekly-only sweep left a dead repo breaking the 6-hourly refresh for 6+
+  // days. The daily cron must still skip the OpenRouter-billed audit steps.
+  assert.match(workflow, /if: github\.event\.schedule != '0 8 \* \* \*'/);
+  assert.match(workflow, /check-dead-repos\.js/);
 });

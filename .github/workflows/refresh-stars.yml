@@ -46,6 +46,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const fs = require('fs');
             const title = '[Workflow] GitHub stars refresh failed';
             const { data: open } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -54,16 +55,25 @@ jobs:
               labels: 'workflow-issue',
               per_page: 100
             });
-            const body = `The scheduled stars snapshot failed or GitHub reported an unavailable catalog repository.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}\n\nThe API exposes stale and complete separately, so a partial or old snapshot cannot masquerade as healthy.`;
+
+            // push-stars-snapshot.js writes this when GitHub could not resolve
+            // catalog entries. Naming them here is the difference between a
+            // 2-minute fix and a manual investigation — the generic body alone
+            // left ndesv21/socialclaw breaking runs for ~26h (PR #662).
+            let detail = '';
+            try {
+              detail = fs.readFileSync('stars-unavailable.md', 'utf8');
+            } catch {
+              detail = 'No unavailable-repo report was produced, so the snapshot ' +
+                'failed before ingestion (network, auth, or a degraded API response). ' +
+                'Check the run log.\n';
+            }
+
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = `The scheduled stars snapshot failed.\n\nRun: ${runUrl}\n\n${detail}`;
             const existing = open.find((issue) => issue.title === title);
-            if (existing) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: existing.number,
-                body
-              });
-            } else {
+
+            if (!existing) {
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -71,4 +81,30 @@ jobs:
                 body,
                 labels: ['workflow-issue']
               });
+              return;
             }
+
+            // This workflow runs every 6h, so an unfixed dead repo would post 4
+            // identical comments a day and bury the one that matters. Comment
+            // only when the diagnosis actually changed; the run link alone is
+            // not a change worth notifying for.
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: existing.number,
+              per_page: 100
+            });
+            const lastBody = comments.length ? comments[comments.length - 1].body : existing.body;
+            const withoutRunUrl = (text) => String(text || '').replace(/Run: \S+/g, '').trim();
+
+            if (withoutRunUrl(lastBody) === withoutRunUrl(body)) {
+              core.info(`Issue #${existing.number} already reports this exact failure — not re-commenting.`);
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: existing.number,
+              body
+            });

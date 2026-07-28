@@ -9,7 +9,13 @@ concurrency:
 
 on:
   schedule:
-    - cron: '0 8 * * 1'  # Every Monday at 08:00 UTC
+    # Summary auditing stays weekly (Monday) — it burns OpenRouter credits.
+    # The dead-repo sweep runs daily because it is one free GraphQL query and
+    # a weekly cadence let ndesv21/socialclaw break the 6-hourly stars refresh
+    # for 6+ days: the 07-27 09:01Z audit passed, the repo died at 18:48Z, and
+    # the next check was not due until 08-03 (PR #662).
+    - cron: '0 8 * * 1'  # Every Monday at 08:00 UTC — full audit
+    - cron: '0 8 * * *'  # Daily at 08:00 UTC — dead-repo sweep only
   workflow_dispatch: {}
 
 jobs:
@@ -32,8 +38,12 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # The daily cron exists only to sweep for dead repos. Skip the
+      # OpenRouter-billed summary audit on it; `github.event.schedule` is unset
+      # for workflow_dispatch, so manual runs still get the full audit.
       - name: Run summary audit
         id: audit
+        if: github.event.schedule != '0 8 * * *'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
@@ -50,6 +60,7 @@ jobs:
           fi
 
       - name: Commit if flagged
+        if: github.event.schedule != '0 8 * * *'
         run: |
           git add data/summaries.json
           if git diff --cached --quiet; then
