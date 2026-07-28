@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClaudioDrews/Memory OS — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
+<meta name="description" content="Memory OS is a local memory infrastructure for Hermes Agent that utilizes a seven-layer system to store and retrieve information across sessions. It integrates…">
+<link rel="canonical" href="https://hermesatlas.com/projects/ClaudioDrews/memory-os">
+<meta property="og:title" content="ClaudioDrews/Memory OS — Hermes Atlas">
+<meta property="og:description" content="Memory OS is a local memory infrastructure for Hermes Agent that utilizes a seven-layer system to store and retrieve information across sessions. It integrates…">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/ClaudioDrews/memory-os">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=Memory+OS&amp;subtitle=A+7-layer+memory+operating+system+for+Hermes+Agent+%E2%80%94+persistent+memory+with+Qdrant%2C+structured+facts%2C+fabric+recall%2C+auto-curated+wiki%2C+and+surgical+context+injection.+Runs+locally&amp;kind=project+%C2%B7+memory">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ClaudioDrews/Memory OS — Hermes Atlas">
+<meta name="twitter:description" content="Memory OS is a local memory infrastructure for Hermes Agent that utilizes a seven-layer system to store and retrieve information across sessions. It integrates…">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=Memory+OS&amp;subtitle=A+7-layer+memory+operating+system+for+Hermes+Agent+%E2%80%94+persistent+memory+with+Qdrant%2C+structured+facts%2C+fabric+recall%2C+auto-curated+wiki%2C+and+surgical+context+injection.+Runs+locally&amp;kind=project+%C2%B7+memory">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "map", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "memory &amp; context", "item": "https://hermesatlas.com/lists/best-memory-providers" },
+    { "@type": "ListItem", "position": 3, "name": "memory-os" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/ClaudioDrews/memory-os#software",
+  "name": "Memory OS",
+  "description": "Memory OS is a local memory infrastructure for Hermes Agent that utilizes a seven-layer system to store and retrieve information across sessions. It integrates SQLite, Qdrant, and Redis to provide structured fact storage, semantic search, and an auto-curated wiki pipeline while remaining compatible with various LLM providers.",
+  "url": "https://hermesatlas.com/projects/ClaudioDrews/memory-os",
+  "codeRepository": "https://github.com/ClaudioDrews/memory-os",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
+  "author": {
+    "@type": "Organization",
+    "name": "ClaudioDrews",
+    "url": "https://github.com/ClaudioDrews"
+  },
+  "dateModified": "2026-06-10T10:40:43.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 1307
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">218·repos</span>
+    <span id="meta-version">hermes·v0.19.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/" class="active">map</a>
+    <a href="/lists/">lists</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="/#newsletter">newsletter</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/lists/best-memory-providers">memory &amp; context</a><span class="sep">/</span>memory-os
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">ClaudioDrews</span><span class="slash">/</span>memory-os
+  </h1>
+  <p class="project-desc">A 7-layer memory operating system for Hermes Agent — persistent memory with Qdrant, structured facts, fabric recall, auto-curated wiki, and surgical context injection. Runs locally, any LLM provider.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 1.3K</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
+    
+    <span><span class="meta-label">updated</span>2026-06-10</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/ClaudioDrews/memory-os" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    
+  </div>
+</section>
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">Memory OS is a local memory infrastructure for Hermes Agent that utilizes a seven-layer system to store and retrieve information across sessions. It integrates SQLite, Qdrant, and Redis to provide structured fact storage, semantic search, and an auto-curated wiki pipeline while remaining compatible with various LLM providers.</p>
+    <ul class="summary-highlights">
+      <li>Seven-layer memory system including vector search and structured facts</li>
+      <li>Local infrastructure using Docker, Qdrant, Redis, and SQLite</li>
+      <li>Ground Truth hierarchy to ensure agent prioritizes injected context</li>
+    </ul>
+  </div>
+</section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h2>Memory OS — Hermes Agent Memory Operating System</h2>
+<p><img src="https://raw.githubusercontent.com/ClaudioDrews/memory-os/main/assets/banner.jpg" alt="Memory OS Banner" loading="lazy" decoding="async"></p>
+<blockquote>
+<p><strong>Your agent finally stops forgetting.</strong>  <br>Permanent memory. Local memory infrastructure. API-provider agnostic. Surgically token-efficient.</p>
+</blockquote>
+<p>Seven memory layers. Automatic, intelligent context injection. Structured facts with trust scoring. A self-curating wiki pipeline. Semantic search across <strong>every conversation you've ever had</strong>.</p>
+<p>Memory OS turns Hermes Agent into a real long-term collaborator — one that remembers your projects, your decisions, your reasoning, and brings exactly the right context back at exactly the right moment. Like talking to a colleague who was there for every session.</p>
+<p><strong>Memory infrastructure runs entirely on your machine. Works with any LLM provider — OpenRouter, OpenAI, Anthropic, Ollama, or local models. No memory subscription. No vendor lock-in.</strong></p>
+<hr>
+<h3>What's New in v0.2.0</h3>
+<p><strong>One-command install.</strong> <code>curl -sSL https://raw.githubusercontent.com/ClaudioDrews/memory-os/main/setup.sh | bash</code> sets up the entire stack — Docker services, SQLite databases, Icarus plugin, environment — in one shot. The 10-step manual guide is now a fallback for troubleshooting.</p>
+<p><strong>Community infrastructure.</strong> Issue templates (bug report + feature request), PR checklist, and contributing guide. Project is ready for external contributors — and already has them.</p>
+<p><strong>20+ fixes from systematic audit.</strong> Community-driven review across setup, configuration, performance, and resilience. Highlights: provider-agnostic LLM extraction, O(1) path lookups, FTS5-powered session search, semantic dedup at scale, and idempotent database initialization.</p>
+<p><strong>Installation verified on real hardware.</strong> Smoke tests and ingestion tests ship with the repo. The automated installer has been tested end-to-end — including on modest machines where Docker build times exposed UX gaps that are now handled gracefully.</p>
+<hr>
+<h3>The problem every serious Hermes user knows</h3>
+<p>You spend hours configuring the agent, teaching it your preferences, solving hard problems together — and in the next session it acts like it's meeting you for the first time.</p>
+<ul>
+<li>Repeating context at the start of every conversation</li>
+<li>Losing the thread of important decisions made weeks ago</li>
+<li>Structured facts — your stack, your projects, your patterns — with nowhere to live</li>
+<li>Every memory solution you've tried is either cloud-locked or too shallow to matter</li>
+</ul>
+<p>After months of hitting these walls in production, I built something that actually works.</p>
+<hr>
+<h3>What Memory OS is</h3>
+<p>Not just another plugin. A complete <strong>memory operating system</strong> — 7 layers working in concert, from flat files to a vector database, with surgical context injection, a knowledge pipeline that organizes itself, <strong>and an explicit Ground Truth hierarchy that tells the agent to actually use the injected memory</strong>.</p>
+<p>Designed and refined by someone who ran headfirst into every limitation of stock Hermes and every existing memory solution.</p>
+<p><strong>Requirements:</strong> Hermes Agent + Docker (Qdrant + Redis + ARQ Worker) + Python 3.11+.<br>Compatible with any LLM provider Hermes supports — OpenRouter, OpenAI, Anthropic, Ollama, and more.</p>
+<hr>
+<h3>Architecture: 7 memory layers</h3>
+<pre><code>┌──────────────────────────────────────────────────────────────────┐
+│  LAYER 1 · WORKSPACE                                              │
+│  MEMORY.md · USER.md · CREATIVE.md                               │
+│  → Injected into the system prompt every single turn             │
+├──────────────────────────────────────────────────────────────────┤
+│  LAYER 2 · SESSIONS                                               │
+│  state.db (SQLite + FTS5)                                         │
+│  → Full-text search across your entire conversation history       │
+├──────────────────────────────────────────────────────────────────┤
+│  LAYER 3 · STRUCTURED FACTS                                       │
+│  memory_store.db (SQLite + HRR + FTS5 + trust scoring)            │
+│  → Durable facts with entity resolution and an automatic          │
+│    feedback loop that trains trust scores over time               │
+├──────────────────────────────────────────────────────────────────┤
+│  LAYER 4 · FABRIC (CROSS-SESSION)                                 │
+│  Icarus Plugin (heavily forked)                                   │
+│  → LLM-powered session extraction + multi-source injection        │
+│  → 16 tools: fabric_recall, fabric_write, fabric_brief, etc.      │
+├──────────────────────────────────────────────────────────────────┤
+│  LAYER 5 · VECTOR DATABASE                                        │
+│  Qdrant (4096d Cosine + BM25 sparse)                              │
+│  → 4-level fallback: hybrid → dense → lexical → SQLite            │
+│  → Weekly decay scanner + semantic dedup (cosine &gt;0.92 → merge)  │
+├──────────────────────────────────────────────────────────────────┤
+│  LAYER 6 · LLM WIKI                                               │
+│  Auto-curated vault: concepts/ · entities/ · comparisons/         │
+│  → Continuously ingested into Qdrant via wiki-continuous-ingest   │
+├──────────────────────────────────────────────────────────────────┤
+│  ⚡ LAYER 7 · GROUND TRUTH HIERARCHY (identity layer)              │
+│  SOUL.md · rulebook.md                                             │
+│  → Tells the agent that injected memory is authoritative           │
+│  → Without this, layers 2-6 deliver context the agent ignores     │
+└──────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>How it flows:</strong></p>
+<p><code>pre_llm_call</code> → surgical recall from all four sources (Fabric + Qdrant + Sessions + Facts)</p>
+<p><strong>But recall is not enough.</strong> The agent must be explicitly instructed to treat this injected context as authoritative. That's what <a href="https://github.com/ClaudioDrews/memory-os/blob/main/layers/07-ground-truth.md">Layer 7</a> provides — without it, the agent rediscovers knowledge that's already in the prompt.</p>
+<p><code>post_llm_call</code> + <code>on_session_end</code> → automatic learning extraction and capture</p>
+<p>Each source is gated by relevance thresholds. Per-session deduplication prevents the same context from appearing twice. A social-closer filter skips trivial messages entirely. No padding. No firehose. The LLM gets exactly what it needs — nothing more.</p>
+<hr>
+<h3>Why Layer 7 is the most important layer</h3>
+<p>Layers 1-6 ensure memory is <strong>captured, stored, and injected</strong>. Layer 7 ensures the injected memory is <strong>used</strong>.</p>
+<p>Without the Ground Truth hierarchy:</p>
+<ul>
+<li>Qdrant points are injected but the agent calls the Qdrant API to verify them</li>
+<li>Fabric entries are injected but the agent runs <code>fabric_recall</code> to re-find them  </li>
+<li>Session history is injected but the agent runs <code>session_search</code> to re-discover it</li>
+<li>Facts are injected but the agent probes <code>fact_store</code> to confirm them</li>
+</ul>
+<p>The result: <strong>memory-zero behavior</strong> despite perfect injection. Every rediscovery burns tokens, context, and time.</p>
+<p>→ <strong><a href="https://github.com/ClaudioDrews/memory-os/blob/main/layers/07-ground-truth.md">Read Layer 7: Ground Truth Hierarchy</a></strong> — the critical fix.</p>
+<hr>
+<h3>Memory OS vs. stock Hermes</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Stock Hermes</th>
+<th>Memory OS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Workspace memory</td>
+<td>MEMORY.md + USER.md</td>
+<td>+ CREATIVE.md + intelligent injection</td>
+</tr>
+<tr>
+<td>Session memory</td>
+<td>Basic state.db</td>
+<td>+ FTS5 full-text search + session injection</td>
+</tr>
+<tr>
+<td>Structured facts</td>
+<td>Not present</td>
+<td>Fact store + trust scoring + feedback loop</td>
+</tr>
+<tr>
+<td>Cross-session recall</td>
+<td>Limited</td>
+<td>Fabric fork + multi-source injection</td>
+</tr>
+<tr>
+<td>Vector search</td>
+<td>Not present</td>
+<td>Qdrant hybrid + 4-level fallback cascade</td>
+</tr>
+<tr>
+<td>Cleanup and deduplication</td>
+<td>Not present</td>
+<td>Decay scanner + semantic dedup + archival</td>
+</tr>
+<tr>
+<td>Knowledge pipeline</td>
+<td>Not present</td>
+<td>Self-curating LLM Wiki</td>
+</tr>
+<tr>
+<td><strong>Ground Truth hierarchy</strong></td>
+<td><strong>Not present</strong></td>
+<td><strong>Injected memory ranked as authoritative; agent must use context provided</strong></td>
+</tr>
+<tr>
+<td>Token efficiency</td>
+<td>—</td>
+<td>Surgical: gated retrieval + per-session dedup + no wasted rediscovery</td>
+</tr>
+<tr>
+<td>Infrastructure</td>
+<td>—</td>
+<td>Local memory stack (Qdrant + Redis + ARQ) + any LLM provider</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>Why not mem0, Zep, Letta, or other providers?</h3>
+<p>Because almost every modern memory solution is <strong>cloud-first</strong>. If you want real, private memory infrastructure running on your own machine — with no cloud memory subscription, full provider flexibility, and no data leaving your local stack — none of them deliver what Memory OS delivers.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Memory OS</th>
+<th>mem0</th>
+<th>Zep</th>
+<th>Letta</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Local memory infrastructure</td>
+<td>✓</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>No memory subscription</td>
+<td>✓</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>Provider agnostic (OpenRouter, Ollama…)</td>
+<td>✓</td>
+<td>Partial</td>
+<td>Partial</td>
+<td>Partial</td>
+</tr>
+<tr>
+<td>Hermes-native</td>
+<td>✓</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>Structured facts + trust scores</td>
+<td>✓</td>
+<td>Partial</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>Self-curating wiki</td>
+<td>✓</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>Intelligent decay + archival</td>
+<td>✓</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+<tr>
+<td><strong>Ground Truth hierarchy</strong></td>
+<td><strong>✓</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+<td><strong>✗</strong></td>
+</tr>
+</tbody></table>
+<hr>
+<h3>Included components</h3>
+<ul>
+<li><p><strong>Icarus Plugin (heavily modified fork)</strong> — bundled in <code>icarus/</code><br>The upstream <a href="https://github.com/esaradev/icarus-plugin">esaradev/icarus-plugin</a> is the base, but this fork is not upstream-compatible. Key additions: LLM-powered session extraction (replaces <code>text[:500]</code> truncation), multi-source injection (Qdrant + sessions + facts — upstream is fabric only), CREATIVE.md isolation (fixes <code>§</code> delimiter corruption from dual-writer conflict), backtick sanitization, system injection filter, and social closer detection.</p>
+</li>
+<li><p><strong>Vault Curator v3</strong> — <a href="https://github.com/ClaudioDrews/vault-curator">ClaudioDrews/vault-curator</a><br>Frontmatter enrichment, semantic linking, and MOC index generation for the wiki layer.</p>
+</li>
+</ul>
+<hr>
+<h3>Who this is for</h3>
+<p>For people who take Hermes Agent seriously.<br>For people who want an agent that <strong>actually evolves</strong> over time — one that doesn't need the world re-explained every session.<br>For people who value clean engineering, extreme efficiency, and solutions that hold up in real local production.</p>
+<p>If you're like me — tired of amnesiac agents — Memory OS was built for you.</p>
+<hr>
+<p><strong>Want to see the agent remember for real?</strong><br>Clone it, run it, feel the difference.</p>
+<p>→ <a href="https://github.com/ClaudioDrews/memory-os/blob/main/setup.sh">Quick install</a> · <a href="https://github.com/ClaudioDrews/memory-os/blob/main/setup/install.md">Manual guide</a> · <a href="layers/">Layer deep-dives</a> · <a href="https://github.com/ClaudioDrews/memory-os/blob/main/infrastructure/architecture.md">Infrastructure docs</a> · <a href="skills/">Operational skills</a> · <a href="LICENSE">License</a></p>
+<p>MIT License · Built with obsession by someone who runs Hermes every single day.</p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in memory &amp; context</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/mem0ai/mem0">
+        <div class="stars">★ 61.9K</div>
+        <div class="name"><span class="org">mem0ai /</span> mem0</div>
+      </a>
+      <a class="related-row" href="/projects/vectorize-io/hindsight">
+        <div class="stars">★ 18.9K</div>
+        <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
+      </a>
+      <a class="related-row" href="/projects/greyhaven-ai/autocontext">
+        <div class="stars">★ 1.3K</div>
+        <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
+      </a>
+      <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
+        <div class="stars">★ 352</div>
+        <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
+      </a>
+      <a class="related-row" href="/projects/yoloshii/ClawMem">
+        <div class="stars">★ 195</div>
+        <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
+      </a>
+      <a class="related-row" href="/projects/Signet-AI/signetai">
+        <div class="stars">★ 227</div>
+        <div class="name"><span class="org">Signet-AI /</span> signetai</div>
+      </a>
+      <a class="related-row" href="/projects/plur-ai/plur">
+        <div class="stars">★ 230</div>
+        <div class="name"><span class="org">plur-ai /</span> plur</div>
+      </a>
+      <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
+        <div class="stars">★ 45</div>
+        <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
+      </a>
+    </div>
+    <p class="list-link"><a href="/lists/best-memory-providers">see all memory &amp; context →</a></p>
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
