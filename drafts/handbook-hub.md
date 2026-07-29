@@ -23,7 +23,7 @@ By [Kevin Simback](https://x.com/ksimback) · Hermes Atlas maintainer · Updated
 
 ## 1. What Hermes Agent actually is
 
-**Hermes Agent is an open-source AI agent by [Nous Research](https://nousresearch.com) that runs on your own machine or a cheap VPS, remembers what it learns across sessions, and writes its own reusable skills as it works. It talks to you through a CLI, Telegram, Discord, email, and many other messaging providers. It hit 221,903 GitHub stars (as of 2026-07-29), and it's the fastest-growing open-source agent of 2026.**
+**Hermes Agent is an open-source AI agent by [Nous Research](https://nousresearch.com) that runs on your own machine or a cheap VPS, remembers what it learns across sessions, and writes its own reusable skills as it works. It talks to you through a CLI, Telegram, Discord, email, and many other messaging providers. It hit 221,905 GitHub stars (as of 2026-07-29), and it's the fastest-growing open-source agent of 2026.**
 
 ### The 30-second version
 
@@ -366,7 +366,7 @@ Run Hermes in production for a team. Docker, systemd, managed cloud templates, K
 
 ### Bookmark the Atlas
 
-The handbook teaches you the fundamentals. The Atlas is where you find the specific tool you need for a specific job, ranked, filtered, and security-reviewed. **[Browse all 218+ projects →](/)**.
+The handbook teaches you the fundamentals. The Atlas is where you find the specific tool you need for a specific job, ranked, filtered, and security-reviewed. **[Browse all 217+ projects →](/)**.
 
 And if you want the broader picture of where Hermes is right now — stars, PRs, key launches, what's next — read the quarterly report: **[The State of Hermes Agent — April 2026 →](/reports/state-of-hermes-april-2026)**.
 
@@ -437,8 +437,8 @@ If something is wrong, unclear, or out of date, open an issue on [the Atlas repo
 **Last updated:** 2026-07-29 · Version and star figures re-stamp automatically with every site build.
 
 **Cited stats:**
-- 221,903 GitHub stars (as of 2026-07-29) — source: `api.github.com/repos/NousResearch/hermes-agent`
-- 218+ projects in the Hermes Atlas (as of 2026-07-29)
+- 221,905 GitHub stars (as of 2026-07-29) — source: `api.github.com/repos/NousResearch/hermes-agent`
+- 217+ projects in the Hermes Atlas (as of 2026-07-29)
 - 643 skills in the community Hub (as of 2026-04-19)
 
 **Corrections and feedback:** [open an issue](https://github.com/ksimback/hermes-ecosystem/issues/new) or message on X.
