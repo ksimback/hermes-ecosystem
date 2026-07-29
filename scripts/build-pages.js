@@ -214,6 +214,22 @@ if (fs.existsSync(listsPath)) {
   lists = JSON.parse(fs.readFileSync(listsPath, "utf-8"));
 }
 
+// Use-case bundles + the demand-side story corpus they cite. Both are gated by
+// scripts/validate-use-cases.js, so by the time the build reads them every
+// stack repo exists in repos.json and every evidence id resolves below.
+let useCases = [];
+const useCasesPath = path.join(ROOT, "data", "use-cases.json");
+if (fs.existsSync(useCasesPath)) {
+  useCases = JSON.parse(fs.readFileSync(useCasesPath, "utf-8"));
+}
+
+let userStories = [];
+const userStoriesPath = path.join(ROOT, "data", "user-stories.json");
+if (fs.existsSync(userStoriesPath)) {
+  const corpus = JSON.parse(fs.readFileSync(userStoriesPath, "utf-8"));
+  userStories = Array.isArray(corpus?.stories) ? corpus.stories : [];
+}
+
 let reports = [];
 const reportsPath = path.join(ROOT, "data", "reports.json");
 if (fs.existsSync(reportsPath)) {
@@ -279,6 +295,7 @@ function renderMasthead(activeNav) {
   const nav = [
     { href: "/", label: "map", id: "map" },
     { href: "/lists/", label: "lists", id: "lists" },
+    { href: "/use-cases/", label: "use cases", id: "use-cases" },
     { href: "/guide/", label: "handbook", id: "handbook" },
     { href: "/masterclass/", label: "masterclass", id: "masterclass" },
     { href: "/dev/", label: "dev", id: "dev" },
@@ -652,10 +669,17 @@ ${topProjects.map((r) => `- [${r.owner}/${r.repo}](${SITE_URL}/projects/${r.owne
 ## Curated Lists
 ${lists.map((l) => `- [${l.title}](${SITE_URL}/lists/${l.slug}): ${l.description.slice(0, 180)}`).join("\n")}
 
+## Use Cases
+Cross-category repo bundles for a specific buildable outcome ("I want to build X"), each with a rationale and links to real community posts that prove people ship it.
+- [Use cases index](${SITE_URL}/use-cases/): All ${useCases.length} use-case bundles.
+${useCases.map((uc) => `- [${uc.title}](${SITE_URL}/use-cases/${uc.slug}): ${uc.intent} — ${uc.stack.map((s) => `${s.owner}/${s.repo}`).join(", ")}`).join("\n")}
+
 ## Data
 - [Full catalog JSON](${SITE_URL}/data/repos.json): Machine-readable catalog of every tracked project.
 - [AI-generated summaries](${SITE_URL}/data/summaries.json): Prose summary + highlights for each project.
 - [Per-list summaries](${SITE_URL}/data/list-summaries.json): Curated prose for each list-page project.
+- [Use-case bundles JSON](${SITE_URL}/data/use-cases.json): Machine-readable "I want to build X" → repo stack mappings.
+- [Community story corpus](${SITE_URL}/data/user-stories.json): Mirror of Nous Research's Hermes Agent user-stories corpus (MIT), cited as evidence on use-case pages.
 - [Full context bundle](${SITE_URL}/llms-full.txt): Concatenated content of every guide, report, and summary for direct LLM ingestion.
 - [Sitemap](${SITE_URL}/sitemap.xml): All URLs with last-modified dates.
 
@@ -1165,6 +1189,357 @@ ${PAGE_FOOTER}
 </html>`;
 }
 
+// ── Use-case bundles (/use-cases/) ──
+// The catalog is organized supply-side (by category); /lists/ pages are a single
+// category filter. These pages are the demand-side view: a buildable outcome, the
+// cross-category stack it needs, and the real community stories that prove people
+// build it. Evidence is resolved from data/user-stories.json by id at build time,
+// never copied into data/use-cases.json — see scripts/validate-use-cases.js.
+
+const STORY_SOURCE_LABELS = {
+  x: "X",
+  hn: "Hacker News",
+  gist: "GitHub Gist",
+  producthunt: "Product Hunt",
+  youtube: "YouTube",
+  linkedin: "LinkedIn",
+  github: "GitHub",
+  discord: "Discord",
+  reddit: "Reddit",
+  podcast: "Podcast",
+  blog: "Blog",
+};
+
+function storySourceLabel(source) {
+  return STORY_SOURCE_LABELS[source] || source || "source";
+}
+
+function renderEvidenceTiles(useCase, storyIndex) {
+  const tiles = (useCase.evidence || [])
+    .map((id) => storyIndex.get(id))
+    .filter(Boolean)
+    .map((story) => {
+      const href = safeExternalUrl(story.url);
+      const quote = story.quote || story.headline;
+      const meta = [escapeHtml(story.author || "")].filter(Boolean).join("");
+      const headline = `<div class="uc-evidence-headline">${escapeHtml(story.headline)}</div>`;
+      const body = `${headline}
+      <p class="uc-evidence-quote">${escapeHtml(truncate(quote, 260))}</p>
+      <div class="uc-evidence-meta"><span class="uc-source-pill">${escapeHtml(storySourceLabel(story.source))}</span>${meta ? `<span class="uc-evidence-author">${meta}</span>` : ""}${story.date ? `<span class="uc-evidence-date">${escapeHtml(story.date)}</span>` : ""}</div>`;
+      // Not every corpus entry survives with a usable link; render the tile
+      // either way rather than dropping the proof.
+      return href
+        ? `<a class="uc-evidence" href="${escapeHtml(href)}" target="_blank" rel="noopener nofollow">${body}</a>`
+        : `<div class="uc-evidence">${body}</div>`;
+    });
+  return tiles;
+}
+
+function renderUseCasePage(useCase, repoIndex, storyIndex, relatedUseCases) {
+  const title = `${useCase.title} — which Hermes repos you need | Hermes Atlas`;
+  const desc = escapeHtml(truncate(useCase.intent, 160));
+  const canonicalUrl = `${SITE_URL}/use-cases/${useCase.slug}`;
+
+  const stackRows = useCase.stack
+    .map((item, i) => {
+      const repo = repoIndex.get(`${item.owner}/${item.repo}`);
+      const stars = repo ? `★ ${formatStars(repo.stars || 0)}` : "";
+      const rank = String(i + 1).padStart(2, "0");
+      return `<a class="list-row uc-stack-row" href="/projects/${item.owner}/${item.repo}">
+    <div class="list-rank">${rank}</div>
+    <div class="list-cell-body">
+      <div class="uc-stack-role">${escapeHtml(item.role)}</div>
+      <div class="list-cell-name"><span class="org">${escapeHtml(item.owner)} /</span> ${escapeHtml(item.repo)}${repo?.official ? ' <span class="repo-flag">official</span>' : ""}</div>
+      <div class="list-cell-desc">${escapeHtml(item.why)}</div>
+      ${repo ? `<div class="uc-stack-cat">${escapeHtml(repo.category)}</div>` : ""}
+    </div>
+    <div class="list-cell-stars">${stars}</div>
+  </a>`;
+    })
+    .join("\n  ");
+
+  const evidenceTiles = renderEvidenceTiles(useCase, storyIndex);
+  const evidenceHtml = evidenceTiles.length
+    ? `
+<section class="uc-section" aria-label="Evidence">
+  <div class="section-label">proven by</div>
+  <p class="uc-section-note">Real posts from the Hermes community, mirrored from Nous Research's <a href="https://hermes-agent.nousresearch.com/docs/user-stories" target="_blank" rel="noopener">user stories</a> corpus.</p>
+  <div class="uc-evidence-grid">
+    ${evidenceTiles.join("\n    ")}
+  </div>
+</section>`
+    : "";
+
+  const bulletSection = (label, items) =>
+    Array.isArray(items) && items.length
+      ? `
+<section class="uc-section" aria-label="${escapeHtml(label)}">
+  <div class="section-label">${escapeHtml(label)}</div>
+  <ul class="uc-bullets">
+    ${items.map((v) => `<li>${escapeHtml(v)}</li>`).join("\n    ")}
+  </ul>
+</section>`
+      : "";
+
+  const relatedHtml = relatedUseCases.length
+    ? `
+<section class="uc-section" aria-label="Related use cases">
+  <div class="section-label">related</div>
+  <div class="uc-related">
+    ${relatedUseCases
+      .map((r) => `<a class="uc-related-link" href="/use-cases/${escapeHtml(r.slug)}">${escapeHtml(r.title)}</a>`)
+      .join("\n    ")}
+  </div>
+</section>`
+    : "";
+
+  const howToLD = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "@id": canonicalUrl,
+    name: useCase.title,
+    description: useCase.intent,
+    url: canonicalUrl,
+    isPartOf: { "@id": "https://hermesatlas.com/#website" },
+    step: useCase.stack.map((item, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: item.role,
+      text: item.why,
+      url: `${SITE_URL}/projects/${item.owner}/${item.repo}`,
+    })),
+  };
+
+  const breadcrumbLD = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "map", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 2, name: "use cases", item: "https://hermesatlas.com/use-cases/" },
+      { "@type": "ListItem", position: 3, name: useCase.slug },
+    ],
+  };
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtml(title)}</title>
+<meta name="description" content="${desc}">
+<link rel="canonical" href="${canonicalUrl}">
+<meta property="og:title" content="${escapeHtml(useCase.title)}">
+<meta property="og:description" content="${desc}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="${canonicalUrl}">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="${escapeHtml(ogImageUrl({ title: useCase.title, subtitle: useCase.intent, kind: "use case" }))}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${escapeHtml(useCase.title)}">
+<meta name="twitter:image" content="${escapeHtml(ogImageUrl({ title: useCase.title, subtitle: useCase.intent, kind: "use case" }))}">
+${ldJson(breadcrumbLD)}
+${ldJson(howToLD)}
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+${FAVICON}
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<link rel="stylesheet" href="/assets/css/use-cases.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+${renderMasthead("use-cases")}
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span><a href="/use-cases/">use cases</a><span class="sep">/</span>${escapeHtml(useCase.slug)}
+</div>
+
+<main id="main">
+
+<section class="list-page">
+  <h1 class="list-title">${escapeHtml(useCase.title)}</h1>
+  <p class="uc-intent">“${escapeHtml(useCase.intent)}”</p>
+</section>
+
+<section class="uc-section" aria-label="The stack">
+  <div class="section-label">the stack — ${useCase.stack.length} projects</div>
+  <div class="list-table">
+    ${stackRows}
+  </div>
+</section>
+
+<section class="uc-section" aria-label="Why this stack">
+  <div class="section-label">why this stack</div>
+  <p class="uc-rationale">${escapeHtml(useCase.rationale)}</p>
+</section>
+${evidenceHtml}${bulletSection("caveats", useCase.caveats)}${bulletSection("gaps in the catalog", useCase.gaps)}${relatedHtml}
+
+<div class="back-link"><a href="/use-cases/">← all use cases</a></div>
+
+</main>
+
+${PAGE_FOOTER}
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>`;
+}
+
+function renderUseCasesIndex(useCasesList, storyIndex) {
+  const title = "Use Cases — I want to build X, which Hermes repos do I need? | Hermes Atlas";
+  const desc =
+    "Tell us what you want to build and get the specific Hermes Agent repos you need — cross-category stacks with a rationale, drawn from what the community actually ships.";
+  const canonicalUrl = `${SITE_URL}/use-cases/`;
+  const ogTitle = "Use Cases — Hermes Atlas";
+  const ogSubtitle = "“I want to build X” → the exact repos you need.";
+
+  const evidenceCount = useCasesList.reduce(
+    (n, uc) => n + uc.evidence.filter((id) => storyIndex.has(id)).length,
+    0
+  );
+
+  // data-match carries the searchable surface (title + intent + aliases) so the
+  // matcher in /assets/js/use-cases.js stays a pure DOM filter — no second copy
+  // of the catalog shipped to the client, and it degrades to a full list with
+  // JavaScript disabled.
+  const rows = useCasesList
+    .map((uc, i) => {
+      const rank = String(i + 1).padStart(2, "0");
+      const haystack = [uc.title, uc.intent, ...(uc.aliases || [])].join(" ").toLowerCase();
+      return `<a class="list-row uc-index-row" href="/use-cases/${escapeHtml(uc.slug)}" data-match="${escapeHtml(haystack)}">
+    <div class="list-rank">${rank}</div>
+    <div class="list-cell-body">
+      <div class="list-cell-name">${escapeHtml(uc.title)}</div>
+      <div class="list-cell-desc">${escapeHtml(truncate(uc.intent, 150))}</div>
+    </div>
+    <div class="list-cell-stars">${uc.stack.length} repos</div>
+  </a>`;
+    })
+    .join("\n  ");
+
+  const collectionLD = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": canonicalUrl,
+    name: "Hermes Agent use cases — which repos you need to build X",
+    description: desc,
+    url: canonicalUrl,
+    isPartOf: { "@id": "https://hermesatlas.com/#website" },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: useCasesList.length,
+      itemListElement: useCasesList.map((uc, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${SITE_URL}/use-cases/${uc.slug}`,
+        name: uc.title,
+      })),
+    },
+  };
+
+  const breadcrumbLD = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "map", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 2, name: "use cases" },
+    ],
+  };
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtml(title)}</title>
+<meta name="description" content="${escapeHtml(desc)}">
+<link rel="canonical" href="${canonicalUrl}">
+<meta property="og:title" content="${escapeHtml(ogTitle)}">
+<meta property="og:description" content="${escapeHtml(desc)}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="${canonicalUrl}">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="${escapeHtml(ogImageUrl({ title: ogTitle, subtitle: ogSubtitle, kind: "use cases" }))}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${escapeHtml(ogTitle)}">
+<meta name="twitter:image" content="${escapeHtml(ogImageUrl({ title: ogTitle, subtitle: ogSubtitle, kind: "use cases" }))}">
+${ldJson(breadcrumbLD)}
+${ldJson(collectionLD)}
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+${FAVICON}
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<link rel="stylesheet" href="/assets/css/use-cases.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+${renderMasthead("use-cases")}
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">map</a><span class="sep">/</span>use cases
+</div>
+
+<main id="main">
+
+<section class="list-page">
+  <h1 class="list-title">I want to build&hellip;</h1>
+  <p class="list-intro">The catalog is organized by what a project <em>is</em>. This page is organized by what you're trying to <em>build</em>. Each use case is a cross-category stack — the specific repos you need, in the order the decisions matter — with the real community posts that prove people ship it. ${useCasesList.length} use cases, ${evidenceCount} cited stories.</p>
+</section>
+
+<div class="uc-search-wrap" id="uc-search-wrap" hidden>
+  <label class="sr-only" for="uc-search">Describe what you want to build</label>
+  <input type="search" id="uc-search" class="catalog-search" placeholder="describe what you want to build…" autocomplete="off">
+  <p class="uc-search-empty" id="uc-search-empty" hidden>No use case matches that yet. Try fewer words, or <a href="/">ask the Atlas assistant</a> — it can search the whole catalog.</p>
+</div>
+
+<div class="list-table" id="uc-list" aria-label="Use cases">
+  <div class="list-table-head">
+    <div>#</div>
+    <div>use case</div>
+    <div class="text-right">stack</div>
+  </div>
+  ${rows}
+</div>
+
+<div class="back-link"><a href="/">← back to the map</a></div>
+
+</main>
+
+${PAGE_FOOTER}
+
+<script src="/assets/js/use-cases.js" defer></script>
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>`;
+}
+
 // ── Reports index (/reports/) ──
 function formatReportDate(iso) {
   if (!iso) return "";
@@ -1309,7 +1684,7 @@ ${PAGE_FOOTER}
 // without touching this function), and <lastmod> is the file's real last
 // change: today if this build rewrote it, otherwise its last git commit date.
 // Stamping everything "today" trains crawlers to ignore the signal entirely.
-function generateSitemap(projectPages, listPages, reportPages = []) {
+function generateSitemap(projectPages, listPages, reportPages = [], useCasePages = []) {
   const entry = (urlPath, relFile, changefreq, priority) =>
     `  <url><loc>${SITE_URL}${urlPath}</loc><changefreq>${changefreq}</changefreq><priority>${priority}</priority><lastmod>${lastmodFor(relFile)}</lastmod></url>\n`;
 
@@ -1348,6 +1723,11 @@ function generateSitemap(projectPages, listPages, reportPages = []) {
   urls += entry("/lists/", "lists/index.html", "weekly", "0.7");
   for (const list of listPages) {
     urls += entry(`/lists/${list.slug}`, `lists/${list.slug}.html`, "weekly", "0.6");
+  }
+
+  urls += entry("/use-cases/", "use-cases/index.html", "weekly", "0.8");
+  for (const uc of useCasePages) {
+    urls += entry(`/use-cases/${uc.slug}`, `use-cases/${uc.slug}.html`, "weekly", "0.7");
   }
 
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}</urlset>\n`;
@@ -1872,6 +2252,62 @@ async function main() {
   writePage(path.join(listsDir, "index.html"), renderListsIndex(lists, repos));
   console.log(`  index (${lists.length} lists)`);
 
+  // Generate use-case pages (/use-cases/)
+  if (useCases.length > 0) {
+    console.log("\nGenerating use-case pages...");
+    const useCasesDir = path.join(ROOT, "use-cases");
+    fs.mkdirSync(useCasesDir, { recursive: true });
+
+    const repoIndex = new Map(repos.map((r) => [`${r.owner}/${r.repo}`, r]));
+    const storyIndex = new Map(userStories.map((s) => [s.id, s]));
+
+    for (const useCase of useCases) {
+      // Relate by shared story category first (same demand cluster), then fall
+      // back to shared catalog categories so every page links onward.
+      const ucCategories = new Set(
+        useCase.stack
+          .map((s) => repoIndex.get(`${s.owner}/${s.repo}`)?.category)
+          .filter(Boolean)
+      );
+      const related = useCases
+        .filter((other) => other.slug !== useCase.slug)
+        .map((other) => {
+          const sharedStory = (other.storyCategories || []).filter((c) =>
+            (useCase.storyCategories || []).includes(c)
+          ).length;
+          const sharedCats = other.stack.filter((s) =>
+            ucCategories.has(repoIndex.get(`${s.owner}/${s.repo}`)?.category)
+          ).length;
+          return { other, score: sharedStory * 10 + sharedCats };
+        })
+        .sort((a, b) => b.score - a.score || a.other.slug.localeCompare(b.other.slug))
+        .slice(0, 3)
+        .map((x) => x.other);
+
+      const html = renderUseCasePage(useCase, repoIndex, storyIndex, related);
+      writePage(path.join(useCasesDir, `${useCase.slug}.html`), html);
+      const citedCount = useCase.evidence.filter((id) => storyIndex.has(id)).length;
+      console.log(`  ${useCase.slug} (${useCase.stack.length} repos, ${citedCount} stories)`);
+    }
+
+    writePage(path.join(useCasesDir, "index.html"), renderUseCasesIndex(useCases, storyIndex));
+    console.log(`  index (${useCases.length} use cases)`);
+
+    // Orphan cleanup — a slug removed from data/use-cases.json must not keep
+    // serving a stale bundle (same failure mode as PR #148 on project pages).
+    const canonicalUseCases = new Set([
+      "index.html",
+      ...useCases.map((uc) => `${uc.slug}.html`),
+    ]);
+    for (const file of fs.readdirSync(useCasesDir)) {
+      if (!file.endsWith(".html") || canonicalUseCases.has(file)) continue;
+      fs.unlinkSync(path.join(useCasesDir, file));
+      console.log(`  Removed orphan: use-cases/${file}`);
+    }
+  } else {
+    console.log("\nNo data/use-cases.json found — skipping use-case pages");
+  }
+
   // Generate reports index page
   if (reports.length > 0) {
     console.log("\nGenerating reports index...");
@@ -1883,7 +2319,7 @@ async function main() {
 
   // Generate sitemap
   console.log("\nGenerating sitemap.xml...");
-  const sitemap = generateSitemap(repos, lists, reports);
+  const sitemap = generateSitemap(repos, lists, reports, useCases);
   fs.writeFileSync(path.join(ROOT, "sitemap.xml"), sitemap, "utf-8");
   console.log(`  ${(sitemap.match(/<url>/g) || []).length} URLs (${changedPages.size} pages changed this build)`);
 

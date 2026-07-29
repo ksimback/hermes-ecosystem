@@ -9,6 +9,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), "utf-8");
 const repos = JSON.parse(read("data/repos.json"));
 const lists = JSON.parse(read("data/lists.json"));
+const useCases = JSON.parse(read("data/use-cases.json"));
 const latestRelease = JSON.parse(read("data/latest-release.json"));
 
 function walkHtml(dir, out = []) {
@@ -97,6 +98,48 @@ test("lists index is templated, canonical, and links every list", () => {
   assert.ok(html.includes("application/ld+json"), "lists index has JSON-LD");
   for (const l of lists) {
     assert.ok(html.includes(`href="/lists/${l.slug}"`), `lists index links /lists/${l.slug}`);
+  }
+});
+
+test("use-case pages are in the sitemap, canonical, and cross-linked", () => {
+  const sitemap = read("sitemap.xml");
+  const index = read("use-cases/index.html");
+  assert.ok(sitemap.includes("<loc>https://hermesatlas.com/use-cases/</loc>"), "/use-cases/ in sitemap");
+  assert.ok(index.includes('<link rel="canonical" href="https://hermesatlas.com/use-cases/">'));
+  assert.ok(index.includes('class="masthead"'), "use-cases index uses the shared masthead");
+
+  for (const uc of useCases) {
+    assert.ok(
+      sitemap.includes(`<loc>https://hermesatlas.com/use-cases/${uc.slug}</loc>`),
+      `sitemap has /use-cases/${uc.slug}`
+    );
+    assert.ok(index.includes(`href="/use-cases/${uc.slug}"`), `index links /use-cases/${uc.slug}`);
+
+    // Every recommended repo must link to its live project page, and the page
+    // must carry the evidence section that distinguishes it from a /lists/ page.
+    const page = read(`use-cases/${uc.slug}.html`);
+    assert.ok(
+      page.includes(`<link rel="canonical" href="https://hermesatlas.com/use-cases/${uc.slug}">`),
+      `${uc.slug} has a canonical URL`
+    );
+    for (const item of uc.stack) {
+      assert.ok(
+        page.includes(`href="/projects/${item.owner}/${item.repo}"`),
+        `${uc.slug} links /projects/${item.owner}/${item.repo}`
+      );
+    }
+    assert.match(page, /class="uc-evidence-grid"/, `${uc.slug} renders cited evidence`);
+  }
+});
+
+test("llms.txt advertises the use-case bundles", () => {
+  const llms = read("llms.txt");
+  assert.ok(llms.includes("## Use Cases"), "llms.txt has a Use Cases section");
+  for (const uc of useCases) {
+    assert.ok(
+      llms.includes(`https://hermesatlas.com/use-cases/${uc.slug}`),
+      `llms.txt lists /use-cases/${uc.slug}`
+    );
   }
 });
 

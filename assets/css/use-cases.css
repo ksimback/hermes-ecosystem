@@ -1,0 +1,208 @@
+/* ─── Use-case bundles (/use-cases/) ────────────────────────
+   Loaded after page.css, which supplies .list-page/.list-table/.list-row and
+   the .back-link + .section-label idioms these pages reuse. Only the pieces
+   unique to use-case bundles live here. */
+
+/* The intent, in the user's own words — the thing they'd type into search. */
+.uc-intent {
+  font-family: var(--font-display);
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--ink-dim);
+  max-width: 68ch;
+  margin-top: var(--s-4);
+  text-wrap: pretty;
+}
+
+.uc-section {
+  padding: var(--s-12) var(--s-10) var(--s-8);
+  border-top: 1px solid var(--rule-strong);
+}
+.uc-section .section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  border-left: 2px solid var(--accent);
+  padding-left: 10px;
+  margin-bottom: var(--s-6);
+}
+.uc-section-note {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-mute);
+  line-height: 1.6;
+  max-width: 72ch;
+  margin-bottom: var(--s-6);
+}
+.uc-section-note a {
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--rule-strong);
+}
+.uc-section-note a:hover { color: var(--accent); }
+
+/* ── The stack ──
+   Same grid as .list-row, plus a role kicker and the catalog category, so the
+   cross-category shape of a bundle is legible at a glance. */
+.uc-stack-role {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: var(--s-1);
+}
+.uc-stack-cat {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-mute);
+  margin-top: var(--s-2);
+}
+
+.uc-rationale {
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 1.68;
+  color: var(--ink-dim);
+  max-width: 74ch;
+  text-wrap: pretty;
+}
+
+/* ── Evidence tiles ──
+   Every tile is a real post; the whole tile is the link so the outbound target
+   is unambiguous. */
+.uc-evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--s-4);
+}
+.uc-evidence {
+  display: block;
+  padding: var(--s-5);
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  transition: border-color 0.15s, transform 0.12s ease-out;
+}
+a.uc-evidence:hover {
+  border-color: var(--accent-dim);
+  transform: translateY(-2px);
+}
+.uc-evidence-headline {
+  font-family: var(--font-display);
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+.uc-evidence-quote {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--ink-dim);
+  margin-top: var(--s-3);
+}
+.uc-evidence-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: var(--s-4);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-mute);
+}
+.uc-source-pill {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  border: 1px solid var(--rule-strong);
+  padding: 2px var(--s-2);
+}
+.uc-evidence-author { color: var(--ink-soft); }
+
+.uc-bullets {
+  list-style: none;
+  max-width: 74ch;
+}
+.uc-bullets li {
+  font-family: var(--font-display);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-dim);
+  padding-left: var(--s-5);
+  margin-bottom: var(--s-3);
+  position: relative;
+  text-wrap: pretty;
+}
+.uc-bullets li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+
+.uc-related {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+}
+.uc-related-link {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-dim);
+  border: 1px solid var(--rule-strong);
+  padding: var(--s-2) var(--s-4);
+  transition: color 0.15s, border-color 0.15s;
+}
+.uc-related-link:hover {
+  color: var(--accent);
+  border-color: var(--accent-dim);
+}
+
+/* ── Free-text matcher on the index ──
+   The wrapper is `hidden` in the markup and revealed by /assets/js/use-cases.js,
+   so a browser without JS never sees a search box that can't filter. */
+.uc-search-wrap {
+  padding: 0 var(--s-10) var(--s-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.uc-search-wrap[hidden] { display: none; }
+.uc-search-wrap .catalog-search {
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--bg-elev);
+  border: 1px solid var(--rule-strong);
+  padding: var(--s-3) var(--s-4);
+}
+.uc-search-wrap .catalog-search::placeholder { color: var(--ink-mute); }
+.uc-search-wrap .catalog-search:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.uc-search-empty {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-mute);
+  line-height: 1.6;
+}
+.uc-search-empty a {
+  color: var(--accent);
+  border-bottom: 1px solid var(--accent-dim);
+}
+.uc-index-row[hidden] { display: none; }
+
+@media (max-width: 720px) {
+  .uc-section { padding: var(--s-8) var(--s-5) var(--s-6); }
+  .uc-search-wrap { padding: 0 var(--s-5) var(--s-5); }
+  .uc-intent { font-size: 17px; }
+  .uc-evidence-grid { grid-template-columns: 1fr; }
+}

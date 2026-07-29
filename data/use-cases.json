@@ -1,0 +1,755 @@
+[
+  {
+    "slug": "always-on-personal-ops-agent",
+    "title": "An always-on personal ops agent",
+    "intent": "I want Hermes running 24/7, handling my inbox, calendar and daily errands without me prompting it",
+    "aliases": [
+      "24/7 hermes",
+      "always on agent",
+      "personal assistant",
+      "inbox automation",
+      "morning routine",
+      "raspberry pi hermes",
+      "home server agent",
+      "natural language cron"
+    ],
+    "storyCategories": ["personal-assistant", "cost-optimization"],
+    "stack": [
+      {
+        "owner": "JackTheGit",
+        "repo": "hermes-autonomous-server",
+        "role": "Always-on host",
+        "why": "Headless systemd deployment, which is what an agent that has to survive reboots and run overnight crons actually needs."
+      },
+      {
+        "owner": "mem0ai",
+        "repo": "mem0",
+        "role": "Long-term memory",
+        "why": "An official Hermes memory provider — the difference between an agent that re-learns your preferences daily and one that remembers them."
+      },
+      {
+        "owner": "adnw-vinc",
+        "repo": "hermes-nextcloud",
+        "role": "Calendar, tasks and files",
+        "why": "Gives the agent WebDAV/CalDAV hands on real calendar, task and contact data instead of a chat-only surface."
+      },
+      {
+        "owner": "nesquena",
+        "repo": "hermes-webui",
+        "role": "Reach it from anywhere",
+        "why": "A 24/7 agent is only useful if you can check on it from your phone, and this is a web UI built for exactly that rather than a desktop app you have to be at."
+      },
+      {
+        "owner": "8bit64k",
+        "repo": "cronalytics",
+        "role": "Scheduled-run visibility",
+        "why": "Attributes usage and estimated cost per scheduled run, so a silently looping cron shows up as a line item instead of a surprise bill."
+      }
+    ],
+    "rationale": "This is the single most common thing people actually do with Hermes, and it is not one tool — it is a host that never sleeps, a memory that outlives the session, at least one real-world integration to act on, and a way to look in from your phone. Start with the host and memory; those two decide whether the rest is worth wiring. Add the calendar/task integration once the agent is stable, because that is the first place a hallucinated action has real consequences. Cron analytics comes last but comes early enough to catch the runaway schedule before the invoice does.",
+    "caveats": [
+      "Scheduled runs are where cost quietly compounds — instrument before you scale up the cron count, not after.",
+      "Giving an agent write access to a live calendar or task list is the first genuinely destructive capability in this stack. Run it read-only for a week first."
+    ],
+    "gaps": [],
+    "evidence": [
+      "anthony-inbox-cron",
+      "discord-winterwarrior-pi5-247",
+      "discord-monty-13277-claude-hermes-mcp",
+      "witcheer-macmini-24-7",
+      "kanika-daily-workflows"
+    ]
+  },
+  {
+    "slug": "hermes-in-your-pocket",
+    "title": "Hermes in your pocket",
+    "intent": "I want to talk to my Hermes agent from my phone — mobile app, web UI, or a messaging bridge",
+    "aliases": [
+      "mobile access",
+      "phone access",
+      "telegram",
+      "android app",
+      "ios app",
+      "iphone",
+      "remote control hermes",
+      "chat from my phone",
+      "mobile ui"
+    ],
+    "storyCategories": ["messaging", "personal-assistant"],
+    "stack": [
+      {
+        "owner": "nesquena",
+        "repo": "hermes-webui",
+        "role": "Web + mobile front end",
+        "why": "The default answer for phone access — a browser UI with terminal parity, no app-store round trip."
+      },
+      {
+        "owner": "uzairansaruzi",
+        "repo": "hermex",
+        "role": "Native iPhone client",
+        "why": "Native SwiftUI app that pairs with a self-hosted hermes-webui, if a web view on iOS isn't good enough for you."
+      },
+      {
+        "owner": "Codename-11",
+        "repo": "hermes-relay",
+        "role": "Android client + device control",
+        "why": "Chat, terminal and device control over WSS, for the Android side of the same problem."
+      },
+      {
+        "owner": "clawvader-tech",
+        "repo": "hermes-telegram-miniapp",
+        "role": "Telegram surface",
+        "why": "A mobile-first Telegram Mini App dashboard — Telegram is by far the most common messaging bridge in the story corpus."
+      },
+      {
+        "owner": "amirghm",
+        "repo": "hermes-agent-mobile",
+        "role": "On-device install path",
+        "why": "One-command installer if you'd rather run the agent on the phone than reach a server from it."
+      }
+    ],
+    "rationale": "There are two genuinely different answers here and people conflate them. Either the agent runs on a server and your phone is a client, or the agent runs on the phone. The server-plus-client path is what almost everyone ends up on, so start with hermes-webui and only reach for a native client if the web view specifically annoys you. Pick the messaging bridge based on where you already live — Telegram dominates the corpus, but the same shape works elsewhere. The on-device install is a real option, not a toy, but it is a different set of tradeoffs around battery, background execution and model cost.",
+    "caveats": [
+      "Exposing a self-hosted agent to the internet for phone access is the most common way people accidentally publish a shell. Tunnel it (Tailscale or equivalent) rather than opening a port.",
+      "Native mobile clients pair with a specific backend — check the pairing requirement before assuming any client works with your setup."
+    ],
+    "gaps": [],
+    "evidence": [
+      "discord-fathah-mobile-remote",
+      "discord-codename11-hermes-relay-android",
+      "discord-lsof-hermes-chat-proxy",
+      "discord-kayp5780-webui-home-server",
+      "tessakriesel-railway-telegram"
+    ]
+  },
+  {
+    "slug": "codebase-aware-coding-agent",
+    "title": "A coding agent that actually knows your codebase",
+    "intent": "I want Hermes to understand my repo deeply instead of re-reading files and burning tokens every session",
+    "aliases": [
+      "coding agent",
+      "codebase memory",
+      "repo knowledge",
+      "code intelligence",
+      "understand my codebase",
+      "code search",
+      "reduce tool calls"
+    ],
+    "storyCategories": ["dev-workflow"],
+    "stack": [
+      {
+        "owner": "colbymchenry",
+        "repo": "codegraph",
+        "role": "Pre-indexed code graph",
+        "why": "A local pre-indexed knowledge graph built specifically to cut the token usage and tool-call churn of agents groping through a repo."
+      },
+      {
+        "owner": "ccf",
+        "repo": "agentcairn",
+        "role": "Cross-project memory",
+        "why": "Long-term, cross-project memory for coding agents, so what the agent learned in one repo isn't lost when you switch."
+      },
+      {
+        "owner": "IVRZ-da",
+        "repo": "agentiker-code-intel",
+        "role": "AST-aware tooling",
+        "why": "Tree-sitter, ast-grep and LSP bridge tools — structural code operations instead of regex-and-hope."
+      },
+      {
+        "owner": "obra",
+        "repo": "superpowers",
+        "role": "Development methodology",
+        "why": "The most-adopted agentic skills framework in the catalog; it supplies the how-to-work-on-code layer above raw retrieval."
+      },
+      {
+        "owner": "liaohch3",
+        "repo": "claude-tap",
+        "role": "Trace inspection",
+        "why": "A local trace viewer for the agent's API traffic — the fastest way to see why a session went sideways."
+      }
+    ],
+    "rationale": "The complaint behind this use case is almost never \"the model is dumb\" — it is \"the agent keeps rediscovering my repo from scratch.\" So the stack is ordered by how much of that waste each layer removes. Indexing the code once (codegraph) removes the most. Persisting what was learned across sessions and projects (agentcairn) removes the next chunk. AST-aware tools cut the remaining flailing on structural edits. The skills framework changes how the agent approaches the work rather than what it can see, and the trace viewer is how you find out which of the above isn't earning its keep.",
+    "caveats": [
+      "Indexing and memory layers both add a staleness problem: an index that lags your working tree produces confidently wrong answers. Check the reindex trigger before trusting it on a fast-moving branch.",
+      "These layers overlap. Adding all five at once makes it very hard to tell which one helped — introduce them one at a time."
+    ],
+    "gaps": [],
+    "evidence": [
+      "technmak-10-days",
+      "kristopher-codebase-memory",
+      "discord-hypercubed-knowledge-starter-kit",
+      "gh-jgravelle-jmunch",
+      "discord-sprmn24-diff-review-plugin"
+    ]
+  },
+  {
+    "slug": "cut-your-token-bill",
+    "title": "Cut your token bill",
+    "intent": "I want to know where my spend is going and run Hermes for a fraction of what it costs me now",
+    "aliases": [
+      "reduce cost",
+      "token spend",
+      "cheaper hermes",
+      "cost tracking",
+      "budget",
+      "save money",
+      "token usage",
+      "rate limits",
+      "run hermes cheap"
+    ],
+    "storyCategories": ["cost-optimization"],
+    "stack": [
+      {
+        "owner": "junhoyeo",
+        "repo": "tokscale",
+        "role": "Measure first",
+        "why": "CLI token-usage tracking across Hermes and the other agent CLIs — you cannot cut what you haven't measured."
+      },
+      {
+        "owner": "Javis603",
+        "repo": "token-monitor",
+        "role": "Live cost widget",
+        "why": "Real-time token, cost and rate-limit readout that reads Hermes state directly, for the during-the-session view."
+      },
+      {
+        "owner": "alias8818",
+        "repo": "hermes-tool-slimmer",
+        "role": "Shrink the fixed overhead",
+        "why": "Reduces tool-schema overhead via keyword selection — this targets the per-call fixed cost that people are consistently shocked by."
+      },
+      {
+        "owner": "nujovich",
+        "repo": "hermes-telemetry",
+        "role": "Hard budget ceiling",
+        "why": "Budget enforcement, not just observability — it stops runaway costs rather than reporting them afterwards."
+      },
+      {
+        "owner": "marshallrichards",
+        "repo": "ClawPhone",
+        "role": "Cheap always-on host",
+        "why": "Running the agent on an Android handset via Termux is a genuinely used answer to \"I don't want to pay for a server.\""
+      }
+    ],
+    "rationale": "Every cost story in the corpus follows the same arc: someone measures, discovers the bill is mostly fixed overhead rather than useful work, and then attacks that. So measure before you optimize — tokscale for the ledger, token-monitor for the live view. The single biggest lever people report is trimming what gets sent every call (tool schemas, context), which is what the slimmer targets. Add hard budget enforcement before you add more automation, because scheduled work is where spend compounds while you aren't looking. Cheaper hosting is real savings but it is the smallest term; do it last.",
+    "caveats": [
+      "Trimming tool schemas trades capability for cost — the agent can only use tools it can still see. Verify your critical workflows after slimming.",
+      "Enforcement plugins that hard-stop on budget will interrupt long-running jobs mid-flight. Decide whether you want a ceiling or an alarm."
+    ],
+    "gaps": [],
+    "evidence": [
+      "greg-isenberg-termux",
+      "gh-bichev-dashboard",
+      "discord-vgallotti-rtk-token-savings",
+      "anup-5vps",
+      "0xmega-no-mac-mini",
+      "theo-hetzner"
+    ]
+  },
+  {
+    "slug": "multi-agent-build-pipeline",
+    "title": "A multi-agent build pipeline",
+    "intent": "I want several agents planning, coding, reviewing and shipping in parallel instead of one agent doing everything serially",
+    "aliases": [
+      "multi agent",
+      "orchestration",
+      "agent swarm",
+      "kanban",
+      "parallel agents",
+      "agent fleet",
+      "plan code qa ship",
+      "mission control"
+    ],
+    "storyCategories": ["dev-workflow", "meta"],
+    "stack": [
+      {
+        "owner": "builderz-labs",
+        "repo": "mission-control",
+        "role": "Task dispatch + spend",
+        "why": "Self-hosted orchestration that dispatches tasks, runs multi-agent workflows and monitors spend in one place."
+      },
+      {
+        "owner": "agent37-platform",
+        "repo": "minions",
+        "role": "Supervise and review",
+        "why": "Create, supervise and review autonomous Hermes work from one screen — the review half is what keeps a fleet from shipping garbage."
+      },
+      {
+        "owner": "xintaofei",
+        "repo": "codeg",
+        "role": "Session aggregation",
+        "why": "Aggregates sessions across Hermes, Claude Code, Codex and OpenCode, for when the fleet isn't all one agent."
+      },
+      {
+        "owner": "tiann",
+        "repo": "execplan-skill",
+        "role": "Checkpointed execution",
+        "why": "Multi-step execution with checkpoints and recovery — the difference between a failed run you can resume and one you restart."
+      },
+      {
+        "owner": "IVRZ-da",
+        "repo": "agentiker-plan-follow",
+        "role": "Plan enforcement",
+        "why": "Review gates, parallel groups and auto-verify, so agents follow the plan rather than improvising past it."
+      }
+    ],
+    "rationale": "Fleets fail on coordination, not capability. The stories that work all have the same two things: a single screen where you can see what every agent is doing, and a gate the work has to pass before it lands. So the orchestrator and the review surface come first, together — an orchestrator without review just produces bad work faster. Checkpointing matters more than it sounds like it should, because long parallel runs fail partway and restarting from zero is what kills the economics. Plan enforcement is the last piece and the one people add after their first agent confidently does the wrong task well.",
+    "caveats": [
+      "Parallel agents multiply spend linearly and mistakes faster than that. Pair this stack with the cost-visibility one before scaling past a handful of lanes.",
+      "Several of these tools assume they own the session lifecycle. Running two orchestrators at once is a common and confusing failure."
+    ],
+    "gaps": [],
+    "evidence": [
+      "gkisokay-autobuild",
+      "tonbi-18-agent-kanban-fleet",
+      "reddit-itsdodobitch-kanban-feature",
+      "discord-purkkaviritys-goban-kanban",
+      "avichawla-masterclass-three-agents"
+    ]
+  },
+  {
+    "slug": "fully-self-hosted-private-stack",
+    "title": "A fully self-hosted, private stack",
+    "intent": "I want Hermes running entirely on my own hardware with local models and no data leaving my network",
+    "aliases": [
+      "self hosted",
+      "local models",
+      "privacy",
+      "offline",
+      "no cloud",
+      "on premise",
+      "ollama",
+      "air gapped",
+      "local first",
+      "homelab"
+    ],
+    "storyCategories": ["privacy", "cost-optimization"],
+    "stack": [
+      {
+        "owner": "xmbshwll",
+        "repo": "hermes-agent-docker",
+        "role": "Contained runtime",
+        "why": "A simple Docker sandbox image — the least-effort way to stop an autonomous agent from having your whole machine."
+      },
+      {
+        "owner": "InfiniteWhispers",
+        "repo": "HermesAgent-MultiModel",
+        "role": "Local model stack",
+        "why": "A fully-local multi-model framework running on consumer GPUs with Ollama, so inference stays on your hardware too."
+      },
+      {
+        "owner": "yoloshii",
+        "repo": "ClawMem",
+        "role": "Local-first memory",
+        "why": "On-device memory and context with no cloud dependency — memory is the layer that sees everything, so a cloud-backed provider here would quietly undo the rest of the stack."
+      },
+      {
+        "owner": "runta-dev",
+        "repo": "clawshell",
+        "role": "Runtime safety layer",
+        "why": "A security harness for PII and credentials, which matters more, not less, once everything is inside your own perimeter."
+      },
+      {
+        "owner": "pyrate-llama",
+        "repo": "hermes-ui",
+        "role": "Self-hosted interface",
+        "why": "A self-hosted web interface so the private stack is still pleasant to use without reaching for a hosted dashboard."
+      }
+    ],
+    "rationale": "\"Self-hosted\" quietly breaks at whichever layer you forget. People containerize the agent, run a local model, and then wire in a cloud memory provider — and the private stack has a cloud dependency in the one place that sees everything. So this bundle is deliberately ordered by where the leaks actually happen: runtime, then inference, then memory. The safety layer is not optional just because the network is yours; the credential and PII exposure is from the agent to itself. Everything here has a heavier local-hardware cost than the cloud equivalent, and that tradeoff is the whole point.",
+    "caveats": [
+      "Local models are meaningfully weaker at long tool-use chains. Expect to simplify workflows that worked on a frontier model.",
+      "Sandboxing and remote access pull in opposite directions — decide your access story (tunnel, not open port) before you harden the runtime."
+    ],
+    "gaps": [
+      "The catalog has no strong self-hosted, local-first web-search option yet — community stories reach for a self-run SearXNG container, which isn't in Atlas as a Hermes-specific project."
+    ],
+    "evidence": [
+      "discord-flensbo-searxng-setup",
+      "gh-paultisl-tailscale",
+      "gh-arkka-legal",
+      "emmanuel-run-yourself",
+      "hn-flere-imsaho-im-using-hermes",
+      "discord-ones07389-4-agents-on-laptop"
+    ]
+  },
+  {
+    "slug": "obsidian-second-brain",
+    "title": "Your notes as the agent's second brain",
+    "intent": "I want Hermes to read and write my Obsidian vault as its long-term memory, not a black-box database",
+    "aliases": [
+      "obsidian",
+      "second brain",
+      "notes",
+      "markdown memory",
+      "knowledge base",
+      "journaling",
+      "vault",
+      "memory i can read",
+      "memory",
+      "forgets",
+      "forgetting",
+      "remembers",
+      "persistence across sessions",
+      "context compaction",
+      "long term recall"
+    ],
+    "storyCategories": ["personal-assistant", "research"],
+    "stack": [
+      {
+        "owner": "ccf",
+        "repo": "agentcairn",
+        "role": "Vault as source of truth",
+        "why": "Explicitly built around using your own Obsidian vault as the memory substrate rather than an opaque vector store."
+      },
+      {
+        "owner": "stephenschoettler",
+        "repo": "hermes-lcm",
+        "role": "Lossless context",
+        "why": "A DAG-based context engine that never drops a message — the failure people hit when compaction silently eats their constraints."
+      },
+      {
+        "owner": "Sahil-SS9",
+        "repo": "hermes-memlock",
+        "role": "Survive compaction",
+        "why": "Re-asserts standing instructions after context compaction, detecting drift and rehydrating before the model answers."
+      },
+      {
+        "owner": "outsourc-e",
+        "repo": "hermes-workspace",
+        "role": "Browse what it remembers",
+        "why": "A native workspace with an actual memory browser, so 'what does it think it knows' is a question you can answer."
+      }
+    ],
+    "rationale": "The recurring complaint in these stories is not that the agent forgets — it is that you cannot see or edit what it remembers. Plain-markdown memory fixes that at the root: the vault is human-readable, diffable and yours. But file-backed memory alone doesn't survive long sessions, which is why the context engine and the compaction guard are in the bundle rather than optional extras; losing standing instructions mid-session is the specific failure people describe. The memory browser closes the loop by making the agent's state inspectable instead of inferred from its behavior.",
+    "caveats": [
+      "Markdown memory scales worse than a vector store on retrieval quality once the vault gets large. This is a legibility-over-recall trade, made deliberately.",
+      "Giving an agent write access to a vault you care about warrants a git-backed vault and a review habit."
+    ],
+    "gaps": [],
+    "evidence": [
+      "reddit-jonathan-rivera-obsidian-as-the",
+      "discord-jezza2463-daily-journal-kimi",
+      "discord-kouff-obsidian-calendar-signal",
+      "hn-rnxrx-obsidian",
+      "alexfinn-memory-wiki"
+    ]
+  },
+  {
+    "slug": "content-engine-in-your-voice",
+    "title": "A content engine that writes in your voice",
+    "intent": "I want Hermes researching, drafting and posting content that actually sounds like me",
+    "aliases": [
+      "content creation",
+      "write in my voice",
+      "social media",
+      "twitter",
+      "x posts",
+      "linkedin",
+      "youtube",
+      "newsletter",
+      "ghostwriter",
+      "publishing"
+    ],
+    "storyCategories": ["content-creation", "marketing"],
+    "stack": [
+      {
+        "owner": "supermemoryai",
+        "repo": "supermemory",
+        "role": "Voice and style memory",
+        "why": "An official memory provider — your past writing is the training data for your voice, and it has to persist across sessions."
+      },
+      {
+        "owner": "ZeroPointRepo",
+        "repo": "youtube-skills",
+        "role": "Source material",
+        "why": "Transcript, search, channel and playlist skills — the most common research input in the content stories."
+      },
+      {
+        "owner": "indranilbanerjee",
+        "repo": "contentforge",
+        "role": "Production pipeline",
+        "why": "A content production plugin with explicit quality gates and AI-pattern humanization, rather than a single drafting prompt."
+      },
+      {
+        "owner": "conorbronsdon",
+        "repo": "avoid-ai-writing",
+        "role": "De-slop pass",
+        "why": "Audits and rewrites to strip detectable AI writing patterns — the step that decides whether the output is publishable."
+      },
+      {
+        "owner": "Xquik-dev",
+        "repo": "hermes-tweet",
+        "role": "Publishing to X",
+        "why": "Native X automation, for the last mile that otherwise stays manual."
+      }
+    ],
+    "rationale": "The stories that produce content people actually ship all separate three things that beginners collapse into one prompt: what to write about, how you sound, and whether it reads as machine-written. Memory carries your voice, because voice is a corpus problem and not a prompt problem. The research skills feed the topic pipeline. The production plugin and the de-slop pass are the quality gate, and they are the reason the output is publishable rather than merely generated. Automated publishing goes last, deliberately — it is the step you should trust least early on.",
+    "caveats": [
+      "Automated posting is publishing. Keep a human approval step until the voice is genuinely right; a bad post is not retractable.",
+      "Platform automation depends on third-party API access that changes without warning — expect maintenance on the publishing layer specifically."
+    ],
+    "gaps": [],
+    "evidence": [
+      "betterstack-tweets",
+      "yashica-linkedin",
+      "saboo-monica",
+      "metics-weekly-cron",
+      "cyrilxbt-tiktok-factory"
+    ]
+  },
+  {
+    "slug": "daily-research-briefing",
+    "title": "A daily research briefing",
+    "intent": "I want Hermes to scan sources overnight and hand me a filtered briefing every morning",
+    "aliases": [
+      "research agent",
+      "daily briefing",
+      "news digest",
+      "morning briefing",
+      "web search",
+      "source scanning",
+      "perplexity replacement",
+      "market scan"
+    ],
+    "storyCategories": ["research", "content-creation"],
+    "stack": [
+      {
+        "owner": "robbyczgw-cla",
+        "repo": "hermes-web-search-plus",
+        "role": "Multi-provider search",
+        "why": "Auto-routes across Serper, Tavily, Exa, Querit and Perplexity, so one provider being down or rate-limited doesn't kill the run."
+      },
+      {
+        "owner": "Shelpuk-AI-Technology-Consulting",
+        "repo": "kindly-web-search-mcp-server",
+        "role": "Retrieval fallback",
+        "why": "A second search-and-retrieval path over MCP — briefings that run unattended need redundancy more than they need peak quality."
+      },
+      {
+        "owner": "ZeroPointRepo",
+        "repo": "youtube-skills",
+        "role": "Video sources",
+        "why": "Transcripts and channel search pull in a source class that pure web search misses entirely."
+      },
+      {
+        "owner": "vectorize-io",
+        "repo": "hindsight",
+        "role": "Remember what it already told you",
+        "why": "Retain/recall/reflect workflows so day 30's briefing doesn't repeat day 1's findings."
+      },
+      {
+        "owner": "JackTheGit",
+        "repo": "hermes-ai-infrastructure-monitoring-toolkit",
+        "role": "Scheduled ingestion",
+        "why": "Cron-based research ingestion with cost forecasting on a headless systemd host — the unattended-execution half of the problem."
+      }
+    ],
+    "rationale": "A briefing agent is a reliability problem dressed as a research problem. It runs while you sleep, so anything that can fail silently will, and you find out by receiving nothing. That is why there are two search paths here rather than the single best one, and why scheduled ingestion is treated as its own component instead of a cron line. Memory is what separates a briefing from an RSS reader: without it the agent has no notion of what it already told you, and the signal-to-noise collapses in the second week.",
+    "caveats": [
+      "Search-provider APIs are the usual failure point and most are paid. Check quota behavior before pointing a daily cron at them.",
+      "Deduplicating against prior briefings is the hard part and no tool here does it for free — expect to tune it."
+    ],
+    "gaps": [],
+    "evidence": [
+      "gkisokay-research-brief",
+      "discord-dre108-gigaxity-research",
+      "discord-awais-h-hermes-reads-internet",
+      "codehead-daily-operator",
+      "captain-awesome-news-discord-cron"
+    ]
+  },
+  {
+    "slug": "run-hermes-for-your-team",
+    "title": "Run Hermes for a team or clients",
+    "intent": "I want to operate Hermes for a team or for paying clients, with isolation, oversight and cost attribution",
+    "aliases": [
+      "team",
+      "clients",
+      "agency",
+      "business ops",
+      "multi tenant",
+      "kubernetes",
+      "control room",
+      "cost attribution",
+      "operate for clients"
+    ],
+    "storyCategories": ["business-ops", "enterprise"],
+    "stack": [
+      {
+        "owner": "CryptoDmitry",
+        "repo": "hermes-agent-control-room",
+        "role": "Control-room template",
+        "why": "A template for going from one VPS agent to specialist teams and orchestrated workflows — the shape this use case converges on."
+      },
+      {
+        "owner": "ultraworkers",
+        "repo": "hermes-agent-helm-chart",
+        "role": "Cluster deployment",
+        "why": "A community Helm chart with state-safety guardrails, for when 'one VPS' stops being the answer."
+      },
+      {
+        "owner": "sharbelxyz",
+        "repo": "hermes-agent-mission-control",
+        "role": "Oversight dashboard",
+        "why": "A self-hostable mission-control dashboard backed by your own Postgres, so client work is reviewable rather than trusted."
+      },
+      {
+        "owner": "plur-ai",
+        "repo": "plur",
+        "role": "Shared memory across agents",
+        "why": "A shared memory layer with an open format, so a team of agents has common ground instead of N private silos."
+      },
+      {
+        "owner": "nujovich",
+        "repo": "hermes-telemetry",
+        "role": "Budget per lane",
+        "why": "Budget enforcement and observability — necessary the moment spend has to be attributed to a client rather than to you."
+      }
+    ],
+    "rationale": "The business-ops stories converge on one pattern: isolate per client, watch everything, and be able to say what each engagement cost. Isolation comes first because it is the thing you cannot retrofit — the people running this successfully describe one profile or one instance per client from day one. Orchestration and a real dashboard follow, because selling agent work means being able to show the work. Shared memory is the subtle one: it is what lets a team of agents behave like a team, and it is also the boundary you must not accidentally cross between clients.",
+    "caveats": [
+      "Client isolation is a hard boundary. Shared memory across agents is valuable within one engagement and a serious problem across two — scope it explicitly.",
+      "Running someone else's business on an autonomous agent changes the risk profile entirely. Pair this with the guardrails bundle before it touches anything billable."
+    ],
+    "gaps": [
+      "Atlas has no dedicated multi-tenant billing or per-client cost-attribution project yet — today this is assembled from general telemetry plus per-client isolation."
+    ],
+    "evidence": [
+      "discord-megabyte0x-hermes-for-team",
+      "ibuzovskyi-3-money-setups",
+      "sharbel-junior-operator",
+      "nathanwilbanks-297-streak",
+      "discord-ogiberstein-project-os"
+    ]
+  },
+  {
+    "slug": "guardrails-before-it-touches-prod",
+    "title": "Guardrails before it touches anything real",
+    "intent": "I want approval gates and sandboxing so my agent can't do something destructive on its own",
+    "aliases": [
+      "guardrails",
+      "safety",
+      "approval gate",
+      "sandbox",
+      "security",
+      "permissions",
+      "human in the loop",
+      "converse mode",
+      "stop it breaking things",
+      "destructive actions",
+      "deleting files",
+      "dangerous commands",
+      "prevent mistakes",
+      "review before it runs"
+    ],
+    "storyCategories": ["privacy", "enterprise", "dev-workflow"],
+    "stack": [
+      {
+        "owner": "TheAiSingularity",
+        "repo": "hermesclaw",
+        "role": "Hardware-level sandbox",
+        "why": "Sandboxing with hardware-level enforcement — the outermost boundary, and the one that holds when the others are misconfigured."
+      },
+      {
+        "owner": "runta-dev",
+        "repo": "clawshell",
+        "role": "PII and credential harness",
+        "why": "A runtime security layer for sensitive credentials and PII, catching the exfiltration class rather than the destruction class."
+      },
+      {
+        "owner": "nativ3ai",
+        "repo": "hermes-agent-camel",
+        "role": "Trust boundaries",
+        "why": "A fork with integrated CaMeL trust boundaries for safer autonomous execution, if you want this at the agent level rather than bolted on."
+      },
+      {
+        "owner": "ucsandman",
+        "repo": "DashClaw",
+        "role": "Policy and risk assessment",
+        "why": "Guard policies and risk assessment — the layer that decides which actions need a human before they run."
+      },
+      {
+        "owner": "Sahil-SS9",
+        "repo": "hermaguard",
+        "role": "Adversarial review",
+        "why": "Parallel subagents attacking the change from different angles before it lands, for the code path specifically."
+      }
+    ],
+    "rationale": "Almost every guardrail story starts the same way — the agent did something confidently wrong, fast, and the person went looking for a brake. Layer these from outside in: a sandbox that limits the blast radius regardless of what the agent believes, a runtime harness for the credentials it can see, then policy that decides which actions require a human. The trust-boundary fork is the alternative to bolting the middle layers on, and it is a real fork, so treat it as an either/or rather than an addition. Adversarial review is narrower — it protects the code you ship, not the system the agent runs on.",
+    "caveats": [
+      "A fork with built-in trust boundaries and a bolted-on harness solve overlapping problems. Pick one architecture rather than stacking both.",
+      "Guardrails only bind the paths they know about. An agent with shell access routes around policy that lives above the shell."
+    ],
+    "gaps": [],
+    "evidence": [
+      "discord-ibrandis-converse-before-act",
+      "gh-iacker-discord-gate",
+      "michael-security-eval",
+      "discord-harrison07525-security-rule-skill",
+      "hn-flere-imsaho-im-using-hermes"
+    ]
+  },
+  {
+    "slug": "see-what-your-agent-is-doing",
+    "title": "See what your agent is actually doing",
+    "intent": "I want visibility into every tool call, session and decision instead of guessing from the output",
+    "aliases": [
+      "observability",
+      "monitoring",
+      "tracing",
+      "dashboard",
+      "logs",
+      "audit",
+      "otel",
+      "debug my agent",
+      "session history",
+      "what is it doing"
+    ],
+    "storyCategories": ["meta", "dev-workflow"],
+    "stack": [
+      {
+        "owner": "liaohch3",
+        "repo": "claude-tap",
+        "role": "Trace viewer",
+        "why": "A local viewer for the agent's actual API traffic — ground truth when the output and your mental model disagree."
+      },
+      {
+        "owner": "stainlu",
+        "repo": "hermes-labyrinth",
+        "role": "Read-only run journeys",
+        "why": "Read-only observability with journeys and reports, so instrumenting the agent can't itself change its behavior."
+      },
+      {
+        "owner": "briancaffey",
+        "repo": "hermes-otel",
+        "role": "Standard telemetry export",
+        "why": "OpenTelemetry export, so agent traces land in whatever you already use rather than a bespoke dashboard."
+      },
+      {
+        "owner": "jazzyalex",
+        "repo": "agent-sessions",
+        "role": "Session history",
+        "why": "A native session browser and analytics view — the after-the-fact question of what happened last Tuesday."
+      },
+      {
+        "owner": "observeco",
+        "repo": "observeco",
+        "role": "Self-healing monitors",
+        "why": "Discovery, monitoring and auto-recovery for multi-agent systems, for setups where noticing late is itself the failure."
+      }
+    ],
+    "rationale": "There are three distinct questions here and picking the wrong tool for yours wastes a weekend: what is it doing right now, what did it do last week, and why did this specific call go wrong. The trace viewer answers the third and is the one people reach for during an incident. Read-only journeys and session history answer the first two, and the read-only property matters more than it sounds — observability that mutates the agent's context is a debugging trap. OTel export is the escape hatch if you already have infrastructure; auto-recovery is only worth it once you have enough agents that watching them manually stopped working.",
+    "caveats": [
+      "Full tool-call logging captures whatever the agent saw, secrets included. Treat the trace store as sensitive.",
+      "Several of these overlap heavily. Start with the one matching your actual question rather than installing the set."
+    ],
+    "gaps": [],
+    "evidence": [
+      "discord-bert-71849-audit-grafana",
+      "discord-synextco-hermes-hud",
+      "gh-tcollins-audit",
+      "discord-roach-jeong-h-ops-dashboard",
+      "gkisokay-codex-watcher"
+    ]
+  }
+]

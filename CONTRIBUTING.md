@@ -101,6 +101,37 @@ If you'd rather open a PR instead of an issue:
 | Guides & Docs | Curated lists, tutorials, optimization guides |
 | Forks & Derivatives | Meaningful forks with added functionality |
 
+### Adding a use case
+
+`/use-cases/` pages are curated bundles: a buildable outcome, the cross-category
+stack it needs, and the real community stories that prove people actually build it.
+They live in [`data/use-cases.json`](./data/use-cases.json) and are gated by
+`node scripts/validate-use-cases.js`.
+
+How the existing set was derived, and how to derive a new one:
+
+1. **Start from demand, not from the catalog.** `data/user-stories.json` mirrors
+   Nous's community story corpus (262 stories, 15 categories, MIT — refresh it with
+   `node scripts/sync-user-stories.js`). Group the headlines by category and look
+   for an outcome that recurs across several independent stories. If you can only
+   find one story, it isn't a use case yet.
+2. **Write the intent in the user's words** — "I want Hermes running 24/7 handling
+   my inbox", not "Personal Assistant". The `aliases` array is what the on-page
+   free-text matcher searches, so put the phrasings people actually type there.
+   Aliases must be unique across all use cases, or the matcher is ambiguous.
+3. **Assemble a stack that spans at least three catalog categories.** This is
+   enforced. A single-category bundle is a `/lists/` page, and we already have those.
+   Every repo must already exist in `data/repos.json` — the recommender never
+   reaches outside the catalog.
+4. **Order the stack by decision weight**, not by star count. The `rationale`
+   should explain why *this* combination and *this* order; if it reads like it
+   could describe any five repos, it isn't earned yet.
+5. **Cite at least three stories by `id`.** Never paste a quote into
+   `use-cases.json` — quotes are resolved from the corpus at build time, so an
+   upstream removal fails the validator instead of leaving a stale quotation.
+6. **Use `gaps` honestly.** "Nothing strong in the catalog yet for X" is useful
+   signal and is preferred over padding a stack with a weak pick.
+
 ## Testing
 
 We run a production smoke test after every deploy. See [`TESTING.md`](./TESTING.md)

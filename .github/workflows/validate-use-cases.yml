@@ -1,0 +1,48 @@
+name: Validate use-cases.json
+
+# Gates the curated demand-side join. The two failure modes worth blocking a
+# merge for: a bundle recommending a repo that isn't in the Atlas catalog, and
+# an evidence citation pointing at a story id that no longer exists upstream.
+# Also runs when data/repos.json changes, because dropping a repo from the
+# catalog silently orphans every use-case stack that cited it.
+
+on:
+  pull_request:
+    paths:
+      - 'data/use-cases.json'
+      - 'data/user-stories.json'
+      - 'data/repos.json'
+      - 'scripts/validate-use-cases.js'
+      - 'scripts/sync-user-stories.js'
+      - 'tests/use-cases.test.js'
+      - '.github/workflows/validate-use-cases.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/use-cases.json'
+      - 'data/user-stories.json'
+      - 'data/repos.json'
+      - 'scripts/validate-use-cases.js'
+      - 'scripts/sync-user-stories.js'
+      - 'tests/use-cases.test.js'
+      - '.github/workflows/validate-use-cases.yml'
+  workflow_dispatch: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run use-case tests
+        run: node --test tests/use-cases.test.js
+
+      - name: Validate data/use-cases.json
+        run: node scripts/validate-use-cases.js
