@@ -203,6 +203,12 @@ export function createStarsHandler({
         return res.status(200).json(cached);
       }
 
+      // Why the fallback below is degraded. A live-refresh failure used to
+      // collapse into the generic "Live refresh unavailable", so an expired
+      // GITHUB_TOKEN was indistinguishable from a transient GitHub outage —
+      // the response looked identical either way and nothing named the cause.
+      let refreshError = null;
+
       if (env.GITHUB_TOKEN) {
         try {
           const snapshot = await fetchGitHubStars({
@@ -213,21 +219,33 @@ export function createStarsHandler({
           const response = await persistSnapshot(repoList, snapshot, "github-api");
           return res.status(200).json(response);
         } catch (error) {
-          console.error("Live star refresh failed:", error.message);
+          refreshError = error.message;
+          console.error("Live star refresh failed:", refreshError);
           if (refresh) {
             res.setHeader("Cache-Control", "no-store");
-            return res.status(503).json({ error: "Star refresh failed", stale: true });
+            return res
+              .status(503)
+              .json({ error: "Star refresh failed", reason: refreshError, stale: true });
           }
         }
       } else if (refresh) {
         res.setHeader("Cache-Control", "no-store");
         return res.status(503).json({ error: "GitHub token unavailable", stale: true });
+      } else {
+        refreshError = "GITHUB_TOKEN is not configured";
       }
 
       const lastGood = await kvGetImpl(STAR_KEYS.lastGood);
       if (storedResponseIsValid(lastGood, repoList)) {
         res.setHeader("Cache-Control", "no-store");
-        return res.status(200).json(markFallback(lastGood, "Live refresh unavailable"));
+        return res
+          .status(200)
+          .json(
+            markFallback(
+              lastGood,
+              refreshError ? `Live refresh failed: ${refreshError}` : "Live refresh unavailable",
+            ),
+          );
       }
 
       res.setHeader("Cache-Control", "no-store");

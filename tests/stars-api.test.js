@@ -167,6 +167,65 @@ test("authenticated GET refresh reports GitHub failure as HTTP 503", async () =>
   assert.equal(res.body.stale, true);
 });
 
+// A live-refresh failure used to collapse into the generic "Live refresh
+// unavailable", making an expired GITHUB_TOKEN indistinguishable from a
+// transient GitHub outage. The degraded response must name the cause.
+test("last-good fallback names the live-refresh failure that caused it", async () => {
+  const lastGood = buildStarsResponse({
+    starData,
+    hermesRelease: release,
+    atlasStars: 42,
+    fetchedAt: "2026-07-14T00:00:00Z",
+    source: "github-actions",
+    stale: false,
+  });
+  const res = responseRecorder();
+  await handler({
+    env: { GITHUB_TOKEN: "expired" },
+    kvGetImpl: async (key) => (key === STAR_KEYS.lastGood ? lastGood : null),
+    fetchImpl: async () => {
+      throw new Error("Bad credentials");
+    },
+  })(request(), res);
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.body.source, "last-good");
+  assert.equal(res.body.stale, true);
+  assert.match(res.body.degradedReason, /Live refresh failed: Bad credentials/);
+});
+
+test("last-good fallback distinguishes an absent token from a failing one", async () => {
+  const lastGood = buildStarsResponse({
+    starData,
+    hermesRelease: release,
+    atlasStars: 42,
+    fetchedAt: "2026-07-14T00:00:00Z",
+    source: "github-actions",
+    stale: false,
+  });
+  const res = responseRecorder();
+  await handler({
+    env: {},
+    kvGetImpl: async (key) => (key === STAR_KEYS.lastGood ? lastGood : null),
+  })(request(), res);
+  assert.match(res.body.degradedReason, /GITHUB_TOKEN is not configured/);
+});
+
+test("authenticated GET refresh surfaces the failure reason in the 503 body", async () => {
+  const res = responseRecorder();
+  await handler({
+    env: { CRON_SECRET: "secret", GITHUB_TOKEN: "expired" },
+    fetchImpl: async () => {
+      throw new Error("Bad credentials");
+    },
+  })(request({
+    query: { cron: "1" },
+    headers: { authorization: "Bearer secret" },
+  }), res);
+  assert.equal(res.statusCode, 503);
+  assert.equal(res.body.stale, true);
+  assert.equal(res.body.reason, "Bad credentials");
+});
+
 test("refresh and POST routes reject missing authorization", async () => {
   const run = handler({ env: { CRON_SECRET: "secret" } });
   for (const req of [

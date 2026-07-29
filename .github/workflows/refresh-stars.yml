@@ -31,6 +31,18 @@ jobs:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: node scripts/push-stars-snapshot.js
 
+      # Publication above uses the ACTIONS token, so it proves nothing about the
+      # GITHUB_TOKEN configured in Vercel. api/stars.js only reaches for that one
+      # when the cached snapshot is cold, and degrades silently when it fails —
+      # so an expired token stays invisible until the cache also expires. This
+      # forces the live path every run and fails loud instead.
+      #
+      # Runs after publication so a token problem can never block the snapshot.
+      - name: Probe the serverless live-refresh path
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: node scripts/probe-live-refresh.js
+
       - name: Close prior failure alerts after recovery
         if: success()
         env:
@@ -60,13 +72,19 @@ jobs:
             // catalog entries. Naming them here is the difference between a
             // 2-minute fix and a manual investigation — the generic body alone
             // left ndesv21/socialclaw breaking runs for ~26h (PR #662).
+            // probe-live-refresh.js writes this when the Vercel-side token
+            // cannot fetch. Checked first: it runs after publication, so if it
+            // produced a report the snapshot itself succeeded and the token is
+            // the actual finding.
             let detail = '';
-            try {
-              detail = fs.readFileSync('stars-unavailable.md', 'utf8');
-            } catch {
-              detail = 'No unavailable-repo report was produced, so the snapshot ' +
-                'failed before ingestion (network, auth, or a degraded API response). ' +
-                'Check the run log.\n';
+            const read = (file) => {
+              try { return fs.readFileSync(file, 'utf8'); } catch { return ''; }
+            };
+            detail = read('stars-probe.md') || read('stars-unavailable.md');
+            if (!detail) {
+              detail = 'Neither a probe report nor an unavailable-repo report was ' +
+                'produced, so the snapshot failed before ingestion (network, auth, ' +
+                'or a degraded API response). Check the run log.\n';
             }
 
             const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
