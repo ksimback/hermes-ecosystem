@@ -1,17 +1,34 @@
 #!/usr/bin/env node
 /**
- * Dead-repo detector for data/repos.json.
+ * Catalog health sweep for data/repos.json and ECOSYSTEM.md.
  *
- * Issues a single GraphQL query for every entry, captures NOT_FOUND
- * errors (deleted / renamed / private repos), and writes a markdown
- * tracking-issue body to dead-repos.md. Empty file = no dead repos.
+ * Issues one GraphQL query for every catalog entry and a second for any
+ * ECOSYSTEM.md row that is not in the catalog, then writes a markdown
+ * tracking-issue body to dead-repos.md. Empty file = healthy.
  *
- * Background: deleted / renamed / private repos should be removed from
- * Atlas even when build-pages can skip missing metadata, because they
- * otherwise leave stale GitHub links and project pages in the catalog.
+ * Reports three distinct conditions, because they need different fixes:
+ *
+ *   dead    — NOT_FOUND. Breaks the stars snapshot; remove the entry.
+ *   renamed — resolves to a different nameWithOwner. Nothing fails, which is
+ *             why this went undetected for months: GitHub redirects renamed
+ *             repos, so a stale entry returns stars and passes availability
+ *             checks while the catalog carries a name that no longer exists.
+ *   drift   — an ECOSYSTEM.md row with no catalog entry, sub-classified by
+ *             resolving it, since a rename is indistinguishable from a stale
+ *             row by string comparison alone.
+ *
+ * Classification rules live in lib/catalog-health.js and are unit-tested.
  */
 import fs from "node:fs/promises";
 import { githubHeaders } from "../lib/github.js";
+import {
+  buildRepoQuery,
+  findDeadRepos,
+  findRenamedRepos,
+  findEcosystemDrift,
+  classifyDrift,
+  renderIssueBody,
+} from "../lib/catalog-health.js";
 
 const TOKEN = process.env.GITHUB_TOKEN;
 if (!TOKEN) {
@@ -25,117 +42,73 @@ if (!TOKEN) {
   process.exit(process.env.CI ? 1 : 0);
 }
 
+async function graphql(query) {
+  const res = await fetch("https://api.github.com/graphql", {
+    method: "POST",
+    headers: { ...githubHeaders(TOKEN), "Content-Type": "application/json" },
+    body: JSON.stringify({ query: `query { ${query} }` }),
+  });
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    console.error(`GraphQL HTTP ${res.status}: ${body.slice(0, 200)}`);
+    process.exit(1);
+  }
+  const json = await res.json();
+  for (const err of json.errors || []) {
+    if (err?.type !== "NOT_FOUND") {
+      console.warn(`Non-NOT_FOUND GraphQL error: ${JSON.stringify(err).slice(0, 200)}`);
+    }
+  }
+  return { data: json.data || {}, errors: json.errors || [] };
+}
+
 const repos = JSON.parse(await fs.readFile("data/repos.json", "utf8"));
 
-// Guard the string interpolation below: owner/repo are validated to this
-// charset by validate-repos-json.js, but skip-and-warn here too so a bad
-// entry can never inject into the GraphQL document. Aliases keep the
-// ORIGINAL array index so the repos[idx] lookup in error handling stays
-// correct even when entries are skipped.
-const SAFE_NAME_RE = /^[A-Za-z0-9_.-]+$/;
-const repoQueries = repos
-  .map((r, i) => {
-    if (!SAFE_NAME_RE.test(r.owner ?? "") || !SAFE_NAME_RE.test(r.repo ?? "")) {
-      console.warn(
-        `Skipping entry ${i} with unsafe owner/repo: ${JSON.stringify(r.owner)}/${JSON.stringify(r.repo)}`
-      );
-      return null;
-    }
-    return `repo${i}: repository(owner: "${r.owner}", name: "${r.repo}") { nameWithOwner }`;
-  })
-  .filter(Boolean)
-  .join("\n");
-
-if (!repoQueries) {
+const { query: repoQuery, skipped } = buildRepoQuery(repos, "repo");
+for (const s of skipped) {
+  console.warn(
+    `Skipping entry ${s.index} with unsafe owner/repo: ` +
+    `${JSON.stringify(s.entry.owner)}/${JSON.stringify(s.entry.repo)}`
+  );
+}
+if (!repoQuery) {
   console.error("No valid repo entries to check; aborting.");
   process.exit(1);
 }
 
-const res = await fetch("https://api.github.com/graphql", {
-  method: "POST",
-  headers: { ...githubHeaders(TOKEN), "Content-Type": "application/json" },
-  body: JSON.stringify({ query: `query { ${repoQueries} }` }),
-});
+const catalogResult = await graphql(repoQuery);
+const dead = findDeadRepos(repos, catalogResult.errors, "repo");
+const renamed = findRenamedRepos(repos, catalogResult.data, "repo");
 
-if (!res.ok) {
-  const body = await res.text().catch(() => "");
-  console.error(`GraphQL HTTP ${res.status}: ${body.slice(0, 200)}`);
-  process.exit(1);
-}
+console.log(`Checked ${repos.length} repos: ${dead.length} dead, ${renamed.length} renamed`);
+for (const r of renamed) console.log(`  renamed: ${r.from} -> ${r.to}`);
 
-const data = await res.json();
-const dead = [];
-
-for (const err of data.errors || []) {
-  if (err.type !== "NOT_FOUND") {
-    console.warn(`Non-NOT_FOUND GraphQL error: ${JSON.stringify(err).slice(0, 200)}`);
-    continue;
-  }
-  const alias = err.path?.[0];
-  if (!alias || !alias.startsWith("repo")) continue;
-  const idx = parseInt(alias.slice(4), 10);
-  const r = repos[idx];
-  if (!r) continue;
-  dead.push({
-    owner: r.owner,
-    repo: r.repo,
-    url: r.url || `https://github.com/${r.owner}/${r.repo}`,
-  });
-}
-
-console.log(`Checked ${repos.length} repos: ${dead.length} dead`);
-
-// ECOSYSTEM.md drift: it mirrors the catalog and is bundled into llms-full.txt
-// + the RAG chunks, so repo rows left behind after a catalog removal quietly
-// pollute LLM retrieval. Flag any ECOSYSTEM.md repo link not in data/repos.json.
-let ecoDrift = [];
+// ECOSYSTEM.md drift, resolved rather than assumed. Advising a blanket delete
+// here would strip live projects out of llms-full.txt and the RAG corpus
+// whenever a repo is renamed.
+let drift = null;
 try {
   const eco = await fs.readFile("ECOSYSTEM.md", "utf8");
-  const inCatalog = new Set(repos.map((r) => `${r.owner}/${r.repo}`.toLowerCase()));
-  const linked = [
-    ...new Set(
-      [...eco.matchAll(/github\.com\/([\w.-]+\/[\w.-]+)/g)].map((m) =>
-        m[1].replace(/\.git$/, "").toLowerCase()
-      )
-    ),
-  ];
-  ecoDrift = linked.filter(
-    (k) => !inCatalog.has(k) && !k.startsWith("nousresearch/hermes-agent")
-  );
-  console.log(`ECOSYSTEM.md: ${ecoDrift.length} repo rows not in catalog`);
+  const driftNames = findEcosystemDrift(eco, repos);
+  console.log(`ECOSYSTEM.md: ${driftNames.length} repo rows not in catalog`);
+
+  if (driftNames.length > 0) {
+    const entries = driftNames.map((name) => {
+      const [owner, repo] = name.split("/");
+      return { owner, repo };
+    });
+    const { query: ecoQuery } = buildRepoQuery(entries, "eco");
+    const ecoResult = ecoQuery ? await graphql(ecoQuery) : { data: {}, errors: [] };
+    drift = classifyDrift(driftNames, ecoResult, repos);
+    console.log(
+      `  drift breakdown: ${drift.renamed.length} renamed, ` +
+      `${drift.dead.length} dead, ${drift.missing.length} not catalogued`
+    );
+  } else {
+    drift = { renamed: [], dead: [], missing: [] };
+  }
 } catch (e) {
   console.warn(`Could not read ECOSYSTEM.md for drift check: ${e.message}`);
 }
 
-let body = "";
-if (dead.length > 0) {
-  body =
-    `The following ${dead.length} repo${dead.length === 1 ? "" : "s"} in \`data/repos.json\` no longer resolve on GitHub. ` +
-    `They may have been deleted, renamed, or made private.\n\n` +
-    `**Why this matters**: dead GitHub entries leave stale external links, stale generated project pages, ` +
-    `and incomplete metadata in Atlas.\n\n` +
-    `## Dead entries\n\n`;
-  for (const d of dead) {
-    body += `- \`${d.owner}/${d.repo}\` — ${d.url}\n`;
-  }
-  body +=
-    `\n## Fix\n\nRemove each entry from \`data/repos.json\` and merge. ` +
-    `See PR #148 (Web3CZ removal) and a4e906e (iamagenius00/hermes-a2a removal) for prior examples.\n\n`;
-}
-
-if (ecoDrift.length > 0) {
-  body +=
-    `## ECOSYSTEM.md drift (${ecoDrift.length})\n\n` +
-    `These repos are linked in \`ECOSYSTEM.md\` but are no longer in \`data/repos.json\`. ` +
-    `\`ECOSYSTEM.md\` is bundled into \`llms-full.txt\` and the RAG chunks, so these stale rows ` +
-    `pollute LLM retrieval.\n\n`;
-  for (const k of ecoDrift) body += `- \`${k}\`\n`;
-  body += `\n**Fix**: remove each stale row from \`ECOSYSTEM.md\` (or re-add the repo to the catalog).\n\n`;
-}
-
-if (body) {
-  body +=
-    `_Auto-detected by \`scripts/check-dead-repos.js\` via \`audit-summaries.yml\`. This issue updates in place; it auto-closes when the lists go empty._\n`;
-}
-
-await fs.writeFile("dead-repos.md", body);
+await fs.writeFile("dead-repos.md", renderIssueBody({ dead, renamed, drift }));

@@ -101,18 +101,21 @@ jobs:
           gh workflow run build-pages.yml
           echo "Dispatched build-pages.yml to regenerate flagged summaries"
 
-      - name: Detect dead repos
+      - name: Sweep catalog health (dead, renamed, drifted)
         if: always()  # run even if earlier steps failed
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/check-dead-repos.js
 
-      - name: Open or update dead-repo tracking issue
+      - name: Open or update catalog-health tracking issue
         if: always()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          title="Dead repos detected in data/repos.json"
+          # Covers dead, renamed, and ECOSYSTEM.md-drifted entries. Renamed
+          # repos resolve fine on GitHub, so they never surfaced under the
+          # previous dead-only title.
+          title="Catalog health: dead, renamed, or drifted repos"
           # `in:title` scopes the search to the title field so we don't
           # match stray issues that happen to mention the phrase in their body.
           existing=$(gh issue list \
@@ -123,11 +126,11 @@ jobs:
             --jq '.[0].number // empty')
 
           if [ ! -s dead-repos.md ]; then
-            echo "No dead repos detected"
+            echo "Catalog healthy: no dead, renamed, or drifted entries"
             if [ -n "$existing" ]; then
               gh issue close "$existing" \
                 --repo "$GITHUB_REPOSITORY" \
-                --comment "Auto-closed: no dead repos detected in latest audit run."
+                --comment "Auto-closed: no dead, renamed, or drifted catalog entries in latest audit run."
               echo "Closed stale issue #$existing"
             fi
             exit 0
