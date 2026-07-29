@@ -70,7 +70,16 @@ async function withAtlasFixture({ stars = {}, releaseTag = "v2026.7.7.2" } = {})
         prerelease: false,
       }]));
     }
-    if (url.pathname === "/api/chat") return send(200, "text/event-stream", "data: Hermes Agent is ready.\n\n");
+    if (url.pathname === "/api/chat") {
+      // The smoke test sends a second, build-flavored query and asserts the
+      // __META__ trailer names a matched bundle — that's the only external
+      // signal that data/use-cases.json reached the serverless function.
+      const meta = `‎__META__${JSON.stringify({
+        model: "test/model",
+        useCases: ["hermes-in-your-pocket"],
+      })}__META__‎`;
+      return send(200, "text/event-stream", `data: Hermes Agent is ready.\n\n${meta}`);
+    }
     if (url.pathname === "/api/stars") {
       const response = {
         stale: false,

@@ -2,6 +2,7 @@ import { kvIncr, kvIncrBy, kvExpireNx } from "../lib/redis.js";
 import { combinedRetrievalScore, enrichChunkMetadata } from "../lib/rag-scoring.js";
 import { buildLatestReleaseBlock, detectLatestReleaseQuery } from "../lib/latest-release.js";
 import { parseChunkStore } from "../lib/chunk-store.js";
+import { matchUseCases, buildUseCaseBlock, inferCategory } from "../lib/use-case-match.js";
 import { readFileSync } from "fs";
 import { join } from "path";
 
@@ -11,6 +12,7 @@ let corpusDimensions = null;
 let bm25Index = null;
 let reposData = null;
 let latestReleaseData = null;
+let useCasesData = null;
 
 function loadChunks() {
   if (chunks) return chunks;
@@ -41,6 +43,22 @@ function loadRepos() {
   } catch (e) {
     console.error("Failed to load repos.json:", e.message);
     return [];
+  }
+}
+
+function loadUseCases() {
+  if (useCasesData) return useCasesData;
+  try {
+    // Literal join(process.cwd(), ...) so Vercel's file tracer bundles it —
+    // same constraint as loadChunks above.
+    const raw = readFileSync(join(process.cwd(), "data", "use-cases.json"), "utf-8");
+    useCasesData = JSON.parse(raw);
+    return useCasesData;
+  } catch (e) {
+    // Missing bundles degrade to the pre-existing catalog-dump behavior.
+    console.error("Failed to load use-cases.json:", e.message);
+    useCasesData = [];
+    return useCasesData;
   }
 }
 
@@ -421,16 +439,37 @@ export default async function handler(req, res) {
 
     console.log(`[RAG] Top result: ${scored[0]?.source} (${scored[0]?._authority}/${scored[0]?._contentKind}, cos=${scored[0]?._cosine.toFixed(3)}, bm25=${scored[0]?._bm25.toFixed(3)}); ${new Set(scored.map(s => s.source)).size} unique sources`);
 
-    // 6. Detect ranking/comparison queries and inject repo metadata
-    // This gives the LLM live star counts to actually rank/compare repos
+    // 6. Curated use-case bundles for "I want to build X" questions.
+    // A matched bundle is ~300 tokens of curated stack + rationale, versus the
+    // ~7,900-token full-catalog dump below that the model would otherwise have
+    // to re-rank itself. Matching is deterministic (lib/use-case-match.js) and
+    // shared with the /use-cases/ page matcher so the two can't disagree.
+    const repos = loadRepos();
+    const repoIndex = new Map(repos.map((r) => [`${r.owner}/${r.repo}`, r]));
+    const useCaseMatches = matchUseCases(`${message}\n${searchQuery}`, loadUseCases());
+    const useCaseBlock = buildUseCaseBlock(useCaseMatches, repoIndex);
+    if (useCaseBlock) {
+      console.log(`[RAG] Injected ${useCaseMatches.length} use-case bundle(s): ${useCaseMatches.map(m => `${m.useCase.slug}(${m.score})`).join(", ")}`);
+    }
+
+    // 7. Detect ranking/comparison queries and inject repo metadata.
+    // This gives the LLM live star counts to actually rank/compare repos.
+    //
+    // Narrow to a single category when the query unambiguously names one —
+    // that is a ~83% token cut on this path (7.9k → ~1.4k). inferCategory
+    // returns null on ambiguous or absent signals, which keeps the full dump;
+    // narrowing wrongly would starve a legitimate cross-category ranking
+    // question, and that is worse than paying the tokens.
     const needsRepoData = isRepoMetadataQuery(searchQuery);
     let repoMetadataBlock = "";
-    if (needsRepoData) {
-      const repos = loadRepos();
-      if (repos.length > 0) {
-        repoMetadataBlock = `\n\n## REPO METADATA (sorted by stars within each category)\n${buildRepoSummary(repos)}\n`;
-        console.log(`[RAG] Injected repo metadata (${repos.length} repos) for ranking query`);
-      }
+    if (needsRepoData && repos.length > 0) {
+      const category = inferCategory(`${message}\n${searchQuery}`);
+      const scopedRepos = category ? repos.filter((r) => r.category === category) : repos;
+      // Never let a narrow-but-empty slice silently replace the catalog.
+      const effective = scopedRepos.length > 0 ? scopedRepos : repos;
+      const scopeLabel = category && scopedRepos.length > 0 ? ` — scoped to ${category}` : "";
+      repoMetadataBlock = `\n\n## REPO METADATA (sorted by stars within each category${scopeLabel})\n${buildRepoSummary(effective)}\n`;
+      console.log(`[RAG] Injected repo metadata (${effective.length}/${repos.length} repos${category ? `, category=${category}` : ", full catalog"})`);
     }
 
     const needsLatestRelease = detectLatestReleaseQuery(`${message}\n${searchQuery}`);
@@ -474,7 +513,7 @@ Then run \`hermes\` to start. Only Git is required as a prerequisite — the ins
 
 ANSWER RULES:
 - Synthesize confidently from what the context DOES contain; state plainly when it doesn't contain the answer. Skip filler hedges like "based on the available records" — but never manufacture confidence the context can't support.
-- GROUNDING: only state facts — descriptions, star counts, commands, version numbers — that appear in the CORE FACTS, LATEST RELEASE, RETRIEVED CONTEXT, or REPO METADATA sections. NEVER infer what a project does from its name alone. If the context doesn't cover the entity or fact asked about, say plainly the Atlas doesn't have that information, then offer the closest genuinely-relevant items from the context instead.
+- GROUNDING: only state facts — descriptions, star counts, commands, version numbers — that appear in the CORE FACTS, LATEST RELEASE, RETRIEVED CONTEXT, USE-CASE BUNDLES, or REPO METADATA sections. NEVER infer what a project does from its name alone. If the context doesn't cover the entity or fact asked about, say plainly the Atlas doesn't have that information, then offer the closest genuinely-relevant items from the context instead.
 - PREMISES: if the question asserts something the context doesn't support (e.g. "why was X removed?"), verify it against the context and correct the premise rather than answering as if it were true.
 - AMBIGUITY: if two or more projects in the context share (or nearly share) a name, present them all and disambiguate — never silently pick one.
 - SCOPE: for questions unrelated to the Hermes ecosystem, or requests to produce code or tasks against this site (e.g. scraping it), politely redirect to what Ask the Atlas is for rather than complying.
@@ -484,6 +523,7 @@ ANSWER RULES:
 - Use the RETRIEVED CONTEXT section for specific details, recent updates, and tool recommendations.
 - Prefer official_docs and curated_atlas sources when context conflicts. Treat catalog/generated pages as lookup sources, not broad product overviews, unless the user is asking about skills/catalogs.
 - For ranking/comparison/recommendation questions, use the REPO METADATA section for accurate star counts, and ALWAYS cite exact star counts when comparing or recommending repos.
+- If a USE-CASE BUNDLES section is present, the user is asking what to build. Lead with that curated stack — give the repos in the order listed with their roles, summarize the "Why", and surface any Caveats or Known gaps honestly rather than dropping them. Link the Atlas page. Treat the bundle as a starting point, not an exhaustive list: if REPO METADATA contains a clearly better fit for what they described, say so.
 - Cite sources from RETRIEVED CONTEXT using [Source: filename.md] format in brackets.
 - For "what is" questions, give a proper 2-3 sentence overview first, THEN details.
 - For "how do I" questions, give concrete steps with commands.
@@ -495,7 +535,7 @@ ${baselineContext}${latestReleaseBlock}
 
 ## RETRIEVED CONTEXT (relevant to this specific question)
 
-${retrievedContext}${repoMetadataBlock}`;
+${retrievedContext}${useCaseBlock}${repoMetadataBlock}`;
 
     const messages = [
       { role: "system", content: systemPrompt },
@@ -619,8 +659,18 @@ ${retrievedContext}${repoMetadataBlock}`;
 
     // Append model trailer at end of stream — client splits it off
     // Format: \u200E (LRM, invisible) + JSON + \u200E
-    if (actualModel) {
-      const trailer = `\u200E__META__${JSON.stringify({ model: actualModel })}__META__\u200E`;
+    //
+    // `useCases` reports which bundles were injected. It exists so the failure
+    // mode this feature is most exposed to (Vercel's file tracer not bundling
+    // data/use-cases.json, leaving loadUseCases() permanently empty) stays
+    // observable from outside, instead of silently degrading to the old
+    // full-catalog behavior while every check stays green.
+    if (actualModel || useCaseMatches.length > 0) {
+      const meta = { model: actualModel };
+      if (useCaseMatches.length > 0) {
+        meta.useCases = useCaseMatches.map((m) => m.useCase.slug);
+      }
+      const trailer = `\u200E__META__${JSON.stringify(meta)}__META__\u200E`;
       res.write(trailer);
     }
 

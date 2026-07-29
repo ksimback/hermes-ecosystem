@@ -82,6 +82,17 @@ async function main() {
     source: file.source,
     content: fs.readFileSync(file.path, "utf-8"),
   }));
+
+  // Use-case bundles live in JSON, not markdown, so synthesize a page per
+  // bundle here rather than committing a duplicate markdown copy that could
+  // drift from data/use-cases.json. Sources are labeled as URL paths
+  // ("use-cases/<slug>/") so RAG citations point at the real page and
+  // classifyChunkSource tiers them as curated_atlas.
+  const useCaseFiles = buildUseCaseMarkdown();
+  markdownFiles.push(...useCaseFiles);
+  if (useCaseFiles.length > 0) {
+    console.log(`Added ${useCaseFiles.length} synthesized use-case pages`);
+  }
   writeLatestReleaseMetadata(markdownFiles);
 
   // Chunk all files
@@ -175,6 +186,67 @@ function writeLatestReleaseMetadata(markdownFiles) {
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, `${JSON.stringify(latestRelease, null, 2)}\n`);
   console.log(`Latest release metadata: ${latestRelease.version} (${latestRelease.tag || "no tag"})`);
+}
+
+// Render each use-case bundle as a retrievable markdown page. Includes the
+// stack with live star counts, the rationale, caveats/gaps, and the cited
+// community stories, so a RAG hit carries the same substance the page does.
+function buildUseCaseMarkdown() {
+  const useCasesPath = path.join(ROOT, "data", "use-cases.json");
+  if (!fs.existsSync(useCasesPath)) return [];
+
+  const useCases = JSON.parse(fs.readFileSync(useCasesPath, "utf-8"));
+  const repos = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "repos.json"), "utf-8"));
+  const repoIndex = new Map(repos.map((r) => [`${r.owner}/${r.repo}`, r]));
+
+  let stories = [];
+  const storiesPath = path.join(ROOT, "data", "user-stories.json");
+  if (fs.existsSync(storiesPath)) {
+    const corpus = JSON.parse(fs.readFileSync(storiesPath, "utf-8"));
+    stories = Array.isArray(corpus?.stories) ? corpus.stories : [];
+  }
+  const storyIndex = new Map(stories.map((s) => [s.id, s]));
+
+  return useCases.map((useCase) => {
+    const stack = useCase.stack
+      .map((item) => {
+        const repo = repoIndex.get(`${item.owner}/${item.repo}`);
+        const stars = repo ? ` — ${repo.stars} stars` : "";
+        const category = repo ? ` [${repo.category}]` : "";
+        return `- **${item.role}: ${item.owner}/${item.repo}**${category}${stars}\n  ${item.why}\n  https://hermesatlas.com/projects/${item.owner}/${item.repo}`;
+      })
+      .join("\n");
+
+    const section = (heading, items) =>
+      Array.isArray(items) && items.length
+        ? `\n\n## ${heading}\n\n${items.map((v) => `- ${v}`).join("\n")}`
+        : "";
+
+    const evidence = (useCase.evidence || [])
+      .map((id) => storyIndex.get(id))
+      .filter(Boolean)
+      .map((s) => `- "${s.headline}" — ${s.author || s.source} (${s.source}) ${s.url}`)
+      .join("\n");
+
+    const content = `# ${useCase.title}
+
+Use case: "${useCase.intent}"
+
+Atlas page: https://hermesatlas.com/use-cases/${useCase.slug}
+
+## Recommended stack
+
+${stack}
+
+## Why this stack
+
+${useCase.rationale}${section("Caveats", useCase.caveats)}${section("Gaps in the catalog", useCase.gaps)}${
+      evidence ? `\n\n## Community stories that prove this use case\n\n${evidence}` : ""
+    }
+`;
+
+    return { source: `use-cases/${useCase.slug}/`, content };
+  });
 }
 
 function* walkMarkdown(dir) {

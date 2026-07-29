@@ -28,6 +28,24 @@ test("knowledge rebuild has a scheduled reconciliation path", () => {
   assert.match(workflow, /workflow_dispatch:/);
 });
 
+test("knowledge rebuild triggers on every data file build-chunks reads", () => {
+  const workflow = fs.readFileSync(".github/workflows/rebuild-chunks.yml", "utf-8");
+  const script = fs.readFileSync("scripts/build-chunks.js", "utf-8");
+
+  // build-chunks.js synthesizes retrievable pages from JSON that isn't picked
+  // up by the research/**-style globs. If it reads a data file the workflow
+  // doesn't watch, edits land on the site but the KB keeps serving the old
+  // content — silently, until someone notices the chatbot is wrong.
+  for (const dataFile of ["use-cases.json", "user-stories.json", "repos.json"]) {
+    if (script.includes(`"${dataFile}"`)) {
+      assert.ok(
+        workflow.includes(`data/${dataFile}`),
+        `scripts/build-chunks.js reads data/${dataFile} — add it to rebuild-chunks.yml push paths`
+      );
+    }
+  }
+});
+
 test("page build regenerates from latest main after a rejected push", () => {
   const workflow = fs.readFileSync(".github/workflows/build-pages.yml", "utf-8");
   assert.match(workflow, /Push rejected \(attempt \$attempt\).*regenerating from latest main/);

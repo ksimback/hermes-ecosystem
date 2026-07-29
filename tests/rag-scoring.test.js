@@ -12,6 +12,9 @@ test("classifies official docs, generated catalog docs, and curated Atlas source
   assert.equal(classifyChunkSource({ source: "research/docs/skills/index.md" }).contentKind, "catalog");
   assert.equal(classifyChunkSource({ source: "research/atlas-official-docs-updates.md" }).authority, "curated_atlas");
   assert.equal(classifyChunkSource({ source: "repos/all-star-counts.md" }).contentKind, "repo_metadata");
+  // Use-case bundles are gated, hand-curated editorial — same tier as research/,
+  // not the "community" default they'd otherwise fall through to.
+  assert.equal(classifyChunkSource({ source: "use-cases/obsidian-second-brain/" }).authority, "curated_atlas");
 });
 
 test("official feature docs outrank equally relevant community chunks", () => {

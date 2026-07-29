@@ -328,6 +328,37 @@ await section("2. Public API contracts are semantically healthy", async () => {
     fail("Ask the Atlas", `HTTP ${chat.status}${chat.ok ? ", empty response" : ""}`, `${BASE}/api/chat`);
   }
 
+  // Use-case bundles reach the chat path by reading data/use-cases.json from
+  // inside the serverless function. If Vercel's file tracer ever stops
+  // bundling it, loadUseCases() returns [] forever and every recommendation
+  // silently reverts to the full-catalog dump — no error, no failing check.
+  // The __META__ trailer reports matched slugs, so assert on that rather than
+  // on the model's prose, which is non-deterministic.
+  const bundleChat = await fetchWithTimeout(`${BASE}/api/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: "I want to build a telegram bot to chat with my agent from my phone" }),
+  });
+  if (!bundleChat.ok) {
+    fail("use-case bundle injection", `HTTP ${bundleChat.status}`, `${BASE}/api/chat`);
+  } else {
+    const body = await bundleChat.text();
+    const trailer = body.match(/‎__META__(.*?)__META__‎/);
+    let matched = [];
+    try {
+      matched = trailer ? JSON.parse(trailer[1]).useCases || [] : [];
+    } catch {}
+    if (matched.length > 0) {
+      pass("use-case bundle injection", `matched ${matched.join(", ")}`);
+    } else {
+      fail(
+        "use-case bundle injection",
+        "no bundle matched a canonical build query — data/use-cases.json may not be bundled into the function",
+        `${BASE}/api/chat`
+      );
+    }
+  }
+
   const releaseArtifactResponse = await fetchWithTimeout(`${BASE}/data/latest-release.json`);
   if (!releaseArtifactResponse.ok) {
     fail("latest release freshness", `artifact HTTP ${releaseArtifactResponse.status}`, `${BASE}/data/latest-release.json`);
