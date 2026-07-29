@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server#software",
   "name": "kindly-web-search-mcp-server",
-  "description": "Kindly Web Search is an MCP server designed to provide up-to-date API and package documentation to AI coding tools. It retrieves structured content from sources like StackExchange, GitHub, Wikipedia, and arXiv, and uses a headless browser for general webpage parsing.",
+  "description": "Kindly Web Search is an MCP server designed to provide up-to-date API and package documentation to AI coding tools. It retrieves structured content from sources like StackExchange, GitHub, Wikipedia, and arXiv, or parses general webpages using a headless browser.",
   "url": "https://hermesatlas.com/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server",
   "codeRepository": "https://github.com/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "Shelpuk-AI-Technology-Consulting",
     "url": "https://github.com/Shelpuk-AI-Technology-Consulting"
   },
-  "dateModified": "2026-07-29T12:59:33.000Z",
+  "dateModified": "2026-07-29T14:15:27.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">217·repos</span>
+    <span id="meta-count">216·repos</span>
     <span id="meta-version">hermes·v0.19.0</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -138,10 +138,10 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Kindly Web Search is an MCP server designed to provide up-to-date API and package documentation to AI coding tools. It retrieves structured content from sources like StackExchange, GitHub, Wikipedia, and arXiv, and uses a headless browser for general webpage parsing.</p>
+    <p class="summary-text">Kindly Web Search is an MCP server designed to provide up-to-date API and package documentation to AI coding tools. It retrieves structured content from sources like StackExchange, GitHub, Wikipedia, and arXiv, or parses general webpages using a headless browser.</p>
     <ul class="summary-highlights">
-      <li>Supports Serper, Tavily, SearXNG, and Sofya search providers.</li>
-      <li>Returns full conversations including answers and comments.</li>
+      <li>Supports Serper, SerpBase, Tavily, SearXNG, and Sofya search providers.</li>
+      <li>Returns full conversations including answers and comments in one call.</li>
       <li>Uses a headless Chromium browser for real-time webpage parsing.</li>
     </ul>
   </div>
@@ -213,7 +213,7 @@
 <p>✅ <strong>Returns the full conversation</strong> in a single call: questions, answers, comments, reactions, and metadata</p>
 <p>✅ <strong>Parses any webpage in real-time</strong> using a headless browser for cutting-edge issues that were literally posted yesterday</p>
 <p>✅ <strong>Passes all useful content to the LLM immediately</strong> - no need for a second scraping call</p>
-<p>✅ <strong>Supports multiple search providers</strong> (Serper, Tavily, SearXNG, and Sofya) with intelligent fallback</p>
+<p>✅ <strong>Supports multiple search providers</strong> (Serper, SerpBase, Tavily, SearXNG, and Sofya) with intelligent fallback</p>
 <p>Now, when Claude Code or Codex searches for that GPU batch error, it gets the question <em>and</em> the answers. The code snippets. The "this fixed it for me" comments. Everything it needs to help you solve the problem - <strong>in one call</strong>.</p>
 <p>If you give Kindly a try or like the idea, please drop us a star on GitHub - it’s always huge motivation for us to keep improving it! ⭐️</p>
 <h3>One MCP Server to Rule Them All</h3>
@@ -284,7 +284,7 @@
 </tr>
 </tbody></table>
 <p>All <code>httpx</code>-based handlers read standard proxy environment variables (<code>HTTP_PROXY</code>, <code>HTTPS_PROXY</code>, <code>ALL_PROXY</code>) and support both HTTP and SOCKS proxy URLs via the <code>socksio</code> dependency. The universal HTML loader uses Chromium's <code>--proxy-server</code> flag via <code>KINDLY_CHROME_PROXY</code>, which supports SOCKS5 and other schemes natively.</p>
-<p>Search uses <strong>Serper</strong> (primary, if configured), <strong>Tavily</strong>, <strong>SearXNG</strong>, or <strong>Sofya</strong>, and page extraction uses a local Chromium-based browser via <code>nodriver</code>.</p>
+<p>Search uses <strong>Serper</strong> (primary, if configured), <strong>SerpBase</strong>, <strong>Tavily</strong>, <strong>SearXNG</strong>, or <strong>Sofya</strong>, and page extraction uses a local Chromium-based browser via <code>nodriver</code>.</p>
 <h5>Markdown fast paths (skip the browser for doc sites)</h5>
 <p>Before launching the headless browser, the universal HTML loader first tries to fetch markdown directly with one cheap <code>httpx</code> GET — returning it immediately on a hit and falling back to the browser unchanged on any miss. Two independent probes:</p>
 <table>
@@ -312,7 +312,7 @@
 <p>Both probes validate the response (<code>text/markdown</code>, ≥1 KB, non-empty after sanitize) and apply the same output cap as the browser path, so the returned markdown is consistent across paths. See <code>.env.example</code> for the full entries.</p>
 <h3>Requirements</h3>
 <ul>
-<li>A search provider (priority order): <code>SERPER_API_KEY</code> (recommended) → <code>TAVILY_API_KEY</code> → <code>SEARXNG_BASE_URL</code> (self-hosted SearXNG) → <code>SOFYA_API_KEY</code></li>
+<li>A search provider (priority order): <code>SERPER_API_KEY</code> (recommended) → <code>SERPBASE_API_KEY</code> (SerpBase, Google results) → <code>TAVILY_API_KEY</code> → <code>SEARXNG_BASE_URL</code> (self-hosted SearXNG) → <code>SOFYA_API_KEY</code></li>
 <li>A Chromium-based browser installed on the same machine running the MCP client (Chrome/Chromium/Edge/Brave)<ul>
 <li>Without a browser: specialized sources (StackExchange, GitHub Issues/Discussions, Wikipedia, arXiv) still work well, but universal HTML <code>page_content</code> extraction may fail for other sites.</li>
 </ul>
@@ -360,7 +360,7 @@ which chromium
 </code></pre>
 <p>Other Linux distros: install <code>chromium</code> (or <code>chromium-browser</code>) via your package manager.</p>
 <h4>3) Set your search API key (required)</h4>
-<p>Set <strong>one</strong> of these. Provider selection order is: Serper → Tavily → SearXNG → Sofya.</p>
+<p>Set <strong>one</strong> of these. Provider selection order is: Serper → SerpBase → Tavily → SearXNG → Sofya.</p>
 <p>macOS / Linux:</p>
 <pre><code class="language-bash">export SERPER_API_KEY="..."
 # or:
@@ -396,7 +396,7 @@ $env:SEARXNG_USER_AGENT="Mozilla/5.0 ..."
 Make sure your API keys are set in the same shell/OS environment that launches the MCP client (unless you paste them directly into the client config).</p>
 <h3>Client setup</h3>
 <h4>Codex</h4>
-<p>Set one of <code>SERPER_API_KEY</code>, <code>TAVILY_API_KEY</code>, <code>SEARXNG_BASE_URL</code>, or <code>SOFYA_API_KEY</code>.</p>
+<p>Set one of <code>SERPER_API_KEY</code>, <code>SERPBASE_API_KEY</code>, <code>TAVILY_API_KEY</code>, <code>SEARXNG_BASE_URL</code>, or <code>SOFYA_API_KEY</code>.</p>
 <p>CLI (no file editing) — add a local stdio MCP server:</p>
 <p>macOS / Linux (Serper):</p>
 <pre><code class="language-bash">codex mcp add kindly-web-search \
@@ -444,11 +444,11 @@ args = [
   "start-mcp-server",
 ]
 # Forward variables from your shell/OS environment:
-env_vars = ["SERPER_API_KEY", "TAVILY_API_KEY", "SEARXNG_BASE_URL", "GITHUB_TOKEN", "KINDLY_BROWSER_EXECUTABLE_PATH"]
+env_vars = ["SERPER_API_KEY", "SERPBASE_API_KEY", "TAVILY_API_KEY", "SEARXNG_BASE_URL", "SOFYA_API_KEY", "GITHUB_TOKEN", "KINDLY_BROWSER_EXECUTABLE_PATH"]
 startup_timeout_sec = 120.0
 </code></pre>
 <h4>Claude Code</h4>
-<p>Set one of <code>SERPER_API_KEY</code>, <code>TAVILY_API_KEY</code>, <code>SEARXNG_BASE_URL</code>, or <code>SOFYA_API_KEY</code>.</p>
+<p>Set one of <code>SERPER_API_KEY</code>, <code>SERPBASE_API_KEY</code>, <code>TAVILY_API_KEY</code>, <code>SEARXNG_BASE_URL</code>, or <code>SOFYA_API_KEY</code>.</p>
 <p>CLI (no file editing) — add a local stdio MCP server:</p>
 <p>macOS / Linux (Serper):</p>
 <pre><code class="language-bash">claude mcp add --transport stdio kindly-web-search \
@@ -517,7 +517,7 @@ Create/edit <code>.mcp.json</code> (project scope; recommended for teams):</p>
 }
 </code></pre>
 <h4>Gemini CLI</h4>
-<p>Set one of <code>SERPER_API_KEY</code>, <code>TAVILY_API_KEY</code>, <code>SEARXNG_BASE_URL</code>, or <code>SOFYA_API_KEY</code>.
+<p>Set one of <code>SERPER_API_KEY</code>, <code>SERPBASE_API_KEY</code>, <code>TAVILY_API_KEY</code>, <code>SEARXNG_BASE_URL</code>, or <code>SOFYA_API_KEY</code>.
 Edit <code>~/.gemini/settings.json</code> (or <code>.gemini/settings.json</code> in a project):</p>
 <pre><code class="language-json">{
   "mcpServers": {
@@ -542,7 +542,7 @@ Edit <code>~/.gemini/settings.json</code> (or <code>.gemini/settings.json</code>
 }
 </code></pre>
 <h4>OpenClaw</h4>
-<p>Set one of <code>SERPER_API_KEY</code>, <code>TAVILY_API_KEY</code>, <code>SEARXNG_BASE_URL</code>, or <code>SOFYA_API_KEY</code>.
+<p>Set one of <code>SERPER_API_KEY</code>, <code>SERPBASE_API_KEY</code>, <code>TAVILY_API_KEY</code>, <code>SEARXNG_BASE_URL</code>, or <code>SOFYA_API_KEY</code>.
 If <code>mcporter</code> is not installed yet: <code>npm i -g mcporter</code>.
 mcporter docs: <a href="https://github.com/steipete/mcporter/blob/main/docs/config.md">https://github.com/steipete/mcporter/blob/main/docs/config.md</a></p>
 <p>CLI (no file editing) — <code>mcporter</code> (recommended):</p>
@@ -589,7 +589,7 @@ Edit mcporter config (<code>~/.mcporter/mcporter.json</code>, or <code>config/mc
 <pre><code class="language-bash">openclaw gateway restart
 </code></pre>
 <h4>Antigravity (Google IDE)</h4>
-<p>Set one of <code>SERPER_API_KEY</code>, <code>TAVILY_API_KEY</code>, <code>SEARXNG_BASE_URL</code>, or <code>SOFYA_API_KEY</code>.</p>
+<p>Set one of <code>SERPER_API_KEY</code>, <code>SERPBASE_API_KEY</code>, <code>TAVILY_API_KEY</code>, <code>SEARXNG_BASE_URL</code>, or <code>SOFYA_API_KEY</code>.</p>
 <p>In Antigravity, open the MCP store, then:</p>
 <ol>
 <li>Click <strong>Manage MCP Servers</strong></li>
@@ -617,11 +617,11 @@ Edit mcporter config (<code>~/.mcporter/mcporter.json</code>, or <code>config/mc
 }
 </code></pre>
 <p>If Antigravity can’t find <code>uvx</code>, replace <code>"uvx"</code> with the absolute path (<code>which uvx</code> on macOS/Linux, <code>where uvx</code> on Windows).
-Make sure at least one of <code>SERPER_API_KEY</code> / <code>TAVILY_API_KEY</code> / <code>SEARXNG_BASE_URL</code> is non-empty.
+Make sure at least one of <code>SERPER_API_KEY</code> / <code>SERPBASE_API_KEY</code> / <code>TAVILY_API_KEY</code> / <code>SEARXNG_BASE_URL</code> / <code>SOFYA_API_KEY</code> is non-empty.
 If the first start is slow, run the <code>uvx</code> command from Quickstart once in a terminal to prebuild the environment, then click <strong>Refresh</strong>.
 Don’t commit/share <code>mcp_config.json</code> if it contains API keys.</p>
 <h4>Cursor</h4>
-<p>Set one of <code>SERPER_API_KEY</code>, <code>TAVILY_API_KEY</code>, <code>SEARXNG_BASE_URL</code>, or <code>SOFYA_API_KEY</code>.
+<p>Set one of <code>SERPER_API_KEY</code>, <code>SERPBASE_API_KEY</code>, <code>TAVILY_API_KEY</code>, <code>SEARXNG_BASE_URL</code>, or <code>SOFYA_API_KEY</code>.
 Startup timeout: Cursor does not currently expose a per-server startup timeout setting. If the first run is slow, run the <code>uvx</code> command from Quickstart once in a terminal to prebuild the tool environment, then restart Cursor.
 Create <code>.cursor/mcp.json</code>:</p>
 <pre><code class="language-json">{
@@ -772,7 +772,7 @@ Create <code>.vscode/mcp.json</code>:</p>
 </code></pre>
 <ul>
 <li>MCP endpoint: <code>http://&lt;server-host&gt;:8000/mcp</code></li>
-<li>Make sure at least one of <code>SERPER_API_KEY</code> / <code>TAVILY_API_KEY</code> / <code>SEARXNG_BASE_URL</code> is set.</li>
+<li>Make sure at least one of <code>SERPER_API_KEY</code> / <code>SERPBASE_API_KEY</code> / <code>TAVILY_API_KEY</code> / <code>SEARXNG_BASE_URL</code> / <code>SOFYA_API_KEY</code> is set.</li>
 <li><code>page_content</code> extraction runs on the server machine/container (this Docker image includes Chromium).</li>
 <li>Remote HTTP is typically <strong>unauthenticated</strong> and <strong>unencrypted</strong> by default; don’t expose this port publicly. Use VPN/firewall rules or a reverse proxy with TLS + auth.</li>
 <li>Don’t bake API keys into the image; pass them via env vars at runtime.</li>
@@ -819,7 +819,7 @@ Create <code>.vscode/mcp.json</code>:</p>
 </ul>
 </li>
 <li><code>OSError: [Errno 39] Directory not empty: '/tmp/kindly-nodriver-.../Default'</code>: update to the latest server revision (uv may cache tool envs; <code>uv cache clean</code> can help).</li>
-<li>“web_search fails: no provider key”: set <code>SERPER_API_KEY</code>, <code>TAVILY_API_KEY</code>, or <code>SEARXNG_BASE_URL</code>.</li>
+<li>“web_search fails: no provider key”: set <code>SERPER_API_KEY</code>, <code>SERPBASE_API_KEY</code>, <code>TAVILY_API_KEY</code>, <code>SEARXNG_BASE_URL</code>, or <code>SOFYA_API_KEY</code>.</li>
 </ul>
 <h3>Security</h3>
 <ul>
@@ -842,11 +842,11 @@ Create <code>.vscode/mcp.json</code>:</p>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 319</div>
+        <div class="stars">★ 321</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
-        <div class="stars">★ 42</div>
+        <div class="stars">★ 43</div>
         <div class="name"><span class="org">FahrenheitResearch /</span> hermes-weather-plugin</div>
       </a>
       <a class="related-row" href="/projects/42-evey/evey-bridge-plugin">

@@ -134,7 +134,6 @@ Frameworks for running multiple Hermes agents or coordinating agent swarms.
 | [builderz-labs/mission-control](https://github.com/builderz-labs/mission-control) | Self-hosted AI agent orchestration — dispatch tasks, run multi-agent workflows, monitor spend | 3,875 | Beta |
 | [swarmclawai/swarmclaw](https://github.com/swarmclawai/swarmclaw) | Build autonomous AI agent swarms with orchestration, skills, and multiple model providers | 285 | Beta |
 | [1ilkhamov/opencode-hermes-multiagent](https://github.com/1ilkhamov/opencode-hermes-multiagent) | 17 specialized agents with structured communication protocols | — | Beta |
-| [Rainhoole/hermes-agent-acp-skill](https://github.com/Rainhoole/hermes-agent-acp-skill) | Multi-agent delegation routing via ACP | — | Beta |
 | [Abruptive/Ankh.md](https://github.com/Abruptive/Ankh.md) | TAW Agent × Hermes swarm framework for multi-agent collaboration | 25 | Experimental |
 | [runtimenoteslabs/gladiator](https://github.com/runtimenoteslabs/gladiator) | Autonomous AI companies competing for GitHub stars — agent-vs-agent arena | 29 | Experimental |
 
@@ -175,11 +174,11 @@ Tools that make developing with, debugging, or optimizing Hermes easier.
 |:-----------|:------------|------:|:---------|
 | [junhoyeo/tokscale](https://github.com/junhoyeo/tokscale) | Token usage tracker for Claude Code, OpenClaw, Hermes, and other agents | 1,690 | Production |
 | [joeynyc/hermes-skins](https://github.com/joeynyc/hermes-skins) | Community CLI skins and themes for Hermes terminal UI | 76 | Beta |
-| [roli-lpci/lintlang](https://github.com/roli-lpci/lintlang) | Static linting for agent configs with HERM v1.1 scoring | — | Beta |
+| [hermes-labs-ai/lintlang](https://github.com/hermes-labs-ai/lintlang) | Static linting for agent configs with HERM v1.1 scoring | — | Beta |
 | [0xNyk/openclaw-to-hermes](https://github.com/0xNyk/openclaw-to-hermes) | Migration tool from OpenClaw to Hermes Agent | 21 | Beta |
 | [unmodeled-tyler/vessel-browser](https://github.com/unmodeled-tyler/vessel-browser) | AI-native browser built for autonomous agent control via MCP | 44 | Experimental |
 | [42-evey/evey-setup](https://github.com/42-evey/evey-setup) | One-command Hermes stack setup with 29 pre-configured plugins | — | Beta |
-| [rookiemann/portable-hermes-agent](https://github.com/rookiemann/portable-hermes-agent) | Windows desktop app bundling Hermes with 100 tools | — | Beta |
+| [aivrar/portable-hermes-agent](https://github.com/aivrar/portable-hermes-agent) | Windows desktop app bundling Hermes with 100 tools | — | Beta |
 | [AlexAI-MCP/hermes-CCC](https://github.com/AlexAI-MCP/hermes-CCC) | Hermes Agent ported to Claude Code Channel — 46 native skills, no OAuth, no external process | 56 | Beta |
 | [howdymary/hermes-agent-metaharness](https://github.com/howdymary/hermes-agent-metaharness) | Meta-harness implementation for Hermes Agent orchestration | 46 | Beta |
 
