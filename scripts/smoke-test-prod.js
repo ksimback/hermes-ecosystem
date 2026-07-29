@@ -293,6 +293,7 @@ await section("1. Critical pages return 2xx", async () => {
     "/",
     "/guide/",
     "/lists/",
+    "/use-cases/",
     "/reports/",
     "/privacy/",
     "/sitemap.xml",
