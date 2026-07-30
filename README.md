@@ -105,6 +105,10 @@ OPENROUTER_API_KEY=sk-or-... node scripts/test-rag.js
 | `REDIS_URL` | Redis Cloud connection string | Yes (for cache + history) |
 | `OPENROUTER_MODEL` | Override primary LLM model | No (default: `deepseek/deepseek-v4-flash`) |
 | `OPENROUTER_FALLBACK_MODELS` | Comma-separated fallback chain | No (default: `google/gemini-3-flash-preview,google/gemini-3.1-flash-lite-preview`) |
+| `CHAT_PROVIDER` | Chat LLM transport (`openrouter` or `minimax`) | No (default: `openrouter`) |
+| `MINIMAX_API_KEY` | MiniMax API key (required when `CHAT_PROVIDER=minimax`) | No |
+| `MINIMAX_REGION` | MiniMax regional endpoint (`global_en` or `cn_zh`) | No (default: `global_en`) |
+| `MINIMAX_MODELS` | Comma-separated MiniMax model list | No (default: `MiniMax-M3,MiniMax-M2.7`) |
 
 ## Contributing
 
