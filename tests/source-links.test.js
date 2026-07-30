@@ -51,6 +51,21 @@ test("rejects malformed, empty, and traversal-shaped sources", () => {
   assert.equal(resolveSourceUrl("research/docs/"), null);
 });
 
+// Caught in real production output, where the live API cited "Cli Commands"
+// and "Faq" for an install question.
+test("labels keep acronyms upper-case instead of sentence-casing them", () => {
+  assert.equal(resolveSourceUrl("research/docs/reference/cli-commands.md").label, "CLI Commands");
+  assert.equal(resolveSourceUrl("research/docs/reference/faq.md").label, "FAQ");
+  assert.equal(resolveSourceUrl("research/docs/developer-guide/acp-internals.md").label, "ACP Internals");
+  assert.equal(resolveSourceUrl("research/docs/integrations/mcp-gateway.md").label, "MCP Gateway");
+  // Ordinary words are still capitalized normally.
+  assert.equal(resolveSourceUrl("research/docs/getting-started/quickstart.md").label, "Quickstart");
+  assert.equal(
+    resolveSourceUrl("research/docs/user-guide/features/credential-pools.md").label,
+    "Credential Pools",
+  );
+});
+
 test("collectSourceLinks de-duplicates by URL and preserves rank order", () => {
   const links = collectSourceLinks([
     { source: "research/docs/getting-started/quickstart.md" },
