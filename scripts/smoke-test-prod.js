@@ -146,6 +146,15 @@ function fail(check, message, detail) {
   console.log(`  ${c.red("FAIL")}  ${check} ${c.dim(`- ${message}`)}`);
   if (VERBOSE && detail) console.log(c.dim(`        ${detail}`));
 }
+// A condition that is real but not a production defect — a shared-runner rate
+// limit, say. Recorded and printed like any other result so it can never pass
+// unnoticed, but kept out of `failures` so it does not fail the run.
+function warn(check, message, detail) {
+  results.push({ check, status: "warn", message, detail });
+  warnings.push({ check, message, detail });
+  console.log(`  ${c.yellow("WARN")}  ${check} ${c.dim(`- ${message}`)}`);
+  if (VERBOSE && detail) console.log(c.dim(`        ${detail}`));
+}
 function info(msg) {
   if (VERBOSE) console.log(c.dim(`  ${msg}`));
 }
@@ -376,10 +385,29 @@ await section("2. Public API contracts are semantically healthy", async () => {
           );
         }
       } else {
+        // Authenticate when a token is available: unauthenticated GitHub allows
+        // 60 requests/hour per IP, and Actions runners share IPs, so this call
+        // was intermittently 403ing and reporting production as stale when the
+        // only thing wrong was the rate limit.
+        const ghToken = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
         const upstreamResponse = await fetchWithTimeout(HERMES_RELEASES_URL, {
-          headers: { Accept: "application/vnd.github+json" },
+          headers: {
+            Accept: "application/vnd.github+json",
+            ...(ghToken ? { Authorization: `Bearer ${ghToken}` } : {}),
+          },
         });
-        if (!upstreamResponse.ok) {
+        const rateLimited =
+          (upstreamResponse.status === 403 || upstreamResponse.status === 429) &&
+          upstreamResponse.headers.get("x-ratelimit-remaining") === "0";
+        if (rateLimited) {
+          // Not a production defect — the site artifact was never inspected.
+          // Warn rather than fail, but stay loud about which check was skipped.
+          warn(
+            "latest release freshness",
+            `upstream rate limit (HTTP ${upstreamResponse.status}${ghToken ? "" : ", unauthenticated"}) — freshness not verified`,
+            HERMES_RELEASES_URL,
+          );
+        } else if (!upstreamResponse.ok) {
           fail("latest release freshness", `upstream HTTP ${upstreamResponse.status}`, HERMES_RELEASES_URL);
         } else {
           const upstreamReleases = await readJson(upstreamResponse, "latest release freshness");
@@ -698,12 +726,14 @@ const passed = results.filter((r) => r.status === "pass").length;
 const warned = results.filter((r) => r.status === "warn").length;
 const failed = results.filter((r) => r.status === "fail").length;
 const parts = [c.green(`${passed} passed`)];
-if (warned > 0) parts.push(c.yellow(`${warned} warned (acknowledged)`));
+if (warned > 0) parts.push(c.yellow(`${warned} warned`));
 parts.push(failed > 0 ? c.red(`${failed} failed`) : c.dim("0 failed"));
 console.log(`  ${parts.join(", ")}`);
 
 if (warnings.length > 0) {
-  console.log(c.bold("\nAcknowledged failures (not blocking)"));
+  // Covers both allow-listed acknowledgements and checks that could not be
+  // run (e.g. an upstream rate limit). Neither blocks, both stay visible.
+  console.log(c.bold("\nWarnings (not blocking)"));
   for (const w of warnings) {
     console.log(`  ${c.yellow("!")} ${w.check}: ${w.message}`);
     if (w.detail) console.log(c.dim(`     ${w.detail}`));

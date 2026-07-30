@@ -144,6 +144,9 @@ jobs:
         env:
           SMOKE_BASE: ${{ inputs.base || 'https://hermesatlas.com' }}
           SMOKE_SAMPLE: ${{ inputs.sample || '25' }}
+          # Raises the upstream release-freshness call from 60 req/hour per
+          # shared runner IP to 5000, which is what was intermittently 403ing.
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -o pipefail
           node scripts/smoke-test-prod.js \
