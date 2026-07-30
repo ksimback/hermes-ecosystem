@@ -3,6 +3,13 @@ import { combinedRetrievalScore, enrichChunkMetadata } from "../lib/rag-scoring.
 import { buildLatestReleaseBlock, detectLatestReleaseQuery } from "../lib/latest-release.js";
 import { parseChunkStore } from "../lib/chunk-store.js";
 import { matchUseCases, buildUseCaseBlock, inferCategory } from "../lib/use-case-match.js";
+import {
+  chatProviderConfig,
+  streamChatRequest,
+  chatStreamDelta,
+  chatStreamModel,
+  chatStreamUsage,
+} from "../lib/chat-provider.js";
 import { readFileSync } from "fs";
 import { join } from "path";
 
@@ -239,6 +246,19 @@ function mmrSelect(candidates, queryEmbedding, k, lambda = 0.6) {
 
 const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
 
+// Active chat LLM provider, resolved once via lib/chat-provider.js so the
+// transport config (regional MiniMax endpoints, model list) has a single
+// source of truth that is also unit-tested. Defaults to "openrouter" (the
+// historical waterfall). Set CHAT_PROVIDER=minimax to route the streaming
+// chat completion directly to a MiniMax Anthropic Messages-compatible endpoint
+// instead of OpenRouter. Everything downstream (SSE parsing, usage recording,
+// rate-limit) is transport-agnostic.
+const CHAT_CFG = chatProviderConfig(process.env);
+const CHAT_PROVIDER = CHAT_CFG.provider;
+const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY;
+const MINIMAX_BASE_URL = CHAT_CFG.baseUrl;
+const MINIMAX_PRIMARY_MODEL = CHAT_CFG.model;
+
 // Model config — supports primary + fallback via OpenRouter's native routing.
 // OpenRouter caps the models array at 3 total.
 //
@@ -294,7 +314,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  if (!OPENROUTER_KEY) {
+  if (CHAT_PROVIDER === "minimax" && !MINIMAX_API_KEY) {
+    return res.status(500).json({ error: "Chat not configured — missing API key" });
+  }
+  if (CHAT_PROVIDER !== "minimax" && !OPENROUTER_KEY) {
     return res.status(500).json({ error: "Chat not configured — missing API key" });
   }
 
@@ -546,39 +569,19 @@ ${retrievedContext}${useCaseBlock}${repoMetadataBlock}`;
       { role: "user", content: message },
     ];
 
-    // 6. Stream from LLM
-    const llmRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${OPENROUTER_KEY}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://hermesatlas.com",
-        "X-Title": "Hermes Atlas",
-      },
+    // 6. Stream from LLM. The transport is built via lib/chat-provider.js so
+    // the request shape for each provider lives in one tested place. The
+    // OpenRouter waterfall and the MiniMax direct path stay fully isolated —
+    // neither branch sees the other's request shape.
+    const llmRes = await streamChatRequest({
+      provider: CHAT_PROVIDER,
+      baseUrl: CHAT_PROVIDER === "minimax" ? MINIMAX_BASE_URL : "https://openrouter.ai/api/v1",
+      apiKey: CHAT_PROVIDER === "minimax" ? MINIMAX_API_KEY : OPENROUTER_KEY,
+      model: CHAT_PROVIDER === "minimax" ? MINIMAX_PRIMARY_MODEL : PRIMARY_MODEL,
+      fallbackModels: CHAT_PROVIDER === "minimax" ? [] : FALLBACK_MODELS,
+      messages,
+      maxTokens: MAX_TOKENS,
       signal: ac.signal,
-      body: JSON.stringify({
-        // OpenRouter native fallback — pass ONLY `models` array (no `model` field)
-        // It will try each in order until one succeeds
-        ...(FALLBACK_MODELS.length > 0
-          ? { models: [PRIMARY_MODEL, ...FALLBACK_MODELS] }
-          : { model: PRIMARY_MODEL }),
-        messages,
-        stream: true,
-        max_tokens: MAX_TOKENS,
-        temperature: 0.3,
-        // Ask OpenRouter to include token usage (and cost) in the final SSE
-        // chunk. That chunk may carry an empty choices array — the parser below
-        // tolerates it (it only reads choices[0] optionally).
-        usage: { include: true },
-        // Force reasoning OFF. Our SSE parser reads only delta.content; a
-        // reasoning-capable model streams to delta.reasoning (empty answer to
-        // us) or burns the whole token budget on hidden thinking. `enabled:
-        // false` stops the generation entirely — unlike `exclude: true`, which
-        // only hides reasoning from the response while still billing for it.
-        // Also insures against the unpinned preview alias silently shipping a
-        // reasoning-on provider revision.
-        reasoning: { enabled: false },
-      }),
     });
 
     if (!llmRes.ok) {
@@ -601,8 +604,8 @@ ${retrievedContext}${useCaseBlock}${repoMetadataBlock}`;
     const decoder = new TextDecoder();
     let buffer = "";
     let totalContent = "";
-    let actualModel = null; // Captured from OpenRouter SSE chunks
-    let usage = null; // Token usage from the final SSE chunk (usage.include)
+    let actualModel = null; // Captured from provider SSE chunks
+    let usage = null; // Token usage from the final SSE chunk
 
     while (true) {
       const { done, value } = await reader.read();
@@ -629,19 +632,29 @@ ${retrievedContext}${useCaseBlock}${repoMetadataBlock}`;
             return res.end();
           }
 
-          // Capture which model OpenRouter actually selected (after fallback routing)
-          if (parsed.model && !actualModel) {
-            actualModel = parsed.model;
+          // Capture which model the provider actually selected/served.
+          // OpenRouter reports it on every chunk; MiniMax reports it on the
+          // `message_start` event as `message.model`. Either way we keep the
+          // first non-empty value so the usage trailer attributes the request.
+          const streamModel = chatStreamModel(parsed);
+          if (streamModel && !actualModel) {
+            actualModel = streamModel;
           }
 
           // Capture token usage — OpenRouter emits it on the final chunk (the
-          // one that may have an empty choices array). Overwrite so we keep the
+          // one that may have an empty choices array). MiniMax emits it on the
+          // `message_delta` event as `usage`. Overwrite so we keep the
           // last/most-complete usage object seen.
-          if (parsed.usage) {
-            usage = parsed.usage;
+          const streamUsage = chatStreamUsage(parsed);
+          if (streamUsage) {
+            usage = streamUsage;
           }
 
-          const content = parsed.choices?.[0]?.delta?.content;
+          // OpenRouter content arrives as choices[].delta.content. MiniMax
+          // content arrives as delta.text on `content_block_delta` events.
+          // Both shapes are read here so the existing content-forwarding path
+          // is transport-agnostic.
+          const content = chatStreamDelta(parsed);
           if (content) {
             totalContent += content;
             res.write(content);
