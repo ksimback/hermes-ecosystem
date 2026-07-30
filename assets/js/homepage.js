@@ -348,21 +348,79 @@
     try { localStorage.removeItem(CHAT_STORAGE_KEY); } catch {}
     chatMessages.innerHTML = '';
     appendStaticMessage('assistant', WELCOME_MSG);
+    syncStarters();
   }
 
-  function appendStaticMessage(role, text, modelUsed) {
+  // Citations come from the API's meta trailer, already filtered to published
+  // pages with resolved URLs (lib/source-links.js). Built with createElement
+  // rather than innerHTML so a source label can never inject markup.
+  function appendSources(el, sources) {
+    if (!Array.isArray(sources) || sources.length === 0) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'chat-sources';
+
+    const label = document.createElement('span');
+    label.className = 'chat-sources-label';
+    label.textContent = 'sources';
+    wrap.appendChild(label);
+
+    const list = document.createElement('ul');
+    for (const src of sources) {
+      if (!src || typeof src.url !== 'string') continue;
+      // Defense in depth: only ever render http(s) destinations.
+      if (!/^https:\/\//i.test(src.url)) continue;
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = src.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.textContent = src.label || src.url;
+      if (src.kind) a.title = src.kind + ' — ' + src.url;
+      li.appendChild(a);
+      list.appendChild(li);
+    }
+    if (!list.children.length) return;
+    wrap.appendChild(list);
+    el.appendChild(wrap);
+  }
+
+  function appendModelBadge(el, modelUsed) {
+    if (!modelUsed) return;
+    const badge = document.createElement('div');
+    badge.className = 'chat-model-badge';
+    badge.textContent = formatModelName(modelUsed);
+    badge.title = 'Answered by ' + modelUsed;
+    el.appendChild(badge);
+  }
+
+  function appendStaticMessage(role, text, modelUsed, sources) {
     const el = document.createElement('div');
     el.className = 'chat-msg chat-' + role;
     el.innerHTML = role === 'user' ? escapeHtml(text) : renderMarkdown(text);
-    if (role === 'assistant' && modelUsed) {
-      const badge = document.createElement('div');
-      badge.className = 'chat-model-badge';
-      badge.textContent = formatModelName(modelUsed);
-      badge.title = 'Answered by ' + modelUsed;
-      el.appendChild(badge);
+    if (role === 'assistant') {
+      appendSources(el, sources);
+      appendModelBadge(el, modelUsed);
     }
     chatMessages.appendChild(el);
     return el;
+  }
+
+  // Starter questions are the empty state: they show only before the first
+  // exchange, and disappear once there is a conversation to read.
+  const chatStarters = document.getElementById('chat-starters');
+
+  function syncStarters() {
+    if (!chatStarters) return;
+    chatStarters.hidden = chatHistory.length > 0;
+  }
+
+  if (chatStarters) {
+    for (const btn of chatStarters.querySelectorAll('.chat-starter')) {
+      btn.addEventListener('click', () => {
+        chatInput.value = btn.textContent.trim();
+        sendMessage();
+      });
+    }
   }
 
   function initChat() {
@@ -371,24 +429,88 @@
       chatHistory = saved;
       appendStaticMessage('assistant', WELCOME_MSG);
       for (const msg of saved) {
-        appendStaticMessage(msg.role, msg.content, msg.model);
+        appendStaticMessage(msg.role, msg.content, msg.model, msg.sources);
       }
     } else {
       appendStaticMessage('assistant', WELCOME_MSG);
     }
+    syncStarters();
   }
   initChat();
 
+  // ── Panel open/close, focus management ──
+  // The panel is a modal dialog: while it is open, Tab must not escape into the
+  // page behind it, Escape must close it, and focus must return to the trigger
+  // so a keyboard user is not dumped at the top of the document.
+  const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
+
+  function chatIsOpen() {
+    return chatPanel.classList.contains('open');
+  }
+
+  function focusableInPanel() {
+    // Deliberately not an offsetParent check: the panel is position:fixed, so
+    // offsetParent is null for it and every descendant, which would leave the
+    // trap with nothing to cycle through. The only conditional visibility in
+    // here is the `hidden` attribute on the starters block, so test for that.
+    return Array.from(chatPanel.querySelectorAll(FOCUSABLE)).filter(
+      (el) => !el.disabled && !el.closest('[hidden]'),
+    );
+  }
+
+  function openChat() {
+    chatPanel.classList.add('open');
+    if (chatBtn) chatBtn.setAttribute('aria-expanded', 'true');
+    syncStarters();
+    chatInput.focus();
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function closeChat({ restoreFocus = true } = {}) {
+    if (!chatIsOpen()) return;
+    chatPanel.classList.remove('open');
+    if (chatBtn) {
+      chatBtn.setAttribute('aria-expanded', 'false');
+      if (restoreFocus) chatBtn.focus();
+    }
+  }
+
   if (chatBtn) {
     chatBtn.addEventListener('click', () => {
-      chatPanel.classList.toggle('open');
-      if (chatPanel.classList.contains('open')) {
-        chatInput.focus();
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
+      if (chatIsOpen()) closeChat();
+      else openChat();
     });
-    chatClose.addEventListener('click', () => chatPanel.classList.remove('open'));
+    chatClose.addEventListener('click', () => closeChat());
   }
+
+  document.addEventListener('keydown', (e) => {
+    if (!chatIsOpen()) return;
+
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeChat();
+      return;
+    }
+
+    if (e.key !== 'Tab') return;
+    const items = focusableInPanel();
+    if (items.length === 0) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+
+    // Wrap at both ends. Also catches the case where focus has drifted outside
+    // the panel entirely (e.g. a click on the page behind it).
+    if (!chatPanel.contains(document.activeElement)) {
+      e.preventDefault();
+      first.focus();
+    } else if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
   if (chatClear) {
     chatClear.addEventListener('click', () => {
       if (chatHistory.length === 0 || confirm('clear conversation history?')) {
@@ -396,6 +518,19 @@
         chatInput.focus();
       }
     });
+  }
+
+  // Visible "working" state. Replaces the old 'searching the research...'
+  // text, which a screen reader read as if it were the answer.
+  function buildLoadingSkeleton() {
+    const wrap = document.createElement('span');
+    wrap.className = 'chat-loading-dots';
+    for (let i = 0; i < 3; i++) wrap.appendChild(document.createElement('i'));
+    const sr = document.createElement('span');
+    sr.className = 'sr-only';
+    sr.textContent = 'searching the research…';
+    wrap.appendChild(sr);
+    return wrap;
   }
 
   async function sendMessage() {
@@ -407,10 +542,15 @@
     chatHistory.push({ role: 'user', content: msg });
     saveChatHistory();
 
+    syncStarters();
+
     chatSend.disabled = true;
     chatInput.disabled = true;
-    const loadingEl = appendMessage('assistant', 'searching the research...');
+    const loadingEl = appendMessage('assistant', '');
     loadingEl.classList.add('loading');
+    // Announce that work is in flight without narrating every streamed token.
+    loadingEl.setAttribute('aria-busy', 'true');
+    loadingEl.appendChild(buildLoadingSkeleton());
 
     try {
       const controller = new AbortController();
@@ -464,24 +604,25 @@
       clearTimeout(timeoutId);
 
       let modelUsed = null;
+      let sources = null;
       const trailerMatch = fullResponse.match(/\u200E__META__(.*?)__META__\u200E/);
       if (trailerMatch) {
-        try { modelUsed = JSON.parse(trailerMatch[1]).model; } catch {}
+        try {
+          const meta = JSON.parse(trailerMatch[1]);
+          modelUsed = meta.model;
+          if (Array.isArray(meta.sources)) sources = meta.sources;
+        } catch {}
         fullResponse = fullResponse.replace(trailerMatch[0], '');
       }
 
       if (!fullResponse.trim()) throw new Error('no response received. please try again.');
 
       loadingEl.innerHTML = renderMarkdown(fullResponse);
-      if (modelUsed) {
-        const badge = document.createElement('div');
-        badge.className = 'chat-model-badge';
-        badge.textContent = formatModelName(modelUsed);
-        badge.title = 'Answered by ' + modelUsed;
-        loadingEl.appendChild(badge);
-      }
+      loadingEl.removeAttribute('aria-busy');
+      appendSources(loadingEl, sources);
+      appendModelBadge(loadingEl, modelUsed);
 
-      chatHistory.push({ role: 'assistant', content: fullResponse, model: modelUsed });
+      chatHistory.push({ role: 'assistant', content: fullResponse, model: modelUsed, sources });
       saveChatHistory();
     } catch (e) {
       let msg = e.message || 'something went wrong. please try again.';
@@ -490,6 +631,7 @@
       }
       loadingEl.textContent = msg;
       loadingEl.classList.remove('loading');
+      loadingEl.removeAttribute('aria-busy');
       loadingEl.classList.add('error');
     } finally {
       chatSend.disabled = false;

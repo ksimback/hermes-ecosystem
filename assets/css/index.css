@@ -741,6 +741,94 @@
   padding-top: 6px;
   border-top: 1px solid var(--chat-rule-soft);
 }
+
+/* Cited sources — only published pages are ever linked (lib/source-links.js). */
+.chat-sources {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--chat-rule-soft);
+}
+.chat-sources-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--chat-ink-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+.chat-sources ul {
+  list-style: none;
+  margin: 5px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+}
+.chat-sources li { margin: 0; }
+.chat-sources a {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--chat-accent);
+  border-bottom: 1px solid var(--chat-rule-soft);
+}
+.chat-sources a:hover,
+.chat-sources a:focus-visible { border-bottom-color: var(--chat-accent); }
+
+/* Streaming indicator. Replaces the old italic "searching…" text, which a
+   screen reader announced as though it were the answer. */
+.chat-loading-dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+.chat-loading-dots i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--chat-ink-mute);
+  animation: chat-dot 1.2s ease-in-out infinite;
+}
+.chat-loading-dots i:nth-child(2) { animation-delay: 0.15s; }
+.chat-loading-dots i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes chat-dot {
+  0%, 100% { opacity: 0.25; }
+  50%      { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-loading-dots i { animation: none; opacity: 0.6; }
+}
+
+/* Empty state: starter questions, shown only before the first exchange. */
+.chat-starters {
+  padding: 0 20px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chat-starters[hidden] { display: none; }
+.chat-starters-label {
+  flex-basis: 100%;
+  margin: 0 0 2px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--chat-ink-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+.chat-starter {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--chat-ink-dim);
+  background: transparent;
+  border: 1px solid var(--chat-rule);
+  padding: 5px 9px;
+  cursor: pointer;
+  text-align: left;
+}
+.chat-starter:hover,
+.chat-starter:focus-visible {
+  color: var(--chat-accent);
+  border-color: var(--chat-accent);
+}
 .chat-input-wrap {
   display: flex;
   gap: 0;

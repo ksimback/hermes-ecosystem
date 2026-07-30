@@ -916,7 +916,7 @@
         <div class="repo-desc">Accelerating Long Context LLM Inference with Accuracy-Preserving Context Optimization in SGLang, vLLM, llama.cpp, OpenClaw, RAG, and Agentic AI.</div>
       </div>
       <div class="repo-delta">— / wk</div>
-    </a>
+    </a>
     <a class="repo-row" href="/projects/yepyhun/Brainstack" data-github="https://github.com/yepyhun/Brainstack" data-desc="Memory kernel stack for Hermes agent">
       <div class="repo-stars">★ 43</div>
       <div class="repo-body">
@@ -1434,7 +1434,7 @@
         <div class="repo-desc">17 specialized agents — research, planning, implementation, quality, infrastructure.</div>
       </div>
       <div class="repo-delta">— / wk</div>
-    </a>
+    </a>
     <a class="repo-row" href="/projects/agent-of-empires/agent-of-empires" data-github="https://github.com/agent-of-empires/agent-of-empires" data-desc="TUI and web control surface for managing multiple coding agents including Hermes Agent, Claude Code, OpenCode, Codex, Gemini, and others">
       <div class="repo-stars">★ 2,912</div>
       <div class="repo-body">
@@ -2157,11 +2157,11 @@
 </footer>
 
 <!-- Chat widget -->
-<button id="chat-btn" title="Ask the Atlas">ask the atlas</button>
-<aside id="chat-panel" aria-label="Atlas chat">
+<button id="chat-btn" title="Ask the Atlas" aria-expanded="false" aria-controls="chat-panel">ask the atlas</button>
+<aside id="chat-panel" role="dialog" aria-modal="true" aria-labelledby="chat-title">
   <div class="chat-header">
     <div>
-      <h3>ask the atlas</h3>
+      <h3 id="chat-title">ask the atlas</h3>
       <span>openrouter · grounded in research</span>
     </div>
     <div class="chat-header-actions">
@@ -2169,7 +2169,16 @@
       <button id="chat-close" title="Close" aria-label="Close chat">close</button>
     </div>
   </div>
-  <div id="chat-messages"></div>
+  <!-- Answers stream in here. aria-live announces them; aria-atomic="false" so
+       only the new message is read, not the whole transcript on every token. -->
+  <div id="chat-messages" aria-live="polite" aria-atomic="false"></div>
+  <div id="chat-starters" class="chat-starters" hidden>
+    <p class="chat-starters-label">try asking</p>
+    <button type="button" class="chat-starter">Which memory provider should I use?</button>
+    <button type="button" class="chat-starter">Hermes vs Claude Code?</button>
+    <button type="button" class="chat-starter">How do I install Hermes Agent?</button>
+    <button type="button" class="chat-starter">What can I build with it?</button>
+  </div>
   <div class="chat-input-wrap">
     <input type="text" id="chat-input" placeholder="ask anything about hermes agent..." aria-label="Ask a question">
     <button id="chat-send" title="Send">send</button>

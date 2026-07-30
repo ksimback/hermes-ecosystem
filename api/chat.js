@@ -3,6 +3,7 @@ import { combinedRetrievalScore, enrichChunkMetadata } from "../lib/rag-scoring.
 import { buildLatestReleaseBlock, detectLatestReleaseQuery } from "../lib/latest-release.js";
 import { parseChunkStore } from "../lib/chunk-store.js";
 import { matchUseCases, buildUseCaseBlock, inferCategory } from "../lib/use-case-match.js";
+import { collectSourceLinks } from "../lib/source-links.js";
 import { readFileSync } from "fs";
 import { join } from "path";
 
@@ -665,11 +666,17 @@ ${retrievedContext}${useCaseBlock}${repoMetadataBlock}`;
     // data/use-cases.json, leaving loadUseCases() permanently empty) stays
     // observable from outside, instead of silently degrading to the old
     // full-catalog behavior while every check stays green.
-    if (actualModel || useCaseMatches.length > 0) {
+    //
+    // `sources` carries the citations the client renders as links. Only
+    // published pages resolve (see lib/source-links.js); Atlas-internal
+    // research is deliberately uncited rather than linked somewhere invented.
+    const sourceLinks = collectSourceLinks(scored);
+    if (actualModel || useCaseMatches.length > 0 || sourceLinks.length > 0) {
       const meta = { model: actualModel };
       if (useCaseMatches.length > 0) {
         meta.useCases = useCaseMatches.map((m) => m.useCase.slug);
       }
+      if (sourceLinks.length > 0) meta.sources = sourceLinks;
       const trailer = `\u200E__META__${JSON.stringify(meta)}__META__\u200E`;
       res.write(trailer);
     }
