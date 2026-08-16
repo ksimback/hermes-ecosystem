@@ -274,6 +274,8 @@ async function main() {
   let listsFailed = 0;
 
   for (const list of lists) {
+    if (list.summaries === false) continue;
+
     const memberRepos = repos.filter((r) => {
       if (list.filter?.category) return r.category === list.filter.category;
       return false;

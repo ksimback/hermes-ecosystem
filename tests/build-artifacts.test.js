@@ -31,6 +31,7 @@ test("generated artifact manifest covers current build outputs", () => {
     "data/summaries.json",
     "data/list-summaries.json",
     "data/latest-release.json",
+    "data/desktop-plugins.json",
   ]);
 });
 

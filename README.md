@@ -1,5 +1,7 @@
 # 🗺️ Hermes Atlas
 
+Browse the public [Hermes Desktop Plugin Atlas](https://hermesatlas.com/lists/desktop-plugins), a source-verified evidence inventory separate from the quality-filtered project catalog. See the [methodology](./research/desktop-plugin-methodology.md), refresh existing entries with `GITHUB_TOKEN="$(gh auth token)" node scripts/refresh-desktop-plugins.js`, or install the local scout profile with `hermes profile install ./profiles/desktop-plugin-scout --alias`.
+
 **The community-curated map of every tool, skill, and integration for [Hermes Agent](https://github.com/NousResearch/hermes-agent) by [Nous Research](https://nousresearch.com).**
 
 🌐 **Live site:** [hermesatlas.com](https://hermesatlas.com)
