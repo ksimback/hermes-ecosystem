@@ -238,7 +238,15 @@ function mmrSelect(candidates, queryEmbedding, k, lambda = 0.6) {
   return selected;
 }
 
+// LLM gateway: "openrouter" (default) or "orcarouter".
+// OrcaRouter is an OpenAI-compatible model routing gateway; when selected, the
+// answer, query rewrite, and embeddings paths all target
+// https://api.orcarouter.ai/v1 using ORCAROUTER_API_KEY.
+const CHAT_GATEWAY = process.env.CHAT_GATEWAY || "openrouter";
+const isOrcaRouter = CHAT_GATEWAY === "orcarouter";
+
 const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
+const ORCAROUTER_KEY = process.env.ORCAROUTER_API_KEY;
 
 // Model config — supports primary + fallback via OpenRouter's native routing.
 // OpenRouter caps the models array at 3 total.
@@ -280,6 +288,12 @@ const FALLBACK_MODELS = (process.env.OPENROUTER_FALLBACK_MODELS ||
   "google/gemini-3.1-flash-lite-preview"
 ).split(",").map(s => s.trim()).filter(Boolean).slice(0, 2);
 
+// OrcaRouter gateway config (CHAT_GATEWAY=orcarouter). OrcaRouter takes a
+// single `model` field (no `models` fallback array), so the waterfall is
+// collapsed to one namespaced model ID. Reasoning is disabled per-request via
+// `thinking: { type: "disabled" }` (OrcaRouter honours `thinking.type`).
+const ORCAROUTER_MODEL = process.env.ORCAROUTER_MODEL || "deepseek/deepseek-v4-flash";
+
 const MAX_TOKENS = parseInt(process.env.CHAT_MAX_TOKENS || "1200");
 
 // Per-IP rate limits
@@ -295,7 +309,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  if (!OPENROUTER_KEY) {
+  if (isOrcaRouter ? !ORCAROUTER_KEY : !OPENROUTER_KEY) {
     return res.status(500).json({ error: "Chat not configured — missing API key" });
   }
 
@@ -548,39 +562,63 @@ ${retrievedContext}${useCaseBlock}${repoMetadataBlock}`;
     ];
 
     // 6. Stream from LLM
-    const llmRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${OPENROUTER_KEY}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://hermesatlas.com",
-        "X-Title": "Hermes Atlas",
-      },
-      signal: ac.signal,
-      body: JSON.stringify({
-        // OpenRouter native fallback — pass ONLY `models` array (no `model` field)
-        // It will try each in order until one succeeds
-        ...(FALLBACK_MODELS.length > 0
-          ? { models: [PRIMARY_MODEL, ...FALLBACK_MODELS] }
-          : { model: PRIMARY_MODEL }),
-        messages,
-        stream: true,
-        max_tokens: MAX_TOKENS,
-        temperature: 0.3,
-        // Ask OpenRouter to include token usage (and cost) in the final SSE
-        // chunk. That chunk may carry an empty choices array — the parser below
-        // tolerates it (it only reads choices[0] optionally).
-        usage: { include: true },
-        // Force reasoning OFF. Our SSE parser reads only delta.content; a
-        // reasoning-capable model streams to delta.reasoning (empty answer to
-        // us) or burns the whole token budget on hidden thinking. `enabled:
-        // false` stops the generation entirely — unlike `exclude: true`, which
-        // only hides reasoning from the response while still billing for it.
-        // Also insures against the unpinned preview alias silently shipping a
-        // reasoning-on provider revision.
-        reasoning: { enabled: false },
-      }),
-    });
+    const llmRes = await fetch(
+      isOrcaRouter
+        ? "https://api.orcarouter.ai/v1/chat/completions"
+        : "https://openrouter.ai/api/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${isOrcaRouter ? ORCAROUTER_KEY : OPENROUTER_KEY}`,
+          "Content-Type": "application/json",
+          // OpenRouter requires attribution headers; OrcaRouter does not.
+          ...(isOrcaRouter
+            ? {}
+            : { "HTTP-Referer": "https://hermesatlas.com", "X-Title": "Hermes Atlas" }),
+        },
+        signal: ac.signal,
+        body: JSON.stringify(
+          isOrcaRouter
+            ? {
+                // OrcaRouter is OpenAI-compatible: a single namespaced `model`
+                // (no `models` fallback array). Reasoning is disabled via
+                // `thinking: { type: "disabled" }` — the same discipline as the
+                // OpenRouter `reasoning: { enabled: false }` below: a reasoning
+                // model would otherwise stream to `delta.reasoning` and return
+                // empty content to our parser.
+                model: ORCAROUTER_MODEL,
+                messages,
+                stream: true,
+                max_tokens: MAX_TOKENS,
+                temperature: 0.3,
+                thinking: { type: "disabled" },
+              }
+            : {
+                // OpenRouter native fallback — pass ONLY `models` array (no `model` field)
+                // It will try each in order until one succeeds
+                ...(FALLBACK_MODELS.length > 0
+                  ? { models: [PRIMARY_MODEL, ...FALLBACK_MODELS] }
+                  : { model: PRIMARY_MODEL }),
+                messages,
+                stream: true,
+                max_tokens: MAX_TOKENS,
+                temperature: 0.3,
+                // Ask OpenRouter to include token usage (and cost) in the final SSE
+                // chunk. That chunk may carry an empty choices array — the parser below
+                // tolerates it (it only reads choices[0] optionally).
+                usage: { include: true },
+                // Force reasoning OFF. Our SSE parser reads only delta.content; a
+                // reasoning-capable model streams to delta.reasoning (empty answer to
+                // us) or burns the whole token budget on hidden thinking. `enabled:
+                // false` stops the generation entirely — unlike `exclude: true`, which
+                // only hides reasoning from the response while still billing for it.
+                // Also insures against the unpinned preview alias silently shipping a
+                // reasoning-on provider revision.
+                reasoning: { enabled: false },
+              }
+        ),
+      }
+    );
 
     if (!llmRes.ok) {
       const err = await llmRes.text();
@@ -817,31 +855,49 @@ ${historyText}
 Latest: ${message}
 Rewritten:`;
 
-    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      signal,
-      headers: {
-        Authorization: `Bearer ${OPENROUTER_KEY}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://hermesatlas.com",
-        "X-Title": "Hermes Atlas — Query Rewriter",
-      },
-      body: JSON.stringify({
-        // Query rewriting needs fast, reliable, non-reasoning models with good
-        // instruction following. Avoid reasoning models (GLM-4.7-Flash) which
-        // put output in a 'reasoning' field and return null content.
-        // All three options below are paid but cost fractions of a cent per call.
-        models: [
-          "google/gemini-3.1-flash-lite-preview",
-          "qwen/qwen3.5-flash-02-23",
-          "mistralai/mistral-small-2603",
-        ],
-        messages: [{ role: "user", content: rewritePrompt }],
-        max_tokens: 100,
-        temperature: 0,
-        stop: ["\n\n", "History:", "Latest:"],
-      }),
-    });
+    const res = await fetch(
+      isOrcaRouter
+        ? "https://api.orcarouter.ai/v1/chat/completions"
+        : "https://openrouter.ai/api/v1/chat/completions",
+      {
+        method: "POST",
+        signal,
+        headers: {
+          Authorization: `Bearer ${isOrcaRouter ? ORCAROUTER_KEY : OPENROUTER_KEY}`,
+          "Content-Type": "application/json",
+          ...(isOrcaRouter
+            ? {}
+            : { "HTTP-Referer": "https://hermesatlas.com", "X-Title": "Hermes Atlas — Query Rewriter" }),
+        },
+        body: JSON.stringify(
+          isOrcaRouter
+            ? {
+                // Single namespaced model + reasoning disabled (see main request).
+                model: ORCAROUTER_MODEL,
+                messages: [{ role: "user", content: rewritePrompt }],
+                max_tokens: 100,
+                temperature: 0,
+                stop: ["\n\n", "History:", "Latest:"],
+                thinking: { type: "disabled" },
+              }
+            : {
+                // Query rewriting needs fast, reliable, non-reasoning models with good
+                // instruction following. Avoid reasoning models (GLM-4.7-Flash) which
+                // put output in a 'reasoning' field and return null content.
+                // All three options below are paid but cost fractions of a cent per call.
+                models: [
+                  "google/gemini-3.1-flash-lite-preview",
+                  "qwen/qwen3.5-flash-02-23",
+                  "mistralai/mistral-small-2603",
+                ],
+                messages: [{ role: "user", content: rewritePrompt }],
+                max_tokens: 100,
+                temperature: 0,
+                stop: ["\n\n", "History:", "Latest:"],
+              }
+        ),
+      }
+    );
 
     if (!res.ok) {
       console.warn("Query rewrite failed, using original");
@@ -884,15 +940,20 @@ async function getEmbedding(text, signal) {
   };
   if (corpusDim && corpusDim !== 1536) body.dimensions = corpusDim;
 
-  const res = await fetch("https://openrouter.ai/api/v1/embeddings", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${OPENROUTER_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-    signal,
-  });
+  const res = await fetch(
+    isOrcaRouter
+      ? "https://api.orcarouter.ai/v1/embeddings"
+      : "https://openrouter.ai/api/v1/embeddings",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${isOrcaRouter ? ORCAROUTER_KEY : OPENROUTER_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+      signal,
+    }
+  );
 
   if (!res.ok) throw new Error(`Embedding error: ${res.status}`);
   const data = await res.json();
