@@ -30,6 +30,7 @@ approvals:
   mode: smart                     # smart | manual | off
   timeout: 300                    # seconds to wait for user response (default: 300)
   cron_mode: deny                 # deny | approve — what cron jobs do when they hit a dangerous command
+  single_query_mode: deny         # deny | approve — what single-query (-q) sessions do on a dangerous command
   mcp_reload_confirm: true        # /reload-mcp asks before invalidating the MCP tool cache
   destructive_slash_confirm: true # /clear, /new, /reset, /undo prompt before discarding state
 ```
@@ -59,6 +60,12 @@ Seconds Hermes waits for an approval reply before timing out.
 `deny`
 
 How [cron jobs](/docs/user-guide/features/cron) behave headlessly when they trigger a dangerous-command prompt. `deny` blocks the command (the agent must find another path); `approve` auto-approves everything in cron context.
+
+`single_query_mode`
+
+`deny`
+
+How one-shot [`hermes chat -q`](/docs/user-guide/cli) sessions behave when they trigger a dangerous-command prompt. A `-q` session runs a single turn and exits with no user waiting to answer prompts; `deny` blocks the command (the agent must find another path), `approve` auto-approves everything in single-query context. Mirrors `cron_mode`.
 
 `mcp_reload_confirm`
 

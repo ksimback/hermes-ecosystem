@@ -79,6 +79,7 @@ compression:
   #   "glm-5.2": 0.40        # longest key wins). See "Per-model threshold
   #   "claude-sonnet": 0.35  # overrides" below.
   target_ratio: 0.20         # How much of threshold to keep as tail (default: 0.20)
+  tail_mode: legacy          # Tail retention policy: legacy | lean (default: legacy)
   protect_last_n: 20         # Minimum protected tail messages (default: 20)
   min_tail_user_messages: 1  # Real user messages guaranteed in the tail (default: 1)
   codex_gpt55_autoraise: true  # gpt-5.5 on Codex OAuth: raise trigger to 85% (default: true)
@@ -128,7 +129,15 @@ Per-model overrides of `threshold`. Keys are substring-matched against the model
 
 0.10-0.80
 
-Controls tail protection token budget: `threshold_tokens × target_ratio`
+Controls tail protection token budget: `threshold_tokens × target_ratio` (legacy mode only — `lean` uses its own clamp)
+
+`tail_mode`
+
+`legacy`
+
+`legacy`, `lean`
+
+Tail retention policy. `legacy` keeps a `target_ratio`\-sized verbatim tail (~100K+ tokens on big-window models). `lean` keeps a clamped tail of `2.5% × context window` (10K floor, 25K cap) and instead carries continuity in the summary: chunked identifier-preserving digests of the compacted region, a mechanically extracted anchor index (PR numbers, SHAs, paths, error strings — regex, never paraphrased), every real user message quoted verbatim (newest-first budget), and a `session_search` recovery pointer so the agent can re-access anything summarized away. Result on 500K-token real sessions: ~49K retained vs ~162K, with higher recall when paired with recovery (see `evals/compaction/results/`). Costs a few extra summarizer calls at the compaction boundary. Old tool results inside the lean tail are demoted to one-line stubs carrying a recovery pointer
 
 `protect_last_n`
 

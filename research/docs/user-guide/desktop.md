@@ -158,6 +158,14 @@ The app also surfaces the broader Hermes management surface so you don't have to
 -   **Messaging** — set up gateway channels.
 -   **Agents** and **Command Center** — orchestration surfaces for multi-agent work.
 
+### Bot Mode (built in)
+
+**Bot Mode** ships with the app and is on by default: a "one chat per agent" roster where every [Hermes profile](/docs/user-guide/profiles) appears as a bot with its own avatar (geometric face, uploaded image, AI-generated portrait, or a pixel pet), its own canonical **Bot Chat** conversation, and its own **Routines** (recurring tasks backed by Hermes cron). Create new agents from the roster — Name / Title / Description plus an Advanced disclosure with the full capabilities surface (model, SOUL, skills, toolsets, MCP servers) — group them into sections, and open group chats where several bots deliberate.
+
+Bots message each other: type `@researcher have a look at this` in any chat and the active bot hands the message off and reports back, and bots reach each other's Bot Chats directly (`hermes -p <bot> chat`). The backend teaches each bot's canonical **Bot Chat** session the messaging protocol automatically (config `agent.bot_mode_protocol`, default on) — including when a teammate bot opens it headlessly from the CLI — so bot-to-bot replies and handoffs work without touching your SOUL.md, and your regular sessions stay untouched.
+
+Don't want it? Flip it off in **Settings → Plugins → Bots** — the roster, routines pane, and composer middleware unregister live, no restart needed.
+
 ### Keyboard & navigation
 
 -   **Command palette** — press **Cmd+K** or **Cmd+P** (Ctrl+K / Ctrl+P on Windows/Linux) to jump to actions and navigate the app from the keyboard: open any page or settings section, jump to a session by title or id, switch model/theme/color mode, spawn a terminal, restart the gateway, update Hermes, and more.
@@ -251,7 +259,7 @@ Connection modes are configured **per profile** — a per-profile override can p
 
 ### Settings → Connections: the multi-connection registry
 
-Alongside the per-profile connection mode above, **Settings → Connections** manages a named registry of every agent source the app knows about — the local runtime, any number of remote gateways (LAN, Tailscale, internet), Hermes Cloud instances, and SSH hosts — all persisted together in one place. The full guide, including the union agent roster, `@name-device` handles, fleet-wide updates, and the plugin SDK surface, is at [Connecting Desktop to Many Hermes Instances](/docs/user-guide/multi-connection-desktop).
+Alongside the per-profile connection mode above, **Settings → Connections** manages a named registry of every agent source the app knows about — the local runtime, any number of remote gateways (LAN, Tailscale, internet), Hermes Cloud instances, and SSH hosts — all persisted together in one place. You can jump there from the plug button at the right end of the sidebar profile rail (**Connect another Hermes gateway…**) or via **⌘K → Connections**. The full guide, including the union agent roster, `@name-device` handles, fleet-wide updates, and the plugin SDK surface, is at [Connecting Desktop to Many Hermes Instances](/docs/user-guide/multi-connection-desktop).
 
 -   **Every connection needs a unique name** (a device name such as "Homelab" or "Work laptop"). When the same profile name exists on several registered sources, surfaces disambiguate it as `@profile-device` (e.g. `@research-homelab`).
 -   **Add / edit / remove / test** connections from the panel. The local entry is managed by the app and cannot be removed. **Test** probes the connection's own HTTP and WebSocket legs directly.
