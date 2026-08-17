@@ -31,8 +31,11 @@ test("generated artifact manifest covers current build outputs", () => {
     "data/summaries.json",
     "data/list-summaries.json",
     "data/latest-release.json",
-    "data/desktop-plugins.json",
   ]);
+});
+
+test("the hand-reviewed Desktop catalog is not staged by scheduled builds", () => {
+  assert.equal(GENERATED_ARTIFACT_PATHS.includes("data/desktop-plugins.json"), false);
 });
 
 test("every hand-authored page refreshed by the build is staged", () => {
@@ -72,14 +75,14 @@ test("assertNoUnstagedChanges allows fully staged generated changes", () => {
   }));
 });
 
-test("assertNoUnstagedChanges fails loudly on silently dropped artifacts", () => {
+test("assertNoUnstagedChanges rejects an unexpected Desktop catalog mutation", () => {
   assert.throws(
     () => assertNoUnstagedChanges({
       statusOutput: [
         "M  index.html",
-        "?? data/new-generated-file.json",
+        " M data/desktop-plugins.json",
       ].join("\n"),
     }),
-    /data\/new-generated-file\.json/
+    /data\/desktop-plugins\.json/
   );
 });
