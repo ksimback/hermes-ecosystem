@@ -61,7 +61,7 @@ We'll review the content and add it to the `research/` folder, which powers the 
 
 `data/desktop-plugins.json` is a source-verified evidence inventory separate from the quality-filtered `data/repos.json` catalog. Read [`research/desktop-plugin-methodology.md`](./research/desktop-plugin-methodology.md) before changing it. Exact SDK/import/path searches are candidate discovery only.
 
-Run `node scripts/refresh-desktop-plugins.js --validate` to verify the committed cutoff baseline offline. Use `GITHUB_TOKEN="$(gh auth token)" node scripts/refresh-desktop-plugins.js --check` for a no-write comparison with current default branches, and run without `--check` only after reviewing the revisions to advance. The verifier fetches source as text and never runs downloaded content. A directly supplied `GITHUB_TOKEN` works when GitHub CLI authentication is unavailable.
+Run `node scripts/refresh-desktop-plugins.js --validate` to verify the committed retrospective cutoff reconstruction offline. Use `GITHUB_TOKEN="$(gh auth token)" node scripts/refresh-desktop-plugins.js --check` for a no-write comparison of recorded evidence paths at current default-branch revisions, and run without `--check` only after reviewing the revisions to advance. This check does not discover new entrypoint paths. The verifier fetches source as text and never runs downloaded content. A directly supplied `GITHUB_TOKEN` works when GitHub CLI authentication is unavailable.
 
 Maintainers can install the repository-local scout profile with `hermes profile install ./profiles/desktop-plugin-scout --alias`. After pulling Atlas changes, run `hermes profile update desktop-plugin-scout` because its recorded source is local.
 

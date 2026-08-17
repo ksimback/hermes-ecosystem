@@ -18,7 +18,7 @@ test("desktop plugin catalog has immutable, source-verified evidence", () => {
   assert.deepEqual(validateCatalog(catalog), []);
   assert.equal(JSON.stringify(catalog, null, 2) + "\n", canonicalizeCatalog(catalog));
   assert.equal(catalog.cutoffAt, "2026-08-14T17:29:59Z");
-  assert.equal(catalog.reviewMode, "cutoff-baseline");
+  assert.equal(catalog.reviewMode, "retrospective-cutoff");
   assert.ok(catalog.plugins.length > 0);
   assert.equal(new Set(catalog.plugins.map((p) => p.repository.toLowerCase())).size, catalog.plugins.length);
   for (const plugin of catalog.plugins) {
@@ -86,11 +86,23 @@ test("source verification requires the SDK import and a concrete contract", () =
     `var plugin = { id: ID, register: function (ctx) {} }; export { plugin as default };`,
     `function register(ctx) {} export default { id: ID, register };`,
     `const plugin: HermesPlugin = /** reviewed type */ ({ id: ID, register(ctx) {} }); export default plugin;`,
+    `const plugin = Object.freeze({ id: ID, register(ctx) {} }); export default plugin;`,
   ]) {
     assert.equal(sourceSignals(`import { host } from "@hermes/plugin-sdk";\n${manifest}`).registrationContract, true);
   }
   const regexAndTemplate = "import { host } from '@hermes/plugin-sdk'; const matcher = /[\"']/g; const tpl = `x ${String('a').replace(/\"/g, '')}`; export default { id: 'real', register(ctx) {} };";
   assert.equal(sourceSignals(regexAndTemplate).registrationContract, true);
+  assert.deepEqual(sourceSignals(`import { host } from "@hermes/plugin-sdk"; function registerPlugin() {} registerPlugin({});`), {
+    sdkImport: true,
+    registrationContract: false,
+    contributionContract: false,
+  });
+  assert.equal(sourceSignals(`import { host } from "@hermes/plugin-sdk"; const meta = { id: "x" }; const lifecycle = { register() {} }; export default lifecycle;`).registrationContract, false);
+  assert.equal(sourceSignals(`import { registerPlugin as mount } from "@hermes/plugin-sdk"; mount({});`).registrationContract, true);
+  assert.equal(sourceSignals(`import * as sdk from "@hermes/plugin-sdk"; sdk.createPlugin({});`).contributionContract, true);
+  assert.equal(sourceSignals(`const { registerPlugin: mount } = require("@hermes/plugin-sdk"); mount({});`).registrationContract, true);
+  assert.equal(sourceSignals(`import { registerPlugin } from "@hermes/plugin-sdk"; function wrapper(registerPlugin) { registerPlugin({}); }`).registrationContract, false);
+  assert.equal(sourceSignals(`import { registerPlugin } from "@hermes/plugin-sdk"; const values = [4]; values[0] / registerPlugin({}) / 2;`).registrationContract, true);
   for (const propertyCall of [
     `loader.import("@hermes/plugin-sdk"); export default { id: "fake", register(ctx) {} };`,
     `loader.require("@hermes/plugin-sdk"); export default { id: "fake", register(ctx) {} };`,

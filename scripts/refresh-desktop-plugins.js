@@ -3,6 +3,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { parse } from "@babel/parser";
+import traverseModule from "@babel/traverse";
+
+const traverse = traverseModule.default || traverseModule;
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CATALOG_PATH = path.join(ROOT, "data", "desktop-plugins.json");
@@ -12,7 +16,7 @@ const UTC_TIMESTAMP_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/;
 const CUTOFF_TIMESTAMP_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
 const METHODOLOGY_URL = "https://github.com/ksimback/hermes-ecosystem/blob/main/research/desktop-plugin-methodology.md";
 const TYPES = new Set(["standalone", "collection", "embedded integration", "public dotfile plugin", "official standalone"]);
-const REVIEW_MODES = new Set(["cutoff-baseline", "current-head"]);
+const REVIEW_MODES = new Set(["retrospective-cutoff", "current-head"]);
 
 function isExactDate(value) {
   if (!DATE_RE.test(value || "")) return false;
@@ -28,165 +32,190 @@ function isExactUtcTimestamp(value, pattern = UTC_TIMESTAMP_RE) {
   return parsed.toISOString() === canonical;
 }
 
-function lexSource(text) {
-  const code = text.split("");
-  const tokens = [];
-  const blank = (start, end) => {
-    for (let index = start; index < end; index += 1) {
-      if (code[index] !== "\n" && code[index] !== "\r") code[index] = " ";
-    }
-  };
-  const scanQuoted = (start, quote) => {
-    let cursor = start + 1;
-    while (cursor < text.length) {
-      if (text[cursor] === "\\") cursor += 2;
-      else if (text[cursor] === quote) return cursor + 1;
-      else cursor += 1;
-    }
-    return cursor;
-  };
-  function scanTemplate(start) {
-    let cursor = start + 1;
-    while (cursor < text.length) {
-      if (text[cursor] === "\\") cursor += 2;
-      else if (text[cursor] === "`") return cursor + 1;
-      else if (text[cursor] === "$" && text[cursor + 1] === "{") cursor = scanExpression(cursor + 2);
-      else cursor += 1;
-    }
-    return cursor;
-  }
-  const scanRegex = (start) => {
-    let cursor = start + 1;
-    let inClass = false;
-    while (cursor < text.length && text[cursor] !== "\n" && text[cursor] !== "\r") {
-      if (text[cursor] === "\\") cursor += 2;
-      else if (text[cursor] === "[") { inClass = true; cursor += 1; }
-      else if (text[cursor] === "]") { inClass = false; cursor += 1; }
-      else if (text[cursor] === "/" && !inClass) {
-        cursor += 1;
-        while (cursor < text.length && /[A-Za-z]/.test(text[cursor])) cursor += 1;
-        return cursor;
-      } else cursor += 1;
-    }
-    return null;
-  };
-  const canStartRegexAt = (cursor) => {
-    let previous = cursor - 1;
-    while (previous >= 0 && /\s/.test(text[previous])) previous -= 1;
-    if (previous < 0) return true;
-    if (/[({[\],;:=!?&|+\-*%^~<>]/.test(text[previous])) return true;
-    if (/[A-Za-z0-9_$]/.test(text[previous])) {
-      let start = previous;
-      while (start > 0 && /[A-Za-z0-9_$]/.test(text[start - 1])) start -= 1;
-      return new Set(["await", "case", "delete", "in", "instanceof", "new", "of", "return", "throw", "typeof", "void", "yield"]).has(text.slice(start, previous + 1));
-    }
-    return false;
-  };
-  function scanExpression(start) {
-    let cursor = start;
-    let depth = 1;
-    while (cursor < text.length && depth > 0) {
-      if (text[cursor] === "'" || text[cursor] === '"') cursor = scanQuoted(cursor, text[cursor]);
-      else if (text[cursor] === "`") cursor = scanTemplate(cursor);
-      else if (text[cursor] === "/" && text[cursor + 1] === "/") {
-        cursor += 2;
-        while (cursor < text.length && text[cursor] !== "\n") cursor += 1;
-      } else if (text[cursor] === "/" && text[cursor + 1] === "*") {
-        cursor += 2;
-        while (cursor < text.length && !(text[cursor] === "*" && text[cursor + 1] === "/")) cursor += 1;
-        cursor = Math.min(text.length, cursor + 2);
-      } else if (text[cursor] === "/" && canStartRegexAt(cursor)) {
-        cursor = scanRegex(cursor) || cursor + 1;
-      } else {
-        if (text[cursor] === "{") depth += 1;
-        else if (text[cursor] === "}") depth -= 1;
-        cursor += 1;
-      }
-    }
-    return cursor;
-  }
-  let index = 0;
-  while (index < text.length) {
-    const char = text[index];
-    const next = text[index + 1];
-    if (char === "/" && next === "/") {
-      const start = index;
-      index += 2;
-      while (index < text.length && text[index] !== "\n") index += 1;
-      blank(start, index);
-    } else if (char === "/" && next === "*") {
-      const start = index;
-      index += 2;
-      while (index < text.length && !(text[index] === "*" && text[index + 1] === "/")) index += 1;
-      index = Math.min(text.length, index + 2);
-      blank(start, index);
-    } else if (char === "/" && canStartRegexAt(index)) {
-      const end = scanRegex(index);
-      if (end) {
-        blank(index, end);
-        index = end;
-      } else {
-        tokens.push({ type: "punctuation", value: char });
-        index += 1;
-      }
-    } else if (char === "'" || char === '"') {
-      const quote = char;
-      const start = index;
-      let value = "";
-      index += 1;
-      while (index < text.length) {
-        if (text[index] === "\\") {
-          value += text[index + 1] || "";
-          index += 2;
-        } else if (text[index] === quote) {
-          index += 1;
-          break;
-        } else {
-          value += text[index];
-          index += 1;
-        }
-      }
-      tokens.push({ type: "string", value });
-      blank(start, index);
-    } else if (char === "`") {
-      const start = index;
-      index = scanTemplate(index);
-      blank(start, index);
-    } else if (/[A-Za-z_$]/.test(char)) {
-      const start = index;
-      index += 1;
-      while (index < text.length && /[A-Za-z0-9_$]/.test(text[index])) index += 1;
-      tokens.push({ type: "identifier", value: text.slice(start, index) });
-    } else {
-      if (!/\s/.test(char)) tokens.push({ type: "punctuation", value: char });
-      index += 1;
-    }
-  }
-  return { code: code.join(""), tokens };
+const SDK_MODULE = "@hermes/plugin-sdk";
+const SDK_HELPERS = new Map([
+  ["registerPlugin", "registrationContract"],
+  ["definePlugin", "contributionContract"],
+  ["createPlugin", "contributionContract"],
+]);
+
+function sdkModuleName(node) {
+  const value = node?.type === "StringLiteral" ? node.value : null;
+  return typeof value === "string" && (value === SDK_MODULE || value.startsWith(`${SDK_MODULE}/`));
 }
 
-function hasSdkImport(tokens) {
-  return tokens.some((token, index) => {
-    if (token.type !== "string" || !(token.value === "@hermes/plugin-sdk" || token.value.startsWith("@hermes/plugin-sdk/"))) return false;
-    const previous = tokens[index - 1]?.value;
-    const beforePrevious = tokens[index - 2]?.value;
-    const callOwner = tokens[index - 3]?.value;
-    const bareImport = previous === "import" && tokens[index - 2]?.value !== ".";
-    const moduleCall = previous === "(" && (beforePrevious === "require" || beforePrevious === "import") && callOwner !== ".";
-    return previous === "from" || bareImport || moduleCall;
-  });
+function propertyName(node, computed = false) {
+  if (node?.type === "Identifier" && !computed) return node.name;
+  if (node?.type === "StringLiteral") return node.value;
+  return null;
+}
+
+function unwrapPath(pathValue) {
+  let current = pathValue;
+  while (current?.node && new Set([
+    "ParenthesizedExpression",
+    "TSAsExpression",
+    "TSTypeAssertion",
+    "TSNonNullExpression",
+    "TSSatisfiesExpression",
+    "TypeCastExpression",
+  ]).has(current.node.type)) current = current.get("expression");
+  return current;
+}
+
+function moduleRequest(pathValue) {
+  const current = unwrapPath(pathValue);
+  if (!current?.node) return false;
+  if (current.isAwaitExpression()) return moduleRequest(current.get("argument"));
+  if (current.isImportExpression?.()) return sdkModuleName(current.node.source);
+  if (!current.isCallExpression()) return false;
+  const callee = current.get("callee");
+  const args = current.get("arguments");
+  if (callee.isImport?.()) return sdkModuleName(args[0]?.node);
+  return callee.isIdentifier({ name: "require" })
+    && !callee.scope.getBinding("require")
+    && sdkModuleName(args[0]?.node);
+}
+
+function bindPattern(pathValue, helperBindings, namespaceBindings) {
+  if (pathValue.isIdentifier()) {
+    const binding = pathValue.scope.getBinding(pathValue.node.name);
+    if (binding) namespaceBindings.add(binding);
+    return;
+  }
+  if (!pathValue.isObjectPattern()) return;
+  for (const property of pathValue.get("properties")) {
+    if (!property.isObjectProperty()) continue;
+    const imported = propertyName(property.node.key, property.node.computed);
+    const value = property.get("value");
+    if (!SDK_HELPERS.has(imported) || !value.isIdentifier()) continue;
+    const binding = value.scope.getBinding(value.node.name);
+    if (binding) helperBindings.set(binding, SDK_HELPERS.get(imported));
+  }
+}
+
+function helperForCall(pathValue, helperBindings, namespaceBindings) {
+  const callee = unwrapPath(pathValue.get("callee"));
+  if (callee.isIdentifier()) {
+    const binding = callee.scope.getBinding(callee.node.name);
+    return binding ? helperBindings.get(binding) : null;
+  }
+  if (!callee.isMemberExpression() && !callee.isOptionalMemberExpression?.()) return null;
+  const object = unwrapPath(callee.get("object"));
+  if (!object.isIdentifier()) return null;
+  const binding = object.scope.getBinding(object.node.name);
+  if (!binding || !namespaceBindings.has(binding)) return null;
+  return SDK_HELPERS.get(propertyName(callee.node.property, callee.node.computed)) || null;
+}
+
+function resolveValue(pathValue, seen = new Set()) {
+  const current = unwrapPath(pathValue);
+  if (!current?.node || seen.has(current.node)) return null;
+  seen.add(current.node);
+  if (current.isObjectExpression()) return current;
+  if (current.isCallExpression()) {
+    const callee = current.get("callee");
+    if (callee.isMemberExpression()
+      && callee.get("object").isIdentifier({ name: "Object" })
+      && propertyName(callee.node.property, callee.node.computed) === "freeze") {
+      return resolveValue(current.get("arguments.0"), seen);
+    }
+  }
+  if (!current.isIdentifier()) return null;
+  const binding = current.scope.getBinding(current.node.name);
+  if (!binding?.path.isVariableDeclarator()) return null;
+  return resolveValue(binding.path.get("init"), seen);
+}
+
+function callableValue(pathValue, seen = new Set()) {
+  const current = unwrapPath(pathValue);
+  if (!current?.node || seen.has(current.node)) return false;
+  seen.add(current.node);
+  if (current.isFunctionExpression() || current.isArrowFunctionExpression()) return true;
+  if (!current.isIdentifier()) return false;
+  const binding = current.scope.getBinding(current.node.name);
+  if (!binding) return false;
+  if (binding.path.isFunctionDeclaration()) return true;
+  return binding.path.isVariableDeclarator() && callableValue(binding.path.get("init"), seen);
+}
+
+function hasManifestObject(pathValue) {
+  const object = resolveValue(pathValue);
+  if (!object) return false;
+  let hasId = false;
+  let hasRegister = false;
+  for (const property of object.get("properties")) {
+    if (property.isSpreadElement()) continue;
+    const key = propertyName(property.node.key, property.node.computed);
+    if (key === "id" && property.isObjectProperty()) hasId = true;
+    if (key !== "register") continue;
+    if (property.isObjectMethod()) hasRegister = true;
+    else if (property.isObjectProperty()) hasRegister = callableValue(property.get("value"));
+  }
+  return hasId && hasRegister;
 }
 
 export function sourceSignals(text) {
-  const scanned = lexSource(text);
-  const sdkImport = hasSdkImport(scanned.tokens);
-  const hasDefaultExport = /export\s+default\b/.test(scanned.code) || /export\s*\{[\s\S]{0,500}?\bas\s+default\b/.test(scanned.code);
-  const manifestObject = /(?:export\s+default\s+|(?:const|let|var)\s+[A-Za-z_$][\w$]*(?:\s*:\s*[^=\n]+)?\s*=\s*)\(?\s*\{[\s\S]{0,2200}?\bid\s*:[\s\S]{0,2200}?\bregister(?:\s*:\s*function\b|\s*\(|\s*[,}])/.test(scanned.code);
-  return {
-    sdkImport,
-    registrationContract: /\bregisterPlugin\s*\(/.test(scanned.code) || (hasDefaultExport && manifestObject),
-    contributionContract: /\b(?:definePlugin|createPlugin)\s*\(/.test(scanned.code),
-  };
+  const ast = parse(text, {
+    sourceType: "unambiguous",
+    createImportExpressions: true,
+    plugins: ["typescript", "jsx", "decorators-legacy", "importAttributes"],
+  });
+  let sdkImport = false;
+  const helperBindings = new Map();
+  const namespaceBindings = new Set();
+  const callPaths = [];
+  const defaultExports = [];
+
+  traverse(ast, {
+    ImportDeclaration(pathValue) {
+      if (!sdkModuleName(pathValue.node.source)) return;
+      sdkImport = true;
+      for (const specifier of pathValue.get("specifiers")) {
+        const local = specifier.get("local");
+        const binding = local.scope.getBinding(local.node.name);
+        if (!binding) continue;
+        if (specifier.isImportNamespaceSpecifier()) namespaceBindings.add(binding);
+        else if (specifier.isImportSpecifier()) {
+          const imported = propertyName(specifier.node.imported);
+          if (SDK_HELPERS.has(imported)) helperBindings.set(binding, SDK_HELPERS.get(imported));
+        }
+      }
+    },
+    ExportNamedDeclaration(pathValue) {
+      if (sdkModuleName(pathValue.node.source)) sdkImport = true;
+      for (const specifier of pathValue.get("specifiers")) {
+        if (propertyName(specifier.node.exported) === "default") defaultExports.push(specifier.get("local"));
+      }
+    },
+    ExportAllDeclaration(pathValue) {
+      if (sdkModuleName(pathValue.node.source)) sdkImport = true;
+    },
+    ExportDefaultDeclaration(pathValue) {
+      defaultExports.push(pathValue.get("declaration"));
+    },
+    VariableDeclarator(pathValue) {
+      if (!moduleRequest(pathValue.get("init"))) return;
+      sdkImport = true;
+      bindPattern(pathValue.get("id"), helperBindings, namespaceBindings);
+    },
+    ImportExpression(pathValue) {
+      if (sdkModuleName(pathValue.node.source)) sdkImport = true;
+    },
+    CallExpression(pathValue) {
+      if (moduleRequest(pathValue)) sdkImport = true;
+      callPaths.push(pathValue);
+    },
+  });
+
+  let registrationContract = defaultExports.some(hasManifestObject);
+  let contributionContract = false;
+  for (const callPath of callPaths) {
+    const signal = helperForCall(callPath, helperBindings, namespaceBindings);
+    if (signal === "registrationContract") registrationContract = true;
+    if (signal === "contributionContract") contributionContract = true;
+  }
+  return { sdkImport, registrationContract, contributionContract };
 }
 
 export async function mapBounded(items, limit, fn) {
@@ -234,7 +263,7 @@ export function validateCatalog(catalog) {
     if (typeof plugin.defaultBranch !== "string" || plugin.defaultBranch.trim() === "") errors.push(`${at}.defaultBranch is empty`);
     if (!SHA_RE.test(plugin.reviewedCommit || "")) errors.push(`${at}.reviewedCommit is not immutable`);
     if (!isExactUtcTimestamp(plugin.reviewedCommitAt)) errors.push(`${at}.reviewedCommitAt is invalid`);
-    if (catalog.reviewMode === "cutoff-baseline" && Date.parse(plugin.reviewedCommitAt) > Date.parse(catalog.cutoffAt)) errors.push(`${at}.reviewedCommitAt is later than cutoffAt`);
+    if (catalog.reviewMode === "retrospective-cutoff" && Date.parse(plugin.reviewedCommitAt) > Date.parse(catalog.cutoffAt)) errors.push(`${at}.reviewedCommitAt is later than cutoffAt`);
     if (!isExactUtcTimestamp(plugin.reviewedAt)) errors.push(`${at}.reviewedAt is invalid`);
     if (!plugin.observed || typeof plugin.observed !== "object" || Array.isArray(plugin.observed)) errors.push(`${at}.observed is invalid`);
     else {

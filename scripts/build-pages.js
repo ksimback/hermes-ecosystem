@@ -962,14 +962,29 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
       const href = r.atlasUrl || r.url || `/projects/${r.owner}/${r.repo}`;
       const description = r.purpose || r.meta?.description || r.description;
       const status = r.atlasUrl ? "Atlas project" : "evidence only";
-      const desktopAttributes = list.filter?.desktopPlugins
-        ? `${href.startsWith("https://") ? ' target="_blank" rel="noopener"' : ""} data-search="${escapeHtml(`${name} ${description}`.toLowerCase())}" data-type="${escapeHtml(r.distributionType || "")}" data-status="${escapeHtml(status)}"`
-        : "";
-      return `<a class="list-row" href="${escapeHtml(href)}"${desktopAttributes}>
+      if (list.filter?.desktopPlugins) {
+        const commitUrl = `${r.url}/tree/${r.reviewedCommit}`;
+        const proofLinks = r.sources.map((source) => `<li><a href="${escapeHtml(source.rawUrl)}" target="_blank" rel="noopener">${escapeHtml(source.path)}</a></li>`).join("");
+        const proofCount = r.sources.length;
+        return `<article class="list-row" data-repository="${escapeHtml(name)}" data-search="${escapeHtml(`${name} ${description}`.toLowerCase())}" data-type="${escapeHtml(r.distributionType || "")}" data-status="${escapeHtml(status)}">
     <div class="list-rank">${rank}</div>
     <div class="list-cell-body">
-      <div class="list-cell-name">${list.filter?.desktopPlugins ? escapeHtml(name) : `<span class="org">${escapeHtml(r.owner)} /</span> ${escapeHtml(r.repo)}`}${r.official ? ' <span class="repo-flag">official</span>' : ""}</div>
-      <div class="list-cell-desc">${escapeHtml(description.slice(0, 140))}${list.filter?.desktopPlugins ? ` · ${escapeHtml(r.distributionType)} · ${status}` : ""}</div>
+      <div class="list-cell-name"><a href="${escapeHtml(href)}"${href.startsWith("https://") ? ' target="_blank" rel="noopener"' : ""}>${escapeHtml(name)}</a>${r.official ? ' <span class="repo-flag">official</span>' : ""}</div>
+      <div class="list-cell-desc">${escapeHtml(description.slice(0, 140))} · ${escapeHtml(r.distributionType)} · ${status}</div>
+      <details class="list-cell-provenance">
+        <summary>reviewed ${escapeHtml(r.reviewedCommit.slice(0, 12))} · ${proofCount} source ${proofCount === 1 ? "proof" : "proofs"}</summary>
+        <div><a href="${escapeHtml(commitUrl)}" target="_blank" rel="noopener">immutable reviewed commit</a> · reviewed ${escapeHtml(r.reviewedAt)}</div>
+        <ul>${proofLinks}</ul>
+      </details>
+    </div>
+    <div class="list-cell-stars">★ ${formatStars(s)}</div>
+  </article>`;
+      }
+      return `<a class="list-row" href="${escapeHtml(href)}">
+    <div class="list-rank">${rank}</div>
+    <div class="list-cell-body">
+      <div class="list-cell-name"><span class="org">${escapeHtml(r.owner)} /</span> ${escapeHtml(r.repo)}${r.official ? ' <span class="repo-flag">official</span>' : ""}</div>
+      <div class="list-cell-desc">${escapeHtml(description.slice(0, 140))}</div>
     </div>
     <div class="list-cell-stars">★ ${formatStars(s)}</div>
   </a>`;

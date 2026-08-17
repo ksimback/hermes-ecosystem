@@ -2,11 +2,13 @@
 
 Cutoff: 2026-08-14 13:29:59 EDT / 17:29:59 UTC
 
-Snapshot: 122 public repositories, comprising 96 standalone repositories, 1 official standalone, 20 collections, 3 embedded integrations, and 2 public dotfile plugins. The verifier records 163 direct source proofs and 3 fetched auxiliary paths that are explicitly excluded from entrypoint evidence.
+Snapshot: 121 public repositories, comprising 95 standalone repositories, 1 official standalone, 20 collections, 3 embedded integrations, and 2 public dotfile plugins. The verifier records 162 direct source proofs and 3 fetched auxiliary paths that are explicitly excluded from entrypoint evidence.
 
 ## Evidence boundary
 
 This inventory includes public repositories whose application-side source imports `@hermes/plugin-sdk` and implements a concrete registration or contribution contract. That boundary identifies code intended to run in Hermes Desktop. Documentation mentions, copied templates, backend-only plugins, fixtures, application forks that merely bundle examples, private or deleted repositories, and search results without a verified source file are excluded.
+
+[`JustaRico/HermOdy`](https://github.com/JustaRico/HermOdy/tree/d8330201fed3cc779a74d4cab55c40e419d21270) is retained as an excluded candidate in the review record because its only SDK-bearing source is syntactically invalid. Textual SDK and manifest matches do not qualify when the source cannot be parsed.
 
 Source verification is an evidence tier, not an endorsement, quality rating, or dynamic safety test. Atlas does not execute plugin code, installers, package scripts, or backends during review. `data/repos.json` remains the quality-filtered Atlas project catalog. A Desktop plugin may be present only as an evidence candidate.
 
@@ -22,9 +24,9 @@ Distribution labels describe packaging:
 
 Discovery is deliberately broader than inclusion. Candidate searches use exact SDK imports, canonical plugin paths, contribution-area names, GitHub topics, and repository descriptions. Search hits are candidates only. They are never promoted automatically into endorsed Atlas projects.
 
-For each existing candidate, `scripts/refresh-desktop-plugins.js` uses authenticated, read-only GitHub API requests to resolve the default branch and its commit, then downloads only the listed source paths as text. A lexical scan ignores comments and string bodies before it accepts a manifest contract. At least one source per repository must contain a real `@hermes/plugin-sdk` import and a concrete registration or contribution signal. Fetched auxiliary paths without a direct signal are retained separately as ignored evidence candidates, never counted as plugin entrypoints. Reviewed URLs use the full commit SHA, never a moving branch, tag, or `HEAD`. The catalog is sorted and serialized deterministically. `--check` compares current heads without writing; a moved or deleted recorded path is reported as evidence drift for manual review. `--validate` performs offline invariant checks.
+For each existing candidate, `scripts/refresh-desktop-plugins.js` uses authenticated, read-only GitHub API requests to resolve the default branch and its commit, then downloads only the listed source paths as text. A JavaScript/TypeScript AST parser resolves SDK imports and aliases, binds helper calls by scope, and requires `id` and callable `register` on the same exported manifest object. At least one source per repository must contain a real `@hermes/plugin-sdk` import and a concrete registration or contribution signal. Fetched auxiliary paths without a direct signal are retained separately as ignored evidence candidates, never counted as plugin entrypoints. Reviewed URLs use the full commit SHA, never a moving branch, tag, or `HEAD`. The catalog is sorted and serialized deterministically. `--check` compares only recorded evidence paths at current default-branch revisions without writing; it does not discover newly added paths. A moved or deleted recorded path is reported as evidence drift for manual review. `--validate` performs offline invariant checks.
 
-In `cutoff-baseline` mode, every reviewed commit must be no later than 2026-08-14 17:29:59 UTC. A later approved refresh changes the catalog to `current-head` mode and preserves the prior baseline in Git history. Metadata such as stars, forks, and activity is an observation at review time, not a quality score. The public evidence index is alphabetical rather than star-ranked.
+In `retrospective-cutoff` mode, each reviewed commit has a commit-controlled committer timestamp no later than 2026-08-14 17:29:59 UTC. The catalog was reviewed after that cutoff, so this is a retrospective reconstruction, not proof that GitHub had the commit or repository available by the cutoff. A later approved refresh changes the catalog to `current-head` mode and preserves the reconstruction in Git history. Metadata such as stars, forks, and activity is an observation at review time, not a quality score. The public evidence index is alphabetical rather than star-ranked.
 
 ## Authority-surface review
 
@@ -68,8 +70,8 @@ Static source review cannot prove categorical safety, runtime behavior, dependen
 ## Update workflow
 
 1. Pull the Atlas repository and inspect catalog and methodology changes.
-2. Run `node scripts/refresh-desktop-plugins.js --validate` to verify the committed cutoff baseline offline.
-3. Run `GITHUB_TOKEN="$(gh auth token)" node scripts/refresh-desktop-plugins.js --check` for a no-write comparison with current default-branch revisions. Run without `--check` only after reviewing the revisions to advance.
+2. Run `node scripts/refresh-desktop-plugins.js --validate` to verify the committed retrospective cutoff reconstruction offline.
+3. Run `GITHUB_TOKEN="$(gh auth token)" node scripts/refresh-desktop-plugins.js --check` for a no-write comparison of recorded evidence paths at current default-branch revisions. Run without `--check` only after reviewing the revisions to advance.
 4. Review immutable source diffs and authority-surface changes. Do not execute downloaded content.
 5. Run `node scripts/refresh-desktop-plugins.js --validate`, `npm test`, and the page build.
 6. Prepare a focused pull request. Candidate discovery and inclusion review remain separate, and unattended mutation is not scheduled.

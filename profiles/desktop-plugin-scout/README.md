@@ -15,11 +15,11 @@ git pull
 hermes profile update desktop-plugin-scout
 ```
 
-Run the profile from the Atlas clone so it can read the catalog and methodology. Validate the committed cutoff baseline offline, then compare it with current default branches without writing:
+Run the profile from the Atlas clone so it can read the catalog and methodology. Validate the committed retrospective cutoff reconstruction offline, then compare recorded evidence paths with current default branches without writing:
 
 ```sh
 node scripts/refresh-desktop-plugins.js --validate
 GITHUB_TOKEN="$(gh auth token)" node scripts/refresh-desktop-plugins.js --check
 ```
 
-Git history preserves prior cutoff baselines. No unattended mutating cron is included.
+Git history preserves prior retrospective cutoff reconstructions. No unattended mutating cron is included.
