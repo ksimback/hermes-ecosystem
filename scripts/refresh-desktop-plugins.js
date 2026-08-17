@@ -7,8 +7,26 @@ import { fileURLToPath } from "node:url";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CATALOG_PATH = path.join(ROOT, "data", "desktop-plugins.json");
 const SHA_RE = /^[0-9a-f]{40}$/;
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const UTC_TIMESTAMP_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/;
+const CUTOFF_TIMESTAMP_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
+const METHODOLOGY_URL = "https://github.com/ksimback/hermes-ecosystem/blob/main/research/desktop-plugin-methodology.md";
 const TYPES = new Set(["standalone", "collection", "embedded integration", "public dotfile plugin", "official standalone"]);
 const REVIEW_MODES = new Set(["cutoff-baseline", "current-head"]);
+
+function isExactDate(value) {
+  if (!DATE_RE.test(value || "")) return false;
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(parsed.valueOf()) && parsed.toISOString().slice(0, 10) === value;
+}
+
+function isExactUtcTimestamp(value, pattern = UTC_TIMESTAMP_RE) {
+  if (!pattern.test(value || "")) return false;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.valueOf())) return false;
+  const canonical = value.includes(".") ? value : value.replace(/Z$/, ".000Z");
+  return parsed.toISOString() === canonical;
+}
 
 function lexSource(text) {
   const code = text.split("");
@@ -187,14 +205,22 @@ export async function mapBounded(items, limit, fn) {
 export function validateCatalog(catalog) {
   const errors = [];
   if (catalog?.schemaVersion !== 1) errors.push("schemaVersion must be 1");
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(catalog?.cutoff || "")) errors.push("cutoff must be YYYY-MM-DD");
-  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(catalog?.cutoffAt || "")) errors.push("cutoffAt must be an exact UTC timestamp");
+  if (!isExactDate(catalog?.cutoff)) errors.push("cutoff must be a valid YYYY-MM-DD date");
+  if (!isExactUtcTimestamp(catalog?.cutoffAt, CUTOFF_TIMESTAMP_RE)) errors.push("cutoffAt must be an exact UTC timestamp");
   if (catalog?.cutoffAt?.slice(0, 10) !== catalog?.cutoff) errors.push("cutoffAt date must match cutoff");
   if (!REVIEW_MODES.has(catalog?.reviewMode)) errors.push("reviewMode is invalid");
+  if (catalog?.evidenceTier !== "source-verified") errors.push("evidenceTier must be source-verified");
+  if (typeof catalog?.notice !== "string" || catalog.notice.trim() === "") errors.push("notice is empty");
+  if (catalog?.methodology !== METHODOLOGY_URL) errors.push("methodology must be the canonical Atlas methodology URL");
   if (!Array.isArray(catalog?.plugins)) return [...errors, "plugins must be an array"];
+  if (catalog.plugins.length === 0) errors.push("plugins must not be empty");
   const keys = new Set();
   for (const [index, plugin] of catalog.plugins.entries()) {
     const at = `plugins[${index}]`;
+    if (!plugin || typeof plugin !== "object" || Array.isArray(plugin)) {
+      errors.push(`${at} must be an object`);
+      continue;
+    }
     if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(plugin.repository || "")) errors.push(`${at}.repository is invalid`);
     const key = String(plugin.repository).toLowerCase();
     if (keys.has(key)) errors.push(`${at}.repository is duplicated`);
@@ -205,33 +231,54 @@ export function validateCatalog(catalog) {
     if (typeof plugin.official !== "boolean") errors.push(`${at}.official must be boolean`);
     if (plugin.official !== (plugin.distributionType === "official standalone")) errors.push(`${at}.official disagrees with distributionType`);
     if (plugin.official && !String(plugin.repository).toLowerCase().startsWith("nousresearch/")) errors.push(`${at}.official repository is not owned by NousResearch`);
+    if (typeof plugin.defaultBranch !== "string" || plugin.defaultBranch.trim() === "") errors.push(`${at}.defaultBranch is empty`);
     if (!SHA_RE.test(plugin.reviewedCommit || "")) errors.push(`${at}.reviewedCommit is not immutable`);
-    if (!/^\d{4}-\d{2}-\d{2}T/.test(plugin.reviewedCommitAt || "") || Number.isNaN(Date.parse(plugin.reviewedCommitAt))) errors.push(`${at}.reviewedCommitAt is invalid`);
+    if (!isExactUtcTimestamp(plugin.reviewedCommitAt)) errors.push(`${at}.reviewedCommitAt is invalid`);
     if (catalog.reviewMode === "cutoff-baseline" && Date.parse(plugin.reviewedCommitAt) > Date.parse(catalog.cutoffAt)) errors.push(`${at}.reviewedCommitAt is later than cutoffAt`);
-    if (!/^\d{4}-\d{2}-\d{2}T/.test(plugin.reviewedAt || "") || Number.isNaN(Date.parse(plugin.reviewedAt))) errors.push(`${at}.reviewedAt is invalid`);
-    if (!Array.isArray(plugin.sources) || plugin.sources.length === 0) errors.push(`${at}.sources is empty`);
+    if (!isExactUtcTimestamp(plugin.reviewedAt)) errors.push(`${at}.reviewedAt is invalid`);
+    if (!plugin.observed || typeof plugin.observed !== "object" || Array.isArray(plugin.observed)) errors.push(`${at}.observed is invalid`);
+    else {
+      for (const field of ["stars", "forks"]) {
+        if (plugin.observed[field] !== undefined && (!Number.isInteger(plugin.observed[field]) || plugin.observed[field] < 0)) errors.push(`${at}.observed.${field} is invalid`);
+      }
+      if (plugin.observed.activityAt !== undefined && Number.isNaN(Date.parse(plugin.observed.activityAt))) errors.push(`${at}.observed.activityAt is invalid`);
+    }
+    const directSources = Array.isArray(plugin.sources) ? plugin.sources : [];
+    const ignoredSources = Array.isArray(plugin.ignoredSources) ? plugin.ignoredSources : [];
+    if (directSources.length === 0) errors.push(`${at}.sources is empty`);
+    if (plugin.ignoredSources !== undefined && !Array.isArray(plugin.ignoredSources)) errors.push(`${at}.ignoredSources must be an array`);
     let completeSource = false;
     const seenPaths = new Set();
-    for (const [sourceIndex, source] of (plugin.sources || []).entries()) {
+    for (const [sourceIndex, source] of directSources.entries()) {
       const sat = `${at}.sources[${sourceIndex}]`;
-      const segments = String(source.path || "").split("/");
-      if (!source.path || source.path.startsWith("/") || segments.includes("..")) errors.push(`${sat}.path is invalid`);
-      if (seenPaths.has(source.path)) errors.push(`${sat}.path is duplicated`);
-      seenPaths.add(source.path);
-      const expected = `https://raw.githubusercontent.com/${plugin.repository}/${plugin.reviewedCommit}/${source.path.split("/").map(encodeURIComponent).join("/")}`;
+      if (!source || typeof source !== "object" || Array.isArray(source)) {
+        errors.push(`${sat} must be an object`);
+        continue;
+      }
+      const sourcePath = typeof source.path === "string" ? source.path : "";
+      const segments = sourcePath.split("/");
+      if (!sourcePath || sourcePath.startsWith("/") || segments.includes("..")) errors.push(`${sat}.path is invalid`);
+      if (seenPaths.has(sourcePath)) errors.push(`${sat}.path is duplicated`);
+      seenPaths.add(sourcePath);
+      const expected = `https://raw.githubusercontent.com/${plugin.repository}/${plugin.reviewedCommit}/${sourcePath.split("/").map(encodeURIComponent).join("/")}`;
       if (source.rawUrl !== expected) errors.push(`${sat}.rawUrl is not canonical and immutable`);
       if (!["sdkImport", "registrationContract", "contributionContract"].every((key) => typeof source.signals?.[key] === "boolean")) errors.push(`${sat}.signals must be booleans`);
       const hasContract = source.signals?.registrationContract || source.signals?.contributionContract;
       if (!source.signals?.sdkImport && !hasContract) errors.push(`${sat} has no Desktop SDK evidence signal`);
       if (source.signals?.sdkImport && hasContract) completeSource = true;
     }
-    for (const [sourceIndex, source] of (plugin.ignoredSources || []).entries()) {
+    for (const [sourceIndex, source] of ignoredSources.entries()) {
       const sat = `${at}.ignoredSources[${sourceIndex}]`;
-      const segments = String(source.path || "").split("/");
-      if (!source.path || source.path.startsWith("/") || segments.includes("..")) errors.push(`${sat}.path is invalid`);
-      if (seenPaths.has(source.path)) errors.push(`${sat}.path is duplicated`);
-      seenPaths.add(source.path);
-      const expected = `https://raw.githubusercontent.com/${plugin.repository}/${plugin.reviewedCommit}/${source.path.split("/").map(encodeURIComponent).join("/")}`;
+      if (!source || typeof source !== "object" || Array.isArray(source)) {
+        errors.push(`${sat} must be an object`);
+        continue;
+      }
+      const sourcePath = typeof source.path === "string" ? source.path : "";
+      const segments = sourcePath.split("/");
+      if (!sourcePath || sourcePath.startsWith("/") || segments.includes("..")) errors.push(`${sat}.path is invalid`);
+      if (seenPaths.has(sourcePath)) errors.push(`${sat}.path is duplicated`);
+      seenPaths.add(sourcePath);
+      const expected = `https://raw.githubusercontent.com/${plugin.repository}/${plugin.reviewedCommit}/${sourcePath.split("/").map(encodeURIComponent).join("/")}`;
       if (source.rawUrl !== expected) errors.push(`${sat}.rawUrl is not canonical and immutable`);
       if (!["sdkImport", "registrationContract", "contributionContract"].every((key) => typeof source.signals?.[key] === "boolean")) errors.push(`${sat}.signals must be booleans`);
       if (Object.values(source.signals || {}).some(Boolean)) errors.push(`${sat} unexpectedly has an evidence signal`);
@@ -252,16 +299,18 @@ export function canonicalizeCatalog(catalog) {
   return JSON.stringify(copy, null, 2) + "\n";
 }
 
+export function serializeValidatedCatalog(catalog) {
+  const errors = validateCatalog(catalog);
+  if (errors.length) throw new Error(`Catalog validation failed:\n${errors.map((error) => `- ${error}`).join("\n")}`);
+  return canonicalizeCatalog(catalog);
+}
+
 export function parseArgs(argv) {
-  const options = { write: true, network: true, concurrency: 6, seed: null };
+  const options = { write: true, network: true, concurrency: 6 };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === "--check") options.write = false;
     else if (arg === "--validate") { options.write = false; options.network = false; }
-    else if (arg === "--seed") {
-      options.seed = argv[++i];
-      if (!options.seed) throw new Error("--seed requires a CSV path");
-    }
     else if (arg === "--concurrency") {
       options.concurrency = Number(argv[++i]);
       if (!Number.isInteger(options.concurrency) || options.concurrency < 1 || options.concurrency > 12) throw new Error("--concurrency must be an integer from 1 to 12");
@@ -291,15 +340,13 @@ async function githubText(fetchImpl, token, repository, sha, sourcePath) {
 
 export async function refreshCatalog(catalog, { token, concurrency = 6, fetchImpl = fetch, reviewedAt = new Date().toISOString() } = {}) {
   if (!token) throw new Error("GITHUB_TOKEN is required for live verification");
-  if (Number.isNaN(Date.parse(reviewedAt))) throw new Error("reviewedAt must be an ISO timestamp");
+  if (!Number.isInteger(concurrency) || concurrency < 1 || concurrency > 12) throw new Error("concurrency must be an integer from 1 to 12");
+  if (!isExactUtcTimestamp(reviewedAt)) throw new Error("reviewedAt must be an exact UTC timestamp");
   const failures = [];
-  const resolvingBaseline = Boolean(catalog.resolveAtCutoff);
   const plugins = await mapBounded(catalog.plugins, concurrency, async (plugin) => {
     try {
       const repo = await githubJson(fetchImpl, token, `/repos/${plugin.repository}`);
-      const commit = resolvingBaseline
-        ? (await githubJson(fetchImpl, token, `/repos/${plugin.repository}/commits?sha=${encodeURIComponent(repo.default_branch)}&until=${encodeURIComponent(catalog.cutoffAt)}&per_page=1`))[0]
-        : await githubJson(fetchImpl, token, `/repos/${plugin.repository}/commits/${encodeURIComponent(repo.default_branch)}`);
+      const commit = await githubJson(fetchImpl, token, `/repos/${plugin.repository}/commits/${encodeURIComponent(repo.default_branch)}`);
       if (!commit) throw new Error(`no default-branch commit existed by ${catalog.cutoff}`);
       const sha = commit.sha;
       if (!SHA_RE.test(sha)) throw new Error("default branch did not resolve to a full commit SHA");
@@ -318,10 +365,12 @@ export async function refreshCatalog(catalog, { token, concurrency = 6, fetchImp
       }
       const commitAt = commit.commit?.committer?.date || commit.commit?.author?.date;
       if (!commitAt) throw new Error("commit timestamp was unavailable");
+      const basePlugin = { ...plugin };
+      delete basePlugin.ignoredSources;
       return {
-        ...plugin,
-        purpose: resolvingBaseline ? (plugin.purpose || repo.description || plugin.repository) : (repo.description || plugin.purpose || plugin.repository),
-        observed: resolvingBaseline ? plugin.observed : { stars: repo.stargazers_count, forks: repo.forks_count, activityAt: repo.pushed_at },
+        ...basePlugin,
+        purpose: repo.description || plugin.purpose || plugin.repository,
+        observed: { stars: repo.stargazers_count, forks: repo.forks_count, activityAt: repo.pushed_at },
         defaultBranch: repo.default_branch,
         reviewedCommit: sha,
         reviewedCommitAt: commitAt,
@@ -334,76 +383,22 @@ export async function refreshCatalog(catalog, { token, concurrency = 6, fetchImp
       return plugin;
     }
   });
-  const { resolveAtCutoff, ...publicCatalog } = catalog;
-  return { catalog: { ...publicCatalog, reviewMode: resolvingBaseline ? "cutoff-baseline" : "current-head", plugins }, failures };
-}
-
-function parseSeedCsv(text) {
-  const lines = text.replace(/\r/g, "").trim().split("\n");
-  const split = (line) => {
-    const cells = []; let cell = ""; let quoted = false;
-    for (let i = 0; i < line.length; i += 1) {
-      const char = line[i];
-      if (char === '"' && quoted && line[i + 1] === '"') { cell += '"'; i += 1; }
-      else if (char === '"') quoted = !quoted;
-      else if (char === "," && !quoted) { cells.push(cell); cell = ""; }
-      else cell += char;
-    }
-    cells.push(cell); return cells;
-  };
-  const fields = split(lines.shift());
-  return lines.map((line) => Object.fromEntries(fields.map((field, i) => [field, split(line)[i] || ""])));
-}
-
-async function catalogFromSeed(seedPath) {
-  const rows = parseSeedCsv(await fs.readFile(path.resolve(seedPath), "utf8"));
-  return {
-    schemaVersion: 1,
-    cutoff: "2026-08-14",
-    cutoffAt: "2026-08-14T17:29:59Z",
-    reviewMode: "cutoff-baseline",
-    evidenceTier: "source-verified",
-    notice: "Static source verification confirms observed Hermes Desktop SDK contracts at an immutable revision. It is not endorsement or dynamic safety testing.",
-    methodology: "https://github.com/ksimback/hermes-ecosystem/blob/main/research/desktop-plugin-methodology.md",
-    resolveAtCutoff: true,
-    plugins: rows.map((row) => ({
-      repository: row.repository,
-      url: row.url,
-      purpose: row.purpose,
-      distributionType: row.type,
-      official: row.type === "official standalone",
-      observed: {
-        ...(row.stars === "" ? {} : { stars: Number(row.stars) }),
-        ...(row.forks === "" ? {} : { forks: Number(row.forks) }),
-        activityAt: row.latest_commit,
-      },
-      defaultBranch: "",
-      reviewedCommit: "0000000000000000000000000000000000000000",
-      reviewedCommitAt: "",
-      reviewedAt: "",
-      sources: row.source_urls.split(/\s+/).map((url) => ({ path: new URL(url).pathname.split("/HEAD/")[1], rawUrl: url, signals: {} })),
-    })),
-  };
+  return { catalog: { ...catalog, reviewMode: "current-head", plugins }, failures: failures.sort() };
 }
 
 async function main() {
   const options = parseArgs(process.argv.slice(2));
-  let original = "";
-  let catalog;
-  if (options.seed) catalog = await catalogFromSeed(options.seed);
-  else { original = await fs.readFile(CATALOG_PATH, "utf8"); catalog = JSON.parse(original); }
-  if (!options.seed) {
-    const initialErrors = validateCatalog(catalog);
-    if (initialErrors.length) throw new Error(`Catalog validation failed:\n${initialErrors.map((e) => `- ${e}`).join("\n")}`);
-  }
+  const original = await fs.readFile(CATALOG_PATH, "utf8");
+  const catalog = JSON.parse(original);
+  serializeValidatedCatalog(catalog);
   if (!options.network) {
     if (original !== canonicalizeCatalog(catalog)) throw new Error("Catalog is not deterministically ordered/formatted");
     console.log("Desktop plugin catalog is valid and deterministic.");
     return;
   }
   const result = await refreshCatalog(catalog, { token: process.env.GITHUB_TOKEN, concurrency: options.concurrency });
-  if (result.failures.length) throw new Error(`Verification failures:\n${result.failures.map((e) => `- ${e}`).join("\n")}`);
-  const next = canonicalizeCatalog(result.catalog);
+  if (result.failures.length) throw new Error(`Current-head evidence failures:\n${result.failures.map((e) => `- ${e}`).join("\n")}`);
+  const next = serializeValidatedCatalog(result.catalog);
   const drift = next !== original;
   if (options.write) {
     if (drift) await fs.writeFile(CATALOG_PATH, next);

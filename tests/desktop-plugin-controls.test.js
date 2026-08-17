@@ -34,6 +34,7 @@ test("desktop plugin search filters the generated evidence rows", () => {
   const { document } = window;
   assert.equal(rows(document).length, catalog.plugins.length);
   assert.equal(visible(document).length, catalog.plugins.length);
+  assert.equal(document.querySelector("#desktop-count").textContent, `${catalog.plugins.length} of ${catalog.plugins.length} repositories`);
 
   const search = document.querySelector("#desktop-search");
   search.value = "token meter";
@@ -44,6 +45,7 @@ test("desktop plugin search filters the generated evidence rows", () => {
   assert.ok(matches.length < catalog.plugins.length);
   const normalize = (value) => value.toLowerCase().replace(/[-_/]+/g, " ").replace(/\s+/g, " ").trim();
   assert.ok(matches.every((row) => normalize(row.dataset.search).includes("token meter")));
+  assert.equal(document.querySelector("#desktop-count").textContent, `${matches.length} of ${catalog.plugins.length} repositories`);
 });
 
 test("desktop plugin distribution filter matches catalog metadata", () => {

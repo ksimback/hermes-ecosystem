@@ -110,10 +110,18 @@ test("desktop plugin evidence list is searchable and links every verified reposi
   assert.ok(html.includes('id="desktop-status"'));
   const desktopList = lists.find((list) => list.filter?.desktopPlugins);
   assert.ok(desktopList);
+  assert.equal(desktopList.methodology, desktopPlugins.methodology);
   assert.ok(html.includes(`href="${desktopList.methodology}"`));
   assert.ok(html.includes('application/ld+json'));
   assert.ok(html.includes("<div>repository</div>"));
+  assert.ok(html.includes('class="desktop-plugin-controls"'));
+  assert.ok(html.includes('aria-label="Source-verified repository index"'));
+  assert.ok(html.includes("https://schema.org/ItemListOrderAscending"));
+  assert.ok(!html.includes('aria-label="Ranked list"'));
   assert.equal((html.match(/class="list-row"/g) || []).length, desktopPlugins.plugins.length);
+  const rowNames = [...html.matchAll(/data-search="[^"]*"[^>]*>[\s\S]*?<div class="list-cell-name">([^<]+)(?:<|$)/g)].map((match) => match[1].trim());
+  const alphabetical = desktopPlugins.plugins.map((plugin) => plugin.repository).sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" }));
+  assert.deepEqual(rowNames, alphabetical);
   const canonical = new Map(repos.map((repo) => [`${repo.owner}/${repo.repo}`.toLowerCase(), repo]));
   for (const plugin of desktopPlugins.plugins) {
     const atlasRepo = canonical.get(plugin.repository.toLowerCase());

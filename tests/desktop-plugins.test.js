@@ -7,6 +7,7 @@ import {
   mapBounded,
   parseArgs,
   refreshCatalog,
+  serializeValidatedCatalog,
   sourceSignals,
   validateCatalog,
 } from "../scripts/refresh-desktop-plugins.js";
@@ -118,7 +119,8 @@ test("refresh uses one supplied review timestamp and marks current-head mode", a
     cutoffAt: "2026-08-14T17:29:59Z",
     reviewMode: "current-head",
     evidenceTier: "source-verified",
-    methodology: "https://example.com/methodology",
+    notice: "Fixture evidence only.",
+    methodology: "https://github.com/ksimback/hermes-ecosystem/blob/main/research/desktop-plugin-methodology.md",
     plugins: [{
       repository: "example/plugin",
       url: "https://github.com/example/plugin",
@@ -149,6 +151,58 @@ test("refresh uses one supplied review timestamp and marks current-head mode", a
   assert.deepEqual(result.failures, []);
   assert.equal(result.catalog.reviewMode, "current-head");
   assert.equal(result.catalog.plugins[0].reviewedAt, reviewedAt);
+  assert.doesNotThrow(() => serializeValidatedCatalog(result.catalog));
+});
+
+test("refresh promotes ignored paths without retaining stale duplicates", async () => {
+  const input = structuredClone(catalog);
+  input.reviewMode = "current-head";
+  input.plugins = [structuredClone(catalog.plugins.find((plugin) => plugin.ignoredSources?.length))];
+  const plugin = input.plugins[0];
+  const nextSha = "c".repeat(40);
+  const fetchImpl = async (value) => {
+    const url = new URL(value);
+    if (url.pathname === `/repos/${plugin.repository}`) return Response.json({ default_branch: plugin.defaultBranch, description: plugin.purpose, stargazers_count: 1, forks_count: 0, pushed_at: "2026-08-17T00:00:00Z" });
+    if (url.pathname === `/repos/${plugin.repository}/commits/${plugin.defaultBranch}`) return Response.json({ sha: nextSha, commit: { committer: { date: "2026-08-17T00:00:00Z" } } });
+    if (url.pathname.includes("/contents/")) return new Response('import { host } from "@hermes/plugin-sdk"; export default { id: "promoted", register(ctx) {} };');
+    return new Response("not found", { status: 404 });
+  };
+  const result = await refreshCatalog(input, { token: "test-token", fetchImpl, reviewedAt: "2026-08-17T01:00:00Z" });
+  assert.deepEqual(result.failures, []);
+  assert.equal(result.catalog.plugins[0].ignoredSources, undefined);
+  assert.equal(result.catalog.plugins[0].sources.length, plugin.sources.length + plugin.ignoredSources.length);
+  assert.doesNotThrow(() => serializeValidatedCatalog(result.catalog));
+});
+
+test("validated serialization rejects an empty or malformed catalog", () => {
+  const empty = structuredClone(catalog);
+  empty.plugins = [];
+  assert.throws(() => serializeValidatedCatalog(empty), /plugins must not be empty/);
+  const malformed = structuredClone(catalog);
+  malformed.methodology = "https://example.com/methodology";
+  malformed.plugins[0].observed.stars = -1;
+  malformed.plugins[0].sources = [null];
+  malformed.plugins[1] = null;
+  let errors;
+  assert.doesNotThrow(() => { errors = validateCatalog(malformed); });
+  assert.ok(errors.some((error) => error.includes("methodology must be the canonical Atlas methodology URL")));
+  assert.ok(errors.some((error) => error.includes("observed.stars is invalid")));
+  assert.ok(errors.some((error) => error.includes("sources[0] must be an object")));
+  assert.ok(errors.some((error) => error.includes("plugins[1] must be an object")));
+  assert.throws(() => serializeValidatedCatalog(malformed), /Catalog validation failed/);
+});
+
+test("catalog validator rejects impossible calendar dates", () => {
+  const impossible = structuredClone(catalog);
+  impossible.cutoff = "2026-02-31";
+  impossible.cutoffAt = "2026-02-31T17:29:59Z";
+  impossible.plugins[0].reviewedCommitAt = "2026-02-31T00:00:00Z";
+  impossible.plugins[0].reviewedAt = "2026-02-31T00:00:00.000Z";
+  const errors = validateCatalog(impossible);
+  assert.ok(errors.some((error) => error.includes("cutoff must be a valid")));
+  assert.ok(errors.some((error) => error.includes("cutoffAt must be an exact")));
+  assert.ok(errors.some((error) => error.includes("reviewedCommitAt is invalid")));
+  assert.ok(errors.some((error) => error.includes("reviewedAt is invalid")));
 });
 
 test("bounded mapper never exceeds its limit and preserves order", async () => {
@@ -169,6 +223,6 @@ test("check mode is no-write and CLI rejects unknown options", () => {
   assert.equal(parseArgs(["--check"]).write, false);
   assert.equal(parseArgs(["--validate"]).network, false);
   assert.throws(() => parseArgs(["--at-cutoff"]), /Unknown option/);
-  assert.throws(() => parseArgs(["--seed"]), /requires a CSV path/);
+  assert.throws(() => parseArgs(["--seed"]), /Unknown option/);
   assert.throws(() => parseArgs(["--surprise"]), /Unknown option/);
 });

@@ -447,10 +447,15 @@ function renderSoftwareApplicationLD(repo, meta, summary) {
 }
 
 // ── GEO: CollectionPage + ItemList JSON-LD for a list page ──
+const starsFor = (repo) => repo.meta?.stars ?? repo.observed?.stars ?? repo.stars ?? 0;
+const repositoryNameFor = (repo) => repo.repository || `${repo.owner}/${repo.repo}`;
+const sortListRepos = (list, repos) => repos.slice().sort((a, b) => list.filter?.desktopPlugins
+  ? repositoryNameFor(a).localeCompare(repositoryNameFor(b), "en", { sensitivity: "base" })
+  : starsFor(b) - starsFor(a));
+
 function renderCollectionPageLD(list, matchedRepos) {
   const canonicalUrl = `${SITE_URL}/lists/${list.slug}`;
-  const starsFor = (repo) => repo.meta?.stars ?? repo.observed?.stars ?? repo.stars ?? 0;
-  const sorted = matchedRepos.slice().sort((a, b) => starsFor(b) - starsFor(a));
+  const sorted = sortListRepos(list, matchedRepos);
 
   const node = {
     "@context": "https://schema.org",
@@ -463,7 +468,9 @@ function renderCollectionPageLD(list, matchedRepos) {
     mainEntity: {
       "@type": "ItemList",
       numberOfItems: sorted.length,
-      itemListOrder: "https://schema.org/ItemListOrderDescending",
+      itemListOrder: list.filter?.desktopPlugins
+        ? "https://schema.org/ItemListOrderAscending"
+        : "https://schema.org/ItemListOrderDescending",
       itemListElement: sorted.map((r, i) => ({
         "@type": "ListItem",
         position: i + 1,
@@ -945,8 +952,7 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
   const desc = escapeHtml(truncate(list.description, 160));
   const canonicalUrl = `${SITE_URL}/lists/${list.slug}`;
 
-  const starsFor = (repo) => repo.meta?.stars ?? repo.observed?.stars ?? repo.stars ?? 0;
-  const sorted = matchedRepos.slice().sort((a, b) => starsFor(b) - starsFor(a));
+  const sorted = sortListRepos(list, matchedRepos);
 
   const repoRows = sorted
     .map((r, i) => {
@@ -1047,10 +1053,10 @@ ${renderMasthead("lists")}
   <h1 class="list-title">${escapeHtml(list.title)}</h1>
   <p class="list-intro">${escapeHtml(list.description)}</p>
 ${list.slug === "best-memory-providers" ? '  <p class="list-intro">For the architecture behind these tools, read <a href="/guide/memory/">The Hermes Agent Memory Guidebook</a>.</p>' : list.filter?.desktopPlugins ? "" : "  "}
-  ${list.filter?.desktopPlugins ? `<p class="list-intro"><a href="${escapeHtml(list.methodology)}" target="_blank" rel="noopener">Read the source-verification methodology and limitations.</a></p><div class="uc-search-wrap"><label for="desktop-search">Search</label><input id="desktop-search" class="catalog-search" type="search" placeholder="repository or purpose"><label for="desktop-type">Distribution</label><select id="desktop-type"><option value="">all types</option><option>standalone</option><option>collection</option><option>embedded integration</option><option>public dotfile plugin</option><option>official standalone</option></select><label for="desktop-status">Atlas status</label><select id="desktop-status"><option value="">all statuses</option><option>Atlas project</option><option>evidence only</option></select></div>` : ""}
+  ${list.filter?.desktopPlugins ? `<p class="list-intro">Entries are alphabetical. Star counts are observed metadata, not ranking or endorsement. <a href="${escapeHtml(list.methodology)}" target="_blank" rel="noopener">Read the source-verification methodology and limitations.</a></p><div class="desktop-plugin-controls"><label>Search<input id="desktop-search" type="search" placeholder="repository or purpose" autocomplete="off"></label><label>Distribution<select id="desktop-type"><option value="">all types</option><option>standalone</option><option>collection</option><option>embedded integration</option><option>public dotfile plugin</option><option>official standalone</option></select></label><label>Atlas status<select id="desktop-status"><option value="">all statuses</option><option>Atlas project</option><option>evidence only</option></select></label><output id="desktop-count" aria-live="polite">${matchedRepos.length} of ${matchedRepos.length} repositories</output></div>` : ""}
 </section>
 
-<div class="list-table" aria-label="Ranked list">
+<div class="list-table" aria-label="${list.filter?.desktopPlugins ? "Source-verified repository index" : "Ranked list"}">
   <div class="list-table-head">
     <div>#</div>
     <div>${list.filter?.desktopPlugins ? "repository" : "project"}</div>
@@ -1082,11 +1088,11 @@ ${list.filter?.desktopPlugins ? '<script src="/assets/js/desktop-plugins.js" def
 // the shared masthead/footer, JSON-LD, and is linked from every page's nav —
 // it's the hub for the directory-intent queries the list pages target.
 function renderListsIndex(lists, repos) {
-  const title = "Curated Lists — the best Hermes Agent tools by use case | Hermes Atlas";
-  const desc = "Curated lists of the best Hermes Agent skills, memory providers, workspaces & GUIs, deployment options, developer tools, and multi-agent frameworks.";
+  const title = "Hermes Agent Lists and Evidence Indexes | Hermes Atlas";
+  const desc = "Curated Hermes Agent project rankings by use case, plus source-verified evidence indexes with explicit review boundaries.";
   const canonicalUrl = `${SITE_URL}/lists/`;
-  const ogTitle = "Curated Lists — Hermes Atlas";
-  const ogSubtitle = "The best Hermes Agent tools by use case, ranked by GitHub stars.";
+  const ogTitle = "Lists and Evidence Indexes: Hermes Atlas";
+  const ogSubtitle = "Curated project rankings plus source-verified evidence indexes.";
 
   const countFor = (list) => list.filter?.desktopPlugins
     ? desktopPlugins.length
@@ -1096,7 +1102,7 @@ function renderListsIndex(lists, repos) {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     "@id": canonicalUrl,
-    name: "Curated Lists — Hermes Agent tools by use case",
+    name: "Hermes Agent lists and evidence indexes",
     description: desc,
     url: canonicalUrl,
     isPartOf: { "@id": "https://hermesatlas.com/#website" },
@@ -1179,11 +1185,11 @@ ${renderMasthead("lists")}
 <main id="main">
 
 <section class="list-page">
-  <h1 class="list-title">Curated Lists</h1>
-  <p class="list-intro">The best Hermes Agent tools by use case — skills, memory providers, workspaces &amp; GUIs, deployment options, developer tools, and multi-agent frameworks. Every list is ranked by GitHub stars and refreshed with live data.</p>
+  <h1 class="list-title">Lists &amp; Evidence Indexes</h1>
+  <p class="list-intro">Curated project lists rank by GitHub stars. Evidence indexes are alphabetical and keep source verification separate from endorsement, compatibility, and runtime safety.</p>
 </section>
 
-<div class="list-table" aria-label="Curated lists">
+<div class="list-table" aria-label="Lists and evidence indexes">
   <div class="list-table-head">
     <div>#</div>
     <div>list</div>
