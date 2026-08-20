@@ -521,6 +521,46 @@
   max-width: 68ch;
   text-wrap: pretty;
 }
+.desktop-plugin-controls {
+  display: grid;
+  grid-template-columns: minmax(220px, 2fr) repeat(2, minmax(160px, 1fr)) auto;
+  gap: 12px;
+  align-items: end;
+  margin-top: 20px;
+}
+.desktop-plugin-controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.desktop-plugin-controls input,
+.desktop-plugin-controls select {
+  min-width: 0;
+  width: 100%;
+  font: 13px var(--font-mono);
+  color: var(--ink);
+  background: var(--bg-elev);
+  border: 1px solid var(--rule-strong);
+  padding: 10px 12px;
+}
+.desktop-plugin-controls input::placeholder { color: var(--ink-mute); }
+.desktop-plugin-controls input:focus-visible,
+.desktop-plugin-controls select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.desktop-plugin-controls output {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-dim);
+  white-space: nowrap;
+  padding: 11px 0;
+}
 
 .list-table {
   margin: 0;
@@ -584,6 +624,30 @@
   color: var(--ink-dim);
   line-height: 1.55;
   margin-top: 4px;
+}
+.list-cell-name > a { color: inherit; }
+.list-cell-name > a:hover { color: var(--accent); }
+.list-cell-provenance {
+  margin-top: 7px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.55;
+  color: var(--ink-mute);
+}
+.list-cell-provenance summary {
+  cursor: pointer;
+  width: fit-content;
+}
+.list-cell-provenance[open] summary { color: var(--ink-dim); }
+.list-cell-provenance div { margin: 5px 0 2px; }
+.list-cell-provenance ul {
+  margin: 0;
+  padding-left: 18px;
+}
+.list-cell-provenance a {
+  color: var(--accent);
+  border-bottom: 1px solid var(--accent-dim);
+  overflow-wrap: anywhere;
 }
 .list-cell-stars {
   font-family: var(--font-mono);
@@ -980,6 +1044,8 @@
     gap: 20px;
   }
   .list-page { padding: 32px 20px 24px; }
+  .desktop-plugin-controls { grid-template-columns: 1fr; }
+  .desktop-plugin-controls output { padding: 0; }
   .list-table-head, .list-row { padding-left: 20px; padding-right: 20px; }
   .list-row:hover { padding-left: 32px; }
   .listicle {

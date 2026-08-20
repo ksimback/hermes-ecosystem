@@ -1,0 +1,83 @@
+name: Validate Desktop plugin evidence
+
+# Gates the source-verified Desktop evidence index without running the full
+# repository suite on unrelated changes. The catalog verifier is offline and
+# no third-party plugin code is executed.
+
+on:
+  pull_request:
+    paths:
+      - 'data/desktop-plugins.json'
+      - 'data/lists.json'
+      - 'data/latest-release.json'
+      - 'data/repos.json'
+      - 'data/use-cases.json'
+      - 'lib/build-artifacts.js'
+      - 'scripts/build-pages.js'
+      - 'scripts/refresh-desktop-plugins.js'
+      - 'assets/css/page.css'
+      - 'assets/js/desktop-plugins.js'
+      - 'lists/desktop-plugins.html'
+      - 'lists/index.html'
+      - 'sitemap.xml'
+      - 'tests/build-artifacts.test.js'
+      - 'tests/desktop-plugins.test.js'
+      - 'tests/desktop-plugin-controls.test.js'
+      - 'tests/seo-pages.test.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/validate-desktop-plugins.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/desktop-plugins.json'
+      - 'data/lists.json'
+      - 'data/latest-release.json'
+      - 'data/repos.json'
+      - 'data/use-cases.json'
+      - 'lib/build-artifacts.js'
+      - 'scripts/build-pages.js'
+      - 'scripts/refresh-desktop-plugins.js'
+      - 'assets/css/page.css'
+      - 'assets/js/desktop-plugins.js'
+      - 'lists/desktop-plugins.html'
+      - 'lists/index.html'
+      - 'sitemap.xml'
+      - 'tests/build-artifacts.test.js'
+      - 'tests/desktop-plugins.test.js'
+      - 'tests/desktop-plugin-controls.test.js'
+      - 'tests/seo-pages.test.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/validate-desktop-plugins.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies without package scripts
+        run: npm ci --ignore-scripts
+
+      - name: Validate catalog and scanner behavior
+        run: node --test tests/build-artifacts.test.js tests/desktop-plugins.test.js tests/desktop-plugin-controls.test.js
+
+      - name: Validate generated evidence pages
+        run: node --test --test-name-pattern='^(lists index is templated|desktop plugin evidence list)' tests/seo-pages.test.js
+
+      - name: Validate deterministic evidence catalog
+        run: node scripts/refresh-desktop-plugins.js --validate

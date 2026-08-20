@@ -214,6 +214,12 @@ if (fs.existsSync(listsPath)) {
   lists = JSON.parse(fs.readFileSync(listsPath, "utf-8"));
 }
 
+let desktopPlugins = [];
+const desktopPluginsPath = path.join(ROOT, "data", "desktop-plugins.json");
+if (fs.existsSync(desktopPluginsPath)) {
+  desktopPlugins = JSON.parse(fs.readFileSync(desktopPluginsPath, "utf-8")).plugins || [];
+}
+
 // Use-case bundles + the demand-side story corpus they cite. Both are gated by
 // scripts/validate-use-cases.js, so by the time the build reads them every
 // stack repo exists in repos.json and every evidence id resolves below.
@@ -441,9 +447,15 @@ function renderSoftwareApplicationLD(repo, meta, summary) {
 }
 
 // ── GEO: CollectionPage + ItemList JSON-LD for a list page ──
+const starsFor = (repo) => repo.meta?.stars ?? repo.observed?.stars ?? repo.stars ?? 0;
+const repositoryNameFor = (repo) => repo.repository || `${repo.owner}/${repo.repo}`;
+const sortListRepos = (list, repos) => repos.slice().sort((a, b) => list.filter?.desktopPlugins
+  ? repositoryNameFor(a).localeCompare(repositoryNameFor(b), "en", { sensitivity: "base" })
+  : starsFor(b) - starsFor(a));
+
 function renderCollectionPageLD(list, matchedRepos) {
   const canonicalUrl = `${SITE_URL}/lists/${list.slug}`;
-  const sorted = matchedRepos.slice().sort((a, b) => (b.meta?.stars || b.stars) - (a.meta?.stars || a.stars));
+  const sorted = sortListRepos(list, matchedRepos);
 
   const node = {
     "@context": "https://schema.org",
@@ -456,12 +468,14 @@ function renderCollectionPageLD(list, matchedRepos) {
     mainEntity: {
       "@type": "ItemList",
       numberOfItems: sorted.length,
-      itemListOrder: "https://schema.org/ItemListOrderDescending",
+      itemListOrder: list.filter?.desktopPlugins
+        ? "https://schema.org/ItemListOrderAscending"
+        : "https://schema.org/ItemListOrderDescending",
       itemListElement: sorted.map((r, i) => ({
         "@type": "ListItem",
         position: i + 1,
-        url: `${SITE_URL}/projects/${r.owner}/${r.repo}`,
-        name: `${r.owner}/${r.repo}`,
+        url: r.atlasUrl ? `${SITE_URL}${r.atlasUrl}` : r.url || `${SITE_URL}/projects/${r.owner}/${r.repo}`,
+        name: r.repository || `${r.owner}/${r.repo}`,
       })),
     },
   };
@@ -938,17 +952,39 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
   const desc = escapeHtml(truncate(list.description, 160));
   const canonicalUrl = `${SITE_URL}/lists/${list.slug}`;
 
-  const sorted = matchedRepos.slice().sort((a, b) => (b.meta?.stars || b.stars) - (a.meta?.stars || a.stars));
+  const sorted = sortListRepos(list, matchedRepos);
 
   const repoRows = sorted
     .map((r, i) => {
-      const s = r.meta?.stars || r.stars;
+      const s = starsFor(r);
       const rank = String(i + 1).padStart(2, '0');
-      return `<a class="list-row" href="/projects/${r.owner}/${r.repo}">
+      const name = r.repository || `${r.owner}/${r.repo}`;
+      const href = r.atlasUrl || r.url || `/projects/${r.owner}/${r.repo}`;
+      const description = r.purpose || r.meta?.description || r.description;
+      const status = r.atlasUrl ? "Atlas project" : "evidence only";
+      if (list.filter?.desktopPlugins) {
+        const commitUrl = `${r.url}/tree/${r.reviewedCommit}`;
+        const proofLinks = r.sources.map((source) => `<li><a href="${escapeHtml(source.rawUrl)}" target="_blank" rel="noopener">${escapeHtml(source.path)}</a></li>`).join("");
+        const proofCount = r.sources.length;
+        return `<article class="list-row" data-repository="${escapeHtml(name)}" data-search="${escapeHtml(`${name} ${description}`.toLowerCase())}" data-type="${escapeHtml(r.distributionType || "")}" data-status="${escapeHtml(status)}">
+    <div class="list-rank">${rank}</div>
+    <div class="list-cell-body">
+      <div class="list-cell-name"><a href="${escapeHtml(href)}"${href.startsWith("https://") ? ' target="_blank" rel="noopener"' : ""}>${escapeHtml(name)}</a>${r.official ? ' <span class="repo-flag">official</span>' : ""}</div>
+      <div class="list-cell-desc">${escapeHtml(description.slice(0, 140))} · ${escapeHtml(r.distributionType)} · ${status}</div>
+      <details class="list-cell-provenance">
+        <summary>reviewed ${escapeHtml(r.reviewedCommit.slice(0, 12))} · ${proofCount} source ${proofCount === 1 ? "proof" : "proofs"}</summary>
+        <div><a href="${escapeHtml(commitUrl)}" target="_blank" rel="noopener">immutable reviewed commit</a> · reviewed ${escapeHtml(r.reviewedAt)}</div>
+        <ul>${proofLinks}</ul>
+      </details>
+    </div>
+    <div class="list-cell-stars">★ ${formatStars(s)}</div>
+  </article>`;
+      }
+      return `<a class="list-row" href="${escapeHtml(href)}">
     <div class="list-rank">${rank}</div>
     <div class="list-cell-body">
       <div class="list-cell-name"><span class="org">${escapeHtml(r.owner)} /</span> ${escapeHtml(r.repo)}${r.official ? ' <span class="repo-flag">official</span>' : ""}</div>
-      <div class="list-cell-desc">${escapeHtml((r.meta?.description || r.description).slice(0, 140))}</div>
+      <div class="list-cell-desc">${escapeHtml(description.slice(0, 140))}</div>
     </div>
     <div class="list-cell-stars">★ ${formatStars(s)}</div>
   </a>`;
@@ -1031,13 +1067,14 @@ ${renderMasthead("lists")}
 <section class="list-page">
   <h1 class="list-title">${escapeHtml(list.title)}</h1>
   <p class="list-intro">${escapeHtml(list.description)}</p>
-  ${list.slug === "best-memory-providers" ? '<p class="list-intro">For the architecture behind these tools, read <a href="/guide/memory/">The Hermes Agent Memory Guidebook</a>.</p>' : ""}
+${list.slug === "best-memory-providers" ? '  <p class="list-intro">For the architecture behind these tools, read <a href="/guide/memory/">The Hermes Agent Memory Guidebook</a>.</p>' : list.filter?.desktopPlugins ? "" : "  "}
+  ${list.filter?.desktopPlugins ? `<p class="list-intro">Entries are alphabetical. Star counts are observed metadata, not ranking or endorsement. <a href="${escapeHtml(list.methodology)}" target="_blank" rel="noopener">Read the source-verification methodology and limitations.</a></p><div class="desktop-plugin-controls"><label>Search<input id="desktop-search" type="search" placeholder="repository or purpose" autocomplete="off"></label><label>Distribution<select id="desktop-type"><option value="">all types</option><option>standalone</option><option>collection</option><option>embedded integration</option><option>public dotfile plugin</option><option>official standalone</option></select></label><label>Atlas status<select id="desktop-status"><option value="">all statuses</option><option>Atlas project</option><option>evidence only</option></select></label><output id="desktop-count" aria-live="polite">${matchedRepos.length} of ${matchedRepos.length} repositories</output></div>` : ""}
 </section>
 
-<div class="list-table" aria-label="Ranked list">
+<div class="list-table" aria-label="${list.filter?.desktopPlugins ? "Source-verified repository index" : "Ranked list"}">
   <div class="list-table-head">
     <div>#</div>
-    <div>project</div>
+    <div>${list.filter?.desktopPlugins ? "repository" : "project"}</div>
     <div class="text-right">stars</div>
   </div>
   ${repoRows}
@@ -1052,6 +1089,7 @@ ${PAGE_FOOTER}
 
 <script src="/assets/js/theme-toggle.js" defer></script>
 <script src="/assets/js/masthead-fetch.js" defer></script>
+${list.filter?.desktopPlugins ? '<script src="/assets/js/desktop-plugins.js" defer></script>' : ""}
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
@@ -1065,20 +1103,21 @@ ${PAGE_FOOTER}
 // the shared masthead/footer, JSON-LD, and is linked from every page's nav —
 // it's the hub for the directory-intent queries the list pages target.
 function renderListsIndex(lists, repos) {
-  const title = "Curated Lists — the best Hermes Agent tools by use case | Hermes Atlas";
-  const desc = "Curated lists of the best Hermes Agent skills, memory providers, workspaces & GUIs, deployment options, developer tools, and multi-agent frameworks.";
+  const title = "Hermes Agent Lists and Evidence Indexes | Hermes Atlas";
+  const desc = "Curated Hermes Agent project rankings by use case, plus source-verified evidence indexes with explicit review boundaries.";
   const canonicalUrl = `${SITE_URL}/lists/`;
-  const ogTitle = "Curated Lists — Hermes Atlas";
-  const ogSubtitle = "The best Hermes Agent tools by use case, ranked by GitHub stars.";
+  const ogTitle = "Lists and Evidence Indexes: Hermes Atlas";
+  const ogSubtitle = "Curated project rankings plus source-verified evidence indexes.";
 
-  const countFor = (list) =>
-    list.filter?.category ? repos.filter((r) => r.category === list.filter.category).length : 0;
+  const countFor = (list) => list.filter?.desktopPlugins
+    ? desktopPlugins.length
+    : list.filter?.category ? repos.filter((r) => r.category === list.filter.category).length : 0;
 
   const collectionLD = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     "@id": canonicalUrl,
-    name: "Curated Lists — Hermes Agent tools by use case",
+    name: "Hermes Agent lists and evidence indexes",
     description: desc,
     url: canonicalUrl,
     isPartOf: { "@id": "https://hermesatlas.com/#website" },
@@ -1106,13 +1145,14 @@ function renderListsIndex(lists, repos) {
   const listRows = lists.map((l, i) => {
     const rank = String(i + 1).padStart(2, "0");
     const count = countFor(l);
+    const countLabel = l.filter?.desktopPlugins ? `${count} verified repos` : `${count} projects`;
     return `<a class="list-row" href="/lists/${escapeHtml(l.slug)}">
     <div class="list-rank">${rank}</div>
     <div class="list-cell-body">
       <div class="list-cell-name">${escapeHtml(l.title)}</div>
       <div class="list-cell-desc">${escapeHtml(truncate(l.description, 140))}</div>
     </div>
-    <div class="list-cell-stars">${count} projects</div>
+    <div class="list-cell-stars">${countLabel}</div>
   </a>`;
   }).join("\n  ");
 
@@ -1160,11 +1200,11 @@ ${renderMasthead("lists")}
 <main id="main">
 
 <section class="list-page">
-  <h1 class="list-title">Curated Lists</h1>
-  <p class="list-intro">The best Hermes Agent tools by use case — skills, memory providers, workspaces &amp; GUIs, deployment options, developer tools, and multi-agent frameworks. Every list is ranked by GitHub stars and refreshed with live data.</p>
+  <h1 class="list-title">Lists &amp; Evidence Indexes</h1>
+  <p class="list-intro">Curated project lists rank by GitHub stars. Evidence indexes are alphabetical and keep source verification separate from endorsement, compatibility, and runtime safety.</p>
 </section>
 
-<div class="list-table" aria-label="Curated lists">
+<div class="list-table" aria-label="Lists and evidence indexes">
   <div class="list-table-head">
     <div>#</div>
     <div>list</div>
@@ -2233,8 +2273,13 @@ async function main() {
   // Generate list pages
   console.log("Generating list pages...");
   for (const list of lists) {
-    const matchedRepos = repos
+    const matchedRepos = (list.filter?.desktopPlugins ? desktopPlugins.map((plugin) => {
+      const [owner, repo] = plugin.repository.split("/");
+      const canonical = repos.find((item) => item.owner.toLowerCase() === owner.toLowerCase() && item.repo.toLowerCase() === repo.toLowerCase());
+      return { ...plugin, ...(canonical ? { atlasUrl: `/projects/${canonical.owner}/${canonical.repo}` } : {}) };
+    }) : repos)
       .filter((r) => {
+        if (list.filter?.desktopPlugins) return true;
         if (list.filter?.category) return r.category === list.filter.category;
         return false;
       })

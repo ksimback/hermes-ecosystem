@@ -18,6 +18,14 @@ test("project and list summaries cannot retain repos removed from the catalog", 
   assert.deepEqual(orphanedSummaries, []);
 
   for (const list of lists) {
+    if (list.summaries === false) {
+      assert.deepEqual(
+        Object.keys(listSummaries[list.slug]?.entries || {}),
+        [],
+        `${list.slug} disables per-project summaries`,
+      );
+      continue;
+    }
     const members = new Set(
       repos
         .filter((repo) => !list.filter?.category || repo.category === list.filter.category)

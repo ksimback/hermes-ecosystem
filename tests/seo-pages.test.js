@@ -9,6 +9,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), "utf-8");
 const repos = JSON.parse(read("data/repos.json"));
 const lists = JSON.parse(read("data/lists.json"));
+const desktopPlugins = JSON.parse(read("data/desktop-plugins.json"));
 const useCases = JSON.parse(read("data/use-cases.json"));
 const latestRelease = JSON.parse(read("data/latest-release.json"));
 
@@ -99,6 +100,38 @@ test("lists index is templated, canonical, and links every list", () => {
   for (const l of lists) {
     assert.ok(html.includes(`href="/lists/${l.slug}"`), `lists index links /lists/${l.slug}`);
   }
+  assert.ok(html.includes(`${desktopPlugins.plugins.length} verified repos`));
+});
+
+test("desktop plugin evidence list is searchable and links every verified repository", () => {
+  const html = read("lists/desktop-plugins.html");
+  assert.ok(html.includes('id="desktop-search"'));
+  assert.ok(html.includes('id="desktop-type"'));
+  assert.ok(html.includes('id="desktop-status"'));
+  const desktopList = lists.find((list) => list.filter?.desktopPlugins);
+  assert.ok(desktopList);
+  assert.equal(desktopList.methodology, desktopPlugins.methodology);
+  assert.ok(html.includes(`href="${desktopList.methodology}"`));
+  assert.ok(html.includes('application/ld+json'));
+  assert.ok(html.includes("<div>repository</div>"));
+  assert.ok(html.includes('class="desktop-plugin-controls"'));
+  assert.ok(html.includes('aria-label="Source-verified repository index"'));
+  assert.ok(html.includes("https://schema.org/ItemListOrderAscending"));
+  assert.ok(!html.includes('aria-label="Ranked list"'));
+  assert.equal((html.match(/class="list-row"/g) || []).length, desktopPlugins.plugins.length);
+  const rowNames = [...html.matchAll(/data-repository="([^"]+)"/g)].map((match) => match[1]);
+  const alphabetical = desktopPlugins.plugins.map((plugin) => plugin.repository).sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" }));
+  assert.deepEqual(rowNames, alphabetical);
+  const canonical = new Map(repos.map((repo) => [`${repo.owner}/${repo.repo}`.toLowerCase(), repo]));
+  for (const plugin of desktopPlugins.plugins) {
+    assert.ok(html.includes(plugin.reviewedCommit), `${plugin.repository} reviewed commit is visible`);
+    assert.ok(html.includes(plugin.reviewedAt), `${plugin.repository} review timestamp is visible`);
+    for (const source of plugin.sources) assert.ok(html.includes(source.rawUrl), `${plugin.repository}/${source.path} proof is linked`);
+    const atlasRepo = canonical.get(plugin.repository.toLowerCase());
+    const href = atlasRepo ? `/projects/${atlasRepo.owner}/${atlasRepo.repo}` : plugin.url;
+    assert.ok(html.includes(`href="${href}"`), `desktop list links ${plugin.repository}`);
+  }
+  assert.ok(read("sitemap.xml").includes("https://hermesatlas.com/lists/desktop-plugins"));
 });
 
 test("use-case pages are in the sitemap, canonical, and cross-linked", () => {
