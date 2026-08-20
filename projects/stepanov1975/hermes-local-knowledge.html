@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>stepanov1975/hermes-local-knowledge — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Hermes Local Knowledge is a plugin for the Hermes Agent that indexes and routes local artifacts such as skills, support documents, scripts, and MCP servers. It…">
+<meta name="description" content="Hermes Local Knowledge is a reusable plugin for Hermes Agents that functions as an artifact router for local indexing and discovery. It provides tools to…">
 <link rel="canonical" href="https://hermesatlas.com/projects/stepanov1975/hermes-local-knowledge">
 <meta property="og:title" content="stepanov1975/hermes-local-knowledge — Hermes Atlas">
-<meta property="og:description" content="Hermes Local Knowledge is a plugin for the Hermes Agent that indexes and routes local artifacts such as skills, support documents, scripts, and MCP servers. It…">
+<meta property="og:description" content="Hermes Local Knowledge is a reusable plugin for Hermes Agents that functions as an artifact router for local indexing and discovery. It provides tools to…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/stepanov1975/hermes-local-knowledge">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="stepanov1975/hermes-local-knowledge — Hermes Atlas">
-<meta name="twitter:description" content="Hermes Local Knowledge is a plugin for the Hermes Agent that indexes and routes local artifacts such as skills, support documents, scripts, and MCP servers. It…">
+<meta name="twitter:description" content="Hermes Local Knowledge is a reusable plugin for Hermes Agents that functions as an artifact router for local indexing and discovery. It provides tools to…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-local-knowledge&amp;subtitle=Hermes+Agent+plugin+for+local+knowledge+search+and+artifact+routing%E2%80%94find+the+right+skill%2C+script%2C+runbook%2C+cron+job%2C+MCP+server%2C+or+document.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/stepanov1975/hermes-local-knowledge#software",
   "name": "hermes-local-knowledge",
-  "description": "Hermes Local Knowledge is a plugin for the Hermes Agent that indexes and routes local artifacts such as skills, support documents, scripts, and MCP servers. It functions as an artifact router rather than a chunk-based RAG system, providing routing hints that direct the agent to inspect entire files before acting.",
+  "description": "Hermes Local Knowledge is a reusable plugin for Hermes Agents that functions as an artifact router for local indexing and discovery. It provides tools to search, fetch, and traverse graph edges for various local sources including skills, scripts, runbooks, and MCP server configurations.",
   "url": "https://hermesatlas.com/projects/stepanov1975/hermes-local-knowledge",
   "codeRepository": "https://github.com/stepanov1975/hermes-local-knowledge",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "stepanov1975",
     "url": "https://github.com/stepanov1975"
   },
-  "dateModified": "2026-08-14T18:39:55.000Z",
+  "dateModified": "2026-08-17T17:59:27.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -81,8 +81,8 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">228·repos</span>
-    <span id="meta-version">hermes·v0.20.2</span>
+    <span id="meta-count">230·repos</span>
+    <span id="meta-version">hermes·v0.20.4</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -123,7 +123,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-08-14</span>
+    <span><span class="meta-label">updated</span>2026-08-17</span>
   </div>
 
   <div class="actions">
@@ -138,11 +138,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Local Knowledge is a plugin for the Hermes Agent that indexes and routes local artifacts such as skills, support documents, scripts, and MCP servers. It functions as an artifact router rather than a chunk-based RAG system, providing routing hints that direct the agent to inspect entire files before acting.</p>
+    <p class="summary-text">Hermes Local Knowledge is a reusable plugin for Hermes Agents that functions as an artifact router for local indexing and discovery. It provides tools to search, fetch, and traverse graph edges for various local sources including skills, scripts, runbooks, and MCP server configurations.</p>
     <ul class="summary-highlights">
-      <li>Indexes skills, scripts, runbooks, cron jobs, and MCP server configurations.</li>
-      <li>Provides tools for knowledge search, neighbor traversal, and usage reporting.</li>
-      <li>Supports optional, opt-in automatic tool-routing note generation using model calls.</li>
+      <li>Routes local questions to whole artifacts rather than using chunk RAG.</li>
+      <li>Registers five native tools for knowledge search, retrieval, and feedback.</li>
+      <li>Supports optional automated tool-routing note generation via model calls.</li>
     </ul>
   </div>
 </section>
@@ -226,7 +226,7 @@
 <td>Summarize local usage, failures, zero-result queries, and feedback.</td>
 </tr>
 </tbody></table>
-<p>The plugin also registers <code>pre_llm_call</code>, <code>post_tool_call</code>, <code>on_session_end</code>, and <code>on_session_finalize</code> hooks for optional same-turn implicit search-result feedback and tool-OKF capture/generation. The turn lifecycle hooks keep correlation inside the plugin when Hermes dispatches local-knowledge tools through its deferred-tool bridge.</p>
+<p>The plugin also registers <code>pre_llm_call</code>, <code>post_tool_call</code>, <code>on_session_end</code>, and <code>on_session_finalize</code> hooks. When the configured source is available, Hermes hosts with cache-safe plugin prompt sections add one concise system-prompt hint for each new session: use <code>knowledge_search</code> for local tools and information. Older hosts use a deduplicated <code>pre_llm_call</code> hint as a compatibility fallback. In either case, <code>pre_llm_call</code> continues to bind optional same-turn implicit search-result feedback; the remaining lifecycle hooks support that feedback and tool-OKF capture/generation while keeping correlation inside the plugin when Hermes dispatches local-knowledge tools through its deferred-tool bridge.</p>
 <p>Implicit feedback is disabled by default. In a private controlled installation, it can learn a routing hint when the same artifact is consumed after distinct matching searches, with each <code>knowledge_get</code> tied to that search's unassisted baseline in the same Hermes session, task, and turn:</p>
 <pre><code class="language-yaml">local_knowledge:
   implicit_feedback:
@@ -262,7 +262,7 @@ hermes config set local_knowledge.okf.auto_generate true
 </code></pre>
 <p>If it is already enabled, report that instead of asking again. If the user declines, leave <code>auto_generate</code> disabled and report that existing lookup and manual OKF management remain available, but new tool-routing notes will not be generated automatically.</p>
 <h4>Install the proactive router skill</h4>
-<p>The tools can be called directly, but the bundled skill tells Hermes when to use them proactively:</p>
+<p>The per-turn hook makes the primary search tool discoverable without loading a full routing skill. The bundled skill adds the detailed search/fetch/inspect workflow, freshness guidance, and feedback procedure:</p>
 <pre><code class="language-bash">hermes local-knowledge install-router-skill --json
 </code></pre>
 <p><code>installed</code> and <code>current</code> are successful statuses. A different existing skill produces <code>conflict</code>; review it before choosing <code>--force</code>.</p>
@@ -514,11 +514,11 @@ git diff --check
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 63.4K</div>
+        <div class="stars">★ 63.7K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 20.1K</div>
+        <div class="stars">★ 20.4K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -526,19 +526,19 @@ git diff --check
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 360</div>
+        <div class="stars">★ 362</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
-        <div class="stars">★ 200</div>
+        <div class="stars">★ 199</div>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/Signet-AI/signetai">
-        <div class="stars">★ 246</div>
+        <div class="stars">★ 252</div>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 237</div>
+        <div class="stars">★ 240</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">

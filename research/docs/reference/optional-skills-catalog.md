@@ -103,6 +103,10 @@ Generate flat, minimal educational SVG visuals as HTML.
 
 Generate ideas via named methods from creative practice.
 
+[**draw-your-font**](/docs/user-guide/skills/optional/creative/creative-draw-your-font)
+
+Turn a handwriting photo into an installable TTF font.
+
 [**heartmula**](/docs/user-guide/skills/optional/creative/creative-heartmula)
 
 HeartMuLa: Suno-like song generation from lyrics + tags.
@@ -122,6 +126,10 @@ Create meme PNGs from templates with Pillow text overlay.
 [**pixel-art**](/docs/user-guide/skills/optional/creative/creative-pixel-art)
 
 Pixel art w/ era palettes (NES, Game Boy, PICO-8).
+
+[**simple-english**](/docs/user-guide/skills/optional/creative/creative-simple-english)
+
+Rewrite text to ASD-STE100 Simplified Technical English.
 
 [**social-media-content-calendar**](/docs/user-guide/skills/optional/creative/creative-social-media-content-calendar)
 

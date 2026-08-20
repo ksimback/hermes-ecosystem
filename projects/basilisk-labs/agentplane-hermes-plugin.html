@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>basilisk-labs/agentplane-hermes-plugin — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="This plugin integrates AgentPlane into the Hermes ecosystem by enabling external Kanban worker lanes. It functions by intercepting Kanban assignees matching…">
+<meta name="description" content="This plugin acts as a transport adapter to bridge AgentPlane with Hermes as a native worker-lane. It manages the execution of AgentPlane tasks while Hermes…">
 <link rel="canonical" href="https://hermesatlas.com/projects/basilisk-labs/agentplane-hermes-plugin">
 <meta property="og:title" content="basilisk-labs/agentplane-hermes-plugin — Hermes Atlas">
-<meta property="og:description" content="This plugin integrates AgentPlane into the Hermes ecosystem by enabling external Kanban worker lanes. It functions by intercepting Kanban assignees matching…">
+<meta property="og:description" content="This plugin acts as a transport adapter to bridge AgentPlane with Hermes as a native worker-lane. It manages the execution of AgentPlane tasks while Hermes…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/basilisk-labs/agentplane-hermes-plugin">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="basilisk-labs/agentplane-hermes-plugin — Hermes Atlas">
-<meta name="twitter:description" content="This plugin integrates AgentPlane into the Hermes ecosystem by enabling external Kanban worker lanes. It functions by intercepting Kanban assignees matching…">
+<meta name="twitter:description" content="This plugin acts as a transport adapter to bridge AgentPlane with Hermes as a native worker-lane. It manages the execution of AgentPlane tasks while Hermes…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=agentplane-hermes-plugin&amp;subtitle=%F0%9F%94%8C+Hermes+plugin+for+spawning+AgentPlane+as+an+external+worker+lane.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/basilisk-labs/agentplane-hermes-plugin#software",
   "name": "agentplane-hermes-plugin",
-  "description": "This plugin integrates AgentPlane into the Hermes ecosystem by enabling external Kanban worker lanes. It functions by intercepting Kanban assignees matching specific patterns and resolving them to an external supervisor command rather than a standard Hermes profile. The integration maintains strict boundaries by requiring AgentPlane to manage task lifecycles through official APIs instead of direct database mutations. It supports path allowlisting for secure workspace management and includes a di",
+  "description": "This plugin acts as a transport adapter to bridge AgentPlane with Hermes as a native worker-lane. It manages the execution of AgentPlane tasks while Hermes maintains ownership of Kanban task state and LLM episodes.",
   "url": "https://hermesatlas.com/projects/basilisk-labs/agentplane-hermes-plugin",
   "codeRepository": "https://github.com/basilisk-labs/agentplane-hermes-plugin",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "basilisk-labs",
     "url": "https://github.com/basilisk-labs"
   },
-  "dateModified": "2026-06-02T21:34:20.000Z",
+  "dateModified": "2026-08-17T23:41:03.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -81,8 +81,8 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">228·repos</span>
-    <span id="meta-version">hermes·v0.20.2</span>
+    <span id="meta-count">230·repos</span>
+    <span id="meta-version">hermes·v0.20.4</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -123,7 +123,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-06-02</span>
+    <span><span class="meta-label">updated</span>2026-08-17</span>
   </div>
 
   <div class="actions">
@@ -138,11 +138,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">This plugin integrates AgentPlane into the Hermes ecosystem by enabling external Kanban worker lanes. It functions by intercepting Kanban assignees matching specific patterns and resolving them to an external supervisor command rather than a standard Hermes profile. The integration maintains strict boundaries by requiring AgentPlane to manage task lifecycles through official APIs instead of direct database mutations. It supports path allowlisting for secure workspace management and includes a diagnostic tool for verifying registry and binary configurations.</p>
+    <p class="summary-text">This plugin acts as a transport adapter to bridge AgentPlane with Hermes as a native worker-lane. It manages the execution of AgentPlane tasks while Hermes maintains ownership of Kanban task state and LLM episodes.</p>
     <ul class="summary-highlights">
-      <li>Maps agentplane-* Kanban assignees to external supervisor commands</li>
-      <li>Requires explicit task ID mapping via card metadata</li>
-      <li>Enforces security through AGENTPLANE_HERMES_ALLOWED_ROOTS path allowlisting</li>
+      <li>Implements a native Hermes command group for AgentPlane tasks.</li>
+      <li>Provides a conversational bridge for task approvals within Hermes.</li>
+      <li>Requires AgentPlane version 0.7.6 or newer.</li>
     </ul>
   </div>
 </section>
@@ -153,42 +153,103 @@
     <h2>AgentPlane Hermes Plugin</h2>
 <p><a href="https://github.com/basilisk-labs/agentplane-hermes-plugin/actions/workflows/ci.yml"><img src="https://github.com/basilisk-labs/agentplane-hermes-plugin/actions/workflows/ci.yml/badge.svg" alt="CI" loading="lazy" decoding="async"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" loading="lazy" decoding="async"></a>
-<a href="https://github.com/basilisk-labs/agentplane"><img src="https://img.shields.io/badge/AgentPlane-0.6%2B-111827" alt="AgentPlane" loading="lazy" decoding="async"></a></p>
-<p>Hermes plugin for spawning AgentPlane as an external worker lane.</p>
-<p>This package makes Hermes Kanban assignees matching <code>agentplane-*</code> resolve to an
-external supervisor command instead of a Hermes profile.</p>
-<h3>Status</h3>
-<p>Compatibility plugin for current Hermes images, with a native registration path
-for Hermes runtimes that expose:</p>
-<pre><code class="language-python">register_worker_lane(match, spawn_fn)
-</code></pre>
-<p>Without that hook, the plugin still provides doctor/registry checks and does not
-mutate <code>kanban.db</code> directly.</p>
-<h3>Runtime contract</h3>
-<p>Hermes image/runtime must provide:</p>
+<a href="https://github.com/basilisk-labs/agentplane"><img src="https://img.shields.io/badge/AgentPlane-0.7.6%2B-111827" alt="AgentPlane" loading="lazy" decoding="async"></a></p>
+<p>Hermes native worker-lane bridge for AgentPlane protocol v2.</p>
+<p>The division of responsibility is deliberate:</p>
 <ul>
-<li><code>PATH</code> containing <code>/opt/hermes/bin</code></li>
-<li>Node.js 24+</li>
-<li><code>agentplane</code> on <code>PATH</code> or <code>AGENTPLANE_BIN=/path/to/agentplane</code></li>
-<li><code>AGENTPLANE_HERMES_LANE_REGISTRY=/opt/agentplane/lane-registry.json</code></li>
-<li>optional <code>AGENTPLANE_HERMES_ALLOWED_ROOTS=/workspace:/srv/agentplane</code>
-path allowlist for spawned AgentPlane workspaces</li>
-<li>Hermes plugin loader pointed at this plugin</li>
+<li>Hermes performs every LLM episode and owns the Kanban task, claim, run, heartbeat, retry,
+comments, and dashboard state.</li>
+<li>AgentPlane owns formal engineering task state, PLANNER/EXECUTOR/EVALUATOR roles, authority,
+repository routing, verification, publication, integration, and the terminal decision.</li>
+<li>The plugin is a transport adapter. It never edits AgentPlane task files, reconstructs lifecycle
+transitions from prose, or writes directly to the Hermes database.</li>
 </ul>
-<p>Cards dispatched to an AgentPlane lane must carry an explicit AgentPlane task id
-in <code>agentplane_task_id</code>, <code>agentplaneTaskId</code>, or <code>metadata.agentplane.task_id</code>.
-The plugin intentionally does not treat a Hermes card id as an AgentPlane task id.</p>
-<p>Example lane registry:</p>
+<h3>Commands</h3>
+<p>The plugin registers one native Hermes command group:</p>
+<pre><code class="language-bash">hermes agentplane doctor --json
+hermes agentplane run
+hermes agentplane supervise --task-id &lt;agentplane-task-id&gt; --root &lt;repo&gt;
+hermes agentplane approve --task-id &lt;agentplane-task-id&gt; [--root &lt;repo&gt;]
+</code></pre>
+<p><code>run</code> is the AgentPlane custom-runner entrypoint. It reads the runner bundle and bootstrap from the
+<code>AGENTPLANE_RUNNER_*</code> contract, executes the bounded WorkOrder through Hermes oneshot mode,
+validates <code>AgentSemanticResult v2</code>, and atomically writes the exact result path.</p>
+<p><code>supervise</code> is the normal native worker-lane entrypoint. It requests a fresh
+<code>ap task advance &lt;id&gt; --agent-json</code> packet, executes only <code>agent_episode</code>, writes the typed result
+to the exact <code>exchange.result_path</code>, and resumes with the exact <code>exchange.resume_argv</code>. It stops at
+human-input, external-wait, recovery, framework, or terminal boundaries. AgentPlane resolves
+repository-policy side effects internally. Formal transitions remain invisible to the Hermes user
+but are never delegated to the model.</p>
+<p><code>approve</code> is the trusted conversational bridge for a current <code>approval_required</code> packet. The same
+operation is registered as <code>/agentplane_approve &lt;task-id&gt; [workspace-root]</code>, so a user can approve
+inside a Hermes conversation without copying a state fingerprint or running a terminal command.
+It signs only the packet's exact <code>operator_action.approval_receipt.request</code>, substitutes only the
+receipt placeholder in the supplied argv, executes it, and requests a fresh packet. Provider merge
+packets deliberately have no executable argv and are rejected by this bridge.</p>
+<h3>Runtime contract</h3>
+<p>Hermes must expose <code>register_worker_lane(match, spawn_fn)</code> and plugin CLI discovery. The runtime
+also needs AgentPlane 0.7.6 or newer and the following configuration:</p>
+<pre><code class="language-bash">export AGENTPLANE_HERMES_LANE_REGISTRY=/opt/agentplane/lane-registry.json
+export AGENTPLANE_HERMES_ALLOWED_ROOTS=/workspace/repo-a:/workspace/repo-b
+export AGENTPLANE_BIN=/usr/local/bin/agentplane
+</code></pre>
+<p>The root allowlist is mandatory. Empty means deny all workspaces.</p>
+<p>Configure the non-secret approval identity in Hermes <code>config.yaml</code>:</p>
+<pre><code class="language-yaml">plugins:
+  entries:
+    agentplane:
+      settings:
+        approval_issuer: hermes-dialog
+        approval_subject: owner
+        approval_ttl_minutes: 10
+</code></pre>
+<p>The trusted Hermes host process also needs an Ed25519 PKCS8 DER key encoded as base64 in the secret
+environment variable <code>AGENTPLANE_HERMES_APPROVAL_PRIVATE_KEY_PKCS8</code>. This secret is intentionally
+absent from the worker environment, so an LLM episode or terminal subprocess cannot invoke the
+signer. <code>hermes agentplane doctor --json</code> reports the matching <code>approval_bridge.public_key_spki</code>;
+configure that public key under AgentPlane
+<code>authority.approval_receipts.trusted_issuers[].public_key_spki</code> with the same issuer id.</p>
+<p>The plugin does not inherit the complete parent environment. It forwards a small runtime allowlist,
+the AgentPlane runner fields, and the current Hermes claim. Provider credentials that must be
+available to a subprocess require an explicit name allowlist:</p>
+<pre><code class="language-bash">export AGENTPLANE_HERMES_FORWARD_ENV=OPENROUTER_API_KEY,ANTHROPIC_API_KEY
+</code></pre>
+<p>The values are not logged or included in doctor output.</p>
+<p>Every plugin-owned AgentPlane process asserts:</p>
+<pre><code class="language-text">AGENTPLANE_HERMES_PLUGIN_PROTOCOL=agentplane.hermes.plugin.v2
+AGENTPLANE_HERMES_NATIVE_WORKER_LANE_API=1
+AGENTPLANE_HERMES_APPROVAL_RECEIPT_BRIDGE=1
+</code></pre>
+<p>The third assertion is emitted only when the trusted host process loaded a valid Ed25519 key. The
+private key variable itself is never forwarded.</p>
+<h3>Approval and autonomous side effects</h3>
+<p>The primary AgentPlane plan always requires an explicit user decision. The user invokes
+<code>/agentplane_approve</code> from Hermes, and the trusted plugin records the signed, short-lived,
+state-bound receipt. The LLM cannot infer approval from prose or manufacture this receipt.</p>
+<p>After plan approval, AgentPlane <code>authority.mode=policy|all</code> can pass routine side effects without
+another Hermes prompt. <code>policy</code> allows only <code>allow_operations</code>; <code>all</code> allows every side effect
+except <code>deny_operations</code>; the denylist wins. Drift, unconfigured or denied effects, provider merge,
+destructive or credential boundaries, and unsafe authority recovery still return to the user.</p>
+<h3>Lane registry</h3>
+<p>Cards must carry an explicit AgentPlane task id in <code>agentplane_task_id</code>, <code>agentplaneTaskId</code>, or
+<code>metadata.agentplane.task_id</code>. A Hermes card id is never treated as an AgentPlane task id.</p>
 <pre><code class="language-json">{
-  "schema": "agentplane.hermes.lane-registry.v1",
+  "schema": "agentplane.hermes.lane-registry.v2",
   "lanes": [
     {
       "name": "agentplane-coder",
       "match": "agentplane-*",
       "kind": "agentplane",
       "spawn": {
-        "command": "agentplane",
-        "args": ["hermes", "supervise", "{agentplane_task_id}", "--root", "{repo}", "--execute-step", "--json"]
+        "command": "hermes",
+        "args": [
+          "agentplane",
+          "supervise",
+          "--task-id",
+          "{agentplane_task_id}",
+          "--root",
+          "{repo}"
+        ]
       },
       "env": [
         "HERMES_KANBAN_TASK",
@@ -201,32 +262,34 @@ The plugin intentionally does not treat a Hermes card id as an AgentPlane task i
   ]
 }
 </code></pre>
+<p>The spawn callback refuses an incomplete native claim. During an LLM episode, the plugin uses the
+Hermes <code>kanban heartbeat</code> lifecycle command with the current run id before and after the episode and
+periodically while it runs. A rejected heartbeat aborts result submission, preventing a stale run
+from writing into a newer AgentPlane exchange.</p>
 <h3>Install</h3>
-<p>Copy this repository into a Hermes plugin path, for example:</p>
+<p>Copy or install this package into a Hermes plugin path and enable <code>agentplane</code> in Hermes config:</p>
 <pre><code class="language-bash">mkdir -p ~/.hermes/plugins/agentplane
 cp -R __init__.py agentplane_hermes_plugin plugin.yaml ~/.hermes/plugins/agentplane/
 </code></pre>
-<p>Enable it in Hermes config:</p>
 <pre><code class="language-yaml">plugins:
   enabled:
     - agentplane
 </code></pre>
-<p>Set runtime variables:</p>
-<pre><code class="language-bash">export AGENTPLANE_HERMES_LANE_REGISTRY=/opt/agentplane/lane-registry.json
-export AGENTPLANE_BIN=/usr/local/bin/agentplane
-export AGENTPLANE_HERMES_ALLOWED_ROOTS=/workspace
-</code></pre>
-<h3>Doctor</h3>
-<p>When Hermes exposes plugin CLI registration, run:</p>
-<pre><code class="language-bash">hermes agentplane doctor --json
-</code></pre>
-<p>Expected signal:</p>
+<p>Then run <code>hermes agentplane doctor --json</code>. <code>ok=true</code> requires:</p>
 <ul>
-<li>registry exists</li>
-<li>AgentPlane binary resolves</li>
-<li>at least one <code>kind: agentplane</code> lane exists</li>
-<li>native worker-lane API is reported when Hermes exposes it</li>
+<li>valid lane registry with at least one <code>kind: agentplane</code> lane;</li>
+<li>resolvable Hermes and AgentPlane executables;</li>
+<li>native worker-lane registration;</li>
+<li>a valid trusted approval-receipt bridge key;</li>
+<li>a non-empty allowed-root set.</li>
 </ul>
+<p>AgentPlane's own <code>agentplane hermes doctor --json</code> additionally checks the repository workflow and
+the protocol assertion passed by this plugin.</p>
+<h3>Completion</h3>
+<p>The Hermes root card may close only from an AgentPlane
+<code>agentplane.hermes.terminal-attestation.v1</code> whose canonical route outcome is <code>done</code>. A local
+<code>status=DONE</code> or <code>verification=ok</code> check is insufficient because provider, integration, ACR, or
+cleanup work may still remain.</p>
 <h3>Development</h3>
 <pre><code class="language-bash">python3 -m venv .venv
 . .venv/bin/activate
@@ -234,10 +297,6 @@ python -m pip install -e ".[dev]"
 python scripts/check_integrity.py
 python -m pytest
 </code></pre>
-<h3>Boundaries</h3>
-<p>The plugin must not write directly to <code>~/.hermes/kanban.db</code>. AgentPlane should
-complete, block, heartbeat, and reclaim work only through Hermes lifecycle APIs
-or CLI surfaces.</p>
 
   </section>
 </details>
@@ -250,15 +309,15 @@ or CLI surfaces.</p>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
-        <div class="stars">★ 376</div>
+        <div class="stars">★ 382</div>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 403</div>
+        <div class="stars">★ 408</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
-        <div class="stars">★ 46</div>
+        <div class="stars">★ 47</div>
         <div class="name"><span class="org">FahrenheitResearch /</span> hermes-weather-plugin</div>
       </a>
       <a class="related-row" href="/projects/42-evey/evey-bridge-plugin">
@@ -266,19 +325,19 @@ or CLI surfaces.</p>
         <div class="name"><span class="org">42-evey /</span> evey-bridge-plugin</div>
       </a>
       <a class="related-row" href="/projects/nativ3ai/hermes-payguard">
-        <div class="stars">★ 13</div>
+        <div class="stars">★ 14</div>
         <div class="name"><span class="org">nativ3ai /</span> hermes-payguard</div>
       </a>
       <a class="related-row" href="/projects/raulvidis/hermes-cloudflare">
-        <div class="stars">★ 46</div>
+        <div class="stars">★ 48</div>
         <div class="name"><span class="org">raulvidis /</span> hermes-cloudflare</div>
       </a>
       <a class="related-row" href="/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server">
-        <div class="stars">★ 372</div>
+        <div class="stars">★ 376</div>
         <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
       </a>
       <a class="related-row" href="/projects/stainlu/hermes-labyrinth">
-        <div class="stars">★ 302</div>
+        <div class="stars">★ 303</div>
         <div class="name"><span class="org">stainlu /</span> hermes-labyrinth</div>
       </a>
     </div>

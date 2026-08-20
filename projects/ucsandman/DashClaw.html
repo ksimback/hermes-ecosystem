@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/ucsandman/DashClaw#software",
   "name": "DashClaw",
-  "description": "DashClaw is a fail-closed decision infrastructure that intercepts and evaluates AI agent tool calls before execution. It provides a remote approval system for unattended agent sessions, allowing users to resolve blocked actions via a web inbox, CLI, or mobile devices.",
+  "description": "DashClaw is a fail-closed decision infrastructure that intercepts and evaluates AI agent tool calls before execution. It provides a remote approval system for unattended agent sessions, allowing users to review, allow, or deny actions through various interfaces including a CLI, PWA, and messaging platforms.",
   "url": "https://hermesatlas.com/projects/ucsandman/DashClaw",
   "codeRepository": "https://github.com/ucsandman/DashClaw",
   "applicationCategory": "BusinessApplication",
@@ -47,13 +47,13 @@
     "name": "ucsandman",
     "url": "https://github.com/ucsandman"
   },
-  "dateModified": "2026-08-17T02:24:04.000Z",
+  "dateModified": "2026-08-17T10:21:20.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 293
+    "userInteractionCount": 295
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,8 +81,8 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">228·repos</span>
-    <span id="meta-version">hermes·v0.20.2</span>
+    <span id="meta-count">230·repos</span>
+    <span id="meta-version">hermes·v0.20.4</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -119,7 +119,7 @@
   <p class="project-desc">🛡️ The approval and policy layer for AI agents. Intercept risky actions before they run, block them, or approve them remotely.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 293</span>
+    <span class="stars">★ 295</span>
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
@@ -138,11 +138,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">DashClaw is a fail-closed decision infrastructure that intercepts and evaluates AI agent tool calls before execution. It provides a remote approval system for unattended agent sessions, allowing users to resolve blocked actions via a web inbox, CLI, or mobile devices.</p>
+    <p class="summary-text">DashClaw is a fail-closed decision infrastructure that intercepts and evaluates AI agent tool calls before execution. It provides a remote approval system for unattended agent sessions, allowing users to review, allow, or deny actions through various interfaces including a CLI, PWA, and messaging platforms.</p>
     <ul class="summary-highlights">
-      <li>Intercepts destructive tool calls before execution using a fail-closed hook.</li>
-      <li>Provides signed, tamper-evident audit trails for every decision.</li>
-      <li>Supports remote approvals via PWA, Telegram, Discord, and CLI.</li>
+      <li>Intercepts tool calls before execution using a fail-closed hook.</li>
+      <li>Generates signed, tamper-evident audit trails for every decision.</li>
+      <li>Supports remote approvals via Telegram, Discord, and mobile PWA.</li>
     </ul>
   </div>
 </section>
@@ -412,7 +412,7 @@ bash scripts/install-hermes-plugin.sh            # macOS / Linux (.ps1 on Window
 <li><strong>The default pack is catastrophe-only.</strong> Seeded automatically for every new self-hosted org, it interrupts for the irreversible class: it blocks mass-destructive filesystem, git, and database actions outright, and holds writes to secret files (<code>.env</code>, <code>*.pem</code>, <code>*.key</code>, <code>secrets/**</code>) for one-click approval. A warn-only rate limit nets runaways; everything else runs. This is a documented lesson, not a preference. See below.</li>
 <li><strong>Sensitive actions require human approval, and the approval is one click.</strong> Approvals route to <code>/approvals</code>, the CLI, the mobile PWA at <code>/approve</code>, Telegram, or Discord. When one policy blows its interruption budget, per-action pings collapse into one flood banner with bulk-resolve. A repeat interruption can be retired at the card with "Allow, don't ask again", which writes a target-scoped, expiring, revocable grant rather than silencing anything. Pending approvals are never auto-resolved.</li>
 <li><strong>Every decision is recorded and outcomes are durable.</strong> A five-state finality machine plus a lost-confirmation sweep guarantee no silent double-execute on retry. Spec below and in <a href="https://github.com/ucsandman/DashClaw/blob/main/docs/architecture/durable-execution-finality.md"><code>docs/architecture/durable-execution-finality.md</code></a>.</li>
-<li><strong>Interruption precision is calibrated, not guessed.</strong> A distribution-free controller (<a href="https://github.com/ucsandman/DashClaw/blob/main/docs/architecture/governance-core-theory.md"><code>/calibration</code></a>, default off) turns your approve/deny verdicts into a proven false-interruption bound. Shadow-first, tighten-only; loosening always routes through human-ratified proposals.</li>
+<li><strong>Interruption precision is calibrated, not guessed.</strong> A distribution-free controller (<a href="https://github.com/ucsandman/DashClaw/blob/main/docs/architecture/governance-core-theory.md"><code>/calibration</code></a>, default off) turns your approve/deny verdicts into a proven false-interruption bound. Shadow-first, then it loosens as well as tightens: below the calibrated threshold an approval request becomes a recorded warning instead, bounded by the riskiest action you have personally approved and retracted by a single deny. It never reaches <code>allow</code>, never touches a <code>block</code>, and never edits a policy — standing policy changes still route through human-ratified proposals.</li>
 <li><strong>Enforcement proves it is still on.</strong> A liveness probe drives a synthetic held action through the real hook seam and verdicts by whether it executed, never by reading the ledger. Because once it did not, and nothing noticed. Stale never renders green.</li>
 <li><strong>Prompt-injection scanning is on by default.</strong> High-confidence system-override patterns force a <code>block</code> at guard time; lower-severity patterns raise a <code>warn</code>.</li>
 <li><strong>An outside decision engine can tighten decisions, never loosen them.</strong> An org can configure one external decision provider (configured on <code>/policies</code>); the guard calls it during every evaluation and joins its verdict stricter-wins — external <code>deny</code> is absolute for the evaluated act, external <code>allow</code> never overrides a stricter local result, and the verdict is identity-bound to the exact act. An unreachable provider takes an explicit posture (<code>fail_closed</code> default) and is always recorded as <code>external unavailable</code>, never as governance that happened. A domain-specific provider can be scoped to the exact action types it governs; out-of-scope acts stay local-only, never billed to the provider's authority. Contract: <a href="https://github.com/ucsandman/DashClaw/blob/main/docs/external-verdict-provider.md"><code>docs/external-verdict-provider.md</code></a>.</li>
@@ -558,11 +558,11 @@ bash scripts/install-hermes-plugin.sh            # macOS / Linux (.ps1 on Window
         <div class="name"><span class="org">rodmarkun /</span> anihermes</div>
       </a>
       <a class="related-row" href="/projects/JackTheGit/hermes-ai-infrastructure-monitoring-toolkit">
-        <div class="stars">★ 31</div>
+        <div class="stars">★ 33</div>
         <div class="name"><span class="org">JackTheGit /</span> hermes-ai-infrastructure-monitoring-toolkit</div>
       </a>
       <a class="related-row" href="/projects/bigph00t/hermescraft">
-        <div class="stars">★ 59</div>
+        <div class="stars">★ 61</div>
         <div class="name"><span class="org">bigph00t /</span> hermescraft</div>
       </a>
       <a class="related-row" href="/projects/hxsteric/mercury">
@@ -570,7 +570,7 @@ bash scripts/install-hermes-plugin.sh            # macOS / Linux (.ps1 on Window
         <div class="name"><span class="org">hxsteric /</span> mercury</div>
       </a>
       <a class="related-row" href="/projects/bryercowan/hermes-embodied">
-        <div class="stars">★ 12</div>
+        <div class="stars">★ 13</div>
         <div class="name"><span class="org">bryercowan /</span> hermes-embodied</div>
       </a>
       <a class="related-row" href="/projects/Sahil-SS9/MrHermagi-tutorbot">

@@ -136,6 +136,10 @@ Manage credentials — add, list, remove, reset, status, logout. Handles OAuth f
 
 Send a one-shot message to a configured messaging platform (Telegram, Discord, Slack, Signal, SMS, …). Useful from shell scripts, cron jobs, CI hooks, and monitoring daemons — no agent loop, no LLM.
 
+`hermes peer`
+
+Register peer Hermes gateways on other machines and DM their agents' canonical Bot Chats (`hermes peer dm <peer>[/<agent>] "…"`). The transport behind cross-machine bot-to-bot messaging.
+
 `hermes secrets`
 
 Manage external secret sources (currently Bitwarden Secrets Manager) for pulling API keys at process startup instead of from `~/.hermes/.env`.
@@ -308,7 +312,7 @@ Manage profiles — multiple isolated Hermes instances.
 
 Print shell completion scripts (bash/zsh/fish).
 
-`hermes version`
+`hermes --version`
 
 Show version information.
 
@@ -336,6 +340,10 @@ Description
 
 One-shot, non-interactive prompt.
 
+`--query-file PATH`
+
+Read the one-shot prompt from a file (`-` = stdin). Nothing is shell-interpreted, so quotes, `$(...)`, and backticks arrive verbatim — use this for programmatic or untrusted message bodies (Bot Mode teammate DMs use it). Mutually exclusive with `-q`.
+
 `-m`, `--model <model>`
 
 Override the model for this run.
@@ -346,7 +354,7 @@ Enable a comma-separated set of toolsets.
 
 `--provider <provider>`
 
-Force a provider: `auto`, `openrouter`, `nous`, `openai-codex`, `copilot-acp`, `copilot`, `anthropic`, `gemini`, `huggingface`, `novita` (aliases `novita-ai`, `novitaai`), `openai-api`, `zai`, `kimi-coding`, `kimi-coding-cn`, `minimax`, `minimax-cn`, `minimax-oauth`, `kilocode`, `xiaomi`, `arcee`, `gmi`, `upstage` (alias `solar`), `alibaba`, `alibaba-coding-plan` (alias `alibaba_coding`), `deepseek`, `nvidia`, `ollama-cloud`, `xai` (alias `grok`), `xai-oauth` (alias `grok-oauth`), `qwen-oauth`, `bedrock`, `opencode-zen`, `opencode-go`, `ai-gateway`, `azure-foundry`, `lmstudio`, `stepfun`, `tencent-tokenhub` (alias `tencent`, `tokenhub`).
+Force a provider: `auto`, `openrouter`, `nous`, `openai-codex`, `copilot-acp`, `copilot`, `anthropic`, `gemini`, `huggingface`, `novita` (aliases `novita-ai`, `novitaai`), `openai-api`, `zai`, `kimi-coding`, `kimi-coding-cn`, `minimax`, `minimax-cn`, `minimax-oauth`, `kilocode`, `xiaomi`, `arcee`, `gmi`, `upstage` (alias `solar`), `alibaba`, `alibaba-coding-plan` (alias `alibaba_coding`), `deepseek`, `nvidia`, `ollama-cloud`, `xai` (alias `grok`), `xai-oauth` (alias `grok-oauth`), `qwen-oauth`, `bedrock`, `opencode-zen`, `opencode-go`, `commandcode`, `commandcode-anthropic`, `ai-gateway`, `azure-foundry`, `lmstudio`, `stepfun`, `tencent-tokenhub` (alias `tencent`, `tokenhub`).
 
 `-s`, `--skills <name>`
 
@@ -867,6 +875,43 @@ hermes send --to slack:#eng --subject "[CI]" --file build.log
 hermes send --list                  # all platforms
 hermes send --list telegram         # filter by platform
 ```
+
+## `hermes peer`
+
+```
+hermes peer add <name> --url http://host:port --key <API_SERVER_KEY>
+hermes peer list
+hermes peer dm <peer>[/<agent>] "message"
+hermes peer remove <name>
+```
+
+Bot-to-bot DMs across machines. Register another Hermes gateway (any machine running the `api_server` platform) as a _peer_, then message its agents: `hermes peer dm` resolves the remote agent's canonical **Bot Chat** session over the peer's API server, runs one agent turn there, and prints the reply on stdout — the cross-machine twin of the local `hermes -p <bot> chat --in ~ -c "Bot Chat" …` bot-messaging command.
+
+`<peer>` alone targets the peer gateway's main agent; `<peer>/<agent>` targets a named profile on a multiplexed peer (routed via its `/p/<profile>/` mirror).
+
+Subcommand
+
+Description
+
+`add <name> --url <URL> [--key <KEY>] [--note TEXT]`
+
+Register or update a peer. The URL goes to `config.yaml` (`bot_peers`); the key is stored as `HERMES_PEER_<NAME>_KEY` in `~/.hermes/.env`.
+
+`list`
+
+List peers and whether each has a key configured.
+
+`dm <peer>[/<agent>] [message]`
+
+Message the peer agent's canonical Bot Chat and print the reply (`--json` for machine-readable output; message falls back to stdin).
+
+`remove <name>`
+
+Remove a peer from the registry (the `.env` key entry is left in place).
+
+When at least one peer is registered, the Bot Mode messaging protocol (`agent.bot_mode_protocol`) taught to every canonical Bot Chat automatically includes the peer roster and the `hermes peer dm` pattern, so agents discover cross-machine teammates without SOUL edits. See [Bot Mode](/docs/user-guide/bot-mode).
+
+Exit codes: `0` on success, `1` on delivery/peer failure, `2` on usage errors.
 
 ## `hermes secrets`
 
@@ -3057,7 +3102,7 @@ Command
 
 Description
 
-`hermes version`
+`hermes --version`
 
 Print version information.
 

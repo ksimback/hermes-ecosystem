@@ -37,7 +37,7 @@ The frame people reach for is: **Claude Code is a specialist; Hermes is a genera
 | **Messaging channels** | Terminal only | Terminal, Telegram, Discord, email, webhooks |
 | **Multi-agent / delegation** | Subagents via the Task tool | Native delegation, multi-agent teams, profiles |
 | **Sandboxing** | Approval prompts, permission system | Approval policies, Docker backend, profile isolation |
-| **License & openness** | Proprietary (Anthropic) | Open-source (MIT), 231,578 stars as of 2026-08-17 |
+| **License & openness** | Proprietary (Anthropic) | Open-source (MIT), 233,369 stars as of 2026-08-20 |
 
 The two rows that matter most for the decision: **model support** (Anthropic-only vs multi-provider) and **where it runs** (inside a repo vs on a server).
 
@@ -64,7 +64,7 @@ Hermes is the right tool when your task crosses sessions, channels, or models.
 - **You want cross-channel access.** Message Hermes from Telegram during a commute. Check back on the CLI that evening. Same agent, same memory, same skills. Claude Code doesn't leave the terminal.
 - **You want the agent to get better over time.** The learning loop — five-tool-call retrospectives, auto-generated skills — compounds quietly. Day thirty doesn't feel like day one.
 - **You want model flexibility.** Swap from Claude to GPT to GLM-5 to local Ollama with one command. No code changes, no vendor lock-in. Cheap models for cheap jobs, frontier models for real work.
-- **You want it to be yours.** MIT-licensed, 231,578 stars (as of 2026-08-17), self-hostable on a $5 VPS. The code is open, the data lives on your disk, and nothing phones home.
+- **You want it to be yours.** MIT-licensed, 233,369 stars (as of 2026-08-20), self-hostable on a $5 VPS. The code is open, the data lives on your disk, and nothing phones home.
 
 Hermes falls short when you need deep in-editor coding support. It can read and write code, but it's not optimized for the minute-by-minute code-edit-test loop the way Claude Code is. Use Claude Code for that, and use Hermes around it.
 
@@ -113,24 +113,24 @@ For *simple* coding tasks — "refactor this file," "add a test" — yes. For su
 
 ### Is Hermes production-ready?
 
-As of 2026-08-17, yes, with caveats. 231,578 GitHub stars, an active Nous team shipping every two weeks, and a ~650-project community ecosystem. Real companies run Hermes in production. The honest caveats: the skill ecosystem is younger than Claude Code's, and some integrations still have rough edges. Read the **[State of Hermes report →](/reports/state-of-hermes-april-2026)** for the full picture.
+As of 2026-08-20, yes, with caveats. 233,369 GitHub stars, an active Nous team shipping every two weeks, and a ~650-project community ecosystem. Real companies run Hermes in production. The honest caveats: the skill ecosystem is younger than Claude Code's, and some integrations still have rough edges. Read the **[State of Hermes report →](/reports/state-of-hermes-april-2026)** for the full picture.
 
 ---
 
 ## What next
 
 - **New to Hermes?** Start with the full beginner's walkthrough: **[The Hermes Handbook →](/guide/)**
-- **Want the tool landscape?** Browse **[all 228+ projects in the Atlas →](/)**
+- **Want the tool landscape?** Browse **[all 230+ projects in the Atlas →](/)**
 - **Curious about the ecosystem?** Read the **[State of Hermes — April 2026 report →](/reports/state-of-hermes-april-2026)**
 
 ---
 
 **Written by [Kevin Simback](https://x.com/ksimback)** · maintainer, Hermes Atlas
 
-**Last updated:** 2026-08-17 · Version and star figures re-stamp automatically with every site build.
+**Last updated:** 2026-08-20 · Version and star figures re-stamp automatically with every site build.
 
 **Cited stats:**
-- 231,578 GitHub stars (as of 2026-08-17) — source: `api.github.com/repos/NousResearch/hermes-agent`
+- 233,369 GitHub stars (as of 2026-08-20) — source: `api.github.com/repos/NousResearch/hermes-agent`
 - 643 skills in the community Hub (research bank snapshot, as of 2026-04-19)
 
 **Corrections and feedback:** [open an issue](https://github.com/ksimback/hermes-ecosystem/issues/new) or message on X.

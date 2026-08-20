@@ -1,6 +1,6 @@
 # Hermes Agent
 
-**Source:** https://hermes-agent.nousresearch.com/docs
+**Source:** https://hermes-agent.nousresearch.com/docs/
 
 The self-improving AI agent built by [Nous Research](https://nousresearch.com). The only agent with a built-in learning loop — it creates skills from experience, improves them during use, nudges itself to persist knowledge, and builds a deepening model of who you are across sessions.
 
@@ -9,6 +9,10 @@ The self-improving AI agent built by [Nous Research](https://nousresearch.com). 
 Get Started →
 
 ](/docs/getting-started/installation)[
+
+Explore Bot Mode
+
+](/docs/user-guide/bot-mode)[
 
 Download Desktop
 
@@ -74,6 +78,10 @@ Config file, providers, models, and options
 
 Set up Telegram, Discord, Slack, WhatsApp, Teams, or more
 
+🤖 **[Bot Mode](/docs/user-guide/bot-mode)**
+
+Named Bots with their own model, memory, skills, routines, and chats
+
 🔧 **[Tools & Toolsets](/docs/user-guide/features/tools)**
 
 60+ built-in tools and how to configure them
@@ -133,6 +141,7 @@ Common questions and solutions
 -   **Lives where you do** — CLI, Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Mattermost, Email, SMS, DingTalk, Feishu, WeCom, Weixin, QQ Bot, Yuanbao, BlueBubbles, Home Assistant, Microsoft Teams, Google Chat, and more — 20+ platforms from one gateway
 -   **Built by model trainers** — Created by [Nous Research](https://nousresearch.com), the lab behind Hermes, Nomos, and Psyche. Works with [Nous Portal](https://portal.nousresearch.com), [OpenRouter](https://openrouter.ai), OpenAI, or any endpoint
 -   **Scheduled automations** — Built-in cron with delivery to any platform
+-   **[Bot Mode](/docs/user-guide/bot-mode)** — Build a durable team of specialist Bots that work together in group chats and through `@mentions`
 -   **Delegates & parallelizes** — Spawn isolated subagents for parallel workstreams. Programmatic Tool Calling via `execute_code` collapses multi-step pipelines into single inference calls
 -   **Open standard skills** — Compatible with [agentskills.io](https://agentskills.io). Skills are portable, shareable, and community-contributed via the Skills Hub
 -   **Full web control** — Search, extract, browse, vision, image generation, TTS — one subscription via [Nous Portal](/docs/integrations/nous-portal) bundles all of them
@@ -143,7 +152,7 @@ Common questions and solutions
 
 Machine-readable entry points to this documentation:
 
--   **[`/llms.txt`](/docs/assets/files/llms-faaf9398aa5828403fd56f6be7989c9f.txt)** — curated index of every doc page with short descriptions. ~17 KB, safe to load into an LLM context.
--   **[`/llms-full.txt`](/docs/assets/files/llms-full-f28621df80ac3e46958cec858cb3bfdc.txt)** — every doc page concatenated into a single markdown file for one-shot ingestion. ~1.8 MB.
+-   **[`/llms.txt`](/docs/assets/files/llms-9e6ee453dd14f35da4a4a1e0200447d2.txt)** — curated index of every doc page with short descriptions. ~17 KB, safe to load into an LLM context.
+-   **[`/llms-full.txt`](/docs/assets/files/llms-full-182faa1a0608c31335bd05162433bd37.txt)** — every doc page concatenated into a single markdown file for one-shot ingestion. ~1.8 MB.
 
 Both files also resolve at `/docs/llms.txt` and `/docs/llms-full.txt`. Generated fresh on every deploy.

@@ -226,6 +226,12 @@ Default; ~5–10 s
 
 Image
 
+`grok-imagine-image-2.0`
+
+Typography/layout-aware; strongest quality; ~10–20 s
+
+Image
+
 `grok-imagine-image-quality`
 
 Higher fidelity; ~10–20 s

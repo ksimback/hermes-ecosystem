@@ -103,6 +103,16 @@ tip
 
 Cron jobs let Hermes Agent run tasks on a schedule — daily summaries, periodic checks, automated reports — without you being present.
 
+### "I want a team of specialist Bots"
+
+Create named Bots with their own model, memory, skills, routines, and chats, then bring them together in group chats or through `@mentions`.
+
+1.  [Desktop](/docs/user-guide/desktop)
+2.  [Profiles](/docs/user-guide/profiles)
+3.  [Bot Mode](/docs/user-guide/bot-mode)
+4.  [Cron Scheduling](/docs/user-guide/features/cron)
+5.  [Multi-connection Desktop](/docs/user-guide/multi-connection-desktop)
+
 ### "I want to build custom tools/skills"
 
 Extend Hermes Agent with your own tools and reusable skill packages.
@@ -172,6 +182,12 @@ Installable plugin packages that add new capabilities
 Persistent memory across sessions
 
 [Memory](/docs/user-guide/features/memory)
+
+**Bot Mode**
+
+Named specialist Bots with persistent chats, routines, group chats, and `@mentions`
+
+[Bot Mode](/docs/user-guide/bot-mode)
 
 **Context Files**
 

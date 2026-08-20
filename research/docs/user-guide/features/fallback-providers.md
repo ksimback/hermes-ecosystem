@@ -190,6 +190,12 @@ OpenCode Zen
 
 `OPENCODE_ZEN_API_KEY`
 
+CommandCode
+
+`commandcode` (alias `commandcode-chat`; Claude via `commandcode-anthropic`)
+
+`COMMANDCODE_API_KEY`
+
 OpenCode Go
 
 `opencode-go`

@@ -16,7 +16,7 @@ Path
 
 Version
 
-`3.1.0`
+`3.2.0`
 
 Author
 
@@ -32,7 +32,7 @@ linux, macos, windows
 
 Tags
 
-`hermes`, `setup`, `configuration`, `multi-agent`, `spawning`, `cli`, `gateway`, `themes`, `skins`, `desktop-plugins`, `tui-widgets`, `petdex`, `development`
+`hermes`, `setup`, `configuration`, `multi-agent`, `spawning`, `cli`, `gateway`, `bots`, `bot-mode`, `features`, `themes`, `skins`, `desktop-plugins`, `tui-widgets`, `petdex`, `development`
 
 Related skills
 
@@ -66,11 +66,13 @@ What makes Hermes different:
 
 This skill is a concise operating guide, not the complete source of truth for every Hermes feature. If a Hermes feature, command, or setting is not mentioned here or in a reference, do not treat that absence as evidence that it does not exist. Check the live repository and official docs before giving a negative answer.
 
-Good verification targets:
+Good verification targets, cheapest first:
 
+-   **Every shipped feature, one line each: [https://hermes-agent.nousresearch.com/docs/llms.txt](https://hermes-agent.nousresearch.com/docs/llms.txt).** Start here for any "can Hermes do X?" or "how do I do X?" — it indexes the entire documentation set with a link to the page that answers. It is generated from the docs tree on every build, so it is never behind the product. Fetch it with `web_extract`, or `curl -s https://hermes-agent.nousresearch.com/docs/llms.txt` when web tools are off. The whole documentation set in one file is at `/docs/llms-full.txt`.
 -   CLI commands: `hermes --help`, `hermes <command> --help`, and `hermes_cli/main.py`
--   User documentation: [https://hermes-agent.nousresearch.com/docs/](https://hermes-agent.nousresearch.com/docs/)
 -   Source tree: [https://github.com/NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent)
+
+Never answer "Hermes can't do that" from memory. Hermes ships far more than this skill body describes, and the index exists so a negative answer is always checkable.
 
 ## Quick Start
 
@@ -119,6 +121,14 @@ Profiles use `~/.hermes/profiles/<name>/` with the same layout. When a profile i
 User wants...
 
 Load
+
+**Anything not listed below — "can Hermes do X?", "how do I set up X?"**
+
+**[https://hermes-agent.nousresearch.com/docs/llms.txt](https://hermes-agent.nousresearch.com/docs/llms.txt)**
+
+Bots that chat, run routines, or message each other; the Bots tab
+
+docs: `/user-guide/bot-mode`
 
 CLI commands, subcommands, flags, "how do I run X"
 
@@ -191,6 +201,12 @@ delegate\_task "capped at N" reports
 "Can app X use my Nous Portal subscription/OAuth?"
 
 `references/portal-auth-for-third-party-apps.md`
+
+Connecting a messaging platform (Telegram, Discord, Slack, WhatsApp, …)
+
+docs: `/user-guide/messaging`
+
+The reference list above is not the feature list — it is the set of topics that need more than their docs page. For everything else Hermes ships, fetch `llms.txt` and it maps the question to the page that answers it.
 
 Two theming rules that hold even without loading the reference: **you apply skins yourself** (`hermes config set display.skin <name>` — every surface repaints live within ~a second; don't tell the user to run `/skin`), and **to tweak one color, edit the ACTIVE skin** (`hermes skin set <key> <hex>`) — never fork `default`, which drops the palette and resets the background.
 

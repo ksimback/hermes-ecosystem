@@ -357,6 +357,7 @@ With isolation on:
 -   The parent's checkout stays untouched; children can't clobber each other's edits.
 -   When a child finishes, its result entry gains a `worktree` field reporting `path`, `branch`, `commits` (ahead of the base), and `dirty`. The parent reviews or merges each branch (`git log <branch>`, `git merge <branch>`).
 -   A worktree left with **no commits and a clean tree is pruned automatically** (`pruned: true`); anything holding work is kept.
+-   Pruning requires proof. If a git inspection probe fails — or finalization itself errors — the worktree and branch are kept and the entry carries `inspection_failed: true` plus a `note` — `commits`/`dirty` are then defaults, not measurements, so inspect the worktree rather than assuming the child produced nothing.
 
 Scope: opt-in, git-only, and local-terminal-backend-only. In a non-git directory, on docker/ssh/modal backends, or if worktree creation fails, the setting degrades silently to today's shared-workspace behavior — never an error.
 
