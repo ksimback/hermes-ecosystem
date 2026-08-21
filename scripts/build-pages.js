@@ -19,6 +19,7 @@ import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
 import { githubHeaders, fetchReadme, fetchAllMetadata } from "../lib/github.js";
 import { REFRESHED_CONTENT_PATHS } from "../lib/build-artifacts.js";
+import { validateSkills } from "./validate-skills-json.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -2101,6 +2102,21 @@ async function main() {
     }
     console.log(`  Loaded ${Object.keys(handbookMentions).length} handbook mentions`);
   } catch { console.log("  No handbook-mentions.json found"); }
+
+  // Skills Hub data (new, hand-curated — data/skills.json). Optional until
+  // it's added; gate it here the same way validate-skills-json.js gates CI
+  // so a bad hand-edit fails the build instead of shipping silently broken.
+  const skillsPath = path.join(ROOT, "data", "skills.json");
+  if (fs.existsSync(skillsPath)) {
+    const skillsData = JSON.parse(fs.readFileSync(skillsPath, "utf-8"));
+    const skillsErrors = validateSkills(skillsData, repos, useCases);
+    if (skillsErrors.length > 0) {
+      throw new Error(`data/skills.json validation failed:\n- ${skillsErrors.join("\n- ")}`);
+    }
+    console.log(`  Loaded data/skills.json (${skillsData.skills.length} skills)`);
+  } else {
+    console.log("  data/skills.json not present; skills hub skipped");
+  }
   console.log();
 
   // Ensure output directories exist

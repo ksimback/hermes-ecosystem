@@ -1,0 +1,46 @@
+name: Validate skills.json
+
+# Gates the curated Skills Hub join. The two failure modes worth blocking a
+# merge for: an entry recommending a repo that isn't in the Atlas catalog,
+# and a use-case group slug colliding with data/use-cases.json. Also runs
+# when data/repos.json or data/use-cases.json change, because dropping a
+# repo or renaming a use-case slug silently orphans skills.json entries.
+
+on:
+  pull_request:
+    paths:
+      - 'data/skills.json'
+      - 'data/repos.json'
+      - 'data/use-cases.json'
+      - 'scripts/validate-skills-json.js'
+      - 'tests/validate-skills-json.test.js'
+      - '.github/workflows/validate-skills-json.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/skills.json'
+      - 'data/repos.json'
+      - 'data/use-cases.json'
+      - 'scripts/validate-skills-json.js'
+      - 'tests/validate-skills-json.test.js'
+      - '.github/workflows/validate-skills-json.yml'
+  workflow_dispatch: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run skills.json tests
+        run: node --test tests/validate-skills-json.test.js
+
+      - name: Validate data/skills.json
+        run: node scripts/validate-skills-json.js
