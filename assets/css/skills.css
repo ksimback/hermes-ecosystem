@@ -1,0 +1,215 @@
+/* ─── Skills Hub (/skills/, /skills/for-*) ──────────────────
+   Loaded after page.css (which supplies .list-page/.list-table/.list-row,
+   .section-label and .back-link) and use-cases.css (which supplies the
+   .uc-section shell these pages reuse). Only the pieces unique to the hub —
+   the freshness stamp, top-pick cards, install blocks, and the FAQ — live
+   here. The install box itself is styled in page.css: project pages render it
+   too and they do not load this file. */
+
+/* The honest stamp. Never bumped by a rebuild — it mirrors data/skills.json's
+   updatedAt/testedAgainst, plus a "Hermes vX is out" warning when the catalog
+   has moved past the last hand re-verification. */
+.sk-freshness {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+  margin-top: var(--s-4);
+}
+.sk-freshness .sk-stale {
+  color: var(--negative);
+}
+
+.sk-lede {
+  margin-top: var(--s-5);
+}
+.sk-lede a {
+  color: var(--accent);
+  border-bottom: 1px solid var(--accent-dim);
+}
+
+/* ── Top-pick cards ── */
+.sk-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--s-4);
+}
+.sk-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-5);
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+}
+.sk-card-group {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+.sk-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+.sk-card-name {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.sk-card-name .org {
+  color: var(--ink-mute);
+  font-weight: 400;
+}
+.sk-card-stars {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.sk-verdict {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--ink-dim);
+  margin: 0;
+}
+.sk-card-link {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  border-bottom: 1px solid var(--accent-dim);
+  align-self: flex-start;
+}
+.sk-card-link:hover { border-bottom-color: var(--accent); }
+
+/* ── Type badge ── */
+.sk-type {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+  border: 1px solid var(--rule-strong);
+  padding: 1px var(--s-2);
+  margin-left: var(--s-2);
+  white-space: nowrap;
+}
+
+/* ── Install command ──
+   Plain selectable code, deliberately not a JS "copy" button: the site ships
+   no inline script and the hub is not worth a new bundle. */
+.sk-install-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-mute);
+  margin-bottom: var(--s-2);
+}
+.sk-install {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--bg-offset);
+  border: 1px solid var(--rule-strong);
+  border-left: 2px solid var(--accent);
+  padding: var(--s-3) var(--s-4);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.sk-compat {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--ink-mute);
+  margin-top: var(--s-2);
+}
+.sk-compat .sk-compat-label {
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 9.5px;
+  margin-right: var(--s-2);
+}
+
+/* ── Ranked entries on a /skills/for-* page ── */
+.sk-entry {
+  padding: var(--s-6) 0;
+  border-bottom: 1px solid var(--rule);
+}
+.sk-entry:last-child { border-bottom: 0; }
+.sk-entry-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+.sk-entry-name {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.sk-entry-name a { color: var(--ink); }
+.sk-entry-name a:hover { color: var(--accent); }
+.sk-entry-name .org { color: var(--ink-mute); font-weight: 400; }
+.sk-entry-body { margin-top: var(--s-4); }
+.sk-pick-flag {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--bg);
+  background: var(--accent);
+  padding: 2px var(--s-2);
+  margin-left: var(--s-2);
+}
+
+/* ── "How we picked" + FAQ ── */
+.sk-method {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: var(--ink-dim);
+  max-width: 74ch;
+}
+.sk-faq {
+  max-width: 74ch;
+}
+.sk-faq-item {
+  padding-bottom: var(--s-5);
+  margin-bottom: var(--s-5);
+  border-bottom: 1px solid var(--rule);
+}
+.sk-faq-item:last-child { border-bottom: 0; margin-bottom: 0; }
+.sk-faq-q {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin-bottom: var(--s-3);
+}
+.sk-faq-a {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: var(--ink-dim);
+  margin: 0;
+}
+
+@media (max-width: 720px) {
+  .sk-card-grid { grid-template-columns: 1fr; }
+  .sk-entry-head { flex-direction: column; gap: var(--s-1); }
+}
