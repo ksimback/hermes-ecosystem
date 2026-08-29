@@ -98,7 +98,7 @@ The session has been auto-compressed N times.
 
 `▶ N`
 
-N `/background` tasks currently running.
+N `/bg` tasks currently running.
 
 `⚠ YOLO`
 

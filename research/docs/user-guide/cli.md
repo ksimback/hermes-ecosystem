@@ -135,7 +135,7 @@ Estimated session cost (or `n/a` for unknown/zero-priced models)
 
 ▶ N
 
-**Active background tasks** — how many `/background` prompts are still running in the current session. Appears whenever at least one task is in flight.
+**Active background tasks** — how many `/bg` prompts are still running in the current session. Appears whenever at least one task is in flight.
 
 Duration
 
@@ -298,9 +298,13 @@ List currently available tools
 
 Browse the skills hub and official optional skills
 
-`/background <prompt>`
+`/bg <prompt>`
 
 Run a prompt in a separate background session
+
+`/btw <question>`
+
+Ask a side question about the current conversation without interrupting it
 
 `/skin`
 
@@ -623,7 +627,7 @@ When compression triggers, middle turns are summarized while the first 3 and las
 Run a prompt in a separate background session while continuing to use the CLI for other work:
 
 ```
-/background Analyze the logs in /var/log and summarize any errors from today
+/bg Analyze the logs in /var/log and summarize any errors from today
 ```
 
 Hermes immediately confirms the task and gives you back the prompt:
@@ -635,7 +639,7 @@ Hermes immediately confirms the task and gives you back the prompt:
 
 ### How It Works
 
-Each `/background` prompt spawns a **completely separate agent session** in a daemon thread:
+Each `/bg` prompt spawns a **completely separate agent session** in a daemon thread:
 
 -   **Isolated conversation** — the background agent has no knowledge of your current session's history. It receives only the prompt you provide.
 -   **Same configuration** — the background agent inherits your model, provider, toolsets, reasoning settings, and fallback model from the current session.
@@ -659,8 +663,8 @@ If the task fails, you'll see an error notification instead. If `display.bell_on
 
 ### Use Cases
 
--   **Long-running research** — "/background research the latest developments in quantum error correction" while you work on code
--   **File processing** — "/background analyze all Python files in this repo and list any security issues" while you continue a conversation
+-   **Long-running research** — "/bg research the latest developments in quantum error correction" while you work on code
+-   **File processing** — "/bg analyze all Python files in this repo and list any security issues" while you continue a conversation
 -   **Parallel investigations** — start multiple background tasks to explore different angles simultaneously
 
 info

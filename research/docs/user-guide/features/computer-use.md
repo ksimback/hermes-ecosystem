@@ -143,6 +143,14 @@ computer_use:
 
 The manifest names the apps, browser profile kinds, allowed origins, and typed tools the session may use (see the [cua-driver permission modes reference](https://cua.ai/docs/reference/cua-driver/permission-modes) for the format). Hermes launches a private runtime with `--capability-manifest ... --approve-capability-manifest`; anything outside the manifest fails closed inside cua-driver. A missing or unreadable manifest fails loudly at session start rather than silently downgrading. Session YOLO still overrides bounded for that one session.
 
+On macOS, private-session daemons launch through the installed `CuaDriver.app` bundle (so permission grants attribute to the driver's own identity instead of resetting with every Hermes build), and Hermes verifies the bundle's code signature — exact `com.trycua.driver` identifier and the official signing team — before launching it. If you build cua-driver from source (unsigned), opt in explicitly:
+
+```
+# config.yaml
+computer_use:
+  allow_unsigned_driver: true   # local driver development only
+```
+
 Each MCP transport owns a private lifecycle session inside its runtime. A public session name is only a label for cursor identity and session-scoped state. It does not select, share, or keep a runtime alive. Turning `/yolo` off, resetting or closing the Hermes session, cancellation cleanup, or process exit closes that transport session. Hermes also stops private runtimes that it launched for bounded, unrestricted, or existing-profile access. One Hermes conversation cannot change another runtime's mode or grants. On macOS, a standard runtime with an existing-profile grant uses a fresh CuaDriver.app daemon on a private socket. Bounded and unrestricted modes use a private embedded service under the Hermes host identity.
 
 `smart` approval remains `standard`: an LLM classification cannot stand in for a reviewed manifest or a launch-time grant.

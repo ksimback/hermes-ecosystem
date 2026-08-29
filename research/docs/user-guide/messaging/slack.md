@@ -348,7 +348,7 @@ Then in Slack:
 
 ### Legacy `/hermes <subcommand>` still works
 
-For backward compatibility with older manifests, you can still type `/hermes btw run the tests` — Hermes routes it the same way as `/btw run the tests`. Free-form questions also work: `/hermes what's the weather?` is treated as a regular message.
+For backward compatibility with older manifests, you can still type `/hermes bg run the tests` — Hermes routes it the same way as `/bg run the tests`. Free-form questions also work: `/hermes what's the weather?` is treated as a regular message.
 
 ### Using commands inside threads (the `!cmd` prefix)
 
@@ -432,6 +432,12 @@ platforms:
       # Only the first chunk of the first reply is broadcast.
       reply_broadcast: false
 
+      # Control Slack's automatic link-preview cards without changing or
+      # removing clickable links from message text. Omit either key to keep
+      # Slack's default behavior for that preview type.
+      unfurl_links: false
+      unfurl_media: false
+
       # Render agent messages as Slack Block Kit blocks (default: false).
       # When true, the final agent message is sent with structured blocks —
       # section headers, dividers, true nested lists (via rich_text), and
@@ -498,6 +504,18 @@ When `false`, channel messages get direct replies instead of threads. Messages i
 `false`
 
 When `true`, thread replies are also posted to the main channel. Only the first chunk is broadcast.
+
+`platforms.slack.extra.unfurl_links`
+
+Slack default
+
+Set to `false` to suppress automatic previews for linked web pages while preserving clickable links. When either unfurl key is set, media captions are posted as a separate message _before_ the file (Slack's upload API cannot carry unfurl controls), and native draft streaming falls back to edit-based delivery.
+
+`platforms.slack.extra.unfurl_media`
+
+Slack default
+
+Set to `false` to suppress automatic media previews while preserving clickable links. Same caption-ordering and streaming notes as `unfurl_links`.
 
 `platforms.slack.extra.rich_blocks`
 

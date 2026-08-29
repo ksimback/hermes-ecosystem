@@ -80,7 +80,7 @@ Show git changes in the working directory. Default: unstaged changes plus untrac
 
 `/snapshot [create|restore <id>|prune]` (alias: `/snap`)
 
-Create or restore state snapshots of Hermes config/state. `create [label]` saves a snapshot, `restore <id>` reverts to it, `prune [N]` removes old snapshots, or list all with no args.
+Create or restore state snapshots of Hermes config/state. `create [label]` saves a snapshot, `restore <id>` reverts to it, `prune [N]` removes old snapshots, or list all with no args. Database restores write through SQLite's backup API so live processes (gateway, dashboard) see the restored data safely; if that path fails while another process still holds the database open, the restore refuses instead of risking corruption — stop the holder and retry.
 
 `/stop`
 
@@ -146,9 +146,13 @@ Visual context-window breakdown. On the CLI/TUI: a 5×20 glyph block grid (each 
 
 Show active agents and running tasks across the current session.
 
-`/background <prompt>` (alias: `/bg`, `/btw`)
+`/bg <prompt>`
 
 Run a prompt in a separate background session. The agent processes your prompt independently — your current session stays free for other work. Results appear as a panel when the task finishes. See [CLI Background Sessions](/docs/user-guide/cli#background-sessions).
+
+`/btw <question>`
+
+Ask a quick side question **about the current conversation** without interrupting it. A one-shot auxiliary LLM call answers from a read-only snapshot of the transcript — the live session's history and prompt cache are untouched, and the current turn keeps running. For independent work with a fresh context, use `/bg`.
 
 `/branch [name]` (alias: `/fork`)
 
@@ -242,7 +246,7 @@ Toggle the gateway runtime-metadata footer on final replies (shows model, contex
 
 `/busy [queue|steer|interrupt|status]`
 
-CLI-only: control what pressing Enter does while Hermes is working — queue the new message, steer mid-turn, or interrupt immediately.
+Control what happens when you message while Hermes is working — queue the new message, steer mid-turn, or interrupt immediately. Works in the CLI and messaging gateway.
 
 `/indicator [kaomoji|emoji|unicode|ascii]`
 
@@ -601,9 +605,13 @@ List or restore filesystem checkpoints.
 
 Show git changes in the working directory (fenced and truncated to platform message limits). `session` shows the cumulative diff of everything Hermes changed; `--stat` shows just the summary.
 
-`/background <prompt>`
+`/bg <prompt>`
 
 Run a prompt in a separate background session. Results are delivered back to the same chat when the task finishes. See [Messaging Background Sessions](/docs/user-guide/messaging/#background-sessions).
+
+`/btw <question>`
+
+Ask a side question about the current conversation without interrupting it. Answered from a transcript snapshot; the answer is sent to the chat when ready.
 
 `/queue <prompt>` (alias: `/q`)
 
@@ -751,12 +759,12 @@ Invoke any installed skill by name.
 
 ## Notes
 
--   `/skin`, `/snapshot`, `/export`, `/import`, `/reload`, `/tools`, `/toolsets`, `/browser`, `/config`, `/cron`, `/platforms`, `/paste`, `/image`, `/statusbar`, `/battery`, `/focus`, `/plugins`, `/busy`, `/indicator`, `/wake`, `/journey`, `/redraw`, `/clear`, `/history`, `/save`, `/copy`, `/handoff`, `/prompt`, `/pet`, `/hatch`, `/timestamps`, `/subscription`, and `/quit` are **CLI-only** commands.
+-   `/skin`, `/snapshot`, `/export`, `/import`, `/reload`, `/tools`, `/toolsets`, `/browser`, `/config`, `/cron`, `/platforms`, `/paste`, `/image`, `/statusbar`, `/battery`, `/focus`, `/plugins`, `/indicator`, `/wake`, `/journey`, `/redraw`, `/clear`, `/history`, `/save`, `/copy`, `/handoff`, `/prompt`, `/pet`, `/hatch`, `/timestamps`, `/subscription`, and `/quit` are **CLI-only** commands.
 -   `/skills` is **CLI-only for search/browse/install**; its write-approval review subcommands (`pending`, `approve`, `reject`, `diff`, `approval`) also work on messaging platforms when `skills.write_approval` is on. `/memory` works on **both** surfaces.
 -   `/verbose` is **CLI-only by default**, but can be enabled for messaging platforms by setting `display.tool_progress_command: true` in `config.yaml`. When enabled, it cycles the `display.tool_progress` mode and saves to config.
 -   `/focus` and `/verbose` share one suppression path (`display.tool_progress`), so they can never contradict each other: `/focus on` pins tool progress to `off` and stashes your mode under `display.focus_saved_tool_progress`; `/focus off` restores it; cycling `/verbose` while focus is on takes the mode back and clears the focus badge. Focus view is display-only — it never changes conversation history, the system prompt, or anything sent to the model, so it has zero prompt-cache impact.
 -   `/sethome`, `/restart`, `/approve`, `/deny`, `/topic`, `/platform`, and `/commands` are **messaging-only** commands.
--   `/status`, `/egress`, `/version`, `/whoami`, `/background`, `/queue`, `/steer`, `/voice`, `/reload-mcp`, `/reload-skills`, `/rollback`, `/diff`, `/debug`, `/fast`, `/approvals`, `/footer`, `/curator`, `/kanban`, `/topup`, `/suggestions`, `/blueprint`, `/learn`, `/init`, `/sessions`, and `/yolo` work in **both** the CLI and the messaging gateway.
+-   `/status`, `/egress`, `/version`, `/whoami`, `/bg`, `/btw`, `/queue`, `/steer`, `/voice`, `/reload-mcp`, `/reload-skills`, `/rollback`, `/diff`, `/debug`, `/fast`, `/approvals`, `/busy`, `/footer`, `/curator`, `/kanban`, `/topup`, `/suggestions`, `/blueprint`, `/learn`, `/init`, `/sessions`, and `/yolo` work in **both** the CLI and the messaging gateway.
 -   `/voice join`, `/voice channel`, and `/voice leave` are only meaningful on Discord.
 -   In the TUI, `/sessions` shows live sessions in the current TUI process. Use `/resume [name]` or `hermes --tui --resume <id-or-title>` for saved or closed transcripts.
 

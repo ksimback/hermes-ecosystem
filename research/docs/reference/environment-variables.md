@@ -198,6 +198,14 @@ Tencent TokenHub API key ([tokenhub.tencentmaas.com](https://tokenhub.tencentmaa
 
 Override Tencent TokenHub base URL (default: `https://tokenhub.tencentmaas.com/v1`)
 
+`TOKENPLAN_API_KEY`
+
+Tencent TokenPlan API key (LKEAP; Anthropic Messages endpoint)
+
+`TOKENPLAN_BASE_URL`
+
+Override Tencent TokenPlan base URL (default: `https://api.lkeap.cloud.tencent.com/plan/anthropic`)
+
 `AZURE_FOUNDRY_API_KEY`
 
 Microsoft Foundry / Azure OpenAI API key ([ai.azure.com](https://ai.azure.com/)). Not needed when `model.auth_mode: entra_id`
@@ -313,6 +321,22 @@ NovitaAI API key — AI-native cloud for Model API, Agent Sandbox, and GPU Cloud
 `NOVITA_BASE_URL`
 
 Override NovitaAI base URL (default: `https://api.novita.ai/openai/v1`)
+
+`RAMP_ROUTER_API_KEY`
+
+Ramp Router API key ([app.router.com/keys](https://app.router.com/keys)); alias `ROUTER_API_KEY` also accepted
+
+`RAMP_ROUTER_BASE_URL`
+
+Override Ramp Router base URL (default: `https://api.router.com/v1`)
+
+`NEBIUS_API_KEY`
+
+Nebius Token Factory API key ([tokenfactory.nebius.com](https://tokenfactory.nebius.com/)); `NEBIUS_TOKEN_FACTORY_API_KEY` also accepted
+
+`NEBIUS_BASE_URL`
+
+Override Nebius Token Factory base URL (default: `https://api.tokenfactory.nebius.com/v1`)
 
 `NVIDIA_API_KEY`
 
@@ -2554,7 +2578,7 @@ Per-platform connect timeout during gateway startup and reconnect (seconds; `0`/
 
 `HERMES_GATEWAY_BUSY_INPUT_MODE`
 
-Default gateway busy-input behavior: `queue`, `steer`, or `interrupt`. Can be overridden per chat with `/busy`.
+Default gateway busy-input behavior: `queue`, `steer`, or `interrupt`. Can be overridden for the active profile with `/busy`.
 
 `HERMES_GATEWAY_BUSY_ACK_ENABLED`
 

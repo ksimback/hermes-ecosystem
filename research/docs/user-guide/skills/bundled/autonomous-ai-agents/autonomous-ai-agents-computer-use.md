@@ -2,7 +2,7 @@
 
 **Source:** https://hermes-agent.nousresearch.com/docs/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-computer-use
 
-Drive the desktop in the background without stealing focus.
+Drive the desktop background-first; escalate on signal.
 
 ## Skill metadata
 

@@ -62,7 +62,7 @@ Delegate coding to OpenAI Codex CLI (features, PRs).
 
 [`computer-use`](/docs/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-computer-use)
 
-Drive the desktop in the background without stealing focus.
+Drive the desktop background-first; escalate on signal.
 
 `autonomous-ai-agents/computer-use`
 

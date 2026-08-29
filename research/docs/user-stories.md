@@ -4,13 +4,525 @@
 
 What the Hermes Agent community is actually building. Every tile below links to a real post, issue, video, or gist where someone describes how they use Hermes — scraped from X, GitHub, Reddit, Hacker News, YouTube, blogs, and podcasts.
 
-**262** stories**15** categories**11** sources
+**326** stories**15** categories**11** sources
 
-All262Dev Workflow65Personal Assistant44Integrations26Meta & Ecosystem21Creative19Business Ops16Cost Optimization13Content Creation11Research9Enterprise9Messaging8Privacy & Self-Hosted8General6Trading & Markets5Marketing2
+All326Dev Workflow77Personal Assistant49Integrations32Creative26Business Ops23Meta & Ecosystem23Cost Optimization20Privacy & Self-Hosted13Content Creation12Research12Enterprise12Messaging11General9Trading & Markets5Marketing2
 
-All sourcesX · Twitter42Hacker News4Reddit15GitHub38YouTube17Blog20Podcast2LinkedIn3GitHub Gist4Product Hunt1Discord116
+All sourcesX · Twitter61Hacker News4Reddit60GitHub38YouTube17Blog20Podcast2LinkedIn3GitHub Gist4Product Hunt1Discord116
 
 [
+
+RedditDev Workflow
+
+### Solo-building a job-site app where the agent files its own tasks and deploys
+
+“The project is a job-site management app: Next.js frontend, NestJS API, postgres, redis, pgbouncer, nginx with brotli. I'm building it solo and Hermes handles the bulk of the actual implementation. It files its own tasks, writes the code, runs QA, deploys, and keeps its own documentation current. I mostly review things over Telegram.”
+
+u/riceinmybelly · 2026-06-18↗](https://www.reddit.com/r/hermesagent/comments/1u9fa2w/)[
+
+RedditPersonal Assistant
+
+### 28 cron jobs, 30+ skills, and a 3am "Dreaming" job that writes tomorrow's context
+
+“I run 28 cron jobs and 30+ custom skills. Every single one was built with Hermes, not downloaded. … Every night at 3 AM while I sleep, Hermes reads every single conversation we had. It extracts the decisions made, projects worked on, bugs chased, people talked to, and mistakes that should not be repeated.”
+
+u/HolmeBengt · 2026-06-23↗](https://www.reddit.com/r/hermesagent/comments/1udesr1/)[
+
+RedditBusiness Ops
+
+### €2,700 a month installing Hermes for French small businesses
+
+“I’ve been testing a simple service offer around Hermes Agent for French small businesses, and last month it brought in around €2,700. … Most of the value is not just “installing an AI agent.” It’s adapting it to the company’s real workflows”
+
+u/pacmanpill · 2026-06-13↗](https://www.reddit.com/r/hermesagent/comments/1u4l0dj/)[
+
+RedditMessaging
+
+### Built the iOS app he wanted for his own agent, having never written Swift
+
+“I was on the subway in NYC, talking to my Hermes agent thru Telegram. Loved Hermes. Telegram, not so much. … I'd never built an iOS app, and I don't really know Swift.”
+
+u/uzairansar · 2026-06-30↗](https://www.reddit.com/r/hermesagent/comments/1ujduc7/)[
+
+RedditDev Workflow
+
+### Agent teams that message each other peer-to-peer and self-schedule wake-ups
+
+“I built Hermes Swarm, a self-hosted server that runs teams of AI agents 24/7. Each agent is a full Hermes agent. That means they have their own terminal, a browser and read/write access to the team's shared filesystem. They message each other peer-to-peer, delegate work and self-schedule their own wake-ups.”
+
+u/Upset\_Simple\_4858 · 2026-06-27↗](https://www.reddit.com/r/hermesagent/comments/1uh308s/)[
+
+RedditIntegrations
+
+### Free web tooling for the agent: search, fetch, crawl, no API keys
+
+“I built Hound as a drop-in MCP server that handles all of it. No API keys, no Docker, no config wizard. Just add it to your \`~/.hermes/config.yaml\` and your agent gets 6 web research tools.”
+
+u/Opening\_Library9560 · 2026-07-20↗](https://www.reddit.com/r/hermesagent/comments/1v1ok4c/)[
+
+RedditBusiness Ops
+
+### 11 construction WhatsApp groups, 82 messages boiled down to 3 lines
+
+“11 construction WhatsApp groups. Tower crane updates, QA/QC reports, manpower tracking, safety alerts. Hermes reads all of them and summarizes everything I need to know. … That's 82 WhatsApp messages boiled down to 3 lines.”
+
+u/Godzillaton · 2026-06-28↗](https://www.reddit.com/r/hermesagent/comments/1uhyift/)[
+
+RedditCreative
+
+### A JARVIS tablet for his seven-year-old, with ranks, missions and a Dad Link
+
+“I’ve spent the last nine days building a Kid Mode on top of Hermes Agent for my seven-year-old. … It boots directly into a custom console with a central voice glyph, telemetry, rank insignia, vocabulary cards, classified files, missions, house controls, and a direct line to me.”
+
+u/Exciting\_Charity7304 · 2026-07-12↗](https://www.reddit.com/r/hermesagent/comments/1utzz6q/)[
+
+RedditDev Workflow
+
+### Stripped Electron out of the desktop app to reach one agent from every device
+
+“I took the official Hermes desktop app's UI, stripped out Electron, and turned it into a plain web app. Now I host it on one machine and reach the full Hermes agent from my laptop, desktop, phone, and iPad - on my LAN, or from anywhere via Tailscale.”
+
+u/przbadu · 2026-07-13↗](https://www.reddit.com/r/hermesagent/comments/1uv2fig/)[
+
+RedditPersonal Assistant
+
+### A $175 Dell OptiPlex from Facebook Marketplace, running 24/7
+
+“Used Dell OptiPlex from Facebook Marketplace — $175, 16GB RAM, Linux Telegram as the interface (I barely touch the desktop app) Runs 24/7, no Mac Mini, no GPU rig … Every morning at 8:30am I get an email with 1-3 curated rental listings. It filters by school district, commute time, lighting, bedrooms, budget.”
+
+u/kenmazaika · 2026-07-04↗](https://www.reddit.com/r/hermesagent/comments/1umvy8k/)[
+
+RedditEnterprise
+
+### A DFIR analyst runs work, coaching and homelab as three separate profiles
+
+“Job: Cybersecurity Analyst (DFIR) / Cyber Threat Intelligence Profiles are a game changer. Use them. My default profile is for work. It's connected to my second brain in Obsidian and synced through Git.”
+
+u/stan\_frbd · 2026-07-09↗](https://www.reddit.com/r/hermesagent/comments/1urri8w/)[
+
+RedditDev Workflow
+
+### One installer that turns a fresh install into a 9-role dev team
+
+“You run it on a fresh Hermes install and you get 8 specialist profiles plus the default profile acting as CTO … The part I care most about: authority is enforced by toolset restrictions, not just system prompt instructions.”
+
+u/humanth-shashani · 2026-07-16↗](https://www.reddit.com/r/hermesagent/comments/1uxnr3u/)[
+
+RedditCost Optimization
+
+### Parsed a 3,799-page AMD manual locally with SQLite FTS5 instead of a vector DB
+
+“I built a custom Document Structuring Skill for Hermes Agent because running massive tech manuals on local hardware was completely blowing up my context window … Test PDF: AMD Technical Documentation \* Size: 3,799 pages”
+
+u/Barnet1123 · 2026-06-19↗](https://www.reddit.com/r/hermesagent/comments/1u9zkkj/)[
+
+RedditCreative
+
+### Reverse-engineered a pellet smoker API so the agent watches the brisket overnight
+
+“I reverse engineered the FireBoard API and turned it into a tool, so Hermes can now read temp data and modify the set point. Why wake in a cold sweat over BBQ temperature control when your agent can play night watchman?”
+
+u/Tasty-Property-434 · 2026-07-03↗](https://www.reddit.com/r/hermesagent/comments/1ums5f9/)[
+
+RedditPersonal Assistant
+
+### Gave the agent its own Gmail so it scouts apartments every morning
+
+“The version that works is much simpler: 1. I create saved searches on sites like Zillow and Trulia. 2. New-listing alerts go to a dedicated Gmail account used by my Hermes agent. 3. Once a day, a cron job reads the alerts through the Himalaya email CLI. … automate the 97% that involves gathering and filtering information”
+
+u/kenmazaika · 2026-07-18↗](https://www.reddit.com/r/hermesagent/comments/1v06ap3/)[
+
+RedditPersonal Assistant
+
+### Ditched Excel trackers for a "Twin AI" defined in SOUL.md
+
+“I have been running Hermes Agent as a "Twin AI" for about a month. The goal was simple: stop being the bottleneck for my own life and my small physical-product business. … It is not "answer my question." It is "operate on my behalf within clear boundaries."”
+
+u/rodgezee · 2026-07-18↗](https://www.reddit.com/r/hermesagent/comments/1uzqlni/)[
+
+RedditPrivacy & Self-Hosted
+
+### Local email gatekeeper on a Mac mini so the agent never sees 2FA codes
+
+“I wanted my Hermes agent to read my emails and draft replies. But I did not want Hermes to have access to everything. Specifically not 2FA codes, password resets, or banking notifications. If my agent ever got compromised, those should never be within reach.”
+
+u/HolmeBengt · 2026-07-05↗](https://www.reddit.com/r/hermesagent/comments/1unuk20/)[
+
+RedditEnterprise
+
+### A Kubernetes operator so team agent config goes through PR review
+
+“My team uses the Hermes agent to offload tasks. But it's basically a personal agent so configuration is CLI-driven by default, which is painful for a team. Every configuration change meant executing into containers with no review. … Now: - \`kubectl get\` shows the declared state - Changes go through PR/review - No more manual container access”
+
+u/noah-h-lee · 2026-06-18↗](https://www.reddit.com/r/kubernetes/comments/1u8wmh8/)[
+
+RedditCost Optimization
+
+### A ~$9/month client stack: Hetzner, Ansible, 1Password, Telegram
+
+“Hetzner VPS: €4/month, EU-hosted (or wherever you/your customers are located), everything in Docker containers (isolated, reproducible) \* Hermes Agent: deployed via Ansible playbooks (one command, fully automated) … One of my customers uses it to track ~50 dividend ETFs; the agent queries his tracking sheet, cross-references latest yields, and posts a summary to his Telegram every morning.”
+
+u/SuperALfun · 2026-06-17↗](https://www.reddit.com/r/AI_Agents/comments/1u89zrj/)[
+
+RedditIntegrations
+
+### Brain-and-arm: VPS agent reaches a locked-down work laptop over outbound WSS
+
+“My Hermes agent lives on a VPS. I wanted it to run commands on my work-laptop, read files, deploy code — but my company laptop blocks installs and some URLs. No SSH tunnels, no VPN, no inbound ports. So I built a brain-and-arm architecture”
+
+u/rektsd · 2026-06-28↗](https://www.reddit.com/r/hermesagent/comments/1uhokhf/)[
+
+RedditBusiness Ops
+
+### Forwarded a 50-page Greek PDF over Telegram and got a reviewed PR back
+
+“I forwarded the PDF and the task spec to Hermes over Telegram while I was making coffee. It cloned the repo, discovered the framework and i18n conventions by reading the codebase, added the PDF, updated the data source, ran build, typecheck, and all 48 tests.”
+
+u/Elegant\_Emergency859 · 2026-07-14↗](https://www.reddit.com/r/hermesagent/comments/1uvu2ic/)[
+
+RedditContent Creation
+
+### Dictates messy ideas into a Telegram topic, gets structured docs back
+
+“For the past few months, this has been my single most-used Hermes workflow. It starts on my phone and ends with a collaborative document I can share with zero time spent in a text editor.”
+
+u/kenmazaika · 2026-07-11↗](https://www.reddit.com/r/hermesagent/comments/1ut8o53/)[
+
+RedditCost Optimization
+
+### Found the cron mode that costs zero tokens
+
+“Does every single run(setup as scheduled task/job by asking Hermes) cost me LLM tokens? … --script --no-agent : this is the one people(at least beginners like me) miss. The script is the job. No agent loop, no LLM call, period.”
+
+u/kabira121 · 2026-07-16↗](https://www.reddit.com/r/hermesagent/comments/1uxwlyj/)[
+
+RedditMessaging
+
+### A Dashboard PWA plugin to put the operational layer on a phone home screen
+
+“The part that never fit in a chat window is the operational layer: activity, projects, kanban, cron, system status, agent profiles. The stuff you open when you want to \*see\* what's going on.”
+
+u/Deep\_Cost5166 · 2026-06-29↗](https://www.reddit.com/r/hermesagent/comments/1uiw15m/)[
+
+RedditIntegrations
+
+### One Obsidian vault, one local brain, four agents sharing the same memory
+
+“I run four different AI agents day to day: Claude Code, Codex, Grok, and a self-hosted Telegram/Discord/WhatsApp gateway (Hermes). Each had its \*own\* memory. The same facts about my work (people, companies, projects, preferences) lived in 4+ places, drifted apart, and there was no single place to ask. Classic agent amnesia, times four.”
+
+u/fxa3bah · 2026-06-12↗](https://www.reddit.com/r/hermesagent/comments/1u45ywh/)[
+
+RedditDev Workflow
+
+### Gave seven agents a shared Kanban board and they started managing themselves
+
+“The problem was: how do you coordinate 7+ AI agents working on different tasks? Spreadsheets? Chat logs? Nope. Built a Kanban board instead. … The board reads \`SOUL.md\` from each profile and pulls the name + description.”
+
+u/Ok\_Run\_5401 · 2026-06-21↗](https://www.reddit.com/r/hermesagent/comments/1ubz5h6/)[
+
+RedditPrivacy & Self-Hosted
+
+### Tracks everything the agent installs on your machine
+
+“One thing I noticed after using AI coding agents for a while is that they install a lot of things on your machine. … A few days later, I have no idea where some packages or containers came from.”
+
+u/StillMiddle1493 · 2026-07-10↗](https://www.reddit.com/r/hermesagent/comments/1uso754/)[
+
+RedditGeneral
+
+### Not a coder, not in IT: the pile of small jobs he actually uses it for
+
+“I had it pull the top 20 pet poisons, and determine proper treatments (Charcoal vs. Emesis vs. Intralipids vs...) and make a spreadsheet, saved in my Obsidian vault. I can never remember what toxins are treated with what... \*yeah, I verified them all\*”
+
+u/Elaphe21 · 2026-06-14↗](https://www.reddit.com/r/hermesagent/comments/1u5dcnj/)[
+
+RedditResearch
+
+### A synthetic hippocampus that forgets on purpose
+
+“You have a great conversation on Monday, and by Friday your agent looks at you like you're a stranger who wandered into its context window. … So I built Synapse a temporal knowledge graph memory system for Hermes agents.”
+
+u/humanth-shashani · 2026-06-26↗](https://www.reddit.com/r/hermesagent/comments/1ug5z2r/)[
+
+RedditDev Workflow
+
+### Four agents, three vendors, one tmux session, one person talking to the lead
+
+“i talk directly to opus, the lead, give it one small prompt, and it starts delegating and building, without me relaying anything between them.”
+
+u/MiddleSweet9163 · 2026-06-30↗](https://www.reddit.com/r/tmux/comments/1ujxes9/)[
+
+RedditPersonal Assistant
+
+### Twenty cron "signals" writing to a daily ledger, then an agent triages them
+
+“I created a summary graphic with just 7 of the 20 or so 'signals' which I connect to hermes (skills running on pure cron jobs). They all write nice formatted logs into a daily ledger. Then, an agentic cron job to triage the logs and highlight anything of importance into a 'triage' ledger.”
+
+u/SquishyData · 2026-07-03↗](https://www.reddit.com/r/aiagents/comments/1umccuo/)[
+
+RedditCost Optimization
+
+### A lazygit-style TUI for where the AI coding money actually goes
+
+“I built OpenTab because I wanted to know where my AI coding money actually goes — and especially how much value I'm getting from my subscriptions. … Getting the accounting right was most of the work”
+
+u/hamidi-dev · 2026-07-09↗](https://www.reddit.com/r/tui/comments/1urq4jy/)[
+
+RedditBusiness Ops
+
+### Agents as YAML org nodes: a local company, not one big chatbot
+
+“I’ve been building Jinn, a self-hosted AI workspace that treats agents less like one big chatbot and more like a small local company.”
+
+u/TotalGod · 2026-07-08↗](https://www.reddit.com/r/SideProject/comments/1uqja2d/)[
+
+RedditCreative
+
+### A Live2D body for the agent that speaks when a cron fires
+
+“Pet works on Mac and talks to my Hermes VPS via tailscale. It utilizes TTS whenever a long task completes or a cron fires.”
+
+u/Soundpulse99 · 2026-07-12↗](https://www.reddit.com/r/hermesagent/comments/1uunch9/)[
+
+RedditCreative
+
+### An idle game hard-locked to your own local gateway
+
+“Hermes IdleViber is an ambient idle/incremental game that lives in your browser. … The twist? The game is hard-locked to your local Hermes Agent gateway.”
+
+u/Ads\_Doctor\_Melbourne · 2026-06-17↗](https://www.reddit.com/r/hermesagent/comments/1u82x0p/)[
+
+RedditPrivacy & Self-Hosted
+
+### One Termux script to put the whole agent on a phone
+
+“I installed the Hermes agent on my phone using Termux and connected it to my Telegram! So I have my agents everywhere in my pocket”
+
+u/Ok\_Run\_5401 · 2026-06-21↗](https://www.reddit.com/r/hermesagent/comments/1ubyqrz/)[
+
+RedditIntegrations
+
+### Hermes Voice on the Even Hub turns G2 glasses into a hands-free front end
+
+“It turns the G2 into a hands-free front-end for your own self-hosted Hermes agent. I built it because I wanted it, and I use it pretty much every day.”
+
+u/DesignEddi · 2026-07-09↗](https://www.reddit.com/r/EvenRealities/comments/1urmx8i/)[
+
+RedditMessaging
+
+### Native iOS companion for approvals and live tool activity
+
+“I have been using Hermes Agent as a persistent personal operator, but Telegram became limiting once I had several sessions and longer-running work.”
+
+u/fan7as7ic\_7 · 2026-07-23↗](https://www.reddit.com/r/hermesagent/comments/1v4cl63/)[
+
+RedditIntegrations
+
+### Five instances routed through a home residential IP to stop the 403s
+
+“My agents were hitting 403s constantly. Cloudflare, Akamai, Datadome — if the site has any bot detection at all, a datacenter IP and a headless browser get blocked immediately. … Five Hermes Agent instances on my homelab, all routing through a residential IP via a Raspberry Pi on a home network.”
+
+u/Countlesshrs · 2026-06-15↗](https://www.reddit.com/r/hermesagent/comments/1u6u2hc/)[
+
+RedditGeneral
+
+### A skill that checks all-time-low prices on digital movies and TV
+
+“I use CheapCharts daily to lookup deals and pricing for movies and show bundles. I worked with my hermes agent to create a skill using CheapCharts public API.”
+
+u/knowoneknows · 2026-06-23↗](https://www.reddit.com/r/hermesagent/comments/1udx637/)[
+
+RedditCreative
+
+### Fresh workout playlists every morning, then a full MP3 library rebuild
+
+“I enabled the Spotify integration for this first time this week and put to work having Hermes create two new playlists for me: on that is ~10 minutes for my rowing machine workout and one that is ~25 minutes for my treadmill workout.”
+
+u/slowmotionrunner · 2026-07-19↗](https://www.reddit.com/r/hermesagent/comments/1v0gqpg/)[
+
+RedditCreative
+
+### Design skills so agent-generated UI stops looking generic
+
+“I built a tool that helps you let your Hermes agents build better UI by using design skills that lets you build UI in a certain style.”
+
+u/elwingo1 · 2026-06-29↗](https://www.reddit.com/r/hermesagent/comments/1uiuhj0/)[
+
+RedditPrivacy & Self-Hosted
+
+### Qwen3.6-35B-A3B at 64K context on an RTX 3060 12GB, ~53 tok/s
+
+“I've been building a local AI workstation over the last few days and wanted to share the final configuration because one optimization completely changed the result.”
+
+u/krrish253 · 2026-07-11↗](https://www.reddit.com/r/hermesagent/comments/1uto1zg/)[
+
+RedditCost Optimization
+
+### Running free on a 7900 XTX with 200k context
+
+“I've been running my Hermes agent with \`Gemma 4 26b a4b q4 qat\` on my AMD 7900 XTX gpu, with 15GB size, it leave plenty of room for 200k context length”
+
+u/real-bahman · 2026-07-05↗](https://www.reddit.com/r/LocalLLM/comments/1unxaye/)[
+
+RedditResearch
+
+### A learning plugin aimed at the human, not the agent
+
+“Agentic AI made building about 10x faster. Learning didn't get any faster. I noticed I was shipping systems I couldn't re-explain a week later … Hermes already learns for itself; this is the missing half”
+
+u/No\_Skill\_8393 · 2026-07-18↗](https://www.reddit.com/r/hermesagent/comments/1uzu2ck/)[
+
+X · TwitterBusiness Ops
+
+### Connected an entire business to the agent through one Obsidian vault
+
+“I connected my entire business to Hermes x Obsidian. Client notes, SOPs, meeting logs, business decisions - all of it. My Hermes agent now runs automations I didn't even know I needed, and my agent self-evolves over time.”
+
+@milesdeutscher · 2026-06-20↗](https://x.com/milesdeutscher/status/2068133236052730347)[
+
+X · TwitterEnterprise
+
+### Gumroad runs much of the business through an agent on a dedicated Mac
+
+“The agent runs on a dedicated mac and cron jobs wake it up to check support tickets, watch X mentions, work on engineering tasks, update finance docs, and follow up on previous work. … When Gumclaw makes a mistake, the correction becomes a dated policy rule that every future session must read.”
+
+@scotty529 · 2026-07-21↗](https://x.com/scotty529/status/2079686465513279615)[
+
+X · TwitterPrivacy & Self-Hosted
+
+### 24/7 on an Android phone via Cloud Shell, no VPS and no laptop
+
+“found a way to run Hermes Agent 24/7 using only your Android phone for free 😳 no VPS, Termux, PC or laptop needed. … agent keeps running even after you close the app or phone”
+
+@pengsonal · 2026-07-13↗](https://x.com/pengsonal/status/2076665891580756285)[
+
+X · TwitterDev Workflow
+
+### /steer: change the instructions without stopping the run
+
+“When your agent is already working, you can inject new instructions without stopping the task. … This feels less like prompting… and more like steering a real teammate while they work.”
+
+@iamlukethedev · 2026-07-02↗](https://x.com/iamlukethedev/status/2072711102656389369)[
+
+X · TwitterDev Workflow
+
+### Watched an agent delete a codebase, then typed /rollback 1
+
+“I just watched an AI agent destroy a codebase in 3 seconds. … So I typed: /rollback 1 Everything came back. Files restored. Agent context rewound. Like it never happened.”
+
+@iamlukethedev · 2026-07-21↗](https://x.com/iamlukethedev/status/2079686197761237430)[
+
+X · TwitterDev Workflow
+
+### Hermes was not broken, the config was default: a 24/7 pre-flight list
+
+“Hermes was not broken. The config was default.”
+
+@alphabatcher · 2026-06-05↗](https://x.com/alphabatcher/status/2062860612036694324)[
+
+X · TwitterMeta & Ecosystem
+
+### A research task turned into a live map of 80+ ecosystem projects
+
+“What started as a research task turned into full-blown community project It spent the week mapping every tool, skill, and integration built for @NousResearch's Hermes Agent”
+
+@KSimback · 2026-04-12↗](https://x.com/KSimback/status/2043331012902691177)[
+
+X · TwitterIntegrations
+
+### Signed tool cards so the agent verifies a tool before calling it
+
+“Tool calling is the biggest unguarded attack surface in LLM agents. So I built Glyph Protocol: every tool ships as a cryptographically signed card.”
+
+@MonoPerr0 · 2026-06-14↗](https://x.com/MonoPerr0/status/2066004565539873195)[
+
+X · TwitterResearch
+
+### Mixture of Agents, explained: consult several models, one writes the answer
+
+“Every agent commits to a single model, and every model has blind spots the others would have caught. … The unit you work with is a preset. Think of it as a recipe that names a few models to consult and one model to write the final answer, saved under a label you can reuse.”
+
+@akshay\_pachaar · 2026-06-28↗](https://x.com/akshay_pachaar/status/2071227474227482690)[
+
+X · TwitterDev Workflow
+
+### How a specialist agent gets crafted: run it 4 to 10 times and let skills emerge
+
+“you can't create a solid production agent from scratch. it needs to be crafted through iterations.”
+
+@shannholmberg · 2026-05-17↗](https://x.com/shannholmberg/status/2056043898804539405)[
+
+X · TwitterBusiness Ops
+
+### Four levels of setup, from one main agent to a cron-driven team
+
+“once a workflow is solid, break it out into its own agent with its own credentials, memory and scope.”
+
+@shannholmberg · 2026-05-18↗](https://x.com/shannholmberg/status/2056410242330874349)[
+
+X · TwitterCreative
+
+### A voice agent that runs the computer without a keyboard
+
+“And unlike Siri, it does not just answer questions. It actually builds things.”
+
+@JulianGoldieSEO · 2026-07-13↗](https://x.com/JulianGoldieSEO/status/2076728365902651901)[
+
+X · TwitterDev Workflow
+
+### One agent builds, another audits, overnight and unattended
+
+“one model checking its own work finds fewer errors than two models checking each other.”
+
+@IBuzovskyi · 2026-06-25↗](https://x.com/IBuzovskyi/status/2070171401919631812)[
+
+X · TwitterDev Workflow
+
+### A Chief of Staff orchestrator that grades its own workers pass, rework or failed
+
+“The completed work is checked by the Orchestrator and either marked as passed, needs rework or failed. … if it does the same task a few times it will create a skill and the more times it uses it, the agent will update the skill from what it’s learned.”
+
+@HoLiPrompt · 2026-07-23↗](https://x.com/HoLiPrompt/status/2080410240512852151)[
+
+X · TwitterGeneral
+
+### Runs on a five-year-old Dell with a busted GPU
+
+“My Hermes agent by @NousResearch runs on an old @DellTech @DellXPS laptop with a busted GPU. I bought it 5 years ago just for Zoom calls and Spotify. It still works.”
+
+@fpostigo · 2026-06-12↗](https://x.com/fpostigo/status/2065468128906383452)[
+
+X · TwitterCost Optimization
+
+### Three agents, split by job: the grunt work that needs speed
+
+“Hermes Agent: Everything else. Blog posts, competitor research, news monitoring, code reviews. The grunt work that needs speed.”
+
+@quxiaoyin · 2026-05-26↗](https://x.com/quxiaoyin/status/2059303885122965663)[
+
+X · TwitterMeta & Ecosystem
+
+### Nine hours reading the source: how the self-improvement loop actually works
+
+“the hook is that the agent self-improves by writing its own skills. the system prompt has a nudge baked in: every N tool calls, consider saving a skill. … i watched it create a extract-social-testimonial skill on its own and its proven useful.”
+
+@elvissun · 2026-04-17↗](https://x.com/elvissun/status/2045155784577687862)[
+
+X · TwitterCost Optimization
+
+### Where the money actually goes, and the three places people overspend
+
+“Most people overspend on AI in three places: 1. Defaulting to frontier models for every task”
+
+@milesdeutscher · 2026-07-14↗](https://x.com/milesdeutscher/status/2076850928414814429)[
+
+X · TwitterBusiness Ops
+
+### What the agent is allowed to own decides whether it feels like a cofounder
+
+“A smarter model will not give you an AI cofounder. What the agent is allowed to own will.”
+
+@code\_rams · 2026-07-11↗](https://x.com/code_rams/status/2076003234217660608)[
 
 BlogPersonal Assistant
 

@@ -214,6 +214,12 @@ Kilo Code
 
 `KILOCODE_API_KEY`
 
+Ramp Router
+
+`router`
+
+`RAMP_ROUTER_API_KEY`
+
 Xiaomi MiMo
 
 `xiaomi`
@@ -231,6 +237,12 @@ GMI Cloud
 `gmi`
 
 `GMI_API_KEY`
+
+Nebius Token Factory
+
+`nebius-token-factory`
+
+`NEBIUS_API_KEY`
 
 Alibaba / DashScope
 
@@ -261,6 +273,12 @@ Tencent TokenHub
 `tencent-tokenhub`
 
 `TOKENHUB_API_KEY`
+
+Tencent TokenPlan
+
+`tencent-tokenplan`
+
+`TOKENPLAN_API_KEY`
 
 Microsoft Foundry
 

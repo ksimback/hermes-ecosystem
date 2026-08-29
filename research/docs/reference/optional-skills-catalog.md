@@ -179,6 +179,10 @@ Run 150+ AI apps (image, video, LLM) via inference.sh CLI.
 
 Zero-install localhost tunnels over SSH via Pinggy.
 
+[**setup-wizard-generator**](/docs/user-guide/skills/optional/devops/devops-setup-wizard-generator)
+
+Generate a bash wizard guiding a human through manual setup.
+
 [**watchers**](/docs/user-guide/skills/optional/devops/devops-watchers)
 
 Poll RSS, JSON APIs, and GitHub with watermark dedup.
@@ -201,7 +205,7 @@ Description
 
 [**agentmail**](/docs/user-guide/skills/optional/email/email-agentmail)
 
-Give the agent its own inbox: send and receive email.
+Use when an agent needs AgentMail CLI email inboxes.
 
 ## finance
 
@@ -459,6 +463,10 @@ Description
 
 Fetch Canvas LMS courses and assignments via API token.
 
+[**decision-questionnaire**](/docs/user-guide/skills/optional/productivity/productivity-decision-questionnaire)
+
+Turn an unanswerable decision into a questionnaire doc.
+
 [**here-now**](/docs/user-guide/skills/optional/productivity/productivity-here-now)
 
 Publish sites to {slug}.here.now and store files in Drives.
@@ -581,6 +589,10 @@ AST-aware structural code search and rewrite via ast-grep.
 
 Generate wiki docs + Mermaid diagrams for any codebase.
 
+[**grill-me**](/docs/user-guide/skills/optional/software-development/software-development-grill-me)
+
+Adversarial plan interview before implementation.
+
 [**rest-graphql-debug**](/docs/user-guide/skills/optional/software-development/software-development-rest-graphql-debug)
 
 Debug REST/GraphQL APIs: status codes, auth, schemas, repro.
@@ -606,6 +618,10 @@ Record a site's XHR into a HAR, derive an HTTP client.
 [**page-agent**](/docs/user-guide/skills/optional/web-development/web-development-page-agent)
 
 Embed an in-page natural-language GUI copilot in web apps.
+
+[**publish-site**](/docs/user-guide/skills/optional/web-development/web-development-publish-site)
+
+Versioned site deploys to GitHub/Cloudflare/Netlify Pages.
 
 ## yuanbao
 

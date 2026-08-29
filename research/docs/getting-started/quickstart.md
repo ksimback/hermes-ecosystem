@@ -1,4 +1,4 @@
-# Quickstart
+# Hermes Agent Quickstart
 
 **Source:** https://hermes-agent.nousresearch.com/docs/getting-started/quickstart
 
@@ -263,6 +263,18 @@ Multi-model API gateway
 
 Set `NOVITA_API_KEY`
 
+**Ramp Router**
+
+Responses-native LLM gateway routing across OpenAI/Anthropic/xAI/...
+
+Set `RAMP_ROUTER_API_KEY`
+
+**Nebius Token Factory**
+
+Open models on Nebius AI cloud
+
+Set `NEBIUS_API_KEY`
+
 **StepFun**
 
 Step Plan models
@@ -280,6 +292,12 @@ Set `XIAOMI_API_KEY`
 Tencent-hosted models
 
 Set `TOKENHUB_API_KEY`
+
+**Tencent TokenPlan**
+
+Tencent Hy models via Anthropic-style endpoint
+
+Set `TOKENPLAN_API_KEY`
 
 **Ollama Cloud**
 

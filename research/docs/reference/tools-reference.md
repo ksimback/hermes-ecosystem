@@ -4,7 +4,7 @@
 
 This page documents Hermes' built-in tools, grouped by toolset. Availability varies by platform, credentials, and enabled toolsets.
 
-**Quick counts (current registry):** ~86 tools — 10 browser tools (core) + 2 CDP-gated browser tools, 4 file tools, 4 Home Assistant tools, 2 terminal tools (`terminal`, `process`), 11 desktop-GUI tools (`read_terminal`, `close_terminal`, `open_preview`, `close_preview`, `read_preview`, `drive_preview`, `annotate_preview`, `read_window_below`, `focus_pane`, `react_to_message`, `tour` — desktop-app sessions only), 2 web tools, 5 Feishu tools, 7 Spotify tools (registered by the bundled `spotify` plugin), 5 Yuanbao tools, 12 kanban tools (registered when the kanban dispatcher spawns the agent), 3 project tools (desktop/GUI sessions), 2 Discord tools, 3 video tools (`video_generate`, `xai_video_edit`, `xai_video_extend`), and a handful of standalone tools (`memory`, `clarify`, `delegate_task`, `execute_code`, `cronjob`, `session_search`, `skill_view`/`skill_manage`/`skills_list`, `text_to_speech`, `image_generate`, `vision_analyze`, `video_analyze`, `todo`, `computer_use`, `x_search`).
+**Quick counts (current registry):** ~86 tools — 10 browser tools (core) + 2 CDP-gated browser tools, 4 file tools, 4 Home Assistant tools, 2 terminal tools (`terminal`, `process`), 12 desktop-GUI tools (`read_terminal`, `close_terminal`, `open_preview`, `close_preview`, `read_preview`, `drive_preview`, `annotate_preview`, `read_window_below`, `focus_pane`, `react_to_message`, `tour`, `tip` — desktop-app sessions only), 2 web tools, 5 Feishu tools, 7 Spotify tools (registered by the bundled `spotify` plugin), 5 Yuanbao tools, 12 kanban tools (registered when the kanban dispatcher spawns the agent), 3 project tools (desktop/GUI sessions), 2 Discord tools, 3 video tools (`video_generate`, `xai_video_edit`, `xai_video_extend`), and a handful of standalone tools (`memory`, `clarify`, `delegate_task`, `execute_code`, `cronjob`, `session_search`, `skill_view`/`skill_manage`/`skills_list`, `text_to_speech`, `image_generate`, `vision_analyze`, `video_analyze`, `todo`, `computer_use`, `x_search`).
 
 MCP Tools
 
@@ -586,6 +586,12 @@ Give a live guided tour: dim the screen, highlight an element, and attach a narr
 
 —
 
+`tip`
+
+Point at one element with a small accent bubble and an arrow — the quiet sibling of `tour`, with no dimming, no spotlight, and no Next/Prev. Same `data-tour` handles and the same `tour(action='targets')` discovery call.
+
+—
+
 ### Tours
 
 The `tour` tool discovers its own targets — call `action='targets'` and it returns every addressable element on screen with a selector, a label, and a `stable` flag. Stable selectors key off identity (`data-tour`, `id`, `data-testid`, `aria-label`) and survive a re-render; positional `nth-child` paths don't, so stable ones sort first and should be preferred.
@@ -648,6 +654,14 @@ startTour([
 
 Pass `'preview'` as the second argument to run against the page in the preview pane instead of the app.
 
+### Tips
+
+A tip is a tour step without the production: one bubble, one arrow, no scrim and nothing to page through. It's the right weight for a sentence that would be clearer with a finger on the thing it's about — "the model name is a button" — where dimming the whole app would not be.
+
+The `tip` tool takes the same selectors `tour(action='targets')` reports, so discovery is one call for both, and the durable `data-tour` handles above name targets for either. One tip is on screen at a time; a new one replaces the last.
+
+The app can also show its own, walking a built-in catalog of app features in order. That half is on by default and switched off in Settings → Appearance, and it is paced like a game's loading-screen tips rather than a notification: a few minutes into a launch at the earliest, then at most one every six hours, and only at a genuinely idle moment. Closing one of its tips with the ✕ retires that tip for good, and the same settings row brings them back. The tool is not behind that switch — like `tour`, it runs in answer to the conversation rather than at idle. It does share the cooldown, so a tip from Hermes also buys the user six hours of quiet from the rotation.
+
 ## `todo` toolset
 
 Tool
@@ -658,7 +672,7 @@ Requires environment
 
 `todo`
 
-Manage your task list for the current session. Use for complex tasks with 3+ steps or when the user provides multiple tasks. Call with no parameters to read the current list. Writing: - Provide 'todos' array to create/update items - merge=…
+Manage your task list for the current session. Use for complex tasks with 3+ steps or when the user provides multiple tasks. Call with no parameters to read the current list. Items may nest: an item's optional `parent` field points at another item's id, making it a subtask — surfaces render the tree indented.
 
 —
 

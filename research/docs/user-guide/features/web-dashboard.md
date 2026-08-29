@@ -1,4 +1,4 @@
-# Web Dashboard
+# Hermes Web Dashboard
 
 **Source:** https://hermes-agent.nousresearch.com/docs/user-guide/features/web-dashboard
 
@@ -1096,13 +1096,24 @@ For deploys behind reverse proxies that don't reliably forward those headers (ma
 ```
 dashboard:
   public_url: "https://dashboard.example.com/hermes"
+  trusted_proxies:
+    - "172.20.0.5"
 ```
 
 When set, the OAuth callback URL becomes `<public_url>/auth/callback` verbatim — `X-Forwarded-Prefix` is ignored on that code path because the operator has explicitly declared the public URL. This is intentional: stacking the prefix on top would double-prefix the common case where the prefix is already baked into `public_url`.
 
 The hostname in `public_url` is also accepted as an **exact** HTTP `Host` and WebSocket `Origin` value. This supports a reverse proxy that preserves the browser-facing hostname while forwarding to a dashboard bound to `127.0.0.1`. Wildcards and suffix matches are not allowed, so an attacker host such as `dashboard.example.com.evil.test` remains rejected by the DNS-rebinding guard.
 
-Declaring a non-loopback `public_url` always engages the dashboard auth gate, even when the backend binds to loopback. Configure a password or OAuth provider first; without one, Hermes fails closed at startup. This prevents the local SPA session token from becoming a remote authentication mechanism through the proxy. Uvicorn also enables trusted proxy-header processing in this mode so a local TLS terminator can supply `X-Forwarded-Proto: https` for secure cookies.
+Declaring a non-loopback `public_url` always engages the dashboard auth gate, even when the backend binds to loopback. Configure a password or OAuth provider first; without one, Hermes fails closed at startup. This prevents the local SPA session token from becoming a remote authentication mechanism through the proxy. Uvicorn also enables proxy-header processing in this mode. Loopback proxies are trusted automatically. If the TLS terminator connects from another container or host, add its exact IP address to `dashboard.trusted_proxies`, or add a bounded CIDR for a dedicated proxy network when the address is dynamic:
+
+```
+dashboard:
+  public_url: "https://dashboard.example.com/hermes"
+  trusted_proxies:
+    - "172.20.0.0/24"
+```
+
+Only listed peers may supply `X-Forwarded-Proto` and `X-Forwarded-For`. Hermes always preserves loopback trust and rejects `*`, `0.0.0.0/0`, and `::/0`. Trusting a network means every container or machine on that network can supply forwarding metadata, so prefer an exact proxy IP or a dedicated proxy-only network.
 
 ```
 # Backend remains reachable only on this machine.
@@ -1141,7 +1152,7 @@ Default — reconstruct from `X-Forwarded-*` headers
 
 Validation rejects values without `http://` / `https://` scheme, without a host, or containing quote / angle / whitespace / control characters. A malformed value silently falls through to header reconstruction so the login flow keeps working rather than dispatching the user to a hostile URL.
 
-> **Note:** `public_url` overrides the OAuth callback URL only. The `Secure` cookie flag is still controlled by `request.url.scheme` (X-Forwarded-Proto under proxy\_headers), so an `http://` `public_url` on a TLS-terminated public deploy will produce non-Secure cookies. This is an operator footgun — pair `public_url` with proper TLS termination upstream.
+> **Note:** `public_url` overrides the OAuth callback URL only. The `Secure` cookie flag is still controlled by `request.url.scheme`, using `X-Forwarded-Proto` only when the connecting peer is loopback or listed in `trusted_proxies`. Pair an HTTPS `public_url` with TLS termination and a bounded trusted-proxy entry when the proxy is not on loopback.
 
 ### OAuth flow
 

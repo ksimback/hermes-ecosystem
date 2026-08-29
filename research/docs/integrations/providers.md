@@ -1,4 +1,4 @@
-# AI Providers
+# LLM and Model Providers
 
 **Source:** https://hermes-agent.nousresearch.com/docs/integrations/providers
 
@@ -36,6 +36,10 @@ Setup
 
 `OPENROUTER_API_KEY` in `~/.hermes/.env`
 
+**Ramp Router**
+
+`RAMP_ROUTER_API_KEY` in `~/.hermes/.env` (provider: `router`; aliases: `ramp-router`, `ramp`, `router.com`; Responses-native gateway, live account-scoped catalog)
+
 **Fireworks AI**
 
 `FIREWORKS_API_KEY` in `~/.hermes/.env` (provider: `fireworks`; aliases: `fireworks-ai`, `fw`)
@@ -67,6 +71,10 @@ Setup
 **GMI Cloud**
 
 `GMI_API_KEY` in `~/.hermes/.env` (provider: `gmi`; aliases: `gmi-cloud`, `gmicloud`)
+
+**Nebius Token Factory**
+
+`NEBIUS_API_KEY` in `~/.hermes/.env` (provider: `nebius-token-factory`; aliases: `nebius`, `nebius-tf`, `tokenfactory`)
 
 **Actual Computer**
 
@@ -108,6 +116,10 @@ Setup
 
 `TOKENHUB_API_KEY` in `~/.hermes/.env` (provider: `tencent-tokenhub`, aliases: `tencent`, `tokenhub`, `tencentmaas`)
 
+**Tencent TokenPlan**
+
+`TOKENPLAN_API_KEY` in `~/.hermes/.env` (provider: `tencent-tokenplan`, aliases: `tokenplan`, `tencent-lkeap`; Anthropic Messages endpoint)
+
 **OpenCode Zen**
 
 `OPENCODE_ZEN_API_KEY` in `~/.hermes/.env` (provider: `opencode-zen`)
@@ -122,7 +134,7 @@ Setup
 
 **OpenCode Free**
 
-Keyless — no API key or account needed (provider: `opencode-free`, aliases: `free`, `opencode_free`). Select via `hermes model` or `/model free`; requests are sent anonymously
+Keyless — no API key or account needed (provider: `opencode-free`, aliases: `free`, `opencode_free`). Select via `hermes model` or `/model free`; requests are sent anonymously. The model list refreshes automatically from OpenCode's live catalog, so rotating free promotions appear (and delisted ones disappear) without a Hermes update
 
 **DeepSeek**
 
@@ -468,6 +480,10 @@ hermes chat --provider fireworks --model accounts/fireworks/models/kimi-k2p6
 hermes chat --provider novita --model moonshotai/kimi-k2.5
 # Requires: NOVITA_API_KEY in ~/.hermes/.env
 
+# Ramp Router (model IDs come from your account's live catalog)
+hermes chat --provider router --model gpt-5.4-mini
+# Requires: RAMP_ROUTER_API_KEY in ~/.hermes/.env
+
 # z.ai / ZhipuAI GLM
 hermes chat --provider zai --model glm-5
 # Requires: GLM_API_KEY in ~/.hermes/.env
@@ -496,9 +512,13 @@ hermes chat --provider alibaba --model qwen3.5-plus
 hermes chat --provider xiaomi --model mimo-v2-pro
 # Requires: XIAOMI_API_KEY in ~/.hermes/.env
 
-# Tencent TokenHub (Hy3 Preview)
-hermes chat --provider tencent-tokenhub --model hy3-preview
+# Tencent TokenHub (Hy4 preview)
+hermes chat --provider tencent-tokenhub --model hy4-preview
 # Requires: TOKENHUB_API_KEY in ~/.hermes/.env
+
+# Tencent TokenPlan (Hy4 preview via Anthropic Messages endpoint)
+hermes chat --provider tencent-tokenplan --model hy4-preview
+# Requires: TOKENPLAN_API_KEY in ~/.hermes/.env
 
 # Arcee AI (Trinity models)
 hermes chat --provider arcee --model trinity-large-thinking
@@ -512,6 +532,10 @@ hermes chat --provider meta-ai --model muse-spark-1.2
 # Use the exact model ID returned by GMI's /v1/models endpoint.
 hermes chat --provider gmi --model zai-org/GLM-5.1-FP8
 # Requires: GMI_API_KEY in ~/.hermes/.env
+
+# Nebius Token Factory
+hermes chat --provider nebius --model deepseek-ai/DeepSeek-V4-Pro
+# Requires: NEBIUS_API_KEY in ~/.hermes/.env
 ```
 
 Fireworks uses its native slash-form catalog IDs, such as `accounts/fireworks/models/kimi-k2p6`. Run `hermes model`, choose **Fireworks AI**, and select from the live catalog or enter another Fireworks model ID. The default endpoint is `https://api.fireworks.ai/inference/v1`; configure a different endpoint through `model.base_url` in `config.yaml`, not `.env`.
@@ -2050,7 +2074,7 @@ fallback_model:
 
 When activated, the fallback swaps the model and provider mid-session without losing your conversation. The chain is tried entry-by-entry; activation is one-shot per session.
 
-Supported providers: `openrouter`, `nous`, `novita`, `openai-codex`, `copilot`, `copilot-acp`, `anthropic`, `gemini`, `qwen-oauth`, `huggingface`, `zai`, `kimi-coding`, `kimi-coding-cn`, `minimax`, `minimax-cn`, `minimax-oauth`, `deepseek`, `nvidia`, `xai`, `xai-oauth`, `ollama-cloud`, `bedrock`, `ai-gateway`, `azure-foundry`, `opencode-zen`, `opencode-go`, `commandcode`, `commandcode-anthropic`, `kilocode`, `xiaomi`, `arcee`, `gmi`, `actual`, `stepfun`, `lmstudio`, `alibaba`, `alibaba-coding-plan`, `tencent-tokenhub`, `custom`.
+Supported providers: `openrouter`, `nous`, `novita`, `openai-codex`, `copilot`, `copilot-acp`, `anthropic`, `gemini`, `qwen-oauth`, `huggingface`, `zai`, `kimi-coding`, `kimi-coding-cn`, `minimax`, `minimax-cn`, `minimax-oauth`, `deepseek`, `nvidia`, `xai`, `xai-oauth`, `ollama-cloud`, `bedrock`, `ai-gateway`, `azure-foundry`, `opencode-zen`, `opencode-go`, `commandcode`, `commandcode-anthropic`, `kilocode`, `xiaomi`, `arcee`, `gmi`, `actual`, `stepfun`, `lmstudio`, `alibaba`, `alibaba-coding-plan`, `tencent-tokenhub`, `tencent-tokenplan`, `nebius-token-factory`, `router`, `custom`.
 
 tip
 

@@ -484,6 +484,14 @@ macOS/Windows signing and notarization run automatically when the relevant crede
 
 ### macOS permissions and local rebuilds (TCC)
 
+**Silence every folder prompt with one switch.** macOS prompts per-category (Desktop, then Downloads, then Documents, ...) as Hermes touches each folder. A single **Full Disk Access** grant covers all of them, permanently — and with Hermes' stable signing identities it survives every update:
+
+1.  System Settings → **Privacy & Security → Full Disk Access** (or run `open "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"`)
+2.  Enable your terminal app — and **Hermes.app** if you use Desktop.
+3.  Fully quit and relaunch them once.
+
+`hermes doctor` reports whether the current terminal context already has the grant, and `hermes setup` shows this tip on macOS when it doesn't.
+
 macOS remembers permission grants (Full Disk Access, Desktop/Downloads/Documents, Accessibility, Automation, microphone) against the app's _code-signing identity_, not its path. Locally built and self-updated apps are signed with a stable identifier-pinned ad-hoc signature, so grants persist across updates.
 
 One-time note: grants made to builds _before_ the identifier-pinned signing fix (PR #73681) carry the old cdhash-pinned requirement. macOS keeps showing the toggle as ON for those stale grants but still re-prompts, because the stored grant no longer matches the rebuilt binary — and the modern prompt has no Allow button, so it looks like there is nothing to re-check. If that happens, reset the stale grant once and re-grant:
