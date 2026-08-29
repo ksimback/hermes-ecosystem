@@ -519,11 +519,12 @@ await section("3. Generated discovery artifacts are current", async () => {
   }
 });
 
-// 4. Homepage category counts match repos.json
-await section("4. Homepage category counts match data/repos.json", async () => {
-  const r = await fetchWithTimeout(`${BASE}/`);
+// 4. Catalog category counts match repos.json (the catalog lives on the
+//    generated /ecosystem/ page since the homepage redesign)
+await section("4. /ecosystem/ category counts match data/repos.json", async () => {
+  const r = await fetchWithTimeout(`${BASE}/ecosystem/`);
   if (!r.ok) {
-    fail("homepage fetch", `HTTP ${r.status}`, `${BASE}/`);
+    fail("/ecosystem/ fetch", `HTTP ${r.status}`, `${BASE}/ecosystem/`);
     return;
   }
   const html = await r.text();
@@ -538,7 +539,7 @@ await section("4. Homepage category counts match data/repos.json", async () => {
 
   const sections = root.querySelectorAll('section.cat[data-category]');
   if (sections.length === 0) {
-    fail("homepage sections", "no <section.cat[data-category]> found on homepage", "is the homepage structure unchanged?");
+    fail("/ecosystem/ sections", "no <section.cat[data-category]> found on /ecosystem/", "is the catalog page structure unchanged?");
     return;
   }
 
@@ -565,8 +566,8 @@ await section("4. Homepage category counts match data/repos.json", async () => {
     if (!seenCats.has(cat)) {
       fail(
         `${cat} section`,
-        `category exists in repos.json (${byCat.get(cat)} entries) but no <section> for it on homepage`,
-        `add a <section class="cat" data-category="${cat}"> to index.html`
+        `category exists in repos.json (${byCat.get(cat)} entries) but no <section> for it on /ecosystem/`,
+        `add the category to data/categories.json (renderEcosystemPage fails loud without it)`
       );
     }
   }
@@ -679,20 +680,21 @@ await section("7. RSS feed is well-formed", async () => {
   pass("rss.xml", `well-formed, ${opens} items`);
 });
 
-// 8. Internal link integrity (homepage anchors)
-await section("8. Sample of internal links from homepage resolve", async () => {
-  const r = await fetchWithTimeout(`${BASE}/`);
-  if (!r.ok) {
-    fail("homepage fetch (links check)", `HTTP ${r.status}`);
-    return;
-  }
-  const html = await r.text();
-  const root = parseHtml(html);
-  const anchors = root.querySelectorAll("a[href]");
+// 8. Internal link integrity (homepage + /ecosystem/ anchors)
+await section("8. Sample of internal links from homepage + /ecosystem/ resolve", async () => {
   const internal = new Set();
-  for (const a of anchors) {
-    const href = a.getAttribute("href") || "";
-    if (href.startsWith("/") && !href.startsWith("//")) internal.add(href.split("#")[0].split("?")[0]);
+  for (const page of ["/", "/ecosystem/"]) {
+    const r = await fetchWithTimeout(`${BASE}${page}`);
+    if (!r.ok) {
+      fail(`${page} fetch (links check)`, `HTTP ${r.status}`);
+      return;
+    }
+    const html = await r.text();
+    const root = parseHtml(html);
+    for (const a of root.querySelectorAll("a[href]")) {
+      const href = a.getAttribute("href") || "";
+      if (href.startsWith("/") && !href.startsWith("//")) internal.add(href.split("#")[0].split("?")[0]);
+    }
   }
   const list = Array.from(internal)
     .filter(Boolean)

@@ -42,43 +42,9 @@
     });
   }
 
-  // ── Tooltip ──
-  const tooltip = document.getElementById('tooltip');
-  const ttName = document.getElementById('tt-name');
-  const ttDesc = document.getElementById('tt-desc');
-
-  function initTooltips() {
-    document.querySelectorAll('.repo-row[data-desc]').forEach(item => {
-      item.addEventListener('mouseenter', e => {
-        const nameEl = item.querySelector('.repo-name');
-        ttName.textContent = nameEl ? nameEl.textContent.replace('official', '').trim() : '';
-        ttDesc.textContent = item.getAttribute('data-desc') || '';
-        tooltip.style.display = 'block';
-        positionTooltip(e);
-      });
-      item.addEventListener('mousemove', positionTooltip);
-      item.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
-    });
-  }
-
-  function positionTooltip(e) {
-    const pad = 12;
-    let x = e.clientX + pad, y = e.clientY + pad;
-    const w = 340, h = tooltip.getBoundingClientRect().height || 80;
-    if (x + w > window.innerWidth) x = e.clientX - w - pad;
-    if (y + h > window.innerHeight) y = e.clientY - h - pad;
-    tooltip.style.left = x + 'px';
-    tooltip.style.top = y + 'px';
-  }
-  initTooltips();
-
-  // ── Add data-repo attributes to repo rows ──
-  document.querySelectorAll('.repo-row[data-github]').forEach(item => {
-    const match = item.getAttribute('data-github').match(/github\.com\/([^/]+\/[^/]+)/);
-    if (match) item.setAttribute('data-repo', match[1]);
-  });
-
-  // ── Live star counts + weekly deltas + trending ──
+  // ── Live ecosystem stats (masthead meta + stats row) ──
+  // Repo-row star/delta/trending updates moved to /assets/js/ecosystem.js
+  // with the catalog (homepage redesign) — this page only shows aggregates.
   async function fetchStars() {
     try {
       const [starsRes, historyRes] = await Promise.all([
@@ -111,70 +77,27 @@
         }
       }
 
-      const deltas = {};
-      const growthPct = {};
-      for (const [key, series] of Object.entries(timeSeries)) {
-        // Require 8 snapshots (= 7 full days, since cron runs daily) before
-        // showing weekly growth. Previously fell back to series[0] when
-        // history was sparse, which mislabeled "since first snapshot" as
-        // "weekly" — inflating trending badges during the first week of
-        // tracking or after data gaps.
+      // Require 8 snapshots (= 7 full days, since cron runs daily) before
+      // counting a repo toward weekly growth — sparse history mislabels
+      // "since first snapshot" as "weekly" and inflates the number.
+      let sumDelta = 0;
+      for (const series of Object.values(timeSeries)) {
         if (series.length < 8) continue;
-        const current = series[series.length - 1];
-        const weekAgo = series[series.length - 8];
-        const delta = current - weekAgo;
-        deltas[key] = delta;
-        if (weekAgo > 0) growthPct[key] = (delta / weekAgo) * 100;
+        const delta = series[series.length - 1] - series[series.length - 8];
+        if (delta > 0) sumDelta += delta;
       }
 
-      const trendingSet = new Set(
-        Object.entries(growthPct)
-          .filter(([_, pct]) => pct > 0)
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 5)
-          .map(([key]) => key)
-      );
-
-      // Update repo rows
-      document.querySelectorAll('.repo-row[data-repo]').forEach(item => {
-        const key = item.getAttribute('data-repo');
-        const info = data.repos?.[key];
-        if (!info) return;
-
-        const starsEl = item.querySelector('.repo-stars');
-        if (starsEl) starsEl.textContent = '★ ' + formatStars(info.stars);
-        item.setAttribute('data-stars', info.stars);
-        if (info.updatedAt) item.setAttribute('data-updated', info.updatedAt);
-
-        const deltaEl = item.querySelector('.repo-delta');
-        if (deltaEl) {
-          const delta = deltas[key];
-          if (delta === undefined) {
-            deltaEl.textContent = '— / wk';
-            deltaEl.className = 'repo-delta zero';
-          } else if (delta === 0) {
-            deltaEl.textContent = '0 / wk';
-            deltaEl.className = 'repo-delta zero';
-          } else if (delta > 0) {
-            deltaEl.innerHTML = '+' + formatStars(delta) + ' / wk' + (trendingSet.has(key) ? '<span class="hot"> · hot</span>' : '');
-            deltaEl.className = 'repo-delta';
-          } else {
-            deltaEl.textContent = '-' + formatStars(Math.abs(delta)) + ' / wk';
-            deltaEl.className = 'repo-delta negative';
-          }
-        }
-      });
-
-      // Update stats row
+      // Stats row
       if (data.totals) {
-        document.getElementById('stat-total-stars').textContent = formatStars(data.totals.stars);
-        document.getElementById('stat-total-repos').textContent = data.totals.count;
-        const sumDelta = Object.values(deltas).reduce((a, b) => a + (b > 0 ? b : 0), 0);
+        const totalStars = document.getElementById('stat-total-stars');
+        if (totalStars) totalStars.textContent = formatStars(data.totals.stars);
+        const totalRepos = document.getElementById('stat-total-repos');
+        if (totalRepos) totalRepos.textContent = data.totals.count;
         const weekEl = document.getElementById('stat-week-delta');
         if (weekEl) weekEl.textContent = sumDelta > 0 ? '+' + formatStars(sumDelta) : '—';
       }
 
-      // Update masthead meta
+      // Masthead meta
       const metaCount = document.getElementById('meta-count');
       if (metaCount && data.totals?.count) metaCount.textContent = data.totals.count + '·repos';
 
@@ -189,13 +112,6 @@
       // Hero sub count
       const heroSubCount = document.getElementById('hero-sub-count');
       if (heroSubCount && data.totals?.count) heroSubCount.textContent = data.totals.count;
-
-      // Featured repo numbers
-      const heroStars = document.getElementById('hero-stars');
-      if (heroStars && data.repos?.['NousResearch/hermes-agent']) {
-        heroStars.textContent = formatStars(data.repos['NousResearch/hermes-agent'].stars);
-      }
-      // hero version is set by fetchVersion() (authoritative release notes).
     } catch (e) {
       console.log('Stars API unavailable, using static counts', e);
     }
@@ -227,81 +143,8 @@
     return String(n);
   }
 
-  // Catalog search + sort (progressive enhancement). Reveals the controls
-  // (hidden by default so no-JS users get the full browsable list) and wires
-  // live text filtering + within-category sorting over the existing repo rows.
-  function initCatalogControls() {
-    const controls = document.getElementById('catalog-controls');
-    if (!controls) return;
-    const search = document.getElementById('catalog-search');
-    const sortSel = document.getElementById('catalog-sort');
-    const countEl = document.getElementById('catalog-result-count');
-    const sections = Array.from(document.querySelectorAll('section.cat'));
-    const rows = [];
-    sections.forEach(sec => {
-      sec.querySelectorAll('.repo-row').forEach(row => {
-        const slug = (row.getAttribute('href') || '').replace('/projects/', '').toLowerCase();
-        const desc = (row.getAttribute('data-desc') || '').toLowerCase();
-        rows.push({ row, sec, hay: slug + ' ' + desc });
-      });
-    });
-    const starsOf = row => {
-      const attr = row.getAttribute('data-stars');
-      if (attr) return parseInt(attr, 10) || 0;
-      const el = row.querySelector('.repo-stars');
-      return el ? parseInt(el.textContent.replace(/[^0-9]/g, ''), 10) || 0 : 0;
-    };
-    const nameOf = row => (row.getAttribute('href') || '').toLowerCase();
-    const updatedOf = row => row.getAttribute('data-updated') || '';
-    function applyFilter() {
-      const q = search.value.trim().toLowerCase();
-      let visible = 0;
-      rows.forEach(({ row, hay }) => {
-        const show = !q || hay.indexOf(q) !== -1;
-        row.style.display = show ? '' : 'none';
-        if (show) visible++;
-      });
-      sections.forEach(sec => {
-        const any = Array.from(sec.querySelectorAll('.repo-row')).some(r => r.style.display !== 'none');
-        sec.style.display = any ? '' : 'none';
-      });
-      countEl.textContent = q ? visible + ' match' + (visible === 1 ? '' : 'es') : '';
-    }
-    function applySort() {
-      const key = sortSel.value;
-      document.querySelectorAll('.cat-list').forEach(list => {
-        Array.from(list.querySelectorAll('.repo-row'))
-          .sort((a, b) => {
-            if (key === 'name') return nameOf(a).localeCompare(nameOf(b));
-            if (key === 'active') return updatedOf(b).localeCompare(updatedOf(a));
-            return starsOf(b) - starsOf(a);
-          })
-          .forEach(it => list.appendChild(it));
-      });
-    }
-    search.addEventListener('input', applyFilter);
-    sortSel.addEventListener('change', applySort);
-    controls.hidden = false;
-    applySort();
-  }
-
-  // Initialize data-stars from current star text. Must run before
-  // initCatalogControls(): its initial sort reads data-stars, and its
-  // text-parsing fallback can't handle "1.2K"-style abbreviations.
-  document.querySelectorAll('.repo-row').forEach(item => {
-    const starsEl = item.querySelector('.repo-stars');
-    if (starsEl && !item.getAttribute('data-stars')) {
-      const text = starsEl.textContent.replace('★', '').trim().replace(',', '');
-      let val = 0;
-      if (text.includes('K')) val = parseFloat(text) * 1000;
-      else val = parseInt(text) || 0;
-      item.setAttribute('data-stars', val);
-    }
-  });
-
   fetchStars();
   fetchVersion();
-  initCatalogControls();
 
   // ── Chat Widget ──
   const chatBtn = document.getElementById('chat-btn');
@@ -586,7 +429,7 @@
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value, { stream: true });
-        const cleaned = chunk.replace(/\u200B/g, '');
+        const cleaned = chunk.replace(/​/g, '');
         if (!cleaned) continue;
 
         if (firstChunk) {
@@ -596,7 +439,7 @@
         }
 
         fullResponse += cleaned;
-        const displayText = fullResponse.replace(/\u200E__META__.*?__META__\u200E/, '');
+        const displayText = fullResponse.replace(/‎__META__.*?__META__‎/, '');
         loadingEl.innerHTML = renderMarkdown(displayText);
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
@@ -605,7 +448,7 @@
 
       let modelUsed = null;
       let sources = null;
-      const trailerMatch = fullResponse.match(/\u200E__META__(.*?)__META__\u200E/);
+      const trailerMatch = fullResponse.match(/‎__META__(.*?)__META__‎/);
       if (trailerMatch) {
         try {
           const meta = JSON.parse(trailerMatch[1]);

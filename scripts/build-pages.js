@@ -305,8 +305,12 @@ const FAVICON = `<link rel="icon" href="/favicon.ico" sizes="any">
 
 // ── Shared masthead ──
 function renderMasthead(activeNav) {
+  // "newsletter" was dropped when "ecosystem" was added (homepage redesign):
+  // the nav stays at 10 items, and the signup keeps its /#newsletter anchor
+  // via the homepage email-cta + footer links.
   const nav = [
-    { href: "/", label: "map", id: "map" },
+    { href: "/", label: "home", id: "home" },
+    { href: "/ecosystem/", label: "ecosystem", id: "ecosystem" },
     { href: "/lists/", label: "lists", id: "lists" },
     { href: "/skills/", label: "skills", id: "skills" },
     { href: "/use-cases/", label: "use cases", id: "use-cases" },
@@ -314,7 +318,6 @@ function renderMasthead(activeNav) {
     { href: "/masterclass/", label: "masterclass", id: "masterclass" },
     { href: "/dev/", label: "dev", id: "dev" },
     { href: "/reports/", label: "reports", id: "reports" },
-    { href: "/#newsletter", label: "newsletter", id: "newsletter" },
     { href: "https://github.com/ksimback/hermes-ecosystem", label: "source", id: "source" },
   ];
   const navHtml = nav
@@ -366,7 +369,7 @@ function refreshSiteChrome() {
   for (const relDir of roots) collect(relDir);
 
   const activeFor = (rel) => {
-    if (rel === "index.html") return "map";
+    if (rel === "index.html") return "home";
     if (rel.startsWith("guide/")) return "handbook";
     if (rel.startsWith("masterclass/")) return "masterclass";
     if (rel.startsWith("dev/")) return "dev";
@@ -650,7 +653,7 @@ function writeLlmsFiles(repos, lists, summaries, reports = []) {
   // ── llms.txt ──
   const llmsTxt = `# Hermes Atlas
 
-> The community-curated ecosystem map for Hermes Agent by Nous Research — ${repos.length}+ tools, skills, plugins, and integrations with live GitHub data and AI-generated summaries. Updated daily. As of ${today}.
+> The decision layer for Hermes Agent by Nous Research — install guidance, mode and skill picks, and a community-curated catalog of ${repos.length}+ tools, skills, plugins, and integrations with live GitHub data and AI-generated summaries. Updated daily. As of ${today}.
 
 Hermes Atlas tracks every open-source project in the Hermes Agent ecosystem across ${categoryCount} categories. Each project has a dedicated page with a prose summary, live star count, README, and category metadata. The full catalog is also available as JSON at ${SITE_URL}/data/repos.json for programmatic access.
 
@@ -873,7 +876,7 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary, handbo
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "map", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
     { "@type": "ListItem", "position": 2, "name": "${escapeHtml(repo.category.toLowerCase())}", "item": "https://hermesatlas.com${listSlug ? `/lists/${listSlug}` : "/"}" },
     { "@type": "ListItem", "position": 3, "name": "${escapeHtml(repo.repo.toLowerCase())}" }
   ]
@@ -894,10 +897,10 @@ ${FAVICON}
 
 <a class="skip-link" href="#main">Skip to content</a>
 
-${renderMasthead("map")}
+${renderMasthead("ecosystem")}
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span><a href="${listSlug ? `/lists/${listSlug}` : "/"}">${escapeHtml(repo.category.toLowerCase())}</a><span class="sep">/</span>${escapeHtml(repo.repo.toLowerCase())}
+  <a href="/">home</a><span class="sep">/</span><a href="${listSlug ? `/lists/${listSlug}` : "/"}">${escapeHtml(repo.category.toLowerCase())}</a><span class="sep">/</span>${escapeHtml(repo.repo.toLowerCase())}
 </div>
 
 <main id="main">
@@ -1050,7 +1053,7 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "map", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
     { "@type": "ListItem", "position": 2, "name": "lists", "item": "https://hermesatlas.com/lists/" },
     { "@type": "ListItem", "position": 3, "name": "${escapeHtml(list.slug)}" }
   ]
@@ -1074,7 +1077,7 @@ ${FAVICON}
 ${renderMasthead("lists")}
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span><a href="/lists/">lists</a><span class="sep">/</span>${escapeHtml(list.slug)}
+  <a href="/">home</a><span class="sep">/</span><a href="/lists/">lists</a><span class="sep">/</span>${escapeHtml(list.slug)}
 </div>
 
 <main id="main">
@@ -1096,7 +1099,7 @@ ${renderMasthead("lists")}
 </div>
 ${listicleHtml}
 
-<div class="back-link"><a href="/">← back to the map</a></div>
+<div class="back-link"><a href="/">← back home</a></div>
 
 </main>
 
@@ -1150,7 +1153,7 @@ function renderListsIndex(lists, repos) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "map", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 1, name: "home", item: "https://hermesatlas.com/" },
       { "@type": "ListItem", position: 2, name: "lists" },
     ],
   };
@@ -1206,7 +1209,7 @@ ${FAVICON}
 ${renderMasthead("lists")}
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span>lists
+  <a href="/">home</a><span class="sep">/</span>lists
 </div>
 
 <main id="main">
@@ -1225,7 +1228,7 @@ ${renderMasthead("lists")}
   ${listRows}
 </div>
 
-<div class="back-link"><a href="/">← back to the map</a></div>
+<div class="back-link"><a href="/">← back home</a></div>
 
 </main>
 
@@ -1244,8 +1247,8 @@ ${PAGE_FOOTER}
 // ── Ecosystem catalog (/ecosystem/) ──
 // The full 12-category repo catalog, fully generated from data/repos.json +
 // data/categories.json (row blurbs come from the optional hand-curated
-// `blurb` field). This page replaces the old homepage-embedded catalog that
-// syncHomepageRepos() maintained append-only inside hand-authored HTML.
+// `blurb` field). This page replaced the old homepage-embedded catalog that
+// was maintained append-only inside hand-authored HTML.
 function renderEcosystemPage(repos) {
   const roundedCount = Math.floor(repos.length / 10) * 10;
   const title = `Hermes Agent Ecosystem — ${roundedCount}+ open-source tools, skills & integrations | Hermes Atlas`;
@@ -1274,7 +1277,7 @@ function renderEcosystemPage(repos) {
       const catRepos = (byCategory.get(c.category) || []).sort(
         (a, b) => (b.stars || 0) - (a.stars || 0)
       );
-      const rows = catRepos.map(renderHomepageRepoRow).join("");
+      const rows = catRepos.map(renderRepoRow).join("");
       return `<section class="cat" data-category="${escapeHtml(c.category)}">
   <div class="cat-meta">
     <div class="cat-num">${escapeHtml(c.num)}</div>
@@ -1619,7 +1622,7 @@ function renderSkillsHub(data, model) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "map", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 1, name: "home", item: "https://hermesatlas.com/" },
       { "@type": "ListItem", position: 2, name: "skills" },
     ],
   };
@@ -1664,7 +1667,7 @@ ${FAVICON}
 ${renderMasthead("skills")}
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span>skills
+  <a href="/">home</a><span class="sep">/</span>skills
 </div>
 
 <main id="main">
@@ -1788,7 +1791,7 @@ function renderSkillsUseCasePage(data, group, otherGroups) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "map", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 1, name: "home", item: "https://hermesatlas.com/" },
       { "@type": "ListItem", position: 2, name: "skills", item: "https://hermesatlas.com/skills/" },
       { "@type": "ListItem", position: 3, name: group.slug },
     ],
@@ -1847,7 +1850,7 @@ ${FAVICON}
 ${renderMasthead("skills")}
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span><a href="/skills/">skills</a><span class="sep">/</span>${escapeHtml(group.slug)}
+  <a href="/">home</a><span class="sep">/</span><a href="/skills/">skills</a><span class="sep">/</span>${escapeHtml(group.slug)}
 </div>
 
 <main id="main">
@@ -2020,7 +2023,7 @@ function renderUseCasePage(useCase, repoIndex, storyIndex, relatedUseCases) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "map", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 1, name: "home", item: "https://hermesatlas.com/" },
       { "@type": "ListItem", position: 2, name: "use cases", item: "https://hermesatlas.com/use-cases/" },
       { "@type": "ListItem", position: 3, name: useCase.slug },
     ],
@@ -2065,7 +2068,7 @@ ${FAVICON}
 ${renderMasthead("use-cases")}
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span><a href="/use-cases/">use cases</a><span class="sep">/</span>${escapeHtml(useCase.slug)}
+  <a href="/">home</a><span class="sep">/</span><a href="/use-cases/">use cases</a><span class="sep">/</span>${escapeHtml(useCase.slug)}
 </div>
 
 <main id="main">
@@ -2160,7 +2163,7 @@ function renderUseCasesIndex(useCasesList, storyIndex) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "map", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 1, name: "home", item: "https://hermesatlas.com/" },
       { "@type": "ListItem", position: 2, name: "use cases" },
     ],
   };
@@ -2204,7 +2207,7 @@ ${FAVICON}
 ${renderMasthead("use-cases")}
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span>use cases
+  <a href="/">home</a><span class="sep">/</span>use cases
 </div>
 
 <main id="main">
@@ -2229,7 +2232,7 @@ ${renderMasthead("use-cases")}
   ${rows}
 </div>
 
-<div class="back-link"><a href="/">← back to the map</a></div>
+<div class="back-link"><a href="/">← back home</a></div>
 
 </main>
 
@@ -2287,7 +2290,7 @@ function renderReportsIndex(reports) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "map", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 1, name: "home", item: "https://hermesatlas.com/" },
       { "@type": "ListItem", position: 2, name: "reports" },
     ],
   };
@@ -2350,7 +2353,7 @@ ${FAVICON}
 ${renderMasthead("reports")}
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span>reports
+  <a href="/">home</a><span class="sep">/</span>reports
 </div>
 
 <main id="main">
@@ -2369,7 +2372,7 @@ ${renderMasthead("reports")}
   ${reportRows}
 </div>
 
-<div class="back-link"><a href="/">← back to the map</a></div>
+<div class="back-link"><a href="/">← back home</a></div>
 
 </main>
 
@@ -2451,8 +2454,8 @@ function generateSitemap(projectPages, listPages, reportPages = [], useCasePages
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}</urlset>\n`;
 }
 
-// ── Render a single homepage repo-row block ──
-function renderHomepageRepoRow(r) {
+// ── Render a single catalog repo-row block (used by /ecosystem/) ──
+function renderRepoRow(r) {
   const stars = (r.stars || 0).toLocaleString("en-US");
   const flag = r.official ? ' <span class="repo-flag">official</span>' : "";
   // Hand-curated catalog blurb wins over the raw GitHub description.
@@ -2469,153 +2472,22 @@ function renderHomepageRepoRow(r) {
 `;
 }
 
-// ── Sync homepage repo-rows from data/repos.json (append-only) ──
+// ── Bake live stats into the static homepage ──
 //
-// The homepage (index.html) is statically rendered HTML. Auto-discovered
-// repos that get merged via validate-repo-suggestion.yml only update
-// data/repos.json — they don't touch index.html, so the homepage drifts
-// behind the data file. This function detects every repo in repos.json
-// missing from index.html and appends a new <a class="repo-row"> block
-// into the matching <section class="cat" data-category="...">. Existing
-// rows are never modified, preserving hand-curated descriptions and
-// ordering. Each section's <span class="cat-count-n"> is also rewritten
-// from the live count.
-function syncHomepageRepos(repos) {
-  console.log("\nSyncing homepage repo-rows from repos.json...");
+// The homepage is a hand-authored decision router (the catalog moved to the
+// generated /ecosystem/ page — see renderEcosystemPage). masthead-fetch.js /
+// homepage.js live-update these spans in the browser, but non-JS crawlers
+// (GPTBot, ClaudeBot, PerplexityBot) index the baked values, which otherwise
+// sit frozen at whatever the page was hand-authored with. This replaces the
+// old append-only row-sync machinery, which died with the homepage catalog
+// (and took the mixed-EOL trap with it).
+function bakeHomepageStats(repos) {
+  console.log("\nBaking live stats into index.html...");
   const indexPath = path.join(ROOT, "index.html");
   let html = fs.readFileSync(indexPath, "utf-8");
-  const NL = html.includes("\r\n") ? "\r\n" : "\n";
 
-  // Prune stale repo-rows before syncing. The append-only add logic below never
-  // removes rows, so entries pruned from data/repos.json (dead/renamed repos)
-  // and any duplicate rows left behind by double-submission linger as broken
-  // links. Drop any repo-row whose owner/repo is not in repos.json, and collapse
-  // duplicate rows to the first occurrence. Only touches <a class="repo-row">
-  // anchors — the hand-curated featured hero uses different markup.
-  const validKeys = new Set(repos.map((r) => `${r.owner}/${r.repo}`));
-  const seenRows = new Set();
-  let removedInvalid = 0;
-  let removedDup = 0;
-  html = html.replace(
-    /\n[ \t]*<a class="repo-row" href="\/projects\/([^"]+)"[\s\S]*?<\/a>/g,
-    (block, key) => {
-      if (!validKeys.has(key)) {
-        removedInvalid++;
-        return "";
-      }
-      if (seenRows.has(key)) {
-        removedDup++;
-        return "";
-      }
-      seenRows.add(key);
-      return block;
-    }
-  );
-  if (removedInvalid || removedDup) {
-    console.log(`  Pruned ${removedInvalid} dead + ${removedDup} duplicate repo-rows`);
-  }
-
-  const onPage = new Set(
-    [...html.matchAll(/href="\/projects\/([^"]+)"/g)].map((m) => m[1])
-  );
-
-  // Refresh stale star counts on existing rendered rows. The append-only
-  // policy preserves hand-curated descriptions, but star counts are pure
-  // live data — without this pass they stay frozen at the value the row
-  // had when first added, even after data/repos.json gets refreshed by
-  // the GraphQL pass in main(). Touches only the ★ NNNN text inside each
-  // <div class="repo-stars">; everything else is left as-is.
-  const repoByKey = new Map(repos.map((r) => [`${r.owner}/${r.repo}`, r]));
-  let rowsRefreshed = 0;
-  html = html.replace(
-    /(data-github="https:\/\/github\.com\/([^"]+)"[^>]*>\s*<div class="repo-stars">★ )([0-9,]+)(<\/div>)/g,
-    (full, prefix, key, oldStars, suffix) => {
-      const r = repoByKey.get(key);
-      if (!r || typeof r.stars !== "number") return full;
-      const newStars = r.stars.toLocaleString("en-US");
-      if (newStars === oldStars) return full;
-      rowsRefreshed++;
-      return prefix + newStars + suffix;
-    }
-  );
-  if (rowsRefreshed > 0) {
-    console.log(`  Refreshed star counts on ${rowsRefreshed} existing rows`);
-  }
-
-  const missingByCategory = {};
-  const queuedMissing = new Set();
-  for (const r of repos) {
-    const key = `${r.owner}/${r.repo}`;
-    if (!onPage.has(key) && !queuedMissing.has(key)) {
-      queuedMissing.add(key);
-      (missingByCategory[r.category] = missingByCategory[r.category] || []).push(r);
-    }
-  }
-  const missingCount = Object.values(missingByCategory).reduce((a, b) => a + b.length, 0);
-
-  if (missingCount === 0) {
-    console.log("  Already in sync (0 entries to add)");
-  } else {
-    const closeNeedle = `${NL}  </div>${NL}`;
-    for (const [category, missing] of Object.entries(missingByCategory)) {
-      missing.sort((a, b) => (b.stars || 0) - (a.stars || 0));
-      let newRowsHtml = missing.map(renderHomepageRepoRow).join("");
-      if (NL === "\r\n") newRowsHtml = newRowsHtml.replace(/\n/g, "\r\n");
-
-      const sectionStartTag = `<section class="cat" data-category="${category}">`;
-      const sectionStart = html.indexOf(sectionStartTag);
-      if (sectionStart === -1) {
-        console.warn(`  ⚠ Section not found: ${category} — skipping ${missing.length} repos`);
-        continue;
-      }
-      const sectionEnd = html.indexOf("</section>", sectionStart);
-      const insertBefore = html.lastIndexOf(closeNeedle, sectionEnd);
-      if (insertBefore === -1 || insertBefore < sectionStart) {
-        console.warn(`  ⚠ Could not locate cat-list end in section: ${category}`);
-        continue;
-      }
-
-      html =
-        html.slice(0, insertBefore) +
-        NL +
-        newRowsHtml.trimEnd() +
-        html.slice(insertBefore);
-      console.log(`  ${category}: +${missing.length}`);
-    }
-  }
-
-  // Refresh per-category counts from repos.json, which is the public source
-  // of truth used by smoke-test-prod.js and external consumers. Some homepage
-  // sections intentionally omit or retain hand-curated rows (for example the
-  // featured Hermes Agent hero), so rendered row counts are not reliable
-  // catalog counts.
-  const categoryTotals = repos.reduce((acc, r) => {
-    acc.set(r.category, (acc.get(r.category) || 0) + 1);
-    return acc;
-  }, new Map());
-  const sectionRe = /<section class="cat" data-category="([^"]+)">([\s\S]*?)<\/section>/g;
-  let sm;
-  while ((sm = sectionRe.exec(html)) !== null) {
-    const category = sm[1];
-    const sectionContent = sm[2];
-    const expectedCount = categoryTotals.get(category) || 0;
-    const countMatch = sectionContent.match(/<span class="cat-count-n">(\d+)<\/span>/);
-    if (countMatch && parseInt(countMatch[1], 10) !== expectedCount) {
-      const absoluteIdx = sm.index + sm[0].indexOf(countMatch[0]);
-      html =
-        html.slice(0, absoluteIdx) +
-        `<span class="cat-count-n">${expectedCount}</span>` +
-        html.slice(absoluteIdx + countMatch[0].length);
-      // Re-prime the regex to re-scan from current position since string length changed
-      sectionRe.lastIndex = absoluteIdx;
-    }
-  }
-
-  // Bake the current Hermes version into the static homepage spans from the
-  // authoritative release notes (data/latest-release.json). Keeps the pre-JS
-  // fallback fresh — the /api/stars fetch still live-updates it in the browser,
-  // but without this the baked value drifts stale (it was stuck at v0.10.0 while
-  // the API's live release field was returning null). No-op when unchanged.
+  // Hermes version from the authoritative release notes
+  // (data/latest-release.json) — the /api/stars release field can null out.
   try {
     const lr = JSON.parse(
       fs.readFileSync(path.join(ROOT, "data", "latest-release.json"), "utf-8")
@@ -2635,10 +2507,7 @@ function syncHomepageRepos(repos) {
     console.warn(`  Could not bake Hermes version into index.html: ${e.message}`);
   }
 
-  // Bake catalog-derived counters into the static homepage. masthead-fetch.js /
-  // homepage.js live-update these spans in the browser, but non-JS crawlers
-  // (GPTBot, ClaudeBot, PerplexityBot) index the baked values — which otherwise
-  // sit frozen at whatever count the page had when the span was hand-authored.
+  // Catalog-derived counters (masthead count, stats row, hero prose).
   const roundedCount = Math.floor(repos.length / 10) * 10;
   html = html
     .replace(/(<span id="meta-count">)[^<]*(<\/span>)/, `$1${repos.length}·repos$2`)
@@ -2648,16 +2517,8 @@ function syncHomepageRepos(repos) {
     .replace(/\(\d{2,3}\+ tools\)/g, `(${roundedCount}+ tools)`)
     .replace(/\b\d{2,3}\+ projects across/g, `${roundedCount}+ projects across`);
 
-  const flagship = repos.find((r) => r.owner === "NousResearch" && r.repo === "hermes-agent");
-  if (flagship && typeof flagship.stars === "number") {
-    html = html.replace(
-      /(<span class="big star" id="hero-stars">)[^<]*(<\/span>)/,
-      `$1${formatStars(flagship.stars)}$2`
-    );
-  }
-
   if (writePage(indexPath, html)) {
-    console.log(`  ✓ Wrote index.html${missingCount > 0 ? ` (+${missingCount} new rows)` : ""}`);
+    console.log("  ✓ Wrote index.html (stats baked)");
   }
 }
 
@@ -2958,7 +2819,7 @@ async function main() {
 
   // Sync homepage repo-rows from repos.json (auto-discovered repos only update
   // data/repos.json; index.html drifts unless this catches missing entries)
-  syncHomepageRepos(repos);
+  bakeHomepageStats(repos);
 
   // Re-stamp version/star/date facts in hand-authored guide pages + drafts.
   // Must run before writeLlmsFiles (which bundles the drafts and guide HTML)
