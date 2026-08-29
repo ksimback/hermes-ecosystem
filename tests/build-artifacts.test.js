@@ -18,6 +18,7 @@ test("generated artifact manifest covers current build outputs", () => {
     "masterclass/",
     "projects/",
     "lists/",
+    "ecosystem/",
     "use-cases/",
     "skills/",
     "reports/",

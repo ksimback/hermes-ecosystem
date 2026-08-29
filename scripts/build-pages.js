@@ -244,6 +244,13 @@ if (fs.existsSync(reportsPath)) {
 // than at import time; held here so the render pass can reach it.
 let skillsData = null;
 
+// Catalog category presentation (order, § numbers, display titles, intro
+// lines) for the generated /ecosystem/ page. Hand-curated; every category in
+// repos.json must have an entry — enforced fail-loud in renderEcosystemPage.
+const categories = JSON.parse(
+  fs.readFileSync(path.join(ROOT, "data", "categories.json"), "utf-8")
+);
+
 let latestHermesVersion = "v0.15.2";
 const latestReleasePath = path.join(ROOT, "data", "latest-release.json");
 if (fs.existsSync(latestReleasePath)) {
@@ -669,6 +676,9 @@ A hands-on developer tutorial for building on the Hermes Agent codebase, written
 - [Glossary](${SITE_URL}/dev/glossary): Plain-English definitions of every Hermes term.
 - [Codebase map & cheat sheet](${SITE_URL}/dev/codebase-map): Where to edit X — key files, the ~/.hermes data dir, and commands.
 - [Skill authoring template](${SITE_URL}/dev/skill-template): A copy-paste SKILL.md with annotated frontmatter.
+
+## Ecosystem Catalog
+- [The full ecosystem catalog](${SITE_URL}/ecosystem/): All ${repos.length} tracked projects across ${categoryCount} categories on one page, with live GitHub data.
 
 ## Top Projects
 ${topProjects.map((r) => `- [${r.owner}/${r.repo}](${SITE_URL}/projects/${r.owner}/${r.repo}): ${r.description} (${(r.stars || 0).toLocaleString()} stars${r.official ? ", official" : ""})`).join("\n")}
@@ -1223,6 +1233,188 @@ ${PAGE_FOOTER}
 
 <script src="/assets/js/theme-toggle.js" defer></script>
 <script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>`;
+}
+
+// ── Ecosystem catalog (/ecosystem/) ──
+// The full 12-category repo catalog, fully generated from data/repos.json +
+// data/categories.json (row blurbs come from the optional hand-curated
+// `blurb` field). This page replaces the old homepage-embedded catalog that
+// syncHomepageRepos() maintained append-only inside hand-authored HTML.
+function renderEcosystemPage(repos) {
+  const roundedCount = Math.floor(repos.length / 10) * 10;
+  const title = `Hermes Agent Ecosystem — ${roundedCount}+ open-source tools, skills & integrations | Hermes Atlas`;
+  const desc = `The complete Hermes Agent ecosystem catalog — ${roundedCount}+ open-source tools, skills, plugins, workspaces, and integrations across 12 categories, with live GitHub data. Quality-filtered and curated weekly.`;
+  const canonicalUrl = `${SITE_URL}/ecosystem/`;
+  const ogTitle = "The Hermes Agent Ecosystem";
+  const ogSubtitle = `${roundedCount}+ open-source tools, skills, plugins & integrations — live GitHub data`;
+
+  // Fail loud if a catalog category has no presentation entry: a silently
+  // dropped section is exactly the class of bug the old homepage sync hid.
+  const metaByCategory = new Map(categories.map((c) => [c.category, c]));
+  const missingMeta = [...new Set(repos.map((r) => r.category))].filter(
+    (c) => !metaByCategory.has(c)
+  );
+  if (missingMeta.length > 0) {
+    throw new Error(
+      `data/categories.json is missing entries for: ${missingMeta.join(", ")}`
+    );
+  }
+
+  const byCategory = new Map(categories.map((c) => [c.category, []]));
+  for (const r of repos) byCategory.get(r.category).push(r);
+
+  const sections = categories
+    .map((c) => {
+      const catRepos = (byCategory.get(c.category) || []).sort(
+        (a, b) => (b.stars || 0) - (a.stars || 0)
+      );
+      const rows = catRepos.map(renderHomepageRepoRow).join("");
+      return `<section class="cat" data-category="${escapeHtml(c.category)}">
+  <div class="cat-meta">
+    <div class="cat-num">${escapeHtml(c.num)}</div>
+    <h2 class="cat-title">${escapeHtml(c.title)}</h2>
+    <p class="cat-desc">${escapeHtml(c.description)}</p>
+    <div class="cat-count"><span class="cat-count-n">${catRepos.length}</span> repos</div>
+  </div>
+  <div class="cat-list">
+${rows.trimEnd()}
+  </div>
+</section>`;
+    })
+    .join("\n\n");
+
+  const breadcrumbLD = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "home", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 2, name: "ecosystem" },
+    ],
+  };
+
+  const collectionLD = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": canonicalUrl,
+    name: "The Hermes Agent Ecosystem — full catalog",
+    description: desc,
+    url: canonicalUrl,
+    isPartOf: { "@id": "https://hermesatlas.com/#website" },
+    mainEntity: { "@id": "https://hermesatlas.com/#catalog" },
+  };
+
+  // The machine-readable catalog Dataset. Canonical home is this page (the
+  // homepage's copy of the same node is retired with the homepage redesign).
+  const datasetLD = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "@id": "https://hermesatlas.com/#catalog",
+    name: "Hermes Agent Ecosystem Catalog",
+    description: `Machine-readable catalog of community-built tools, skills, plugins, workspaces, and integrations for Nous Research's Hermes Agent. ${roundedCount}+ projects across 12 categories with live GitHub metadata and AI-generated summaries.`,
+    url: canonicalUrl,
+    keywords:
+      "Hermes Agent, Nous Research, AI agents, LLM tools, agent skills, MCP servers, agent plugins",
+    license: "https://creativecommons.org/publicdomain/zero/1.0/",
+    isAccessibleForFree: true,
+    creator: { "@id": "https://hermesatlas.com/#organization" },
+    publisher: { "@id": "https://hermesatlas.com/#organization" },
+    distribution: [
+      { "@type": "DataDownload", encodingFormat: "application/json", contentUrl: "https://hermesatlas.com/data/repos.json" },
+      { "@type": "DataDownload", encodingFormat: "application/json", contentUrl: "https://hermesatlas.com/data/summaries.json" },
+      { "@type": "DataDownload", encodingFormat: "application/json", contentUrl: "https://hermesatlas.com/data/list-summaries.json" },
+      { "@type": "DataDownload", encodingFormat: "text/plain", contentUrl: "https://hermesatlas.com/llms-full.txt" },
+      { "@type": "DataDownload", encodingFormat: "application/xml", contentUrl: "https://hermesatlas.com/sitemap.xml" },
+    ],
+  };
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtml(title)}</title>
+<meta name="description" content="${escapeHtml(desc)}">
+<link rel="canonical" href="${canonicalUrl}">
+<meta property="og:title" content="${escapeHtml(ogTitle)}">
+<meta property="og:description" content="${escapeHtml(desc)}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="${canonicalUrl}">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="${escapeHtml(ogImageUrl({ title: ogTitle, subtitle: ogSubtitle, kind: "lists" }))}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${escapeHtml(ogTitle)}">
+<meta name="twitter:image" content="${escapeHtml(ogImageUrl({ title: ogTitle, subtitle: ogSubtitle, kind: "lists" }))}">
+${ldJson(breadcrumbLD)}
+${ldJson(collectionLD)}
+${ldJson(datasetLD)}
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+${FAVICON}
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<link rel="stylesheet" href="/assets/css/ecosystem.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+${renderMasthead("ecosystem")}
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span>ecosystem
+</div>
+
+<main id="main">
+
+<section class="list-page">
+  <h1 class="list-title">The Hermes Agent ecosystem</h1>
+  <p class="list-intro">Every open-source tool, skill, plugin, workspace, and integration in the Hermes Agent ecosystem — <strong>${repos.length} projects across 12 categories</strong>, quality-filtered, with live GitHub data. Know what you want to build? <a href="/use-cases/">Find repos by use case →</a> Looking for skills? <a href="/skills/">Best picks by use case →</a></p>
+</section>
+
+<!-- Catalog search + sort. Progressive enhancement: hidden by default and
+     revealed + wired by initCatalogControls(); with JS off, the full
+     categorized list below stays fully browsable. -->
+<div class="catalog-controls" id="catalog-controls" hidden>
+  <input type="search" id="catalog-search" class="catalog-search" placeholder="filter projects by name or description…" aria-label="Filter projects">
+  <label class="catalog-sort-wrap">
+    <span class="catalog-sort-label">sort</span>
+    <select id="catalog-sort" class="catalog-sort" aria-label="Sort projects">
+      <option value="stars">most stars</option>
+      <option value="name">name a–z</option>
+      <option value="active">recently active</option>
+    </select>
+  </label>
+  <span class="catalog-result-count" id="catalog-result-count" aria-live="polite"></span>
+</div>
+
+${sections}
+
+</main>
+
+<!-- Tooltip (single shared element, positioned via JS) -->
+<div class="tooltip" id="tooltip" role="tooltip">
+  <div class="tt-name" id="tt-name"></div>
+  <div class="tt-desc" id="tt-desc"></div>
+  <div class="tt-link">view project page →</div>
+</div>
+
+${PAGE_FOOTER}
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<script src="/assets/js/ecosystem.js" defer></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
@@ -2234,6 +2426,10 @@ function generateSitemap(projectPages, listPages, reportPages = [], useCasePages
     urls += entry(`/projects/${page.owner}/${page.repo}`, `projects/${page.owner}/${page.repo}.html`, "weekly", "0.8");
   }
 
+  // The full catalog page — the homepage's former primary content, now its
+  // own routed destination.
+  urls += entry("/ecosystem/", "ecosystem/index.html", "daily", "0.9");
+
   urls += entry("/lists/", "lists/index.html", "weekly", "0.7");
   for (const list of listPages) {
     urls += entry(`/lists/${list.slug}`, `lists/${list.slug}.html`, "weekly", "0.6");
@@ -2259,7 +2455,8 @@ function generateSitemap(projectPages, listPages, reportPages = [], useCasePages
 function renderHomepageRepoRow(r) {
   const stars = (r.stars || 0).toLocaleString("en-US");
   const flag = r.official ? ' <span class="repo-flag">official</span>' : "";
-  const desc = (r.description || "").trim();
+  // Hand-curated catalog blurb wins over the raw GitHub description.
+  const desc = (r.blurb || r.description || "").trim();
   const descPunctuated = desc.endsWith(".") ? desc : desc + ".";
   return `    <a class="repo-row" href="/projects/${r.owner}/${r.repo}" data-github="https://github.com/${r.owner}/${r.repo}" data-desc="${escapeHtml(desc)}">
       <div class="repo-stars">★ ${stars}</div>
@@ -2792,6 +2989,12 @@ async function main() {
 
   // Generate the lists index page (/lists/)
   writePage(path.join(listsDir, "index.html"), renderListsIndex(lists, repos));
+
+  // Full catalog page (/ecosystem/) — generated from repos.json + categories.json
+  console.log("\nGenerating /ecosystem/ catalog page...");
+  const ecosystemDir = path.join(ROOT, "ecosystem");
+  if (!fs.existsSync(ecosystemDir)) fs.mkdirSync(ecosystemDir, { recursive: true });
+  writePage(path.join(ecosystemDir, "index.html"), renderEcosystemPage(repos));
   console.log(`  index (${lists.length} lists)`);
 
   // Generate use-case pages (/use-cases/)

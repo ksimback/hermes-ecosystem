@@ -300,8 +300,10 @@ async function section(title, fn) {
 await section("1. Critical pages return 2xx", async () => {
   const paths = [
     "/",
+    "/ecosystem/",
     "/guide/",
     "/lists/",
+    "/skills/",
     "/use-cases/",
     "/reports/",
     "/privacy/",

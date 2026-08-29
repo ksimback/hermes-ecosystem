@@ -130,6 +130,16 @@ export function validateRepos(repos) {
       errors.push(`${label} official must be boolean`);
     }
 
+    // Optional hand-curated catalog blurb (rendered on /ecosystem/ in place of
+    // the GitHub description). Kept short so rows stay scannable.
+    if ("blurb" in entry) {
+      if (!isNonEmptyString(entry.blurb)) {
+        errors.push(`${label} blurb, when present, must be a non-empty string`);
+      } else if (entry.blurb.length > 200) {
+        errors.push(`${label} blurb must be ≤ 200 characters`);
+      }
+    }
+
     if (
       "stars" in entry &&
       (!Number.isInteger(entry.stars) || entry.stars < 0)
