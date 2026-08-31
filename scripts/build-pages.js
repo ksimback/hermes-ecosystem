@@ -661,6 +661,8 @@ Hermes Atlas tracks every open-source project in the Hermes Agent ecosystem acro
 - [Beginner's Guide to Hermes Agent](${SITE_URL}/guide/): Install, pick a model, ship your first workflow, with the best community tool for every step.
 - [Install Hermes Agent](${SITE_URL}/guide/install/): Step-by-step install for macOS, Linux, Windows, and WSL, with troubleshooting.
 - [The Hermes Agent Memory Guidebook](${SITE_URL}/guide/memory/): Kevin Simback's guide to native memory, MemoryProviders, and community memory plug-ins.
+- [How to Run Hermes Agent: Desktop vs CLI vs Docker/VPS vs Bot Gateway](${SITE_URL}/guide/modes/): Every way to run Hermes compared — front-ends share state; the real decision is where the agent lives.
+- [Hermes Desktop: The Complete Guide](${SITE_URL}/guide/desktop/): Install on macOS/Windows/Linux, desktop-only features, plugins, remote/VPS connections, and known rough edges.
 - [Hermes Agent vs. Claude Code](${SITE_URL}/guide/vs-claude-code/): Feature-by-feature comparison for choosing between the two.
 
 ## Masterclass
@@ -753,6 +755,16 @@ This file is the companion to ${SITE_URL}/llms.txt (the concise index).`);
   try {
     const memoryDraft = fs.readFileSync(path.join(ROOT, "drafts", "guide-memory.md"), "utf-8");
     sections.push(`# The Hermes Agent Memory Guidebook (/guide/memory/)\n\nCanonical URL: ${SITE_URL}/guide/memory/\n\n${memoryDraft}`);
+  } catch {}
+
+  try {
+    const modesDraft = fs.readFileSync(path.join(ROOT, "drafts", "guide-modes.md"), "utf-8");
+    sections.push(`# How to Run Hermes Agent (/guide/modes/)\n\nCanonical URL: ${SITE_URL}/guide/modes/\n\n${modesDraft}`);
+  } catch {}
+
+  try {
+    const desktopDraft = fs.readFileSync(path.join(ROOT, "drafts", "guide-desktop.md"), "utf-8");
+    sections.push(`# Hermes Desktop: The Complete Guide (/guide/desktop/)\n\nCanonical URL: ${SITE_URL}/guide/desktop/\n\n${desktopDraft}`);
   } catch {}
 
   try {

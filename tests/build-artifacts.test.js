@@ -8,6 +8,22 @@ import {
   parsePorcelainStatus,
 } from "../lib/build-artifacts.js";
 
+test("refreshed content manifest covers the hand-authored pages + drafts", () => {
+  assert.deepEqual(REFRESHED_CONTENT_PATHS, [
+    "guide/index.html",
+    "guide/install/index.html",
+    "guide/memory/index.html",
+    "guide/vs-claude-code/index.html",
+    "guide/modes/index.html",
+    "guide/desktop/index.html",
+    "drafts/handbook-hub.md",
+    "drafts/handbook-vs-claude-code.md",
+    "drafts/guide-memory.md",
+    "drafts/guide-modes.md",
+    "drafts/guide-desktop.md",
+  ]);
+});
+
 test("generated artifact manifest covers current build outputs", () => {
   assert.deepEqual(GENERATED_ARTIFACT_PATHS, [
     "index.html",

@@ -68,6 +68,11 @@ async function main() {
   const guideSources = [
     { file: "handbook-hub.md", source: "guide/" },
     { file: "handbook-vs-claude-code.md", source: "guide/vs-claude-code/" },
+    // guide-memory.md existed before this list gained it — the Memory
+    // Guidebook was never chunked for RAG until the modes/desktop pass.
+    { file: "guide-memory.md", source: "guide/memory/" },
+    { file: "guide-modes.md", source: "guide/modes/" },
+    { file: "guide-desktop.md", source: "guide/desktop/" },
   ];
   for (const g of guideSources) {
     const filePath = path.join(ROOT, "drafts", g.file);

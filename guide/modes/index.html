@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Run Hermes Agent: Desktop vs CLI vs Docker/VPS vs Bot Gateway | Hermes Atlas</title>
+<meta name="description" content="Every way to run Hermes Agent compared — Desktop app, CLI/TUI, web dashboard, Docker on a VPS, managed Hermes Cloud, messaging bots, and Android/Termux. Which mode fits you, with tradeoffs from the official docs.">
+<meta name="keywords" content="hermes desktop, hermes agent desktop, hermes cli, hermes docker, hermes vps, hermes bot mode, hermes agent modes, run hermes agent, hermes workspace, hermes android">
+<link rel="canonical" href="https://hermesatlas.com/guide/modes/">
+<meta property="og:title" content="How to Run Hermes Agent: Desktop vs CLI vs Docker/VPS vs Bot Gateway">
+<meta property="og:description" content="Every way to run Hermes Agent compared — Desktop, CLI/TUI, dashboard, Docker/VPS, managed cloud, messaging bots, Android. Which mode fits you.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/guide/modes/">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="article:published_time" content="2026-08-31T00:00:00Z">
+<meta property="article:modified_time" content="2026-08-31T00:00:00Z">
+<meta property="article:author" content="https://x.com/ksimback">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=How+to+Run+Hermes+Agent&amp;subtitle=Desktop+vs+CLI+vs+Docker%2FVPS+vs+bot+gateway+-+pick+your+mode&amp;kind=handbook+%C2%B7+decision">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to Run Hermes Agent: Desktop vs CLI vs Docker/VPS vs Bot Gateway">
+<meta name="twitter:description" content="Every way to run Hermes Agent compared — which mode fits you, with tradeoffs from the official docs.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=How+to+Run+Hermes+Agent&amp;subtitle=Desktop+vs+CLI+vs+Docker%2FVPS+vs+bot+gateway+-+pick+your+mode&amp;kind=handbook+%C2%B7+decision">
+<meta name="twitter:creator" content="@ksimback">
+<meta name="author" content="Kevin Simback">
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to Run Hermes Agent: Desktop vs CLI vs Docker/VPS vs Bot Gateway",
+  "description": "Every way to run Hermes Agent compared — Desktop app, CLI/TUI, web dashboard, Docker on a VPS, managed Hermes Cloud, messaging bots, and Android/Termux — with tradeoffs sourced from the official docs.",
+  "image": "https://hermesatlas.com/api/og?title=How+to+Run+Hermes+Agent&subtitle=Desktop+vs+CLI+vs+Docker%2FVPS+vs+bot+gateway+-+pick+your+mode&kind=handbook+%C2%B7+decision",
+  "keywords": ["hermes desktop", "hermes cli", "hermes docker", "hermes vps", "hermes bot mode", "run hermes agent"],
+  "datePublished": "2026-08-31T00:00:00Z",
+  "dateModified": "2026-08-31T00:00:00Z",
+  "author": {"@type": "Person", "name": "Kevin Simback", "url": "https://x.com/ksimback"},
+  "publisher": {"@type": "Organization", "name": "Hermes Atlas", "url": "https://hermesatlas.com"},
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://hermesatlas.com/guide/modes/"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does Hermes Agent have a desktop app?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Yes. Hermes Desktop is a native app for macOS, Windows, and Linux built around the same agent core as the CLI — same config, keys, sessions, skills, and memory. Install it from the official download page, or run `hermes desktop` from an existing CLI install."}
+    },
+    {
+      "@type": "Question",
+      "name": "Should I use Hermes Desktop or the CLI?",
+      "acceptedAnswer": {"@type": "Answer", "text": "They are front-ends to the same agent and share state, so it is not either/or — you can start a session in one and resume it in the other. Desktop adds multi-session windows, the Bot Mode roster, and remote-gateway management; the TUI (hermes --tui) is the officially recommended interactive terminal experience."}
+    },
+    {
+      "@type": "Question",
+      "name": "Can I run Hermes Agent on a Raspberry Pi or home server?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Yes — the Docker image (Tier 1, x86_64 and aarch64) is the supported path for always-on Linux boxes including ARM single-board computers. Plan for at least 1GB RAM and one core, 2–4GB if you enable browser tools. Docker installs update by pulling a new image rather than `hermes update`."}
+    },
+    {
+      "@type": "Question",
+      "name": "Can I run Hermes Agent on Android?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Yes, via Termux — a Tier 2 (best-effort) platform. The tested bundle covers the CLI, cron, background terminal, a Telegram gateway, MCP, and memory. Android may suspend background jobs, so gateway persistence is best-effort; heavy extras like voice are not available."}
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need a VPS to run Hermes as a Telegram or Discord bot?",
+      "acceptedAnswer": {"@type": "Answer", "text": "No, but it helps. The messaging gateway is one background process that connects to all your configured platforms and runs anywhere — your laptop, Desktop's built-in Bot Mode, or a Docker container. A VPS (or managed Hermes Cloud) is the right home when you want the bot to stay up after your laptop sleeps."}
+    },
+    {
+      "@type": "Question",
+      "name": "Is it safe to expose the Hermes dashboard on a VPS?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Only behind real authentication. Binding to a non-loopback address engages a mandatory auth gate; the official guidance is OAuth via Nous Portal for anything reachable from the public internet, and username/password only on a trusted LAN or VPN like Tailscale. Unauthenticated public dashboards were the entry point for a real attack campaign in June 2026."}
+    },
+    {
+      "@type": "Question",
+      "name": "Should I install Hermes on Windows natively or in WSL2?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Native Windows is Tier 1 and runs chat, the gateway, cron, browser tools, and MCP directly — fine for most users. Pick WSL2 if you want the dashboard's embedded terminal (POSIX PTY, WSL2-only) or do POSIX-heavy development and want Hermes on the same Linux filesystem as your tools."}
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/"},
+    {"@type": "ListItem", "position": 2, "name": "handbook", "item": "https://hermesatlas.com/guide/"},
+    {"@type": "ListItem", "position": 3, "name": "modes"}
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">246·repos</span>
+    <span id="meta-version">hermes·v0.20.6</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/" class="active">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/guide/">handbook</a><span class="sep">/</span>modes
+</div>
+<main class="article" id="main">
+
+<header class="article-header">
+  <div class="article-badge">handbook · decision guide</div>
+  <h1>How to Run Hermes Agent: Desktop vs CLI vs Docker/VPS vs Bot Gateway</h1>
+  <p class="subtitle">Every way to run Hermes, compared honestly — so you pick the right mode the first time. A decision page of <a href="/guide/">The Hermes Handbook</a>, cross-checked against the official docs.</p>
+  <p class="meta">By <a href="https://x.com/ksimback">Kevin Simback</a> · Hermes Atlas maintainer · Updated 2026-08-31 · ~9 min read</p>
+</header>
+
+<h2 id="tldr">TL;DR</h2>
+
+<p><strong>You don't have to choose a front-end — you have to choose where the agent lives.</strong> Hermes Desktop, the CLI/TUI, and the web dashboard are all front-ends to the <em>same agent core</em>: same config, same API keys, same sessions, same skills, same memory. The <a href="https://hermes-agent.nousresearch.com/docs/user-guide/desktop">official docs</a> put it plainly: "Pick whichever fits the moment. They share state." The decision that actually matters is where the agent process runs: your own machine (simplest), a Docker container on a VPS or home server (always-on), managed Hermes Cloud (hosted for you), or your phone via Termux (best-effort). Current release is v0.20.6 (as of 2026-08-27).</p>
+
+<p>Quick router: brand new? <a href="/guide/desktop/">Start with Hermes Desktop</a>. Terminal person? The TUI (<code>hermes --tui</code>) is the officially recommended interactive experience. Want a Telegram/Discord bot that never sleeps? Docker on a $5 VPS. On the fence about Windows native vs WSL2? <a href="#windows">There's an official answer</a>.</p>
+
+<h2 id="four-decisions">The two decisions (and the two that aren't)</h2>
+
+<p>People searching "hermes desktop vs cli" are usually asking four different questions at once. Two of them are real decisions; two aren't:</p>
+
+<ul>
+  <li><strong>Which front-end do I look at?</strong> — <em>not really a decision.</em> Desktop, CLI/TUI, and dashboard share one session store; you can start a chat in the app and resume it in the terminal.</li>
+  <li><strong>Which platform am I on?</strong> — <em>mostly decided for you.</em> The official <a href="https://hermes-agent.nousresearch.com/docs/getting-started/platform-support">platform-support tiers</a> tell you what's safe (see the matrix below).</li>
+  <li><strong>Where does the agent process live?</strong> — <em>the real decision.</em> Laptop vs container/VPS vs managed cloud vs phone changes uptime, security posture, and how you update.</li>
+  <li><strong>Which channels reach it?</strong> — <em>the second real decision.</em> Terminal-only, or the messaging gateway (Telegram, Discord, Slack, WhatsApp, Signal, SMS and 15+ more) — one background process that connects to every platform you configure.</li>
+</ul>
+
+<h2 id="comparison">The modes at a glance</h2>
+
+<div class="article-table-scroll" tabindex="0">
+<table>
+<thead><tr><th>Mode</th><th>Best for</th><th>Requirements</th><th>Main tradeoff</th></tr></thead>
+<tbody>
+<tr><td><strong><a href="/guide/desktop/">Desktop app</a></strong></td><td>First-timers; multi-session work; managing bots and remote gateways visually</td><td>macOS (Apple Silicon), Windows 10/11, or Linux</td><td>Heaviest install (Electron); macOS permission prompts on first run</td></tr>
+<tr><td><strong>CLI / TUI</strong></td><td>Terminal workflows, worktree-parallel agents, background sessions</td><td>Tier-1 OS; TUI needs Node.js ≥ 20</td><td>No visual session roster; terminal-emulator quirks vary</td></tr>
+<tr><td><strong>Web dashboard</strong></td><td>Browser admin panel for every profile on a machine</td><td><code>hermes dashboard</code> (optional web extras)</td><td>Embedded terminal tab needs a POSIX PTY (not Windows-native)</td></tr>
+<tr><td><strong>Docker / VPS</strong></td><td>Always-on gateways and bots; reproducible upgrades; ARM boards</td><td>1GB/1 core minimum (2–4GB with browser tools)</td><td>No <code>hermes update</code> — you update by pulling a new image</td></tr>
+<tr><td><strong>Managed Hermes Cloud</strong></td><td>Hosted instances without owning a server</td><td>Nous Portal account</td><td>Newest option; managed through the Portal or its MCP server</td></tr>
+<tr><td><strong>Bot / messaging gateway</strong></td><td>Hermes in Telegram, Discord, Slack, WhatsApp, Signal, SMS…</td><td>Any install mode + <code>hermes gateway setup</code></td><td>Needs a home that stays awake (see Docker/VPS)</td></tr>
+<tr><td><strong>Android (Termux)</strong></td><td>Hermes in your pocket; phone-local CLI + Telegram gateway</td><td>aarch64 Android + Termux</td><td>Tier 2: Android suspends background jobs; no voice extra</td></tr>
+<tr><td><strong>Nix / NixOS</strong></td><td>Declarative systemd services; reproducible fleets</td><td>Nix on macOS/Linux/NixOS</td><td>Tier 2: "breaks often due to node.js packaging woes" — official words</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2 id="front-ends">The front-ends: Desktop, CLI/TUI, dashboard</h2>
+
+<p><strong><a href="/guide/desktop/">Hermes Desktop</a></strong> is a native app for macOS, Windows, and Linux built around the same agent core — "not a separate product or a lightweight clone" per the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/desktop">docs</a>. It's the best default for most people: multi-session chat windows, the Bot Mode roster, Memory Graph, a global Quick Entry hotkey, and the ability to connect to several remote gateways, VPS boxes, or Cloud instances at once. If you already run the CLI, <code>hermes desktop</code> launches it against your existing config. We wrote a <a href="/guide/desktop/">full Hermes Desktop guide</a> covering install, desktop-only features, plugins, and the known rough edges.</p>
+
+<p><strong>The CLI and TUI</strong> are two terminal front-ends over one SQLite session store. The classic CLI is what <code>hermes</code> gives you by default; the newer TUI (<code>hermes --tui</code>, Node.js ≥ 20) is what the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/tui">official docs call "the recommended way to run Hermes interactively"</a>. Power-user features live here: worktree-isolated parallel agents (<code>hermes -w</code>), background sessions (<code>/bg</code>), shell passthrough (<code>!cmd</code>), and skill slash-commands.</p>
+
+<p><strong>The web dashboard</strong> (<code>hermes dashboard</code>) is a machine-level admin panel at <code>127.0.0.1:9119</code> that manages every profile on the box; for local use "no data leaves localhost" per the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/web-dashboard">docs</a>. Its optional Chat tab embeds the full TUI in the browser through a pseudo-terminal — the one feature with a real platform constraint (POSIX PTY, so WSL2 rather than native Windows).</p>
+
+<h2 id="where-it-lives">Where the agent lives</h2>
+
+<h3 id="your-machine">Your machine (default)</h3>
+<p>The standard install (<code>install.sh</code> on macOS/Linux/WSL2, <code>install.ps1</code> or the Desktop installer on Windows) runs everything locally. Simplest to set up, updates via <code>hermes update</code>, and everything above applies. The only catch: the agent sleeps when your laptop does — cron jobs and bots included.</p>
+
+<h3 id="docker-vps">Docker on a VPS or home server (always-on)</h3>
+<p>The official image (<code>nousresearch/hermes-agent</code>, x86_64 + aarch64, Tier 1) is the supported path for anything that should stay up: bot gateways, cron-driven agents, team instances. Under the hood it's Debian with s6-overlay supervising the gateway and dashboard — crashed processes restart themselves. One container can host several profiles, which the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/docker">docs now recommend</a> over one-container-per-profile. Plan for 1GB/1 core minimum, 2–4GB with browser tools. Two rules that save real pain: never point two gateway containers at one data directory (session/memory corruption), and remember Docker installs update by pulling a new image — <code>hermes update</code> is intentionally unsupported there.</p>
+<p><strong>Security, in one paragraph:</strong> binding the dashboard or backend to a non-loopback address engages a mandatory auth gate, and the old <code>--insecure</code> escape hatch is now a deprecated no-op — because in June 2026 internet scanners used unauthenticated public dashboards as the entry point for a real campaign that planted SSH-key backdoors via MCP-config persistence. The official guidance since: <strong>OAuth via Nous Portal for anything reachable from the public internet; username/password only on a trusted LAN or VPN (Tailscale)</strong>. Details in the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/docker">Docker guide</a> and <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/web-dashboard">dashboard docs</a>.</p>
+<p>Browsing deployment tooling? The Atlas catalogs community <a href="/lists/deployment-options">deployment options</a> — Docker Compose stacks, Nix flakes, systemd templates, Kubernetes charts.</p>
+
+<h3 id="cloud">Managed Hermes Cloud</h3>
+<p>Nous also runs <a href="https://portal.nousresearch.com/cloud">Hermes Cloud</a> — hosted instances you create, start, stop, and destroy from the Portal's agents page (or, fittingly, from an agent via its MCP server). It's the "I want an always-on Hermes without owning a server" answer. The public docs on it are still thin compared to Docker, so treat this as the convenience path rather than the deeply documented one; Desktop connects to Cloud instances the same way it connects to any remote gateway.</p>
+
+<h3 id="phone">Your phone (Termux, Tier 2)</h3>
+<p>Hermes runs on Android via Termux with a tested bundle: CLI, cron, background terminal, a best-effort Telegram gateway, MCP, and memory. The honest limits from the <a href="https://hermes-agent.nousresearch.com/docs/getting-started/termux">official Termux guide</a>: Android may suspend background jobs, so "gateway persistence is best-effort rather than a normal managed service," and heavy extras (voice, full browser bootstrap) aren't available. For a phone-centric setup that works today, most people pair a VPS-hosted gateway with Telegram on the phone — see the <a href="/use-cases/hermes-in-your-pocket">Hermes in your pocket</a> use case.</p>
+
+<h2 id="channels">Bots and messaging: the gateway</h2>
+
+<p>"Bot mode" isn't a separate install — it's the messaging gateway: <em>one background process that connects to all your configured platforms</em>. Telegram, Discord, Slack, Google Chat, WhatsApp, Signal, SMS and more each have setup pages, and the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/messaging/">official platform comparison</a> shows exactly which features (voice, images, files, threads, reactions, streaming) each channel supports. <code>hermes gateway setup</code> is the entry point from every install mode. In Hermes Desktop, Bot Mode is built in and on by default — a "bot" is just a Hermes profile with a face, and everything has CLI parity (<code>hermes -p &lt;bot&gt; chat</code>).</p>
+
+<h2 id="tiers">Platform support tiers (official)</h2>
+
+<div class="article-table-scroll" tabindex="0">
+<table>
+<thead><tr><th>Tier</th><th>Platforms</th><th>What it means</th></tr></thead>
+<tbody>
+<tr><td><strong>Tier 1</strong></td><td>macOS (Apple Silicon) · Windows 10/11 (native) · Linux &amp; WSL2 · Docker</td><td>"We strive to never break installations and updates for these." First-priority fixes.</td></tr>
+<tr><td><strong>Tier 2</strong></td><td>Android (Termux) · Nix (macOS/Linux/NixOS)</td><td>Best effort. "Releases may break them" — Nix in particular "breaks often due to node.js packaging woes."</td></tr>
+<tr><td><strong>Unsupported</strong></td><td>AUR · Intel Macs · <code>pip</code>/<code>uv tool</code> installs · <code>brew</code></td><td>May be broken now, may break more; compat code can be removed at any point. Migrate to a supported method.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Source: <a href="https://hermes-agent.nousresearch.com/docs/getting-started/platform-support">official platform support page</a>. Yes, Intel Macs are unsupported; yes, <code>brew install hermes-agent</code> is a trap.</p>
+
+<h2 id="windows">Windows: native or WSL2?</h2>
+
+<p>Both are Tier 1, and the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/windows-wsl-quickstart">official WSL2 guide</a> gives a refreshingly direct answer. Pick <strong>WSL2</strong> if: you want the dashboard's embedded terminal tab (POSIX PTY, WSL2-only), you do POSIX-heavy development and want Hermes on the same Linux filesystem as your tools, or you already maintain a WSL2 environment. <strong>Native is fine — or better</strong> — for everyone else: chat, the gateway, cron, browser tools, and MCP all run natively, and you skip crossing the WSL↔Windows boundary every time you touch a file or URL. The <a href="https://hermes-agent.nousresearch.com/docs/user-guide/windows-native">native guide's feature matrix</a> lists the exact deltas.</p>
+
+<h2 id="recommendations">If you're still deciding</h2>
+
+<ul>
+  <li><strong>"I just want to try Hermes"</strong> → <a href="/guide/desktop/">Hermes Desktop</a> on your Tier-1 machine. Everything transfers to the CLI later because it's the same agent.</li>
+  <li><strong>"I live in a terminal"</strong> → <code>install.sh</code> + <code>hermes --tui</code>. Add the dashboard when you want a browser view.</li>
+  <li><strong>"I want a bot that answers at 3am"</strong> → Docker on a small VPS (or Hermes Cloud), gateway configured, dashboard behind OAuth or a tailnet. Manage it from Desktop's remote-gateway connections.</li>
+  <li><strong>"I want it on my phone"</strong> → Telegram against a VPS gateway first; Termux if you genuinely need phone-local execution.</li>
+  <li><strong>"I run NixOS"</strong> → you already know the tradeoff you signed up for. The <a href="https://hermes-agent.nousresearch.com/docs/getting-started/nix-setup">Nix setup guide</a> is extensive; it's still Tier 2.</li>
+</ul>
+
+<p>Next steps: <a href="/guide/install/">the install guide</a> for your platform, <a href="/skills/">the Skills Hub</a> once you're running, and <a href="/lists/deployment-options">deployment options</a> from the community catalog. Comparing agents instead of modes? <a href="/guide/vs-claude-code/">Hermes vs Claude Code</a>.</p>
+
+<h2 id="frequently-asked-questions">FAQ</h2>
+
+<h3>Does Hermes Agent have a desktop app?</h3>
+<p>Yes — <a href="/guide/desktop/">Hermes Desktop</a>, a native app for macOS, Windows, and Linux built on the same agent core as the CLI. Install it from the official download page, or run <code>hermes desktop</code> from an existing install.</p>
+
+<h3>Should I use Hermes Desktop or the CLI?</h3>
+<p>It's not either/or: they share config, sessions, skills, and memory, so you can move between them freely. Desktop adds visual multi-session and bot management; the TUI is the officially recommended interactive terminal experience.</p>
+
+<h3>Can I run Hermes Agent on a Raspberry Pi or home server?</h3>
+<p>Yes — the Docker image is Tier 1 on aarch64, which covers ARM single-board computers. Budget 1GB RAM/1 core minimum (2–4GB with browser tools), and update by pulling a new image.</p>
+
+<h3>Can I run Hermes Agent on Android?</h3>
+<p>Yes, via Termux (Tier 2). CLI, cron, MCP, memory, and a best-effort Telegram gateway are tested; Android may suspend background jobs, so don't rely on it as an always-on host.</p>
+
+<h3>Do I need a VPS to run Hermes as a Telegram or Discord bot?</h3>
+<p>No — the gateway runs anywhere, including Desktop's built-in Bot Mode. But a VPS or Hermes Cloud is the right home once you want the bot to outlive your laptop's lid.</p>
+
+<h3>Is it safe to expose the Hermes dashboard on a VPS?</h3>
+<p>Only behind the auth gate — OAuth (Nous Portal) for anything public, username/password strictly for LAN/VPN. Unauthenticated dashboards were exploited in a real June 2026 campaign; the <code>--insecure</code> flag is now a deprecated no-op.</p>
+
+<h3>Should I install on Windows natively or in WSL2?</h3>
+<p>Native for most people (it's Tier 1 and nearly everything works). WSL2 if you want the dashboard's embedded terminal or a real POSIX environment shared with your dev tools.</p>
+
+<div class="article-footer">
+  <p>Maintained by <a href="https://x.com/ksimback">Kevin Simback</a> · Part of <a href="/guide/">The Hermes Handbook</a> · Facts sourced from the <a href="https://hermes-agent.nousresearch.com/docs/">official Hermes Agent docs</a> · if this was useful, drop a ★ on <a href="https://github.com/ksimback/hermes-ecosystem">the atlas repo</a> →</p>
+</div>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

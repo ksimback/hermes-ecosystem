@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hermes Desktop: The Complete Guide — Install, Features, Plugins | Hermes Atlas</title>
+<meta name="description" content="Hermes Desktop explained: what the app is, how to install it on macOS, Windows, and Ubuntu/Linux, what's desktop-only (Bot Mode, Memory Graph, multi-connection), how plugins and skills work, and the known rough edges.">
+<meta name="keywords" content="hermes desktop, hermes desktop app, hermes agent desktop, hermes desktop ubuntu, hermes desktop plugins, hermes desktop install, hermes desktop vs cli, hermes workspace">
+<link rel="canonical" href="https://hermesatlas.com/guide/desktop/">
+<meta property="og:title" content="Hermes Desktop: The Complete Guide">
+<meta property="og:description" content="What Hermes Desktop is, how to install it on macOS/Windows/Linux, what's desktop-only, how plugins work, and the known rough edges.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/guide/desktop/">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="article:published_time" content="2026-08-31T00:00:00Z">
+<meta property="article:modified_time" content="2026-08-31T00:00:00Z">
+<meta property="article:author" content="https://x.com/ksimback">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=Hermes+Desktop&amp;subtitle=Install%2C+desktop-only+features%2C+plugins%2C+and+the+rough+edges&amp;kind=handbook+%C2%B7+guide">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hermes Desktop: The Complete Guide">
+<meta name="twitter:description" content="Install on macOS/Windows/Linux, desktop-only features, plugins, and the known rough edges.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=Hermes+Desktop&amp;subtitle=Install%2C+desktop-only+features%2C+plugins%2C+and+the+rough+edges&amp;kind=handbook+%C2%B7+guide">
+<meta name="twitter:creator" content="@ksimback">
+<meta name="author" content="Kevin Simback">
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Hermes Desktop: The Complete Guide — Install, Features, Plugins",
+  "description": "What Hermes Desktop is, how to install it on macOS, Windows, and Linux, what's desktop-only, how plugins and skills work, and the known rough edges.",
+  "image": "https://hermesatlas.com/api/og?title=Hermes+Desktop&subtitle=Install%2C+desktop-only+features%2C+plugins%2C+and+the+rough+edges&kind=handbook+%C2%B7+guide",
+  "keywords": ["hermes desktop", "hermes desktop app", "hermes desktop ubuntu", "hermes desktop plugins", "hermes desktop vs cli"],
+  "datePublished": "2026-08-31T00:00:00Z",
+  "dateModified": "2026-08-31T00:00:00Z",
+  "author": {"@type": "Person", "name": "Kevin Simback", "url": "https://x.com/ksimback"},
+  "publisher": {"@type": "Organization", "name": "Hermes Atlas", "url": "https://hermesatlas.com"},
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://hermesatlas.com/guide/desktop/"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is Hermes Desktop different from the Hermes Agent CLI?",
+      "acceptedAnswer": {"@type": "Answer", "text": "No — it is the same agent with a native UI. Same config, API keys, sessions, skills, and memory; the docs describe it as 'not a separate product or a lightweight clone.' Sessions started in the app resume in the CLI/TUI and vice versa."}
+    },
+    {
+      "@type": "Question",
+      "name": "How do I install Hermes Desktop on Ubuntu or other Linux distros?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Download the Linux build from the official Hermes Desktop page, or — if the CLI is already installed via install.sh — just run `hermes desktop`, which launches the app against your existing config and sessions. It runs on macOS, Windows, and Linux."}
+    },
+    {
+      "@type": "Question",
+      "name": "Does Hermes Desktop support plugins and skills?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Yes. Desktop uses the same skills, plugins, and MCP servers as every other Hermes surface, because it drives the same agent core. Anything you install for the CLI is available in the app; Bot Mode profiles get the same capabilities."}
+    },
+    {
+      "@type": "Question",
+      "name": "Can Hermes Desktop connect to a Hermes instance on a VPS or in the cloud?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Yes — the app can attach to a remote `hermes serve` backend and manage several remote gateways, VPS boxes, or Hermes Cloud instances at once. Official guidance: use OAuth via Nous Portal for anything reachable from the public internet; username/password only over a trusted LAN or VPN such as Tailscale."}
+    },
+    {
+      "@type": "Question",
+      "name": "Why does Hermes Desktop ask for so many permissions on macOS?",
+      "acceptedAnswer": {"@type": "Answer", "text": "The backend runs agent commands, so macOS gates it behind TCC permissions (files, automation) and Gatekeeper. This is expected first-run friction; the docs cover the prompts and the signing-identity setup that reduces them."}
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/"},
+    {"@type": "ListItem", "position": 2, "name": "handbook", "item": "https://hermesatlas.com/guide/"},
+    {"@type": "ListItem", "position": 3, "name": "desktop"}
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">246·repos</span>
+    <span id="meta-version">hermes·v0.20.6</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/" class="active">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/guide/">handbook</a><span class="sep">/</span>desktop
+</div>
+<main class="article" id="main">
+
+<header class="article-header">
+  <div class="article-badge">handbook · desktop</div>
+  <h1>Hermes Desktop: The Complete Guide</h1>
+  <p class="subtitle">What the app actually is, how to install it on macOS, Windows, and Linux, what you can only do here — and the rough edges the download page won't mention. A satellite of <a href="/guide/">The Hermes Handbook</a>.</p>
+  <p class="meta">By <a href="https://x.com/ksimback">Kevin Simback</a> · Hermes Atlas maintainer · Updated 2026-08-31 · ~7 min read</p>
+</header>
+
+<h2 id="tldr">TL;DR</h2>
+
+<p><strong>Hermes Desktop is not a separate product — it's the same agent as the CLI with a native UI.</strong> The <a href="https://hermes-agent.nousresearch.com/docs/user-guide/desktop">official docs</a> are explicit: same config, same API keys, same sessions, same skills, same memory; "anything you do here shows up there." It runs on macOS, Windows, and Linux, launches its own backend (a <code>hermes serve</code> process — no separate server setup needed), and is the best starting point for most new users. Current release is v0.20.6 (as of 2026-08-27). Deciding between modes first? Read <a href="/guide/modes/">How to run Hermes Agent</a>.</p>
+
+<h2 id="install">Install (macOS · Windows · Ubuntu/Linux)</h2>
+
+<p>Two paths, per the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/desktop">docs</a>:</p>
+<ul>
+  <li><strong>Fresh install:</strong> download the app for your OS from the <a href="https://hermes-agent.nousresearch.com/desktop">official Hermes Desktop page</a>. macOS is Apple Silicon only (Intel Macs are officially unsupported); Windows 10/11 x86_64 and aarch64; Linux builds cover mainstream glibc distros — the team tests on the latest Ubuntu.</li>
+  <li><strong>Already run the CLI?</strong> Just type <code>hermes desktop</code>. The app picks up your existing config, keys, sessions, and skills — nothing to migrate, because there's nothing separate to migrate to.</li>
+</ul>
+<p>The app is self-contained: it starts and manages its own local backend and never requires you to run the web dashboard. On Ubuntu and other distros, if you installed the CLI via <code>install.sh</code>, the <code>hermes desktop</code> route is usually smoother than hunting a package for your distro.</p>
+
+<h2 id="desktop-only">What you can only do in Desktop</h2>
+
+<ul>
+  <li><strong>Multi-session, multi-window chat</strong> — parallel conversations with live tool activity, drag-and-drop file attachments, a side-by-side preview rail, queue editing, and find-in-transcript.</li>
+  <li><strong>Bot Mode</strong> — a roster of named agent profiles (each "bot" is just a Hermes profile), built in and on by default, with group rooms and full CLI parity (<code>hermes -p &lt;bot&gt; chat</code>).</li>
+  <li><strong>Memory Graph, HUD floating mode, and Quick Entry</strong> — a global hotkey that drops a prompt into your agent from anywhere in the OS.</li>
+  <li><strong>Multi-connection</strong> — attach to <em>several</em> backends at once: your local agent plus remote gateways on a VPS, a home server, or managed Hermes Cloud instances, all in one window (<a href="https://hermes-agent.nousresearch.com/docs/user-guide/multi-connection-desktop">docs</a>).</li>
+  <li><strong>Session controls the terminal makes you memorize</strong> — per-session YOLO toggle, a live context-usage meter with a token breakdown popover, and a customizable status bar.</li>
+</ul>
+
+<h2 id="plugins">Desktop + plugins and skills</h2>
+
+<p>Because Desktop drives the same agent core, <strong>it uses the same skills, plugins, and MCP servers as every other surface</strong> — there is no separate "desktop plugin" format. Anything installed for the CLI is live in the app, and Bot Mode profiles inherit the same capabilities. To extend your setup:</p>
+<ul>
+  <li><a href="/skills/">The Hermes Skills Hub</a> — curated best skills by use case, with verified install commands.</li>
+  <li><a href="/ecosystem/">The ecosystem catalog</a> — community plugins &amp; extensions, memory providers, and workspace tools, with live GitHub data.</li>
+  <li><a href="/guide/memory/">The Memory Guidebook</a> — if the thing you want to add is persistent memory.</li>
+</ul>
+
+<h2 id="remote">Connecting Desktop to a VPS or cloud instance</h2>
+
+<p>Desktop can attach to a remote backend — meaning a <code>hermes serve</code> process that <em>you</em> keep running on the remote machine (systemd/tmux); the app connects to it, it doesn't start it for you. Binding that backend to a non-loopback address automatically engages its auth gate, and the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/desktop">docs' guidance</a> on providers is unambiguous:</p>
+<ul>
+  <li><strong>OAuth (Nous Portal)</strong> — "preferred for anything reachable beyond your own machine": VPS, public host, cloud.</li>
+  <li><strong>Username/password</strong> — trusted LAN or VPN only (Tailscale is the clean option: bind to the tailscale IP). "Never expose a password-protected backend directly to the open internet."</li>
+</ul>
+<p>Note the gateway (Telegram/Discord/etc.) is a separate long-running process from the <code>hermes serve</code> backend — on a remote host you keep both alive. Setup details: <a href="/guide/modes/#docker-vps">the modes guide's Docker/VPS section</a>.</p>
+
+<h2 id="rough-edges">Known rough edges (honest section)</h2>
+
+<ul>
+  <li><strong>Electron download on install/build</strong> — roughly a 114MB fetch that some networks throttle or block; recent versions self-heal via a mirror fallback, but a hanging first launch is usually this.</li>
+  <li><strong>macOS permission friction</strong> — TCC prompts (files, automation) and Gatekeeper on first run are expected: the backend runs real agent commands. The docs cover the prompts and the signing-identity setup that tames them.</li>
+  <li><strong>Remote hosts that change SSH keys</strong> — Desktop hard-fails ("latches") rather than silently retrying; you clear the host-key change and reconnect.</li>
+  <li><strong>It's the heaviest way to run Hermes</strong> — if you want the lightest possible install on a server, that's <a href="/guide/modes/#docker-vps">Docker</a>, not Desktop.</li>
+</ul>
+
+<h2 id="whats-new">What's new lately</h2>
+
+<p>The v2026.8.27 release line brought several desktop-visible changes: consent-gated browsing with your real Chrome profile (with a close-with-approval flow on Windows), the built-in browser getting its own OS window, opt-in OS-keychain encryption for secrets (ending the per-launch macOS Keychain prompt parade), a fleet profile rail, and a managed SSH remote-update engine. The prior release added Bot Mode group-room threads and a round of desktop rendering performance work. Full history: <a href="https://github.com/NousResearch/hermes-agent/releases">official releases</a>.</p>
+
+<h2 id="vs-cli">Desktop vs CLI/TUI at a glance</h2>
+
+<div class="article-table-scroll" tabindex="0">
+<table>
+<thead><tr><th></th><th><strong>Hermes Desktop</strong></th><th><strong>CLI / TUI</strong></th></tr></thead>
+<tbody>
+<tr><td><strong>Same agent?</strong></td><td colspan="2">Yes — shared config, sessions, skills, memory. Start in one, resume in the other.</td></tr>
+<tr><td><strong>Best at</strong></td><td>Multi-session work, Bot Mode roster, remote-gateway management, visual context controls</td><td>Worktree-parallel agents (<code>hermes -w</code>), background sessions (<code>/bg</code>), shell passthrough, scripting</td></tr>
+<tr><td><strong>Install weight</strong></td><td>Native app (Electron)</td><td><code>install.sh</code> / <code>install.ps1</code>; TUI needs Node.js ≥ 20</td></tr>
+<tr><td><strong>Official framing</strong></td><td>"Purpose-built UI for chat, configuration, and management"</td><td>TUI is "the recommended way to run Hermes interactively"</td></tr>
+<tr><td><strong>Choose it when</strong></td><td>You're new, or you juggle several agents/bots/machines</td><td>You live in a terminal and script your tools</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2 id="frequently-asked-questions">FAQ</h2>
+
+<h3>Is Hermes Desktop different from the Hermes Agent CLI?</h3>
+<p>No — same agent, native UI. The docs call it "not a separate product or a lightweight clone." Sessions move freely between app and terminal.</p>
+
+<h3>How do I install Hermes Desktop on Ubuntu?</h3>
+<p>Download the Linux build from the official page, or run <code>hermes desktop</code> if the CLI is already installed — it launches against your existing config.</p>
+
+<h3>Does Hermes Desktop support plugins?</h3>
+<p>Yes — the same skills, plugins, and MCP servers as every Hermes surface. Browse <a href="/skills/">curated skills</a> and <a href="/ecosystem/">community plugins</a> on the Atlas.</p>
+
+<h3>Can Desktop connect to a VPS or Hermes Cloud instance?</h3>
+<p>Yes, to several at once. Use OAuth (Nous Portal) for anything public; username/password only over LAN/VPN like Tailscale.</p>
+
+<h3>Why all the macOS permission prompts?</h3>
+<p>The backend executes real commands, so macOS gates it behind TCC and Gatekeeper. Expected on first run; the docs show the reduced-friction signing setup.</p>
+
+<div class="article-footer">
+  <p>Maintained by <a href="https://x.com/ksimback">Kevin Simback</a> · Part of <a href="/guide/">The Hermes Handbook</a> · Facts sourced from the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/desktop">official Hermes Desktop docs</a> · if this was useful, drop a ★ on <a href="https://github.com/ksimback/hermes-ecosystem">the atlas repo</a> →</p>
+</div>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
