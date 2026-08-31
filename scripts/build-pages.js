@@ -659,7 +659,12 @@ Hermes Atlas tracks every open-source project in the Hermes Agent ecosystem acro
 
 ## Guide
 - [Beginner's Guide to Hermes Agent](${SITE_URL}/guide/): Install, pick a model, ship your first workflow, with the best community tool for every step.
-- [Install Hermes Agent](${SITE_URL}/guide/install/): Step-by-step install for macOS, Linux, Windows, and WSL, with troubleshooting.
+- [Install Hermes Agent](${SITE_URL}/guide/install/): Step-by-step install for every platform, with troubleshooting.
+- [Install on Windows 10/11](${SITE_URL}/guide/install/windows/): Native PowerShell (Tier 1, no admin), the Desktop installer, or WSL2 — with the official guidance on which to pick.
+- [Install on macOS](${SITE_URL}/guide/install/macos/): Desktop installer or curl one-liner — Apple Silicon only; Intel Macs and brew installs are unsupported.
+- [Install on Linux](${SITE_URL}/guide/install/linux/): Ubuntu, Debian, Fedora, Arch — plus the headless server and systemd service-user recipe.
+- [Install on a Raspberry Pi](${SITE_URL}/guide/install/raspberry-pi/): Pi 4/5 with a 64-bit OS — direct install or the official aarch64 Docker image.
+- [Install on a VPS](${SITE_URL}/guide/install/vps/): The always-on server setup — sizing, Docker vs direct, and the mandatory-auth security guidance.
 - [The Hermes Agent Memory Guidebook](${SITE_URL}/guide/memory/): Kevin Simback's guide to native memory, MemoryProviders, and community memory plug-ins.
 - [How to Run Hermes Agent: Desktop vs CLI vs Docker/VPS vs Bot Gateway](${SITE_URL}/guide/modes/): Every way to run Hermes compared — front-ends share state; the real decision is where the agent lives.
 - [Hermes Desktop: The Complete Guide](${SITE_URL}/guide/desktop/): Install on macOS/Windows/Linux, desktop-only features, plugins, remote/VPS connections, and known rough edges.
@@ -751,6 +756,19 @@ This file is the companion to ${SITE_URL}/llms.txt (the concise index).`);
     const stripped = stripHtmlToText(installHtml);
     if (stripped) sections.push(`# Install Hermes Agent (/guide/install/)\n\nCanonical URL: ${SITE_URL}/guide/install/\n\n${stripped}`);
   } catch {}
+
+  for (const [draftFile, title, urlPath] of [
+    ["guide-install-windows.md", "Install Hermes Agent on Windows 10/11", "guide/install/windows/"],
+    ["guide-install-macos.md", "Install Hermes Agent on macOS", "guide/install/macos/"],
+    ["guide-install-linux.md", "Install Hermes Agent on Linux", "guide/install/linux/"],
+    ["guide-install-raspberry-pi.md", "Install Hermes Agent on a Raspberry Pi", "guide/install/raspberry-pi/"],
+    ["guide-install-vps.md", "Install Hermes Agent on a VPS", "guide/install/vps/"],
+  ]) {
+    try {
+      const draft = fs.readFileSync(path.join(ROOT, "drafts", draftFile), "utf-8");
+      sections.push(`# ${title} (/${urlPath})\n\nCanonical URL: ${SITE_URL}/${urlPath}\n\n${draft}`);
+    } catch {}
+  }
 
   try {
     const memoryDraft = fs.readFileSync(path.join(ROOT, "drafts", "guide-memory.md"), "utf-8");
@@ -2412,10 +2430,17 @@ function generateSitemap(projectPages, listPages, reportPages = [], useCasePages
   let urls = entry("/", "index.html", "daily", "1.0");
 
   urls += entry("/guide/", "guide/index.html", "monthly", "0.9");
-  const guideSlugs = fs.readdirSync(path.join(ROOT, "guide"), { withFileTypes: true })
-    .filter((d) => d.isDirectory() && fs.existsSync(path.join(ROOT, "guide", d.name, "index.html")))
-    .map((d) => d.name)
-    .sort();
+  const guideSlugs = [];
+  const collectGuideSlugs = (relDir) => {
+    for (const d of fs.readdirSync(path.join(ROOT, "guide", relDir), { withFileTypes: true })) {
+      if (!d.isDirectory()) continue;
+      const slug = relDir ? `${relDir}/${d.name}` : d.name;
+      if (fs.existsSync(path.join(ROOT, "guide", slug, "index.html"))) guideSlugs.push(slug);
+      collectGuideSlugs(slug);
+    }
+  };
+  collectGuideSlugs("");
+  guideSlugs.sort();
   for (const slug of guideSlugs) {
     urls += entry(`/guide/${slug}/`, `guide/${slug}/index.html`, "monthly", "0.8");
   }

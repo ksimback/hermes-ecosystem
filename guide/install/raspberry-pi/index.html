@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Install Hermes Agent on a Raspberry Pi 4 or 5 (Direct or Docker) | Hermes Atlas</title>
+<meta name="description" content="Run Hermes Agent on a Raspberry Pi 4 or 5 — direct install on Raspberry Pi OS 64-bit or the official aarch64 Docker image. Hardware requirements, always-on gateway setup, and what actually works, from the official docs.">
+<meta name="keywords" content="hermes agent raspberry pi, install hermes on raspberry pi, hermes raspberry pi 4, hermes raspberry pi 5, hermes agent on raspberry pi, hermes pi install, hermes aarch64">
+<link rel="canonical" href="https://hermesatlas.com/guide/install/raspberry-pi/">
+<meta property="og:title" content="How to Install Hermes Agent on a Raspberry Pi 4 or 5 (Direct or Docker)">
+<meta property="og:description" content="A Pi 4/5 with 4+ GB RAM and a 64-bit OS runs Hermes as an always-on agent. Direct install or the official aarch64 Docker image.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/guide/install/raspberry-pi/">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="article:published_time" content="2026-08-31T00:00:00Z">
+<meta property="article:modified_time" content="2026-08-31T00:00:00Z">
+<meta property="article:author" content="https://x.com/ksimback">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=Hermes+Agent+on+a+Raspberry+Pi&amp;subtitle=Pi+4%2F5%2C+64-bit+OS%2C+direct+install+or+aarch64+Docker&amp;kind=handbook+%C2%B7+install">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to Install Hermes Agent on a Raspberry Pi 4 or 5">
+<meta name="twitter:description" content="Pi 4/5 with 4+ GB RAM and a 64-bit OS. Direct install or the official aarch64 Docker image.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=Hermes+Agent+on+a+Raspberry+Pi&amp;subtitle=Pi+4%2F5%2C+64-bit+OS%2C+direct+install+or+aarch64+Docker&amp;kind=handbook+%C2%B7+install">
+<meta name="twitter:creator" content="@ksimback">
+<meta name="author" content="Kevin Simback">
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to Install Hermes Agent on a Raspberry Pi 4 or 5 (Direct or Docker)",
+  "description": "Run Hermes Agent on a Raspberry Pi 4 or 5 — direct install on Raspberry Pi OS 64-bit or the official aarch64 Docker image. Hardware requirements and always-on gateway setup.",
+  "image": "https://hermesatlas.com/api/og?title=Hermes+Agent+on+a+Raspberry+Pi&subtitle=Pi+4%2F5%2C+64-bit+OS%2C+direct+install+or+aarch64+Docker&kind=handbook+%C2%B7+install",
+  "keywords": ["hermes agent raspberry pi", "install hermes on raspberry pi", "hermes raspberry pi 4", "hermes raspberry pi 5"],
+  "datePublished": "2026-08-31T00:00:00Z",
+  "dateModified": "2026-08-31T00:00:00Z",
+  "author": {"@type": "Person", "name": "Kevin Simback", "url": "https://x.com/ksimback"},
+  "publisher": {"@type": "Organization", "name": "Hermes Atlas", "url": "https://hermesatlas.com"},
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://hermesatlas.com/guide/install/raspberry-pi/"},
+  "isPartOf": {"@type": "Article", "@id": "https://hermesatlas.com/guide/install/", "name": "How to install Hermes Agent"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can Hermes Agent run on a Raspberry Pi 5?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Yes — Linux on aarch64 is Tier 1, and so is the official Docker image on aarch64. A Pi 5 with 4 or 8 GB RAM handles the agent, messaging gateway, and cron comfortably when paired with a hosted model API."}
+    },
+    {
+      "@type": "Question",
+      "name": "Can Hermes Agent run on a Raspberry Pi 4?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Yes — the same install paths apply. Prefer the 4 GB or 8 GB model; on a 2 GB Pi 4, install with --skip-browser to skip Chromium, the most memory-hungry component."}
+    },
+    {
+      "@type": "Question",
+      "name": "What about a Raspberry Pi 3?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Borderline. The Pi 3's CPU is aarch64-capable but it has only 1 GB RAM — exactly the documented Docker minimum, with no headroom. A gateway-only setup without browser tools can work; expect swap pressure. A Pi 4/5 is the realistic floor."}
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need a 64-bit OS on the Pi?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Yes. Official support targets aarch64 — install Raspberry Pi OS 64-bit or Ubuntu Server 64-bit, not a 32-bit (armv7) image."}
+    },
+    {
+      "@type": "Question",
+      "name": "Can the Raspberry Pi run the language model locally?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Not realistically. The Pi runs the agent; the model should be a hosted API (Nous Portal, Anthropic, OpenAI) or a model server on beefier hardware on your LAN. That split is what keeps the Pi footprint light."}
+    },
+    {
+      "@type": "Question",
+      "name": "Should I use Docker or a direct install on the Pi?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Docker for set-and-forget uptime: the official image supervises the gateway with s6 (auto-restart on crash) and upgrades by pulling a new image. Direct install gives the lightest footprint and supports hermes update in place."}
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/"},
+    {"@type": "ListItem", "position": 2, "name": "handbook", "item": "https://hermesatlas.com/guide/"},
+    {"@type": "ListItem", "position": 3, "name": "install", "item": "https://hermesatlas.com/guide/install/"},
+    {"@type": "ListItem", "position": 4, "name": "raspberry-pi"}
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">247·repos</span>
+    <span id="meta-version">hermes·v0.21.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/" class="active">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/guide/">handbook</a><span class="sep">/</span><a href="/guide/install/">install</a><span class="sep">/</span>raspberry-pi
+</div>
+<main class="article" id="main">
+
+<header class="article-header">
+  <div class="article-badge">handbook · install · raspberry pi</div>
+  <h1>How to Install Hermes Agent on a Raspberry Pi</h1>
+  <p class="subtitle">Pi 4 or 5, 64-bit OS, direct install or the official aarch64 Docker image — the always-on pocket-server setup. A platform page of <a href="/guide/install/">the install guide</a>, cross-checked against the official docs.</p>
+  <p class="meta">By <a href="https://x.com/ksimback">Kevin Simback</a> · Hermes Atlas maintainer · Updated 2026-08-31 · ~6 min read</p>
+</header>
+
+<h2 id="tldr">TL;DR</h2>
+
+<p><strong>Yes, Hermes runs on a Raspberry Pi — and there's no Pi-specific build because none is needed.</strong> Linux on aarch64 is <a href="https://hermes-agent.nousresearch.com/docs/getting-started/platform-support">Tier 1</a>, and so is the official Docker image on aarch64. A <strong>Pi 4 or Pi 5 with 4+ GB RAM</strong> running a <strong>64-bit OS</strong> is the sweet spot. The one mental shift: the Pi runs the <em>agent</em>; the <em>model</em> is a hosted API (Nous Portal, Anthropic, OpenAI) — don't plan on local LLM inference on the Pi itself.</p>
+
+<pre><code>sudo apt install -y git curl xz-utils
+curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+source ~/.bashrc
+hermes version      # prints v0.21.0 (or newer)</code></pre>
+
+<p>This guide covers Hermes Agent <strong>v0.21.0</strong>. On other platforms? See <a href="/guide/install/windows/">Windows</a>, <a href="/guide/install/macos/">macOS</a>, <a href="/guide/install/linux/">Linux</a>, or <a href="/guide/install/vps/">VPS</a>.</p>
+
+<h2 id="hardware">Hardware requirements</h2>
+
+<div class="article-table-scroll" tabindex="0">
+<table>
+<thead><tr><th>Board</th><th>Verdict</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><strong>Pi 5 (4/8 GB)</strong></td><td>Best fit</td><td>Comfortable headroom for agent + gateway + cron, even with browser tools</td></tr>
+<tr><td><strong>Pi 4 (4/8 GB)</strong></td><td>Good</td><td>The community workhorse; same install paths</td></tr>
+<tr><td><strong>Pi 4 (2 GB)</strong></td><td>Workable</td><td>Install with <code>--skip-browser</code> — Chromium is the memory hog</td></tr>
+<tr><td><strong>Pi 3 (1 GB)</strong></td><td>Borderline</td><td>aarch64-capable CPU, but 1 GB is the documented Docker minimum with zero headroom</td></tr>
+<tr><td><strong>Pi Zero / armv7 boards</strong></td><td>No</td><td>Not aarch64, or nowhere near the resource floor</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>The resource numbers come from the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/docker">official Docker docs</a>: minimum 1 GB RAM / 1 core, recommended 2–4 GB — and "browser automation (Playwright/Chromium) is the most memory-hungry feature. If you don't need browser tools, 1 GB is sufficient." Two non-negotiables: a <strong>64-bit OS</strong> (Raspberry Pi OS 64-bit or Ubuntu Server — official support targets aarch64, not 32-bit armv7), and decent storage (a quality SD card works; USB/NVMe boot is kinder for an always-on box, since sessions and logs grow — budget 500 MB–2 GB+ beyond the ~200 MB install).</p>
+
+<h2 id="direct">Path 1 — direct install on Raspberry Pi OS</h2>
+
+<p>Raspberry Pi OS 64-bit is Debian-based, which makes the Pi just another Tier-1 Linux aarch64 box — the standard installer from the TL;DR applies as-is, including the <a href="https://hermes-agent.nousresearch.com/docs/getting-started/installation">official prerequisites</a> (<code>git</code>, <code>curl</code>, <code>xz-utils</code>). Headless Pi? Add <code>--skip-browser</code> to skip Chromium entirely:</p>
+
+<pre><code>curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash -s -- --skip-browser</code></pre>
+
+<p>For an always-on Telegram/Discord bot: <code>hermes gateway setup</code> offers to install a systemd user unit, then <code>sudo loginctl enable-linger &lt;user&gt;</code> so the gateway starts at boot and survives logout. The full service-user recipe (Playwright system libraries, PATH for service accounts) is on the <a href="/guide/install/linux/#server">Linux page</a> — everything there applies to the Pi verbatim.</p>
+
+<h2 id="docker">Path 2 — Docker (recommended for set-and-forget)</h2>
+
+<p>The official image (<code>nousresearch/hermes-agent</code>) is published for aarch64 and supervises the gateway with s6 — a crashed process restarts itself within seconds, per the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/docker">Docker docs</a>:</p>
+
+<pre><code>mkdir -p ~/.hermes
+docker run -it --rm -v ~/.hermes:/opt/data nousresearch/hermes-agent setup
+docker run -d --name hermes --restart unless-stopped \
+  -v ~/.hermes:/opt/data -p 8642:8642 \
+  nousresearch/hermes-agent gateway run</code></pre>
+
+<p>All state lives in the mounted <code>~/.hermes</code>; upgrading is <code>docker pull</code> + recreate (Docker installs intentionally don't support <code>hermes update</code>). Never point two gateway containers at the same data directory — the official docs warn it corrupts session files and memory stores.</p>
+
+<h2 id="community">What people actually run on Pis</h2>
+
+<p>Community reports in our <a href="/use-cases/">user-story corpus</a> include a Raspberry Pi 5 running Hermes 24/7 as an always-on personal agent, and Pi-hosted gateways serving Telegram from residential IPs. Treat these as community anecdotes rather than official benchmarks — but they match exactly what Tier-1 aarch64 support implies. The same always-on pattern on rented hardware is the <a href="/guide/install/vps/">VPS setup</a>; the tradeoffs between them are in the <a href="/guide/modes/">modes guide</a>.</p>
+
+<h2 id="frequently-asked-questions">FAQ</h2>
+
+<h3>Can Hermes Agent run on a Raspberry Pi 5?</h3>
+<p>Yes — aarch64 Linux and aarch64 Docker are both Tier 1. A Pi 5 (4 or 8 GB) handles the agent, gateway, and cron comfortably with a hosted model API.</p>
+
+<h3>Can Hermes Agent run on a Raspberry Pi 4?</h3>
+<p>Yes — same paths. Prefer the 4 GB or 8 GB model; on 2 GB, install with <code>--skip-browser</code>.</p>
+
+<h3>What about a Raspberry Pi 3?</h3>
+<p>Borderline: aarch64-capable but only 1 GB RAM — the documented minimum with no headroom. Gateway-only without browser tools can work; expect swap pressure.</p>
+
+<h3>Do I need a 64-bit OS?</h3>
+<p>Yes. Official support targets aarch64 — use Raspberry Pi OS 64-bit or Ubuntu Server 64-bit, not the 32-bit image.</p>
+
+<h3>Can the Pi run the model locally?</h3>
+<p>Not realistically — pair Hermes on the Pi with a hosted API or a model server on beefier LAN hardware.</p>
+
+<h3>Docker or direct install on the Pi?</h3>
+<p>Docker for set-and-forget uptime (s6 auto-restart, image-based upgrades); direct install for the lightest footprint and in-place <code>hermes update</code>.</p>
+
+<p>Next: <a href="/guide/install/#first-run">pick a model provider</a>, set up <a href="/guide/install/#verify">verification</a>, and browse community <a href="/lists/deployment-options">deployment options</a> — Compose stacks and systemd templates that drop straight onto a Pi.</p>
+
+<div class="article-footer">
+  <p>Maintained by <a href="https://x.com/ksimback">Kevin Simback</a> · Part of <a href="/guide/">The Hermes Handbook</a> · Facts sourced from the <a href="https://hermes-agent.nousresearch.com/docs/">official Hermes Agent docs</a> · if this was useful, drop a ★ on <a href="https://github.com/ksimback/hermes-ecosystem">the atlas repo</a> →</p>
+</div>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
