@@ -45,7 +45,6 @@ The foundational repos maintained by Nous Research.
 | [NousResearch/hermes-paperclip-adapter](https://github.com/NousResearch/hermes-paperclip-adapter) `official` | Run Hermes as a managed employee in Paperclip company systems | 663 | Beta |
 | [NousResearch/autonovel](https://github.com/NousResearch/autonovel) `official` | Autonomous novel-writing pipeline generating 100k+ word manuscripts | 401 | Beta |
 | [NousResearch/Hermes-Function-Calling](https://github.com/NousResearch/Hermes-Function-Calling) `official` | Function calling examples and training data for Hermes LLM models | 1,249 | Production |
-| [NousResearch/atropos](https://github.com/NousResearch/atropos) `official` | RL training environments framework for tool-calling models (submodule: tinker-atropos) | 997 | Beta |
 
 ---
 
