@@ -16,11 +16,21 @@ test("refreshed content manifest covers the hand-authored pages + drafts", () =>
     "guide/vs-claude-code/index.html",
     "guide/modes/index.html",
     "guide/desktop/index.html",
+    "guide/install/windows/index.html",
+    "guide/install/macos/index.html",
+    "guide/install/linux/index.html",
+    "guide/install/raspberry-pi/index.html",
+    "guide/install/vps/index.html",
     "drafts/handbook-hub.md",
     "drafts/handbook-vs-claude-code.md",
     "drafts/guide-memory.md",
     "drafts/guide-modes.md",
     "drafts/guide-desktop.md",
+    "drafts/guide-install-windows.md",
+    "drafts/guide-install-macos.md",
+    "drafts/guide-install-linux.md",
+    "drafts/guide-install-raspberry-pi.md",
+    "drafts/guide-install-vps.md",
   ]);
 });
 
