@@ -24,9 +24,9 @@ By [Kevin Simback](https://x.com/ksimback) · Hermes Atlas maintainer · Updated
 ## 1. What Hermes Agent actually is
 
 <<<<<<< HEAD
-**Hermes Agent is an open-source AI agent by [Nous Research](https://nousresearch.com) that runs on your own machine or a cheap VPS, remembers what it learns across sessions, and writes its own reusable skills as it works. It talks to you through a CLI, Telegram, Discord, email, and many other messaging providers. It hit 238,969 GitHub stars (as of 2026-08-31), and it's the fastest-growing open-source agent of 2026.**
+**Hermes Agent is an open-source AI agent by [Nous Research](https://nousresearch.com) that runs on your own machine or a cheap VPS, remembers what it learns across sessions, and writes its own reusable skills as it works. It talks to you through a CLI, Telegram, Discord, email, and many other messaging providers. It hit 238,972 GitHub stars (as of 2026-08-31), and it's the fastest-growing open-source agent of 2026.**
 =======
-**Hermes Agent is an open-source AI agent by [Nous Research](https://nousresearch.com) that runs on your own machine or a cheap VPS, remembers what it learns across sessions, and writes its own reusable skills as it works. It talks to you through a CLI, Telegram, Discord, email, and many other messaging providers. It hit 238,969 GitHub stars (as of 2026-08-31), and it's the fastest-growing open-source agent of 2026.**
+**Hermes Agent is an open-source AI agent by [Nous Research](https://nousresearch.com) that runs on your own machine or a cheap VPS, remembers what it learns across sessions, and writes its own reusable skills as it works. It talks to you through a CLI, Telegram, Discord, email, and many other messaging providers. It hit 238,972 GitHub stars (as of 2026-08-31), and it's the fastest-growing open-source agent of 2026.**
 >>>>>>> origin/main
 
 ### The 30-second version
@@ -424,7 +424,7 @@ Yes. Run `hermes model`, pick "custom OpenAI-compatible endpoint," and point at 
 hermes update
 ```
 
-Hermes self-updates. It tells you what changed, backs up your config, and applies the new version. Current release is v0.20.6 (as of 2026-08-27); the team ships roughly every two weeks.
+Hermes self-updates. It tells you what changed, backs up your config, and applies the new version. Current release is v0.21.0 (as of 2026-08-31); the team ships roughly every two weeks.
 
 ---
 
@@ -442,10 +442,10 @@ If something is wrong, unclear, or out of date, open an issue on [the Atlas repo
 
 **Cited stats:**
 <<<<<<< HEAD
-- 238,969 GitHub stars (as of 2026-08-31) — source: `api.github.com/repos/NousResearch/hermes-agent`
+- 238,972 GitHub stars (as of 2026-08-31) — source: `api.github.com/repos/NousResearch/hermes-agent`
 - 247+ projects in the Hermes Atlas (as of 2026-08-31)
 =======
-- 238,969 GitHub stars (as of 2026-08-31) — source: `api.github.com/repos/NousResearch/hermes-agent`
+- 238,972 GitHub stars (as of 2026-08-31) — source: `api.github.com/repos/NousResearch/hermes-agent`
 - 247+ projects in the Hermes Atlas (as of 2026-08-31)
 >>>>>>> origin/main
 - 643 skills in the community Hub (as of 2026-04-19)
