@@ -329,11 +329,40 @@ async function main() {
       }
       const entries = mergeEntryMaps(chunkMaps);
 
-      // Fail loud if any member lost its description in a chunk (e.g. a chunk
-      // still truncated, or a model dropped a key). Same failure path as a
-      // single-call failure: throw -> caught below -> listsFailed++ -> the run
-      // throws at the end. The cache is not half-written.
-      const missing = findMissingEntries(entries, memberKeys);
+      // A model can return valid JSON that silently omits a member's key
+      // (run 33409296779 dropped one repo out of 34 and failed the whole
+      // build). Give the dropped members one targeted retry — a fresh call
+      // scoped to just those repos — before failing loud.
+      let missing = findMissingEntries(entries, memberKeys);
+      if (missing.length > 0) {
+        console.warn(
+          `  ${list.slug}: model dropped ${missing.length} entr${missing.length === 1 ? "y" : "ies"}, retrying: ${missing.join(", ")}`,
+        );
+        const missingSet = new Set(missing);
+        const retryMembers = rankedMembers.filter((r) =>
+          missingSet.has(`${r.owner}/${r.repo}`),
+        );
+        for (const retryChunk of chunkList(retryMembers, LIST_CHUNK_SIZE)) {
+          await sleep(DELAY_MS);
+          const retryEntries = await callOpenRouterJSON({
+            system: SYSTEM_PROMPT,
+            user: buildListPrompt(list, retryChunk, summaries),
+            apiKey: OPENROUTER_KEY,
+            maxTokens: 3200,
+          });
+          // Only accept the keys we asked for — a stray extra key must not
+          // overwrite a good description from the original pass.
+          for (const [key, value] of Object.entries(retryEntries)) {
+            if (missingSet.has(key)) entries[key] = value;
+          }
+        }
+        missing = findMissingEntries(entries, memberKeys);
+      }
+
+      // Fail loud if any member still lacks a description (e.g. a chunk
+      // still truncated, or the retry dropped the key again). Same failure
+      // path as a single-call failure: throw -> caught below -> listsFailed++
+      // -> the run throws at the end. The cache is not half-written.
       if (missing.length > 0) {
         throw new Error(
           `Missing list descriptions after batching: ${missing.join(", ")}`,
