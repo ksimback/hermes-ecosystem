@@ -119,7 +119,7 @@
       "name": "Does Hermes Agent work on Windows?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. Native Windows is supported as an early beta via a PowerShell installer (irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1 | iex). For a more road-tested setup, run wsl --install in PowerShell to get WSL2 + Ubuntu, then run the standard Linux curl installer from inside WSL."
+        "text": "Yes — native Windows 10/11 is a Tier 1 platform. Run the PowerShell installer (iex (irm https://hermes-agent.nousresearch.com/install.ps1)) or the Hermes Desktop installer; no admin rights needed. WSL2 is equally supported if you prefer a POSIX environment."
       }
     },
     {
@@ -244,7 +244,7 @@
   <p class="meta">By <a href="https://x.com/ksimback">Kevin Simback</a> · Hermes Atlas maintainer · Updated 2026-08-31 · ~18 min read</p>
 </header>
 
-<blockquote><strong>More handbook guides:</strong> deciding how to run Hermes — Desktop vs CLI vs Docker/VPS vs bot gateway — read <a href="/guide/modes/"><strong>How to Run Hermes Agent →</strong></a> (and the <a href="/guide/desktop/"><strong>Hermes Desktop guide →</strong></a>). For memory architecture and how to choose between GBrain, Mnemosyne, Mem0, Hindsight, Honcho, and Supermemory, read <a href="/guide/memory/"><strong>The Hermes Agent Memory Guidebook →</strong></a></blockquote>
+<blockquote><strong>More handbook guides:</strong> deciding how to run Hermes — Desktop vs CLI vs Docker/VPS vs bot gateway — read <a href="/guide/modes/"><strong>How to Run Hermes Agent →</strong></a> (and the <a href="/guide/desktop/"><strong>Hermes Desktop guide →</strong></a>). Installing? There's a dedicated guide for your platform: <a href="/guide/install/windows/"><strong>Windows</strong></a>, <a href="/guide/install/macos/"><strong>macOS</strong></a>, <a href="/guide/install/linux/"><strong>Linux</strong></a>, <a href="/guide/install/raspberry-pi/"><strong>Raspberry Pi</strong></a>, or <a href="/guide/install/vps/"><strong>VPS</strong></a>. For memory architecture and how to choose between GBrain, Mnemosyne, Mem0, Hindsight, Honcho, and Supermemory, read <a href="/guide/memory/"><strong>The Hermes Agent Memory Guidebook →</strong></a></blockquote>
 
 <blockquote><strong>TL;DR</strong> — Hermes Agent is Nous Research's open-source autonomous AI agent. It runs on your laptop or a VPS, remembers everything across sessions, writes its own reusable skills as it works, and reaches you through 14+ messaging platforms (CLI, Telegram, Discord, Slack, email, and more). You install it with one command, pick any model from 20+ LLM providers, and it compounds in capability over the following thirty days. As of August 2026. Based on 100+ ecosystem projects reviewed, 33 research sources, and the live GitHub repo.</blockquote>
 
@@ -267,7 +267,7 @@
 
 <h2 id="1-what-hermes-agent-actually-is">1. What Hermes Agent actually is</h2>
 
-<p><strong>Hermes Agent is an open-source AI agent by <a href="https://nousresearch.com" target="_blank" rel="noopener">Nous Research</a> that runs on your own machine or a cheap VPS, remembers what it learns across sessions, and writes its own reusable skills as it works. It talks to you through a CLI, Telegram, Discord, email, and many other messaging providers. It hit 238,978 GitHub stars (as of 2026-08-31), and it's the fastest-growing open-source agent of 2026.</strong></p>
+<p><strong>Hermes Agent is an open-source AI agent by <a href="https://nousresearch.com" target="_blank" rel="noopener">Nous Research</a> that runs on your own machine or a cheap VPS, remembers what it learns across sessions, and writes its own reusable skills as it works. It talks to you through a CLI, Telegram, Discord, email, and many other messaging providers. It hit 238,983 GitHub stars (as of 2026-08-31), and it's the fastest-growing open-source agent of 2026.</strong></p>
 
 <h3>The 30-second version</h3>
 
@@ -380,7 +380,7 @@
 <h3>Prerequisites</h3>
 
 <ul>
-<li><strong>macOS, Linux, Windows, Android (Termux).</strong> Linux, macOS, and WSL2 are first-class. Native Windows works via an early-beta PowerShell installer. Termux on Android works via a curated install path.</li>
+<li><strong>macOS, Linux, Windows, Android (Termux).</strong> Linux, macOS (Apple Silicon), WSL2, and native Windows are all Tier 1. Termux on Android works via a curated install path (Tier 2).</li>
 <li><strong>A terminal.</strong> Any shell works — bash, zsh, fish.</li>
 <li><strong>An API key or a local model.</strong> If you don't have a model provider or want to set up a new one for your agent, a great place to start is the <a href="https://portal.nousresearch.com" target="_blank" rel="noopener">Nous Portal</a> — otherwise just grab an API key from your model provider, or a local Ollama/LM Studio install. You can always swap model providers later.</li>
 <li><strong>~200 MB of disk</strong> for the install plus whatever you use for memory and skills.</li>
@@ -392,7 +392,7 @@
 
 <pre><code>curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash</code></pre>
 
-<p><strong>Native Windows (PowerShell, early beta):</strong></p>
+<p><strong>Native Windows (PowerShell, Tier 1):</strong></p>
 
 <pre><code>irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1 | iex</code></pre>
 
@@ -630,7 +630,7 @@ hermes skills info &lt;name&gt;      # inspect before installing</code></pre>
 <p>Hermes itself is free and open-source (MIT licensed). You pay only for the model API you use. With some API model providers or a local Ollama model, your total cost can be $0. With Claude or GPT, you can easily spend $100+ per month depending on volume.</p>
 
 <h3>Does it work on Windows?</h3>
-<p>Yes — two paths. <strong>WSL2</strong> is the road-tested option: run <code>wsl --install</code> in PowerShell, install Ubuntu, then run the standard Linux curl installer from inside WSL. <strong>Native Windows</strong> works via an early-beta PowerShell installer (<code>irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1 | iex</code>) — Nous's own framing is "not road-tested as broadly," so prefer WSL2 if you're using Hermes for real work.</p>
+<p>Yes — <strong>native Windows 10/11 is Tier 1</strong>: run <code>iex (irm https://hermes-agent.nousresearch.com/install.ps1)</code> in PowerShell (no admin rights) or use the Desktop installer. <strong>WSL2</strong> is equally supported and the right pick for POSIX-heavy workflows. The official native-vs-WSL2 guidance, feature matrix, and pitfalls are in the <a href="/guide/install/windows/">Windows install guide</a>.</p>
 
 <h3>Can I run it fully offline?</h3>
 <p>Yes. Install Hermes, pair it with Ollama or LM Studio, and disconnect your network. Memory, skills, and cron all work offline. The catch: local models are weaker at tool calling, so complex multi-step workflows degrade. For offline <em>coding</em>, you're fine to an extent based on the capabilities of your local model. For offline <em>automation with many tool calls</em>, expect rough edges.</p>
@@ -665,7 +665,7 @@ hermes skills info &lt;name&gt;      # inspect before installing</code></pre>
   <p><strong>Last updated:</strong> 2026-08-31 · Version and star figures re-stamp automatically with every site build.</p>
   <p><strong>Cited stats:</strong></p>
   <ul>
-    <li>238,978 GitHub stars (as of 2026-08-31) — source: <code>api.github.com/repos/NousResearch/hermes-agent</code></li>
+    <li>238,983 GitHub stars (as of 2026-08-31) — source: <code>api.github.com/repos/NousResearch/hermes-agent</code></li>
     <li>247+ projects in the Hermes Atlas (as of 2026-08-31)</li>
     <li>643 skills in the community Hub (as of 2026-04-19)</li>
   </ul>

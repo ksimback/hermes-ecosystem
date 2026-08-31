@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Install Hermes Agent on Mac (Apple Silicon): Desktop App or CLI | Hermes Atlas</title>
+<meta name="description" content="Install Hermes Agent on macOS — Desktop installer or one curl command. Apple Silicon (M1–M4) is Tier 1; Intel Macs and brew installs are officially unsupported. The honest Mac setup guide.">
+<meta name="keywords" content="hermes install mac, install hermes agent macos, hermes agent mac, how to install hermes on mac, hermes apple silicon, hermes mac mini, hermes brew">
+<link rel="canonical" href="https://hermesatlas.com/guide/install/macos/">
+<meta property="og:title" content="How to Install Hermes Agent on Mac (Apple Silicon): Desktop App or CLI">
+<meta property="og:description" content="Desktop installer or one curl command. Apple Silicon is Tier 1; Intel Macs and brew installs are officially unsupported.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/guide/install/macos/">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="article:published_time" content="2026-08-31T00:00:00Z">
+<meta property="article:modified_time" content="2026-08-31T00:00:00Z">
+<meta property="article:author" content="https://x.com/ksimback">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=Install+Hermes+Agent+on+Mac&amp;subtitle=Apple+Silicon+is+Tier+1+-+Desktop+installer+or+one+curl+command&amp;kind=handbook+%C2%B7+install">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to Install Hermes Agent on Mac (Apple Silicon)">
+<meta name="twitter:description" content="Desktop installer or one curl command. Apple Silicon is Tier 1; Intel Macs and brew are unsupported.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=Install+Hermes+Agent+on+Mac&amp;subtitle=Apple+Silicon+is+Tier+1+-+Desktop+installer+or+one+curl+command&amp;kind=handbook+%C2%B7+install">
+<meta name="twitter:creator" content="@ksimback">
+<meta name="author" content="Kevin Simback">
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to Install Hermes Agent on Mac (Apple Silicon): Desktop App or CLI",
+  "description": "Install Hermes Agent on macOS — Desktop installer or one curl command. Apple Silicon (M1–M4) is Tier 1; Intel Macs and brew installs are officially unsupported.",
+  "image": "https://hermesatlas.com/api/og?title=Install+Hermes+Agent+on+Mac&subtitle=Apple+Silicon+is+Tier+1+-+Desktop+installer+or+one+curl+command&kind=handbook+%C2%B7+install",
+  "keywords": ["hermes install mac", "install hermes agent macos", "hermes apple silicon", "hermes mac mini"],
+  "datePublished": "2026-08-31T00:00:00Z",
+  "dateModified": "2026-08-31T00:00:00Z",
+  "author": {"@type": "Person", "name": "Kevin Simback", "url": "https://x.com/ksimback"},
+  "publisher": {"@type": "Organization", "name": "Hermes Atlas", "url": "https://hermesatlas.com"},
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://hermesatlas.com/guide/install/macos/"},
+  "isPartOf": {"@type": "Article", "@id": "https://hermesatlas.com/guide/install/", "name": "How to install Hermes Agent"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does Hermes work on Apple Silicon (M1, M2, M3, M4)?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Yes — macOS on Apple Silicon is a Tier 1 platform. The installer pulls native arm64 binaries; no Rosetta required."}
+    },
+    {
+      "@type": "Question",
+      "name": "Does Hermes Agent work on Intel Macs?",
+      "acceptedAnswer": {"@type": "Answer", "text": "No — macOS on Intel (x86) processors is explicitly listed as unsupported in the official platform matrix. It may be broken now and may break more; compatibility code can be removed at any point. Use a Linux machine, a VPS, or the Docker image on other hardware instead."}
+    },
+    {
+      "@type": "Question",
+      "name": "Can I install Hermes with Homebrew?",
+      "acceptedAnswer": {"@type": "Answer", "text": "No — brew install hermes-agent is an officially unsupported path, as are pip and uv tool installs. Use the Hermes Desktop installer or the official curl one-liner."}
+    },
+    {
+      "@type": "Question",
+      "name": "Should I use the Desktop installer or the curl install on a Mac?",
+      "acceptedAnswer": {"@type": "Answer", "text": "The Desktop installer is the recommended easy path and gives you the app plus the CLI in one shot; the curl one-liner is for terminal-only installs. They share the same agent core, config, and data — and running hermes desktop later upgrades a CLI install to the app."}
+    },
+    {
+      "@type": "Question",
+      "name": "Is a Mac mini a good always-on Hermes host?",
+      "acceptedAnswer": {"@type": "Answer", "text": "An Apple Silicon Mac mini works well as an always-on host — it's a Tier 1 platform. For headless server-style setups, compare the Docker/VPS route, which adds supervised auto-restart."}
+    },
+    {
+      "@type": "Question",
+      "name": "How much disk space does Hermes use on a Mac?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Roughly 200 MB for a fresh install, plus another 100–500 MB over time for sessions, skills, and memory under ~/.hermes/."}
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/"},
+    {"@type": "ListItem", "position": 2, "name": "handbook", "item": "https://hermesatlas.com/guide/"},
+    {"@type": "ListItem", "position": 3, "name": "install", "item": "https://hermesatlas.com/guide/install/"},
+    {"@type": "ListItem", "position": 4, "name": "macos"}
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">247·repos</span>
+    <span id="meta-version">hermes·v0.21.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/" class="active">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/guide/">handbook</a><span class="sep">/</span><a href="/guide/install/">install</a><span class="sep">/</span>macos
+</div>
+<main class="article" id="main">
+
+<header class="article-header">
+  <div class="article-badge">handbook · install · macos</div>
+  <h1>How to Install Hermes Agent on a Mac</h1>
+  <p class="subtitle">Desktop installer or one curl command — Apple Silicon only, and honest about it. A platform page of <a href="/guide/install/">the install guide</a>, cross-checked against the official docs.</p>
+  <p class="meta">By <a href="https://x.com/ksimback">Kevin Simback</a> · Hermes Atlas maintainer · Updated 2026-08-31 · ~5 min read</p>
+</header>
+
+<h2 id="tldr">TL;DR</h2>
+
+<p><strong>Two supported paths, both Tier 1 on Apple Silicon (M1–M4).</strong> The <a href="https://hermes-agent.nousresearch.com/docs/getting-started/installation">official install page</a> recommends the <a href="https://hermes-agent.nousresearch.com/">Hermes Desktop installer</a> — download, run, and you get the desktop app <em>and</em> the CLI sharing one config. Terminal-only? One command:</p>
+
+<pre><code>curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+source ~/.zshrc     # macOS default shell since Catalina
+hermes              # start chatting</code></pre>
+
+<p>This guide covers Hermes Agent <strong>v0.21.0</strong>. On other platforms? See <a href="/guide/install/windows/">Windows</a>, <a href="/guide/install/linux/">Linux</a>, <a href="/guide/install/raspberry-pi/">Raspberry Pi</a>, or <a href="/guide/install/vps/">VPS</a>.</p>
+
+<h2 id="support">What's supported on a Mac — and what isn't</h2>
+
+<div class="article-table-scroll" tabindex="0">
+<table>
+<thead><tr><th>Setup</th><th>Status</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><strong>Apple Silicon (M1–M4)</strong> + Desktop installer or <code>install.sh</code></td><td>Tier 1</td><td>"We strive to never break installations and updates for these" — first-priority fixes</td></tr>
+<tr><td><strong>Intel (x86) Macs</strong></td><td>Unsupported</td><td>Explicitly listed as unsupported; may be broken now, compat code can be removed any time</td></tr>
+<tr><td><strong><code>brew install hermes-agent</code></strong></td><td>Unsupported</td><td>Same list — migrate to the Desktop installer or <code>install.sh</code></td></tr>
+<tr><td><strong><code>pip</code> / <code>uv tool install</code></strong></td><td>Unsupported</td><td>PyPI installs are not a supported distribution method</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Source: the <a href="https://hermes-agent.nousresearch.com/docs/getting-started/platform-support">official platform support matrix</a>. If you're on an Intel Mac, the practical alternatives are Hermes on a <a href="/guide/install/linux/">Linux box</a> or <a href="/guide/install/vps/">VPS</a> you connect to remotely, or the Docker image (Tier 1 on x86_64) on other hardware.</p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p>Just <strong>Git</strong> (<code>git --version</code> — macOS offers the Xcode Command Line Tools automatically if it's missing). Per the <a href="https://hermes-agent.nousresearch.com/docs/getting-started/installation">official docs</a>, the installer handles everything else itself: <code>uv</code>, Python 3.11 (no sudo), Node.js 26 (an existing Node 22.22+/24.11+/26+ is used as-is), ripgrep, and ffmpeg. You do <em>not</em> need to brew-install any of those first.</p>
+
+<h2 id="install">Install and verify</h2>
+
+<p><strong>Path 1 — Desktop installer (recommended):</strong> <a href="https://hermes-agent.nousresearch.com/">download Hermes Desktop</a>, run it, and it provisions the CLI runtime into <code>~/.hermes</code> — the same layout a CLI install uses, which is why the app and terminal are interchangeable afterwards. We cover the app itself in the <a href="/guide/desktop/">Hermes Desktop guide</a>.</p>
+
+<p><strong>Path 2 — CLI-only:</strong> the curl command from the TL;DR. Code lands in <code>~/.hermes/hermes-agent/</code>, the launcher at <code>~/.local/bin/hermes</code>, your data (config, keys, sessions, skills, memory) in <code>~/.hermes/</code>. Then verify:</p>
+
+<pre><code>hermes version      # prints v0.21.0 (or newer)
+hermes doctor       # health check — every line should be green</code></pre>
+
+<p>First run: <code>hermes</code> starts the provider wizard. The fastest path is <code>hermes setup --portal</code> — one Nous Portal login covers 300+ models plus the Tool Gateway. All four provider paths (Portal, your own API key, local Ollama, skip-for-now) are walked through in <a href="/guide/install/#first-run">first run and model provider</a>. Moving from another machine? <code>hermes import</code> restores a full backup instead of re-configuring.</p>
+
+<p>Installed CLI-only and want the app later? Run <code>hermes desktop</code> — it installs and launches Hermes Desktop against your existing config.</p>
+
+<h2 id="troubleshooting">If something breaks</h2>
+
+<p>The two Mac-specific failures we see: <strong>ffmpeg/ripgrep resolution on Apple Silicon</strong> when Homebrew's <code>/opt/homebrew/bin</code> isn't in your shell env (add <code>eval "$(/opt/homebrew/bin/brew shellenv)"</code> to <code>~/.zshrc</code>), and <strong><code>hermes: command not found</code></strong> right after install (reload with <code>source ~/.zshrc</code> or open a new terminal). Everything else — API-key errors, npm failures, hung downloads — is in the <a href="/guide/install/#troubleshooting">shared troubleshooting tree</a>, and <code>hermes doctor</code> diagnoses most of it.</p>
+
+<h2 id="frequently-asked-questions">FAQ</h2>
+
+<h3>Does Hermes work on Apple Silicon (M1, M2, M3, M4)?</h3>
+<p>Yes — macOS on Apple Silicon is Tier 1. The installer pulls native arm64 binaries; no Rosetta required.</p>
+
+<h3>Does Hermes Agent work on Intel Macs?</h3>
+<p>No — Intel Macs are explicitly <a href="https://hermes-agent.nousresearch.com/docs/getting-started/platform-support">unsupported</a>. Use a Linux machine, a <a href="/guide/install/vps/">VPS</a>, or Docker on other hardware instead.</p>
+
+<h3>Can I install Hermes with Homebrew?</h3>
+<p>No — <code>brew install hermes-agent</code> is an officially unsupported path, as are <code>pip</code>/<code>uv tool</code> installs. Use the Desktop installer or the curl one-liner.</p>
+
+<h3>Should I use the Desktop installer or the curl install?</h3>
+<p>Desktop installer if you want the app (it's the recommended easy path); curl if you're terminal-only. Same agent core, same config — and <code>hermes desktop</code> upgrades a CLI install any time.</p>
+
+<h3>Is a Mac mini a good always-on Hermes host?</h3>
+<p>An Apple Silicon Mac mini works well — Tier 1, quiet, and popular for exactly this. For headless server-style uptime, compare the <a href="/guide/install/vps/">Docker/VPS route</a>.</p>
+
+<h3>How much disk space does Hermes use?</h3>
+<p>Roughly 200 MB fresh, plus 100–500 MB over time for sessions, skills, and memory.</p>
+
+<p>Next: <a href="/guide/install/#verify">verify the install</a>, <a href="/guide/install/#first-run">pick a model provider</a>, then <a href="/skills/">the Skills Hub</a>. Deciding between the app and the terminal? <a href="/guide/modes/">Every mode compared</a>.</p>
+
+<div class="article-footer">
+  <p>Maintained by <a href="https://x.com/ksimback">Kevin Simback</a> · Part of <a href="/guide/">The Hermes Handbook</a> · Facts sourced from the <a href="https://hermes-agent.nousresearch.com/docs/">official Hermes Agent docs</a> · if this was useful, drop a ★ on <a href="https://github.com/ksimback/hermes-ecosystem">the atlas repo</a> →</p>
+</div>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

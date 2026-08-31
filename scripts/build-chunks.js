@@ -73,6 +73,11 @@ async function main() {
     { file: "guide-memory.md", source: "guide/memory/" },
     { file: "guide-modes.md", source: "guide/modes/" },
     { file: "guide-desktop.md", source: "guide/desktop/" },
+    { file: "guide-install-windows.md", source: "guide/install/windows/" },
+    { file: "guide-install-macos.md", source: "guide/install/macos/" },
+    { file: "guide-install-linux.md", source: "guide/install/linux/" },
+    { file: "guide-install-raspberry-pi.md", source: "guide/install/raspberry-pi/" },
+    { file: "guide-install-vps.md", source: "guide/install/vps/" },
   ];
   for (const g of guideSources) {
     const filePath = path.join(ROOT, "drafts", g.file);

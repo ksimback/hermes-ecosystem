@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Install Hermes Agent on Windows 10/11: PowerShell, Desktop Installer, or WSL2 | Hermes Atlas</title>
+<meta name="description" content="Install Hermes Agent natively on Windows 10/11 (Tier 1) — the PowerShell one-liner, the Desktop installer, or WSL2. No admin rights needed. With the official native-vs-WSL2 guidance and every Windows pitfall.">
+<meta name="keywords" content="install hermes agent windows, hermes install powershell, hermes agent windows 11, hermes windows install, hermes agent wsl2, hermes native windows, install hermes on windows 10">
+<link rel="canonical" href="https://hermesatlas.com/guide/install/windows/">
+<meta property="og:title" content="How to Install Hermes Agent on Windows 10/11: PowerShell, Desktop Installer, or WSL2">
+<meta property="og:description" content="Native Windows is Tier 1. One PowerShell line, no admin rights — plus the Desktop installer and the WSL2 path, with the official guidance on which to pick.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/guide/install/windows/">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="article:published_time" content="2026-08-31T00:00:00Z">
+<meta property="article:modified_time" content="2026-08-31T00:00:00Z">
+<meta property="article:author" content="https://x.com/ksimback">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=Install+Hermes+Agent+on+Windows&amp;subtitle=PowerShell%2C+Desktop+installer%2C+or+WSL2+-+no+admin+rights+needed&amp;kind=handbook+%C2%B7+install">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to Install Hermes Agent on Windows 10/11">
+<meta name="twitter:description" content="Native Windows is Tier 1. One PowerShell line, no admin rights — plus the Desktop installer and WSL2 paths.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=Install+Hermes+Agent+on+Windows&amp;subtitle=PowerShell%2C+Desktop+installer%2C+or+WSL2+-+no+admin+rights+needed&amp;kind=handbook+%C2%B7+install">
+<meta name="twitter:creator" content="@ksimback">
+<meta name="author" content="Kevin Simback">
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to Install Hermes Agent on Windows 10/11: PowerShell, Desktop Installer, or WSL2",
+  "description": "Install Hermes Agent natively on Windows 10/11 (Tier 1) — the PowerShell one-liner, the Desktop installer, or WSL2. No admin rights needed, with the official native-vs-WSL2 guidance.",
+  "image": "https://hermesatlas.com/api/og?title=Install+Hermes+Agent+on+Windows&subtitle=PowerShell%2C+Desktop+installer%2C+or+WSL2+-+no+admin+rights+needed&kind=handbook+%C2%B7+install",
+  "keywords": ["install hermes agent windows", "hermes install powershell", "hermes agent windows 11", "hermes wsl2"],
+  "datePublished": "2026-08-31T00:00:00Z",
+  "dateModified": "2026-08-31T00:00:00Z",
+  "author": {"@type": "Person", "name": "Kevin Simback", "url": "https://x.com/ksimback"},
+  "publisher": {"@type": "Organization", "name": "Hermes Atlas", "url": "https://hermesatlas.com"},
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://hermesatlas.com/guide/install/windows/"},
+  "isPartOf": {"@type": "Article", "@id": "https://hermesatlas.com/guide/install/", "name": "How to install Hermes Agent"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do I need admin rights to install Hermes on Windows?",
+      "acceptedAnswer": {"@type": "Answer", "text": "No. The PowerShell installer writes only to %LOCALAPPDATA%\\hermes and your User PATH — no UAC prompt. Even gateway auto-start at login uses a non-elevated Scheduled Task."}
+    },
+    {
+      "@type": "Question",
+      "name": "Is native Windows still an early beta?",
+      "acceptedAnswer": {"@type": "Answer", "text": "No — Windows 10/11 native (x86_64 and aarch64) is a Tier 1 platform in the official support matrix, alongside macOS and Linux. Everything runs natively except one feature: the dashboard's embedded terminal pane, which needs a POSIX PTY and is WSL2-only."}
+    },
+    {
+      "@type": "Question",
+      "name": "Should I install Hermes natively or in WSL2?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Native for most people. The official guidance: pick WSL2 if you want the dashboard's embedded terminal, do POSIX-heavy development and want Hermes on the same Linux filesystem as your tools, or already maintain a WSL2 environment. Otherwise native is fine — or better — since you skip the WSL↔Windows boundary."}
+    },
+    {
+      "@type": "Question",
+      "name": "Where does Hermes install on Windows?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Code at %LOCALAPPDATA%\\hermes\\hermes-agent\\, your data (config, keys, sessions, skills) directly under %LOCALAPPDATA%\\hermes\\. Reinstalls only replace the checkout — your data survives. WSL2 installs live separately under ~/.hermes inside the distro."}
+    },
+    {
+      "@type": "Question",
+      "name": "Does the messaging gateway work on native Windows?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Yes — Telegram, Discord, Slack, WhatsApp and 15+ platforms all run natively, and hermes gateway install keeps the gateway running at login via a non-elevated Scheduled Task, spawned through pythonw.exe so a stray Ctrl+C can't kill it."}
+    },
+    {
+      "@type": "Question",
+      "name": "Does Hermes run on Windows on ARM?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Yes — the official platform matrix lists Windows 10/11 on both x86_64 and aarch64 as Tier 1."}
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/"},
+    {"@type": "ListItem", "position": 2, "name": "handbook", "item": "https://hermesatlas.com/guide/"},
+    {"@type": "ListItem", "position": 3, "name": "install", "item": "https://hermesatlas.com/guide/install/"},
+    {"@type": "ListItem", "position": 4, "name": "windows"}
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">247·repos</span>
+    <span id="meta-version">hermes·v0.21.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/" class="active">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/guide/">handbook</a><span class="sep">/</span><a href="/guide/install/">install</a><span class="sep">/</span>windows
+</div>
+<main class="article" id="main">
+
+<header class="article-header">
+  <div class="article-badge">handbook · install · windows</div>
+  <h1>How to Install Hermes Agent on Windows 10/11</h1>
+  <p class="subtitle">PowerShell one-liner, Desktop installer, or WSL2 — with the official guidance on which to pick. A platform page of <a href="/guide/install/">the install guide</a>, cross-checked against the official docs.</p>
+  <p class="meta">By <a href="https://x.com/ksimback">Kevin Simback</a> · Hermes Atlas maintainer · Updated 2026-08-31 · ~7 min read</p>
+</header>
+
+<h2 id="tldr">TL;DR</h2>
+
+<p><strong>Native Windows is Tier 1.</strong> Hermes runs on Windows 10 and 11 (x86_64 and aarch64) with no WSL, no Cygwin, no Docker — the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/windows-native">official native guide</a> opens with exactly those words. No admin rights required. Open PowerShell and run:</p>
+
+<pre><code>iex (irm https://hermes-agent.nousresearch.com/install.ps1)</code></pre>
+
+<p>Then open a <em>new</em> terminal (the installer updates your User PATH) and run <code>hermes</code>. This guide covers Hermes Agent <strong>v0.21.0</strong>. On other platforms? See <a href="/guide/install/macos/">macOS</a>, <a href="/guide/install/linux/">Linux</a>, <a href="/guide/install/raspberry-pi/">Raspberry Pi</a>, or <a href="/guide/install/vps/">VPS</a>.</p>
+
+<h2 id="paths">The three install paths</h2>
+
+<div class="article-table-scroll" tabindex="0">
+<table>
+<thead><tr><th>Path</th><th>Best for</th><th>How</th></tr></thead>
+<tbody>
+<tr><td><strong>PowerShell one-liner</strong></td><td>Anyone already in a terminal</td><td><code>iex (irm https://hermes-agent.nousresearch.com/install.ps1)</code> — no admin, installs to <code>%LOCALAPPDATA%\hermes</code></td></tr>
+<tr><td><strong>Hermes Desktop installer</strong></td><td>A familiar Windows install experience; handing Hermes to a non-developer</td><td><a href="https://hermes-agent.nousresearch.com/">Download the installer</a> and run it — on first launch it runs <code>install.ps1</code> under the hood; the app and the CLI share one install</td></tr>
+<tr><td><strong>WSL2</strong></td><td>POSIX-heavy development; the dashboard's embedded terminal</td><td><code>wsl --install</code>, reboot, then the Linux installer inside Ubuntu</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>The <a href="https://hermes-agent.nousresearch.com/docs/getting-started/installation">official install page</a> recommends the Desktop installer as the easy path on Windows and macOS; the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/windows-native">native guide</a> suggests the one-liner "when you're already in a terminal."</p>
+
+<h2 id="what-it-does">What the PowerShell installer does</h2>
+
+<p>Everything lands under <code>%LOCALAPPDATA%\hermes\</code> and <code>hermes</code> is added to your <strong>User PATH</strong> — no UAC prompt at any point. Per the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/windows-native">official docs</a>, the installer bootstraps <code>uv</code>, Python 3.11, Node.js 26 (winget if available, else a portable tarball), and — only if <code>git</code> isn't already on PATH — a self-contained <strong>PortableGit</strong> (~45 MB, official git-for-windows build) under <code>%LOCALAPPDATA%\hermes\git</code>. It sets <code>HERMES_GIT_BASH_PATH</code> so Hermes runs shell commands through Git Bash — "same strategy Claude Code uses" — and finishes with the <code>hermes setup</code> wizard.</p>
+
+<p>Need installer options? The scriptblock form passes parameters — <code>-Branch</code> / <code>-Commit</code> / <code>-Tag</code> to pin a version, <code>-NoVenv</code>, <code>-SkipSetup</code>, <code>-HermesHome</code>, <code>-InstallDir</code>:</p>
+
+<pre><code>&amp; ([scriptblock]::Create((irm https://hermes-agent.nousresearch.com/install.ps1))) -SkipSetup</code></pre>
+
+<p>After it finishes, open a new PowerShell window and verify:</p>
+
+<pre><code>hermes version      # prints v0.21.0 (or newer)
+hermes doctor       # health check — every line should be green</code></pre>
+
+<p>Then configure a model — fastest is <code>hermes setup --portal</code> (one Nous Portal login covers 300+ models plus the tool gateway, which the docs call the highest-friction part of Windows setup solved in one command). Full first-run walkthrough: <a href="/guide/install/#first-run">first run and model provider</a> on the main install page.</p>
+
+<h2 id="feature-matrix">What works natively</h2>
+
+<p>Per the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/windows-native#feature-matrix">official feature matrix</a>, "everything except the dashboard's embedded terminal pane runs natively on Windows": the CLI, the interactive TUI (<code>hermes --tui</code>), the full messaging gateway (Telegram, Discord, Slack, WhatsApp, 15+ platforms), the cron scheduler, the browser tool, MCP servers (stdio and HTTP), local Ollama / LM Studio, the web dashboard, and auto-start at login. The one exception — the dashboard's <code>/chat</code> embedded terminal — needs a POSIX PTY and shows a "use WSL2 for this" banner natively.</p>
+
+<h2 id="native-or-wsl2">Native or WSL2?</h2>
+
+<p>Both are Tier 1, and the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/windows-wsl-quickstart">official WSL2 guide</a> answers directly. Pick <strong>WSL2</strong> if: you want the dashboard's embedded terminal tab, you do POSIX-heavy development and want Hermes on the same Linux filesystem as your tools, or you already maintain a WSL2 environment. <strong>Native is fine — or better</strong> — for everyone else: you skip crossing the WSL↔Windows boundary every time you touch a file or URL.</p>
+
+<p>The WSL2 path in three commands: <code>wsl --install</code> from Admin PowerShell (installs the WSL2 kernel + Ubuntu), reboot, then inside Ubuntu run the standard Linux installer — <code>curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</code>. The two installs coexist cleanly: native data under <code>%LOCALAPPDATA%\hermes</code>, WSL data under <code>~/.hermes</code>. WSL2 specifics (filesystem boundaries, networking, systemd) are covered by our <a href="/guide/install/linux/">Linux install page</a> plus the official WSL2 guide.</p>
+
+<h2 id="gateway">Running the gateway at Windows login</h2>
+
+<p>For an always-on Telegram/Discord bot on your PC, <code>hermes gateway install</code> registers a <strong>Scheduled Task</strong> (<code>ONLOGON</code>, non-elevated — no UAC) with a Startup-folder fallback, and spawns the gateway detached via <code>pythonw.exe</code>, which the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/windows-native">docs</a> note "immunizes it against CTRL_C_EVENT broadcasts" — a stray Ctrl+C elsewhere can't kill it. Manage it with <code>hermes gateway status / start / stop / restart / uninstall</code>. Want the bot to outlive your PC's uptime entirely? That's the <a href="/guide/install/vps/">VPS setup</a>.</p>
+
+<h2 id="pitfalls">Common pitfalls</h2>
+
+<ul>
+  <li><strong><code>hermes: command not found</code> right after install</strong> — open a <em>new</em> PowerShell window; existing shells don't pick up the User PATH change.</li>
+  <li><strong><code>[scriptblock]::Create(...)</code> fails with an assignment error</strong> — your <code>install.ps1</code> download picked up a UTF-8 BOM. Use the plain <code>irm | iex</code> form, which strips BOMs automatically.</li>
+  <li><strong><code>/edit</code> or <code>Ctrl-X Ctrl-E</code> opens nothing you want</strong> — Hermes defaults <code>EDITOR=notepad</code> on Windows. For VS Code: <code>$env:EDITOR = "code --wait"</code> (the <code>--wait</code> is critical), set at User scope to persist.</li>
+  <li><strong>Non-Latin characters render as <code>?</code></strong> — the UTF-8 console shim didn't activate. Check <code>HERMES_DISABLE_WINDOWS_UTF8</code> is unset, or switch to Windows Terminal.</li>
+  <li><strong>Weird Node version errors from the browser tool</strong> — an older system Node sits earlier on PATH than Hermes's bundled Node 26.</li>
+  <li><strong>Ran the Linux <code>curl | bash</code> in PowerShell</strong> — that command is for WSL2 only; use the <code>irm | iex</code> installer natively.</li>
+</ul>
+
+<p>Deeper failures: <code>hermes doctor</code> diagnoses most of them, and the <a href="/guide/install/#troubleshooting">shared troubleshooting tree</a> covers the cross-platform ones.</p>
+
+<h2 id="uninstall">Uninstall</h2>
+
+<p><code>hermes uninstall</code> is the clean path — it removes the scheduled task, launchers, and the <code>hermes-agent\</code> checkout but leaves your config, sessions, and skills in <code>%LOCALAPPDATA%\hermes</code> for a reinstall. To remove everything: also <code>Remove-Item -Recurse -Force "$env:LOCALAPPDATA\hermes"</code>.</p>
+
+<h2 id="frequently-asked-questions">FAQ</h2>
+
+<h3>Do I need admin rights to install Hermes on Windows?</h3>
+<p>No. The installer writes only to <code>%LOCALAPPDATA%\hermes</code> and your User PATH — no UAC prompt. Even gateway auto-start uses a non-elevated Scheduled Task.</p>
+
+<h3>Is native Windows still an early beta?</h3>
+<p>No — Windows 10/11 native (x86_64 and aarch64) is a <a href="https://hermes-agent.nousresearch.com/docs/getting-started/platform-support">Tier 1 platform</a>, alongside macOS and Linux. Everything runs natively except the dashboard's embedded terminal pane (WSL2-only).</p>
+
+<h3>Should I install Hermes natively or in WSL2?</h3>
+<p>Native for most people. WSL2 if you want the dashboard's embedded terminal, do POSIX-heavy development, or already maintain WSL2 — that's the official guidance verbatim.</p>
+
+<h3>Where does Hermes install on Windows?</h3>
+<p>Code at <code>%LOCALAPPDATA%\hermes\hermes-agent\</code>; your data (config, keys, sessions, skills) directly under <code>%LOCALAPPDATA%\hermes\</code>. Reinstalls only replace the checkout — your data survives.</p>
+
+<h3>Does the messaging gateway work on native Windows?</h3>
+<p>Yes — Telegram, Discord, Slack, WhatsApp and 15+ platforms all run natively, and <code>hermes gateway install</code> keeps it running at login.</p>
+
+<h3>Does Hermes run on Windows on ARM?</h3>
+<p>Yes — the official matrix lists Windows 10/11 on both x86_64 and aarch64 as Tier 1.</p>
+
+<p>Next: <a href="/guide/install/#verify">verify the install</a>, <a href="/guide/install/#first-run">pick a model provider</a>, then <a href="/skills/">the Skills Hub</a>. Deciding how to run Hermes long-term? <a href="/guide/modes/">Every mode compared</a>.</p>
+
+<div class="article-footer">
+  <p>Maintained by <a href="https://x.com/ksimback">Kevin Simback</a> · Part of <a href="/guide/">The Hermes Handbook</a> · Facts sourced from the <a href="https://hermes-agent.nousresearch.com/docs/">official Hermes Agent docs</a> · if this was useful, drop a ★ on <a href="https://github.com/ksimback/hermes-ecosystem">the atlas repo</a> →</p>
+</div>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Install Hermes Agent on a VPS: The Always-On Server Setup | Hermes Atlas</title>
+<meta name="description" content="Run Hermes Agent on a $5 VPS — Docker or direct install, sized from the official docs, with the mandatory-auth security guidance for exposing the dashboard and the SSH-not-browser-console warning.">
+<meta name="keywords" content="hermes agent vps, install hermes on vps, hermes agent server, hermes docker vps, hermes always on, hermes agent ubuntu server, hermes telegram bot server">
+<link rel="canonical" href="https://hermesatlas.com/guide/install/vps/">
+<meta property="og:title" content="How to Install Hermes Agent on a VPS: The Always-On Server Setup">
+<meta property="og:description" content="A $5 VPS runs Hermes as an always-on agent. Docker or direct install, with the official sizing and security guidance.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/guide/install/vps/">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="article:published_time" content="2026-08-31T00:00:00Z">
+<meta property="article:modified_time" content="2026-08-31T00:00:00Z">
+<meta property="article:author" content="https://x.com/ksimback">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=Hermes+Agent+on+a+VPS&amp;subtitle=The+always-on+server+setup+-+Docker+or+direct%2C+secured+properly&amp;kind=handbook+%C2%B7+install">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to Install Hermes Agent on a VPS">
+<meta name="twitter:description" content="A $5 VPS runs Hermes as an always-on agent. Docker or direct install, secured properly.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=Hermes+Agent+on+a+VPS&amp;subtitle=The+always-on+server+setup+-+Docker+or+direct%2C+secured+properly&amp;kind=handbook+%C2%B7+install">
+<meta name="twitter:creator" content="@ksimback">
+<meta name="author" content="Kevin Simback">
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to Install Hermes Agent on a VPS: The Always-On Server Setup",
+  "description": "Run Hermes Agent on a $5 VPS — Docker or direct install, sized from the official docs, with the mandatory-auth security guidance for exposing the dashboard.",
+  "image": "https://hermesatlas.com/api/og?title=Hermes+Agent+on+a+VPS&subtitle=The+always-on+server+setup+-+Docker+or+direct%2C+secured+properly&kind=handbook+%C2%B7+install",
+  "keywords": ["hermes agent vps", "install hermes on vps", "hermes agent server", "hermes docker vps"],
+  "datePublished": "2026-08-31T00:00:00Z",
+  "dateModified": "2026-08-31T00:00:00Z",
+  "author": {"@type": "Person", "name": "Kevin Simback", "url": "https://x.com/ksimback"},
+  "publisher": {"@type": "Organization", "name": "Hermes Atlas", "url": "https://hermesatlas.com"},
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://hermesatlas.com/guide/install/vps/"},
+  "isPartOf": {"@type": "Article", "@id": "https://hermesatlas.com/guide/install/", "name": "How to install Hermes Agent"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How small a VPS can run Hermes Agent?",
+      "acceptedAnswer": {"@type": "Answer", "text": "The official minimum is 1 GB RAM / 1 core / 500 MB disk — the typical $5 tier — as long as the model is a hosted API and you skip browser tools. Recommended is 2–4 GB RAM and 2 cores; browser automation (Playwright/Chromium) is the most memory-hungry feature."}
+    },
+    {
+      "@type": "Question",
+      "name": "Which VPS provider should I use for Hermes?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Any standard Ubuntu/Debian VPS works — Hermes has no provider-specific requirements. Whichever you pick, do the install over SSH: the official docs warn that browser-based VPS consoles (Hetzner Cloud and others) mis-transmit characters like : and @, silently corrupting docker run arguments and pasted API keys."}
+    },
+    {
+      "@type": "Question",
+      "name": "Should I use Docker or a direct install on a VPS?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Docker for supervised auto-restart (s6 restarts a crashed gateway in seconds) and clean image-based upgrades; direct install if you want hermes update in place and the lightest footprint. Both are fully supported."}
+    },
+    {
+      "@type": "Question",
+      "name": "Is it safe to expose the Hermes dashboard on a VPS?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Only behind the mandatory auth gate. Official guidance: OAuth via Nous Portal for anything reachable from the public internet; username/password only on a trusted LAN or VPN like Tailscale; or bind to 127.0.0.1 and use an SSH tunnel. Unauthenticated public dashboards were the entry point for a real June 2026 attack campaign, and the old --insecure flag is now a deprecated no-op."}
+    },
+    {
+      "@type": "Question",
+      "name": "Can Hermes Desktop connect to my VPS?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Yes — keep a hermes serve backend running on the VPS (via systemd) and add it as a remote gateway in Desktop's Settings → Gateways, protected by OAuth. One connection serves every profile on the box."}
+    },
+    {
+      "@type": "Question",
+      "name": "How do I update Hermes on a VPS?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Docker: docker pull nousresearch/hermes-agent:latest, then recreate the container — all state persists in the mounted ~/.hermes. Direct install: hermes update."}
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/"},
+    {"@type": "ListItem", "position": 2, "name": "handbook", "item": "https://hermesatlas.com/guide/"},
+    {"@type": "ListItem", "position": 3, "name": "install", "item": "https://hermesatlas.com/guide/install/"},
+    {"@type": "ListItem", "position": 4, "name": "vps"}
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">247·repos</span>
+    <span id="meta-version">hermes·v0.21.0</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/" class="active">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/guide/">handbook</a><span class="sep">/</span><a href="/guide/install/">install</a><span class="sep">/</span>vps
+</div>
+<main class="article" id="main">
+
+<header class="article-header">
+  <div class="article-badge">handbook · install · vps</div>
+  <h1>How to Install Hermes Agent on a VPS</h1>
+  <p class="subtitle">The always-on server setup — Docker or direct install, sized from the official docs, secured properly. A platform page of <a href="/guide/install/">the install guide</a>.</p>
+  <p class="meta">By <a href="https://x.com/ksimback">Kevin Simback</a> · Hermes Atlas maintainer · Updated 2026-08-31 · ~7 min read</p>
+</header>
+
+<h2 id="tldr">TL;DR</h2>
+
+<p><strong>A $5 VPS (1 CPU, 1 GB RAM) is enough</strong> to run Hermes as an always-on agent — a Telegram/Discord bot that answers at 3am, cron automations, a remote backend for Hermes Desktop — as long as the model is a hosted API (Nous Portal, Anthropic, OpenAI) rather than local inference. Recommended path: <strong>Docker</strong> (<code>nousresearch/hermes-agent</code>, Tier 1 on x86_64 and aarch64) with <code>--restart unless-stopped</code>; the image's s6 supervisor restarts a crashed gateway within seconds. This guide covers Hermes Agent <strong>v0.21.0</strong>.</p>
+
+<p><strong>One rule before anything else: connect over SSH, not your provider's browser console.</strong> The <a href="https://hermes-agent.nousresearch.com/docs/user-guide/docker">official Docker docs</a> warn that browser-based VPS consoles (Hetzner Cloud and others) mis-transmit special characters — <code>:</code> may arrive as <code>;</code>, <code>@</code> gets mangled — silently corrupting <code>docker run -v/-e</code> arguments and pasted API keys.</p>
+
+<h2 id="sizing">Sizing</h2>
+
+<div class="article-table-scroll" tabindex="0">
+<table>
+<thead><tr><th>Resource</th><th>Minimum</th><th>Recommended</th></tr></thead>
+<tbody>
+<tr><td>Memory</td><td>1 GB</td><td>2–4 GB</td></tr>
+<tr><td>CPU</td><td>1 core</td><td>2 cores</td></tr>
+<tr><td>Disk (data)</td><td>500 MB</td><td>2+ GB (grows with sessions/skills)</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Straight from the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/docker">official resource table</a>, which adds: "browser automation (Playwright/Chromium) is the most memory-hungry feature. If you don't need browser tools, 1 GB is sufficient." Distro-wise, anything glibc/systemd/FHS works; Ubuntu is the tested reference — details on the <a href="/guide/install/linux/">Linux page</a>.</p>
+
+<h2 id="docker">Path A — Docker (recommended)</h2>
+
+<pre><code>ssh root@&lt;your-vps&gt;
+mkdir -p ~/.hermes
+docker run -it --rm -v ~/.hermes:/opt/data nousresearch/hermes-agent setup
+docker run -d --name hermes --restart unless-stopped \
+  -v ~/.hermes:/opt/data -p 8642:8642 \
+  nousresearch/hermes-agent gateway run</code></pre>
+
+<p>The first command runs the setup wizard once (keys land in <code>~/.hermes/.env</code> on the host); the second starts the persistent gateway. All state lives in the mounted directory — the container is stateless, so upgrading is <code>docker pull</code> + recreate (<code>hermes update</code> is intentionally unsupported in Docker). One container hosts multiple profiles — the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/docker">officially recommended pattern</a> — each gateway s6-supervised with per-profile rotated logs. Two rules that save real pain: never point two gateway containers at one data directory (session/memory corruption), and add <code>--shm-size=1g</code> if you enable browser tools.</p>
+
+<h2 id="direct">Path B — direct install (service user)</h2>
+
+<p>The standard Linux installer, run as a dedicated unprivileged user:</p>
+
+<pre><code>curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash -s -- --skip-browser</code></pre>
+
+<p>(<code>--skip-browser</code> skips Chromium on headless boxes; drop it if you want browser automation, in which case an admin first runs <code>sudo npx playwright install-deps chromium</code>.) Then <code>hermes gateway setup</code> — it offers to install a systemd user unit — and <code>sudo loginctl enable-linger &lt;user&gt;</code> so the gateway starts at boot and survives logout. The complete recipe, including PATH for service accounts, is on the <a href="/guide/install/linux/#server">Linux page</a>.</p>
+
+<h2 id="security">Security: the part people get wrong</h2>
+
+<p>Exposing the dashboard or API server on a VPS means binding to a non-loopback address, and that <strong>engages a mandatory auth gate</strong>. This isn't theoretical: per the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/docker">official docs</a>, unauthenticated public dashboards were the entry point for a real June 2026 campaign in which internet scanners drove exposed agents into planting SSH-key backdoors — and the old <code>--insecure</code> escape hatch is now a deprecated no-op. The official guidance:</p>
+
+<ul>
+  <li><strong>OAuth via Nous Portal</strong> for anything reachable from the public internet.</li>
+  <li><strong>Username/password</strong> (<code>HERMES_DASHBOARD_BASIC_AUTH_USERNAME</code>/<code>_PASSWORD</code>) only on a trusted LAN or VPN such as Tailscale.</li>
+  <li>Or skip exposure entirely: bind to <code>127.0.0.1</code> and reach the dashboard over an SSH tunnel.</li>
+  <li>The gateway's OpenAI-compatible API server is off by default; enabling it beyond loopback requires an <code>API_SERVER_KEY</code>. "Opening any port on an internet-facing machine is a security risk" — the docs' words.</li>
+</ul>
+
+<h2 id="remote">Using the VPS from your desktop and phone</h2>
+
+<p><strong>Hermes Desktop</strong> connects to the VPS as a remote gateway: keep a <code>hermes serve</code> backend running on the VPS (systemd is the natural home), then add its URL under Settings → Gateways in the app — the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/desktop">desktop docs</a> call OAuth "preferred for anything reachable beyond your own machine." One connection serves every profile on the box via the app's profile switcher.</p>
+
+<p><strong>Your phone</strong> is the reason most people do this at all: configure the messaging gateway (<code>hermes gateway setup</code>) and talk to your agent over Telegram, Discord, or WhatsApp from anywhere — the full pattern is in the <a href="/use-cases/hermes-in-your-pocket">Hermes in your pocket</a> use case. Community Compose stacks, systemd templates, and reverse-proxy configs live in <a href="/lists/deployment-options">deployment options</a>.</p>
+
+<h2 id="frequently-asked-questions">FAQ</h2>
+
+<h3>How small a VPS can run Hermes Agent?</h3>
+<p>1 GB RAM / 1 core is the documented minimum (without browser tools); 2–4 GB recommended. The typical $5 tier works with a hosted model API.</p>
+
+<h3>Which provider should I use?</h3>
+<p>Any standard Ubuntu/Debian VPS — Hermes has no provider-specific requirements. Whatever you pick, install over SSH: browser-based consoles (e.g. Hetzner's) corrupt special characters in pasted commands.</p>
+
+<h3>Docker or direct install on a VPS?</h3>
+<p>Docker for supervised auto-restart and image-based upgrades; direct install for in-place <code>hermes update</code> and the lightest footprint.</p>
+
+<h3>Is it safe to expose the Hermes dashboard on a VPS?</h3>
+<p>Only behind the mandatory auth gate — OAuth (Nous Portal) for public reachability, username/password strictly for LAN/VPN, or loopback-only behind an SSH tunnel. <code>--insecure</code> no longer bypasses anything.</p>
+
+<h3>Can Hermes Desktop connect to my VPS?</h3>
+<p>Yes — run <code>hermes serve</code> on the VPS and add it as a remote gateway in Desktop's Settings → Gateways, protected by OAuth.</p>
+
+<h3>How do I update Hermes on the VPS?</h3>
+<p>Docker: <code>docker pull</code> + recreate (state persists in <code>~/.hermes</code>). Direct install: <code>hermes update</code>.</p>
+
+<p>Next: <a href="/guide/install/#first-run">configure a model provider</a>, then decide what the box should do — the <a href="/guide/modes/">modes guide</a> compares always-on gateways, managed Hermes Cloud, and everything in between. On your own ARM hardware instead? <a href="/guide/install/raspberry-pi/">The Raspberry Pi setup</a> is this page without the rent.</p>
+
+<div class="article-footer">
+  <p>Maintained by <a href="https://x.com/ksimback">Kevin Simback</a> · Part of <a href="/guide/">The Hermes Handbook</a> · Facts sourced from the <a href="https://hermes-agent.nousresearch.com/docs/">official Hermes Agent docs</a> · if this was useful, drop a ★ on <a href="https://github.com/ksimback/hermes-ecosystem">the atlas repo</a> →</p>
+</div>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
