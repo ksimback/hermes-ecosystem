@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>garrytan/gbrain — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="GBrain is a memory and synthesis layer for AI agents that provides a self-wiring knowledge graph and automated gap analysis. It functions as a persistent…">
+<meta name="description" content="GBrain is a synthesis and memory layer for AI agents that combines graph traversal with gap analysis to provide cited answers from ingested data. It functions…">
 <link rel="canonical" href="https://hermesatlas.com/projects/garrytan/gbrain">
 <meta property="og:title" content="garrytan/gbrain — Hermes Atlas">
-<meta property="og:description" content="GBrain is a memory and synthesis layer for AI agents that provides a self-wiring knowledge graph and automated gap analysis. It functions as a persistent…">
+<meta property="og:description" content="GBrain is a synthesis and memory layer for AI agents that combines graph traversal with gap analysis to provide cited answers from ingested data. It functions…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/garrytan/gbrain">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="garrytan/gbrain — Hermes Atlas">
-<meta name="twitter:description" content="GBrain is a memory and synthesis layer for AI agents that provides a self-wiring knowledge graph and automated gap analysis. It functions as a persistent…">
+<meta name="twitter:description" content="GBrain is a synthesis and memory layer for AI agents that combines graph traversal with gap analysis to provide cited answers from ingested data. It functions…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=gbrain&amp;subtitle=Garry%27s+Opinionated+OpenClaw%2FHermes+Agent+Brain&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/garrytan/gbrain#software",
   "name": "gbrain",
-  "description": "GBrain is a memory and synthesis layer for AI agents that provides a self-wiring knowledge graph and automated gap analysis. It functions as a persistent institutional or personal memory daemon, extracting entity references and typed edges from ingested data to generate cited prose answers.",
+  "description": "GBrain is a synthesis and memory layer for AI agents that combines graph traversal with gap analysis to provide cited answers from ingested data. It functions as a background daemon for consolidating information across people, companies, and ideas while maintaining scoped access for team environments.",
   "url": "https://hermesatlas.com/projects/garrytan/gbrain",
   "codeRepository": "https://github.com/garrytan/gbrain",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "garrytan",
     "url": "https://github.com/garrytan"
   },
-  "dateModified": "2026-08-31T07:58:09.000Z",
+  "dateModified": "2026-08-31T15:58:28.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 29342
+    "userInteractionCount": 29354
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">247·repos</span>
+    <span id="meta-count">248·repos</span>
     <span id="meta-version">hermes·v0.20.6</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -120,7 +120,7 @@
   <p class="project-desc">Garry's Opinionated OpenClaw/Hermes Agent Brain</p>
 
   <div class="meta-row">
-    <span class="stars">★ 29.3K</span>
+    <span class="stars">★ 29.4K</span>
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">GBrain is a memory and synthesis layer for AI agents that provides a self-wiring knowledge graph and automated gap analysis. It functions as a persistent institutional or personal memory daemon, extracting entity references and typed edges from ingested data to generate cited prose answers.</p>
+    <p class="summary-text">GBrain is a synthesis and memory layer for AI agents that combines graph traversal with gap analysis to provide cited answers from ingested data. It functions as a background daemon for consolidating information across people, companies, and ideas while maintaining scoped access for team environments.</p>
     <ul class="summary-highlights">
-      <li>Provides a self-wiring knowledge graph with typed entity relationships.</li>
-      <li>Performs gap analysis to identify missing information in queries.</li>
-      <li>Supports multi-tenant company deployments with scoped data access.</li>
+      <li>Generates synthesized prose answers with citations and gap analysis.</li>
+      <li>Extracts typed entity edges for a self-wiring knowledge graph.</li>
+      <li>Supports multi-user scoped access with verified data isolation.</li>
     </ul>
   </div>
 </section>
@@ -443,18 +443,29 @@ gbrain reindex-search-vector --yes        # recreate triggers + backfill
 <li><strong>Rerankers</strong>: Voyage <code>rerank-2.5</code> hosted (the new-install default; reranking is on in <code>balanced</code> and <code>tokenmax</code> modes, same <code>VOYAGE_API_KEY</code> as embeddings), ZeroEntropy <code>zerank-2</code> (deprecated — hosted API ends 2026-09-04; still the fallback for brains that never set <code>search.reranker.model</code>), plus the <code>llama-server-reranker</code> recipe for fully-local cross-encoder rerank via llama.cpp — runs Qwen3-Reranker or self-hosted zerank weights against the same <code>gateway.rerank()</code> seam. Setup walkthrough in <a href="https://github.com/garrytan/gbrain/blob/main/docs/ai-providers/llama-server-reranker.md"><code>docs/ai-providers/llama-server-reranker.md</code></a>.</li>
 <li><strong>Credential vault + gateway</strong>: <code>gbrain creds</code> manages OAuth and API credentials in a local vault (<a href="https://github.com/garrytan/gbrain/blob/main/recipes/credential-gateway.md"><code>recipes/credential-gateway.md</code></a>); agent-side vault-aware secret distribution: <a href="https://github.com/garrytan/gbrain/blob/main/docs/integrations/credential-gateway.md"><code>docs/integrations/credential-gateway.md</code></a>.</li>
 <li><strong>MCP clients</strong>: every major MCP client is supported. <a href="docs/mcp/"><code>docs/mcp/</code></a> per-client setup.</li>
+<li><strong>Memorable (procedural memory)</strong>: optional, off by default. Your brain remembers <em>what</em> happened; Memorable makes your agent remember <em>how</em> — finished sessions become replayable procedures stored on your machine (in a standalone local store, or inside your brain database if you opt in), recalled when a similar task comes back. See the section below, and <a href="https://github.com/garrytan/gbrain/blob/main/docs/memorable-agents.md"><code>docs/memorable-agents.md</code></a> for the agent-facing detail.</li>
 </ul>
-<h3>Architecture</h3>
-<p><strong>Two engines, one contract.</strong> PGLite (Postgres 17 via WASM, zero-config, default) for personal brains up to ~50K pages. Postgres + pgvector (Supabase or self-hosted) for shared / large / multi-machine deployments. The contract-first <code>BrainEngine</code> interface in <a href="https://github.com/garrytan/gbrain/blob/main/src/core/engine.ts"><code>src/core/engine.ts</code></a> defines the 140+ methods both engines implement; CLI and MCP server are generated from one source.</p>
-<p><strong>Brain repo is the system of record.</strong> Your knowledge lives in a regular git repo (your "brain repo") as markdown files. GBrain syncs the repo into Postgres for retrieval; deletes in git become soft-deletes in DB. You can publish public subsets, share team mounts, run thin-client setups pointing at a colleague's brain server. Topologies in <a href="https://github.com/garrytan/gbrain/blob/main/docs/architecture/topologies.md"><code>docs/architecture/topologies.md</code></a>.</p>
-<p><strong>Two organizational axes (brain ⊥ source).</strong> A <em>brain</em> is a database (your personal brain, a team mount you joined). A <em>source</em> is a repo inside that brain (wiki, gstack, an essay, a knowledge base). Routing lives in <code>.gbrain-source</code> dotfiles and resolves via a documented 6-tier precedence chain. Full diagrams in <a href="https://github.com/garrytan/gbrain/blob/main/docs/architecture/brains-and-sources.md"><code>docs/architecture/brains-and-sources.md</code></a>.</p>
-<p><strong>Why the graph matters.</strong> Vector search returns chunks that are semantically close. The graph returns chunks that are factually connected. Hybrid search pulls from both; auto-linking on every write keeps the graph fresh. Deep dive: <a href="https://github.com/garrytan/gbrain/blob/main/docs/architecture/RETRIEVAL.md"><code>docs/architecture/RETRIEVAL.md</code></a>.</p>
-<h3>Troubleshooting</h3>
-<p><strong>Say to your agent first:</strong> <em>"Run a brain health check and fix what you find"</em> — this routes to the maintain skill, which runs <code>gbrain doctor</code> and either auto-fixes or prints the exact repair command; your agent can run the whole loop (<em>"Get my brain health score to 90"</em> uses the remediation planner with a cost cap). The sections below are for when you want the manual path.</p>
-<p><strong>PGLite crashes at startup with <code>RuntimeError: Aborted()</code> (often right after a macOS upgrade)?</strong> Not a macOS incompatibility — the OS-upgrade reboot killed gbrain mid-write and tore the data dir's WAL. gbrain now repairs this automatically on the next command (data preserved, backup kept); if auto-repair is disabled or skipped, run <code>gbrain pglite-repair --dry-run</code> to diagnose and <code>gbrain pglite-repair --yes</code> to repair in place. Full recovery ladder (repair → rebuild → engine switch) in <a href="https://github.com/garrytan/gbrain/blob/main/docs/ENGINES.md#troubleshooting-startup-abort-runtimeerror-aborted"><code>docs/ENGINES.md</code> — Troubleshooting: startup abort</a> and <a href="https://github.com/garrytan/gbrain/blob/main/docs/INSTALL.md#pglite-crashes-on-macos-26x-tahoe"><code>docs/INSTALL.md</code></a>.</p>
-<p><strong><code>gbrain import</code> fails with <code>expected N dimensions, not M</code>?</strong> Run <code>gbrain doctor</code>. It will print the exact `gbrain</p>
-<hr>
-<p><em>README truncated. <a href="https://github.com/garrytan/gbrain#readme">Continue reading on GitHub</a></em></p>
+<h4>Memorable — remember how, not just what (optional)</h4>
+<p>The third time your agent fixes the same class of bug, it shouldn't re-diagnose it from scratch. Without procedural memory, every session starts cold: re-explore the codebase, re-find the file, re-discover which command actually verifies the fix. <a href="https://www.memorable.sh">Memorable</a> closes that loop. Once enabled, a finished session's real tool calls — what ran, with what arguments, and (where the harness records it) whether each step succeeded — become an ordered, replayable <em>procedure</em>: steps, trigger signature, preconditions, postconditions. It is stored <strong>on your machine</strong>, in a standalone local store by default or inside your existing brain database if you opt in (the fine print explains the trade-off). Next time a similar task shows up:</p>
+<pre><code class="language-sh">memorable recall "the order-validation tests are failing again"
+# → 0.981  procedures/ab12cd34-fix-failing-order-tests  [lexical]
+memorable show procedures/ab12cd34-fix-failing-order-tests
+# → last time this landed in src/orders/validate.js and
+#   ./test.sh verified it — the steps, in order, with real outcomes
+</code></pre>
+<p>Your agent skips the diagnosis it already did once and goes straight to the fix. That's the whole product: <strong>capture is automatic</strong> (nothing to remember at the end of a session), and <strong>recall is one command</strong> at the start of the next.</p>
+<p><strong>Say to your agent:</strong> <em>"Set up Memorable so you remember how tasks were done"</em> — your agent installs and initializes the CLI (<code>npm i -g memorable-cli</code>, <code>memorable init</code>, <code>memorable enable</code>); you then run the one consent step below yourself. Day to day: <em>"Before you start, check Memorable for how we did this last time"</em> — your agent runs <code>memorable recall "&lt;the task in your words&gt;"</code> — and <em>"What has Memorable stored so far?"</em> — your agent runs <code>memorable list</code>.</p>
+<p><strong>Turn it on (three steps, the last one is yours):</strong></p>
+<pre><code class="language-sh">npm i -g memorable-cli                    # 1. the CLI, published on npm (closed source)
+memorable init &amp;&amp; memorable enable         # 2. standalone local store + let Memorable record sessions
+                                           #    (`memorable init gbrain` stores procedures in your brain DB
+                                           #     instead — trade-off in the fine print's first bullet)
+
+
+---
+
+*README truncated. [Continue reading on GitHub](https://github.com/garrytan/gbrain#readme)*
+</code></pre>
 
   </section>
 </details>

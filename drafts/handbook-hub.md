@@ -23,7 +23,11 @@ By [Kevin Simback](https://x.com/ksimback) · Hermes Atlas maintainer · Updated
 
 ## 1. What Hermes Agent actually is
 
-**Hermes Agent is an open-source AI agent by [Nous Research](https://nousresearch.com) that runs on your own machine or a cheap VPS, remembers what it learns across sessions, and writes its own reusable skills as it works. It talks to you through a CLI, Telegram, Discord, email, and many other messaging providers. It hit 238,810 GitHub stars (as of 2026-08-31), and it's the fastest-growing open-source agent of 2026.**
+<<<<<<< HEAD
+**Hermes Agent is an open-source AI agent by [Nous Research](https://nousresearch.com) that runs on your own machine or a cheap VPS, remembers what it learns across sessions, and writes its own reusable skills as it works. It talks to you through a CLI, Telegram, Discord, email, and many other messaging providers. It hit 238,902 GitHub stars (as of 2026-08-31), and it's the fastest-growing open-source agent of 2026.**
+=======
+**Hermes Agent is an open-source AI agent by [Nous Research](https://nousresearch.com) that runs on your own machine or a cheap VPS, remembers what it learns across sessions, and writes its own reusable skills as it works. It talks to you through a CLI, Telegram, Discord, email, and many other messaging providers. It hit 238,902 GitHub stars (as of 2026-08-31), and it's the fastest-growing open-source agent of 2026.**
+>>>>>>> origin/main
 
 ### The 30-second version
 
@@ -180,7 +184,7 @@ Everything else is rare. If `hermes doctor` shows a problem it doesn't explain, 
 
 ### The first-weekend mistake
 
-Hermes delegates heavily to the model. Tool calling, planning, skill writing — it's all the model's job. Small or older models can't reliably call tools, so they get stuck in loops or produce garbage. **Gemma 2B, Llama 3.1 8B, and other sub-frontier models are almost always the wrong default.** They run fine for chat, not for agent workflows.
+Hermes delegates heavily to the model. Tool calling, planning, skill writing — it's all the model's job. Small or older models can't reliably call tools, so they get stuck in loops or produce garbage. **Small local models (the 8B-and-under class) and older releases are almost always the wrong default.** They run fine for chat, not for agent workflows.
 
 The community consensus: use a frontier model for real work; use a local model only for experimentation.
 
@@ -194,13 +198,13 @@ The community consensus: use a frontier model for real work; use a local model o
 | MiniMax M2.7 | $$ | Excellent | Fast | Excellent value |
 | DeepSeek | $ | Good | Fast | Cost-optimized workflows |
 | Nous Portal (subscription) | $ (flat) | Excellent | Fast | Predictable monthly cost |
-| Ollama + Qwen 2.5 Coder | Free (local) | Good | Depends on GPU | Offline coding, privacy-sensitive work |
-| Ollama + Gemma / Llama 8B | Free (local) | **Poor** | Depends on GPU | Chat-only; don't use for agent work |
+| Ollama + Gemma 4 26B / Qwen 3.5 | Free (local) | Good | Depends on GPU | Offline coding, privacy-sensitive work |
+| Ollama + small models (8B and under) | Free (local) | **Poor** | Depends on GPU | Chat-only; don't use for agent work |
 
 
 ### When local is fine, when it isn't
 
-- **Local is fine when:** you're drafting code snippets, chatting, or running single-shot summarization. Ollama + Qwen 2.5 Coder 32B handles 80% of everyday CLI use.
+- **Local is fine when:** you're drafting code snippets, chatting, or running single-shot summarization. Gemma 4 26B via Ollama is the community's current pick for local experiments; Qwen 3.5 (via Ollama or LM Studio) is the popular alternative. One trap: Hermes needs a 64K-token context window and Ollama defaults to 4K — raise it or tool calls break silently.
 - **Local isn't fine when:** you want multi-step tool calls (watch a site, call an API, summarize, post to Telegram). You'll hit loops, timeouts, and bad tool arguments. Switch to a frontier API.
 
 ### The easy button: Nous Portal
@@ -366,7 +370,7 @@ Run Hermes in production for a team. Docker, systemd, managed cloud templates, K
 
 ### Bookmark the Atlas
 
-The handbook teaches you the fundamentals. The Atlas is where you find the specific tool you need for a specific job, ranked, filtered, and security-reviewed. **[Browse all 247+ projects →](/)**.
+The handbook teaches you the fundamentals. The Atlas is where you find the specific tool you need for a specific job, ranked, filtered, and security-reviewed. **[Browse all 248+ projects →](/)**.
 
 And if you want the broader picture of where Hermes is right now — stars, PRs, key launches, what's next — read the quarterly report: **[The State of Hermes Agent — April 2026 →](/reports/state-of-hermes-april-2026)**.
 
@@ -437,8 +441,13 @@ If something is wrong, unclear, or out of date, open an issue on [the Atlas repo
 **Last updated:** 2026-08-31 · Version and star figures re-stamp automatically with every site build.
 
 **Cited stats:**
-- 238,810 GitHub stars (as of 2026-08-31) — source: `api.github.com/repos/NousResearch/hermes-agent`
-- 247+ projects in the Hermes Atlas (as of 2026-08-31)
+<<<<<<< HEAD
+- 238,902 GitHub stars (as of 2026-08-31) — source: `api.github.com/repos/NousResearch/hermes-agent`
+- 248+ projects in the Hermes Atlas (as of 2026-08-31)
+=======
+- 238,902 GitHub stars (as of 2026-08-31) — source: `api.github.com/repos/NousResearch/hermes-agent`
+- 248+ projects in the Hermes Atlas (as of 2026-08-31)
+>>>>>>> origin/main
 - 643 skills in the community Hub (as of 2026-04-19)
 
 **Corrections and feedback:** [open an issue](https://github.com/ksimback/hermes-ecosystem/issues/new) or message on X.

@@ -1128,7 +1128,7 @@ Run deeper checks that may take longer.
 ## `hermes cron`
 
 ```
-hermes cron <list|create|edit|pause|resume|run|remove|status|tick>
+hermes cron <list|create|edit|pause|resume|run|remove|status|runs|incidents|doctor|tick>
 ```
 
 Subcommand
@@ -1166,6 +1166,10 @@ Delete a scheduled job.
 `status`
 
 Check whether the cron scheduler is running.
+
+`doctor`
+
+Read-only fleet health check: failed runs, failed deliveries, overdue/missing `next_run_at`, missing scripts or workdirs. Exits non-zero when issues are found.
 
 `tick`
 

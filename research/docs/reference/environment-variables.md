@@ -594,7 +594,7 @@ Extra Chromium launch flags (comma- or newline-separated). Hermes auto-injects `
 
 `AGENT_BROWSER_ENGINE`
 
-Browser engine for local mode: `auto` (default — Chromium-family via CDP), or a specific engine override.
+Local browser engine: `auto` (default — Chromium-family via CDP), `lightpanda` (Browser Use mode spawns `lightpanda serve`; the built-in tools pass `--engine lightpanda` to agent-browser), or `chrome`. Same as `browser.engine` in config.yaml.
 
 `FAL_KEY`
 
