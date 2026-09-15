@@ -18,6 +18,7 @@ import crypto from "crypto";
 import { fileURLToPath } from "url";
 import { githubHeaders, fetchReadme } from "../lib/github.js";
 import { callOpenRouter } from "../lib/openrouter.js";
+import { callOrcaRouter } from "../lib/orcarouter.js";
 import { writeJsonCheckpoint } from "../lib/json-checkpoint.js";
 import { mapWithConcurrency } from "../lib/bounded-concurrency.js";
 import { auditVerdictIsPass } from "../lib/summary-pruning.js";
@@ -26,10 +27,19 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
 
-if (!GITHUB_TOKEN || !OPENROUTER_KEY) {
-  console.error("Error: GITHUB_TOKEN and OPENROUTER_API_KEY required");
+// LLM gateway: "openrouter" (default) or "orcarouter" (see lib/orcarouter.js).
+const LLM_GATEWAY = process.env.LLM_GATEWAY || "openrouter";
+const isOrcaRouter = LLM_GATEWAY === "orcarouter";
+const audit = isOrcaRouter ? callOrcaRouter : callOpenRouter;
+const LLM_KEY = isOrcaRouter
+  ? process.env.ORCAROUTER_API_KEY
+  : process.env.OPENROUTER_API_KEY;
+
+if (!GITHUB_TOKEN || !LLM_KEY) {
+  console.error(
+    `Error: GITHUB_TOKEN and ${isOrcaRouter ? "ORCAROUTER_API_KEY" : "OPENROUTER_API_KEY"} required`
+  );
   process.exit(1);
 }
 
@@ -83,7 +93,7 @@ async function main() {
     console.log(`  ${key}: auditing...`);
 
     try {
-      const response = await callOpenRouter({
+      const response = await audit({
         system:
           "You are a fact-checker. Compare a summary against its source README. Identify any specific claims in the summary that are NOT supported by the README content. Be strict — if a number, feature name, or capability is mentioned in the summary but not in the README, flag it.",
         user: `README (source of truth):
@@ -98,7 +108,7 @@ Highlights to verify:
 ${entry.highlights?.map((h) => `- "${h}"`).join("\n") || "None"}
 
 List each unsupported claim, or respond with exactly "NONE" if all claims are supported.`,
-        apiKey: OPENROUTER_KEY,
+        apiKey: LLM_KEY,
         maxTokens: 300,
       });
 
