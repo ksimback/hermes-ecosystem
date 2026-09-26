@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>conorbronsdon/avoid-ai-writing — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
-<meta name="description" content="avoid-ai-writing is a portable writing skill for AI agents designed to audit and rewrite English content to eliminate detectable AI patterns. It utilizes a…">
+<meta name="description" content="avoid-ai-writing is a portable writing skill for AI agents designed to audit and rewrite English content to remove detectable AI patterns. It uses a multi-pass…">
 <link rel="canonical" href="https://hermesatlas.com/projects/conorbronsdon/avoid-ai-writing">
 <meta property="og:title" content="conorbronsdon/avoid-ai-writing — Hermes Atlas">
-<meta property="og:description" content="avoid-ai-writing is a portable writing skill for AI agents designed to audit and rewrite English content to eliminate detectable AI patterns. It utilizes a…">
+<meta property="og:description" content="avoid-ai-writing is a portable writing skill for AI agents designed to audit and rewrite English content to remove detectable AI patterns. It uses a multi-pass…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/conorbronsdon/avoid-ai-writing">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="conorbronsdon/avoid-ai-writing — Hermes Atlas">
-<meta name="twitter:description" content="avoid-ai-writing is a portable writing skill for AI agents designed to audit and rewrite English content to eliminate detectable AI patterns. It utilizes a…">
+<meta name="twitter:description" content="avoid-ai-writing is a portable writing skill for AI agents designed to audit and rewrite English content to remove detectable AI patterns. It uses a multi-pass…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=avoid-ai-writing&amp;subtitle=Skill+that+audits+and+rewrites+content+to+remove+AI+writing+patterns.+Use+it+with+your+favorite+agents+including+Claude+Code%2C+OpenClaw%2C+Codex%2C+and+Hermes.&amp;kind=project+%C2%B7+skills">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/conorbronsdon/avoid-ai-writing#software",
   "name": "avoid-ai-writing",
-  "description": "avoid-ai-writing is a portable writing skill for AI agents designed to audit and rewrite English content to eliminate detectable AI patterns. It utilizes a bundled detector engine to identify 74 pattern categories and a 112-entry word replacement table to provide plainer alternatives to common AI-associated language.",
+  "description": "avoid-ai-writing is a portable writing skill for AI agents designed to audit and rewrite English content to remove detectable AI patterns. It uses a multi-pass editing process and a 112-entry word replacement table to replace complex terminology with plainer alternatives.",
   "url": "https://hermesatlas.com/projects/conorbronsdon/avoid-ai-writing",
   "codeRepository": "https://github.com/conorbronsdon/avoid-ai-writing",
   "applicationCategory": "DeveloperApplication",
@@ -47,7 +47,7 @@
     "name": "conorbronsdon",
     "url": "https://github.com/conorbronsdon"
   },
-  "dateModified": "2026-09-26T14:54:51.000Z",
+  "dateModified": "2026-09-26T18:43:13.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -148,11 +148,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">avoid-ai-writing is a portable writing skill for AI agents designed to audit and rewrite English content to eliminate detectable AI patterns. It utilizes a bundled detector engine to identify 74 pattern categories and a 112-entry word replacement table to provide plainer alternatives to common AI-associated language.</p>
+    <p class="summary-text">avoid-ai-writing is a portable writing skill for AI agents designed to audit and rewrite English content to remove detectable AI patterns. It uses a multi-pass editing process and a 112-entry word replacement table to replace complex terminology with plainer alternatives.</p>
     <ul class="summary-highlights">
       <li>Supports rewrite, detect-only, and edit-in-place modes.</li>
-      <li>Includes five optional voice profiles for professional or casual tones.</li>
-      <li>Uses a two-pass editing process to verify and refine corrections.</li>
+      <li>Features five optional voice profiles including casual and technical.</li>
+      <li>Compatible with agents like Claude Code, OpenClaw, and Hermes.</li>
     </ul>
   </div>
 </section>
@@ -246,6 +246,7 @@
 <ul>
 <li><strong>Single final rewrite</strong> — completes its audit, correction, and available verification before returning one full version. A short change summary follows when useful; a detailed audit remains available on request without adding a competing draft.</li>
 <li><strong>Two-pass editing</strong> — review can catch patterns that survive the first edit, while one shared limit covers both corrective edits and preservation repairs.</li>
+<li><strong>Surface-aware delivery</strong> — checks how the destination renders single newlines before returning prose, unwraps accidental hard-wrapped paragraphs only when those breaks would show, and preserves intentional structure such as lists, poetry, code, and addresses.</li>
 <li><strong>112-entry word replacement table across 3 tiers + 10 Tier 3 phrases</strong> — not vibes-based. Every flagged word has a specific, plainer alternative. "Leverage" → "use." "Commence" → "start." Tier 1 matches flag unless a listed exception applies, Tier 2 words flag when they cluster, Tier 3 words flag only at high density. Tier 1 itself splits into <strong>1A frequency markers</strong> (<code>delve</code>, <code>tapestry</code>) and <strong>1B clarity edits</strong> (<code>in order to</code>, <code>utilize</code>) — same fix, but only 1A is evidence about how a passage was produced, and 1B is weighted lower so a wordiness fix cannot push a document toward an AI classification. Tier 3 <em>phrases</em> (multi-word boilerplate like "the integration of," "decentralized compute") flag on per-phrase repetition or when 3+ distinct phrases stack in one piece — the LLM-self-varies-boilerplate shape.</li>
 <li><strong>74 pattern categories</strong> — representative examples below, each with before/after. Includes structural detection (hashtag stuffing, bare-NP bullet lists, hedge-stacked predictions), AI-tool fingerprints (placeholders, citation markup, UTM params), rhythm/uniformity checks, conversational-register tells, and writer-side tests. The full catalog lives in <a href="https://github.com/conorbronsdon/avoid-ai-writing/blob/main/references/patterns.md"><code>references/patterns.md</code></a>; this count is enforced against it in CI.</li>
 <li><strong>Detect mode</strong> — flag patterns without rewriting. See which flags are real problems vs. judgment calls. Useful when patterns might be intentional or you're auditing content you don't want altered.</li>
@@ -1101,7 +1102,7 @@ guardrails first.</p>
         <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
       </a>
       <a class="related-row" href="/projects/tlehman/litprog-skill">
-        <div class="stars">★ 272</div>
+        <div class="stars">★ 273</div>
         <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
       </a>
       <a class="related-row" href="/projects/esaradev/icarus-plugin">
