@@ -120,7 +120,7 @@ As of 2026-09-26, yes, with caveats. 249,194 GitHub stars, an active Nous team s
 ## What next
 
 - **New to Hermes?** Start with the full beginner's walkthrough: **[The Hermes Handbook →](/guide/)**
-- **Want the tool landscape?** Browse **[all 252+ projects in the Atlas →](/)**
+- **Want the tool landscape?** Browse **[all 248+ projects in the Atlas →](/)**
 - **Curious about the ecosystem?** Read the **[State of Hermes — April 2026 report →](/reports/state-of-hermes-april-2026)**
 
 ---

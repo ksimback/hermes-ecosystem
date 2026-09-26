@@ -105,7 +105,6 @@ Plugins extend Hermes with new tools, data sources, or behaviors at the framewor
 | [robbyczgw-cla/hermes-web-search-plus](https://github.com/robbyczgw-cla/hermes-web-search-plus) | Multi-provider web search routing (fallback across search APIs) | — | Beta |
 | [FahrenheitResearch/hermes-weather-plugin](https://github.com/FahrenheitResearch/hermes-weather-plugin) | Professional weather data with NWS imagery and forecasts | — | Beta |
 | [nativ3ai/hermes-payguard](https://github.com/nativ3ai/hermes-payguard) | Safe USDC and x402 payment handling for agents | — | Experimental |
-| [raulvidis/hermes-cloudflare](https://github.com/raulvidis/hermes-cloudflare) | Headless browsing via Cloudflare Workers | — | Experimental |
 
 ---
 
@@ -159,7 +158,6 @@ Connect Hermes to external platforms, services, and ecosystems.
 | Repository | Description | Stars | Maturity |
 |:-----------|:------------|------:|:---------|
 | [teknium1/hermes-miniverse](https://github.com/teknium1/hermes-miniverse) | Bridge Hermes to Miniverse pixel worlds — agent embodiment in virtual environments | 8 | Experimental |
-| [raulvidis/hermes-android](https://github.com/raulvidis/hermes-android) | Android device bridge with Python toolset for mobile automation | — | Beta |
 | [gizdusum/hermes-blockchain-oracle](https://github.com/gizdusum/hermes-blockchain-oracle) | Solana on-chain analytics MCP server for Hermes | — | Experimental |
 | [Ridwannurudeen/hermes-council](https://github.com/Ridwannurudeen/hermes-council) | Adversarial multi-perspective MCP server for decision-making | — | Experimental |
 
