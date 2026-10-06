@@ -4,6 +4,7 @@ import { buildLatestReleaseBlock, detectLatestReleaseQuery } from "../lib/latest
 import { parseChunkStore } from "../lib/chunk-store.js";
 import { matchUseCases, buildUseCaseBlock, inferCategory } from "../lib/use-case-match.js";
 import { collectSourceLinks } from "../lib/source-links.js";
+import bundledUseCasesData from "../data/use-cases.json" with { type: "json" };
 import { readFileSync } from "fs";
 import { join } from "path";
 
@@ -13,7 +14,7 @@ let corpusDimensions = null;
 let bm25Index = null;
 let reposData = null;
 let latestReleaseData = null;
-let useCasesData = null;
+const useCasesData = bundledUseCasesData;
 
 function loadChunks() {
   if (chunks) return chunks;
@@ -48,19 +49,7 @@ function loadRepos() {
 }
 
 function loadUseCases() {
-  if (useCasesData) return useCasesData;
-  try {
-    // Literal join(process.cwd(), ...) so Vercel's file tracer bundles it —
-    // same constraint as loadChunks above.
-    const raw = readFileSync(join(process.cwd(), "data", "use-cases.json"), "utf-8");
-    useCasesData = JSON.parse(raw);
-    return useCasesData;
-  } catch (e) {
-    // Missing bundles degrade to the pre-existing catalog-dump behavior.
-    console.error("Failed to load use-cases.json:", e.message);
-    useCasesData = [];
-    return useCasesData;
-  }
+  return useCasesData;
 }
 
 function loadLatestRelease() {

@@ -510,7 +510,7 @@ await section("3. Generated discovery artifacts are current", async () => {
     fail("llms.txt freshness", `HTTP ${llms.status}`, `${BASE}/llms.txt`);
   } else {
     const text = await llms.text();
-    const catalogCount = new RegExp(`\\b${repos.length}\\+?\\s+(?:tools|projects|repos)\\b`, "i");
+    const catalogCount = new RegExp(`\\b${repos.length}\\+?\\s+(?:tracked\\s+)?(?:tools|projects|repos)\\b`, "i");
     if (catalogCount.test(text)) {
       pass("llms.txt freshness", `states ${repos.length}-project catalog`);
     } else {
