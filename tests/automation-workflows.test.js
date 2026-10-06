@@ -156,4 +156,6 @@ test("PR smoke waits for the Vercel build before probing its deployment URL", ()
   assert.match(workflow, /s\.context === 'Vercel'/);
   assert.match(workflow, /vercelStatus\?\.state !== 'success'/);
   assert.match(workflow, /listDeploymentStatuses/);
+  assert.match(workflow, /Wait for exact preview artifact/);
+  assert.match(workflow, /cmp --silent data\/repos\.json/);
 });

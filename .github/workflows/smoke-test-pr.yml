@@ -123,6 +123,33 @@ jobs:
 
             core.setFailed('Timed out waiting for Vercel preview deploy (10min)');
 
+      - name: Wait for exact preview artifact
+        env:
+          SMOKE_BASE: ${{ steps.vercel.outputs.base_url }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          set -euo pipefail
+          if [ -z "$VERCEL_AUTOMATION_BYPASS_SECRET" ]; then
+            echo "::error::VERCEL_AUTOMATION_BYPASS_SECRET is not set"
+            exit 1
+          fi
+          deployed_repos="$(mktemp)"
+          trap 'rm -f "$deployed_repos"' EXIT
+          for attempt in $(seq 1 40); do
+            if curl --fail --silent --show-error \
+              --header "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET" \
+              "$SMOKE_BASE/data/repos.json" \
+              --output "$deployed_repos" \
+              && cmp --silent data/repos.json "$deployed_repos"; then
+              echo "Preview is serving this checkout's repos.json (attempt $attempt)"
+              exit 0
+            fi
+            echo "Preview artifact is not current yet (attempt $attempt/40); waiting 15s"
+            sleep 15
+          done
+          echo "::error::Preview never served this checkout's data/repos.json"
+          exit 1
+
       - name: Run smoke test against preview
         id: smoke
         # Pass the preview URL via env, never interpolated straight into the
