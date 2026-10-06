@@ -134,20 +134,26 @@ jobs:
             exit 1
           fi
           deployed_repos="$(mktemp)"
-          trap 'rm -f "$deployed_repos"' EXIT
+          deployed_llms="$(mktemp)"
+          trap 'rm -f "$deployed_repos" "$deployed_llms"' EXIT
           for attempt in $(seq 1 40); do
             if curl --fail --silent --show-error \
               --header "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET" \
               "$SMOKE_BASE/data/repos.json" \
               --output "$deployed_repos" \
-              && cmp --silent data/repos.json "$deployed_repos"; then
-              echo "Preview is serving this checkout's repos.json (attempt $attempt)"
+              && curl --fail --silent --show-error \
+              --header "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET" \
+              "$SMOKE_BASE/llms.txt" \
+              --output "$deployed_llms" \
+              && cmp --silent data/repos.json "$deployed_repos" \
+              && cmp --silent llms.txt "$deployed_llms"; then
+              echo "Preview is serving this checkout's repos.json and llms.txt (attempt $attempt)"
               exit 0
             fi
             echo "Preview artifact is not current yet (attempt $attempt/40); waiting 15s"
             sleep 15
           done
-          echo "::error::Preview never served this checkout's data/repos.json"
+          echo "::error::Preview never served this checkout's repos.json and llms.txt"
           exit 1
 
       - name: Run smoke test against preview
