@@ -27,6 +27,8 @@ test("Vercel explicitly bundles the curated use-case data for chat", () => {
   const chatSource = fs.readFileSync(path.join(ROOT, "api/chat.js"), "utf8");
   assert.match(chatSource, /import bundledUseCasesData from "\.\.\/data\/use-cases\.json"/);
   assert.doesNotMatch(chatSource, /readFileSync\(join\(process\.cwd\(\), "data", "use-cases\.json"/);
+  assert.match(chatSource, /matchUseCases\(message, loadUseCases\(\)\)/);
+  assert.doesNotMatch(chatSource, /matchUseCases\(`\$\{message\}\\n\$\{searchQuery\}`/);
 });
 
 // ── tokenization ──

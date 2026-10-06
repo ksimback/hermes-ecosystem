@@ -436,7 +436,10 @@ export default async function handler(req, res) {
     // shared with the /use-cases/ page matcher so the two can't disagree.
     const repos = loadRepos();
     const repoIndex = new Map(repos.map((r) => [`${r.owner}/${r.repo}`, r]));
-    const useCaseMatches = matchUseCases(`${message}\n${searchQuery}`, loadUseCases());
+    // Match the user's original request, not the LLM-expanded search query.
+    // Expansion terms improve retrieval but can add generic vocabulary shared
+    // by several bundles, diluting an otherwise exact curated alias match.
+    const useCaseMatches = matchUseCases(message, loadUseCases());
     const useCaseBlock = buildUseCaseBlock(useCaseMatches, repoIndex);
     if (useCaseBlock) {
       console.log(`[RAG] Injected ${useCaseMatches.length} use-case bundle(s): ${useCaseMatches.map(m => `${m.useCase.slug}(${m.score})`).join(", ")}`);
