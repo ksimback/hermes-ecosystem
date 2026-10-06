@@ -75,8 +75,9 @@ async function withAtlasFixture({ stars = {}, releaseTag = "v2026.7.7.2" } = {})
     }
     if (url.pathname === "/api/chat") {
       // The smoke test sends a second, build-flavored query and asserts the
-      // __META__ trailer names a matched bundle — that's the only external
-      // signal that data/use-cases.json reached the serverless function.
+      // response header names a matched bundle. The trailer remains in the
+      // fixture to cover backward compatibility with older deployments.
+      res.setHeader("x-atlas-use-cases", "hermes-in-your-pocket");
       const meta = `‎__META__${JSON.stringify({
         model: "test/model",
         useCases: ["hermes-in-your-pocket"],

@@ -364,6 +364,17 @@ export default async function handler(req, res) {
     }
   }
 
+  // Resolve curated bundles before opening the stream and expose the result as
+  // a response header. This keeps deployment health observable even when the
+  // upstream model fails or terminates its stream before the metadata trailer.
+  const useCaseMatches = matchUseCases(message, loadUseCases());
+  res.setHeader(
+    "X-Atlas-Use-Cases",
+    useCaseMatches.length > 0
+      ? useCaseMatches.map((match) => match.useCase.slug).join(",")
+      : "none",
+  );
+
   // Set streaming headers EARLY so client gets response immediately
   // This prevents Vercel from killing the connection during slow LLM responses
   res.setHeader("Content-Type", "text/plain; charset=utf-8");
@@ -439,7 +450,6 @@ export default async function handler(req, res) {
     // Match the user's original request, not the LLM-expanded search query.
     // Expansion terms improve retrieval but can add generic vocabulary shared
     // by several bundles, diluting an otherwise exact curated alias match.
-    const useCaseMatches = matchUseCases(message, loadUseCases());
     const useCaseBlock = buildUseCaseBlock(useCaseMatches, repoIndex);
     if (useCaseBlock) {
       console.log(`[RAG] Injected ${useCaseMatches.length} use-case bundle(s): ${useCaseMatches.map(m => `${m.useCase.slug}(${m.score})`).join(", ")}`);

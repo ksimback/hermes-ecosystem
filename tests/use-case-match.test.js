@@ -29,6 +29,7 @@ test("Vercel explicitly bundles the curated use-case data for chat", () => {
   assert.doesNotMatch(chatSource, /readFileSync\(join\(process\.cwd\(\), "data", "use-cases\.json"/);
   assert.match(chatSource, /matchUseCases\(message, loadUseCases\(\)\)/);
   assert.doesNotMatch(chatSource, /matchUseCases\(`\$\{message\}\\n\$\{searchQuery\}`/);
+  assert.match(chatSource, /"X-Atlas-Use-Cases"/);
 });
 
 // ── tokenization ──
