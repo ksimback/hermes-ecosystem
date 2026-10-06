@@ -62,13 +62,13 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            // Use the GitHub Deployments API, NOT the 'Vercel' commit status:
-            // the status's target_url points at the vercel.com dashboard, not
-            // the deployment. Probing the dashboard 404s on every path — which
-            // is exactly how this gate passed vacuously for weeks (the 404s
-            // "failed" but the exit code was masked downstream; see pipefail
-            // note on the run step). The deployment status's environment_url
-            // is the real, fetchable preview origin.
+            // Vercel creates a successful GitHub Deployment record before the
+            // build finishes. Its environment_url can therefore serve the
+            // previous artifact for several seconds. Use the 'Vercel' commit
+            // status only as the readiness gate, then use the Deployment
+            // status's environment_url as the real, fetchable preview origin.
+            // (The commit status target_url is a vercel.com dashboard URL and
+            // must never be probed as the deployment itself.)
             const sha = context.payload.pull_request.head.sha;
             const owner = context.repo.owner;
             const repo = context.repo.repo;
@@ -79,6 +79,20 @@ jobs:
             core.info(`Polling Vercel preview deployment for PR #${context.payload.pull_request.number} @ ${sha}`);
 
             while (Date.now() - start < MAX_WAIT_MS) {
+              const { data: combined } = await github.rest.repos.getCombinedStatusForRef({
+                owner, repo, ref: sha,
+              });
+              const vercelStatus = combined.statuses.find((s) => s.context === 'Vercel');
+              if (vercelStatus?.state === 'failure' || vercelStatus?.state === 'error') {
+                core.setFailed(`Vercel preview build failed for ${sha}`);
+                return;
+              }
+              if (vercelStatus?.state !== 'success') {
+                core.info(`Vercel build is ${vercelStatus?.state || 'not reported'}; waiting before probing the deployment`);
+                await new Promise((resolve) => setTimeout(resolve, INTERVAL_MS));
+                continue;
+              }
+
               const { data: deployments } = await github.rest.repos.listDeployments({
                 owner, repo, sha, per_page: 10,
               });

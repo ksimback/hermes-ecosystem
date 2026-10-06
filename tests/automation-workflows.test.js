@@ -149,3 +149,11 @@ test("PR smoke can report failures and release monitor closes resolved legacy al
   assert.match(release, /Close resolved legacy release alerts/);
   assert.match(release, /Auto-merge failed on release PR/);
 });
+
+test("PR smoke waits for the Vercel build before probing its deployment URL", () => {
+  const workflow = fs.readFileSync(".github/workflows/smoke-test-pr.yml", "utf-8");
+  assert.match(workflow, /getCombinedStatusForRef/);
+  assert.match(workflow, /s\.context === 'Vercel'/);
+  assert.match(workflow, /vercelStatus\?\.state !== 'success'/);
+  assert.match(workflow, /listDeploymentStatuses/);
+});
