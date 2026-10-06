@@ -19,6 +19,12 @@ const useCases = readJson("data/use-cases.json");
 const repos = readJson("data/repos.json");
 const repoIndex = new Map(repos.map((r) => [`${r.owner}/${r.repo}`, r]));
 
+test("Vercel explicitly bundles the curated use-case data for chat", () => {
+  const vercel = readJson("vercel.json");
+  const includeFiles = vercel.functions?.["api/*.js"]?.includeFiles;
+  assert.equal(includeFiles, "data/use-cases.json");
+});
+
 // ── tokenization ──
 
 test("stop words are dropped so filler doesn't inflate scores", () => {
