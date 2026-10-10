@@ -171,7 +171,7 @@ Tools that make developing with, debugging, or optimizing Hermes easier.
 |:-----------|:------------|------:|:---------|
 | [junhoyeo/tokscale](https://github.com/junhoyeo/tokscale) | Token usage tracker for Claude Code, OpenClaw, Hermes, and other agents | 1,690 | Production |
 | [joeynyc/hermes-skins](https://github.com/joeynyc/hermes-skins) | Community CLI skins and themes for Hermes terminal UI | 76 | Beta |
-| [hermes-labs-ai/lintlang](https://github.com/hermes-labs-ai/lintlang) | Static linting for agent configs with HERM v1.1 scoring | — | Beta |
+| [hermes-labs-ai/lintlang](https://github.com/hermes-labs-ai/lintlang) | Deterministic linting for agent instructions, tools, and skills; native Hermes Agent `pre_verify` plugin | — | Beta |
 | [0xNyk/openclaw-to-hermes](https://github.com/0xNyk/openclaw-to-hermes) | Migration tool from OpenClaw to Hermes Agent | 21 | Beta |
 | [unmodeled-tyler/vessel-browser](https://github.com/unmodeled-tyler/vessel-browser) | AI-native browser built for autonomous agent control via MCP | 44 | Experimental |
 | [42-evey/evey-setup](https://github.com/42-evey/evey-setup) | One-command Hermes stack setup with 29 pre-configured plugins | — | Beta |
