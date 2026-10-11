@@ -194,7 +194,7 @@ In priority order, these are worth adding when the site complexity warrants:
 ### Lower priority / situational
 
 7. **API smoke test** for `/api/chat` (the RAG chatbot). Needs an
-   `OPENROUTER_API_KEY` secret in the workflow and consumes credits, so add
+   `NOUS_API_KEY` secret in the workflow and consumes credits, so add
    only if the chatbot becomes load-bearing for the value proposition.
 
 8. **External-link audit** (separate workflow, daily). Walk `data/repos.json`
