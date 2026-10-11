@@ -55,7 +55,7 @@ jobs:
 
       - name: Rebuild chunks
         env:
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
         run: node scripts/build-chunks.js
 
       - name: Check if generated knowledge data changed
@@ -86,7 +86,7 @@ jobs:
           # `-X theirs` on rebase auto-resolves conflicts in our favour
           # (during rebase, "theirs" = the commit being replayed = ours).
           # Chunk-store conflicts are guaranteed when two runs both modify
-          # it because OpenRouter embeddings aren't byte-deterministic, and
+          # it because provider embeddings aren't byte-deterministic, and
           # the two outputs are semantically equivalent (built from the same
           # source), so keeping ours is safe — for the binary embeddings.bin
           # "theirs" takes our whole file, which is exactly right. If the
@@ -140,7 +140,7 @@ jobs:
             const wf = 'rebuild-chunks';
             const title = `[Workflow] ${wf} failed`;
             const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const body = `The **${wf}** workflow failed — it rebuilds the Ask-the-Atlas knowledge base.\n\n**Run:** ${runUrl}\n\nCheck the run log (OpenRouter embeddings, the chunk-store write, or the push-retry loop).`;
+            const body = `The **${wf}** workflow failed — it rebuilds the Ask-the-Atlas knowledge base.\n\n**Run:** ${runUrl}\n\nCheck the run log (Nous Portal embeddings + credits, the chunk-store write, or the push-retry loop).`;
             const existing = await github.rest.issues.listForRepo({
               owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'workflow-issue'
             });

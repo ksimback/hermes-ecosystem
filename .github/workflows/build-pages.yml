@@ -49,7 +49,7 @@ jobs:
       - name: Generate summaries
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
         run: node scripts/generate-summaries.js
 
       - name: Build project pages
@@ -79,7 +79,7 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
         run: |
           git config user.name "Hermes Atlas Bot"
           git config user.email "bot@hermesatlas.com"
@@ -151,7 +151,7 @@ jobs:
             const wf = 'build-pages';
             const title = `[Workflow] ${wf} failed`;
             const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const body = `The **${wf}** workflow failed — it gates what is live on hermesatlas.com.\n\n**Run:** ${runUrl}\n\nCheck the run log (npm install, generator error, OpenRouter/GitHub API, or the push-retry loop).`;
+            const body = `The **${wf}** workflow failed — it gates what is live on hermesatlas.com.\n\n**Run:** ${runUrl}\n\nCheck the run log (npm install, generator error, Nous Portal credits/GitHub API, or the push-retry loop).`;
             const existing = await github.rest.issues.listForRepo({
               owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'workflow-issue'
             });
