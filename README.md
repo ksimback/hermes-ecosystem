@@ -101,10 +101,26 @@ OPENROUTER_API_KEY=sk-or-... node scripts/test-rag.js
 | Variable | Purpose | Required |
 |----------|---------|----------|
 | `GITHUB_TOKEN` | Fine-grained PAT, public repos read-only | For 5000/hr rate limit (60/hr without) |
-| `OPENROUTER_API_KEY` | LLM API key for chat | Yes |
+| `OPENROUTER_API_KEY` | LLM API key for chat (OpenRouter gateway) | Yes, unless `CHAT_GATEWAY=orcarouter` |
 | `REDIS_URL` | Redis Cloud connection string | Yes (for cache + history) |
 | `OPENROUTER_MODEL` | Override primary LLM model | No (default: `deepseek/deepseek-v4-flash`) |
 | `OPENROUTER_FALLBACK_MODELS` | Comma-separated fallback chain | No (default: `google/gemini-3-flash-preview,google/gemini-3.1-flash-lite-preview`) |
+| `CHAT_GATEWAY` | Chat LLM gateway: `openrouter` (default) or `orcarouter` | No |
+| `ORCAROUTER_API_KEY` | LLM API key for chat when `CHAT_GATEWAY=orcarouter` | Yes when using the OrcaRouter gateway |
+| `ORCAROUTER_MODEL` | Override the OrcaRouter chat/rewrite model | No (default: `deepseek/deepseek-v4-flash`) |
+| `LLM_GATEWAY` | Gateway for batch summary scripts (`generate-summaries.js`, `audit-summaries.js`): `openrouter` (default) or `orcarouter` | No |
+
+### OrcaRouter gateway
+
+The site's LLM calls default to [OpenRouter](https://openrouter.ai). You can switch the
+chat endpoint (answer streaming, query rewrite, and embeddings) to
+[OrcaRouter](https://www.orcarouter.ai) by setting `CHAT_GATEWAY=orcarouter` and
+`ORCAROUTER_API_KEY`, and the batch summary scripts by setting `LLM_GATEWAY=orcarouter`.
+OrcaRouter is an OpenAI-compatible model routing gateway that requires namespaced model
+IDs (for example `deepseek/deepseek-v4-flash`, `openai/gpt-5.5`). It also runs
+gateway-level, zero-trust security for AI agents on the same endpoint — screening every
+prompt/response and governing every tool call on a default-deny basis, with no application
+code changes.
 
 ## Contributing
 

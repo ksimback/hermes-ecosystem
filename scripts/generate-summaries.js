@@ -19,6 +19,7 @@ import crypto from "crypto";
 import { fileURLToPath } from "url";
 import { githubHeaders, fetchReadme } from "../lib/github.js";
 import { callOpenRouterJSON } from "../lib/openrouter.js";
+import { callOrcaRouterJSON } from "../lib/orcarouter.js";
 import {
   listSummaryNeedsRegeneration,
   pruneObjectKeys,
@@ -38,14 +39,24 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
+
+// LLM gateway: "openrouter" (default) or "orcarouter". The orcarouter helper
+// sends a single namespaced model with reasoning disabled (see lib/orcarouter.js).
+const LLM_GATEWAY = process.env.LLM_GATEWAY || "openrouter";
+const isOrcaRouter = LLM_GATEWAY === "orcarouter";
+const summarize = isOrcaRouter ? callOrcaRouterJSON : callOpenRouterJSON;
+const LLM_KEY = isOrcaRouter
+  ? process.env.ORCAROUTER_API_KEY
+  : process.env.OPENROUTER_API_KEY;
 
 if (!GITHUB_TOKEN) {
   console.error("Error: GITHUB_TOKEN environment variable required");
   process.exit(1);
 }
-if (!OPENROUTER_KEY) {
-  console.error("Error: OPENROUTER_API_KEY environment variable required");
+if (!LLM_KEY) {
+  console.error(
+    `Error: ${isOrcaRouter ? "ORCAROUTER_API_KEY" : "OPENROUTER_API_KEY"} environment variable required`
+  );
   process.exit(1);
 }
 
@@ -205,13 +216,13 @@ async function main() {
     // Generate summary
     console.log(`  ${key}: generating summary...`);
     try {
-      const result = await callOpenRouterJSON({
+      const result = await summarize({
         system: SYSTEM_PROMPT,
         user: buildProjectPrompt(
           { ...repo, audit: existing?.audit, auditNotes: existing?.auditNotes },
           readmeRaw,
         ),
-        apiKey: OPENROUTER_KEY,
+        apiKey: LLM_KEY,
         maxTokens: 600,
       });
 
@@ -318,10 +329,10 @@ async function main() {
       const chunks = chunkList(rankedMembers, LIST_CHUNK_SIZE);
       const chunkMaps = [];
       for (const chunk of chunks) {
-        const chunkEntries = await callOpenRouterJSON({
+        const chunkEntries = await summarize({
           system: SYSTEM_PROMPT,
           user: buildListPrompt(list, chunk, summaries),
-          apiKey: OPENROUTER_KEY,
+          apiKey: LLM_KEY,
           maxTokens: 3200,
         });
         chunkMaps.push(chunkEntries);
