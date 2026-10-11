@@ -32,8 +32,8 @@ Hermes Atlas is a living directory of the Hermes Agent ecosystem. Hermes Agent (
 │                          │                    │              │
 │                          ▼                    ▼              │
 │                   ┌──────────┐         ┌────────────┐       │
-│                   │  Redis   │         │ OpenRouter │       │
-│                   │  Cloud   │         │  (Gemma 4) │       │
+│                   │  Redis   │         │ Nous Portal│       │
+│                   │  Cloud   │         │  (DeepSeek)│       │
 │                   └────┬─────┘         └────────────┘       │
 │                        │                                     │
 │                        ▼                                     │
@@ -48,7 +48,7 @@ Hermes Atlas is a living directory of the Hermes Agent ecosystem. Hermes Agent (
 - **Frontend:** Vanilla HTML/CSS/JavaScript (no framework, no build step)
 - **Hosting:** Vercel (static + serverless functions)
 - **Cache:** Redis Cloud (1hr TTL on star counts, daily history snapshots)
-- **LLM:** OpenRouter with fallback chain (Gemma 4 31B → Gemma 4 26B → Gemini 3 Flash)
+- **LLM:** Nous Portal with a client-side fallback chain (DeepSeek V4.1 Flash → Step 5 Preview)
 - **Embeddings:** OpenAI text-embedding-3-small (computed once at build time, cached as static JSON)
 - **Retrieval:** Hybrid BM25 + cosine similarity, MMR re-ranking, conversation-aware query rewriting
 
@@ -87,10 +87,10 @@ cd hermes-ecosystem
 npm install
 
 # To rebuild the chatbot's knowledge base after editing research/ files:
-OPENROUTER_API_KEY=sk-or-... node scripts/build-chunks.js
+NOUS_API_KEY=... node scripts/build-chunks.js
 
 # To test the RAG pipeline locally:
-OPENROUTER_API_KEY=sk-or-... node scripts/test-rag.js
+NOUS_API_KEY=... node scripts/test-rag.js
 
 # To preview the static site, just open index.html in a browser
 # (the API endpoints only work when deployed to Vercel)
@@ -101,10 +101,11 @@ OPENROUTER_API_KEY=sk-or-... node scripts/test-rag.js
 | Variable | Purpose | Required |
 |----------|---------|----------|
 | `GITHUB_TOKEN` | Fine-grained PAT, public repos read-only | For 5000/hr rate limit (60/hr without) |
-| `OPENROUTER_API_KEY` | LLM API key for chat | Yes |
+| `NOUS_API_KEY` | [Nous Portal](https://portal.nousresearch.com) API key for chat + embeddings | Yes |
 | `REDIS_URL` | Redis Cloud connection string | Yes (for cache + history) |
-| `OPENROUTER_MODEL` | Override primary LLM model | No (default: `deepseek/deepseek-v4-flash`) |
-| `OPENROUTER_FALLBACK_MODELS` | Comma-separated fallback chain | No (default: `google/gemini-3-flash-preview,google/gemini-3.1-flash-lite-preview`) |
+| `CHAT_MODEL` | Override primary LLM model | No (default: `deepseek/deepseek-v4.1-flash`) |
+| `CHAT_FALLBACK_MODELS` | Comma-separated fallback chain | No (default: `stepfun/step-5-preview`) |
+| `LLM_BASE_URL` / `LLM_API_KEY` | Point at another OpenAI-compatible gateway | No (default: Nous Portal) |
 
 ## Contributing
 
