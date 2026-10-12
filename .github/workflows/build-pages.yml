@@ -59,6 +59,8 @@ jobs:
 
       - name: Check for changes
         id: diff
+        env:
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           # Stage generated artifacts through a repo-owned manifest instead of
           # hand-maintaining pathspecs in this workflow. If a generator emits a
@@ -66,6 +68,16 @@ jobs:
           # artifact cannot be silently dropped from the bot commit.
           node scripts/stage-build-artifacts.js
           if git diff --cached --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          # A commit that only restamps star counts and dates carries no
+          # content, but it moves main and flips every open PR that carries
+          # regenerated artifacts to CONFLICTING, where GitHub runs no CI at
+          # all (#958). Skip it on push/dispatch builds; the daily scheduled
+          # build always commits, so freshness still lands once a day. The
+          # classifier exits non-zero when unsure, which falls through to the
+          # normal commit.
+          elif [ "$EVENT_NAME" != "schedule" ] && node scripts/classify-rebuild-diff.js; then
+            echo "Only star counts / date stamps changed - skipping the bot commit (daily scheduled build will land it)."
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             PAGES=$(find projects -name '*.html' | wc -l)

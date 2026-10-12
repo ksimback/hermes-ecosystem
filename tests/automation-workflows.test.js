@@ -160,3 +160,26 @@ test("PR smoke waits for the Vercel build before probing its deployment URL", ()
   assert.match(workflow, /cmp --silent data\/repos\.json/);
   assert.match(workflow, /cmp --silent llms\.txt/);
 });
+
+test("page build skips noise-only commits except on the daily schedule, failing open", () => {
+  const build = fs.readFileSync(".github/workflows/build-pages.yml", "utf-8");
+  assert.match(build, /EVENT_NAME: \$\{\{ github\.event_name \}\}/);
+  // The classifier only runs for non-schedule events, and only its exit 0
+  // (positively noise-only) can suppress the commit.
+  assert.match(build, /elif \[ "\$EVENT_NAME" != "schedule" \] && node scripts\/classify-rebuild-diff\.js; then/);
+});
+
+test("a failed deploy of a bot rebuild commit raises the smoke alert", () => {
+  const smoke = fs.readFileSync(".github/workflows/post-deploy-smoke.yml", "utf-8");
+  assert.match(smoke, /if: failure\(\) && \(github\.event_name != 'workflow_dispatch' \|\| inputs\.target_sha != ''\)/);
+  assert.match(smoke, /core\.exportVariable\('SMOKE_BLOCKER'/);
+  assert.match(smoke, /process\.env\.SMOKE_BLOCKER/);
+});
+
+test("conflicted PRs are told once per head commit that CI is not running", () => {
+  const alarm = fs.readFileSync(".github/workflows/pr-conflict-alarm.yml", "utf-8");
+  assert.match(alarm, /pull-requests: write/);
+  assert.match(alarm, /pr\.mergeable !== 'CONFLICTING'/);
+  assert.match(alarm, /pr-conflict-alarm/);
+  assert.match(alarm, /pr\.headRefOid/);
+});
