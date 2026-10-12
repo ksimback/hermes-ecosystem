@@ -245,19 +245,15 @@ const LLM_KEY = LLM_API_KEY;
 // model either streams to `delta.reasoning` (an empty answer to our parser)
 // or burns the token budget on hidden thinking, so every request carries a
 // per-model reasoning param chosen by reasoningFor() in lib/llm.js. That
-// policy is LOAD-BEARING: deepseek flash models need `enabled: false`, and
-// stepfun/step-5-preview rejects exactly that param with HTTP 400. Adding a
-// model to this chain means checking which of the two it needs.
+// policy is LOAD-BEARING: most models need `enabled: false`, and a few
+// (e.g. stepfun/step-5-preview) reject exactly that param with HTTP 400.
+// Adding a model to this chain means checking which of the two it needs.
 //
 // PAID MODELS ONLY: free-tier models measured a ~0.86-pt quality drain on the
 // 100-question graded eval (July 2026) by refusing answerable questions.
 //
-// MODEL DECISION (2026-10-11): deepseek-v4.1-flash primary, step-5-preview
-// fallback, chosen with the move to Nous Portal. NOT yet run through the
-// graded eval that promoted deepseek-v4-flash (8.96 vs gemini-3-flash's 9.14,
-// decision 2026-07-23) — re-run it before trusting quality parity.
-// step-5-preview costs roughly 8x deepseek per answer (mandatory reasoning),
-// which is acceptable only because it serves fallback traffic.
+// MODEL DECISION (2026-10-12): gpt-6-luna primary, claude-haiku-5.5 fallback.
+// The defaults and the eval evidence behind them live in lib/llm.js.
 //
 // Override names changed with the provider (were OPENROUTER_MODEL /
 // OPENROUTER_FALLBACK_MODELS) so a stale Vercel override cannot silently

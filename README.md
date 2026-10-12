@@ -33,7 +33,7 @@ Hermes Atlas is a living directory of the Hermes Agent ecosystem. Hermes Agent (
 │                          ▼                    ▼              │
 │                   ┌──────────┐         ┌────────────┐       │
 │                   │  Redis   │         │ Nous Portal│       │
-│                   │  Cloud   │         │  (DeepSeek)│       │
+│                   │  Cloud   │         │(GPT-6 Luna)│       │
 │                   └────┬─────┘         └────────────┘       │
 │                        │                                     │
 │                        ▼                                     │
@@ -48,7 +48,7 @@ Hermes Atlas is a living directory of the Hermes Agent ecosystem. Hermes Agent (
 - **Frontend:** Vanilla HTML/CSS/JavaScript (no framework, no build step)
 - **Hosting:** Vercel (static + serverless functions)
 - **Cache:** Redis Cloud (1hr TTL on star counts, daily history snapshots)
-- **LLM:** Nous Portal with a client-side fallback chain (DeepSeek V4.1 Flash → Step 5 Preview)
+- **LLM:** Nous Portal with a client-side fallback chain (GPT-6 Luna → Claude Haiku 5.5)
 - **Embeddings:** OpenAI text-embedding-3-small (computed once at build time, cached as static JSON)
 - **Retrieval:** Hybrid BM25 + cosine similarity, MMR re-ranking, conversation-aware query rewriting
 
@@ -103,8 +103,8 @@ NOUS_API_KEY=... node scripts/test-rag.js
 | `GITHUB_TOKEN` | Fine-grained PAT, public repos read-only | For 5000/hr rate limit (60/hr without) |
 | `NOUS_API_KEY` | [Nous Portal](https://portal.nousresearch.com) API key for chat + embeddings | Yes |
 | `REDIS_URL` | Redis Cloud connection string | Yes (for cache + history) |
-| `CHAT_MODEL` | Override primary LLM model | No (default: `deepseek/deepseek-v4.1-flash`) |
-| `CHAT_FALLBACK_MODELS` | Comma-separated fallback chain | No (default: `stepfun/step-5-preview`) |
+| `CHAT_MODEL` | Override primary LLM model | No (default: `openai/gpt-6-luna`) |
+| `CHAT_FALLBACK_MODELS` | Comma-separated fallback chain | No (default: `anthropic/claude-haiku-5.5`) |
 | `LLM_BASE_URL` / `LLM_API_KEY` | Point at another OpenAI-compatible gateway | No (default: Nous Portal) |
 
 ## Contributing
