@@ -31,6 +31,7 @@ import {
   chunkList,
   mergeEntryMaps,
   findMissingEntries,
+  pickSingleEntry,
   buildListPrompt,
 } from "../lib/list-summary-batching.js";
 
@@ -328,8 +329,10 @@ async function main() {
 
       // A model can return valid JSON that silently omits a member's key
       // (run 33409296779 dropped one repo out of 34 and failed the whole
-      // build). Give the dropped members one targeted retry — a fresh call
-      // scoped to just those repos — before failing loud.
+      // build). Give each dropped member one targeted retry — a fresh call
+      // scoped to that single repo — before failing loud. One repo per call
+      // makes the response unambiguous, so a key the model misspells again is
+      // still recoverable (see pickSingleEntry).
       let missing = findMissingEntries(entries, memberKeys);
       if (missing.length > 0) {
         console.warn(
@@ -339,18 +342,18 @@ async function main() {
         const retryMembers = rankedMembers.filter((r) =>
           missingSet.has(`${r.owner}/${r.repo}`),
         );
-        for (const retryChunk of chunkList(retryMembers, LIST_CHUNK_SIZE)) {
+        for (const member of retryMembers) {
           await sleep(DELAY_MS);
+          const key = `${member.owner}/${member.repo}`;
           const retryEntries = await callLLMJSON({
             system: SYSTEM_PROMPT,
-            user: buildListPrompt(list, retryChunk, summaries),
+            user: buildListPrompt(list, [member], summaries),
             maxTokens: 3200,
           });
-          // Only accept the keys we asked for — a stray extra key must not
+          // Only ever writes the key we asked for — a stray key must not
           // overwrite a good description from the original pass.
-          for (const [key, value] of Object.entries(retryEntries)) {
-            if (missingSet.has(key)) entries[key] = value;
-          }
+          const description = pickSingleEntry(retryEntries, key);
+          if (description) entries[key] = description;
         }
         missing = findMissingEntries(entries, memberKeys);
       }
