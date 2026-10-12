@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           # Full history so computeAddedDates() in build-pages.js can walk the
           # git log of data/repos.json for per-repo first-seen dates. A shallow
@@ -39,7 +39,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
 
@@ -145,7 +145,7 @@ jobs:
       # Actions tab. Opens (or comments on a deduped) workflow-issue.
       - name: Escalate on failure
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const wf = 'build-pages';

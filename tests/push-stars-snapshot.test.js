@@ -243,7 +243,7 @@ test("dead-repo sweep runs daily while the billed summary audit stays weekly", a
   assert.match(workflow, /cron: '0 8 \* \* 1'/);
   assert.match(workflow, /cron: '0 8 \* \* \*'/);
   // A weekly-only sweep left a dead repo breaking the 6-hourly refresh for 6+
-  // days. The daily cron must still skip the OpenRouter-billed audit steps.
+  // days. The daily cron must still skip the LLM-billed audit steps.
   assert.match(workflow, /if: github\.event\.schedule != '0 8 \* \* \*'/);
   assert.match(workflow, /check-dead-repos\.js/);
 });

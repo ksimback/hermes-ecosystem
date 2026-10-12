@@ -21,10 +21,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
 
@@ -46,7 +46,7 @@ jobs:
       - name: Check for new official docs changes
         id: docs_check
         continue-on-error: true
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           retries: 3
           retry-exempt-status-codes: 400,401,403,404,422
@@ -76,7 +76,7 @@ jobs:
         if: steps.docs_check.outputs.docs_updated == 'true'
         env:
           COMMIT_MSG: ${{ steps.docs_check.outputs.commit_msg }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           retries: 3
           retry-exempt-status-codes: 400,401,403,404,422
@@ -120,7 +120,7 @@ jobs:
       - name: Close resolved legacy release alerts
         continue-on-error: true
         if: steps.releases.outcome == 'success' && success()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           retries: 3
           retry-exempt-status-codes: 400,401,403,404,422
@@ -159,7 +159,7 @@ jobs:
       - name: Close release-monitor alert after recovery
         continue-on-error: true
         if: steps.releases.outcome == 'success' && success()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           retries: 3
           retry-exempt-status-codes: 400,401,403,404,422
@@ -196,7 +196,7 @@ jobs:
 
       - name: Escalate release-monitor failure
         if: steps.releases.outcome == 'failure'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           retries: 3
           retry-exempt-status-codes: 400,401,403,404,422

@@ -43,10 +43,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
 
@@ -109,7 +109,7 @@ jobs:
       # reaches the static homepage instead of stopping at the RAG artifact.
       - name: Dispatch page rebuild
         if: steps.diff.outputs.changed == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             await github.rest.actions.createWorkflowDispatch({
@@ -134,7 +134,7 @@ jobs:
       # that Ask the Atlas answers from; a failed run was previously only a red X.
       - name: Escalate on failure
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const wf = 'rebuild-chunks';

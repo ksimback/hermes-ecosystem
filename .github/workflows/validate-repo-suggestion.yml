@@ -41,7 +41,7 @@ jobs:
 
     steps:
       - name: Load source issue
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           REQUESTED_ISSUE_NUMBER: ${{ inputs.issue_number }}
         with:
@@ -79,7 +79,7 @@ jobs:
 
       - name: Decide whether this issue is a repo submission
         id: gate
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const title = process.env.SOURCE_ISSUE_TITLE || '';
@@ -102,7 +102,7 @@ jobs:
 
       - name: Split multi-repo suggestion into atomic issues
         if: steps.gate.outputs.multi_repo == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const body = process.env.SOURCE_ISSUE_BODY || '';
@@ -179,7 +179,7 @@ jobs:
 
       - name: Ensure repo-suggestion label is present
         if: steps.gate.outputs.should_run == 'true' && steps.gate.outputs.has_label != 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             await github.rest.issues.addLabels({
@@ -192,18 +192,18 @@ jobs:
 
       - name: Checkout
         if: steps.gate.outputs.should_run == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
         if: steps.gate.outputs.should_run == 'true'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
 
       - name: Extract repo URL from issue body
         if: steps.gate.outputs.should_run == 'true'
         id: extract
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const body = process.env.SOURCE_ISSUE_BODY || '';
@@ -232,7 +232,7 @@ jobs:
       - name: Fetch repo metadata from GitHub API
         if: steps.gate.outputs.should_run == 'true'
         id: metadata
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           # Pass via env (not `${{ }}` interpolated into the script body) so an
           # issue-derived value can never be injected as code. Matches the
@@ -330,7 +330,7 @@ jobs:
       - name: Run validation checks
         if: steps.gate.outputs.should_run == 'true'
         id: validate
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           REPO_OWNER: ${{ steps.metadata.outputs.canonical_owner }}
           REPO_NAME: ${{ steps.metadata.outputs.canonical_repo }}
@@ -434,7 +434,7 @@ jobs:
 
       - name: Comment validation report on issue
         if: steps.gate.outputs.should_run == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           REPORT: ${{ steps.validate.outputs.report }}
         with:
@@ -449,7 +449,7 @@ jobs:
 
       - name: Close issue if already in atlas
         if: steps.validate.outputs.already_in_atlas == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             await github.rest.issues.update({
@@ -468,7 +468,7 @@ jobs:
 
       - name: Create PR to add repo (if passed)
         if: steps.validate.outputs.passed == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           REPO_OWNER: ${{ steps.metadata.outputs.canonical_owner }}
           REPO_NAME: ${{ steps.metadata.outputs.canonical_repo }}
@@ -791,10 +791,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
 
