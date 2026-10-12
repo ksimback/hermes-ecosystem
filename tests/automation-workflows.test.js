@@ -97,7 +97,7 @@ test("daily monitor dispatches docs ingestion independently and resolves its not
 
 test("release monitor retries transient GitHub API failures", () => {
   const monitor = fs.readFileSync(".github/workflows/release-monitor.yml", "utf-8");
-  const githubScriptSteps = monitor.match(/uses: actions\/github-script@v7/g) || [];
+  const githubScriptSteps = monitor.match(/uses: actions\/github-script@v\d+/g) || [];
   const retrySettings = monitor.match(/^\s+retries: 3$/gm) || [];
   const retryExemptions = monitor.match(/^\s+retry-exempt-status-codes: 400,401,403,404,422$/gm) || [];
 
