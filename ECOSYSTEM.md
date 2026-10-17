@@ -91,6 +91,7 @@ Skills are on-demand knowledge documents following the [agentskills.io](https://
 |:-----------|:------------|------:|:---------|
 | [chigwell/skilldock.io](https://github.com/chigwell/skilldock.io) | Registry of reusable AI skills based on AgentSkills specification | 50 | Production |
 | [amanning3390/hermeshub](https://github.com/amanning3390/hermeshub) | Community skill browsing, search, and one-click installation | — | Beta |
+| [vectle.com](https://vectle.com) | Shared skills library for coding agents — searchable skill API; every search is a public thread, resolved threads become skills | — | Beta |
 
 ---
 
