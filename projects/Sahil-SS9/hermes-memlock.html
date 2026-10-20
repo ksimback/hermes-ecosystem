@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sahil-SS9/hermes-memlock — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="MemLock is a Hermes Agent plugin designed to prevent instruction decay by re-asserting standing instructions after context compaction events. It monitors the…">
+<meta name="description" content="MemLock is a plugin for the Hermes ecosystem designed to prevent instruction decay following context compaction. It detects compaction events, audits whether…">
 <link rel="canonical" href="https://hermesatlas.com/projects/Sahil-SS9/hermes-memlock">
 <meta property="og:title" content="Sahil-SS9/hermes-memlock — Hermes Atlas">
-<meta property="og:description" content="MemLock is a Hermes Agent plugin designed to prevent instruction decay by re-asserting standing instructions after context compaction events. It monitors the…">
+<meta property="og:description" content="MemLock is a plugin for the Hermes ecosystem designed to prevent instruction decay following context compaction. It detects compaction events, audits whether…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/Sahil-SS9/hermes-memlock">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,14 +16,14 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Sahil-SS9/hermes-memlock — Hermes Atlas">
-<meta name="twitter:description" content="MemLock is a Hermes Agent plugin designed to prevent instruction decay by re-asserting standing instructions after context compaction events. It monitors the…">
+<meta name="twitter:description" content="MemLock is a plugin for the Hermes ecosystem designed to prevent instruction decay following context compaction. It detects compaction events, audits whether…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-memlock&amp;subtitle=Re-assert+standing+instructions+after+context+compaction.+Pin+anchors%2C+detect+drift%2C+rehydrate+before+the+model+forgets&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "map", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
     { "@type": "ListItem", "position": 2, "name": "plugins &amp; extensions", "item": "https://hermesatlas.com/" },
     { "@type": "ListItem", "position": 3, "name": "hermes-memlock" }
   ]
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/Sahil-SS9/hermes-memlock#software",
   "name": "hermes-memlock",
-  "description": "MemLock is a Hermes Agent plugin designed to prevent instruction decay by re-asserting standing instructions after context compaction events. It monitors the conversation for compaction markers and audits whether pinned instructions, known as anchors, still exist in the active, non-summary region of the context window. When an anchor is detected as drifted or lost, the plugin rehydrates it by appending a reminder block to the current user turn. This ensures the model continues to follow specific",
+  "description": "MemLock is a plugin for the Hermes ecosystem designed to prevent instruction decay following context compaction. It detects compaction events, audits whether pinned instructions remain in the active context region, and rehydrates missing instructions as a reminder block.",
   "url": "https://hermesatlas.com/projects/Sahil-SS9/hermes-memlock",
   "codeRepository": "https://github.com/Sahil-SS9/hermes-memlock",
   "applicationCategory": "BrowserApplication",
@@ -47,13 +47,13 @@
     "name": "Sahil-SS9",
     "url": "https://github.com/Sahil-SS9"
   },
-  "dateModified": "2026-06-17T20:26:12.000Z",
+  "dateModified": "2026-09-17T01:19:17.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 9
+    "userInteractionCount": 18
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,19 +81,20 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">217·repos</span>
-    <span id="meta-version">hermes·v0.19.0</span>
+    <span id="meta-count">262·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
-    <a href="/" class="active">map</a>
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
     <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
     <a href="/use-cases/">use cases</a>
     <a href="/guide/">handbook</a>
     <a href="/masterclass/">masterclass</a>
     <a href="/dev/">dev</a>
     <a href="/reports/">reports</a>
-    <a href="/#newsletter">newsletter</a>
     <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
   </nav>
   <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
@@ -107,7 +108,7 @@
 </header>
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span><a href="/">plugins &amp; extensions</a><span class="sep">/</span>hermes-memlock
+  <a href="/">home</a><span class="sep">/</span><a href="/">plugins &amp; extensions</a><span class="sep">/</span>hermes-memlock
 </div>
 
 <main id="main">
@@ -119,11 +120,11 @@
   <p class="project-desc">Re-assert standing instructions after context compaction. Pin anchors, detect drift, rehydrate before the model forgets</p>
 
   <div class="meta-row">
-    <span class="stars">★ 9</span>
+    <span class="stars">★ 18</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-06-17</span>
+    <span><span class="meta-label">updated</span>2026-09-17</span>
   </div>
 
   <div class="actions">
@@ -135,14 +136,16 @@
 
 
 
+
+
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">MemLock is a Hermes Agent plugin designed to prevent instruction decay by re-asserting standing instructions after context compaction events. It monitors the conversation for compaction markers and audits whether pinned instructions, known as anchors, still exist in the active, non-summary region of the context window. When an anchor is detected as drifted or lost, the plugin rehydrates it by appending a reminder block to the current user turn. This ensures the model continues to follow specific output formats or behavioral rules even during long-running dialogues.</p>
+    <p class="summary-text">MemLock is a plugin for the Hermes ecosystem designed to prevent instruction decay following context compaction. It detects compaction events, audits whether pinned instructions remain in the active context region, and rehydrates missing instructions as a reminder block.</p>
     <ul class="summary-highlights">
-      <li>Detects context compaction and audits active memory for instruction drift</li>
-      <li>Rehydrates lost instructions via keyword probes or semantic embedding similarity</li>
-      <li>Provides a guard_pin tool for managing persistent behavioral instructions</li>
+      <li>Detects Hermes context compaction markers to identify instruction drift.</li>
+      <li>Audits active context regions for pinned anchors using keyword probes.</li>
+      <li>Rehydrates drifted instructions only when they are missing from active memory.</li>
     </ul>
   </div>
 </section>
@@ -159,6 +162,7 @@ and rehydrates the casualties as a reminder block before they drift out of
 the model's working memory.</p>
 <hr>
 <h3>60-second Quickstart</h3>
+<p>See <a href="https://github.com/Sahil-SS9/hermes-memlock/blob/main/SKILL.md">SKILL.md</a> for complete harness-specific installation instructions.</p>
 <pre><code class="language-bash"># Clone into Hermes plugins directory
 git clone https://github.com/Sahil-SS9/hermes-memlock.git ~/.hermes/plugins/memlock
 
@@ -175,7 +179,94 @@ plugins:
 
 # Pin and then send a long message that triggers compaction;
 # the pin survives. That's the whole demo.
+
+# Change your mind? Update the pin in place — same id, old version kept:
+guard_pin(pin_id="&lt;id from /guard&gt;", text="Always reply in numbered lists")
 </code></pre>
+<hr>
+<h3>Setup wizard</h3>
+<p>Instead of hand-editing config, run the stdlib-only detection script once:</p>
+<pre><code class="language-bash">python3 ~/.hermes/plugins/memlock/memlock_setup.py --dry-run   # report only
+python3 ~/.hermes/plugins/memlock/memlock_setup.py             # detect + apply
+python3 ~/.hermes/plugins/memlock/memlock_setup.py --provider severian
+python3 ~/.hermes/plugins/memlock/memlock_setup.py --prune-days 30
+</code></pre>
+<h3>Portability Matrix</h3>
+<p>MemLock is designed to work across different agent harnesses with varying levels of integration:</p>
+<table>
+<thead>
+<tr>
+<th>Harness</th>
+<th>Hooks Support</th>
+<th>Injection Mechanism</th>
+<th>Provider Adapters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Hermes</strong></td>
+<td>Full (native plugin)</td>
+<td>Context compaction detection + reminder injection</td>
+<td>Severian, Mnemosyne, MCP-adapter</td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td>Hooks via <code>.claude/settings.json</code></td>
+<td>Precompaction snapshot + post-compaction audit</td>
+<td>MCP-adapter (via server)</td>
+</tr>
+<tr>
+<td><strong>MCP-generic</strong></td>
+<td>Manual tool calls</td>
+<td>MCP tools: <code>memlock_pin</code>, <code>memlock_unpin</code>, <code>memlock_update</code>, <code>memlock_status</code>, <code>memlock_audit</code></td>
+<td>MCP-adapter (direct connection)</td>
+</tr>
+</tbody></table>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Hooks support: Automatic triggering based on harness events</li>
+<li>Injection mechanism: How MemLock gets reminders into the agent's context</li>
+<li>Provider adapters: Which memory backends can be used for preference-aware audits</li>
+</ul>
+<p>The wizard probes your Hermes installation and reports every finding, then
+writes <strong>only</strong> the <code>memlock:</code> section of <code>~/.hermes/config.yaml</code> (a
+timestamped backup is taken first; nothing outside that section is touched).
+Auto-detection checks:</p>
+<ul>
+<li>Severian plugin directory (<code>$HERMES_HOME/plugins/severian/plugin.yaml</code>)
+and/or a <code>SEVERIAN_DSN</code> environment variable → PostgreSQL backend</li>
+<li>Mnemosyne plugin directory (<code>$HERMES_HOME/plugins/mnemosyne/</code>), a
+<code>mnemosyne</code> entry under <code>plugins.enabled</code>, and any Mnemosyne database file</li>
+<li>Exit codes: <code>0</code> configured, <code>1</code> nothing detected (guidance printed),
+<code>2</code> error (e.g. <code>--prune-days &lt; 7</code>)</li>
+</ul>
+<p>Detected provider verdicts:</p>
+<table>
+<thead>
+<tr>
+<th>Verdict</th>
+<th>Evidence found</th>
+<th>Config written</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>severian</code></td>
+<td>plugin dir or <code>SEVERIAN_DSN</code> (wins when both providers are present)</td>
+<td><code>preference_adapter: severian</code>, plus <code>adapter_dsn</code> when available</td>
+</tr>
+<tr>
+<td><code>mnemosyne</code></td>
+<td>plugin dir or enabled-config listing (DB file is reported but not sufficient on its own)</td>
+<td><code>preference_adapter: mnemosyne</code>, plus <code>adapter_db_path</code> when resolvable</td>
+</tr>
+<tr>
+<td><code>none</code></td>
+<td>no provider evidence</td>
+<td><code>reverse_audit: true</code>, <code>preference_adapter: ""</code> — core pin/audit features work unchanged; only the reverse pass stays off</td>
+</tr>
+</tbody></table>
+<p><code>--prune-days N</code> deletes session store files older than N days by mtime
+(minimum 7 — recent stores carry live audit state). It never touches
+<code>memlock/persist/</code> (durable global pins) or non-<code>.json</code> files.</p>
 <hr>
 <h3>Why this exists</h3>
 <p>Hermes context compression wraps compacted turns in:</p>
@@ -378,12 +469,47 @@ probes. Note the model downloads lazily on first semantic audit.</p>
 <td>Sentence-transformer for semantic mode</td>
 </tr>
 <tr>
+<td><code>reverse_audit</code></td>
+<td><code>false</code></td>
+<td>Query stored preferences after compaction (needs a preference adapter)</td>
+</tr>
+<tr>
+<td><code>preference_adapter</code></td>
+<td><code>""</code></td>
+<td><code>""</code> = off; <code>severian</code> or <code>mnemosyne</code> (see below, or run memlock_setup.py)</td>
+</tr>
+<tr>
+<td><code>adapter_dsn</code></td>
+<td>unset</td>
+<td>PostgreSQL DSN for the severian adapter (falls back to <code>SEVERIAN_DSN</code>)</td>
+</tr>
+<tr>
+<td><code>adapter_db_path</code></td>
+<td>unset</td>
+<td>SQLite path for the mnemosyne adapter (falls back to Mnemosyne env vars / default layout)</td>
+</tr>
+<tr>
+<td><code>reverse_preference_query</code></td>
+<td><code>applicable user preferences</code></td>
+<td>Query string passed to the preference provider</td>
+</tr>
+<tr>
+<td><code>reverse_limit</code></td>
+<td><code>50</code></td>
+<td>Max preference rows retrieved per audit</td>
+</tr>
+<tr>
 <td><code>anchors</code></td>
 <td><code>[]</code></td>
 <td>Static anchors seeded from config</td>
 </tr>
 </tbody></table>
 <hr>
+<p>See <code>docs/REVERSE_AUDIT.md</code> for the reverse-audit developer guide: usage,
+report interpretation, and the forward-vs-reverse distinction. The
+preference provider is selected through the adapter layer in
+<code>memlock_adapters/</code> — run <code>memlock_setup.py</code> to have it detected and wired
+for you.</p>
 <h3>Slash Commands</h3>
 <table>
 <thead>
@@ -394,11 +520,11 @@ probes. Note the model downloads lazily on first semantic audit.</p>
 </thead>
 <tbody><tr>
 <td><code>/guard</code></td>
-<td>Show integrity score, anchor list, drift log</td>
+<td>Show integrity score, anchor list, version history, drift log</td>
 </tr>
 </tbody></table>
 <h3>Tool: <code>guard_pin</code></h3>
-<p>Pin or unpin a standing instruction.</p>
+<p>Pin, update, roll back, or unpin a standing instruction.</p>
 <table>
 <thead>
 <tr>
@@ -409,8 +535,18 @@ probes. Note the model downloads lazily on first semantic audit.</p>
 </thead>
 <tbody><tr>
 <td><code>text</code></td>
-<td>For pin</td>
-<td>The instruction to preserve</td>
+<td>For pin/update</td>
+<td>The instruction to preserve (or the new wording for an update)</td>
+</tr>
+<tr>
+<td><code>pin_id</code></td>
+<td>For update/rollback</td>
+<td>Anchor id of an existing pin. Update: same id retained, previous version kept in history (last 5 versions per pin). Rollback: restores a prior version from history</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td>For rollback</td>
+<td>Set to <code>"rollback"</code> to restore the selected prior version; the displaced current state is pushed onto history (nothing is destroyed)</td>
 </tr>
 <tr>
 <td><code>priority</code></td>
@@ -425,12 +561,12 @@ probes. Note the model downloads lazily on first semantic audit.</p>
 <tr>
 <td><code>probes</code></td>
 <td>No</td>
-<td>Distinctive keywords for drift detection (auto-derived)</td>
+<td>Distinctive keywords for drift detection (auto-derived from the current text on pin/update)</td>
 </tr>
 <tr>
 <td><code>scope</code></td>
 <td>No</td>
-<td><code>session</code> (default, dies with session) or <code>global</code> (persists across sessions)</td>
+<td><code>session</code> (default, dies with session) or <code>global</code> (persists across sessions). On update/rollback: a global pin's durable copy is re-synced automatically. On unpin: <code>scope=global</code> also removes the durable copy</td>
 </tr>
 <tr>
 <td><code>unpin</code></td>
@@ -438,6 +574,27 @@ probes. Note the model downloads lazily on first semantic audit.</p>
 <td>Anchor id to remove</td>
 </tr>
 </tbody></table>
+<pre><code class="language-python"># Update an existing pin in place — same anchor id, history kept:
+guard_pin(pin_id="pin_1755000000_0", text="Always reply in numbered lists")
+
+# Roll back to the previous version (displaced state pushed to history):
+guard_pin(action="rollback", pin_id="pin_1755000000_0")
+</code></pre>
+<h4>Pin integrity (v0.5.1)</h4>
+<p>Durable pins are covered by a sha256 manifest (<code>memlock/persist/manifest.json</code>).
+A pin file whose bytes no longer match its recorded hash is <strong>quarantined</strong> —
+skipped with a warning, never silently loaded — so tampered or corrupted pins
+cannot poison agent behaviour. Session stores carry an advisory <code>self_sha256</code>
+checksum as well.</p>
+<h4>MCP server mode &amp; other harnesses</h4>
+<p>MemLock's core is harness-agnostic (<code>memlock_core/</code>). Beyond the Hermes plugin:</p>
+<ul>
+<li><strong>Claude Code</strong> — <code>python3 memlock_setup.py --harness claude-code</code> installs
+SessionStart/PreCompact hooks into <code>.claude/settings.json</code>.</li>
+<li><strong>Any MCP client</strong> — run <code>python3 -m mcp_server</code>; tools: <code>memlock_pin</code>,
+<code>memlock_unpin</code>, <code>memlock_update</code>, <code>memlock_status</code>, <code>memlock_audit</code>.</li>
+<li>See <a href="https://github.com/Sahil-SS9/hermes-memlock/blob/main/SKILL.md">SKILL.md</a> and the Portability Matrix above.</li>
+</ul>
 <h4>Cross-session persistence</h4>
 <p>Pins with <code>scope: global</code> are saved to a durable store and automatically
 re-seeded on every new session. The default backend is a zero-dependency
@@ -482,36 +639,36 @@ downloads the embedding model on first use.</li>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
-        <div class="stars">★ 353</div>
+        <div class="stars">★ 431</div>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 335</div>
+        <div class="stars">★ 533</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
-        <div class="stars">★ 43</div>
+        <div class="stars">★ 49</div>
         <div class="name"><span class="org">FahrenheitResearch /</span> hermes-weather-plugin</div>
       </a>
       <a class="related-row" href="/projects/42-evey/evey-bridge-plugin">
-        <div class="stars">★ 12</div>
+        <div class="stars">★ 18</div>
         <div class="name"><span class="org">42-evey /</span> evey-bridge-plugin</div>
       </a>
       <a class="related-row" href="/projects/nativ3ai/hermes-payguard">
-        <div class="stars">★ 13</div>
+        <div class="stars">★ 14</div>
         <div class="name"><span class="org">nativ3ai /</span> hermes-payguard</div>
       </a>
-      <a class="related-row" href="/projects/raulvidis/hermes-cloudflare">
-        <div class="stars">★ 42</div>
-        <div class="name"><span class="org">raulvidis /</span> hermes-cloudflare</div>
-      </a>
       <a class="related-row" href="/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server">
-        <div class="stars">★ 363</div>
+        <div class="stars">★ 399</div>
         <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
       </a>
       <a class="related-row" href="/projects/stainlu/hermes-labyrinth">
-        <div class="stars">★ 300</div>
+        <div class="stars">★ 306</div>
         <div class="name"><span class="org">stainlu /</span> hermes-labyrinth</div>
+      </a>
+      <a class="related-row" href="/projects/runta-dev/clawshell">
+        <div class="stars">★ 346</div>
+        <div class="name"><span class="org">runta-dev /</span> clawshell</div>
       </a>
     </div>
     

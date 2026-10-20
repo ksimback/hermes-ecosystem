@@ -1,0 +1,81 @@
+name: PR Conflict Alarm
+
+# A PR that conflicts with main gets NO pull_request workflow runs: GitHub
+# cannot build the test merge commit, so smoke and the validators silently
+# never fire. There is no red X and no notice; the PR just looks ignored
+# (#958). This comments once per head commit so the silence becomes visible.
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+on:
+  schedule:
+    - cron: '41 */6 * * *'
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: pr-conflict-alarm
+  cancel-in-progress: true
+
+jobs:
+  alarm:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Comment on conflicted PRs
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const MARKER = 'pr-conflict-alarm';
+            const query = `
+              query($owner: String!, $repo: String!) {
+                repository(owner: $owner, name: $repo) {
+                  pullRequests(states: OPEN, first: 100) {
+                    nodes {
+                      number
+                      isDraft
+                      mergeable
+                      headRefOid
+                      comments(last: 50) { nodes { body } }
+                    }
+                  }
+                }
+              }`;
+
+            // GitHub computes mergeability lazily: the first read after main
+            // moves returns UNKNOWN and kicks off the computation.
+            let prs = [];
+            for (let attempt = 1; attempt <= 4; attempt++) {
+              const data = await github.graphql(query, { owner, repo });
+              prs = data.repository.pullRequests.nodes;
+              if (!prs.some(pr => pr.mergeable === 'UNKNOWN')) break;
+              await new Promise(r => setTimeout(r, 10000));
+            }
+
+            let commented = 0;
+            for (const pr of prs) {
+              if (pr.mergeable !== 'CONFLICTING') continue;
+              const marker = `<!-- ${MARKER}:${pr.headRefOid} -->`;
+              if (pr.comments.nodes.some(c => c.body.includes(marker))) continue;
+              await github.rest.issues.createComment({
+                owner, repo, issue_number: pr.number,
+                body: [
+                  'This PR has merge conflicts with `main`.',
+                  '',
+                  'GitHub does not run any checks on a conflicted PR (no smoke test, no validators), so it will look idle until the conflicts are resolved. To fix it, merge or rebase onto the latest `main` and push.',
+                  '',
+                  marker,
+                ].join('\n'),
+              });
+              commented++;
+              core.info(`Commented on #${pr.number}`);
+            }
+            const unknown = prs.filter(pr => pr.mergeable === 'UNKNOWN').length;
+            core.info(`${prs.length} open PRs, ${prs.filter(pr => pr.mergeable === 'CONFLICTING').length} conflicted, ${commented} newly notified, ${unknown} still UNKNOWN`);

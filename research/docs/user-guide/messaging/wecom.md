@@ -2,6 +2,8 @@
 
 **Source:** https://hermes-agent.nousresearch.com/docs/user-guide/messaging/wecom
 
+Python dependency commands on this page use a [PM-prepared source checkout](/docs/reference/package-management#developer-workflow). After a dependency change, reactivate the checkout and restart Hermes.
+
 Connect Hermes to [WeCom](https://work.weixin.qq.com/) (企业微信), Tencent's enterprise messaging platform. The adapter uses WeCom's AI Bot WebSocket gateway for real-time bidirectional communication — no public endpoint or webhook needed.
 
 See also: [WeCom Callback](/docs/user-guide/messaging/wecom-callback) for inbound webhook setup.
@@ -95,7 +97,7 @@ hermes gateway
 
 Streaming and typing indicators
 
-The WeCom adapter delivers each response as a single complete message — it does **not** stream responses token-by-token, and it does **not** show a typing indicator. "Reply correlation" (below) only threads a response to its inbound request; it is not live streaming.
+The WeCom adapter streams responses natively over WeCom's `msgtype: "stream"` protocol: the client shows a thinking/typing bubble as soon as a turn starts, and the reply renders token-by-token in a single bubble as the model generates it. Tool-call progress is folded into the same bubble. Native streaming follows the global streaming switch, which is off by default: turn it on with `streaming.enabled: true` in `config.yaml`. WeCom's per-platform `display.platforms.wecom.streaming` (default `true`) only applies while the global switch is on; set it to `false` to keep single-shot delivery on WeCom.
 
 ## Configuration Options
 
@@ -154,6 +156,24 @@ Group IDs allowed (when group\_policy=allowlist)
 `{}`
 
 Per-group configuration (see below)
+
+`stream_keepalive_enabled`
+
+`false`
+
+Send periodic keepalive frames to refresh WeCom's ~6-minute reply-stream window on long turns
+
+`stream_keepalive_interval_seconds`
+
+`120`
+
+Keepalive frame cadence when enabled
+
+`stream_safe_duration_seconds`
+
+`330`
+
+Stream age after which finalize prefers the reliable proactive send
 
 ## Access Policies
 
@@ -282,7 +302,7 @@ WeCom encrypts some inbound media attachments with AES-256-CBC. The adapter hand
 -   When an inbound media item includes an `aeskey` field, the adapter downloads the encrypted bytes and decrypts them using AES-256-CBC with PKCS#7 padding.
 -   The AES key is the base64-decoded value of the `aeskey` field (must be exactly 32 bytes).
 -   The IV is derived from the first 16 bytes of the key.
--   This requires the `cryptography` Python package (`pip install cryptography`).
+-   This requires the `cryptography` Python package (`hermes pm repair`).
 
 No configuration is needed — decryption happens transparently when encrypted media is received.
 
@@ -298,7 +318,7 @@ Size limit
 
 Markdown text messages
 
-4000 chars
+4000 chars per message; longer text is split across messages
 
 `send_image` / `send_image_file`
 
@@ -339,7 +359,7 @@ Files exceeding the absolute 20 MB limit are rejected with an informational mess
 
 When the bot receives a message via the WeCom callback, the adapter remembers the inbound request ID. If a response is sent while the request context is still active, the adapter uses WeCom's reply-mode (`aibot_respond_msg`) to correlate the response directly to the inbound message. This provides a more natural conversation experience in the WeCom client.
 
-The full response is delivered as a single message — the adapter does not stream tokens incrementally. If the inbound request context has expired or is unavailable, the adapter falls back to proactive message sending via `aibot_send_msg`.
+When a native reply stream is active, the response streams incrementally through reply-mode `msgtype: "stream"` frames. If the inbound request context has expired or is unavailable (or a stream frame fails), the adapter falls back to proactive message sending via `aibot_send_msg`.
 
 Reply-mode also works for media: uploaded media can be sent as a reply to the originating message.
 
@@ -465,11 +485,11 @@ Set both env vars or configure in setup wizard
 
 `WeCom startup failed: aiohttp not installed`
 
-Install aiohttp: `pip install aiohttp`
+Install aiohttp: `python -c "import pm; pm.sync_venv(['messaging'], explicit=True)"`
 
 `WeCom startup failed: httpx not installed`
 
-Install httpx: `pip install httpx`
+Install httpx: `hermes pm repair`
 
 `invalid secret (errcode=40013)`
 
@@ -489,11 +509,11 @@ Check per-group `allow_from` lists in the `groups` config section
 
 Media decryption fails
 
-Install `cryptography`: `pip install cryptography`
+Install `cryptography`: `hermes pm repair`
 
 `cryptography is required for WeCom media decryption`
 
-The inbound media is AES-encrypted. Install: `pip install cryptography`
+The inbound media is AES-encrypted. Install: `hermes pm repair`
 
 Voice messages sent as files
 

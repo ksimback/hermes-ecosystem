@@ -10,6 +10,16 @@ import {
   chatStreamModel,
   chatStreamUsage,
 } from "../lib/chat-provider.js";
+import { collectSourceLinks } from "../lib/source-links.js";
+import {
+  LLM_API_KEY,
+  EMBEDDINGS_URL,
+  fetchChatCompletion,
+  shouldTryNextModel,
+  PRIMARY_MODEL as DEFAULT_PRIMARY_MODEL,
+  FALLBACK_MODELS as DEFAULT_FALLBACK_MODELS,
+} from "../lib/llm.js";
+import bundledUseCasesData from "../data/use-cases.json" with { type: "json" };
 import { readFileSync } from "fs";
 import { join } from "path";
 
@@ -19,7 +29,7 @@ let corpusDimensions = null;
 let bm25Index = null;
 let reposData = null;
 let latestReleaseData = null;
-let useCasesData = null;
+const useCasesData = bundledUseCasesData;
 
 function loadChunks() {
   if (chunks) return chunks;
@@ -54,19 +64,7 @@ function loadRepos() {
 }
 
 function loadUseCases() {
-  if (useCasesData) return useCasesData;
-  try {
-    // Literal join(process.cwd(), ...) so Vercel's file tracer bundles it —
-    // same constraint as loadChunks above.
-    const raw = readFileSync(join(process.cwd(), "data", "use-cases.json"), "utf-8");
-    useCasesData = JSON.parse(raw);
-    return useCasesData;
-  } catch (e) {
-    // Missing bundles degrade to the pre-existing catalog-dump behavior.
-    console.error("Failed to load use-cases.json:", e.message);
-    useCasesData = [];
-    return useCasesData;
-  }
+  return useCasesData;
 }
 
 function loadLatestRelease() {
@@ -244,60 +242,46 @@ function mmrSelect(candidates, queryEmbedding, k, lambda = 0.6) {
   return selected;
 }
 
-const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
+const LLM_KEY = LLM_API_KEY;
 
-// Active chat LLM provider, resolved once via lib/chat-provider.js so the
-// transport config (regional MiniMax endpoints, model list) has a single
-// source of truth that is also unit-tested. Defaults to "openrouter" (the
-// historical waterfall). Set CHAT_PROVIDER=minimax to route the streaming
-// chat completion directly to a MiniMax Anthropic Messages-compatible endpoint
-// instead of OpenRouter. Everything downstream (SSE parsing, usage recording,
-// rate-limit) is transport-agnostic.
+// MiniMax is opt-in for answer generation. Embeddings and query rewriting
+// continue to use the shared gateway configuration in lib/llm.js.
 const CHAT_CFG = chatProviderConfig(process.env);
-const CHAT_PROVIDER = CHAT_CFG.provider;
 const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY;
-const MINIMAX_BASE_URL = CHAT_CFG.baseUrl;
-const MINIMAX_PRIMARY_MODEL = CHAT_CFG.model;
 
-// Model config — supports primary + fallback via OpenRouter's native routing.
-// OpenRouter caps the models array at 3 total.
+// Model config — primary + fallbacks, tried in order by the loop in the
+// handler. The provider (Nous Portal, see lib/llm.js) has no server-side
+// fallback: a request names exactly one model.
 //
-// IMPORTANT: Our SSE parser reads ONLY `delta.content`. Reasoning models
-// (GLM-4.7-Flash, Nemotron 3 Super) either stream to `delta.reasoning` instead
-// of `delta.content` (returning empty content to our parser) or leak reasoning
-// text into their content output. deepseek-v4-flash (current primary) is
-// itself REASONING-CAPABLE and is only safe in this waterfall because the chat
-// request body explicitly sends `reasoning: { enabled: false }` (added in
-// PR #626). That param MUST NEVER be removed while a reasoning-capable model is
-// in the waterfall — doing so would either blank the answer or burn the whole
-// token budget on hidden thinking. Any purely NON-reasoning model can be added
-// without that constraint, but the param is now load-bearing regardless.
+// IMPORTANT: Our SSE parser reads ONLY `delta.content`. A reasoning-capable
+// model either streams to `delta.reasoning` (an empty answer to our parser)
+// or burns the token budget on hidden thinking, so every request carries a
+// per-model reasoning param chosen by reasoningFor() in lib/llm.js. That
+// policy is LOAD-BEARING: most models need `enabled: false`, and a few
+// (e.g. stepfun/step-5-preview) reject exactly that param with HTTP 400.
+// Adding a model to this chain means checking which of the two it needs.
 //
-// PAID DEFAULTS (2026-07-23): the chat waterfall deliberately excludes free-tier
-// models. The free gemma-4-31b:free either failed ~91% of calls (mid-July) or,
-// once recovered, served ~91% of traffic at a measured ~0.86-pt quality cost
-// (8.28 vs 9.14 on a 100-question graded eval) because it refuses answerable
-// long-tail questions. lib/openrouter.js keeps a SEPARATE free-tier waterfall for
-// batch summaries (a cost tradeoff, hallucination-audited) — keep the two in sync
-// in awareness of each other.
+// PAID MODELS ONLY: free-tier models measured a ~0.86-pt quality drain on the
+// 100-question graded eval (July 2026) by refusing answerable questions.
 //
-// EVAL EVIDENCE (decision 2026-07-23): deepseek-v4-flash promoted to primary
-// over gemini-3-flash-preview. Through the identical production RAG pipeline,
-// deepseek scored 8.96 vs gemini's 9.14 (a statistical tie within judge noise)
-// at ~6x lower cost ($0.71 vs $4.21 per 1k questions). gemini stays as the
-// reliable fallback; the max-3 waterfall is preserved.
+// MODEL DECISION (2026-10-12): gpt-6-luna primary, claude-haiku-5.5 fallback.
+// The defaults and the eval evidence behind them live in lib/llm.js.
 //
-// PIN NOTE (2026-07-23): OpenRouter exposes no separately-routable dated variant
-// of deepseek-v4-flash or gemini-3-flash-preview (the dated forms —
-// deepseek-v4-flash-20260423, etc. — appear only as canonical_slug metadata),
-// so we use the unpinned aliases. Unpinned preview aliases inherit provider
-// updates silently — mid-July an identical gemini config scored 8.16 → 9.14
-// after an unannounced provider revision. Re-pin here if a dated slug is listed.
-const PRIMARY_MODEL = process.env.OPENROUTER_MODEL || "deepseek/deepseek-v4-flash";
-const FALLBACK_MODELS = (process.env.OPENROUTER_FALLBACK_MODELS ||
-  "google/gemini-3-flash-preview," +
-  "google/gemini-3.1-flash-lite-preview"
-).split(",").map(s => s.trim()).filter(Boolean).slice(0, 2);
+// Override names changed with the provider (were OPENROUTER_MODEL /
+// OPENROUTER_FALLBACK_MODELS) so a stale Vercel override cannot silently
+// defeat these defaults again.
+const PRIMARY_MODEL = process.env.CHAT_MODEL || DEFAULT_PRIMARY_MODEL;
+const FALLBACK_MODELS = (process.env.CHAT_FALLBACK_MODELS
+  ? process.env.CHAT_FALLBACK_MODELS.split(",").map(s => s.trim()).filter(Boolean)
+  : DEFAULT_FALLBACK_MODELS
+).slice(0, 2);
+
+// Query rewriting needs fast models with good instruction following; it runs
+// before retrieval, so its latency is added to every follow-up question.
+// gemini flash-lite measured ~0.6-0.9s warm on the Portal. The two older
+// fallbacks are gone: qwen3.5-flash leaks its thinking into `content` here, and
+// mistral-small returned 429 "at capacity upstream" on every probe.
+const REWRITE_MODELS = ["google/gemini-3.1-flash-lite-preview", PRIMARY_MODEL];
 
 const MAX_TOKENS = parseInt(process.env.CHAT_MAX_TOKENS || "1200");
 
@@ -314,10 +298,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  if (CHAT_PROVIDER === "minimax" && !MINIMAX_API_KEY) {
-    return res.status(500).json({ error: "Chat not configured — missing API key" });
-  }
-  if (CHAT_PROVIDER !== "minimax" && !OPENROUTER_KEY) {
+  if (!LLM_KEY || (CHAT_CFG.provider === "minimax" && !MINIMAX_API_KEY)) {
     return res.status(500).json({ error: "Chat not configured — missing API key" });
   }
 
@@ -334,7 +315,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Invalid message" });
   }
 
-  // Cap history to bound prompt size (and OpenRouter cost). 20 messages
+  // Cap history to bound prompt size (and LLM cost). 20 messages
   // = 10 turns, plenty of context. Each message must also be a sane string.
   if (!Array.isArray(history) || history.length > 20) {
     return res.status(400).json({ error: "Invalid history" });
@@ -379,7 +360,7 @@ export default async function handler(req, res) {
     const count = await kvIncr(key);
     if (count === null) {
       // Redis unavailable — fail closed. Without a working counter we
-      // cannot bound OpenRouter spend, and silently allowing requests
+      // cannot bound LLM spend, and silently allowing requests
       // through is how a billing-bomb happens. Brief outages of chat
       // beat permanent overspend.
       return res.status(503).json({
@@ -396,6 +377,17 @@ export default async function handler(req, res) {
       });
     }
   }
+
+  // Resolve curated bundles before opening the stream and expose the result as
+  // a response header. This keeps deployment health observable even when the
+  // upstream model fails or terminates its stream before the metadata trailer.
+  const useCaseMatches = matchUseCases(message, loadUseCases());
+  res.setHeader(
+    "X-Atlas-Use-Cases",
+    useCaseMatches.length > 0
+      ? useCaseMatches.map((match) => match.useCase.slug).join(",")
+      : "none",
+  );
 
   // Set streaming headers EARLY so client gets response immediately
   // This prevents Vercel from killing the connection during slow LLM responses
@@ -469,7 +461,9 @@ export default async function handler(req, res) {
     // shared with the /use-cases/ page matcher so the two can't disagree.
     const repos = loadRepos();
     const repoIndex = new Map(repos.map((r) => [`${r.owner}/${r.repo}`, r]));
-    const useCaseMatches = matchUseCases(`${message}\n${searchQuery}`, loadUseCases());
+    // Match the user's original request, not the LLM-expanded search query.
+    // Expansion terms improve retrieval but can add generic vocabulary shared
+    // by several bundles, diluting an otherwise exact curated alias match.
     const useCaseBlock = buildUseCaseBlock(useCaseMatches, repoIndex);
     if (useCaseBlock) {
       console.log(`[RAG] Injected ${useCaseMatches.length} use-case bundle(s): ${useCaseMatches.map(m => `${m.useCase.slug}(${m.score})`).join(", ")}`);
@@ -569,105 +563,74 @@ ${retrievedContext}${useCaseBlock}${repoMetadataBlock}`;
       { role: "user", content: message },
     ];
 
-    // 6. Stream from LLM. The transport is built via lib/chat-provider.js so
-    // the request shape for each provider lives in one tested place. The
-    // OpenRouter waterfall and the MiniMax direct path stay fully isolated —
-    // neither branch sees the other's request shape.
-    const llmRes = await streamChatRequest({
-      provider: CHAT_PROVIDER,
-      baseUrl: CHAT_PROVIDER === "minimax" ? MINIMAX_BASE_URL : "https://openrouter.ai/api/v1",
-      apiKey: CHAT_PROVIDER === "minimax" ? MINIMAX_API_KEY : OPENROUTER_KEY,
-      model: CHAT_PROVIDER === "minimax" ? MINIMAX_PRIMARY_MODEL : PRIMARY_MODEL,
-      fallbackModels: CHAT_PROVIDER === "minimax" ? [] : FALLBACK_MODELS,
-      messages,
-      maxTokens: MAX_TOKENS,
-      signal: ac.signal,
-    });
-
-    if (!llmRes.ok) {
-      const err = await llmRes.text();
-      console.error("LLM error:", err);
-      let userMsg = "The AI service is temporarily unavailable. Please try again in a moment.";
-      try {
-        const parsed = JSON.parse(err);
-        if (parsed.error?.code === 429) {
-          userMsg = "All available AI models are rate-limited right now. Please try again in a minute.";
-        }
-        // Do not echo parsed.error.message — never forward an upstream provider's
-        // error text to the client; the full error is logged server-side above.
-      } catch {}
-      res.write(userMsg);
-      return res.end();
-    }
-
-    const reader = llmRes.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = "";
+    // 6. Stream from LLM — walk the model chain until one produces content.
+    // Falling through is only safe while nothing has been written to the
+    // client, which holds for every path that reaches the next iteration.
     let totalContent = "";
-    let actualModel = null; // Captured from provider SSE chunks
-    let usage = null; // Token usage from the final SSE chunk
+    let actualModel = null; // The model that actually answered
+    let usage = null; // Token usage from the final SSE chunk (usage.include)
+    let lastFailureStatus = null;
+    const modelChain = CHAT_CFG.provider === "minimax"
+      ? [CHAT_CFG.model]
+      : [PRIMARY_MODEL, ...FALLBACK_MODELS];
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
+    for (const model of modelChain) {
+      const llmRes = CHAT_CFG.provider === "minimax"
+        ? await streamChatRequest({
+          ...CHAT_CFG,
+          apiKey: MINIMAX_API_KEY,
+          model,
+          messages,
+          maxTokens: MAX_TOKENS,
+          signal: ac.signal,
+        })
+        : await fetchChatCompletion({
+        model,
+        apiKey: LLM_KEY,
+        signal: ac.signal,
+        body: {
+          messages,
+          stream: true,
+          max_tokens: MAX_TOKENS,
+          temperature: 0.3,
+          // Include token usage (and cost) in the final SSE chunk. That chunk
+          // may carry an empty choices array — streamCompletion tolerates it.
+          usage: { include: true },
+        },
+      });
 
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split("\n");
-      buffer = lines.pop() || "";
-
-      for (const line of lines) {
-        if (!line.startsWith("data: ")) continue;
-        const data = line.slice(6).trim();
-        if (data === "[DONE]") continue;
-
-        try {
-          const parsed = JSON.parse(data);
-
-          // Check for errors embedded in the stream
-          if (parsed.error) {
-            console.error("Stream error:", parsed.error);
-            if (totalContent.length === 0) {
-              res.write("The model returned an error. Please try asking again.");
-            }
-            return res.end();
-          }
-
-          // Capture which model the provider actually selected/served.
-          // OpenRouter reports it on every chunk; MiniMax reports it on the
-          // `message_start` event as `message.model`. Either way we keep the
-          // first non-empty value so the usage trailer attributes the request.
-          const streamModel = chatStreamModel(parsed);
-          if (streamModel && !actualModel) {
-            actualModel = streamModel;
-          }
-
-          // Capture token usage — OpenRouter emits it on the final chunk (the
-          // one that may have an empty choices array). MiniMax emits it on the
-          // `message_delta` event as `usage`. Overwrite so we keep the
-          // last/most-complete usage object seen.
-          const streamUsage = chatStreamUsage(parsed);
-          if (streamUsage) {
-            usage = streamUsage;
-          }
-
-          // OpenRouter content arrives as choices[].delta.content. MiniMax
-          // content arrives as delta.text on `content_block_delta` events.
-          // Both shapes are read here so the existing content-forwarding path
-          // is transport-agnostic.
-          const content = chatStreamDelta(parsed);
-          if (content) {
-            totalContent += content;
-            res.write(content);
-          }
-        } catch (e) {
-          // Skip malformed chunks
-        }
+      if (!llmRes.ok) {
+        lastFailureStatus = llmRes.status;
+        // Logged server-side only — never forward an upstream provider's
+        // error text to the client.
+        console.error(`LLM error (${model}, HTTP ${llmRes.status}):`, await llmRes.text());
+        if (!shouldTryNextModel(llmRes.status)) break;
+        continue;
       }
+
+      const attempt = await streamCompletion(llmRes, res);
+      if (attempt.content.trim().length > 0) {
+        totalContent = attempt.content;
+        actualModel = attempt.model || model;
+        usage = attempt.usage;
+        // Errored mid-answer: the partial text is already on the wire.
+        if (attempt.errored) return res.end();
+        break;
+      }
+      console.error(`LLM returned no content (${model})${attempt.errored ? " — stream error" : ""}`);
     }
 
-    // If the model returned nothing, tell the user
+    // Every model failed or came back empty — tell the user
     if (totalContent.trim().length === 0) {
-      res.write("The model returned an empty response. This sometimes happens with free models under load. Please try rephrasing or ask again.");
+      if (lastFailureStatus === 429) {
+        res.write("All available AI models are rate-limited right now. Please try again in a minute.");
+        return res.end();
+      }
+      if (lastFailureStatus !== null) {
+        res.write("The AI service is temporarily unavailable. Please try again in a moment.");
+        return res.end();
+      }
+      res.write("The model returned an empty response. Please try rephrasing or ask again.");
     }
 
     // Append model trailer at end of stream — client splits it off
@@ -678,11 +641,17 @@ ${retrievedContext}${useCaseBlock}${repoMetadataBlock}`;
     // data/use-cases.json, leaving loadUseCases() permanently empty) stays
     // observable from outside, instead of silently degrading to the old
     // full-catalog behavior while every check stays green.
-    if (actualModel || useCaseMatches.length > 0) {
+    //
+    // `sources` carries the citations the client renders as links. Only
+    // published pages resolve (see lib/source-links.js); Atlas-internal
+    // research is deliberately uncited rather than linked somewhere invented.
+    const sourceLinks = collectSourceLinks(scored);
+    if (actualModel || useCaseMatches.length > 0 || sourceLinks.length > 0) {
       const meta = { model: actualModel };
       if (useCaseMatches.length > 0) {
         meta.useCases = useCaseMatches.map((m) => m.useCase.slug);
       }
+      if (sourceLinks.length > 0) meta.sources = sourceLinks;
       const trailer = `\u200E__META__${JSON.stringify(meta)}__META__\u200E`;
       res.write(trailer);
     }
@@ -711,6 +680,58 @@ ${retrievedContext}${useCaseBlock}${repoMetadataBlock}`;
   }
 }
 
+// Read one SSE completion stream, forwarding `delta.content` to the client as
+// it arrives. Returns what was produced so the caller can decide whether to
+// fall back: `content` empty means nothing was written to `res`.
+async function streamCompletion(llmRes, res) {
+  const reader = llmRes.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  const out = { content: "", model: null, usage: null, errored: false };
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop() || "";
+
+    for (const line of lines) {
+      if (!line.startsWith("data: ")) continue;
+      const data = line.slice(6).trim();
+      if (data === "[DONE]") continue;
+
+      try {
+        const parsed = JSON.parse(data);
+
+        // Errors embedded in the stream end this attempt
+        if (parsed.error) {
+          console.error("Stream error:", parsed.error);
+          out.errored = true;
+          return out;
+        }
+
+        const model = chatStreamModel(parsed);
+        if (model && !out.model) out.model = model;
+
+        // Messages streams split input and output usage across events.
+        const usage = chatStreamUsage(parsed);
+        if (usage) out.usage = { ...out.usage, ...usage };
+
+        const content = chatStreamDelta(parsed);
+        if (content) {
+          out.content += content;
+          res.write(content);
+        }
+      } catch (e) {
+        // Skip malformed chunks
+      }
+    }
+  }
+  return out;
+}
+
 // Lightweight, fully non-fatal observability for a completed chat request.
 // Emits one structured log line and bumps two Redis counters (serving-mix +
 // token totals) so production model drift and token spend are visible. NEVER
@@ -722,10 +743,10 @@ async function recordChatUsage(actualModel, usage) {
 
     const promptTokens = usage?.prompt_tokens ?? null;
     const completionTokens = usage?.completion_tokens ?? null;
-    const cost = usage?.cost; // OpenRouter-provided; may be undefined.
+    const cost = usage?.cost; // Provider-reported; may be undefined.
 
     // One structured log line. No message content, no PII — Vercel captures
-    // function logs. Cost is included only when OpenRouter provided it.
+    // function logs. Cost is included only when the provider reported it.
     const logPayload = {
       model: actualModel,
       prompt_tokens: promptTokens,
@@ -823,39 +844,32 @@ ${historyText}
 Latest: ${message}
 Rewritten:`;
 
-    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      signal,
-      headers: {
-        Authorization: `Bearer ${OPENROUTER_KEY}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://hermesatlas.com",
-        "X-Title": "Hermes Atlas — Query Rewriter",
-      },
-      body: JSON.stringify({
-        // Query rewriting needs fast, reliable, non-reasoning models with good
-        // instruction following. Avoid reasoning models (GLM-4.7-Flash) which
-        // put output in a 'reasoning' field and return null content.
-        // All three options below are paid but cost fractions of a cent per call.
-        models: [
-          "google/gemini-3.1-flash-lite-preview",
-          "qwen/qwen3.5-flash-02-23",
-          "mistralai/mistral-small-2603",
-        ],
-        messages: [{ role: "user", content: rewritePrompt }],
-        max_tokens: 100,
-        temperature: 0,
-        stop: ["\n\n", "History:", "Latest:"],
-      }),
-    });
+    let rewritten;
+    for (const model of REWRITE_MODELS) {
+      const res = await fetchChatCompletion({
+        model,
+        apiKey: LLM_KEY,
+        signal,
+        body: {
+          messages: [{ role: "user", content: rewritePrompt }],
+          max_tokens: 100,
+          temperature: 0,
+          stop: ["\n\n", "History:", "Latest:"],
+        },
+      });
+      if (!res.ok) {
+        if (!shouldTryNextModel(res.status)) break;
+        continue;
+      }
+      const data = await res.json();
+      rewritten = data.choices?.[0]?.message?.content?.trim();
+      if (rewritten) break;
+    }
 
-    if (!res.ok) {
+    if (!rewritten) {
       console.warn("Query rewrite failed, using original");
       return message;
     }
-
-    const data = await res.json();
-    let rewritten = data.choices?.[0]?.message?.content?.trim();
 
     // Sanity checks: if rewrite is empty, too short, or way longer, fall back
     if (!rewritten || rewritten.length < 5 || rewritten.length > message.length * 10) {
@@ -890,10 +904,10 @@ async function getEmbedding(text, signal) {
   };
   if (corpusDim && corpusDim !== 1536) body.dimensions = corpusDim;
 
-  const res = await fetch("https://openrouter.ai/api/v1/embeddings", {
+  const res = await fetch(EMBEDDINGS_URL, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${OPENROUTER_KEY}`,
+      Authorization: `Bearer ${LLM_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),

@@ -2,7 +2,7 @@
 
 **Source:** https://hermes-agent.nousresearch.com/docs/user-guide/skills/optional/health/health-neuroskill-bci
 
-Connect to a running NeuroSkill instance and incorporate the user's real-time cognitive and emotional state (focus, relaxation, mood, cognitive load, drowsiness, heart rate, HRV, sleep staging, and 40+ derived EXG scores) into responses. Requires a BCI wearable (Muse 2/S or OpenBCI) and the NeuroSkill desktop app running locally.
+Use live BCI cognitive and mood state from NeuroSkill.
 
 ## Skill metadata
 

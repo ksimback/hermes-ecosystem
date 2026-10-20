@@ -18,6 +18,14 @@ Version
 
 `1.0.0`
 
+Author
+
+Teknium (teknium1), Hermes Agent
+
+License
+
+MIT
+
 Platforms
 
 linux, macos, windows
@@ -112,7 +120,7 @@ yb_send_dm({
   "group_code": "535168412",
   "name": "用户aea3",
   "message": "Here is the image",
-  "media_files": [{"path": "/tmp/photo.jpg"}]
+  "media_files": [{"path": "/path/to/photo.jpg"}]
 })
 ```
 

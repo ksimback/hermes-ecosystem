@@ -26,6 +26,10 @@ License
 
 MIT
 
+Platforms
+
+linux, macos, windows
+
 Tags
 
 `Teams`, `Microsoft Graph`, `Meetings`, `Productivity`, `Operations`
@@ -91,6 +95,7 @@ hermes teams-pipeline subscriptions         # current Graph webhook subscription
 hermes teams-pipeline run <job-id>          # replay a stored job (re-summarize, re-deliver)
 hermes teams-pipeline fetch --meeting-id <id>   # dry-run: resolve meeting + transcript without persisting
 hermes teams-pipeline fetch --join-web-url "<url>"   # dry-run by join URL
+hermes teams-pipeline fetch --join-web-url "<url>" --organizer-user-id <id>   # organizer-scoped lookup (required for /meet/ short URLs)
 ```
 
 ### Subscription management

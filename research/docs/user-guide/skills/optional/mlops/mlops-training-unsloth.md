@@ -46,7 +46,7 @@ The following is the complete skill definition that Hermes loads when this skill
 
 # Unsloth Skill
 
-Comprehensive assistance with unsloth development, generated from official documentation.
+Assistance with unsloth development, generated from official documentation.
 
 ## When to Use This Skill
 
@@ -66,7 +66,7 @@ _Quick reference patterns will be added as you use the skill._
 
 ## Reference Files
 
-This skill includes comprehensive documentation in `references/`:
+This skill includes full documentation in `references/`:
 
 -   **llms-txt.md** - Llms-Txt documentation
 

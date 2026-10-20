@@ -40,7 +40,7 @@ Tags
 
 Related skills
 
-[`serving-llms-vllm`](/docs/user-guide/skills/bundled/mlops/mlops-inference-serving-llms-vllm), [`llama-cpp`](/docs/user-guide/skills/bundled/mlops/mlops-inference-llama-cpp), [`huggingface-tokenizers`](/docs/user-guide/skills/optional/mlops/mlops-huggingface-tokenizers)
+[`serving-llms-vllm`](/docs/user-guide/skills/optional/mlops/mlops-inference-serving-llms-vllm), [`llama-cpp`](/docs/user-guide/skills/optional/mlops/mlops-inference-llama-cpp), [`huggingface-tokenizers`](/docs/user-guide/skills/optional/mlops/mlops-huggingface-tokenizers)
 
 ## Reference: full SKILL.md
 

@@ -2,6 +2,8 @@
 
 **Source:** https://hermes-agent.nousresearch.com/docs/user-guide/messaging/matrix
 
+Python dependency commands on this page use a [PM-prepared source checkout](/docs/reference/package-management#developer-workflow). After a dependency change, reactivate the checkout and restart Hermes.
+
 Hermes Agent integrates with Matrix, the open, federated messaging protocol. Matrix lets you run your own homeserver or use a public one like matrix.org — either way, you keep control of your communications. The bot connects via the `mautrix` Python SDK, processes messages through the Hermes Agent pipeline (including tool use, memory, and reasoning), and responds in real time. It supports text, file attachments, images, audio, video, and optional end-to-end encryption (E2EE).
 
 Hermes works with any Matrix homeserver — Synapse, Conduit, Dendrite, or matrix.org.
@@ -16,11 +18,11 @@ Behavior
 
 **DMs**
 
-Hermes responds to every message. No `@mention` needed. Each DM has its own session. Set `MATRIX_DM_MENTION_THREADS=true` to start a thread when the bot is `@mentioned` in a DM.
+Hermes responds to every message. No `@mention` needed. Each DM has its own session. Set `MATRIX_DM_MENTION_THREADS=true` to start a thread when the bot is `@mentioned` in a DM. Any room with 2 or fewer joined members is treated as a DM this way too, even if it has an explicit name — Matrix clients auto-name 1:1 chats, so name alone isn't a reliable signal.
 
 **Rooms**
 
-By default, Hermes requires an `@mention` to respond. Set `MATRIX_REQUIRE_MENTION=false` or add room IDs to `MATRIX_FREE_RESPONSE_ROOMS` for free-response rooms. Room invites are auto-accepted.
+By default, Hermes requires an `@mention` to respond. Set `MATRIX_REQUIRE_MENTION=false` or add room IDs to `MATRIX_FREE_RESPONSE_ROOMS` for free-response rooms. Room invites are auto-accepted. A deliberately-created 2-person room is still classified as a DM (see above) and silently bypasses `MATRIX_ALLOWED_ROOMS`, `MATRIX_REQUIRE_MENTION`, and `MATRIX_FREE_RESPONSE_ROOMS` — add a third member if you need it to behave like a regular room.
 
 **Threads**
 
@@ -28,7 +30,7 @@ Hermes supports Matrix threads (MSC3440). If you reply in a thread, Hermes keeps
 
 **Auto-threading**
 
-By default, Hermes auto-creates a thread for each message it responds to in a room. This keeps conversations isolated. Set `MATRIX_AUTO_THREAD=false` to disable. Set `MATRIX_DM_AUTO_THREAD=true` (default false) to also auto-create threads for DM messages — this is distinct from `MATRIX_DM_MENTION_THREADS`, which only starts a thread when the bot is `@mentioned` in a DM.
+By default, Hermes auto-creates a thread for each message it responds to in a room. This keeps conversations isolated. Set `MATRIX_AUTO_THREAD=false` to disable. Set `MATRIX_DM_AUTO_THREAD=true` (default false) to also auto-create threads for DM messages — this is distinct from `MATRIX_DM_MENTION_THREADS`, which only starts a thread when the bot is `@mentioned` in a DM. Rooms with 2 or fewer joined members are DM-classified (see above) and follow `MATRIX_DM_AUTO_THREAD`, not `MATRIX_AUTO_THREAD`.
 
 **Commands**
 
@@ -45,6 +47,10 @@ Matrix uses threaded, editable thinking/tool-activity panes when gateway progres
 **Shared rooms with multiple users**
 
 By default, Hermes isolates session history per user inside the room. Two people talking in the same room do not share one transcript unless you explicitly disable that.
+
+**LaTeX math**
+
+`$...$` (inline) and `$$...$$` (display) in replies are sent as Element `data-mx-maths` markup, so clients with **Settings → Labs → Render LaTeX maths in messages** typeset them with KaTeX. Unpaired dollars (`$5 or $10`) stay literal, and the plain-text `body` keeps the raw TeX for other clients.
 
 tip
 
@@ -156,7 +162,7 @@ matrix:
   session_scope: room             # auto|room|thread; room is recommended for project rooms
   auto_thread: true               # Auto-create threads for responses (default: true)
   dm_mention_threads: false       # Create thread when @mentioned in DM (default: false)
-  max_message_length: 16000       # Outbound chunk size in chars (default: 16000, max: 65535)
+  max_message_length: 15000       # Outbound chunk size in UTF-8 bytes (default and max: 15000)
 ```
 
 Or via environment variables:
@@ -406,11 +412,8 @@ Hermes supports Matrix end-to-end encryption, so you can chat with your bot in e
 E2EE requires the `mautrix` library with encryption extras and the `libolm` C library:
 
 ```
-# Install mautrix with E2EE support
-pip install 'mautrix[encryption]'
-
-# Or install with hermes extras
-cd ~/.hermes/hermes-agent && uv pip install -e ".[matrix]"
+# Request the declared Matrix dependencies
+python -c "import pm; pm.sync_venv(['matrix'], explicit=True)"
 ```
 
 You also need `libolm` installed on your system:
@@ -465,16 +468,9 @@ When E2EE is enabled, Hermes:
 
 ### Matrix Tools and Controls
 
-In Matrix conversations, Hermes exposes Matrix-specific tools to the agent:
+Hermes does not expose Matrix-specific agent tools (such as room creation, invites, or redaction) — the agent interacts with Matrix through normal message delivery. The adapter uses reactions and redactions internally to power approval prompts and pickers.
 
--   `matrix_send_reaction`
--   `matrix_redact_message`
--   `matrix_create_room`
--   `matrix_invite_user`
--   `matrix_fetch_history`
--   `matrix_set_presence`
-
-These tools are scoped to Matrix contexts and are not available in non-Matrix toolsets. Admin-style tools are disabled by default: redaction requires `MATRIX_TOOLS_ALLOW_REDACTION=true`, invites require `MATRIX_TOOLS_ALLOW_INVITES=true`, and room creation requires `MATRIX_TOOLS_ALLOW_ROOM_CREATE=true`. Public room creation also requires `MATRIX_ALLOW_PUBLIC_ROOMS=true`. If `MATRIX_ALLOWED_ROOMS` is set, Matrix tools may only target those rooms.
+If `MATRIX_ALLOWED_ROOMS` is set, Hermes only responds in those rooms (DMs are exempt).
 
 Reaction controls use:
 
@@ -606,7 +602,7 @@ To find a Room ID: in Element, go to the room → **Settings** → **Advanced** 
 
 ## Commands in Matrix
 
-Hermes supports the same gateway commands in Matrix that it supports on other messaging platforms, including `/commands`, `/model`, `/stop`, `/queue`, `/steer`, `/goal`, `/subgoal`, `/background`, `/bg`, `/btw`, `/tasks`, and `/yolo`.
+Hermes supports the same gateway commands in Matrix that it supports on other messaging platforms, including `/commands`, `/model`, `/stop`, `/queue`, `/steer`, `/goal`, `/subgoal`, `/bg`, `/btw`, `/tasks`, and `/yolo`.
 
 Some Matrix clients reserve leading `/` for local client commands and may not send unknown slash commands to the room. In that case, use `!` as a Matrix-safe alias:
 
@@ -665,13 +661,13 @@ If this returns your user info, the token is valid. If it returns an error, gene
 **Fix**: Install it:
 
 ```
-pip install 'mautrix[encryption]'
+python -c "import pm; pm.sync_venv(['matrix'], explicit=True)"
 ```
 
 Or with Hermes extras:
 
 ```
-cd ~/.hermes/hermes-agent && uv pip install -e ".[matrix]"
+cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['matrix'], explicit=True)"
 ```
 
 ### Encryption errors / "could not decrypt event"
@@ -754,7 +750,7 @@ tip
 
 ## Proxy Mode (E2EE on macOS)
 
-Matrix E2EE requires `libolm`, which doesn't compile on macOS ARM64 (Apple Silicon). The `hermes-agent[matrix]` extra is gated to Linux only. If you're on macOS, proxy mode lets you run E2EE in a Docker container on a Linux VM while the actual agent runs natively on macOS with full access to your local files, memory, and skills.
+The `matrix` extra is gated to Linux. On macOS or Windows, run the Matrix adapter and encryption dependencies in a Linux container and forward requests to the native agent. The example below uses a macOS host; the same separation applies to Windows with the corresponding host address and authentication.
 
 ### How It Works
 
@@ -829,18 +825,7 @@ services:
       - ./matrix-store:/root/.hermes/platforms/matrix/store
 ```
 
-**`Dockerfile`:**
-
-```
-FROM python:3.11-slim
-
-RUN apt-get update && apt-get install -y libolm-dev && rm -rf /var/lib/apt/lists/*
-RUN cd ~/.hermes/hermes-agent && uv pip install -e ".[matrix]"
-
-CMD ["hermes", "gateway"]
-```
-
-That's the entire container. No API keys for OpenRouter, Anthropic, or any inference provider.
+Use the repository's [Docker build](/docs/user-guide/docker), which includes the Matrix extra on compatible Linux targets and the required native libraries. Do not install dependencies into the sealed image at runtime. The container needs Matrix credentials and proxy access, not inference-provider API keys.
 
 ### Step 3: Start Both
 
@@ -963,4 +948,4 @@ For more information on securing your Hermes Agent deployment, see the [Security
 -   **Federation**: If you're on a federated homeserver, the bot can communicate with users from other servers — just add their full `@user:server` IDs to `MATRIX_ALLOWED_USERS`.
 -   **Auto-join**: The bot automatically accepts room invites and joins. It starts responding immediately after joining.
 -   **Media support**: Hermes can send and receive images, audio, video, and file attachments. Media is uploaded to your homeserver using the Matrix content repository API.
--   **Native voice messages (MSC3245)**: The Matrix adapter automatically tags outgoing voice messages with the `org.matrix.msc3245.voice` flag. This means TTS responses and voice audio are rendered as **native voice bubbles** in Element and other clients that support MSC3245, rather than as generic audio file attachments. Incoming voice messages with the MSC3245 flag are also correctly identified and routed to speech-to-text transcription. No configuration is needed — this works automatically.
+-   **Native voice messages (MSC3245)**: The Matrix adapter automatically tags outgoing voice messages with the `org.matrix.msc3245.voice` flag. This means TTS responses and voice audio are rendered as **native voice bubbles** in Element and other clients that support MSC3245, rather than as generic audio file attachments. Incoming voice messages with the MSC3245 flag are also correctly identified and routed to speech-to-text transcription. No configuration is needed — this works automatically. An audio file attached with a `MEDIA:` tag (an `.mp3`/`.wav` the agent produced, not marked `[[audio_as_voice]]`) is sent as a plain `m.audio` attachment in its original format instead of a voice bubble.

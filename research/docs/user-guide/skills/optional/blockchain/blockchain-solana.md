@@ -76,14 +76,14 @@ RPC endpoint (default): [https://api.mainnet-beta.solana.com](https://api.mainne
 Helper script path: ~/.hermes/skills/blockchain/solana/scripts/solana\_client.py
 
 ```
-python3 solana_client.py wallet   <address> [--limit N] [--all] [--no-prices]
-python3 solana_client.py tx       <signature>
-python3 solana_client.py token    <mint_address>
-python3 solana_client.py activity <address> [--limit N]
-python3 solana_client.py nft      <address>
-python3 solana_client.py whales   [--min-sol N]
-python3 solana_client.py stats
-python3 solana_client.py price    <mint_or_symbol>
+python solana_client.py wallet   <address> [--limit N] [--all] [--no-prices]
+python solana_client.py tx       <signature>
+python solana_client.py token    <mint_address>
+python solana_client.py activity <address> [--limit N]
+python solana_client.py nft      <address>
+python solana_client.py whales   [--min-sol N]
+python solana_client.py stats
+python solana_client.py price    <mint_or_symbol>
 ```
 
 * * *
@@ -93,13 +93,13 @@ python3 solana_client.py price    <mint_or_symbol>
 ### 0\. Setup Check
 
 ```
-python3 --version
+python --version
 
 # Optional: set a private RPC for better rate limits
 export SOLANA_RPC_URL="https://api.mainnet-beta.solana.com"
 
 # Confirm connectivity
-python3 ~/.hermes/skills/blockchain/solana/scripts/solana_client.py stats
+python ~/.hermes/skills/blockchain/solana/scripts/solana_client.py stats
 ```
 
 ### 1\. Wallet Portfolio
@@ -107,7 +107,7 @@ python3 ~/.hermes/skills/blockchain/solana/scripts/solana_client.py stats
 Get SOL balance, SPL token holdings with USD values, NFT count, and portfolio total. Tokens sorted by value, dust filtered, known tokens labeled by name (BONK, JUP, USDC, etc.).
 
 ```
-python3 ~/.hermes/skills/blockchain/solana/scripts/solana_client.py \
+python ~/.hermes/skills/blockchain/solana/scripts/solana_client.py \
   wallet 9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM
 ```
 
@@ -124,7 +124,7 @@ Output includes: SOL balance + USD value, token list with prices sorted by value
 Inspect a full transaction by its base58 signature. Shows balance changes in both SOL and USD.
 
 ```
-python3 ~/.hermes/skills/blockchain/solana/scripts/solana_client.py \
+python ~/.hermes/skills/blockchain/solana/scripts/solana_client.py \
   tx 5j7s8K...your_signature_here
 ```
 
@@ -135,7 +135,7 @@ Output: slot, timestamp, fee, status, balance changes (SOL + USD), program invoc
 Get SPL token metadata, current price, market cap, supply, decimals, mint/freeze authorities, and top 5 holders.
 
 ```
-python3 ~/.hermes/skills/blockchain/solana/scripts/solana_client.py \
+python ~/.hermes/skills/blockchain/solana/scripts/solana_client.py \
   token DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263
 ```
 
@@ -146,7 +146,7 @@ Output: name, symbol, decimals, supply, price, market cap, top 5 holders with pe
 List recent transactions for an address (default: last 10, max: 25).
 
 ```
-python3 ~/.hermes/skills/blockchain/solana/scripts/solana_client.py \
+python ~/.hermes/skills/blockchain/solana/scripts/solana_client.py \
   activity 9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM --limit 25
 ```
 
@@ -155,7 +155,7 @@ python3 ~/.hermes/skills/blockchain/solana/scripts/solana_client.py \
 List NFTs owned by a wallet (heuristic: SPL tokens with amount=1, decimals=0).
 
 ```
-python3 ~/.hermes/skills/blockchain/solana/scripts/solana_client.py \
+python ~/.hermes/skills/blockchain/solana/scripts/solana_client.py \
   nft 9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM
 ```
 
@@ -166,7 +166,7 @@ Note: Compressed NFTs (cNFTs) are not detected by this heuristic.
 Scan the most recent block for large SOL transfers with USD values.
 
 ```
-python3 ~/.hermes/skills/blockchain/solana/scripts/solana_client.py \
+python ~/.hermes/skills/blockchain/solana/scripts/solana_client.py \
   whales --min-sol 500
 ```
 
@@ -177,7 +177,7 @@ Note: scans the latest block only — point-in-time snapshot, not historical.
 Live Solana network health: current slot, epoch, TPS, supply, validator version, SOL price, and market cap.
 
 ```
-python3 ~/.hermes/skills/blockchain/solana/scripts/solana_client.py stats
+python ~/.hermes/skills/blockchain/solana/scripts/solana_client.py stats
 ```
 
 ### 8\. Price Lookup
@@ -185,10 +185,10 @@ python3 ~/.hermes/skills/blockchain/solana/scripts/solana_client.py stats
 Quick price check for any token by mint address or known symbol.
 
 ```
-python3 ~/.hermes/skills/blockchain/solana/scripts/solana_client.py price BONK
-python3 ~/.hermes/skills/blockchain/solana/scripts/solana_client.py price JUP
-python3 ~/.hermes/skills/blockchain/solana/scripts/solana_client.py price SOL
-python3 ~/.hermes/skills/blockchain/solana/scripts/solana_client.py price DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263
+python ~/.hermes/skills/blockchain/solana/scripts/solana_client.py price BONK
+python ~/.hermes/skills/blockchain/solana/scripts/solana_client.py price JUP
+python ~/.hermes/skills/blockchain/solana/scripts/solana_client.py price SOL
+python ~/.hermes/skills/blockchain/solana/scripts/solana_client.py price DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263
 ```
 
 Known symbols: SOL, USDC, USDT, BONK, JUP, WETH, JTO, mSOL, stSOL, PYTH, HNT, RNDR, WEN, W, TNSR, DRIFT, bSOL, JLP, WIF, MEW, BOME, PENGU.
@@ -211,5 +211,5 @@ Known symbols: SOL, USDC, USDT, BONK, JUP, WETH, JTO, mSOL, stSOL, PYTH, HNT, RN
 
 ```
 # Should print current Solana slot, TPS, and SOL price
-python3 ~/.hermes/skills/blockchain/solana/scripts/solana_client.py stats
+python ~/.hermes/skills/blockchain/solana/scripts/solana_client.py stats
 ```

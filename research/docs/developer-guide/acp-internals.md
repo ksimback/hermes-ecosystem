@@ -28,6 +28,10 @@ hermes acp / hermes-acp / python -m acp_adapter
 
 Stdout is reserved for ACP JSON-RPC transport. Human-readable logs go to stderr.
 
+### Gateway terminal projection
+
+`acp_adapter/gateway_server.py` waits for the completion of the exact submitted admission. A cancelled admission returns `stopReason: cancelled`; a failed admission raises an ACP request error rather than reporting `end_turn`. Ordinary completion still returns `end_turn`. Cancellation while waiting for the model suppresses the local `Operation interrupted: waiting for model response` status message; actual partial assistant text remains visible. Terminal outcomes come from the gateway's structured execution result, not from assistant prose or a session-wide cancellation flag.
+
 ## Major components
 
 ### `HermesACPAgent`
@@ -75,6 +79,8 @@ Bridged callbacks:
 -   `thinking_callback` (currently set to `None` in the ACP bridge — reasoning is forwarded through `step_callback` instead)
 -   `step_callback`
 
+Every ACP tool call reaches a terminal status: `tool.completed` closes the call with its own result (`completed` / `failed`), the `step_callback` `prev_tools` pass is only a fallback for runtimes that never project a completion, and anything still open when the turn ends — a denied or blocked call, an interrupted one — is marked `failed` before the response is returned.
+
 Because `AIAgent` runs in a worker thread while ACP I/O lives on the main event loop, the bridge uses:
 
 ```
@@ -109,7 +115,10 @@ Examples:
 ```
 new_session(cwd)
   -> create SessionState
-  -> create AIAgent(platform="acp", enabled_toolsets=["hermes-acp"])
+  -> create AIAgent(platform="acp", enabled_toolsets=<_get_platform_tools(config, "acp"), as on the
+                   gateway: platform_toolsets.acp (default hermes-acp) plus the resolver's extras
+                   such as plugin toolsets, with its admitted MCP servers keyed mcp-<server>>,
+                   disabled_toolsets=<agent.disabled_toolsets>)
   -> bind task_id/session_id to cwd override
 
 prompt(..., session_id)
@@ -120,6 +129,8 @@ prompt(..., session_id)
   -> update session history
   -> emit final agent message chunk
 ```
+
+A turn that ends in a terminal failure (provider refusal, non-retryable error, exhausted retries, interrupt before any reply) is closed by the core loop with a Hermes-authored assistant row ("Your request was not processed…" / "This turn did not complete…") so the durable transcript never ends on an open `user` row. Without it the next prompt would be merged into the failed request and replayed. Context-overflow failures are exempt: their repair is session rotation, not another row.
 
 ### Cancelation
 
@@ -171,7 +182,7 @@ ACP temporarily installs an approval callback on the terminal tool during prompt
 
 ## Related files
 
--   `tests/acp/` — ACP test suite
+-   `tests/acp_adapter/` — ACP test suite
 -   `toolsets.py` — `hermes-acp` toolset definition
 -   `hermes_cli/main.py` — `hermes acp` CLI subcommand
 -   `pyproject.toml` — `[acp]` optional dependency + `hermes-acp` script

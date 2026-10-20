@@ -124,3 +124,29 @@ test("validateStarData rejects duplicates and invalid counts", () => {
     /Duplicate repo|Invalid star count/,
   );
 });
+
+test("fetchGitHubStars chunks large catalogs and merges responses", async () => {
+  const many = Array.from({ length: 5 }, (_, i) => ({ owner: "o", repo: `r${i}`, stars: 1 }));
+  const bodies = [];
+  const result = await fetchGitHubStars({
+    repoList: many,
+    token: "token",
+    chunkSize: 2,
+    fetchImpl: async (url, options) => {
+      const body = JSON.parse(options.body);
+      bodies.push(body);
+      const data = {};
+      for (const key of Object.keys(body.variables)) {
+        const m = key.match(/^owner(\d+)$/);
+        if (m) data[`repo${m[1]}`] = { stargazerCount: Number(m[1]) + 10, updatedAt: "2026-01-01T00:00:00Z", pushedAt: null };
+      }
+      if (body.query.includes("atlas:")) data.atlas = { stargazerCount: 42 };
+      return githubResponse({ data });
+    },
+  });
+  assert.equal(bodies.length, 3);
+  assert.equal(bodies.filter((b) => b.query.includes("atlas:")).length, 1);
+  assert.equal(result.atlasStars, 42);
+  assert.deepEqual(result.starData.map((r) => r.stars), [10, 11, 12, 13, 14]);
+  assert.equal(result.complete, true);
+});

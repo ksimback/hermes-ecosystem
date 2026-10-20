@@ -10,6 +10,10 @@ Get Started →
 
 ](/docs/getting-started/installation)[
 
+Explore Bot Mode
+
+](/docs/user-guide/bot-mode)[
+
 Download Desktop
 
 ](https://hermes-agent.nousresearch.com/)[
@@ -28,7 +32,9 @@ To easily install the command-line and desktop applications, [download the Herme
 
 For a command-line only install without Hermes Desktop, run:
 
-#### Linux / macOS / WSL2 / Android (Termux)
+For aarch64 Android devices, use the separate [Termux APT guide](/docs/getting-started/termux).
+
+#### Linux / macOS / WSL2
 
 ```
 curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
@@ -42,7 +48,7 @@ Run in powershell:
 iex (irm https://hermes-agent.nousresearch.com/install.ps1)
 ```
 
-See the full **[Installation Guide](/docs/getting-started/installation)** for what the installer does, the per-user vs root layout, and Windows-specific notes. For the complete platform support matrix, see **[Platform Support](/docs/getting-started/platform-support)**.
+See the full **[Installation Guide](/docs/getting-started/installation)** for what the installer does, installation ownership and data locations, and Windows-specific notes. For the complete platform support matrix, see **[Platform Support](/docs/getting-started/platform-support)**.
 
 Fastest path to a working agent
 
@@ -56,7 +62,7 @@ It's not a coding copilot tethered to an IDE or a chatbot wrapper around a singl
 
 🚀 **[Installation](/docs/getting-started/installation)**
 
-Install in 60 seconds on Linux, macOS, WSL2, native Windows, or Android
+Install in 60 seconds on Linux, macOS, WSL2, native Windows, Nix & NixOS or Android
 
 📖 **[Quickstart Tutorial](/docs/getting-started/quickstart)**
 
@@ -70,9 +76,13 @@ Find the right docs for your experience level
 
 Config file, providers, models, and options
 
-💬 **[Messaging Gateway](/docs/user-guide/messaging)**
+💬 **[Messaging Gateway](/docs/user-guide/messaging/)**
 
 Set up Telegram, Discord, Slack, WhatsApp, Teams, or more
+
+🤖 **[Bot Mode](/docs/user-guide/bot-mode)**
+
+Named Bots with their own model, memory, skills, routines, and chats
 
 🔧 **[Tools & Toolsets](/docs/user-guide/features/tools)**
 
@@ -129,10 +139,11 @@ Common questions and solutions
 ## Key Features
 
 -   **A closed learning loop** — Agent-curated memory with periodic nudges, autonomous skill creation, skill self-improvement during use, FTS5 cross-session recall with LLM summarization, and [Honcho](https://github.com/plastic-labs/honcho) dialectic user modeling
--   **Runs anywhere, not just your laptop** — 6 terminal backends: local, Docker, SSH, Daytona, Singularity, Modal. Daytona and Modal offer serverless persistence — your environment hibernates when idle, costing nearly nothing
+-   **Runs anywhere, not just your laptop** — 7 terminal backends: local, Docker, SSH, Daytona, Singularity, Modal, Vercel Sandbox. Daytona and Modal offer serverless persistence — your environment hibernates when idle, costing nearly nothing
 -   **Lives where you do** — CLI, Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Mattermost, Email, SMS, DingTalk, Feishu, WeCom, Weixin, QQ Bot, Yuanbao, BlueBubbles, Home Assistant, Microsoft Teams, Google Chat, and more — 20+ platforms from one gateway
 -   **Built by model trainers** — Created by [Nous Research](https://nousresearch.com), the lab behind Hermes, Nomos, and Psyche. Works with [Nous Portal](https://portal.nousresearch.com), [OpenRouter](https://openrouter.ai), OpenAI, or any endpoint
 -   **Scheduled automations** — Built-in cron with delivery to any platform
+-   **[Bot Mode](/docs/user-guide/bot-mode)** — Build a durable team of specialist Bots that work together in group chats and through `@mentions`
 -   **Delegates & parallelizes** — Spawn isolated subagents for parallel workstreams. Programmatic Tool Calling via `execute_code` collapses multi-step pipelines into single inference calls
 -   **Open standard skills** — Compatible with [agentskills.io](https://agentskills.io). Skills are portable, shareable, and community-contributed via the Skills Hub
 -   **Full web control** — Search, extract, browse, vision, image generation, TTS — one subscription via [Nous Portal](/docs/integrations/nous-portal) bundles all of them
@@ -143,7 +154,7 @@ Common questions and solutions
 
 Machine-readable entry points to this documentation:
 
--   **[`/llms.txt`](/docs/assets/files/llms-faaf9398aa5828403fd56f6be7989c9f.txt)** — curated index of every doc page with short descriptions. ~17 KB, safe to load into an LLM context.
--   **[`/llms-full.txt`](/docs/assets/files/llms-full-3f7f7630d4dec0e77f5f81c0f76df96b.txt)** — every doc page concatenated into a single markdown file for one-shot ingestion. ~1.8 MB.
+-   **[`/llms.txt`](/docs/assets/files/llms-b4c4b58a7933861a0a38fec16a3afa92.txt)** — curated index of every doc page with short descriptions. ~17 KB, safe to load into an LLM context.
+-   **[`/llms-full.txt`](/docs/assets/files/llms-full-ed26ceb2936d5c099d31dbe05fa3b5dd.txt)** — every doc page concatenated into a single markdown file for one-shot ingestion. ~1.8 MB.
 
 Both files also resolve at `/docs/llms.txt` and `/docs/llms-full.txt`. Generated fresh on every deploy.

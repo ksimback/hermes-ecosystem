@@ -2,6 +2,8 @@
 
 **Source:** https://hermes-agent.nousresearch.com/docs/user-guide/messaging/dingtalk
 
+Python dependency commands on this page use a [PM-prepared source checkout](/docs/reference/package-management#developer-workflow). After a dependency change, reactivate the checkout and restart Hermes.
+
 Hermes Agent integrates with DingTalk (钉钉) as a chatbot, letting you chat with your AI assistant through direct messages or group chats. The bot connects via DingTalk's Stream Mode — a long-lived WebSocket connection that requires no public URL or webhook server — and replies using markdown-formatted messages through DingTalk's session webhook API.
 
 Before setup, here's the part most people want to know: how Hermes behaves once it's in your DingTalk workspace.
@@ -50,14 +52,10 @@ This guide walks you through the full setup process — from creating your DingT
 Install the required Python packages:
 
 ```
-cd ~/.hermes/hermes-agent && uv pip install -e ".[dingtalk]"
+cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['dingtalk'], explicit=True)"
 ```
 
-Or individually:
-
-```
-pip install dingtalk-stream httpx alibabacloud-dingtalk
-```
+This extra supplies the SDKs alongside core Hermes dependencies:
 
 -   `dingtalk-stream` — DingTalk's official SDK for Stream Mode (WebSocket-based real-time messaging)
 -   `httpx` — async HTTP client used for sending replies via session webhooks
@@ -242,7 +240,7 @@ display:
 **Fix**: Install it:
 
 ```
-pip install dingtalk-stream httpx
+python -c "import pm; pm.sync_venv(['dingtalk'], explicit=True)"
 ```
 
 ### "DINGTALK\_CLIENT\_ID and DINGTALK\_CLIENT\_SECRET required"

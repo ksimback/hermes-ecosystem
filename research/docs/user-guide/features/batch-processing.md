@@ -129,12 +129,6 @@ all
 
 Only process first N samples from dataset
 
-`--max_tokens`
-
-model default
-
-Maximum tokens per model response
-
 ### Provider Routing (OpenRouter)
 
 Parameter

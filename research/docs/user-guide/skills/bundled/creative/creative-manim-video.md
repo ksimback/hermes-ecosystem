@@ -18,9 +18,21 @@ Version
 
 `1.0.0`
 
+Author
+
+SHL0MS, Hermes Agent
+
+License
+
+MIT
+
 Platforms
 
 linux, macos, windows
+
+Tags
+
+`Manim`, `Animation`, `Math`, `Video`
 
 ## Reference: full SKILL.md
 

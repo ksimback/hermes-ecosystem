@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ccf/agentcairn — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Agentcairn provides durable context for coding agents by storing memory as Markdown files in a user-controlled vault. It uses DuckDB as a replaceable retrieval…">
+<meta name="description" content="agentcairn provides a cross-project memory system for coding agents that stores context as Markdown files in a local vault. It uses a disposable DuckDB index…">
 <link rel="canonical" href="https://hermesatlas.com/projects/ccf/agentcairn">
 <meta property="og:title" content="ccf/agentcairn — Hermes Atlas">
-<meta property="og:description" content="Agentcairn provides durable context for coding agents by storing memory as Markdown files in a user-controlled vault. It uses DuckDB as a replaceable retrieval…">
+<meta property="og:description" content="agentcairn provides a cross-project memory system for coding agents that stores context as Markdown files in a local vault. It uses a disposable DuckDB index…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/ccf/agentcairn">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,14 +16,14 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ccf/agentcairn — Hermes Atlas">
-<meta name="twitter:description" content="Agentcairn provides durable context for coding agents by storing memory as Markdown files in a user-controlled vault. It uses DuckDB as a replaceable retrieval…">
+<meta name="twitter:description" content="agentcairn provides a cross-project memory system for coding agents that stores context as Markdown files in a local vault. It uses a disposable DuckDB index…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=agentcairn&amp;subtitle=Long-term%2C+cross-project+memory+for+AI+coding+agents.+Your+own+Obsidian+vault+as+the+source+of+truth.+Daemonless+and+without+opaque+databases%2C+your+memory+belongs+to+you.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "map", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
     { "@type": "ListItem", "position": 2, "name": "memory &amp; context", "item": "https://hermesatlas.com/lists/best-memory-providers" },
     { "@type": "ListItem", "position": 3, "name": "agentcairn" }
   ]
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/ccf/agentcairn#software",
   "name": "agentcairn",
-  "description": "Agentcairn provides durable context for coding agents by storing memory as Markdown files in a user-controlled vault. It uses DuckDB as a replaceable retrieval cache and supports cross-agent memory sharing.",
+  "description": "agentcairn provides a cross-project memory system for coding agents that stores context as Markdown files in a local vault. It uses a disposable DuckDB index for retrieval and supports integration with tools like Claude Code and Codex via MCP plugins.",
   "url": "https://hermesatlas.com/projects/ccf/agentcairn",
   "codeRepository": "https://github.com/ccf/agentcairn",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "ccf",
     "url": "https://github.com/ccf"
   },
-  "dateModified": "2026-07-30T03:52:20.000Z",
+  "dateModified": "2026-10-15T21:44:45.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 26
+    "userInteractionCount": 66
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,19 +81,20 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">217·repos</span>
-    <span id="meta-version">hermes·v0.19.0</span>
+    <span id="meta-count">262·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
-    <a href="/" class="active">map</a>
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
     <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
     <a href="/use-cases/">use cases</a>
     <a href="/guide/">handbook</a>
     <a href="/masterclass/">masterclass</a>
     <a href="/dev/">dev</a>
     <a href="/reports/">reports</a>
-    <a href="/#newsletter">newsletter</a>
     <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
   </nav>
   <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
@@ -107,7 +108,7 @@
 </header>
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span><a href="/lists/best-memory-providers">memory &amp; context</a><span class="sep">/</span>agentcairn
+  <a href="/">home</a><span class="sep">/</span><a href="/lists/best-memory-providers">memory &amp; context</a><span class="sep">/</span>agentcairn
 </div>
 
 <main id="main">
@@ -119,11 +120,11 @@
   <p class="project-desc">Long-term, cross-project memory for AI coding agents. Your own Obsidian vault as the source of truth. Daemonless and without opaque databases, your memory belongs to you.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 26</span>
+    <span class="stars">★ 66</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-07-30</span>
+    <span><span class="meta-label">updated</span>2026-10-15</span>
   </div>
 
   <div class="actions">
@@ -135,14 +136,16 @@
 
 
 
+
+
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Agentcairn provides durable context for coding agents by storing memory as Markdown files in a user-controlled vault. It uses DuckDB as a replaceable retrieval cache and supports cross-agent memory sharing.</p>
+    <p class="summary-text">agentcairn provides a cross-project memory system for coding agents that stores context as Markdown files in a local vault. It uses a disposable DuckDB index for retrieval and supports integration with tools like Claude Code and Codex via MCP plugins.</p>
     <ul class="summary-highlights">
-      <li>Stores memory as inspectable Markdown files</li>
-      <li>Uses DuckDB as a replaceable retrieval cache</li>
-      <li>Supports Claude Code and Codex</li>
+      <li>Stores durable memory as inspectable Markdown files with frontmatter metadata.</li>
+      <li>Uses a local DuckDB cache for hybrid search and retrieval.</li>
+      <li>Integrates with coding agents via MCP servers and host-specific plugins.</li>
     </ul>
   </div>
 </section>
@@ -444,6 +447,7 @@ auto_recall_scope = "project"  # use "all" only as an explicit cross-project opt
 <h3>Privacy and limits</h3>
 <ul>
 <li><strong>The vault is plaintext by design, not encrypted storage.</strong> AgentCairn redacts recognized credential patterns before its automated body/title/tag writes; unknown patterns and hand edits remain your responsibility.</li>
+<li><strong>Vault files are owner-only (<code>0600</code>/<code>0700</code>).</strong> Because the vault is plaintext and redaction is best-effort, the file mode is effectively its only access control. Shared-GID setups (e.g. two Docker containers on the same group but different UIDs) need group access, so <code>vault_group_writable = true</code> widens <strong>new</strong> vault notes and directories to <code>0660</code>/<code>0770</code>. It is opt-in on purpose: on macOS every local user's primary group is <code>staff</code>, so a group-readable default would expose your memories to other accounts on the machine. The knob never widens anything outside the vault — the index, ledgers, lock files, and <code>~/.agentcairn/config.toml</code> stay private.</li>
 <li><strong>Cloud features are explicit egress.</strong> The default stays local. Opting into a cloud embedder or LLM judge sends the remaining redacted text to that provider.</li>
 <li><strong>The project is beta.</strong> Standalone use requires Python 3.11+, and the first local model load can take time. The published retrieval evidence is strongest for conversational memory, not a universal code-search claim.</li>
 <li><strong>Ambient behavior varies by host.</strong> The matrix above is intentional: Cursor and Antigravity rely on sweep capture; generic MCP hosts may expose tools without lifecycle hooks.</li>
@@ -476,11 +480,11 @@ uv run pre-commit run --all-files
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 62.1K</div>
+        <div class="stars">★ 67.5K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 18.9K</div>
+        <div class="stars">★ 51.6K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -488,23 +492,23 @@ uv run pre-commit run --all-files
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 352</div>
+        <div class="stars">★ 381</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
-        <div class="stars">★ 195</div>
+        <div class="stars">★ 211</div>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/Signet-AI/signetai">
-        <div class="stars">★ 227</div>
+        <div class="stars">★ 310</div>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 231</div>
+        <div class="stars">★ 306</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
-        <div class="stars">★ 45</div>
+        <div class="stars">★ 52</div>
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
     </div>

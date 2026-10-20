@@ -15,6 +15,7 @@ on:
     paths:
       - 'data/repos.json'
       - 'data/lists.json'
+      - 'data/skills.json'
       - 'data/latest-release.json'
       - 'scripts/build-pages.js'
   workflow_dispatch: {}
@@ -29,7 +30,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           # Full history so computeAddedDates() in build-pages.js can walk the
           # git log of data/repos.json for per-repo first-seen dates. A shallow
@@ -38,7 +39,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
 
@@ -48,7 +49,7 @@ jobs:
       - name: Generate summaries
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
         run: node scripts/generate-summaries.js
 
       - name: Build project pages
@@ -58,6 +59,8 @@ jobs:
 
       - name: Check for changes
         id: diff
+        env:
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           # Stage generated artifacts through a repo-owned manifest instead of
           # hand-maintaining pathspecs in this workflow. If a generator emits a
@@ -65,6 +68,16 @@ jobs:
           # artifact cannot be silently dropped from the bot commit.
           node scripts/stage-build-artifacts.js
           if git diff --cached --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          # A commit that only restamps star counts and dates carries no
+          # content, but it moves main and flips every open PR that carries
+          # regenerated artifacts to CONFLICTING, where GitHub runs no CI at
+          # all (#958). Skip it on push/dispatch builds; the daily scheduled
+          # build always commits, so freshness still lands once a day. The
+          # classifier exits non-zero when unsure, which falls through to the
+          # normal commit.
+          elif [ "$EVENT_NAME" != "schedule" ] && node scripts/classify-rebuild-diff.js; then
+            echo "Only star counts / date stamps changed - skipping the bot commit (daily scheduled build will land it)."
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             PAGES=$(find projects -name '*.html' | wc -l)
@@ -78,7 +91,7 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          NOUS_API_KEY: ${{ secrets.NOUS_API_KEY }}
         run: |
           git config user.name "Hermes Atlas Bot"
           git config user.email "bot@hermesatlas.com"
@@ -144,13 +157,13 @@ jobs:
       # Actions tab. Opens (or comments on a deduped) workflow-issue.
       - name: Escalate on failure
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const wf = 'build-pages';
             const title = `[Workflow] ${wf} failed`;
             const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const body = `The **${wf}** workflow failed — it gates what is live on hermesatlas.com.\n\n**Run:** ${runUrl}\n\nCheck the run log (npm install, generator error, OpenRouter/GitHub API, or the push-retry loop).`;
+            const body = `The **${wf}** workflow failed — it gates what is live on hermesatlas.com.\n\n**Run:** ${runUrl}\n\nCheck the run log (npm install, generator error, Nous Portal credits/GitHub API, or the push-retry loop).`;
             const existing = await github.rest.issues.listForRepo({
               owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'workflow-issue'
             });

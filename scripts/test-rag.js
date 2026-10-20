@@ -3,9 +3,9 @@
  * test-rag.js — Local RAG pipeline tests
  *
  * Tests query rewriting, retrieval quality, and other RAG improvements
- * without deploying. Uses the same OpenRouter calls as production.
+ * without deploying. Uses the same provider calls as production.
  *
- * Usage: OPENROUTER_API_KEY=... node scripts/test-rag.js
+ * Usage: NOUS_API_KEY=... node scripts/test-rag.js
  */
 
 import fs from "fs";
@@ -13,13 +13,13 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { combinedRetrievalScore, enrichChunkMetadata } from "../lib/rag-scoring.js";
 import { loadChunkStore, META_FILENAME } from "../lib/chunk-store.js";
+import { EMBEDDINGS_URL, LLM_API_KEY, PRIMARY_MODEL, fetchChatCompletion } from "../lib/llm.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 
-const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
-if (!OPENROUTER_KEY) {
-  console.error("Error: OPENROUTER_API_KEY required");
+if (!LLM_API_KEY) {
+  console.error("Error: NOUS_API_KEY required");
   process.exit(1);
 }
 
@@ -85,24 +85,21 @@ ${historyText}
 Latest: ${message}
 Rewritten:`;
 
-    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${OPENROUTER_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        models: [
-          "google/gemini-3.1-flash-lite-preview",
-          "qwen/qwen3.5-flash-02-23",
-          "mistralai/mistral-small-2603",
-        ],
-        messages: [{ role: "user", content: rewritePrompt }],
-        max_tokens: 100,
-        temperature: 0,
-        stop: ["\n\n", "History:", "Latest:"],
-      }),
-    });
+    // Mirrors rewriteQuery() in api/chat.js (one model per request; the
+    // provider has no server-side fallback).
+    let res;
+    for (const model of ["google/gemini-3.1-flash-lite-preview", PRIMARY_MODEL]) {
+      res = await fetchChatCompletion({
+        model,
+        body: {
+          messages: [{ role: "user", content: rewritePrompt }],
+          max_tokens: 100,
+          temperature: 0,
+          stop: ["\n\n", "History:", "Latest:"],
+        },
+      });
+      if (res.ok) break;
+    }
 
     if (!res.ok) {
       console.warn("  [rewrite] API failed, using original");
@@ -253,9 +250,9 @@ function cosineSimilarity(a, b) {
 async function getEmbedding(text, corpusDim) {
   const body = { model: "openai/text-embedding-3-small", input: [text] };
   if (corpusDim && corpusDim !== 1536) body.dimensions = corpusDim;
-  const res = await fetch("https://openrouter.ai/api/v1/embeddings", {
+  const res = await fetch(EMBEDDINGS_URL, {
     method: "POST",
-    headers: { Authorization: `Bearer ${OPENROUTER_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${LLM_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`Embedding error: ${res.status}`);

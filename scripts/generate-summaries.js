@@ -10,7 +10,7 @@
  *   - data/summaries.json     (per-repo summaries + highlights)
  *   - data/list-summaries.json (per-list contextual descriptions)
  *
- * Usage: GITHUB_TOKEN=... OPENROUTER_API_KEY=... node scripts/generate-summaries.js
+ * Usage: GITHUB_TOKEN=... NOUS_API_KEY=... node scripts/generate-summaries.js
  */
 
 import fs from "fs";
@@ -18,7 +18,7 @@ import path from "path";
 import crypto from "crypto";
 import { fileURLToPath } from "url";
 import { githubHeaders, fetchReadme } from "../lib/github.js";
-import { callOpenRouterJSON } from "../lib/openrouter.js";
+import { callLLMJSON, LLM_API_KEY, PRIMARY_MODEL } from "../lib/llm.js";
 import {
   listSummaryNeedsRegeneration,
   pruneObjectKeys,
@@ -31,6 +31,7 @@ import {
   chunkList,
   mergeEntryMaps,
   findMissingEntries,
+  pickSingleEntry,
   buildListPrompt,
 } from "../lib/list-summary-batching.js";
 
@@ -38,14 +39,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
 
 if (!GITHUB_TOKEN) {
   console.error("Error: GITHUB_TOKEN environment variable required");
   process.exit(1);
 }
-if (!OPENROUTER_KEY) {
-  console.error("Error: OPENROUTER_API_KEY environment variable required");
+if (!LLM_API_KEY) {
+  console.error("Error: NOUS_API_KEY environment variable required");
   process.exit(1);
 }
 
@@ -205,13 +205,12 @@ async function main() {
     // Generate summary
     console.log(`  ${key}: generating summary...`);
     try {
-      const result = await callOpenRouterJSON({
+      const result = await callLLMJSON({
         system: SYSTEM_PROMPT,
         user: buildProjectPrompt(
           { ...repo, audit: existing?.audit, auditNotes: existing?.auditNotes },
           readmeRaw,
         ),
-        apiKey: OPENROUTER_KEY,
         maxTokens: 600,
       });
 
@@ -238,7 +237,7 @@ async function main() {
         highlights: result.highlights.slice(0, 3),
         readmeHash: hash,
         generatedAt: new Date().toISOString(),
-        model: "google/gemma-4-31b-it:free",
+        model: PRIMARY_MODEL,
         version: SUMMARY_VERSION,
         audit: "pass",
       };
@@ -318,10 +317,9 @@ async function main() {
       const chunks = chunkList(rankedMembers, LIST_CHUNK_SIZE);
       const chunkMaps = [];
       for (const chunk of chunks) {
-        const chunkEntries = await callOpenRouterJSON({
+        const chunkEntries = await callLLMJSON({
           system: SYSTEM_PROMPT,
           user: buildListPrompt(list, chunk, summaries),
-          apiKey: OPENROUTER_KEY,
           maxTokens: 3200,
         });
         chunkMaps.push(chunkEntries);
@@ -329,15 +327,58 @@ async function main() {
       }
       const entries = mergeEntryMaps(chunkMaps);
 
-      // Fail loud if any member lost its description in a chunk (e.g. a chunk
-      // still truncated, or a model dropped a key). Same failure path as a
-      // single-call failure: throw -> caught below -> listsFailed++ -> the run
-      // throws at the end. The cache is not half-written.
-      const missing = findMissingEntries(entries, memberKeys);
+      // A model can return valid JSON that silently omits a member's key
+      // (run 33409296779 dropped one repo out of 34 and failed the whole
+      // build). Give each dropped member one targeted retry — a fresh call
+      // scoped to that single repo — before failing loud. One repo per call
+      // makes the response unambiguous, so a key the model misspells again is
+      // still recoverable (see pickSingleEntry).
+      let missing = findMissingEntries(entries, memberKeys);
+      if (missing.length > 0) {
+        console.warn(
+          `  ${list.slug}: model dropped ${missing.length} entr${missing.length === 1 ? "y" : "ies"}, retrying: ${missing.join(", ")}`,
+        );
+        const missingSet = new Set(missing);
+        const retryMembers = rankedMembers.filter((r) =>
+          missingSet.has(`${r.owner}/${r.repo}`),
+        );
+        for (const member of retryMembers) {
+          await sleep(DELAY_MS);
+          const key = `${member.owner}/${member.repo}`;
+          const retryEntries = await callLLMJSON({
+            system: SYSTEM_PROMPT,
+            user: buildListPrompt(list, [member], summaries),
+            maxTokens: 3200,
+          });
+          // Only ever writes the key we asked for — a stray key must not
+          // overwrite a good description from the original pass.
+          const description = pickSingleEntry(retryEntries, key);
+          if (description) entries[key] = description;
+        }
+        missing = findMissingEntries(entries, memberKeys);
+      }
+
+      // Fail loud if any member still lacks a description (e.g. a chunk
+      // still truncated, or the retry dropped the key again). Same failure
+      // path as a single-call failure: throw -> caught below -> listsFailed++
+      // -> the run throws at the end. The cache is not half-written.
       if (missing.length > 0) {
         throw new Error(
           `Missing list descriptions after batching: ${missing.join(", ")}`,
         );
+      }
+
+      // A model can also emit a near-miss key (wrong case, mangled owner)
+      // next to the real one. Every member was just proven present above,
+      // so a stray is dead weight, not data loss — drop it (logged) instead
+      // of failing the whole build on it.
+      const memberKeySet = new Set(memberKeys);
+      const strays = Object.keys(entries).filter((k) => !memberKeySet.has(k));
+      if (strays.length > 0) {
+        console.warn(
+          `  ${list.slug}: dropping ${strays.length} unexpected key(s) from model output: ${strays.join(", ")}`,
+        );
+        for (const k of strays) delete entries[k];
       }
 
       validateListEntries(entries, memberKeys);

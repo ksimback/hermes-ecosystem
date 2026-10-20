@@ -9,7 +9,7 @@
 ## Prerequisites
 
 -   The **simplex-chat** CLI installed and running as a daemon
--   Python package **websockets** (`pip install websockets`)
+-   Python package **websockets** (`hermes pm repair`)
 
 ## Install simplex-chat
 
@@ -67,7 +67,7 @@ WebSocket URL of the simplex-chat daemon
 
 Recommended
 
-Comma-separated allowlist. Each entry can be a numeric `contactId` **or** a display name — both forms work.
+Comma-separated allowlist of numeric `contactId`s. Display names are **not** accepted — any contact can change theirs.
 
 `SIMPLEX_ALLOW_ALL_USERS`
 
@@ -105,15 +105,15 @@ Optional
 
 Quiet-period seconds (default: `0.8`) used to concatenate rapid-fire inbound text messages into one event
 
-## Find your contact ID or display name
+## Find your contact ID
 
-After starting the daemon, open a conversation with your agent contact. The numeric `contactId` appears in session logs. If you'd rather use the display name shown in the SimpleX UI, that works too — `SIMPLEX_ALLOWED_USERS` accepts either form.
+After starting the daemon, open a conversation with your agent contact. The numeric `contactId` appears in session logs (or run `/contacts` in the daemon). `SIMPLEX_ALLOWED_USERS` matches only this ID: display names are chosen by the contact and can collide, so they are ignored.
 
 ## Authorization
 
 By default **all contacts are denied**. You must either:
 
-1.  Set `SIMPLEX_ALLOWED_USERS` to a comma-separated list of `contactId`s and/or display names (e.g. `SIMPLEX_ALLOWED_USERS=4,alice` matches either contactId 4 or the contact whose display name is "alice"), or
+1.  Set `SIMPLEX_ALLOWED_USERS` to a comma-separated list of numeric `contactId`s (e.g. `SIMPLEX_ALLOWED_USERS=4,9`), or
 2.  Use **DM pairing** — send any message to the bot and it will reply with a pairing code. Enter that code via `hermes pairing approve simplex <CODE>`.
 
 ## Group chats
@@ -127,6 +127,18 @@ SIMPLEX_GROUP_ALLOWED=*              # any group the bot is in
 ```
 
 Address groups by prefixing the chat ID with `group:`, e.g. `simplex:group:12` as a cron `deliver=` target or in a `hermes send` call.
+
+## Sending with `hermes send`
+
+SimpleX works as a standalone send target — the daemon must be running, but a live gateway is not required for plain text:
+
+```
+hermes send --to simplex:alice "hello"          # DM by contact display name
+hermes send --to simplex:group:12 "hello"       # group by numeric ID
+hermes send --to simplex "hello"                # SIMPLEX_HOME_CHANNEL
+```
+
+While the gateway is running, the adapter enumerates your contacts and allowed groups into the channel directory (refreshed every 5 minutes), so `hermes send --list` shows them by name. Before the first gateway run the platform still appears in `--list` with a "no channels discovered yet" hint — direct targets like the ones above work regardless.
 
 ## Attachments
 
@@ -164,6 +176,6 @@ hermes send simplex:<contact-id> "Done!"
 
 **"Cannot reach daemon"** — Ensure `simplex-chat -p 5225` is running and the port matches `SIMPLEX_WS_URL`.
 
-**"websockets not installed"** — Run `pip install websockets`.
+**"websockets not installed"** — Run `hermes pm repair`.
 
 **Messages not received** — Check that the contact's ID is in `SIMPLEX_ALLOWED_USERS` or approve them via DM pairing.

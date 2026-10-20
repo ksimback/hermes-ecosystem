@@ -10,7 +10,7 @@ This guide walks you through running Hermes Agent on a [Nous Portal](https://por
 -   A web browser on the machine you're setting up (or SSH port forwarding — see [OAuth over SSH](/docs/guides/oauth-over-ssh))
 -   About 5 minutes
 
-You do **not** need: an OpenAI key, an Anthropic key, a Firecrawl account, a FAL account, a Browser Use account, or any other per-vendor credential. That's the whole point.
+You do **not** need: an OpenAI key, an Anthropic key, a web search account, a FAL account, a Browser Use account, or any other per-vendor credential. That's the whole point.
 
 ## 1\. Get a subscription
 
@@ -87,7 +87,7 @@ Try something that exercises both the model and the Tool Gateway:
 Hey, search the web for "Hermes Agent release notes" and summarize the top 3 hits.
 ```
 
-You should see Hermes call `web_search` (Firecrawl-backed, through the gateway) and respond with a summary. If the search runs and the response makes sense, you're done — the Portal is wired up end to end.
+You should see Hermes call `web_search` (through the gateway) and respond with a summary. If the search runs and the response makes sense, you're done — the Portal is wired up end to end.
 
 ## 5\. Pick the model you actually want
 
@@ -168,7 +168,7 @@ The cron job runs unattended, calls the model + web search + summarization all t
 
 ## Profiles and multi-user setups
 
-If you use [Hermes profiles](/docs/user-guide/profiles) (e.g. a separate config per project), the Portal refresh token is automatically shared across all profiles via a shared token store. Sign in once on any profile, and the rest pick it up automatically.
+If you use [Hermes profiles](/docs/user-guide/profiles) (e.g. a separate config per project), each profile is an independent credential island: a profile that has never signed in to the Portal fails closed instead of adopting another profile's session. Sign in once per profile with `hermes -p <name> portal` — when a shared Portal session already exists on the machine it offers to import it without a browser round-trip, and from then on the shared token store keeps that profile's token current. See [Profile setup](/docs/integrations/nous-portal#profile-setup).
 
 For team setups where multiple humans share a machine, each human has their own Portal account → each home directory holds its own `~/.hermes/auth.json` → no token sharing across users. This is the right boundary.
 
@@ -258,7 +258,7 @@ With Portal
 
 1× OAuth refresh token, no `.env` keys
 
-1× Firecrawl key for web
+1× web search key
 
 Web routed through gateway
 

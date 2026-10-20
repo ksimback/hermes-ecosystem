@@ -2,7 +2,7 @@
 
 **Source:** https://hermes-agent.nousresearch.com/docs/developer-guide/agent-loop
 
-The core orchestration engine is `run_agent.py`'s `AIAgent` class — a large file that handles everything from prompt assembly to tool dispatch to provider failover.
+The core orchestration engine is the `AIAgent` class. `run_agent.py` is now a thin facade: the loop itself lives in `agent/conversation_loop.py`, each turn phase in `agent/turn_*.py` (iteration prep, API call, API error, overflow, truncation, recovery), constructor wiring in `agent/agent_init.py`, and everything from prompt assembly to tool dispatch to provider failover in focused `agent/*.py` modules mixed into `AIAgent`.
 
 ## Core Responsibilities
 
@@ -165,7 +165,7 @@ for each tool_call in response.tool_calls:
 
 ### Agent-Level Tools
 
-Some tools are intercepted by `run_agent.py` _before_ reaching `handle_function_call()`:
+Some tools are intercepted by `agent/tool_executor.py` (called from `agent/conversation_loop.py`) _before_ reaching `handle_function_call()`:
 
 Tool
 
@@ -265,6 +265,7 @@ When the primary model fails (429 rate limit, 5xx server error, 401/403 auth err
 2.  Try each fallback in order
 3.  On success, continue the conversation with the new provider
 4.  On 401/403, attempt credential refresh before failing over
+5.  A Codex Responses turn that stalls on reasoning-only output (three consecutive continuations with no visible text or tool call) also fails over to the next fallback with reason `incomplete_response`; if the stall consumed the iteration budget, the fallback gets exactly one bounded grace call
 
 The fallback system also covers auxiliary tasks independently — vision, compression, and web extraction each have their own fallback chain configurable via the `auxiliary.*` config section.
 
@@ -299,7 +300,19 @@ Purpose
 
 `run_agent.py`
 
-AIAgent class — the complete agent loop
+`AIAgent` facade — public entry points; loop and turn phases live in `agent/`
+
+`agent/conversation_loop.py`
+
+The agent loop (`run_conversation()` body)
+
+`agent/turn_*.py`
+
+Turn phases: iteration\_prep, api\_call, api\_error, overflow, truncation, recovery
+
+`agent/tool_executor.py`
+
+Tool-call execution and agent-level tool interception
 
 `agent/prompt_builder.py`
 

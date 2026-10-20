@@ -1,4 +1,4 @@
-# Distributed Llm Pretraining Torchtitan
+# Torchtitan
 
 **Source:** https://hermes-agent.nousresearch.com/docs/user-guide/skills/optional/mlops/mlops-torchtitan
 
@@ -192,7 +192,7 @@ context_parallel_degree = 1       # Increase for long sequences
 **Step 2: Set up SLURM script**
 
 ```
-#!/bin/bash
+#!/usr/bin/env bash
 #SBATCH --job-name=llama70b
 #SBATCH --nodes=32
 #SBATCH --ntasks-per-node=8

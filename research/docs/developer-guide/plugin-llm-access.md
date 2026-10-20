@@ -195,6 +195,7 @@ result = ctx.llm.complete(
     agent_id=None,         # optional, gated
     profile=None,          # optional, gated — explicit auth-profile name
     purpose="optional-audit-string",
+    task=None,             # optional — a plugin-registered auxiliary slot
 )
 # → PluginLlmCompleteResult(text, provider, model, agent_id, usage, audit)
 ```
@@ -225,6 +226,7 @@ result = ctx.llm.complete_structured(
     agent_id=None,
     profile=None,
     purpose=None,
+    task=None,             # optional — a plugin-registered auxiliary slot
 )
 # → PluginLlmStructuredResult(text, provider, model, agent_id,
 #                             usage, parsed, content_type, audit)
@@ -238,11 +240,59 @@ Inputs are typed text or image blocks (raw bytes get base64 encoded as a `data:`
 ### Async
 
 ```
-result = await ctx.llm.acomplete(messages=...)
-result = await ctx.llm.acomplete_structured(instructions=..., input=...)
+result = await ctx.llm.acomplete(messages=..., task="classifier")
+result = await ctx.llm.acomplete_structured(
+    instructions=..., input=..., task="classifier"
+)
 ```
 
 Same arguments and result types as their sync counterparts. Use these from gateway adapters, async hooks, or any plugin code already running on an asyncio loop.
+
+### Task-routed auxiliary calls
+
+Pass `task=` to any of the four call shapes when a plugin needs its own configured auxiliary route. Register that task during plugin setup; plugin defaults apply until the operator overrides its provider and model in `auxiliary.<task>`:
+
+```
+def register(ctx):
+    ctx.register_auxiliary_task(
+        "classifier", display_name="Classifier", description="Classify input."
+    )
+
+
+result = ctx.llm.complete(messages=[...], task="classifier")
+result = ctx.llm.complete_structured(instructions=..., input=..., task="classifier")
+```
+
+```
+auxiliary:
+  classifier:
+    provider: openrouter
+    model: vendor/model-id
+```
+
+Plugins may supply provider/model registration defaults for their own tasks. Operator configuration in `auxiliary.<task>` overrides those defaults and controls the deployment choice. A registered task is a first-class slot on every model-assignment surface: the `hermes model` → _Configure auxiliary models_ picker, the dashboard Models page, and Desktop Settings → Models → Auxiliary all list it (after the built-in tasks, under the plugin's `display_name`) and can pin, reset, or flag it as a stale provider pin like any built-in. A plugin can only use a task it registered itself; unknown or foreign task names fail before provider invocation. `allow_task_override: true` is an explicit operator grant for using Hermes built-in auxiliary tasks; it does not permit another plugin's tasks. Omit `task=` (or use `"auto"`) to keep the active main provider/model.
+
+#### Inheriting a built-in slot
+
+`inherit_from` names a built-in auxiliary task (`compression`, `mcp`, `vision`, ...) or a task your plugin (or one loaded before it) already registered. Your task then uses that slot's model until the operator pins one on your task directly:
+
+```
+def register(ctx):
+    ctx.register_auxiliary_task(
+        "classifier",
+        display_name="Classifier",
+        description="Classify input.",
+        inherit_from="compression",         # use whatever compression uses...
+        defaults={"timeout": 90},           # ...but give slow classifiers more room
+    )
+```
+
+-   **Resolved on every read, not copied at registration.** Change `auxiliary.compression` (CLI, dashboard, Desktop, or `config.yaml`) and the classifier follows on its next call, per profile.
+-   **Precedence:** the inherited base, then the plugin's `defaults`, then the operator's `auxiliary.<task>` block.
+-   **An operator pin wins as a whole route.** Once `auxiliary.classifier` sets a non-`auto` provider, a model or a `base_url`, the provider, model, endpoint, key and reasoning effort all come from that block; nothing from the base's route is mixed in. `provider: auto` with an empty model is "no preference", so the task keeps following its base (that is what "Reset all" and Desktop's _Follow <base>_ button write).
+-   **A bad base never breaks the plugin.** An unknown or self-referential `inherit_from` logs a warning and the task registers without inheritance.
+
+The Models settings show an unpinned inheriting task as _inherits Compression · <provider · model>_, and `GET /api/model/auxiliary` returns `inherit_from` plus an `effective` `{provider, model, base_url}` on such rows.
 
 ### Result attributes
 
@@ -273,7 +323,7 @@ The default behaviour is fail-closed. With no `plugins.entries` config block, a 
 -   run any of the four methods against the user's active provider and model,
 -   set request-shaping arguments (`temperature`, `max_tokens`, `timeout`, `system_prompt`, `purpose`, `messages`, `instructions`, `input`, `json_schema`),
 
-…and that's it. `provider=`, `model=`, `agent_id=`, and `profile=` arguments raise `PluginLlmTrustError` until the operator opts in.
+…and that's it. `provider=`, `model=`, `agent_id=`, and `profile=` arguments raise `PluginLlmTrustError` until the operator opts in. Likewise, `task=` can use only the plugin's registered auxiliary task unless the operator grants `allow_task_override` for a built-in task.
 
 **Most plugins never need this section.** A plugin that just calls `ctx.llm.complete(messages=...)` with no overrides runs against whatever the user has active and works zero-config. The block below is only relevant when a plugin specifically wants to pin to a different model or provider than the user.
 
@@ -355,6 +405,12 @@ denied
 denied
 
 `allow_profile_override: true`
+
+built-in `task=`
+
+denied
+
+`allow_task_override: true`
 
 Each override is independently gated. Granting `allow_model_override` does **not** also grant `allow_provider_override` — a plugin trusted to pick a model is still pinned to the user's active provider unless it gets the provider gate as well.
 

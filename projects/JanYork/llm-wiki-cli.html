@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JanYork/llm-wiki-cli — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
+<meta name="description" content="LWC is an agent-driven proactive memory CLI that lets AI agents recall, maintain, and evolve persistent, source-grounded knowledge across sessions. It turns…">
+<link rel="canonical" href="https://hermesatlas.com/projects/JanYork/llm-wiki-cli">
+<meta property="og:title" content="JanYork/llm-wiki-cli — Hermes Atlas">
+<meta property="og:description" content="LWC is an agent-driven proactive memory CLI that lets AI agents recall, maintain, and evolve persistent, source-grounded knowledge across sessions. It turns…">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/JanYork/llm-wiki-cli">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=llm-wiki-cli&amp;subtitle=Agent-driven+proactive+memory+CLI+for+AI+agents+%E2%80%94+autonomously+recall%2C+maintain%2C+and+evolve+persistent%2C+source-grounded+knowledge+across+sessions.&amp;kind=project+%C2%B7+memory">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="JanYork/llm-wiki-cli — Hermes Atlas">
+<meta name="twitter:description" content="LWC is an agent-driven proactive memory CLI that lets AI agents recall, maintain, and evolve persistent, source-grounded knowledge across sessions. It turns…">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=llm-wiki-cli&amp;subtitle=Agent-driven+proactive+memory+CLI+for+AI+agents+%E2%80%94+autonomously+recall%2C+maintain%2C+and+evolve+persistent%2C+source-grounded+knowledge+across+sessions.&amp;kind=project+%C2%B7+memory">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "memory &amp; context", "item": "https://hermesatlas.com/lists/best-memory-providers" },
+    { "@type": "ListItem", "position": 3, "name": "llm-wiki-cli" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/JanYork/llm-wiki-cli#software",
+  "name": "llm-wiki-cli",
+  "description": "LWC is an agent-driven proactive memory CLI that lets AI agents recall, maintain, and evolve persistent, source-grounded knowledge across sessions. It turns curated documents into a durable Wiki with preserved sources, pages, citations, links, indexes, and history, and it does not require embeddings or a vector database. A self-hosted team memory option keeps core memory in local SQLite and Wiki files synchronized through a self-hosted server.",
+  "url": "https://hermesatlas.com/projects/JanYork/llm-wiki-cli",
+  "codeRepository": "https://github.com/JanYork/llm-wiki-cli",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Rust",
+  "license": "https://spdx.org/licenses/Apache-2.0.html",
+  "author": {
+    "@type": "Organization",
+    "name": "JanYork",
+    "url": "https://github.com/JanYork"
+  },
+  "dateModified": "2026-10-07T10:26:33.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 68
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">262·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/lists/best-memory-providers">memory &amp; context</a><span class="sep">/</span>llm-wiki-cli
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">JanYork</span><span class="slash">/</span>llm-wiki-cli
+  </h1>
+  <p class="project-desc">Agent-driven proactive memory CLI for AI agents — autonomously recall, maintain, and evolve persistent, source-grounded knowledge across sessions.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 68</span>
+    <span><span class="meta-label">lang</span>Rust</span>
+    <span><span class="meta-label">license</span>Apache-2.0</span>
+    
+    <span><span class="meta-label">updated</span>2026-10-07</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/JanYork/llm-wiki-cli" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    <a href="https://janyork.github.io/llm-wiki-cli" target="_blank" rel="noopener" class="btn-secondary">homepage</a>
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">LWC is an agent-driven proactive memory CLI that lets AI agents recall, maintain, and evolve persistent, source-grounded knowledge across sessions. It turns curated documents into a durable Wiki with preserved sources, pages, citations, links, indexes, and history, and it does not require embeddings or a vector database. A self-hosted team memory option keeps core memory in local SQLite and Wiki files synchronized through a self-hosted server.</p>
+    <ul class="summary-highlights">
+      <li>Agent-driven proactive memory CLI for AI agents</li>
+      <li>Maintains a source-grounded Wiki with citations and history</li>
+      <li>No embeddings or vector database required</li>
+    </ul>
+  </div>
+</section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h1 align="center">LWC — Proactive Memory for AI Agents</h1>
+
+<p align="center">
+  <strong>Agent-driven · Persistent · Source-grounded</strong>
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@i-xor/lwc"><img alt="npm: @i-xor/lwc" src="https://img.shields.io/badge/npm-%40i--xor%2Flwc-CB3837?logo=npm"></a>
+  <a href="https://crates.io/crates/lwc"><img alt="crates.io: lwc" src="https://img.shields.io/crates/v/lwc.svg"></a>
+  <img alt="Node.js 22 or newer" src="https://img.shields.io/badge/node-%3E%3D22-5FA04E?logo=nodedotjs">
+  <img alt="Platform: macOS, Linux, Windows" src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-666666">
+  <a href="https://github.com/JanYork/llm-wiki-cli/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/JanYork/llm-wiki-cli/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://skills.sh/janyork/llm-wiki-cli/using-lwc"><img alt="skills.sh: using-lwc" src="https://img.shields.io/badge/skills.sh-using--lwc-000000?logo=vercel"></a>
+  <a href="LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg"></a>
+</p>
+
+<p align="center">
+  <a href="README.md">English</a> · <a href="README.zh-CN.md">简体中文</a> ·
+  <a href="docs/readme/README.ja.md">日本語</a> · <a href="docs/readme/README.es.md">Español</a> ·
+  <a href="docs/readme/README.pt-BR.md">Português (Brasil)</a> · <a href="docs/readme/README.fr.md">Français</a> ·
+  <a href="docs/readme/README.ru.md">Русский</a>
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/JanYork/llm-wiki-cli/main/docs/images/lwc-social-preview.png" alt="LWC — Proactive Memory for AI Agents" width="100%">
+</p>
+
+<p><code>lwc</code> is an agent-driven proactive memory CLI for AI agents. It lets Agents
+autonomously recall, maintain, and evolve persistent, source-grounded knowledge
+across sessions.</p>
+<p><strong>Works with Claude Code, Codex, Cursor, OpenCode, Gemini CLI, Kiro, Hermes,
+Antigravity, GitHub Copilot in VS Code, Copilot CLI, Copilot for JetBrains, and
+pi.</strong></p>
+<p>LWC turns curated documents into a durable Wiki. Agents reason and synthesize;
+<code>lwc</code> preserves sources, pages, citations, links, indexes, and history so
+knowledge compounds instead of being rediscovered from raw chunks on every
+query.</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/JanYork/llm-wiki-cli/main/docs/images/lwc-overview-en.png" alt="LWC product overview" width="820">
+</p>
+
+<h3>Self-hosted team memory — v0.19.5</h3>
+<p>LWC team spaces keep core memory in local SQLite and Wiki files and synchronize
+it automatically through a self-hosted server. External Agents resolve conflicts
+through CLI/MCP; LWC does not embed an LLM. The team console supports English and
+Simplified Chinese, explicit space permissions, device/Agent access and auditable
+memory recovery. Cloud-only readers can query without creating a local replica.</p>
+<p>See the <a href="https://github.com/JanYork/llm-wiki-cli/blob/main/deploy/team/README.md">deployment guide</a>, <a href="https://github.com/JanYork/llm-wiki-cli/blob/main/docs/team-cloud/protocol.md">protocol</a>
+and <a href="https://github.com/JanYork/llm-wiki-cli/blob/main/docs/team-cloud/access-policy-recovery.md">access and recovery design</a>.
+Email, Feishu and GitHub sign-in use deployment-supplied provider configuration.</p>
+<p>Sign in with a generated personal key, select an authorized space, and provision a member with initial space access in one step. Share permission-checked page links and follow knowledge links without leaving the reader. <a href="https://github.com/JanYork/llm-wiki-cli/wiki/Team-Memory">Team guide</a> · <a href="https://github.com/JanYork/llm-wiki-cli/blob/main/docs/releases/v0.19.5.md">Release notes</a>.</p>
+<p>Team owners and space managers can move resources to the recycle bin and restore them without losing memory. Changes to a team’s spaces invalidate old deletion confirmations; permission handover remains available while archived. Clients preserve pending memory and pause shared writes when a resource becomes unavailable.</p>
+<p>Automatic sync coalesces edits into durable batches and paces background work. Independent local edits can continue while remote changes arrive; progress, receipts and page reads remain available while search indexes recover. Full snapshots still have a cost, so propagation depends on storage and workload.</p>
+<h3>LWC Is Agent Memory, Not RAG</h3>
+<p>RAG and LWC can both help an LLM work with external documents, but they keep
+state in different places. A typical RAG request retrieves raw chunks and builds
+one answer at query time:</p>
+<pre><code class="language-text">query -&gt; retrieve chunks -&gt; generate answer
+</code></pre>
+<p>LWC keeps the useful work between requests:</p>
+<pre><code class="language-text">task -&gt; recall maintained Wiki -&gt; reason from sources and prior synthesis
+     -&gt; write durable improvements back
+</code></pre>
+<p>Retrieval is one operation inside LWC, not its organizing principle. The durable
+artifact is a source-grounded Wiki whose pages, citations, links,
+contradictions, and history are revised as knowledge changes. LWC therefore
+does not require embeddings or a vector database, and it does not discard each
+synthesis after answering. It can complement RAG, but it is not query-time RAG.</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/JanYork/llm-wiki-cli/main/docs/images/lwc-source-grounding-en.png" alt="LWC source grounding and traceability" width="820">
+</p>
+
+<h4>The Agent operates LWC</h4>
+<p><code>lwc</code> is a machine interface for Agents, not a human-facing note-taking app. In
+normal use, a human selects sources, states goals, asks questions, and reviews
+answers or the projected Markdown. The Agent runs the CLI, manages scope,
+integrates sources, maintains citations and links, and decides what is worth
+recalling or writing back.</p>
+<p>Do not manually drive the routine <code>lwc</code> workflow unless you are developing or
+debugging the tool. Ask your Agent to activate the bundled canonical
+<code>using-lwc</code> Skill instead—usually as <code>$using-lwc</code>.</p>
+<h3>Recommended: Ask Your Agent to Set Up LWC</h3>
+<p>Paste this prompt into the Agent you use. It installs the global CLI, delegates
+all supported host configuration to LWC's idempotent AgentTarget installer, and
+uses native self-configuration only for an unregistered Agent.</p>
+<details>
+<summary><strong>Copy the complete setup prompt</strong></summary>
+
+<pre><code class="language-text">Configure LWC completely for this user. Perform and verify the work; do not
+merely describe commands for me to run.
+
+Source of truth:
+- https://github.com/JanYork/llm-wiki-cli
+- https://github.com/JanYork/llm-wiki-cli/tree/main/skills/using-lwc
+
+Requirements:
+1. Read this README, `SECURITY.md`, and `skills/using-lwc/SKILL.md`. Install the
+   official checksum-verified release if `lwc` is not globally callable; never
+   prefix routine commands with a private binary path or `LWC_PROJECT_ROOT`.
+2. Run `lwc --version`, initialize global memory once with
+   `lwc --scope global init` when missing, then run `lwc agent install --yes`.
+   This command detects installed supported Agents and safely installs their
+   MCP, Skill, Hook and Instructions using official locations. Do not recreate
+   that logic manually or install a native package for the same Agent as well.
+3. Inspect `lwc agent status --target all --location global`. Restart affected
+   Agents and complete their normal Hook trust review where required. Do not
+   initialize a project Wiki or either graph without explicit project consent.
+4. If the current runtime is not one of LWC's registered AgentTargets, use its
+   official user-level conventions to install the canonical `using-lwc` Skill,
+   an additive instruction block, `lwc serve --mcp`, and a bounded session Hook
+   only where those surfaces are officially supported. Preserve existing
+   configuration, remain idempotent, and report unsupported surfaces instead of
+   inventing paths or keys.
+
+Finish with the LWC version, detected and configured Targets, status results,
+files changed, unsupported surfaces, and any restart or trust action remaining.
+</code></pre>
+</details>
+
+<h3>Origin and Acknowledgements</h3>
+<p><code>lwc</code> implements the <a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">LLM Wiki</a>
+pattern proposed by Andrej Karpathy: an LLM incrementally builds and maintains a
+persistent, interlinked Wiki instead of reconstructing knowledge from raw
+documents for every query. The CLI architecture and selected implementation
+details also draw inspiration from
+<a href="https://github.com/nashsu/llm_wiki"><code>nashsu/llm_wiki</code></a>.</p>
+<p>This project adapts those ideas into an agent-first Rust CLI backed by SQLite.</p>
+<h3>Core Design</h3>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/JanYork/llm-wiki-cli/main/docs/images/lwc-architecture-en.png" alt="LWC architecture" width="100%">
+</p>
+
+<p>LWC keeps four distinct layers so durable knowledge stays traceable:</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Raw sources</td>
+<td>Immutable snapshots of curated evidence</td>
+</tr>
+<tr>
+<td>Wiki</td>
+<td>Agent-maintained pages, citations, links, and provenance</td>
+</tr>
+<tr>
+<td>Temporal memory</td>
+<td>Compact records of changes, decisions, outcomes, and unresolved work</td>
+</tr>
+<tr>
+<td>Schema and purpose</td>
+<td>Project-specific rules that guide future maintenance</td>
+</tr>
+</tbody></table>
+<p>SQLite is canonical. Markdown, full-text indexes, and optional graph stores are
+rebuildable projections. Agents update knowledge through the CLI; successful
+operations return structured JSON that can be audited and resumed.</p>
+<p><a href="https://github.com/JanYork/llm-wiki-cli/wiki/Architecture-Overview">Read the architecture overview →</a></p>
+<h3>Portable Memory Archives</h3>
+<p>Agents can package one project Wiki, or an explicitly selected global Wiki,
+into a single portable archive and safely import or conservatively merge it into
+another LWC store. The archive contains the selected Wiki's complete plaintext
+memory, so share it only with a trusted recipient and treat received content as
+untrusted data rather than instructions.</p>
+<p>Existing memory is never replaced implicitly: imports stage a resumable merge,
+while whole-store overwrite requires separate human confirmation. Rebuildable
+indexes and projections are restored after publication; Tutor, Book, and
+Practice remain independent of archive v1.</p>
+<p><a href="https://github.com/JanYork/llm-wiki-cli/blob/main/docs/agent-workflow.md#portable-memory-archives">Use portable memory archives safely →</a></p>
+<h3>Hierarchical Recall and Knowledge Graph</h3>
+<p>LWC indexes Sources and Wiki pages at document, passage, and sentence levels.
+Agents can start with a small answer-shaped context, expand the exact span only
+when necessary, and detect stale locators after content changes.</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/JanYork/llm-wiki-cli/main/docs/images/lwc-memory-graph-en.png" alt="LWC memory graph" width="100%">
+</p>
+
+<p>The optional document graph connects pages, sources, citations, links, and
+explicit semantic relations. SQLite remains authoritative, while Grafeo or
+SurrealDB provides a rebuildable traversal layer. Explicit relations keep their
+reason, provenance, confidence, and source evidence.</p>
+<h4>Document Conversion and Office Reading</h4>
+<p>Optional Anydoc or MarkItDown adapters convert supported local files into
+reviewable Markdown before ingestion. OfficeCLI provides a separate,
+consent-based, read-only path for Word, Excel, and PowerPoint files. Neither
+capability is silently installed or enabled, and source Office files are never
+modified.</p>
+<p>Passage search also indexes the enclosing H2-H6 heading path as an independent
+field. Heading context can improve matching, but it is never prepended to the
+returned snippet or included in its byte range, so citations and span locators
+still point to exact canonical body text. Store migration 17 rebuilds only this
+derived span/search index.</p>
+<p><a href="https://github.com/JanYork/llm-wiki-cli/wiki/Retrieval-and-Indexing">Explore retrieval and indexing →</a> ·
+<a href="https://github.com/JanYork/llm-wiki-cli/wiki/Document-Knowledge-Graph">Document graph →</a> ·
+<a href="https://github.com/JanYork/llm-wiki-cli/wiki/Document-Conversion">Document conversion →</a></p>
+<h3>Optional Learning Suite</h3>
+<p>Tutor, Book, and Practice are independent first-party capabilities, disabled by
+default and backed by separate private stores:</p>
+<ul>
+<li><strong>Tutor</strong> keeps teaching turns, learner evidence, goals, plans, and a private
+Soul/Wiki.</li>
+<li><strong>Book</strong> imports supported books in verified source order for complete,
+grounded reading.</li>
+<li><strong>Practice</strong> keeps versioned question banks, papers, attempts, grading,
+flashcards, and FSRS review state.</li>
+</ul>
+<p>Each runtime is downloaded lazily, pinned to the LWC version, and verified by
+checksum. Disabling a capability preserves its canonical data. Agent Skills
+handle recovery and persistence without exposing routine bookkeeping to the
+learner.</p>
+<p><a href="https://github.com/JanYork/llm-wiki-cli/blob/main/docs/learning-suite-contracts.md">Read the Learning Suite contracts →</a></p>
+<h3>Installation</h3>
+<p>Most users need only one package command:</p>
+<pre><code>npm install --global @i-xor/lwc
+</code></pre>
+<p>Homebrew, crates.io, checksum-verified GitHub releases, and local Cargo builds
+are also supported.</p>
+<p><a href="https://github.com/JanYork/llm-wiki-cli/wiki/Installation-and-Upgrades">Installation and upgrade guide →</a></p>
+<h3>Companion Agent Skill</h3>
+<p>The bundled <a href="skills/using-lwc">using-lwc Skill</a> turns LWC into a proactive
+memory layer. It recalls bounded context, keeps project and global knowledge
+separate, integrates sources, preserves citations, and writes back only verified
+knowledge worth reusing.</p>
+<p>Install it from <a href="https://skills.sh/JanYork/llm-wiki-cli">skills.sh</a>:</p>
+<pre><code>npx skills add JanYork/llm-wiki-cli --skill using-lwc -g
+</code></pre>
+<p>The canonical trigger is <code>$using-lwc</code>. The Skill is runtime-neutral
+and includes focused guidance for memory, document graphs, Word Graph,
+CodeGraph, strong tags, conversion, onboarding, recovery, and maintenance.</p>
+<h4>Native Agent setup</h4>
+<p>LWC detects supported Agents and installs their available MCP, Skill, Hook, and
+Instructions surfaces through idempotent AgentTarget adapters:</p>
+<pre><code>lwc agent install --yes
+</code></pre>
+<p>The unified read-only MCP exposes bounded Wiki memory and optional code context
+without widening the active workspace. The 12 registered targets are Claude
+Code, Cursor, Codex, OpenCode, Hermes, Gemini CLI, Antigravity, Kiro, GitHub
+Copilot in VS Code, Copilot CLI, Copilot for JetBrains, and pi.</p>
+<p><code>agent status</code> reports verified <code>hook_capabilities</code> separately from the native
+events actually written as <code>installed_hook_events</code> for that scope. Narrow shell
+consent is enforced as an ask only for Claude Code, Cursor, global Hermes, and
+Antigravity; Codex receives advisory additional context and cannot enforce the
+ask. Unsupported consent events are not installed and return an exact no-op.
+Only Claude Code and Codex may continue an actionable active Plan from <code>Stop</code>,
+once per native loop guard; other Stop surfaces are not simulated. Refresh and
+uninstall remove only LWC-owned hook entries, including entries inside shared
+groups, while preserving sibling and user configuration.</p>
+<p>Graph capabilities remain consent-aware: document relationships require the
+physical graph, code-structure tasks require CodeGraph, and neither is enabled
+merely because its runtime exists. Office reading follows the same explicit
+consent boundary.</p>
+<p><a href="https://github.com/JanYork/llm-wiki-cli/wiki/AgentTarget-Installation-and-Integration">AgentTarget integration →</a></p>
+<h3>Quick Start</h3>
+<p>Humans normally describe the goal and review the result; the Agent operates the
+CLI. The complete walkthrough lives in the
+<a href="https://github.com/JanYork/llm-wiki-cli/wiki/Quick-Start">Quick Start Wiki page</a>.</p>
+<h4>1. Initialize a project Wiki</h4>
+<p>The Agent creates a project-local Wiki and defines its purpose and maintenance
+rules. Project state is excluded locally from Git unless versioning it was an
+explicit choice.</p>
+<h4>2. Add source material</h4>
+<p>Curated files become immutable, deduplicated snapshots. LWC tracks their live
+paths and can report whether the current file is unchanged, modified, missing,
+or superseded.</p>
+<h4>3. Analyze and integrate one source</h4>
+<p>The Agent reads the complete bounded source, writes a cited source summary,
+updates shared knowledge, and completes the ingest only after both layers are
+consistent.</p>
+<h4>4. Query the accumulated Wiki</h4>
+<p>Search is page-first and source-grounded. Agents retrieve maintained answers
+first, then open exact source evidence when a claim needs verification.</p>
+<h3>Agent Workflow</h3>
+<p>The normal loop is short:</p>
+<ol>
+<li>Recall relevant maintained knowledge.</li>
+<li>Inspect current sources or code when freshness matters.</li>
+<li>Make the smallest verified update.</li>
+<li>Validate retrieval, links, and applicable graph projections.</li>
+</ol>
+<p>Broad revisions use an atomic changeset. See
+<a href="https://github.com/JanYork/llm-wiki-cli/blob/main/docs/agent-workflow.md">the full Agent workflow</a> for trust boundaries,
+preconditions, recovery, and completion evidence.</p>
+<h3>Temporal Memory</h3>
+<p>Temporal memory records compact events about what changed, why a decision was
+made, what was tried, the outcome, and what remains unresolved. It complements
+the Wiki: temporal recall explains history; the Wiki represents current stable
+knowledge.</p>
+<p>Retention is bounded and protects pinned, unresolved, and open contradiction
+records. Events are normalized rather than stored as raw chat transcripts, and
+similar events are never silently merged.</p>
+<p><a href="https://github.com/JanYork/llm-wiki-cli/wiki/Persistent-Memory">Persistent memory guide →</a></p>
+<h3>Multi-machine Sync</h3>
+<p>Sync reconciles project memory, global memory, or both over SSH while keeping
+semantic Wiki state separate from Git publication. Merge preserves unique
+objects from both sides; conflicts are returned as bounded packets for explicit
+resolution.</p>
+<p>Sessions are durable and resumable. LWC never copies live SQLite database,
+WAL, or SHM files, never resets the working tree, and keeps canonical
+publication separate from rebuildable search and graph projections.</p>
+<p><a href="https://github.com/JanYork/llm-wiki-cli/blob/main/docs/agent-workflow.md">Sync workflow and safety contract →</a></p>
+<h3>Atomic Multi-command Changes</h3>
+<p>Changesets keep a multi-step knowledge update invisible until it has been
+reviewed and validated. Commit publishes only touched canonical entities in one
+transaction; unrelated live work survives, and same-entity revision conflicts
+fail closed.</p>
+<p>A successful commit records an exact inverse patch for supported operations,
+enabling guarded rollback without replacing the whole Wiki.</p>
+<p>Draft reads see staged writes, while live SQLite and Markdown stay unchanged.
+The draft database starts as a small sparse overlay; it does not copy or
+checkpoint the live Wiki. <code>changeset show</code> reports staged operations, revisions,
+and readiness without running lint. Commit validates and applies only
+touched entities, so unrelated live writes survive; a same-entity revision conflict
+fails without overwriting either side. Commit rejects empty drafts and blocking
+lint errors; warnings and information remain review guidance and do not block
+publication. There is no force or automatic merge. Use
+<code>--allow-lint-issues --reason "reviewed pre-existing debt"</code> only for audited
+debt that the changeset did not introduce. After commit, rerun the same fixed
+retrieval checks against live state. Commit freezes the reviewed draft before
+publication; <code>changeset_frozen</code> blocks any later staged write. Retry the same
+commit for recovery, or discard after a reported conflict—never add more work
+to a frozen draft.</p>
+<pre><code class="language-bash">lwc --scope project changeset discard architecture-refresh
+lwc --scope project changeset rollback &lt;CHANGESET_ID&gt;
+</code></pre>
+<p>Discard touches only an uncommitted draft. Commit writes a checksummed inverse
+patch containing only touched entities and returns the exact rollback ID;
+rollback restores only those entities and refuses if one changed again. Project
+and global changesets are separate, <code>--scope all</code> is invalid, and <code>init</code>,
+<code>maintenance</code>, <code>checkpoint</code>, and nested changeset commands reject
+<code>--changeset</code>. Drafts never create a second Markdown projection. If a structured
+error reports <code>committed=true</code> with cleanup or materialization work remaining,
+do not repeat the knowledge changes; run the returned recovery action.</p>
+<p>Sparse commit currently has exact patches for Source add/ingest, Page
+put/remove, schema, purpose, and recorded search operations. Retrieval-weight
+and explicit semantic-relation mutations fail before checkpointing or taking a
+live write lock with <code>changeset_sparse_unsupported</code>; apply those as direct
+single-entity transactions until their sparse inverse patches are available.</p>
+<p><a href="https://github.com/JanYork/llm-wiki-cli/wiki/Changesets">Changesets guide →</a></p>
+<h3>Scopes</h3>
+<table>
+<thead>
+<tr>
+<th>Scope</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>project</td>
+<td>Knowledge owned by the nearest project Wiki</td>
+</tr>
+<tr>
+<td>global</td>
+<td>Reusable knowledge shared across projects</td>
+</tr>
+<tr>
+<td>all</td>
+<td>Combined read-only recall and coordinated Sync</td>
+</tr>
+</tbody></table>
+<p>Writes always target one explicit store. LWC never creates implicit
+cross-project citations or links.</p>
+<p><a href="https://github.com/JanYork/llm-wiki-cli/wiki/Scopes-and-Project-Discovery">Scopes and project discovery →</a></p>
+<h3>Search and CJK</h3>
+<p>Search is lexical, deterministic, and page-first. It keeps title, path, summary,
+body, provenance, and graph evidence distinct; supports page/source/kind
+filters; and can explain the exact score arithmetic.</p>
+<p>CJK text uses adjacent bigrams plus useful unigrams, while Latin text uses
+lowercased alphanumeric terms. This dictionary-free design remains stable for
+product names, code symbols, mixed-language text, and emerging vocabulary.</p>
+<h4>Explicit retrieval weights and feedback</h4>
+<p>Auditable document weights capture durable importance. Query-specific feedback
+reranks only matching candidates and stores a fingerprint instead of the raw
+query. Neither mechanism can make unrelated content appear.</p>
+<p><a href="https://github.com/JanYork/llm-wiki-cli/wiki/Search-and-Context">Search and context guide →</a></p>
+<h3>Read-only Viewer and CodeGraph</h3>
+<p><code>lwc view</code> starts a foreground, loopback-only project inspector and opens the
+browser. It serves one embedded TS + Lit application—no CDN and no Node runtime
+at use time—and exposes GET/HEAD APIs only. Pages, sources, Markdown, the
+knowledge graph, and the optional code graph are read from the current project
+without migration, refresh, or graph construction:</p>
+<pre><code class="language-bash">lwc view
+lwc view --port 4173 --no-open
+</code></pre>
+<p>Page detail uses the canonical title, summary, kind, provenance, citations, and
+timestamps. The viewer suppresses only a leading body H1 that matches the
+canonical title and derives a local table of contents from three or more H2-H4
+headings. These presentation rules never rewrite canonical content or projected
+Markdown.</p>
+<p>The viewer starts in English. Use the <code>中文</code> / <code>EN</code> control to switch languages;
+the browser remembers the selection while Wiki content remains in its authored
+language. Graphs use a single Obsidian-inspired 3D relationship view with small
+nodes, persistent labels, thin links, rotation, and zoom.</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/JanYork/llm-wiki-cli/main/docs/images/lwc-codegraph-en.png" alt="LWC CodeGraph code intelligence" width="100%">
+</p>
+
+<p>CodeGraph is project-only and explicitly initialized. It answers questions
+about symbols, callers, callees, dependencies, files, and impact while keeping
+telemetry disabled and graph writes atomic per owner file.</p>
+<p>The pinned runtime recognizes TypeScript, TSX, JavaScript, JSX, ArkTS, Python,
+Go, Rust, Java, C, C++, C#, Razor, PHP, Ruby, Swift, Kotlin, Dart, Svelte, Vue,
+Astro, Liquid, Pascal, Scala, Lua, Luau, Objective-C, R, Solidity, Nix, YAML,
+Twig, XML, .properties, CFML, CFScript, CFQuery, COBOL, VB.NET, Erlang, and
+Terraform.</p>
+<p><a href="https://github.com/JanYork/llm-wiki-cli/wiki/Read-Only-Viewer">Viewer guide →</a> ·
+<a href="https://github.com/JanYork/llm-wiki-cli/wiki/Code-Graph">CodeGraph guide →</a></p>
+<h3>Maintenance and Projection</h3>
+<p>Lint, reindexing, Markdown materialization, compaction, checkpoints, and graph
+projection are explicit operations. Long-running work is durable, observable,
+resumable, and applied in bounded document units.</p>
+<p>SQLite remains canonical throughout. Search indexes, Markdown, and graph stores
+can be rebuilt without rewriting source history or current Wiki knowledge.</p>
+<p><code>lwc lint</code> keeps <code>total</code> and <code>counts</code> as all-issue compatibility fields and
+adds <code>blocking_total</code> for errors plus <code>advisory_total</code> for warnings and
+information. Deterministic Markdown guidance currently reports conflicting or
+duplicate body H1s, the first heading-level jump, and a long unsectioned prose
+region; only integrity errors block changeset commit.</p>
+<p>Notes:</p>
+<ul>
+<li>Maintenance commands return a durable <code>work</code> immediately. Read progress with
+<code>work status</code>, or use <code>work watch</code> and inspect <code>work.result</code> after success.
+Schema v10 to v11 migration uses the same mechanism automatically, so normal
+commands never perform that migration inline.</li>
+<li><code>lint</code> is read-only by default. Add <code>--record</code> only when the lint pass belongs
+in durable operation history.</li>
+<li><code>maintenance reindex</code> rebuilds derived search artifacts from SQLite.</li>
+<li><code>maintenance materialize</code> rebuilds the projected Markdown tree from SQLite.</li>
+<li><code>maintenance compact</code> only attempts a WAL truncate checkpoint; it does not
+hide a full FTS optimization. Run it while the Wiki is idle and inspect
+<code>busy</code> plus <code>after_bytes</code>. A busy reader returns promptly without changing
+canonical content.</li>
+<li>Search queries are private by default; add <code>--record</code> only when you want the query wording stored in the durable operation log.</li>
+</ul>
+<p><code>lwc checkpoint create &lt;NAME&gt;</code> uses SQLite's online backup API. Restore with
+<code>lwc checkpoint restore &lt;NAME&gt;</code>; LWC first creates a <code>pre-restore-*</code> safety
+checkpoint and then rebuilds the projection. Use <code>source remove &lt;ID&gt;</code> and
+<code>page remove &lt;SLUG&gt;</code> for guarded deletion: sources with citations and pages
+with inbound links are refused. Removing the current source for a tracked path
+stops tracking that path instead of silently exposing an older revision as
+current.</p>
+<p>For a multi-source ingest or broad page replacement, prefer a changeset over a
+manual checkpoint: successful commit writes a sparse inverse patch, publishes
+only touched canonical entities in one transaction, and incrementally
+materializes changed Markdown. Commit attempts a WAL truncate after publication;
+<code>wal_checkpointed=false</code> means an active reader prevented it and does not mean
+the canonical commit failed.</p>
+<p>For an external filesystem backup, stop active <code>lwc</code> commands and copy the
+complete <code>.lwc/</code> directory. Do not copy only <code>wiki.db</code> while a writer may still
+be using its WAL files.</p>
+<p><a href="https://github.com/JanYork/llm-wiki-cli/wiki/Maintenance-and-Diagnostics">Maintenance and diagnostics →</a></p>
+<h3>Benchmark Suite</h3>
+<p>The opt-in benchmark measures import time, search latency, Recall@5/10, MRR, and
+storage on a caller-supplied sanitized corpus. Fair comparisons fix the machine,
+corpus, query set, and run conditions, then compare repeated-run medians.</p>
+<p><a href="https://github.com/JanYork/llm-wiki-cli/blob/main/benchmarks/README.md">Benchmark methodology →</a></p>
+<h4>LongMemEval-S retrieval results (v0.18.5)</h4>
+<p><strong>This is an untuned retrieval baseline, not a ceiling on LWC’s effectiveness over continued use.</strong> In real workflows, the model can proactively assess evidence and react to user corrections or relevance feedback, continually updating document weights and query feedback. With reliable feedback and sustained tuning, retrieval is expected to improve beyond this static baseline; that additional gain was not quantified here. Reactive adjustment means feedback-triggered Agent updates, not automatic background learning on every query.</p>
+<p>On September 13, 2026, two complete local runs processed <strong>500/500 questions</strong>,
+with <strong>470 retrieval-scored questions</strong>, using the pinned LongMemEval-S dataset
+and four concurrent workers on an Apple M5 Pro Mac. The second run reused the
+first run's stored sources; all 500 ranked result lists were identical.</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th align="right">First run</th>
+<th align="right">Second run</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Questions processed</td>
+<td align="right">500 / 500</td>
+<td align="right">500 / 500</td>
+</tr>
+<tr>
+<td>Retrieval-scored questions</td>
+<td align="right">470</td>
+<td align="right">470</td>
+</tr>
+<tr>
+<td>Excluded abstention questions</td>
+<td align="right">30</td>
+<td align="right">30</td>
+</tr>
+<tr>
+<td>Recall@1</td>
+<td align="right">83.83% (394/470)</td>
+<td align="right">83.83% (394/470)</td>
+</tr>
+<tr>
+<td>Recall@3</td>
+<td align="right">91.49% (430/470)</td>
+<td align="right">91.49% (430/470)</td>
+</tr>
+<tr>
+<td>Recall@5</td>
+<td align="right">95.11% (447/470)</td>
+<td align="right">95.11% (447/470)</td>
+</tr>
+<tr>
+<td>Recall@10</td>
+<td align="right">97.66% (459/470)</td>
+<td align="right">97.66% (459/470)</td>
+</tr>
+<tr>
+<td>Recall@30</td>
+<td align="right">99.15% (466/470)</td>
+<td align="right">99.15% (466/470)</td>
+</tr>
+<tr>
+<td>Recall@50</td>
+<td align="right">99.15% (466/470)</td>
+<td align="right">99.15% (466/470)</td>
+</tr>
+<tr>
+<td>MRR</td>
+<td align="right">0.883668</td>
+<td align="right">0.883668</td>
+</tr>
+<tr>
+<td>Mean latency</td>
+<td align="right">509.883 ms</td>
+<td align="right">679.759 ms</td>
+</tr>
+<tr>
+<td>P50</td>
+<td align="right">507.697 ms</td>
+<td align="right">665.454 ms</td>
+</tr>
+<tr>
+<td>P90</td>
+<td align="right">663.061 ms</td>
+<td align="right">931.238 ms</td>
+</tr>
+<tr>
+<td>P95</td>
+<td align="right">731.766 ms</td>
+<td align="right">990.375 ms</td>
+</tr>
+<tr>
+<td>P99</td>
+<td align="right">888.555 ms</td>
+<td align="right">1094.886 ms</td>
+</tr>
+</tbody></table>
+<p><strong>These results exclude proactive tuning.</strong> The adapter retrieves raw session
+sources without model-led knowledge curation, relevance feedback, or weight
+updates. In actual Agent workflows, a model can proactively assess evidence,
+curate knowledge, and explicitly adjust document weights or query-specific
+feedback to improve subsequent retrieval. This is an evidence-driven Agent
+workflow, not automatic weight changes on every search; gains depend on feedback
+quality and were not measured here. Evaluate tuning on held-out questions rather
+than feeding test answers back into the same evaluation.</p>
+<p>These are local retrieval results, not official leaderboard scores or answer
+accuracy. Latencies describe four-worker load, not a controlled version-speedup
+comparison. <a href="https://github.com/JanYork/llm-wiki-cli/blob/main/benchmarks/results/2026-09-13-longmemeval-s-0185.json">First-run data</a>
+· <a href="https://github.com/JanYork/llm-wiki-cli/blob/main/benchmarks/results/2026-09-13-longmemeval-s-0185-second.json">Second-run data</a>
+· <a href="https://github.com/JanYork/llm-wiki-cli/blob/main/benchmarks/agent_memory/README.md#longmemeval-s">Reproduction and scoring</a>.</p>
+<h3>Durable Todo and current Plan</h3>
+<p>Todo stores deferred work; Plan stores the currently executing objective,
+ordered steps, progress, and revision. They are independent, opt-in
+capabilities and never convert into each other automatically.</p>
+<p>Bounded lifecycle context isolates Plan and Todo progress by Agent session and,
+where the host exposes it, by subagent. Each Agent sees only explicitly tracked
+work for its opaque context; detailed commands and host capability limits live
+in the workflow guide.</p>
+<p><a href="https://github.com/JanYork/llm-wiki-cli/blob/main/docs/agent-workflow.md#todo-and-plan">Todo and Plan workflow →</a></p>
+<h3>Limits and Non-Goals</h3>
+<p>Current design constraints:</p>
+<ul>
+<li>single-machine, single-user knowledge base;</li>
+<li>UTF-8 text workflow;</li>
+<li>bounded input size of 64 MiB per schema, purpose, source, or page body;</li>
+<li>lexical search, not semantic vector retrieval.</li>
+</ul>
+<p>Deliberate non-goals for this CLI:</p>
+<ul>
+<li>no built-in LLM calls;</li>
+<li>no vector database;</li>
+<li>no daemon or background service;</li>
+<li>no web UI or desktop UI;</li>
+<li>no direct database editing contract.</li>
+</ul>
+<p>If the projected Markdown drifts, rebuild it. If the SQLite schema is wrong, fix it through the CLI and migrations, not by hand.</p>
+<h3>Contributing</h3>
+<p>Issues and pull requests are welcome, especially around:</p>
+<ul>
+<li>agent workflow ergonomics;</li>
+<li>deterministic projection behavior;</li>
+<li>durable citation and page maintenance contracts;</li>
+<li>search quality for multilingual technical corpora.</li>
+</ul>
+<p>Please read <a href="https://github.com/JanYork/llm-wiki-cli/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> before opening a pull request.
+Report security issues according to <a href="https://github.com/JanYork/llm-wiki-cli/blob/main/SECURITY.md">SECURITY.md</a>.</p>
+<h3>License</h3>
+<p>Licensed under the <a href="LICENSE">Apache License 2.0</a>.</p>
+<h3>New in 0.18.0</h3>
+<p>Durable Discussion records preserve visible clarification Q/A in SQLite with granular corrections and evidence-linked summaries. CodeGraph supports native result passthrough, and Agent contracts and recovery output are easier to discover. Codex additionally supports a native plugin package; other host installation routes remain unchanged. See <a href="https://github.com/JanYork/llm-wiki-cli/blob/main/docs/discussion.md">Discussion</a> and <a href="https://github.com/JanYork/llm-wiki-cli/blob/main/integrations/codex-lwc/README.md">Codex plugin</a>.</p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in memory &amp; context</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/mem0ai/mem0">
+        <div class="stars">★ 67.5K</div>
+        <div class="name"><span class="org">mem0ai /</span> mem0</div>
+      </a>
+      <a class="related-row" href="/projects/vectorize-io/hindsight">
+        <div class="stars">★ 51.6K</div>
+        <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
+      </a>
+      <a class="related-row" href="/projects/greyhaven-ai/autocontext">
+        <div class="stars">★ 1.3K</div>
+        <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
+      </a>
+      <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
+        <div class="stars">★ 381</div>
+        <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
+      </a>
+      <a class="related-row" href="/projects/yoloshii/ClawMem">
+        <div class="stars">★ 211</div>
+        <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
+      </a>
+      <a class="related-row" href="/projects/Signet-AI/signetai">
+        <div class="stars">★ 310</div>
+        <div class="name"><span class="org">Signet-AI /</span> signetai</div>
+      </a>
+      <a class="related-row" href="/projects/plur-ai/plur">
+        <div class="stars">★ 306</div>
+        <div class="name"><span class="org">plur-ai /</span> plur</div>
+      </a>
+      <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
+        <div class="stars">★ 52</div>
+        <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
+      </a>
+    </div>
+    <p class="list-link"><a href="/lists/best-memory-providers">see all memory &amp; context →</a></p>
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

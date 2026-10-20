@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`ascii-art`](/docs/user-guide/skills/bundled/creative/creative-ascii-art)
+[`ascii-art`](/docs/user-guide/skills/optional/creative/creative-ascii-art)
 
 ## Reference: full SKILL.md
 
@@ -172,10 +172,10 @@ python "$SKILL_DIR/scripts/generate_meme.py" --search "disaster"
 5.  Run the generator:
     
     ```
-    python "$SKILL_DIR/scripts/generate_meme.py" <template_id> /tmp/meme.png "caption 1" "caption 2" ...
+    python "$SKILL_DIR/scripts/generate_meme.py" <template_id> ~/.hermes/cache/scratch/meme.png "caption 1" "caption 2" ...
     ```
     
-6.  Return the image with `MEDIA:/tmp/meme.png`
+6.  Return the image with `MEDIA:~/.hermes/cache/scratch/meme.png`
 
 ### Mode 2: Custom AI Image (when image\_generate is available)
 
@@ -189,13 +189,13 @@ Use this when no classic template fits, or when the user wants something origina
     -   **Overlay** (text directly on image, white with black outline):
         
         ```
-        python "$SKILL_DIR/scripts/generate_meme.py" --image /path/to/scene.png /tmp/meme.png "top text" "bottom text"
+        python "$SKILL_DIR/scripts/generate_meme.py" --image /path/to/scene.png ~/.hermes/cache/scratch/meme.png "top text" "bottom text"
         ```
         
     -   **Bars** (black bars above/below with white text — cleaner, always readable):
         
         ```
-        python "$SKILL_DIR/scripts/generate_meme.py" --image /path/to/scene.png --bars /tmp/meme.png "top text" "bottom text"
+        python "$SKILL_DIR/scripts/generate_meme.py" --image /path/to/scene.png --bars ~/.hermes/cache/scratch/meme.png "top text" "bottom text"
         ```
         
     
@@ -203,30 +203,30 @@ Use this when no classic template fits, or when the user wants something origina
 5.  **Verify with vision** (if `vision_analyze` is available): Check the result looks good:
     
     ```
-    vision_analyze(image_url="/tmp/meme.png", question="Is the text legible and well-positioned? Does the meme work visually?")
+    vision_analyze(image_url="~/.hermes/cache/scratch/meme.png", question="Is the text legible and well-positioned? Does the meme work visually?")
     ```
     
     If the vision model flags issues (text hard to read, bad placement, etc.), try the other mode (switch between overlay and bars) or regenerate the scene.
-6.  Return the image with `MEDIA:/tmp/meme.png`
+6.  Return the image with `MEDIA:~/.hermes/cache/scratch/meme.png`
 
 ## Examples
 
 **"debugging production at 2 AM":**
 
 ```
-python generate_meme.py this-is-fine /tmp/meme.png "SERVERS ARE ON FIRE" "This is fine"
+python generate_meme.py this-is-fine ~/.hermes/cache/scratch/meme.png "SERVERS ARE ON FIRE" "This is fine"
 ```
 
 **"choosing between sleep and one more episode":**
 
 ```
-python generate_meme.py drake /tmp/meme.png "Getting 8 hours of sleep" "One more episode at 3 AM"
+python generate_meme.py drake ~/.hermes/cache/scratch/meme.png "Getting 8 hours of sleep" "One more episode at 3 AM"
 ```
 
 **"the stages of a Monday morning":**
 
 ```
-python generate_meme.py expanding-brain /tmp/meme.png "Setting an alarm" "Setting 5 alarms" "Sleeping through all alarms" "Working from bed"
+python generate_meme.py expanding-brain ~/.hermes/cache/scratch/meme.png "Setting an alarm" "Setting 5 alarms" "Sleeping through all alarms" "Working from bed"
 ```
 
 ## Listing Templates

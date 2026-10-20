@@ -103,7 +103,7 @@ Resolves to the PR number from the payload.
 
 The payload does not contain code
 
-The GitHub webhook payload includes PR metadata (title, description, branch names, URLs) but **not the diff**. The prompt above instructs the agent to run `gh pr diff` to fetch the actual changes. The `terminal` tool is included in the default `hermes-webhook` toolset, so no extra configuration is needed.
+The GitHub webhook payload includes PR metadata (title, description, branch names, URLs) but **not the diff**. The prompt above instructs the agent to run `gh pr diff` to fetch the actual changes. The default `hermes-webhook` toolset is deliberately constrained (web search/extract, vision, clarify — **no terminal**) because webhook payloads can carry untrusted content. To let this route run `gh`, add a per-route toolset grant: `toolsets: ["terminal", "web"]` on the route config — see [Per-route toolsets](/docs/user-guide/messaging/webhooks#per-route-toolsets).
 
 * * *
 
@@ -297,7 +297,7 @@ GitLab payload fields differ from GitHub's — e.g. `{object_attributes.title}` 
 -   **Never use `INSECURE_NO_AUTH`** in production — it disables signature validation entirely. It is only for local development.
 -   **Rotate your webhook secret** periodically and update it in both GitHub (webhook settings) and your `config.yaml`.
 -   **Rate limiting** is 30 req/min per route by default (configurable via `extra.rate_limit`). Exceeding it returns `429`.
--   **Duplicate deliveries** (webhook retries) are deduplicated via a 1-hour idempotency cache. The cache key is `X-GitHub-Delivery` if present, then `X-Request-ID`, then a millisecond timestamp. When neither delivery ID header is set, retries are **not** deduplicated.
+-   **Duplicate deliveries** (webhook retries) are deduplicated via a 1-hour idempotency cache. The cache key is `X-GitHub-Delivery` if present, then `X-Request-ID`, then a random per-request ID. When neither delivery ID header is set, retries are **not** deduplicated.
 -   **Prompt injection:** PR titles, descriptions, and commit messages are attacker-controlled. Malicious PRs could attempt to manipulate the agent's actions. Run the gateway in a sandboxed environment (Docker, VM) when exposed to the public internet.
 
 * * *

@@ -2,6 +2,8 @@
 
 **Source:** https://hermes-agent.nousresearch.com/docs/user-guide/messaging/teams
 
+Python dependency commands on this page use a [PM-prepared source checkout](/docs/reference/package-management#developer-workflow). After a dependency change, reactivate the checkout and restart Hermes.
+
 Connect Hermes Agent to Microsoft Teams as a bot. Unlike Slack's Socket Mode, Teams delivers messages by calling a **public HTTPS webhook**, so your instance needs a publicly reachable endpoint — either a dev tunnel (local dev) or a real domain (production).
 
 Need meeting summaries from Microsoft Graph events rather than normal bot conversations? Use the dedicated setup page: [Teams Meetings](/docs/user-guide/messaging/teams-meetings).
@@ -28,14 +30,14 @@ Bot only responds when @mentioned.
 
 Teams delivers @mentions as regular messages with `<at>BotName</at>` tags, which Hermes strips automatically before processing.
 
+Without resource-specific consent (RSC) Teams only delivers messages that @mention the bot, so no filtering is needed. Once the app manifest grants `ChannelMessage.Read.Group` or `ChatMessage.Read.Chat`, Teams delivers **every** message in the conversation — set `require_mention: true` (or `TEAMS_REQUIRE_MENTION=true`) so the bot only answers channel/group-chat messages that @mention it or reply to one of its own messages. Personal chats are never gated, and a gated message is dropped before its attachments are downloaded.
+
 * * *
 
 For source or local installs, include the Teams extra so the bundled adapter can import the Microsoft Teams SDK:
 
 ```
-uv sync --extra teams
-# or, for editable installs:
-uv pip install -e ".[teams]"
+python -c "import pm; pm.sync_venv(['teams'], explicit=True)"
 ```
 
 ## Step 1: Install the Teams CLI
@@ -62,7 +64,7 @@ Teams cannot deliver messages to `localhost`. For local development, use any tun
 ```
 # devtunnel (Microsoft)
 devtunnel create hermes-bot --allow-anonymous
-devtunnel port create hermes-bot -p 3978 --protocol https  # replace 3978 with TEAMS_PORT if changed
+devtunnel port create hermes-bot -p 3978 --protocol http  # replace 3978 with TEAMS_PORT if changed
 devtunnel host hermes-bot
 
 # ngrok
@@ -73,6 +75,8 @@ cloudflared tunnel --url http://localhost:3978  # replace 3978 with TEAMS_PORT i
 ```
 
 Copy the `https://` URL from the output — you'll use it in the next step. Leave the tunnel running while developing.
+
+The public tunnel URL uses HTTPS, but Hermes' local webhook listener uses plain HTTP. The tunnel terminates TLS and forwards HTTP to port `3978`; do not configure the local tunnel port as HTTPS.
 
 For production, point your bot's endpoint at your server's public domain instead (see [Production Deployment](#production-deployment)).
 
@@ -109,15 +113,34 @@ TEAMS_ALLOWED_USERS=<your-aad-object-id>
 
 ## Step 5: Start the Gateway
 
+**Docker** (must run from the directory that contains `docker-compose.yml` — usually your cloned `hermes-agent` repo, not `~`):
+
 ```
+cd /path/to/hermes-agent
 HERMES_UID=$(id -u) HERMES_GID=$(id -g) docker compose up -d gateway
 ```
 
-This starts the gateway. The default webhook port is `3978` (override with `TEAMS_PORT`). Check that it's running:
+**Native / systemd install** (typical `hermes` one-liner installer under `~/.hermes/hermes-agent`):
+
+```
+hermes gateway restart
+# or foreground: hermes gateway run
+```
+
+The Teams SDK is optional. When policy permits, the gateway requests the `teams` extra through PM on first start. PM prepares a complete environment instead of modifying the running interpreter. To request the extra explicitly from the prepared source checkout:
+
+```
+python -c "import pm; pm.sync_venv(['teams'], explicit=True)"
+```
+
+The default webhook port is `3978` (override with `TEAMS_PORT`). Check that it's running:
 
 ```
 curl http://localhost:3978/health   # should return: ok
+# Docker:
 docker logs -f hermes
+# Native:
+hermes gateway status -l
 ```
 
 Look for:
@@ -178,6 +201,10 @@ Display name for the home channel
 
 Webhook port (default: `3978`)
 
+`TEAMS_REQUIRE_MENTION`
+
+Set `true` to answer only @mentions / replies to the bot in channels and group chats (default: `false`; for apps with RSC message-read consent)
+
 ### config.yaml
 
 Alternatively, configure via `~/.hermes/config.yaml`:
@@ -191,6 +218,7 @@ platforms:
       client_secret: "your-secret"
       tenant_id: "your-tenant-id"
       port: 3978
+    require_mention: false   # true once the app has RSC message-read consent
 ```
 
 * * *
@@ -256,7 +284,7 @@ If the `teams_pipeline` plugin is **not** enabled, these settings are inert — 
 
 ## Production Deployment
 
-For a permanent server, skip devtunnel and register your bot with your server's public HTTPS endpoint:
+For a permanent server, terminate TLS at a reverse proxy and forward requests to the plain HTTP Hermes listener, normally `http://127.0.0.1:3978`. Register the proxy's public HTTPS endpoint with Teams:
 
 ```
 teams app create \
@@ -270,7 +298,7 @@ If you've already created the bot and just need to update the endpoint:
 teams app update --id <teamsAppId> --endpoint "https://your-domain.com/api/messages"
 ```
 
-Make sure your configured port (`TEAMS_PORT`, default `3978`) is reachable from the internet and that your TLS certificate is valid — Teams rejects self-signed certificates.
+Make sure the public HTTPS endpoint is reachable from the internet and uses a valid TLS certificate. Teams rejects self-signed certificates. Keep the Hermes listener behind the proxy; port `3978` does not serve HTTPS itself.
 
 * * *
 
@@ -280,9 +308,21 @@ Problem
 
 Solution
 
+`Can't find a suitable configuration file` from `docker compose`
+
+You are not in the repo that has `docker-compose.yml`, or you are on a native install — use `hermes gateway restart` instead, or `cd` into the clone first
+
+`requirements not met` / `Teams SDK missing` / `No adapter available for teams`
+
+Request the `teams` extra through PM as shown above, then restart the gateway. Do not install into a system Python or mutate the Hermes environment.
+
 `health` endpoint works but bot doesn't respond
 
 Check that your tunnel is still running and the bot's messaging endpoint matches the tunnel URL
+
+Logs show `"UNKNOWN / HTTP/1.0" 400` when Teams sends a message
+
+The tunnel or reverse proxy is forwarding HTTPS to Hermes' plain HTTP listener. Terminate TLS at the proxy and forward HTTP to port `3978`
 
 `KeyError: 'teams'` in logs
 
@@ -306,7 +346,7 @@ devtunnel URLs are persistent if you use a named tunnel (`devtunnel create herme
 
 Teams shows "This bot is not responding"
 
-The webhook returned an error. Check `docker logs hermes` for tracebacks
+The webhook returned an error. Check `docker logs hermes` / `hermes gateway status -l` for tracebacks
 
 `[teams] Failed to connect` in logs
 

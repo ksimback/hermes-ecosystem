@@ -146,6 +146,15 @@ function fail(check, message, detail) {
   console.log(`  ${c.red("FAIL")}  ${check} ${c.dim(`- ${message}`)}`);
   if (VERBOSE && detail) console.log(c.dim(`        ${detail}`));
 }
+// A condition that is real but not a production defect — a shared-runner rate
+// limit, say. Recorded and printed like any other result so it can never pass
+// unnoticed, but kept out of `failures` so it does not fail the run.
+function warn(check, message, detail) {
+  results.push({ check, status: "warn", message, detail });
+  warnings.push({ check, message, detail });
+  console.log(`  ${c.yellow("WARN")}  ${check} ${c.dim(`- ${message}`)}`);
+  if (VERBOSE && detail) console.log(c.dim(`        ${detail}`));
+}
 function info(msg) {
   if (VERBOSE) console.log(c.dim(`  ${msg}`));
 }
@@ -291,8 +300,10 @@ async function section(title, fn) {
 await section("1. Critical pages return 2xx", async () => {
   const paths = [
     "/",
+    "/ecosystem/",
     "/guide/",
     "/lists/",
+    "/skills/",
     "/use-cases/",
     "/reports/",
     "/privacy/",
@@ -344,9 +355,15 @@ await section("2. Public API contracts are semantically healthy", async () => {
   } else {
     const body = await bundleChat.text();
     const trailer = body.match(/‎__META__(.*?)__META__‎/);
-    let matched = [];
+    const headerMatches = (bundleChat.headers.get("x-atlas-use-cases") || "")
+      .split(",")
+      .map((slug) => slug.trim())
+      .filter((slug) => slug && slug !== "none");
+    let matched = headerMatches;
     try {
-      matched = trailer ? JSON.parse(trailer[1]).useCases || [] : [];
+      if (matched.length === 0) {
+        matched = trailer ? JSON.parse(trailer[1]).useCases || [] : [];
+      }
     } catch {}
     if (matched.length > 0) {
       pass("use-case bundle injection", `matched ${matched.join(", ")}`);
@@ -376,10 +393,29 @@ await section("2. Public API contracts are semantically healthy", async () => {
           );
         }
       } else {
+        // Authenticate when a token is available: unauthenticated GitHub allows
+        // 60 requests/hour per IP, and Actions runners share IPs, so this call
+        // was intermittently 403ing and reporting production as stale when the
+        // only thing wrong was the rate limit.
+        const ghToken = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
         const upstreamResponse = await fetchWithTimeout(HERMES_RELEASES_URL, {
-          headers: { Accept: "application/vnd.github+json" },
+          headers: {
+            Accept: "application/vnd.github+json",
+            ...(ghToken ? { Authorization: `Bearer ${ghToken}` } : {}),
+          },
         });
-        if (!upstreamResponse.ok) {
+        const rateLimited =
+          (upstreamResponse.status === 403 || upstreamResponse.status === 429) &&
+          upstreamResponse.headers.get("x-ratelimit-remaining") === "0";
+        if (rateLimited) {
+          // Not a production defect — the site artifact was never inspected.
+          // Warn rather than fail, but stay loud about which check was skipped.
+          warn(
+            "latest release freshness",
+            `upstream rate limit (HTTP ${upstreamResponse.status}${ghToken ? "" : ", unauthenticated"}) — freshness not verified`,
+            HERMES_RELEASES_URL,
+          );
+        } else if (!upstreamResponse.ok) {
           fail("latest release freshness", `upstream HTTP ${upstreamResponse.status}`, HERMES_RELEASES_URL);
         } else {
           const upstreamReleases = await readJson(upstreamResponse, "latest release freshness");
@@ -480,7 +516,7 @@ await section("3. Generated discovery artifacts are current", async () => {
     fail("llms.txt freshness", `HTTP ${llms.status}`, `${BASE}/llms.txt`);
   } else {
     const text = await llms.text();
-    const catalogCount = new RegExp(`\\b${repos.length}\\+?\\s+(?:tools|projects|repos)\\b`, "i");
+    const catalogCount = new RegExp(`\\b${repos.length}\\+?\\s+(?:tracked\\s+)?(?:tools|projects|repos)\\b`, "i");
     if (catalogCount.test(text)) {
       pass("llms.txt freshness", `states ${repos.length}-project catalog`);
     } else {
@@ -489,11 +525,12 @@ await section("3. Generated discovery artifacts are current", async () => {
   }
 });
 
-// 4. Homepage category counts match repos.json
-await section("4. Homepage category counts match data/repos.json", async () => {
-  const r = await fetchWithTimeout(`${BASE}/`);
+// 4. Catalog category counts match repos.json (the catalog lives on the
+//    generated /ecosystem/ page since the homepage redesign)
+await section("4. /ecosystem/ category counts match data/repos.json", async () => {
+  const r = await fetchWithTimeout(`${BASE}/ecosystem/`);
   if (!r.ok) {
-    fail("homepage fetch", `HTTP ${r.status}`, `${BASE}/`);
+    fail("/ecosystem/ fetch", `HTTP ${r.status}`, `${BASE}/ecosystem/`);
     return;
   }
   const html = await r.text();
@@ -508,7 +545,7 @@ await section("4. Homepage category counts match data/repos.json", async () => {
 
   const sections = root.querySelectorAll('section.cat[data-category]');
   if (sections.length === 0) {
-    fail("homepage sections", "no <section.cat[data-category]> found on homepage", "is the homepage structure unchanged?");
+    fail("/ecosystem/ sections", "no <section.cat[data-category]> found on /ecosystem/", "is the catalog page structure unchanged?");
     return;
   }
 
@@ -535,8 +572,8 @@ await section("4. Homepage category counts match data/repos.json", async () => {
     if (!seenCats.has(cat)) {
       fail(
         `${cat} section`,
-        `category exists in repos.json (${byCat.get(cat)} entries) but no <section> for it on homepage`,
-        `add a <section class="cat" data-category="${cat}"> to index.html`
+        `category exists in repos.json (${byCat.get(cat)} entries) but no <section> for it on /ecosystem/`,
+        `add the category to data/categories.json (renderEcosystemPage fails loud without it)`
       );
     }
   }
@@ -649,20 +686,21 @@ await section("7. RSS feed is well-formed", async () => {
   pass("rss.xml", `well-formed, ${opens} items`);
 });
 
-// 8. Internal link integrity (homepage anchors)
-await section("8. Sample of internal links from homepage resolve", async () => {
-  const r = await fetchWithTimeout(`${BASE}/`);
-  if (!r.ok) {
-    fail("homepage fetch (links check)", `HTTP ${r.status}`);
-    return;
-  }
-  const html = await r.text();
-  const root = parseHtml(html);
-  const anchors = root.querySelectorAll("a[href]");
+// 8. Internal link integrity (homepage + /ecosystem/ anchors)
+await section("8. Sample of internal links from homepage + /ecosystem/ resolve", async () => {
   const internal = new Set();
-  for (const a of anchors) {
-    const href = a.getAttribute("href") || "";
-    if (href.startsWith("/") && !href.startsWith("//")) internal.add(href.split("#")[0].split("?")[0]);
+  for (const page of ["/", "/ecosystem/"]) {
+    const r = await fetchWithTimeout(`${BASE}${page}`);
+    if (!r.ok) {
+      fail(`${page} fetch (links check)`, `HTTP ${r.status}`);
+      return;
+    }
+    const html = await r.text();
+    const root = parseHtml(html);
+    for (const a of root.querySelectorAll("a[href]")) {
+      const href = a.getAttribute("href") || "";
+      if (href.startsWith("/") && !href.startsWith("//")) internal.add(href.split("#")[0].split("?")[0]);
+    }
   }
   const list = Array.from(internal)
     .filter(Boolean)
@@ -698,12 +736,14 @@ const passed = results.filter((r) => r.status === "pass").length;
 const warned = results.filter((r) => r.status === "warn").length;
 const failed = results.filter((r) => r.status === "fail").length;
 const parts = [c.green(`${passed} passed`)];
-if (warned > 0) parts.push(c.yellow(`${warned} warned (acknowledged)`));
+if (warned > 0) parts.push(c.yellow(`${warned} warned`));
 parts.push(failed > 0 ? c.red(`${failed} failed`) : c.dim("0 failed"));
 console.log(`  ${parts.join(", ")}`);
 
 if (warnings.length > 0) {
-  console.log(c.bold("\nAcknowledged failures (not blocking)"));
+  // Covers both allow-listed acknowledgements and checks that could not be
+  // run (e.g. an upstream rate limit). Neither blocks, both stay visible.
+  console.log(c.bold("\nWarnings (not blocking)"));
   for (const w of warnings) {
     console.log(`  ${c.yellow("!")} ${w.check}: ${w.message}`);
     if (w.detail) console.log(c.dim(`     ${w.detail}`));

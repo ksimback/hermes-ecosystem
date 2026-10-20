@@ -4,9 +4,9 @@
 
 [Honcho](https://github.com/plastic-labs/honcho) is an AI-native memory backend that adds dialectic reasoning and deep user modeling on top of Hermes's built-in memory system. Instead of simple key-value storage, Honcho maintains a running model of who the user is — their preferences, communication style, goals, and patterns — by reasoning about conversations after they happen.
 
-Honcho is a Memory Provider Plugin
+Honcho is a catalog Memory Provider Plugin
 
-Honcho is integrated into the [Memory Providers](/docs/user-guide/features/memory-providers) system. All features below are available through the unified memory provider interface.
+Honcho is maintained by Plastic Labs and installed from the [plugin catalog](/docs/user-guide/features/plugins) (`hermes plugins install honcho`); source lives in [plastic-labs/honcho](https://github.com/plastic-labs/honcho/tree/main/hermes-plugin-honcho). It plugs into the [Memory Providers](/docs/user-guide/features/memory-providers) system, so all features below are available through the unified memory provider interface. Homes upgraded from a release that bundled Honcho get the plugin installed automatically — config and memory carry over untouched.
 
 ## What Honcho Adds
 
@@ -67,7 +67,8 @@ Search across history
 ## Setup
 
 ```
-hermes memory setup    # select "honcho" from the provider list
+hermes plugins install honcho   # from the plugin catalog
+hermes memory setup             # select "honcho" from the provider list
 ```
 
 Or configure manually:
@@ -224,6 +225,18 @@ Max chars of dialectic result injected into system prompt
 
 `hybrid` (auto-inject + tools), `context` (inject only), `tools` (tools only)
 
+`initOnSessionStart`
+
+`false`
+
+`tools` mode only. `true` creates the Honcho session **synchronously at session start** so it is ready before the first tool call; `false` (default) defers it to the first `honcho_*` call. See the startup note below
+
+`timeout`
+
+`null` (SDK default)
+
+Seconds allowed for each Honcho SDK call (`requestTimeout` and the `HONCHO_TIMEOUT` env var are accepted too). Caps how long an unreachable server can hold a call, including the eager init above
+
 `writeFrequency`
 
 `'async'`
@@ -278,12 +291,26 @@ Gateway only. Map of runtime IDs to peers (`{"7654321": "alice"}`). Many-to-one
 
 Gateway only. Namespaces unknown runtime IDs (`telegram_7654321`) when no alias matches
 
+`a2aSessions`
+
+`true`
+
+Write DMs from other bots into their own Honcho session per sender bot, never the human's. `false` skips bot-authored turns entirely
+
 **Session strategy** controls how Honcho sessions map to your work:
 
 -   `per-session` — each `hermes` run gets a fresh session. Clean starts, memory via tools. Recommended for new users.
 -   `per-directory` — one Honcho session per working directory. Context accumulates across runs.
 -   `per-repo` — one session per git repository.
 -   `global` — single session across all directories.
+
+Directory-based strategies and manual `sessions` mappings use the logical session working directory, not the backend's launch directory. Desktop/TUI project workspaces and ACP session directories are passed during agent construction, including deferred builds. When no directory is supplied, Honcho uses the runtime cwd resolver: session context, then the scoped `terminal.cwd` setting, then the process launch directory.
+
+Messaging gateways keep their stable per-chat session key regardless of strategy or title. For other sessions, `per-session` identity takes priority, followed by a manual directory mapping, an explicit title, and the configured strategy.
+
+Automatically generated Hermes titles (`derived` or `llm`), including lineage titles for Desktop branches, are display metadata and do not override `sessionStrategy`. An explicit user title remains an intentional session-name override for non-gateway, non-`per-session` sessions without a manual mapping.
+
+Sessions created before title provenance was recorded retain legacy behavior: because an old automatic title cannot be distinguished from an old user title, a title with no source is treated as an explicit override.
 
 **Recall mode** controls how memory flows into conversations:
 
@@ -351,6 +378,8 @@ gates model override
 
 In `tools` mode, the model is fully in control — it calls `honcho_reasoning` when it wants, at whatever `reasoning_level` it picks. Cadence and budget settings only apply to modes with auto-injection (`hybrid` and `context`).
 
+**Startup behaviour and `initOnSessionStart`.** In `hybrid` and `context` mode the session is created in a background thread and startup fails open if Honcho is slow or down. `tools` mode is different by design: with `initOnSessionStart: false` (the default) nothing touches Honcho until the first `honcho_*` tool call, and with `initOnSessionStart: true` the session is created **synchronously during agent construction** so a tool call on turn 1 never races a half-initialized session. That guarantee means startup waits for Honcho: if the server is unreachable, every SDK call in that eager path runs to its connection/`timeout` limit before the agent is ready, which on Desktop shows up as `request timed out: session.resume` / `prompt.submit` (the renderer gives up after 30 s). Keep `initOnSessionStart` at `false` on Desktop and whenever your Honcho is a local service that may not be running, and set `timeout` (seconds) in `honcho.json` to bound each call if you do enable it.
+
 ## Gateway Identity Mapping
 
 These settings only matter when you run the [Hermes gateway](/docs/developer-guide/gateway-internals) — the one entrypoint where users arrive with platform-native runtime IDs (Telegram UID, Discord snowflake, Slack user). CLI, TUI, and desktop sessions have no runtime ID and always resolve to `peerName`, so off-gateway these keys do nothing.
@@ -376,6 +405,8 @@ Result
 Pick `[e]` at the prompt to set the three keys directly instead.
 
 The resolver tries the keys top-down, first match wins: `pinUserPeer` → `userPeerAliases[id]` → `runtimePeerPrefix + id` → raw runtime ID → `peerName` → session-key fallback.
+
+Each turn is written under the peer of whoever wrote it, so in a shared chat the first person to message no longer collects everyone else's facts. A turn from another bot (a Bot Mode DM tagged `bot:<profile>`, or a platform account the adapter flags as a bot) always gets its own peer: `pinUserPeer` unifies one person's accounts, never a bot. Its turn lands in a per-sender `a2a` session (see `a2aSessions`), and `honcho_conclude` / `honcho_profile` refuse writes while such a turn runs, since conclusions and cards describe the human.
 
 Un-pinning orphans pooled memory
 

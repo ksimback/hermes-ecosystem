@@ -40,7 +40,7 @@ Get up and running, have basic conversations, use built-in tools
 
 Set up messaging bots, use advanced features like memory, cron jobs, and skills
 
-[Sessions](/docs/user-guide/sessions) → [Messaging](/docs/user-guide/messaging) → [Tools](/docs/user-guide/features/tools) → [Skills](/docs/user-guide/features/skills) → [Memory](/docs/user-guide/features/memory) → [Cron](/docs/user-guide/features/cron)
+[Sessions](/docs/user-guide/sessions) → [Messaging](/docs/user-guide/messaging/) → [Tools](/docs/user-guide/features/tools) → [Skills](/docs/user-guide/features/skills) → [Memory](/docs/user-guide/features/memory) → [Cron](/docs/user-guide/features/cron)
 
 ~2–3 hours
 
@@ -77,7 +77,7 @@ Deploy Hermes Agent as a bot on your favorite messaging platform.
 
 1.  [Installation](/docs/getting-started/installation)
 2.  [Configuration](/docs/user-guide/configuration)
-3.  [Messaging Overview](/docs/user-guide/messaging)
+3.  [Messaging Overview](/docs/user-guide/messaging/)
 4.  [Telegram Setup](/docs/user-guide/messaging/telegram)
 5.  [Discord Setup](/docs/user-guide/messaging/discord)
 6.  [Voice Mode](/docs/user-guide/features/voice-mode)
@@ -102,6 +102,16 @@ Schedule recurring tasks, run batch jobs, or chain agent actions together.
 tip
 
 Cron jobs let Hermes Agent run tasks on a schedule — daily summaries, periodic checks, automated reports — without you being present.
+
+### "I want a team of specialist Bots"
+
+Create named Bots with their own model, memory, skills, routines, and chats, then bring them together in group chats or through `@mentions`.
+
+1.  [Desktop](/docs/user-guide/desktop)
+2.  [Profiles](/docs/user-guide/profiles)
+3.  [Bot Mode](/docs/user-guide/bot-mode)
+4.  [Cron Scheduling](/docs/user-guide/features/cron)
+5.  [Multi-connection Desktop](/docs/user-guide/multi-connection-desktop)
 
 ### "I want to build custom tools/skills"
 
@@ -172,6 +182,12 @@ Installable plugin packages that add new capabilities
 Persistent memory across sessions
 
 [Memory](/docs/user-guide/features/memory)
+
+**Bot Mode**
+
+Named specialist Bots with persistent chats, routines, group chats, and `@mentions`
+
+[Bot Mode](/docs/user-guide/bot-mode)
 
 **Context Files**
 

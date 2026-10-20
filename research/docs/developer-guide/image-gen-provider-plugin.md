@@ -2,7 +2,7 @@
 
 **Source:** https://hermes-agent.nousresearch.com/docs/developer-guide/image-gen-provider-plugin
 
-Image-gen provider plugins register a backend that services every `image_generate` tool call — DALL·E, gpt-image, Grok, Flux, Imagen, Stable Diffusion, fal, Replicate, a local ComfyUI rig, anything. Built-in providers (OpenAI, OpenAI-Codex, xAI, FAL, Krea, DeepInfra, OpenRouter) all ship as plugins. You can add a new one, or override a bundled one, by dropping a directory into `plugins/image_gen/<name>/`.
+Image-gen provider plugins register a backend that services every `image_generate` tool call — DALL·E, gpt-image, Grok, Flux, Imagen, Stable Diffusion, fal, Replicate, a local ComfyUI rig, anything. Built-in providers (OpenAI, OpenAI-Codex, xAI, FAL, Krea, DeepInfra, OpenRouter, Meta Model API) all ship as plugins. You can add a new one, or override a bundled one, by dropping a directory into `plugins/image_gen/<name>/`.
 
 tip
 
@@ -114,6 +114,11 @@ class MyBackendImageGenProvider(ImageGenProvider):
         # The tool layer surfaces this in the dynamic schema so the model
         # knows when `image_url` is honored. Default (if you omit this) is
         # text-only: {"modalities": ["text"], "max_reference_images": 0}.
+        # Optional keys: "supports_upscale" (bool) adds an `upscale` param, and
+        # "creative_controls" lists the controls you honor from `creativity`,
+        # `intensity`, `complexity`, `movement`. Only declared controls appear
+        # in the schema and reach generate() as kwargs. "source_image_role": "style"
+        # tells the model that image inputs set the look and are not edited.
         return {"modalities": ["text", "image"], "max_reference_images": 4}
 
     def generate(
@@ -328,7 +333,7 @@ Drop a user plugin at `~/.hermes/plugins/image_gen/<name>/` with the same `name`
 ## Testing
 
 ```
-export HERMES_HOME=/tmp/hermes-imggen-test
+export HERMES_HOME=$HOME/.hermes/cache/scratch/hermes-imggen-test
 mkdir -p $HERMES_HOME/plugins/image_gen/my-backend
 # …copy __init__.py + plugin.yaml into that dir…
 
@@ -349,7 +354,7 @@ Or interactively: `hermes tools` → "Image Generation" → select `my-backend` 
 
 -   **`plugins/image_gen/openai/__init__.py`** — gpt-image-2 at low/medium/high tiers as three virtual model IDs sharing one API model with different `quality` params. Good example of tiered models under a single backend + config.yaml precedence chain.
 -   **`plugins/image_gen/xai/__init__.py`** — Grok Imagine via xAI. Different shape (URL output, simpler catalog).
--   **`plugins/image_gen/openai-codex/__init__.py`** — Codex-style Responses API variant reusing the OpenAI SDK with a different routing base URL.
+-   **`plugins/image_gen/openai-codex/__init__.py`** — same catalog as `openai`, but authenticated with the ChatGPT/Codex OAuth token and posted with plain `httpx` to the Codex backend's native `images/generations` / `images/edits` endpoints. Good example of a provider that fetches remote source images client-side and inlines them as data URLs, and that reports backend-returned metadata separately from the request.
 
 ## Distribute via pip
 

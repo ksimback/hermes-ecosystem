@@ -19,6 +19,19 @@ const useCases = readJson("data/use-cases.json");
 const repos = readJson("data/repos.json");
 const repoIndex = new Map(repos.map((r) => [`${r.owner}/${r.repo}`, r]));
 
+test("Vercel explicitly bundles the curated use-case data for chat", () => {
+  const vercel = readJson("vercel.json");
+  const includeFiles = vercel.functions?.["api/*.js"]?.includeFiles;
+  assert.equal(includeFiles, "data/use-cases.json");
+
+  const chatSource = fs.readFileSync(path.join(ROOT, "api/chat.js"), "utf8");
+  assert.match(chatSource, /import bundledUseCasesData from "\.\.\/data\/use-cases\.json"/);
+  assert.doesNotMatch(chatSource, /readFileSync\(join\(process\.cwd\(\), "data", "use-cases\.json"/);
+  assert.match(chatSource, /matchUseCases\(message, loadUseCases\(\)\)/);
+  assert.doesNotMatch(chatSource, /matchUseCases\(`\$\{message\}\\n\$\{searchQuery\}`/);
+  assert.match(chatSource, /"X-Atlas-Use-Cases"/);
+});
+
 // ── tokenization ──
 
 test("stop words are dropped so filler doesn't inflate scores", () => {

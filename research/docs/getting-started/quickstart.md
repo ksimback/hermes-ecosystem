@@ -1,6 +1,8 @@
-# Quickstart
+# Hermes Agent Quickstart
 
 **Source:** https://hermes-agent.nousresearch.com/docs/getting-started/quickstart
+
+Python dependency commands on this page use a [PM-prepared source checkout](/docs/reference/package-management#developer-workflow). After a dependency change, reactivate the checkout and restart Hermes.
 
 This guide gets you from zero to a working Hermes setup that survives real use. Install, choose a provider, verify a working chat, and know exactly what to do when something breaks.
 
@@ -69,7 +71,9 @@ To easily install the command-line and desktop applications, [download the Herme
 
 For a command-line only install without Hermes Desktop, run:
 
-#### Linux / macOS / WSL2 / Android (Termux)
+For aarch64 Android devices, use the separate [Termux APT guide](/docs/getting-started/termux).
+
+#### Linux / macOS / WSL2
 
 ```
 curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
@@ -82,10 +86,6 @@ Run in powershell:
 ```
 iex (irm https://hermes-agent.nousresearch.com/install.ps1) 
 ```
-
-Android / Termux
-
-If you're installing on a phone, see the dedicated [Termux guide](/docs/getting-started/termux) for the tested manual path, supported extras, and current Android-specific limitations.
 
 After it finishes, reload your shell:
 
@@ -117,7 +117,7 @@ Setup modes
 
 On a fresh install, `hermes setup` offers three modes:
 
--   **Quick Setup (Nous Portal)** — free OAuth login, no API keys; sets up a model plus the Tool Gateway tools. The recommended fast path.
+-   **Quick Setup (Nous Portal)** — OAuth login, no API keys to manage; sets up a model plus the Tool Gateway tools, billed to your [Nous Portal subscription](/docs/integrations/nous-portal). The recommended fast path.
 -   **Full Setup** — walk through every provider, tool, and option yourself (bring your own keys).
 -   **Blank Slate** — everything starts **off** except the bare minimum needed to run an agent: **provider & model, the File Operations toolset, and the Terminal toolset**. No web, browser, code execution, vision, memory, delegation, cron, skills, plugins, or MCP servers — and compression, checkpoints, smart routing, and memory capture are all disabled. After the minimal baseline is applied, you choose one of two paths: **start with everything disabled** (finish now with the minimal agent), or **walk through all configurations** (opt in to tools, skills, plugins, MCP, and messaging). Pick this when you want a minimal, fully-controlled agent and intend to enable only exactly what you need.
 
@@ -139,9 +139,9 @@ OAuth login via `hermes model`
 
 **OpenAI Codex**
 
-ChatGPT OAuth, uses Codex models
+ChatGPT or Codex subscription, uses Codex models
 
-Device code auth via `hermes model`
+Device code auth via `hermes model` → **ChatGPT or Codex Subscription**
 
 **Anthropic**
 
@@ -190,6 +190,12 @@ Set `ARCEEAI_API_KEY`
 Multi-model direct API
 
 Set `GMI_API_KEY`
+
+**Actual Computer**
+
+Your own hardware as a private inference cluster — hosted relay or local daemon
+
+Set `ACTUAL_API_KEY` (relay) or `ACTUAL_BASE_URL=http://127.0.0.1:8080` (local, no key)
 
 **MiniMax (OAuth)**
 
@@ -257,6 +263,18 @@ Multi-model API gateway
 
 Set `NOVITA_API_KEY`
 
+**Ramp Router**
+
+Responses-native LLM gateway routing across OpenAI/Anthropic/xAI/...
+
+Set `RAMP_ROUTER_API_KEY`
+
+**Nebius Token Factory**
+
+Open models on Nebius AI cloud
+
+Set `NEBIUS_API_KEY`
+
 **StepFun**
 
 Step Plan models
@@ -274,6 +292,12 @@ Set `XIAOMI_API_KEY`
 Tencent-hosted models
 
 Set `TOKENHUB_API_KEY`
+
+**Tencent TokenPlan**
+
+Tencent Hy models via Anthropic-style endpoint
+
+Set `TOKENPLAN_API_KEY`
 
 **Ollama Cloud**
 
@@ -475,7 +499,7 @@ Only after the base chat works. Pick what you need:
 hermes gateway setup    # Interactive platform configuration
 ```
 
-Connect [Telegram](/docs/user-guide/messaging/telegram), [Discord](/docs/user-guide/messaging/discord), [Slack](/docs/user-guide/messaging/slack), [WhatsApp](/docs/user-guide/messaging/whatsapp), [Signal](/docs/user-guide/messaging/signal), [Email](/docs/user-guide/messaging/email), or [Home Assistant](/docs/user-guide/messaging/homeassistant), or [Microsoft Teams](/docs/user-guide/messaging/teams).
+Connect [Telegram](/docs/user-guide/messaging/telegram), [Discord](/docs/user-guide/messaging/discord), [Slack](/docs/user-guide/messaging/slack), [WhatsApp](/docs/user-guide/messaging/whatsapp), [Signal](/docs/user-guide/messaging/signal), [Email](/docs/user-guide/messaging/email), [Home Assistant](/docs/user-guide/messaging/homeassistant) (plugin), or [Microsoft Teams](/docs/user-guide/messaging/teams).
 
 ### Automation and tools
 
@@ -496,15 +520,7 @@ For Docker sandboxes, you can also enable the **egress credential-injection prox
 
 ### Voice mode
 
-```
-# From the Hermes install directory (the curl installer placed it at
-# ~/.hermes/hermes-agent on Linux/macOS or %LOCALAPPDATA%\hermes\hermes-agent on Windows):
-cd ~/.hermes/hermes-agent
-uv pip install --python ./venv/bin/python -e ".[voice]"
-# Includes faster-whisper for free local speech-to-text
-```
-
-Then in the CLI: `/voice on`. Press `Ctrl+B` to record. See [Voice Mode](/docs/user-guide/features/voice-mode).
+Run `hermes tools` and configure the Voice providers. Then enable `/voice on` in the CLI and press `Ctrl+B` to record. PM handles missing supported requirements; a dependency change can require a restart. Local Faster-Whisper is not available on every architecture. See [Voice Mode](/docs/user-guide/features/voice-mode).
 
 ### Skills
 
@@ -553,7 +569,7 @@ ACP support ships with the standard `[all]` extras, so the curl installer alread
 hermes acp
 ```
 
-(If you installed without `[all]`, run `cd ~/.hermes/hermes-agent && uv pip install -e ".[acp]"` first.)
+(If you installed without `[all]`, run `cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['acp'], explicit=True)"` first.)
 
 See [ACP Editor Integration](/docs/user-guide/features/acp).
 
@@ -667,3 +683,4 @@ Resume last session
 -   **[AI Providers](/docs/integrations/providers)** — Full provider list and setup details
 -   **[Skills System](/docs/user-guide/features/skills)** — Reusable workflows and knowledge
 -   **[Tips & Best Practices](/docs/guides/tips)** — Power user tips
+-   **[Moving to another machine](/docs/reference/faq#exporting-hermes-to-another-machine)** — `hermes backup` migrates your whole setup (or [a single profile](/docs/reference/faq#moving-a-single-profile-to-another-machine)); no need to rebuild from scratch

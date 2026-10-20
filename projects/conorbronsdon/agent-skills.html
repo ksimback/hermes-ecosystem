@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>conorbronsdon/agent-skills — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
+<meta name="description" content="agent-skills is a collection of markdown files that teach coding agents specific workflows. It includes skills for session management, code review, state…">
+<link rel="canonical" href="https://hermesatlas.com/projects/conorbronsdon/agent-skills">
+<meta property="og:title" content="conorbronsdon/agent-skills — Hermes Atlas">
+<meta property="og:description" content="agent-skills is a collection of markdown files that teach coding agents specific workflows. It includes skills for session management, code review, state…">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/conorbronsdon/agent-skills">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=agent-skills&amp;subtitle=Production-tested+agent+skills+for+Claude+Code%2C+Codex%2C+Cursor%2C+and+OpenCode+%E2%80%94+session+management%2C+multi-session+reconciliation%2C+worktree+recovery%2C+PR+review%2C+and+skill+scaffolding.&amp;kind=project+%C2%B7+skills">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="conorbronsdon/agent-skills — Hermes Atlas">
+<meta name="twitter:description" content="agent-skills is a collection of markdown files that teach coding agents specific workflows. It includes skills for session management, code review, state…">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=agent-skills&amp;subtitle=Production-tested+agent+skills+for+Claude+Code%2C+Codex%2C+Cursor%2C+and+OpenCode+%E2%80%94+session+management%2C+multi-session+reconciliation%2C+worktree+recovery%2C+PR+review%2C+and+skill+scaffolding.&amp;kind=project+%C2%B7+skills">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "skills &amp; skill registries", "item": "https://hermesatlas.com/lists/top-skills" },
+    { "@type": "ListItem", "position": 3, "name": "agent-skills" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/conorbronsdon/agent-skills#software",
+  "name": "agent-skills",
+  "description": "agent-skills is a collection of markdown files that teach coding agents specific workflows. It includes skills for session management, code review, state reconciliation, worktree recovery, and skill creation, with installation instructions for Claude Code and other agents. The project is in maintenance mode: it is stable, receives security fixes, and still welcomes issues and pull requests.",
+  "url": "https://hermesatlas.com/projects/conorbronsdon/agent-skills",
+  "codeRepository": "https://github.com/conorbronsdon/agent-skills",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
+  "author": {
+    "@type": "Organization",
+    "name": "conorbronsdon",
+    "url": "https://github.com/conorbronsdon"
+  },
+  "dateModified": "2026-10-07T18:40:17.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 10
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">262·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/lists/top-skills">skills &amp; skill registries</a><span class="sep">/</span>agent-skills
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">conorbronsdon</span><span class="slash">/</span>agent-skills
+  </h1>
+  <p class="project-desc">Production-tested agent skills for Claude Code, Codex, Cursor, and OpenCode — session management, multi-session reconciliation, worktree recovery, PR review, and skill scaffolding. The proportionate-review leg of trust infrastructure for agents.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 10</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
+    
+    <span><span class="meta-label">updated</span>2026-10-07</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/conorbronsdon/agent-skills" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    <a href="https://conorbronsdon.com/go/claude-code-skills" target="_blank" rel="noopener" class="btn-secondary">homepage</a>
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">agent-skills is a collection of markdown files that teach coding agents specific workflows. It includes skills for session management, code review, state reconciliation, worktree recovery, and skill creation, with installation instructions for Claude Code and other agents. The project is in maintenance mode: it is stable, receives security fixes, and still welcomes issues and pull requests.</p>
+    <ul class="summary-highlights">
+      <li>Skills are installed by copying a directory or using the bundled installer.</li>
+      <li>Includes workflows for code review and session management.</li>
+      <li>Skills are plain markdown files.</li>
+    </ul>
+  </div>
+</section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <div align="center">
+
+<h2>agent-skills</h2>
+<blockquote>
+<p><strong>Maintenance mode.</strong> This project is stable and receives security fixes. New features aren't planned, but issues and pull requests are still welcome.</p>
+</blockquote>
+<p>Production-tested agent skills. Drop-in markdown files that teach a coding agent a specific workflow — Claude Code, Codex, Cursor, or OpenCode.</p>
+<p><a href="https://github.com/conorbronsdon/agent-skills/stargazers"><img src="https://img.shields.io/github/stars/conorbronsdon/agent-skills?style=social" alt="GitHub stars" loading="lazy" decoding="async"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="License: MIT" loading="lazy" decoding="async"></a>
+<a href="https://chainofthought.show/?utm_source=github&amp;utm_medium=referral&amp;utm_campaign=repo-readme&amp;utm_content=agent-skills"><img src="https://img.shields.io/badge/Podcast-Chain_of_Thought-purple?style=flat-square" alt="Podcast" loading="lazy" decoding="async"></a>
+<a href="https://x.com/ConorBronsdon"><img src="https://img.shields.io/badge/X-@ConorBronsdon-black?style=flat-square&amp;logo=x" alt="X" loading="lazy" decoding="async"></a></p>
+<img src="https://raw.githubusercontent.com/conorbronsdon/agent-skills/main/docs/demo.gif" alt="A representative /code-review session: the orchestrator sizes the PR as high-stakes, spawns adversarial and operational subagents in parallel alongside Copilot, then triages the findings" width="800">
+
+</div>
+
+<hr>
+<p>These are patterns I built for my own daily work and generalized for anyone to use. They work with Claude Code out of the box, install into Codex, Cursor, and OpenCode with one flag (see <a href="#other-agents">Other agents</a>), and follow the <a href="https://agentskills.io">agentskills.io</a> standard where applicable. The through-line is trust infrastructure for agents — mostly its proportionate-review leg: review scaled to what a mistake would cost, from a quick drift check after parallel sessions to a full adversarial multi-agent pass before a high-stakes merge.</p>
+<h3>At a Glance</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Commands</th>
+<th>What it solves</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="session-management/">Session Management</a></td>
+<td><code>/start</code>, <code>/end</code>, <code>/update</code>, <code>/today</code></td>
+<td>Claude Code has no memory between sessions — this adds it</td>
+</tr>
+<tr>
+<td><a href="code-review/">Code Review</a></td>
+<td><code>/code-review</code></td>
+<td>Single-pass reviews miss architectural P0s — this orchestrates Copilot + parallel subagents</td>
+</tr>
+<tr>
+<td><a href="eval-integrity/">Eval Integrity</a></td>
+<td><code>/eval-integrity</code></td>
+<td>Benchmark numbers get dismissed in review — this audits an eval repo across 7 credibility dimensions</td>
+</tr>
+<tr>
+<td><a href="reconcile/">Reconcile</a></td>
+<td><code>/reconcile</code></td>
+<td>Parallel sessions cause state drift — this detects it</td>
+</tr>
+<tr>
+<td><a href="ssot-check/">SSOT Check</a></td>
+<td><code>/ssot-check</code></td>
+<td>Facts hand-copied across docs drift — this tracks the canonical value and audits every copy</td>
+</tr>
+<tr>
+<td><a href="recover/">Recover</a></td>
+<td><code>/recover</code></td>
+<td>Crashed sessions leave orphaned worktrees — this cleans them</td>
+</tr>
+<tr>
+<td><a href="skill-creator/">Skill Creator</a></td>
+<td><code>/skill-creator</code></td>
+<td>Skill generators rot and skip invocation/context decisions — this scaffolds against the live spec</td>
+</tr>
+<tr>
+<td><a href="guest-circuit/">Guest Circuit</a></td>
+<td><code>/guest-circuit</code></td>
+<td>Pitching a podcast guest blind re-asks what three other shows asked — this maps their circuit and finds the unclaimed angle</td>
+</tr>
+<tr>
+<td><a href="angel-diligence/">Angel Diligence</a></td>
+<td><code>/angel-diligence</code></td>
+<td>Startup diligence is ad hoc and easy to hallucinate; this produces a cited deal memo with a verdict scaffold, not a recommendation</td>
+</tr>
+<tr>
+<td><a href="https://github.com/conorbronsdon/avoid-ai-writing">avoid-ai-writing</a> ↗</td>
+<td><code>/clean-ai-writing</code></td>
+<td>AI writing has tells — 74 pattern categories across vocabulary, structure, rhythm</td>
+</tr>
+<tr>
+<td><a href="https://github.com/conorbronsdon/grokkable-output">grokkable-output</a> ↗</td>
+<td><code>"what did you find?"</code></td>
+<td>Agent reports bury the verdict under headers and arrow chains — this puts the answer in sentence one, with detail layered so you can stop reading anywhere</td>
+</tr>
+<tr>
+<td><a href="https://github.com/conorbronsdon/demo-gif-skill">demo-gif-skill</a> ↗</td>
+<td><code>"add a demo gif"</code></td>
+<td>Demo GIFs rot the moment a tool's output changes — this scripts a reproducible one (vhs/Playwright) into any README</td>
+</tr>
+<tr>
+<td><a href="https://github.com/conorbronsdon/repo-audit">repo-audit</a> ↗</td>
+<td><code>"audit this repo"</code></td>
+<td>A README claims something is blocked; nothing blocks it — this finds the mechanism behind every claim and grades it Enforced, Advisory, or Guidance</td>
+</tr>
+<tr>
+<td><a href="https://github.com/conorbronsdon/agent-memory-kit">agent-memory-kit</a> ↗</td>
+<td><code>/dream rot</code>, <code>/dream lint</code></td>
+<td>Agent memory accumulates and never forgets — this adds the curation pass that catches rot and contradictions before the agent is confidently wrong</td>
+</tr>
+<tr>
+<td><a href="https://github.com/conorbronsdon/agent-workspace">agent-workspace</a> ↗</td>
+<td>Same commands, packaged</td>
+<td>Standalone package of Session Management, Reconcile, and Recover above, with a configurable state layout (<code>workspace.yaml</code>)</td>
+</tr>
+<tr>
+<td><a href="https://github.com/conorbronsdon/agent-skill-builder">agent-skill-builder</a> ↗</td>
+<td>Same command, hardened</td>
+<td>Standalone home of Skill Creator above — adds a machine-checkable validator and weekly spec-drift CI</td>
+</tr>
+<tr>
+<td><a href="https://github.com/conorbronsdon/eunuch-mode">eunuch-mode</a> ↗</td>
+<td><code>/eunuch-mode</code></td>
+<td>A deliberately silly palace-adviser persona: courtly flattery, candid counsel, and an explicit exit</td>
+</tr>
+</tbody></table>
+<p>Rows marked ↗ live in their own repo. Everything else installs from this one. An ↗ row that repackages a skill listed above runs those same commands, so no command is listed twice.</p>
+<h3>Quick Start</h3>
+<p>A skill is a markdown file. Installing one is copying a directory into wherever your agent reads skills from.</p>
+<pre><code class="language-bash"># 1. Copy a skill directory into your project
+mkdir -p your-project/.claude/skills
+cp -r ssot-check your-project/.claude/skills/ssot-check
+
+# 2. Use it
+# Type /ssot-check in your agent
+</code></pre>
+<p>That's the whole installation: the directory name becomes the command, supporting files (<code>patterns/</code>, <code>examples/</code>) ride along, and edits hot-reload within a session. Install to <code>~/.claude/skills/</code> instead to make a skill available across all your projects.</p>
+<p>Or use the bundled installer, which also handles updates and drift checks against your installed copies:</p>
+<pre><code class="language-bash">./install.sh install ssot-check ~/my-project     # copy in
+./install.sh diff    ssot-check ~/my-project     # what changed upstream since you installed?
+./install.sh update  ssot-check ~/my-project     # refresh
+TARGET_SCOPE=user ./install.sh install reconcile # install to the user-level skills dir
+</code></pre>
+<h4>Other agents</h4>
+<p>Every skill here is plain markdown with no Claude-specific syntax, so it runs anywhere that reads a skill file as a procedure. The installer knows where each agent looks:</p>
+<pre><code class="language-bash">./install.sh agents                                    # show the target directories
+AGENT=codex ./install.sh install ssot-check ~/my-project
+</code></pre>
+<table>
+<thead>
+<tr>
+<th><code>AGENT=</code></th>
+<th>Project directory</th>
+<th>User directory</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>claude</code> (default)</td>
+<td><code>.claude/skills</code></td>
+<td><code>~/.claude/skills</code></td>
+</tr>
+<tr>
+<td><code>codex</code></td>
+<td><code>.agents/skills</code></td>
+<td><code>~/.codex/skills</code></td>
+</tr>
+<tr>
+<td><code>cursor</code></td>
+<td><code>.cursor/skills</code></td>
+<td><code>~/.cursor/skills</code></td>
+</tr>
+<tr>
+<td><code>opencode</code></td>
+<td><code>.opencode/skills</code></td>
+<td><code>~/.opencode/skills</code></td>
+</tr>
+<tr>
+<td><code>generic</code></td>
+<td><code>.agents/skills</code></td>
+<td><code>~/.agents/skills</code></td>
+</tr>
+</tbody></table>
+<p>Omitting <code>AGENT</code> behaves exactly as before. An unrecognised value exits <code>1</code> without writing anything, rather than quietly falling back to Claude.</p>
+<p>Two caveats worth stating plainly: skills that shell out to <code>gh</code> need the GitHub CLI whatever the agent, and <code>/</code>-prefixed invocation is a Claude Code convention — other agents may want "use the ssot-check skill" instead.</p>
+<p>Two variations:</p>
+<ul>
+<li><strong>Multi-command skills</strong> (session-management bundles <code>/start</code>, <code>/end</code>, <code>/update</code>, <code>/today</code>): create one thin <code>.claude/skills/&lt;command&gt;/SKILL.md</code> per command that says <code>Load and follow .claude/skills/session-management/SKILL.md, section "/start — Begin Session"</code> — or use <code>.claude/commands/</code> stub files, which still work but are the legacy form.</li>
+<li><strong>Older setups</strong>: if you already route through <code>.claude/commands/</code>, everything here still works that way; the stubs support the same frontmatter.</li>
+</ul>
+<p>See each skill's README for skill-specific setup details.</p>
+<h3>Skills</h3>
+<h4><a href="session-management/">Session Management</a></h4>
+<p>A system of four commands (<code>/start</code>, <code>/end</code>, <code>/update</code>, <code>/today</code>) that give Claude Code memory across conversations. Maintains state files so every session picks up where the last one left off.</p>
+<ul>
+<li><strong><code>/start</code></strong> — Load project state, check what changed, get a briefing</li>
+<li><strong><code>/end</code></strong> — Auto-extract session summary, update state, propose auto-memory updates, check for uncommitted work</li>
+<li><strong><code>/update</code></strong> — Mid-session checkpoint (quick save)</li>
+<li><strong><code>/today</code></strong> — Morning heartbeat: staleness check, deadlines, memory curation</li>
+</ul>
+<p>Includes setup guide with the required file structure and minimal starter templates. These four, plus Reconcile and Recover, have graduated into <a href="https://github.com/conorbronsdon/agent-workspace">agent-workspace</a> — take that one if you want the configurable state layout, this one if you want the four commands with no config.</p>
+<h4><a href="code-review/">Code Review</a></h4>
+<p>Multi-agent orchestrator for code-PR review. Spawns Copilot plus parallel subagents (adversarial, operational, reference-comparison) sized to PR risk, with stale-finding triage and a hard 2-round iteration cap. Built because line-level review consistently misses architectural failures (Vercel <code>maxDuration</code>, persistent-replay vectors, missing retry budgets) that only surface when a reviewer is asked the right operational question.</p>
+<p>Use for: high-stakes PRs touching auth, payment, crypto, deploy configs, or external SDK integrations. Skip for typos and trivial changes.</p>
+<h4><a href="eval-integrity/">Eval Integrity</a></h4>
+<p>Credibility audit for LLM evaluation and benchmark repos. Greps the target repo for evidence across seven integrity dimensions (pre-registration, contamination, holdout hygiene, judge validity, statistical honesty, reproducibility, leaderboard exclusions), spawns one auditor subagent per dimension in parallel, and emits a scored report: PRESENT / PARTIAL / ABSENT with <code>file:line</code> evidence and a concrete fix for every gap. Each gap is tagged INVALIDATING (a reviewer can throw out the published number) or HARDENING. Read-only — it reports and offers fixes, never edits the benchmark or re-runs an eval. The checks were extracted from hardening a real agent benchmark for external grant review.</p>
+<p>Use before submitting a benchmark to a grant, conference, or public leaderboard, or whenever someone says "I don't trust those numbers." The graduated version at <a href="https://github.com/conorbronsdon/eval-integrity">eval-integrity</a> splits the seven dimensions into 36 scoreable sub-checks, adds a JSON result schema for CI trend-tracking, and ships three fixture benchmarks.</p>
+<h4><a href="reconcile/">Reconcile</a></h4>
+<p>Tripwire check for multi-session drift. Scans recent commits, state files, and cross-references for inconsistencies caused by parallel Claude Code sessions.</p>
+<p>Use after merging worktree branches, after crashes, or whenever something feels off.</p>
+<h4><a href="ssot-check/">SSOT Check</a></h4>
+<p>Drift auditor for facts that are canonical in one file but hand-copied into others (episode counts, prices, subscriber numbers, versions). Discover mode scans the repo for drift-prone values and proposes a <code>.ssot.yaml</code> manifest mapping each fact to its canonical file and known copies, with regex capture groups so values can be extracted and compared. Check mode reads the manifest, verifies every copy against the canonical value, and reports IN SYNC / DRIFTED / CANONICAL MOVED / UNVERIFIED with <code>file:line</code> evidence and proposed diffs. Never auto-applies fixes. Reads cross-repo copies (a landing page in a sibling clone) without writing to those repos, and ends with a one-line summary built for a pre-commit habit.</p>
+<p>Use before commits that touch docs, after updating any canonical number, or on any repo with a "grep for other files with this number" rule that people forget to follow. A separate, tool-backed take on the same problem lives at <a href="https://github.com/conorbronsdon/ssot-check">ssot-check</a>: a deterministic stdlib CLI with a pre-commit hook and a GitHub Action. The two have diverged and neither tracks the other — pick the CLI when you want reproducible, CI-enforceable checks, and this skill when you want the model to do the curation and interpretation.</p>
+<h4><a href="recover/">Recover</a></h4>
+<p>Scan for orphaned worktrees and stale branches left behind by crashed or abandoned sessions. Read-only by default — reports findings and waits for your approval before any cleanup.</p>
+<h4><a href="skill-creator/">Skill Creator</a></h4>
+<p>Meta-skill: describe what you want a skill to do in plain language, and it generates a ready-to-ship skill — including the design decisions most generators skip: invocation control (<code>disable-model-invocation</code> for user-only workflows, <code>user-invocable: false</code> for background knowledge), arguments (<code>argument-hint</code>, <code>$ARGUMENTS</code>), and description budget (triggers in the description, detail in the body, since every model-invocable description loads into every session). Ships with a dated snapshot of the frontmatter spec; the canonical, hardened version — with a machine-checkable validator and weekly spec-drift CI — lives at <a href="https://github.com/conorbronsdon/agent-skill-builder">agent-skill-builder</a>, and this copy tracks it.</p>
+<h4><a href="guest-circuit/">Guest Circuit</a></h4>
+<p>Podcast-appearance research for guest booking. Give it a prospective guest's name plus one anchor fact, and it maps their podcast circuit: every show they've appeared on, how recently, what they covered, and what angle is still unclaimed for your show. Uses <a href="https://github.com/conorbronsdon/podcastindex-mcp">podcastindex-mcp</a> (<code>search_by_person</code>) as the canonical source when configured, degrading to web search when not. Every appearance is verified by a fetched page; nothing comes from model memory.</p>
+<p>Abbreviated example output:</p>
+<pre><code class="language-markdown"># Circuit Report: Jane Doe (CTO, Acme) — 2026-06-11
+
+## Appearance Timeline
+| Date       | Show            | Episode                      | Audience signal |
+|------------|-----------------|------------------------------|-----------------|
+| 2026-05-02 | Infra Weekly    | "Scaling Acme's eval stack"  | 410 eps, indie  |
+| 2026-03-18 | The Stack Pod   | "Jane Doe on agent testing"  | 38K YT views    |
+| 2026-01-09 | DevTools Radio  | "From monolith to agents"    | network show    |
+
+## Stump Speech (do not re-ask)
+- The Acme founding story and the monolith rewrite (told on all 3 shows)
+
+## Unclaimed Angles
+- Her March post on eval dataset rot — no show has touched it
+
+## Receptiveness Signal
+3 appearances in 5 months: actively podcast-receptive, cold outreach viable.
+
+## Suggested Pitch Angle
+[one specific paragraph built on the unclaimed angle]
+</code></pre>
+<p>Use before outreach, not for interview prep of an already-booked guest.</p>
+<h4><a href="angel-diligence/">Angel Diligence</a></h4>
+<p>Pre-investment research for angel checks. Give it a company name (plus optional deck notes, founder names, round details) and it runs parallel web research under strict citation rules, then writes a nine-section deal memo that separates verified facts from company claims. Two gates run before any research: a conflict-of-interest check against your employer, and a deal-structure question (direct, SPV, or secondary) that changes how the numbers read. The memo ends in a verdict scaffold, never an invest/pass recommendation — the human decides.</p>
+<h3>How to Use</h3>
+<p>Installation is covered in <a href="#quick-start">Quick Start</a>: copy the whole skill directory (not just SKILL.md — several skills carry <code>patterns/</code> and <code>examples/</code> files they reference) into <code>.claude/skills/</code>, and the directory name becomes the command. For all skills at once:</p>
+<pre><code class="language-bash">mkdir -p your-project/.claude/skills
+for d in session-management code-review eval-integrity reconcile ssot-check recover skill-creator guest-circuit angel-diligence; do
+  cp -r "$d" your-project/.claude/skills/"$d"
+done
+</code></pre>
+<h4>Works with other AI tools</h4>
+<p>These skills follow the <a href="https://agentskills.io">agentskills.io</a> format, which Cursor, OpenHands, and 40+ other Agent Skills-compatible tools support. Check each tool's docs for how to load skills.</p>
+<h3>Related</h3>
+<p>Skills that graduated out of this repo into their own:</p>
+<ul>
+<li><strong><a href="https://github.com/conorbronsdon/agent-workspace">agent-workspace</a></strong> — Session management, reconcile, and recover as one package with a configurable state layout</li>
+<li><strong><a href="https://github.com/conorbronsdon/agent-skill-builder">agent-skill-builder</a></strong> — Standalone home of the skill-creator here: adds a machine-checkable validator and weekly spec-drift CI</li>
+<li><strong><a href="https://github.com/conorbronsdon/eval-integrity">eval-integrity</a></strong> — The benchmark audit as 36 scoreable sub-checks, with a JSON result schema and fixtures</li>
+<li><strong><a href="https://github.com/conorbronsdon/ssot-check">ssot-check</a></strong> — The drift auditor as a deterministic CLI, pre-commit hook, and GitHub Action</li>
+</ul>
+<p>Skills built standalone:</p>
+<ul>
+<li><strong><a href="https://github.com/conorbronsdon/repo-audit">repo-audit</a></strong> — Check a repo's claims against its own code, or get it ready to open-source</li>
+<li><strong><a href="https://github.com/conorbronsdon/agent-memory-kit">agent-memory-kit</a></strong> — Capture, recall, and a read-only curator that finds rot in agent memory</li>
+<li><strong><a href="https://github.com/conorbronsdon/avoid-ai-writing">avoid-ai-writing</a></strong> — Catch and fix AI writing patterns (74 pattern categories)</li>
+<li><strong><a href="https://github.com/conorbronsdon/demo-gif-skill">demo-gif-skill</a></strong> — Add a reproducible demo GIF to any repo's README</li>
+</ul>
+<p>Elsewhere:</p>
+<ul>
+<li><strong><a href="https://github.com/conorbronsdon/ai-tools-for-creators">AI Tools for Creators</a></strong> — Collection of skills, MCP servers, and workflow tools</li>
+<li><strong><a href="https://github.com/conorbronsdon/ai-learning-resources">AI Learning Resources</a></strong> — Curated learning path from "what is AI?" to building with Claude Code</li>
+</ul>
+<h3>Contributing</h3>
+<p>Found a bug or have an improvement? Open an issue or PR. If you've built a skill that others would find useful, I'm happy to consider adding it.</p>
+<h3>About</h3>
+<p>Built by <a href="https://github.com/conorbronsdon">Conor Bronsdon</a>. These skills were developed through daily use while running <a href="https://chainofthought.show/?utm_source=github&amp;utm_medium=referral&amp;utm_campaign=repo-readme&amp;utm_content=agent-skills">Chain of Thought</a>, a podcast about AI infrastructure and developer tools.</p>
+<hr>
+<h3>Disclaimer</h3>
+<p><em>This is an independent personal project, not affiliated with, sponsored by, or endorsed by any company. All views expressed are my own.</em></p>
+<h3>License</h3>
+<p>MIT — see <a href="LICENSE">LICENSE</a>.</p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in skills &amp; skill registries</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
+        <div class="stars">★ 34.7K</div>
+        <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
+      </a>
+      <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
+        <div class="stars">★ 5.1K</div>
+        <div class="name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
+      </a>
+      <a class="related-row" href="/projects/wondelai/skills">
+        <div class="stars">★ 2.5K</div>
+        <div class="name"><span class="org">wondelai /</span> skills</div>
+      </a>
+      <a class="related-row" href="/projects/DougTrajano/pydantic-ai-skills">
+        <div class="stars">★ 380</div>
+        <div class="name"><span class="org">DougTrajano /</span> pydantic-ai-skills</div>
+      </a>
+      <a class="related-row" href="/projects/Agents365-ai/drawio-skill">
+        <div class="stars">★ 10.2K</div>
+        <div class="name"><span class="org">Agents365-ai /</span> drawio-skill</div>
+      </a>
+      <a class="related-row" href="/projects/smartcontractkit/chainlink-agent-skills">
+        <div class="stars">★ 126</div>
+        <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
+      </a>
+      <a class="related-row" href="/projects/tlehman/litprog-skill">
+        <div class="stars">★ 274</div>
+        <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
+      </a>
+      <a class="related-row" href="/projects/esaradev/icarus-plugin">
+        <div class="stars">★ 155</div>
+        <div class="name"><span class="org">esaradev /</span> icarus-plugin</div>
+      </a>
+    </div>
+    <p class="list-link"><a href="/lists/top-skills">see all skills &amp; skill registries →</a></p>
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

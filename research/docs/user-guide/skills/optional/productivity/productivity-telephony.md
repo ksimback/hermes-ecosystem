@@ -205,33 +205,33 @@ Sign up at:
 Then save credentials into Hermes:
 
 ```
-python3 "$SCRIPT" save-twilio ACXXXXXXXXXXXXXXXXXXXXXXXXXXXX your_auth_token_here
+python "$SCRIPT" save-twilio ACXXXXXXXXXXXXXXXXXXXXXXXXXXXX your_auth_token_here
 ```
 
 Search for available numbers:
 
 ```
-python3 "$SCRIPT" twilio-search --country US --area-code 702 --limit 5
+python "$SCRIPT" twilio-search --country US --area-code 702 --limit 5
 ```
 
 Buy and remember a number:
 
 ```
-python3 "$SCRIPT" twilio-buy "+17025551234" --save-env
+python "$SCRIPT" twilio-buy "+17025551234" --save-env
 ```
 
 List owned numbers:
 
 ```
-python3 "$SCRIPT" twilio-owned
+python "$SCRIPT" twilio-owned
 ```
 
 Set one of them as the default later:
 
 ```
-python3 "$SCRIPT" twilio-set-default "+17025551234" --save-env
+python "$SCRIPT" twilio-set-default "+17025551234" --save-env
 # or
-python3 "$SCRIPT" twilio-set-default PNXXXXXXXXXXXXXXXXXXXXXXXXXXXX --save-env
+python "$SCRIPT" twilio-set-default PNXXXXXXXXXXXXXXXXXXXXXXXXXXXX --save-env
 ```
 
 ### Bland.ai — easiest outbound AI calling
@@ -243,7 +243,7 @@ Sign up at:
 Save config:
 
 ```
-python3 "$SCRIPT" save-bland your_bland_api_key --voice mason
+python "$SCRIPT" save-bland your_bland_api_key --voice mason
 ```
 
 ### Vapi — better conversational voice quality
@@ -255,19 +255,19 @@ Sign up at:
 Save the API key first:
 
 ```
-python3 "$SCRIPT" save-vapi your_vapi_api_key
+python "$SCRIPT" save-vapi your_vapi_api_key
 ```
 
 Import your owned Twilio number into Vapi and persist the returned phone number ID:
 
 ```
-python3 "$SCRIPT" vapi-import-twilio --save-env
+python "$SCRIPT" vapi-import-twilio --save-env
 ```
 
 If you already know the Vapi phone number ID, save it directly:
 
 ```
-python3 "$SCRIPT" save-vapi your_vapi_api_key --phone-number-id vapi_phone_number_id_here
+python "$SCRIPT" save-vapi your_vapi_api_key --phone-number-id vapi_phone_number_id_here
 ```
 
 ## Diagnose current state
@@ -275,7 +275,7 @@ python3 "$SCRIPT" save-vapi your_vapi_api_key --phone-number-id vapi_phone_numbe
 At any time, inspect what the skill already knows:
 
 ```
-python3 "$SCRIPT" diagnose
+python "$SCRIPT" diagnose
 ```
 
 Use this first when resuming work in a later session.
@@ -287,25 +287,25 @@ Use this first when resuming work in a later session.
 1.  Save Twilio credentials:
 
 ```
-python3 "$SCRIPT" save-twilio AC... auth_token_here
+python "$SCRIPT" save-twilio AC... auth_token_here
 ```
 
 2.  Search for a number:
 
 ```
-python3 "$SCRIPT" twilio-search --country US --area-code 702 --limit 10
+python "$SCRIPT" twilio-search --country US --area-code 702 --limit 10
 ```
 
 3.  Buy it and save it into `${HERMES_HOME:-~/.hermes}/.env` + state:
 
 ```
-python3 "$SCRIPT" twilio-buy "+17025551234" --save-env
+python "$SCRIPT" twilio-buy "+17025551234" --save-env
 ```
 
 4.  Next session, run:
 
 ```
-python3 "$SCRIPT" diagnose
+python "$SCRIPT" diagnose
 ```
 
 This shows the remembered default number and inbox checkpoint state.
@@ -313,13 +313,13 @@ This shows the remembered default number and inbox checkpoint state.
 ### B. Send a text from the agent number
 
 ```
-python3 "$SCRIPT" twilio-send-sms "+15551230000" "Your deployment completed successfully."
+python "$SCRIPT" twilio-send-sms "+15551230000" "Your deployment completed successfully."
 ```
 
 With media:
 
 ```
-python3 "$SCRIPT" twilio-send-sms "+15551230000" "Here is the chart." --media-url "https://example.com/chart.png"
+python "$SCRIPT" twilio-send-sms "+15551230000" "Here is the chart." --media-url "https://example.com/chart.png"
 ```
 
 ### C. Check inbound texts later with no webhook server
@@ -327,13 +327,13 @@ python3 "$SCRIPT" twilio-send-sms "+15551230000" "Here is the chart." --media-ur
 Poll the inbox for the default Twilio number:
 
 ```
-python3 "$SCRIPT" twilio-inbox --limit 20
+python "$SCRIPT" twilio-inbox --limit 20
 ```
 
 Only show messages that arrived after the last checkpoint, and advance the checkpoint when you're done reading:
 
 ```
-python3 "$SCRIPT" twilio-inbox --since-last --mark-seen
+python "$SCRIPT" twilio-inbox --since-last --mark-seen
 ```
 
 This is the main answer to “how do I access messages the number receives next time the skill is loaded?”
@@ -341,7 +341,7 @@ This is the main answer to “how do I access messages the number receives next 
 ### D. Make a direct Twilio call with built-in TTS
 
 ```
-python3 "$SCRIPT" twilio-call "+15551230000" --message "Hello! This is Hermes calling with your status update." --voice Polly.Joanna
+python "$SCRIPT" twilio-call "+15551230000" --message "Hello! This is Hermes calling with your status update." --voice Polly.Joanna
 ```
 
 ### E. Call with a prerecorded / custom voice message
@@ -357,7 +357,7 @@ Use this when:
 Generate or host audio separately, then:
 
 ```
-python3 "$SCRIPT" twilio-call "+155****0000" --audio-url "https://example.com/briefing.mp3"
+python "$SCRIPT" twilio-call "+155****0000" --audio-url "https://example.com/briefing.mp3"
 ```
 
 Recommended Hermes TTS -> Twilio Play workflow:
@@ -389,7 +389,7 @@ Important note:
 If you need to press digits after the call connects, use `--send-digits`. Twilio interprets `w` as a short wait.
 
 ```
-python3 "$SCRIPT" twilio-call "+18005551234" --message "Connecting to billing now." --send-digits "ww1w2w3"
+python "$SCRIPT" twilio-call "+18005551234" --message "Connecting to billing now." --send-digits "ww1w2w3"
 ```
 
 This is useful for reaching a specific menu branch before handing off to a human or delivering a short status message.
@@ -397,19 +397,19 @@ This is useful for reaching a specific menu branch before handing off to a human
 ### G. Outbound AI phone call with Bland.ai
 
 ```
-python3 "$SCRIPT" ai-call "+15551230000" "Call the dental office, ask for a cleaning appointment on Tuesday afternoon, and if they do not have Tuesday availability, ask for Wednesday or Thursday instead." --provider bland --voice mason --max-duration 3
+python "$SCRIPT" ai-call "+15551230000" "Call the dental office, ask for a cleaning appointment on Tuesday afternoon, and if they do not have Tuesday availability, ask for Wednesday or Thursday instead." --provider bland --voice mason --max-duration 3
 ```
 
 Check status:
 
 ```
-python3 "$SCRIPT" ai-status <call_id> --provider bland
+python "$SCRIPT" ai-status <call_id> --provider bland
 ```
 
 Ask Bland analysis questions after completion:
 
 ```
-python3 "$SCRIPT" ai-status <call_id> --provider bland --analyze "Was the appointment confirmed?,What date and time?,Any special instructions?"
+python "$SCRIPT" ai-status <call_id> --provider bland --analyze "Was the appointment confirmed?,What date and time?,Any special instructions?"
 ```
 
 ### H. Outbound AI phone call with Vapi on your owned number
@@ -417,19 +417,19 @@ python3 "$SCRIPT" ai-status <call_id> --provider bland --analyze "Was the appoin
 1.  Import your Twilio number into Vapi:
 
 ```
-python3 "$SCRIPT" vapi-import-twilio --save-env
+python "$SCRIPT" vapi-import-twilio --save-env
 ```
 
 2.  Place the call:
 
 ```
-python3 "$SCRIPT" ai-call "+15551230000" "You are calling to make a dinner reservation for two at 7:30 PM. If that is unavailable, ask for the nearest time between 6:30 and 8:30 PM." --provider vapi --max-duration 4
+python "$SCRIPT" ai-call "+15551230000" "You are calling to make a dinner reservation for two at 7:30 PM. If that is unavailable, ask for the nearest time between 6:30 and 8:30 PM." --provider vapi --max-duration 4
 ```
 
 3.  Check result:
 
 ```
-python3 "$SCRIPT" ai-status <call_id> --provider vapi
+python "$SCRIPT" ai-status <call_id> --provider vapi
 ```
 
 ## Suggested agent procedure

@@ -5,6 +5,7 @@ import {
   chunkList,
   mergeEntryMaps,
   findMissingEntries,
+  pickSingleEntry,
 } from "../lib/list-summary-batching.js";
 
 test("chunkList splits into chunks of at most the given size", () => {
@@ -69,4 +70,22 @@ test("findMissingEntries flags members lacking a usable description", () => {
   );
   // Accepts an array of keys too.
   assert.deepEqual(findMissingEntries({}, ["a/one"]), ["a/one"]);
+});
+
+test("pickSingleEntry recovers a single-repo retry whose key the model misspelled", () => {
+  const key = "cablate/Agentic-MCP-Skill";
+  assert.equal(pickSingleEntry({ [key]: "exact" }, key), "exact");
+  // The misspelling seen in production (run 38248598705).
+  assert.equal(pickSingleEntry({ "cabl ate/Agentic-MCP-Skill": "recovered" }, key), "recovered");
+  // The exact key wins over any stray.
+  assert.equal(pickSingleEntry({ other: "stray", [key]: "exact" }, key), "exact");
+});
+
+test("pickSingleEntry returns null when the response is ambiguous or unusable", () => {
+  const key = "a/one";
+  assert.equal(pickSingleEntry({ "a/two": "x", "a/three": "y" }, key), null);
+  assert.equal(pickSingleEntry({ "a/0ne": "   " }, key), null);
+  assert.equal(pickSingleEntry({}, key), null);
+  assert.equal(pickSingleEntry(["x"], key), null);
+  assert.equal(pickSingleEntry(null, key), null);
 });

@@ -106,6 +106,14 @@ Volcanic theme — burnt orange and ember
 
 Warm burnt orange to ember gradient. Fire-themed spinners ("banking into the draft", "measuring burn"). Dragon-silhouette ASCII art banner.
 
+### On the Desktop app
+
+The Desktop app lists your CLI skins next to its own themes in **Settings → Appearance**, with a few differences:
+
+-   `default` (and `/skin default`) means the Desktop default theme, **Nous**. A stock `display.skin: default` therefore never repaints Desktop, and a runtime switch to `default` from the CLI/TUI or `config.yaml` moves a Desktop pick back to Nous.
+-   The classic gold look is a separate Desktop theme named `classic` (**Classic Hermes**). Pick it in Appearance, or run `/skin classic`, `/skin gold` or `/skin hermes` in a Desktop chat. It follows the light/dark toggle: gold on navy in dark mode, the CLI's light-terminal goldenrod palette in light mode.
+-   `classic` is a reserved Desktop theme name, like the other Desktop built-ins (`mono`, `slate`, …). A user skin file with one of those names keeps the Desktop palette there; its `customCSS` still applies.
+
 ## Complete list of configurable keys
 
 ### Colors (`colors:`)
@@ -322,13 +330,13 @@ Welcome message shown at CLI startup
 
 Message shown on exit
 
-`Goodbye! ⚕`
+`Goodbye! ☤`
 
 `response_label`
 
 Label on the response box header
 
-`⚕ Hermes`
+`☤ Hermes`
 
 `prompt_symbol`
 
@@ -381,6 +389,14 @@ Rich-markup ASCII art logo (replaces the default HERMES\_AGENT banner)
 string
 
 Rich-markup hero art (replaces the default caduceus art)
+
+`""`
+
+`customCSS`
+
+string
+
+Raw CSS injected into the desktop app and web dashboard while the skin is active (GUI surfaces only; ignored by the CLI/TUI). Capped at 32 KiB.
 
 `""`
 
@@ -487,6 +503,24 @@ branding:
 
 tool_prefix: "▏"
 ```
+
+### Raw `customCSS`
+
+For selector-level styling that colors can't express — font sizes, spacing, pseudo-elements, animations — drop raw CSS into `customCSS`. The desktop app and web dashboard inject it as a `<style>` tag while the skin is active and remove it when you switch to a skin without it.
+
+```
+name: myskin
+
+colors:
+  background: "#1a1030"
+  ui_accent: "#ff5fd2"
+
+customCSS: |
+  .chat-input { font-size: 16px; }
+  .status-bar { background: rgba(0, 0, 0, 0.5); }
+```
+
+The field is capped at 32 KiB and applies to GUI surfaces only — the CLI and TUI ignore it. Because it lives in your skin YAML under `~/.hermes/skins/`, it survives app updates (no more hacking `app.asar`).
 
 ## Hermes Mod — Visual Skin Editor
 

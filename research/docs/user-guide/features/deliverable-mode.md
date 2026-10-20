@@ -12,7 +12,7 @@ Three pieces fit together:
 
 1.  **The agent has tools that produce files.** `execute_code` for charts via matplotlib, the `docx` skill for Word documents, the `xlsx` skill for spreadsheets, the `pdf` and `latex-pdf-report` skills for PDFs, the `powerpoint` skill for decks, `image_generate` for images, `text_to_speech` for audio, and so on.
     
-2.  **The gateway scans agent responses for file paths.** Any absolute path (`/tmp/...`) or home-relative path (`~/...`) ending in a supported extension gets extracted. Paths inside code blocks and inline code are ignored so code samples are never mutilated.
+2.  **The gateway scans agent responses for file paths.** Any absolute path (`~/.hermes/cache/scratch/...`) or home-relative path (`~/...`) ending in a supported extension gets extracted. Paths inside code blocks and inline code are ignored so code samples are never mutilated.
     
 3.  **The gateway dispatches by file type.** Images embed inline where the platform supports it; videos embed inline; audio routes to voice/audio attachments; everything else uploads as a file attachment.
     
@@ -89,7 +89,7 @@ The agent doesn't reach for artifacts by default — it has to know to. Two ways
 
 **Project-level:** add the bias to `AGENTS.md` / `CLAUDE.md` / `.cursorrules` in a project the agent works from, to your global persona in `~/.hermes/SOUL.md`, or as a named preset under `agent.personalities` in `~/.hermes/config.yaml` (switchable per session via `/personality`).
 
-The mechanic the agent has to use is simple: render the file to an absolute path (e.g. `/tmp/q3-revenue.png`) and mention that path as plain text in the reply. The gateway does the rest. Paths inside fenced code blocks or backticks are ignored so code samples are never mutilated.
+The mechanic the agent has to use is simple: render the file to an absolute path (e.g. `~/.hermes/cache/scratch/q3-revenue.png`) and mention that path as plain text in the reply. The gateway does the rest. Paths inside fenced code blocks or backticks are ignored so code samples are never mutilated.
 
 ## Kanban: artifacts ride completion notifications
 
@@ -99,8 +99,8 @@ If you use Hermes' kanban multi-agent workflow, workers can attach deliverable f
 kanban_complete(
     summary="rendered Q3 revenue chart and report",
     artifacts=[
-        "/tmp/q3-revenue.png",
-        "/tmp/q3-report.pdf",
+        "~/.hermes/cache/scratch/q3-revenue.png",
+        "~/.hermes/cache/scratch/q3-report.pdf",
     ],
 )
 ```

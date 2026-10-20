@@ -11,7 +11,9 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repos = JSON.parse(await readFile(path.join(ROOT, "data/repos.json"), "utf8"));
 const today = new Date().toISOString().slice(0, 10);
 
-function homepage() {
+// The catalog (category sections + counts) lives on /ecosystem/ since the
+// homepage redesign; smoke section 4 parses it there.
+function catalogPage() {
   const counts = new Map();
   for (const repo of repos) counts.set(repo.category, (counts.get(repo.category) || 0) + 1);
   return `<!doctype html><html><body>${[...counts.entries()]
@@ -51,11 +53,12 @@ async function withAtlasFixture({ stars = {}, releaseTag = "v2026.7.7.2" } = {})
       res.end(body);
     };
 
-    if (url.pathname === "/") return send(200, "text/html", homepage());
-    if (["/guide/", "/lists/", "/use-cases/", "/reports/", "/privacy/", "/robots.txt"].includes(url.pathname)) return send(200, "text/plain", "ok");
+    if (url.pathname === "/") return send(200, "text/html", "<!doctype html><html><body>home</body></html>");
+    if (url.pathname === "/ecosystem/") return send(200, "text/html", catalogPage());
+    if (["/guide/", "/lists/", "/skills/", "/use-cases/", "/reports/", "/privacy/", "/robots.txt"].includes(url.pathname)) return send(200, "text/plain", "ok");
     if (url.pathname === "/sitemap.xml") return send(200, "application/xml", sitemap(base));
     if (url.pathname === "/rss.xml") return send(200, "application/xml", "<rss><channel><item>ok</item></channel></rss>");
-    if (url.pathname === "/llms.txt") return send(200, "text/plain", `Hermes Atlas has ${repos.length}+ tools.`);
+    if (url.pathname === "/llms.txt") return send(200, "text/plain", `All ${repos.length} tracked projects across 12 categories.`);
     if (url.pathname === "/data/latest-release.json") {
       return send(200, "application/json", JSON.stringify({
         version: releaseTag === "v2026.7.7.2" ? "v0.18.2" : "v0.18.0",
@@ -72,8 +75,9 @@ async function withAtlasFixture({ stars = {}, releaseTag = "v2026.7.7.2" } = {})
     }
     if (url.pathname === "/api/chat") {
       // The smoke test sends a second, build-flavored query and asserts the
-      // __META__ trailer names a matched bundle — that's the only external
-      // signal that data/use-cases.json reached the serverless function.
+      // response header names a matched bundle. The trailer remains in the
+      // fixture to cover backward compatibility with older deployments.
+      res.setHeader("x-atlas-use-cases", "hermes-in-your-pocket");
       const meta = `‎__META__${JSON.stringify({
         model: "test/model",
         useCases: ["hermes-in-your-pocket"],

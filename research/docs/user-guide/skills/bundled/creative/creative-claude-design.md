@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`design-md`](/docs/user-guide/skills/bundled/creative/creative-design-md), [`popular-web-designs`](/docs/user-guide/skills/bundled/creative/creative-popular-web-designs), [`excalidraw`](/docs/user-guide/skills/bundled/creative/creative-excalidraw), [`architecture-diagram`](/docs/user-guide/skills/bundled/creative/creative-architecture-diagram)
+[`design-md`](/docs/user-guide/skills/bundled/creative/creative-design-md), [`popular-web-designs`](/docs/user-guide/skills/bundled/creative/creative-popular-web-designs), [`excalidraw`](/docs/user-guide/skills/optional/creative/creative-excalidraw), [`architecture-diagram`](/docs/user-guide/skills/bundled/creative/creative-architecture-diagram)
 
 ## Reference: full SKILL.md
 

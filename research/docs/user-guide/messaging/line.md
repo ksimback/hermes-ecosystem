@@ -292,6 +292,14 @@ no
 
 Reply when a `/stop` orphan button is tapped
 
+`LINE_EXPIRED_TEXT`
+
+no
+
+"That request has expired — send your message again."
+
+Reply when a button whose cached answer is gone is tapped
+
 * * *
 
 ## Troubleshooting

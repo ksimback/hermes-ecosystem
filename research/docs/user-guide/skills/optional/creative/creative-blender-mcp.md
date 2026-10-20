@@ -22,6 +22,10 @@ Author
 
 alireza78a + kshitijk4poor + Hermes Agent
 
+License
+
+MIT
+
 Platforms
 
 linux, macos, windows

@@ -106,7 +106,7 @@ Use the `terminal` tool for every step. Always pin the version (`wrangler@latest
 3.  **Parse the URLs** from that output. Run the helper to extract them reliably instead of eyeballing:
     
     ```
-    npx wrangler@latest deploy --temporary 2>&1 | python3 scripts/parse_deploy_output.py
+    npx wrangler@latest deploy --temporary 2>&1 | python scripts/parse_deploy_output.py
     ```
     
     (Resolve `scripts/parse_deploy_output.py` to this skill's absolute path.) It prints JSON: `{"live_url", "claim_url", "account", "account_state", "expires_minutes", "deployed"}`.
@@ -138,7 +138,7 @@ Deploy (no account)
 
 Deploy + parse URLs
 
-`npx wrangler@latest deploy --temporary 2>&1 | python3 scripts/parse_deploy_output.py`
+`npx wrangler@latest deploy --temporary 2>&1 | python scripts/parse_deploy_output.py`
 
 Verify live
 
@@ -202,4 +202,4 @@ Allowed
 -   `npx wrangler@latest deploy --temporary` prints a `workers.dev` live URL and a `claim-preview?claimToken=` claim URL.
 -   `curl -sS <live_url>` returns the exact body the Worker code produces.
 -   A second deploy reports `Account: <name> (reused)` and the live URL is unchanged.
--   The parser script's self-test passes: `python3 scripts/parse_deploy_output.py --selftest`.
+-   The parser script's self-test passes: `python scripts/parse_deploy_output.py --selftest`.

@@ -34,6 +34,7 @@ const HAND_WRITTEN = [
   path.join(root, "reports", "state-of-hermes-april-2026.html"),
   path.join(root, "reports", "state-of-hermes-may-2026.html"),
   path.join(root, "reports", "state-of-hermes-july-2026.html"),
+  path.join(root, "reports", "state-of-hermes-september-2026.html"),
   ...walk(path.join(root, "guide"), []),
   ...walk(path.join(root, "dev"), []).filter((file) =>
     !file.includes(`${path.sep}_repo${path.sep}`) &&

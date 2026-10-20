@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heybinshao/hermes-appearance-hub — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
+<meta name="description" content="Hermes Appearance Hub is a desktop plugin that brings appearance and conversation settings into a status-bar panel, with changes taking effect immediately and…">
+<link rel="canonical" href="https://hermesatlas.com/projects/Heybinshao/hermes-appearance-hub">
+<meta property="og:title" content="Heybinshao/hermes-appearance-hub — Hermes Atlas">
+<meta property="og:description" content="Hermes Appearance Hub is a desktop plugin that brings appearance and conversation settings into a status-bar panel, with changes taking effect immediately and…">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/Heybinshao/hermes-appearance-hub">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-appearance-hub&amp;subtitle=%E3%80%90Hermes+%E6%A1%8C%E9%9D%A2%E7%AB%AF%E6%8F%92%E4%BB%B6+v3.5.1%E3%80%91%E5%A4%96%E8%A7%82%E6%95%B4%E5%90%88%E6%B5%AE%E7%AA%97%E2%80%94%E2%80%94%E5%8F%8C%E6%A0%8F%E9%9D%A2%E6%9D%BF%E3%80%81%E6%82%AC%E5%81%9C%E5%8D%B3%E8%A7%81%E7%AE%80%E4%BB%8B%E3%80%81%E4%B8%BB%E9%A2%98%E8%87%AA%E5%8A%A8%E8%B7%9F%E9%9A%8F%E5%AE%98%E6%96%B9%28%E5%90%AB+Binshao+%E6%9A%96%E7%BA%B8%29%E3%80%81%E7%BA%B8%E7%BA%B9%E6%A8%A1%E6%8B%9F%E3%80%81%E9%9C%9E%E9%B9%9C%E6%96%87%E6%A5%B7%E3%80%81%E7%95%8C%E9%9D%A2%E7%BC%A9%E6%94%BE%E4%B8%8E%E8%81%8A%E5%A4%A9%E6%96%87%E5%AD%97%E5%A4%A7%E5%B0%8F%E3%80%81%E7%AA%97%E5%8F%A3%E9%80%8F%E6%98%8E%28%E7%8E%BB%E7%92%83%29%E3%80%81%E5%BC%80%E5%9C%BA%E6%A0%87%E8%AF%86%E3%80%81%E6%B6%88%E6%81%AF%E6%B0%94%E6%B3%A1%E3%80%81%E5%AF%B9%E8%AF%9D%E8%A1%8C%E4%B8%BA%E4%BA%94%E4%BB%B6%E5%A5%97%EF%BC%8C%E7%8A%B6%E6%80%81%E6%A0%8F%E4%B8%80%E9%94%AE%E8%AE%BE%E7%BD%AE%EF%BC%8C%E5%85%A8%E9%83%A8%E5%8D%B3%E6%97%B6%E7%94%9F%E6%95%88%E5%B9%B6%E4%B8%8E%E5%AE%98%E6%96%B9%E8%AE%BE%E7%BD%AE%E9%A1%B5%E5%8F%8C%E5%90%91%E5%90%8C%E6%AD%A5%EF%BC%8Cen%2Fzh%2F%E7%B9%81%E9%AB%94&amp;kind=project+%C2%B7+plugins">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Heybinshao/hermes-appearance-hub — Hermes Atlas">
+<meta name="twitter:description" content="Hermes Appearance Hub is a desktop plugin that brings appearance and conversation settings into a status-bar panel, with changes taking effect immediately and…">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-appearance-hub&amp;subtitle=%E3%80%90Hermes+%E6%A1%8C%E9%9D%A2%E7%AB%AF%E6%8F%92%E4%BB%B6+v3.5.1%E3%80%91%E5%A4%96%E8%A7%82%E6%95%B4%E5%90%88%E6%B5%AE%E7%AA%97%E2%80%94%E2%80%94%E5%8F%8C%E6%A0%8F%E9%9D%A2%E6%9D%BF%E3%80%81%E6%82%AC%E5%81%9C%E5%8D%B3%E8%A7%81%E7%AE%80%E4%BB%8B%E3%80%81%E4%B8%BB%E9%A2%98%E8%87%AA%E5%8A%A8%E8%B7%9F%E9%9A%8F%E5%AE%98%E6%96%B9%28%E5%90%AB+Binshao+%E6%9A%96%E7%BA%B8%29%E3%80%81%E7%BA%B8%E7%BA%B9%E6%A8%A1%E6%8B%9F%E3%80%81%E9%9C%9E%E9%B9%9C%E6%96%87%E6%A5%B7%E3%80%81%E7%95%8C%E9%9D%A2%E7%BC%A9%E6%94%BE%E4%B8%8E%E8%81%8A%E5%A4%A9%E6%96%87%E5%AD%97%E5%A4%A7%E5%B0%8F%E3%80%81%E7%AA%97%E5%8F%A3%E9%80%8F%E6%98%8E%28%E7%8E%BB%E7%92%83%29%E3%80%81%E5%BC%80%E5%9C%BA%E6%A0%87%E8%AF%86%E3%80%81%E6%B6%88%E6%81%AF%E6%B0%94%E6%B3%A1%E3%80%81%E5%AF%B9%E8%AF%9D%E8%A1%8C%E4%B8%BA%E4%BA%94%E4%BB%B6%E5%A5%97%EF%BC%8C%E7%8A%B6%E6%80%81%E6%A0%8F%E4%B8%80%E9%94%AE%E8%AE%BE%E7%BD%AE%EF%BC%8C%E5%85%A8%E9%83%A8%E5%8D%B3%E6%97%B6%E7%94%9F%E6%95%88%E5%B9%B6%E4%B8%8E%E5%AE%98%E6%96%B9%E8%AE%BE%E7%BD%AE%E9%A1%B5%E5%8F%8C%E5%90%91%E5%90%8C%E6%AD%A5%EF%BC%8Cen%2Fzh%2F%E7%B9%81%E9%AB%94&amp;kind=project+%C2%B7+plugins">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "plugins &amp; extensions", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 3, "name": "hermes-appearance-hub" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/Heybinshao/hermes-appearance-hub#software",
+  "name": "hermes-appearance-hub",
+  "description": "Hermes Appearance Hub is a desktop plugin that brings appearance and conversation settings into a status-bar panel, with changes taking effect immediately and synchronizing with the official settings page. It includes themes, language and interface scaling controls, chat appearance options, LXGW WenKai font support, simulated paper texture, and customizable startup branding.",
+  "url": "https://hermesatlas.com/projects/Heybinshao/hermes-appearance-hub",
+  "codeRepository": "https://github.com/Heybinshao/hermes-appearance-hub",
+  "applicationCategory": "BrowserApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "JavaScript",
+  "license": "https://spdx.org/licenses/MIT.html",
+  "author": {
+    "@type": "Organization",
+    "name": "Heybinshao",
+    "url": "https://github.com/Heybinshao"
+  },
+  "dateModified": "2026-10-13T04:07:40.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 16
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">262·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/">plugins &amp; extensions</a><span class="sep">/</span>hermes-appearance-hub
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">Heybinshao</span><span class="slash">/</span>hermes-appearance-hub
+  </h1>
+  <p class="project-desc">【Hermes 桌面端插件 v3.5.1】外观整合浮窗——双栏面板、悬停即见简介、主题自动跟随官方(含 Binshao 暖纸)、纸纹模拟、霞鹜文楷、界面缩放与聊天文字大小、窗口透明(玻璃)、开场标识、消息气泡、对话行为五件套，状态栏一键设置，全部即时生效并与官方设置页双向同步，en/zh/繁體</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 16</span>
+    <span><span class="meta-label">lang</span>JavaScript</span>
+    <span><span class="meta-label">license</span>MIT</span>
+    
+    <span><span class="meta-label">updated</span>2026-10-13</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/Heybinshao/hermes-appearance-hub" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">Hermes Appearance Hub is a desktop plugin that brings appearance and conversation settings into a status-bar panel, with changes taking effect immediately and synchronizing with the official settings page. It includes themes, language and interface scaling controls, chat appearance options, LXGW WenKai font support, simulated paper texture, and customizable startup branding.</p>
+    <ul class="summary-highlights">
+      <li>Offers 12 themes, including Binshao.</li>
+      <li>Uses installed system fonts; falls back to the default font.</li>
+      <li>Removes injected changes when disabled or uninstalled.</li>
+    </ul>
+  </div>
+</section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h2>Hermes Appearance Hub <img src="https://img.shields.io/badge/版本-v3.5.1-blue" alt="版本" loading="lazy" decoding="async"></h2>
+<p>给 Hermes 桌面端用的<strong>外观整合插件</strong>：把散在官方设置页各处的外观与对话行为开关，连同纸纹模拟、霞鹜文楷、Binshao 主题等独有能力，收进状态栏一个浮窗——悬停即见说明，改动即时生效，省掉翻设置页的路径。</p>
+<h3>特性</h3>
+<ul>
+<li>无需构建、不改应用代码——单个 ESM 文件</li>
+<li>状态栏「外观」入口，右键可显隐</li>
+<li>双栏面板 · 每行只留标题，悬停即见简介（底部说明带）</li>
+<li>主题（12 个，含 Binshao 暖纸）· 语言简/繁/EN · 霞鹜文楷 · 纸纹模拟 · 界面缩放</li>
+<li>聊天背景 · 消息气泡 · 窗口透明 · 开场标识 · 对话行为五件套（工具调用显示 / 折叠推理 / 内嵌预览 / 悬浮输入框 / 应用操作）</li>
+<li>设置持久化，卸载清理注入、不留残留</li>
+</ul>
+<h3>界面预览</h3>
+<h4>外观浮窗</h4>
+<p>点击状态栏「外观」按钮弹出，双栏铺开；每行只留标题，悬停任一设置项，底部说明带显示该项简介：</p>
+<p><img src="https://raw.githubusercontent.com/Heybinshao/hermes-appearance-hub/main/assets/screenshot-panel.jpg" alt="外观浮窗" loading="lazy" decoding="async"></p>
+<h4>Binshao 主题</h4>
+<p>暖纸色系明暗双模式，配纸纹模拟使用更佳——亮色泛黄杂志纸，暗色深棕纸：</p>
+<p><img src="https://raw.githubusercontent.com/Heybinshao/hermes-appearance-hub/main/assets/screenshot-theme-binshao-light.jpg" alt="Binshao · 明亮" loading="lazy" decoding="async"></p>
+<p><img src="https://raw.githubusercontent.com/Heybinshao/hermes-appearance-hub/main/assets/screenshot-theme-binshao-dark.jpg" alt="Binshao · 暗色" loading="lazy" decoding="async"></p>
+<h4>开场标识</h4>
+<p>原生文案（官方字标与随机提示语）：</p>
+<p><img src="https://raw.githubusercontent.com/Heybinshao/hermes-appearance-hub/main/assets/screenshot-intro-native.jpg" alt="开场标识 · 原生文案" loading="lazy" decoding="async"></p>
+<p>自定义文案（字标与提示语均可替换）：</p>
+<p><img src="https://raw.githubusercontent.com/Heybinshao/hermes-appearance-hub/main/assets/screenshot-intro-custom.jpg" alt="开场标识 · 自定义" loading="lazy" decoding="async"></p>
+<h4>字体 + 纸纹 · 浅色</h4>
+<p>未启用（系统字体、无纸纹）：</p>
+<p><img src="https://raw.githubusercontent.com/Heybinshao/hermes-appearance-hub/main/assets/screenshot-light-before.png" alt="浅色未启用" loading="lazy" decoding="async"></p>
+<p>启用后（霞鹜文楷 + 宣纸纸纹）：</p>
+<p><img src="https://raw.githubusercontent.com/Heybinshao/hermes-appearance-hub/main/assets/screenshot-light-after.png" alt="浅色启用" loading="lazy" decoding="async"></p>
+<h4>字体 + 纸纹 · 暗色</h4>
+<p>未启用（系统字体、无纸纹）：</p>
+<p><img src="https://raw.githubusercontent.com/Heybinshao/hermes-appearance-hub/main/assets/screenshot-dark-before.png" alt="暗色未启用" loading="lazy" decoding="async"></p>
+<p>启用后（霞鹜文楷 + 宣纸纸纹）：</p>
+<p><img src="https://raw.githubusercontent.com/Heybinshao/hermes-appearance-hub/main/assets/screenshot-dark-after.png" alt="暗色启用" loading="lazy" decoding="async"></p>
+<h3>字体依赖（灵魂注入！！！）</h3>
+<p>全局字体功能使用 <strong>霞鹜文楷（LXGW WenKai）</strong> 与 <strong>霞鹜文楷 Mono（LXGW WenKai Mono）</strong>：</p>
+<ul>
+<li>字体仓库：<a href="https://github.com/lxgw/LxgwWenKai">lxgw/LxgwWenKai</a>（SIL Open Font License 1.1，开源可商用）</li>
+<li><strong>需装到系统</strong>：插件只用本机已装的系统字体，不走 CDN。没装则回退系统默认字体</li>
+<li>一款字体撑起整个界面的气质——向字体作者 <strong>lxgw</strong> 致敬：没有这份优秀的开源中文字体，就没有这个插件的灵魂</li>
+</ul>
+<h3>安装</h3>
+<h4>方式一：官方插件目录（推荐）</h4>
+<pre><code class="language-bash">hermes plugins install hermes-appearance-hub
+</code></pre>
+<p>装完重启 Hermes 桌面端（⌘Q 后重新打开）即可。升级：</p>
+<pre><code class="language-bash">hermes plugins update hermes-appearance-hub
+</code></pre>
+<blockquote>
+<p>目录条目钉在某个已评审的 commit 上——作者仓库的后续提交不会自动进目录，实际装到的版本以插件卡片上的版本号为准。</p>
+</blockquote>
+<h4>方式二：让 Hermes 帮你装（顺带装字体）</h4>
+<p>把下面这句话直接发给 Hermes 就行：</p>
+<pre><code>从 Git 安装这个桌面插件：https://github.com/Heybinshao/hermes-appearance-hub ，顺便去 https://github.com/lxgw/LxgwWenKai 下载 Regular 和 Mono 字体装到系统，装好后重载插件并告诉我怎么用
+</code></pre>
+<p>这条路径装的是仓库当前提交（没有经过目录评审）；升级方式：重做一遍上述安装，弹窗里勾「强制重装」。</p>
+<h4>方式三：手动放置</h4>
+<ol>
+<li>下载本仓库的 <a href="https://github.com/Heybinshao/hermes-appearance-hub/blob/main/desktop/plugin.js"><code>desktop/plugin.js</code></a></li>
+<li>放到 <code>~/.hermes/desktop-plugins/hermes-appearance-hub/plugin.js</code>（目录不存在就创建）</li>
+<li>重启 Hermes 桌面端（⌘Q 后重新打开）</li>
+</ol>
+<blockquote>
+<p>⚠️ 插件入口在仓库的 <code>desktop/</code> 子目录里，别把整个仓库 clone 进 <code>~/.hermes/desktop-plugins/</code>——多出一层目录，宿主就找不到入口文件了。</p>
+</blockquote>
+<p>字体需装到系统：到 <a href="https://github.com/lxgw/LxgwWenKai">lxgw/LxgwWenKai</a> 下载 Regular 和 Mono，装好后重载插件。没装则界面回退系统默认字体。</p>
+<blockquote>
+<p>如果 Hermes 使用了非默认 profile，插件目录是 <code>~/.hermes/profiles/&lt;name&gt;/desktop-plugins/</code>。
+不确定时在桌面端「技能与工具 → 插件」里查看插件目录路径。</p>
+</blockquote>
+<h3>使用</h3>
+<ol>
+<li>状态栏右侧出现「外观」按钮（调色盘图标），点击弹出浮窗</li>
+<li>每行只留标题，鼠标悬停任一设置项，底部说明带显示该项简介（不悬停时显示占位提示）；所有设置项改动即时生效，并与官方设置页双向同步：<ul>
+<li><strong>主题</strong>：右上角明亮/暗色/系统三档、简/繁/EN 语言三键；网格区 12 个主题点击即切（11 个原生 + Binshao）</li>
+<li><strong>聊天背景</strong>：雕像图片显隐开关</li>
+<li><strong>对话行为</strong>：工具调用显示（产品/技术）· 默认折叠推理过程 · 内嵌预览（询问/总是/关闭）· 悬浮输入框（拖出停靠区开关）· 应用操作（标题栏控件左/右）——与官方设置页同键，改动即时生效</li>
+<li><strong>标签栏 / 会话列表密度</strong>：与设置页同源，改动即时生效</li>
+<li><strong>消息气泡</strong>：拖杆调节自己消息气泡的透明度（0 不透明 → 100 只剩边框），与官方设置页同键同步</li>
+<li><strong>窗口透明</strong>：透明/玻璃模式 + 强度滑杆，玻璃模式展开淡出/磨砂质感/应用范围；通过官方 IPC 实时驱动原生窗口效果</li>
+<li><strong>霞鹜文楷</strong>：界面字体一键开关（需装到系统）；官方设置页自定义了聊天字体时自动让位，清空后自动恢复</li>
+<li><strong>纸纹模拟</strong>：噪点层随明暗自动切换；下方配方可选极轻/微调/经典/贴地（暗色）或贴顶（浅色），从左到右由轻到重；关时配方区锁定不可选</li>
+<li><strong>开场标识</strong>：关/开即时生效，与官方设置页开关双向同步（面板改动同步过去，官方页改动也实时跟回来）；原生文案/自定义与输入框常驻显示，按档位分层启用（关→整块锁定；开+原生→输入框锁定；开+自定义→可编辑字标与提示语，停手约半秒自动生效）；禁用插件会还原官方文案</li>
+<li><strong>界面缩放</strong>：底部右角六档按钮，直接驱动 Hermes 原生缩放，与设置/View 菜单同步</li>
+</ul>
+</li>
+<li>状态栏右键菜单 → 勾选「外观设置」可显示/隐藏入口</li>
+</ol>
+<blockquote>
+<p><strong>界面缩放</strong> 六档（90/100/110/125/150/175%）直接调用 Hermes 原生缩放接口
+（<code>window.hermesDesktop.zoom</code>），与系统「设置 → 外观 → 界面缩放」、顶部 View 菜单、Cmd/Ctrl ±
+共用同一套主进程缩放机制，最终值互相一致（都持久化到同一处）。</p>
+</blockquote>
+<h3>从源码开发</h3>
+<pre><code class="language-bash">git clone https://github.com/Heybinshao/hermes-appearance-hub.git
+cd hermes-appearance-hub
+node scripts/build-live.mjs
+</code></pre>
+<p><code>scripts/build-live.mjs</code> 把仓库里的 <code>desktop/plugin.js</code> 同步到本地运行现场
+（<code>~/.hermes/desktop-plugins/hermes-appearance-hub/</code>），并把现场独有的
+LIVE-ONLY 段插回去。</p>
+<p><strong>为什么需要这个脚本</strong>：运行现场带着仓库里没有的段落（当前是 composer
+输入框字体覆盖，绕官方 <code>:lang(zh)</code> 语言分支把 <code>--dt-font-sans</code> 挤到
+fallback 末尾的 bug）。直接 <code>cp</code> 仓库文件会把那段抹掉，导致输入框字体失效；
+而原地手改现场会让仓库与现场双向分叉。所以固定走：读仓库版 → 脚本化插入
+LIVE-ONLY 段 → 写现场，三步各带 assert——锚点对不上就中止、不写半个文件，
+写盘后必过 <code>node --check</code>（现场语法坏掉不是局部降级，是整插件加载失败、
+状态栏入口直接消失）。</p>
+<p>改完刷新：磁盘插件 5 秒热加载，重开浮窗即可（改桌面端自身才需要 ⌘Q）。</p>
+<h3>卸载</h3>
+<p>目录装的：</p>
+<pre><code class="language-bash">hermes plugins remove hermes-appearance-hub
+</code></pre>
+<p>手动装的：删除插件目录 + 重启桌面端：</p>
+<pre><code class="language-bash">rm -rf ~/.hermes/desktop-plugins/hermes-appearance-hub
+</code></pre>
+<p>插件被禁用/删除时会自动移除所有注入（纸纹层、字体、开场标识替换等）并还原官方设置，不留残留。</p>
+<h3>关于作者</h3>
+<p><strong>彬少</strong> —— 一个什么都折腾一下的人：装系统 · 玩AI · 搭知识库 · 做设计。这个仓库里的东西都是我自己的卡点长出来的，日常在用，做完就开源。</p>
+<p>微信公众号 <strong>「宝藏彬少」</strong>：折腾，是为了更好用。欢迎关注交流。</p>
+<h3>许可证</h3>
+<p><a href="LICENSE">MIT</a> © 2026 Binshao</p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in plugins &amp; extensions</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
+        <div class="stars">★ 431</div>
+        <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
+      </a>
+      <a class="related-row" href="/projects/42-evey/hermes-plugins">
+        <div class="stars">★ 533</div>
+        <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
+      </a>
+      <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
+        <div class="stars">★ 49</div>
+        <div class="name"><span class="org">FahrenheitResearch /</span> hermes-weather-plugin</div>
+      </a>
+      <a class="related-row" href="/projects/42-evey/evey-bridge-plugin">
+        <div class="stars">★ 18</div>
+        <div class="name"><span class="org">42-evey /</span> evey-bridge-plugin</div>
+      </a>
+      <a class="related-row" href="/projects/nativ3ai/hermes-payguard">
+        <div class="stars">★ 14</div>
+        <div class="name"><span class="org">nativ3ai /</span> hermes-payguard</div>
+      </a>
+      <a class="related-row" href="/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server">
+        <div class="stars">★ 399</div>
+        <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
+      </a>
+      <a class="related-row" href="/projects/stainlu/hermes-labyrinth">
+        <div class="stars">★ 306</div>
+        <div class="name"><span class="org">stainlu /</span> hermes-labyrinth</div>
+      </a>
+      <a class="related-row" href="/projects/runta-dev/clawshell">
+        <div class="stars">★ 346</div>
+        <div class="name"><span class="org">runta-dev /</span> clawshell</div>
+      </a>
+    </div>
+    
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

@@ -70,7 +70,7 @@ The hard limits that autonomy never overrides: no acting without recorded consen
 
 ## Prerequisites
 
--   `python3` (stdlib only; no extra packages needed for the core engine).
+-   `python` (stdlib only; no extra packages needed for the core engine).
 -   **Optional upgrades** (the skill works zero-config without these; `setup --auto` turns on every one it detects, reading credentials from the shell env **and from `$HERMES_HOME/.env`** so keys Hermes already loads for its own tools are picked up without re-exporting - each one converts a class of human tasks into agent actions):
     -   **Cloud browser (recommended default): `BROWSERBASE_API_KEY`.** `setup --auto` selects it whenever the key is present, and it is the intended baseline: a real residential-IP cloud browser **clears soft/managed CAPTCHAs (Cloudflare Turnstile, hCaptcha/reCAPTCHA checkbox) as normal operation**, so those brokers stay automated (T1) instead of becoming human tasks. This is not CAPTCHA "solving" - no solver service, no fingerprint spoofing; only interactive/behavioral ("hard") challenges the browser genuinely cannot pass fall back to a human task. Without the key, the plain agent browser is used and soft-CAPTCHA brokers drop to T2 (human).
     -   Email automation, two credential-free-or-not options:
@@ -84,7 +84,7 @@ The hard limits that autonomy never overrides: no acting without recorded consen
 Run everything through the `terminal` tool. From this skill's directory:
 
 ```
-PDD="python3 scripts/pdd.py"
+PDD="python scripts/pdd.py"
 ```
 
 The engine stores data under `$PDD_DATA_DIR` (default `$HERMES_HOME/unbroker`), written `0600`. Run via `terminal`, **not** `execute_code` (that sandbox scrubs env and redacts output, which breaks reading the dossier).
@@ -244,5 +244,5 @@ Subagent reports are self-reports: the parent re-verifies key claims (listing UR
 
 ## Verification
 
--   `scripts/run_tests.sh tests/skills/test_unbroker_skill.py` (hermetic; no network), or the dependency-free runner `python3 tests/skills/test_unbroker_skill.py`.
--   Dry run: `$PDD setup --auto && $PDD doctor && SID=$($PDD intake --full-name "Test Person" --email t@example.com --consent | python3 -c 'import sys,json;print(json.load(sys.stdin)["subject_id"])') && $PDD next "$SID"` and confirm a readiness summary plus an ordered action queue.
+-   `scripts/run_tests.sh tests/skills/test_unbroker_skill.py` (hermetic; no network), or the dependency-free runner `python tests/skills/test_unbroker_skill.py`.
+-   Dry run: `$PDD setup --auto && $PDD doctor && SID=$($PDD intake --full-name "Test Person" --email t@example.com --consent | python -c 'import sys,json;print(json.load(sys.stdin)["subject_id"])') && $PDD next "$SID"` and confirm a readiness summary plus an ordered action queue.

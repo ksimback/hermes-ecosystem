@@ -102,9 +102,9 @@ What it does
 
 **Web search & extract**
 
-Firecrawl
+Nous-managed
 
-Agent-grade search and full-page extraction. No Firecrawl API key, no rate limit babysitting.
+Agent-grade search and full-page extraction. No search API key, no rate limit babysitting.
 
 **Image generation**
 
@@ -130,7 +130,7 @@ Modal
 
 Serverless terminal sandboxes for code execution (optional add-on).
 
-Without the gateway, hooking each of those up means a Firecrawl account, a FAL account, a Browser Use account, an OpenAI key, and a Modal account — five separate signups, five separate dashboards, five separate top-up flows. With the gateway, all of it routes through one subscription.
+Without the gateway, hooking each of those up means a web search account, a FAL account, a Browser Use account, an OpenAI key, and a Modal account — five separate signups, five separate dashboards, five separate top-up flows. With the gateway, all of it routes through one subscription.
 
 You can also enable just specific gateway tools (e.g. web search but not image generation) — see [Mixing the gateway with your own backends](#mixing-the-gateway-with-your-own-backends) below.
 
@@ -140,7 +140,7 @@ Because everything routes through one OAuth-authenticated Portal session, you do
 
 ### Cross-platform parity
 
-[Native Windows](/docs/user-guide/windows-native) makes per-tool API key setup its rough edge — installing a Firecrawl account, a FAL account, a Browser Use account, an OpenAI key from Windows is the highest-friction part of getting a useful agent. A Portal subscription smooths that out: one OAuth covers the model and every gateway tool, so Windows users get the same experience as macOS/Linux without manually configuring four backends.
+[Native Windows](/docs/user-guide/windows-native) makes per-tool API key setup its rough edge — installing a web search account, a FAL account, a Browser Use account, an OpenAI key from Windows is the highest-friction part of getting a useful agent. A Portal subscription smooths that out: one OAuth covers the model and every gateway tool, so Windows users get the same experience as macOS/Linux without manually configuring four backends.
 
 ## A note on Hermes 4
 
@@ -283,30 +283,36 @@ model:
   base_url: https://inference-api.nousresearch.com/v1
 ```
 
-The Tool Gateway settings live under their respective tool sections:
+The Tool Gateway settings live under their respective tool sections — each category has a single selection key, and picking **Nous Subscription** in `hermes tools` (or `hermes setup --portal`) writes the value `nous`:
 
 ```
 web:
-  backend: firecrawl
-  use_gateway: true   # web search/extract routes through Tool Gateway
+  backend: nous          # web search/extract routes through Tool Gateway
 
 image_gen:
-  use_gateway: true
+  provider: nous
 
 tts:
-  provider: openai
-  use_gateway: true
+  provider: nous
 
 browser:
-  cloud_provider: browser-use
-  use_gateway: true
+  cloud_provider: nous
 ```
+
+The runtime always follows the stored selection — direct API keys left in `.env` are ignored while a category is set to `nous`, and picking a direct provider (e.g. `image_gen.provider: fal`) without its key produces a clear error rather than silently rerouting through the gateway. (Older configs used a legacy `use_gateway: true` flag; it is read as equivalent to `nous` but is no longer written.)
 
 The OAuth refresh token is stored separately at `~/.hermes/auth.json` (not in `config.yaml` — credentials and configuration are kept separate by design).
 
 ## Token handling
 
 Hermes mints a short-lived JWT from your stored Portal refresh token on each inference call rather than reusing a long-lived API key. The token lifecycle is fully automatic — refresh, mint, retry on transient 401 — and you never see it.
+
+Long-running gateway and dashboard processes also run a background keepalive that refreshes the token before it expires, so idle agents don't pay a 401 round-trip on their first request of each credential lifetime. The keepalive derives its tick from the lifetime the Portal actually issued (several ticks per lifetime), bounded above by:
+
+```
+nous:
+  keepalive_interval_seconds: 900   # upper bound on the tick; 0 disables the keepalive
+```
 
 If the Portal invalidates the refresh token (password change, manual revoke, session expiry), the invalid refresh token is **quarantined locally** so Hermes stops replaying it and you don't see a stream of identical 401s. The next call surfaces a clear "re-authentication required" message. Run `hermes auth add nous` to log in again; the quarantine clears on the next successful login.
 

@@ -23,7 +23,7 @@ For the full feature reference, see [Subagent Delegation](/docs/user-guide/featu
 -   Mechanical multi-step work with logic between steps → `execute_code`
 -   Tasks needing user interaction → subagents can't use `clarify`
 -   Quick file edits → do them directly
--   Durable long-running work that must survive session closure or process restart → `cronjob` or `terminal(background=True, notify_on_complete=True)`. Top-level delegation is asynchronous but still process-local.
+-   Durable long-running work that must survive session closure or process restart → `cronjob_manage` or `terminal(background=True, notify_on_complete=True)`. Top-level delegation is asynchronous but still process-local.
 
 * * *
 
@@ -170,8 +170,8 @@ urls = [r["url"] for r in results[:5]]
 content = web_extract(urls)
 
 # Save for the analysis step
-import json
-with open("/tmp/ai-funding-data.json", "w") as f:
+import json, os
+with open(os.path.expanduser("~/.hermes/cache/scratch/ai-funding-data.json"), "w") as f:
     json.dump({"search_results": results, "extracted": content["results"]}, f)
 print(f"Collected {len(results)} results, extracted {len(content['results'])} pages")
 """)
@@ -179,7 +179,7 @@ print(f"Collected {len(results)} results, extracted {len(content['results'])} pa
 # Step 2: Reasoning-heavy analysis (delegation is better here)
 delegate_task(
     goal="Analyze AI funding data and write a market report",
-    context="""Raw data at /tmp/ai-funding-data.json contains search results and
+    context="""Raw data at ~/.hermes/cache/scratch/ai-funding-data.json contains search results and
     extracted web pages about AI funding, acquisitions, and IPOs in Q1 2026.
     Write a structured market report: key deals, trends, notable players,
     and outlook. Focus on deals over $100M."""
@@ -198,7 +198,7 @@ Subagents inherit the parent's enabled toolsets. `delegate_task` does not accept
 
 ## Constraints
 
--   **Default 3 parallel tasks**: batches default to 3 concurrent subagents (configurable via `delegation.max_concurrent_children` in config.yaml, no hard ceiling, only a floor of 1)
+-   **Default 10 parallel tasks**: batches default to 10 concurrent subagents (configurable via `delegation.max_concurrent_children` in config.yaml, no hard ceiling, only a floor of 1)
 -   **Nested delegation is opt-in**: leaf subagents (default) cannot call `delegate_task`, `clarify`, `memory`, or `execute_code`. Orchestrator subagents (`role="orchestrator"`) retain `delegate_task` for further delegation, but only when `delegation.max_spawn_depth` is raised above the default of 1 (floor 1, no ceiling); the other three remain blocked. Disable globally via `delegation.orchestrator_enabled: false`.
 
 ### Tuning Concurrency and Depth
@@ -213,7 +213,7 @@ Effect
 
 `max_concurrent_children`
 
-3
+10
 
 \>=1
 
@@ -237,8 +237,8 @@ delegation:
 
 -   **Separate terminals** — each subagent gets its own terminal session with separate working directory and state
 -   **No conversation history** — subagents see only the `goal` and `context` the parent agent passes when calling `delegate_task`
--   **Default 50 iterations** — set `max_iterations` lower for simple tasks to save cost
--   **Not durable** — top-level delegation runs in the background and posts its result back later, but it remains tied to the owning session and Hermes process. Session closure, `/stop`, `/new`, or a process restart can cancel or strand in-progress work. Use `cronjob` or `terminal(background=True, notify_on_complete=True)` for work that must survive those boundaries.
+-   **Default 250 iterations** — set `delegation.max_iterations` lower in `config.yaml` for fleets of simple tasks to save cost
+-   **Not durable** — top-level delegation runs in the background and posts its result back later, but it remains tied to the owning session and Hermes process. Session closure, `/stop`, `/new`, or a process restart can cancel or strand in-progress work. Use `cronjob_manage` or `terminal(background=True, notify_on_complete=True)` for work that must survive those boundaries.
 
 * * *
 
@@ -251,6 +251,8 @@ delegation:
 **Use delegation for context isolation.** Sometimes you want a fresh perspective. Delegating forces you to articulate the problem clearly, and the subagent approaches it without the assumptions that built up in your conversation.
 
 **Check results.** Subagent summaries are just that — summaries. If a subagent says "fixed the bug and tests pass," verify by running the tests yourself or reading the diff.
+
+**Failures are surfaced.** A subagent that dies (provider error, timeout, crash) is reported with a clean one-line notice — `⚠️ Subagent failed — "your goal": <reason>` — in the CLI delegation tree and as a chat notice on gateway platforms, even when tool progress is turned off. The parent agent also receives the full error in the tool result.
 
 * * *
 

@@ -2,6 +2,8 @@
 
 **Source:** https://hermes-agent.nousresearch.com/docs/guides/use-voice-mode-with-hermes
 
+Python dependency commands on this page use a [PM-prepared source checkout](/docs/reference/package-management#developer-workflow). After a dependency change, reactivate the checkout and restart Hermes.
+
 This guide is the practical companion to the [Voice Mode feature reference](/docs/user-guide/features/voice-mode).
 
 If the feature page explains what voice mode can do, this guide shows how to actually use it well.
@@ -78,32 +80,32 @@ If that is not solid yet, fix text mode first.
 ### CLI microphone + playback
 
 ```
-cd ~/.hermes/hermes-agent && uv pip install -e ".[voice]"
+cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['voice'], explicit=True)"
 ```
 
 ### Messaging platforms
 
 ```
-cd ~/.hermes/hermes-agent && uv pip install -e ".[messaging]"
+cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['messaging'], explicit=True)"
 ```
 
 ### Premium ElevenLabs TTS
 
 ```
-cd ~/.hermes/hermes-agent && uv pip install -e ".[tts-premium]"
+cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['tts-premium'], explicit=True)"
 ```
 
 ### Local NeuTTS (optional)
 
-```
-python -m pip install -U neutts[all]
-```
+The declared `neutts` dependency requires Python below 3.14. The Hermes runtime requires Python 3.14, so requesting this extra does not install NeuTTS there. Choose a compatible provider. A separately managed NeuTTS command provider needs its own supported Python environment.
 
-### Everything
+### Combined voice and messaging setup
 
 ```
-cd ~/.hermes/hermes-agent && uv pip install -e ".[all]"
+python -c "import pm; pm.sync_venv(['voice', 'messaging', 'tts-premium', 'edge-tts'], explicit=True)"
 ```
+
+The `all` extra is not every optional feature. It does not include these voice and messaging extras.
 
 ## Step 3: install system dependencies
 
@@ -172,19 +174,18 @@ ELEVENLABS_API_KEY=***
 
 ### If you use `hermes setup`
 
-If you choose NeuTTS in the setup wizard, Hermes checks whether `neutts` is already installed. If it is missing, the wizard tells you NeuTTS needs the Python package `neutts` and the system package `espeak-ng`, offers to install them for you, installs `espeak-ng` with your platform package manager, and then runs:
+Setup requests declared Python extras through PM. It cannot override their Python-version or platform markers:
 
-```
-python -m pip install -U neutts[all]
-```
+The declared `neutts` dependency requires Python below 3.14. The Hermes runtime requires Python 3.14, so requesting this extra does not install NeuTTS there. Choose a compatible provider. A separately managed NeuTTS command provider needs its own supported Python environment.
 
-If you skip that install or it fails, the wizard falls back to Edge TTS.
+Select another provider if a dependency cannot run on your platform.
 
 ## Step 5: recommended config
 
 ```
 voice:
   record_key: "ctrl+b"
+  submit_mode: "direct"  # TUI: direct | draft
   max_recording_seconds: 120
   auto_tts: false
   beep_enabled: true
@@ -203,6 +204,18 @@ tts:
 ```
 
 This is a good conservative default for most people.
+
+In the TUI, `voice.submit_mode` controls what happens after transcription:
+
+-   `direct` (default) submits the transcript immediately.
+-   `draft` puts the transcript in the composer so you can edit or cancel it before pressing Enter.
+
+For editable voice drafts, set:
+
+```
+voice:
+  submit_mode: "draft"
+```
 
 If you want local TTS instead, switch the `tts` block to:
 
@@ -493,7 +506,7 @@ That progression keeps the debugging surface small.
 ## Where to read next
 
 -   [Voice Mode feature reference](/docs/user-guide/features/voice-mode)
--   [Messaging Gateway](/docs/user-guide/messaging)
+-   [Messaging Gateway](/docs/user-guide/messaging/)
 -   [Discord setup](/docs/user-guide/messaging/discord)
 -   [Telegram setup](/docs/user-guide/messaging/telegram)
 -   [Configuration](/docs/user-guide/configuration)

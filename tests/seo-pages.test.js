@@ -55,6 +55,8 @@ test("guide pages carry the current Hermes release, not a stale one", () => {
     "guide/install/index.html",
     "guide/memory/index.html",
     "guide/vs-claude-code/index.html",
+    "guide/modes/index.html",
+    "guide/desktop/index.html",
   ]) {
     assert.ok(
       read(rel).includes(`hermes·${version}`),

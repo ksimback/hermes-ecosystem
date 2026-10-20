@@ -97,7 +97,7 @@ test("daily monitor dispatches docs ingestion independently and resolves its not
 
 test("release monitor retries transient GitHub API failures", () => {
   const monitor = fs.readFileSync(".github/workflows/release-monitor.yml", "utf-8");
-  const githubScriptSteps = monitor.match(/uses: actions\/github-script@v7/g) || [];
+  const githubScriptSteps = monitor.match(/uses: actions\/github-script@v\d+/g) || [];
   const retrySettings = monitor.match(/^\s+retries: 3$/gm) || [];
   const retryExemptions = monitor.match(/^\s+retry-exempt-status-codes: 400,401,403,404,422$/gm) || [];
 
@@ -148,4 +148,38 @@ test("PR smoke can report failures and release monitor closes resolved legacy al
   const release = fs.readFileSync(".github/workflows/release-monitor.yml", "utf-8");
   assert.match(release, /Close resolved legacy release alerts/);
   assert.match(release, /Auto-merge failed on release PR/);
+});
+
+test("PR smoke waits for the Vercel build before probing its deployment URL", () => {
+  const workflow = fs.readFileSync(".github/workflows/smoke-test-pr.yml", "utf-8");
+  assert.match(workflow, /getCombinedStatusForRef/);
+  assert.match(workflow, /s\.context === 'Vercel'/);
+  assert.match(workflow, /vercelStatus\?\.state !== 'success'/);
+  assert.match(workflow, /listDeploymentStatuses/);
+  assert.match(workflow, /Wait for exact preview artifact/);
+  assert.match(workflow, /cmp --silent data\/repos\.json/);
+  assert.match(workflow, /cmp --silent llms\.txt/);
+});
+
+test("page build skips noise-only commits except on the daily schedule, failing open", () => {
+  const build = fs.readFileSync(".github/workflows/build-pages.yml", "utf-8");
+  assert.match(build, /EVENT_NAME: \$\{\{ github\.event_name \}\}/);
+  // The classifier only runs for non-schedule events, and only its exit 0
+  // (positively noise-only) can suppress the commit.
+  assert.match(build, /elif \[ "\$EVENT_NAME" != "schedule" \] && node scripts\/classify-rebuild-diff\.js; then/);
+});
+
+test("a failed deploy of a bot rebuild commit raises the smoke alert", () => {
+  const smoke = fs.readFileSync(".github/workflows/post-deploy-smoke.yml", "utf-8");
+  assert.match(smoke, /if: failure\(\) && \(github\.event_name != 'workflow_dispatch' \|\| inputs\.target_sha != ''\)/);
+  assert.match(smoke, /core\.exportVariable\('SMOKE_BLOCKER'/);
+  assert.match(smoke, /process\.env\.SMOKE_BLOCKER/);
+});
+
+test("conflicted PRs are told once per head commit that CI is not running", () => {
+  const alarm = fs.readFileSync(".github/workflows/pr-conflict-alarm.yml", "utf-8");
+  assert.match(alarm, /pull-requests: write/);
+  assert.match(alarm, /pr\.mergeable !== 'CONFLICTING'/);
+  assert.match(alarm, /pr-conflict-alarm/);
+  assert.match(alarm, /pr\.headRefOid/);
 });

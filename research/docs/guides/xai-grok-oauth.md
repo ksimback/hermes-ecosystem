@@ -34,7 +34,7 @@ xAI Responses API (`codex_responses`)
 
 Default model
 
-`grok-build-0.1`
+`grok-4.6`
 
 Endpoint
 
@@ -71,7 +71,7 @@ hermes model
 # → Select "xAI Grok OAuth (SuperGrok / X Premium+)" from the provider list
 # → Hermes opens or prints an accounts.x.ai verification URL
 # → Enter the displayed code if prompted, then approve access in the browser
-# → Pick a model (grok-build-0.1 is at the top)
+# → Pick a model (grok-4.6 is at the top)
 # → Start chatting
 
 hermes
@@ -118,13 +118,13 @@ The `◆ Auth Providers` section will show the current state of every provider, 
 ```
 hermes model
 # → Select "xAI Grok OAuth (SuperGrok / X Premium+)"
-# → Pick from the model list (grok-build-0.1 is pinned to the top)
+# → Pick from the model list (grok-4.6 is pinned to the top)
 ```
 
 Or set the model directly:
 
 ```
-hermes config set model.default grok-build-0.1
+hermes config set model.default grok-4.6
 hermes config set model.provider xai-oauth
 ```
 
@@ -134,7 +134,7 @@ After login, `~/.hermes/config.yaml` will contain:
 
 ```
 model:
-  default: grok-build-0.1
+  default: grok-4.6
   provider: xai-oauth
   base_url: https://api.x.ai/v1
 ```
@@ -184,15 +184,21 @@ Notes
 
 Chat
 
+`grok-4.6`
+
+Default; pinned to the top of the OAuth picker
+
+Chat
+
 `grok-build-0.1`
 
-Default; auto-selected when you log in via OAuth
+Coding-oriented Grok Build model
 
 Chat
 
 `grok-4.3`
 
-Previous default
+Previous generation
 
 Chat
 
@@ -220,6 +226,12 @@ Default; ~5–10 s
 
 Image
 
+`grok-imagine-image-2.0`
+
+Typography/layout-aware; strongest quality; ~10–20 s
+
+Image
+
 `grok-imagine-image-quality`
 
 Higher fidelity; ~10–20 s
@@ -242,7 +254,7 @@ TTS
 
 xAI `/v1/tts` endpoint
 
-The chat catalog is derived live from the on-disk `models.dev` cache; new xAI releases appear automatically once that cache refreshes. `grok-build-0.1` is always pinned to the top of the list.
+The chat catalog is derived live from the on-disk `models.dev` cache; new xAI releases appear automatically once that cache refreshes. `grok-4.6` is always pinned to the top of the list.
 
 ## Environment Variables
 

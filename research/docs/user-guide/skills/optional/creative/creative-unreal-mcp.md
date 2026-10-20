@@ -34,10 +34,6 @@ Tags
 
 `unreal`, `unreal-engine`, `ue5`, `3d`, `mcp`, `scenes`, `cinematics`, `lighting`, `gamedev`
 
-Related skills
-
-[`blender-mcp`](/docs/user-guide/skills/optional/creative/creative-blender-mcp)
-
 ## Reference: full SKILL.md
 
 info
@@ -52,7 +48,7 @@ Companion skill for the `unreal-engine` entry in the Hermes MCP catalog. The MCP
 
 Use when the user wants anything done in Unreal Engine: build or dress a level, spawn/move/delete actors, set up lighting and atmosphere, create or tune material instances, frame a camera shot, capture screenshots or renders, import assets, inspect the scene or UI, run automation tests, or script the editor. Works for single actions ("make the sun golden hour") and for complete multi-step projects ("build me a moody forest clearing with a campfire and render a shot of it").
 
-Don't use for: DCC-style mesh modeling/sculpting (use `blender-mcp` and import the result), or for editing Unreal C++ project source (that's normal code work — use the terminal; this skill is about the live editor).
+Don't use for: DCC-style mesh modeling/sculpting (model in Blender and import the result), or for editing Unreal C++ project source (that's normal code work — use the terminal; this skill is about the live editor).
 
 ## Prerequisites
 
@@ -107,7 +103,7 @@ The discovery walk, always in this order:
 
 Cache what you learn for the session; re-list only after the editor side changes (new plugin enabled, toolset authored, `RefreshTools` run).
 
-The alternative eager mode (`Enable Tool Search` off in Editor Preferences) advertises every tool as its own `mcp_unreal_engine_<tool>` entry. Discovery then happens at `hermes mcp install`/`configure` time instead. Tool-search mode is the default and what this skill assumes; it also keeps schema tokens out of every API call, so prefer it.
+The alternative eager mode (`Enable Tool Search` off in Editor Preferences) advertises every tool as its own `mcp_unreal_engine_{tool}` entry. Discovery then happens at `hermes mcp install`/`configure` time instead. Tool-search mode is the default and what this skill assumes; it also keeps schema tokens out of every API call, so prefer it.
 
 See `references/tool-surface.md` for the shipped toolset catalog, authoring custom toolsets, and the full plugin configuration/console-command reference.
 

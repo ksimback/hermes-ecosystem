@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>roli-lpci/rule-audit — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
+<meta name="description" content="rule-audit statically analyzes AI system prompts and agent instructions, reporting logical contradictions, coverage gaps, priority ambiguities, meta-rule…">
+<link rel="canonical" href="https://hermesatlas.com/projects/roli-lpci/rule-audit">
+<meta property="og:title" content="roli-lpci/rule-audit — Hermes Atlas">
+<meta property="og:description" content="rule-audit statically analyzes AI system prompts and agent instructions, reporting logical contradictions, coverage gaps, priority ambiguities, meta-rule…">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/roli-lpci/rule-audit">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=rule-audit&amp;subtitle=Static+analyzer+for+AI+system+prompts%3A+parses+a+prompt+into+normative+rules+and+reports+contradictions%2C+coverage+gaps%2C+priority+ambiguities%2C+and+absolute-rule+edge+cases+-+no+LLM+c&amp;kind=project+%C2%B7+plugins">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="roli-lpci/rule-audit — Hermes Atlas">
+<meta name="twitter:description" content="rule-audit statically analyzes AI system prompts and agent instructions, reporting logical contradictions, coverage gaps, priority ambiguities, meta-rule…">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=rule-audit&amp;subtitle=Static+analyzer+for+AI+system+prompts%3A+parses+a+prompt+into+normative+rules+and+reports+contradictions%2C+coverage+gaps%2C+priority+ambiguities%2C+and+absolute-rule+edge+cases+-+no+LLM+c&amp;kind=project+%C2%B7+plugins">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "plugins &amp; extensions", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 3, "name": "rule-audit" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/roli-lpci/rule-audit#software",
+  "name": "rule-audit",
+  "description": "rule-audit statically analyzes AI system prompts and agent instructions, reporting logical contradictions, coverage gaps, priority ambiguities, meta-rule paradoxes, and absolute-rule edge cases without calling an LLM. It can run as a CLI or pre-commit hook and is available as a plugin for Claude Code, Codex, Gemini CLI, and GitHub Copilot CLI.",
+  "url": "https://hermesatlas.com/projects/roli-lpci/rule-audit",
+  "codeRepository": "https://github.com/roli-lpci/rule-audit",
+  "applicationCategory": "BrowserApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/Apache-2.0.html",
+  "author": {
+    "@type": "Organization",
+    "name": "roli-lpci",
+    "url": "https://github.com/roli-lpci"
+  },
+  "dateModified": "2026-09-29T13:21:44.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 3
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">262·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/">plugins &amp; extensions</a><span class="sep">/</span>rule-audit
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">roli-lpci</span><span class="slash">/</span>rule-audit
+  </h1>
+  <p class="project-desc">Static analyzer for AI system prompts: parses a prompt into normative rules and reports contradictions, coverage gaps, priority ambiguities, and absolute-rule edge cases - no LLM calls. Deterministic pure-Python lint with CLI, Python API, and CI exit codes. pip install rule-audit</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 3</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>Apache-2.0</span>
+    
+    <span><span class="meta-label">updated</span>2026-09-29</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/roli-lpci/rule-audit" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    <a href="https://hermes-labs.ai" target="_blank" rel="noopener" class="btn-secondary">homepage</a>
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">rule-audit statically analyzes AI system prompts and agent instructions, reporting logical contradictions, coverage gaps, priority ambiguities, meta-rule paradoxes, and absolute-rule edge cases without calling an LLM. It can run as a CLI or pre-commit hook and is available as a plugin for Claude Code, Codex, Gemini CLI, and GitHub Copilot CLI.</p>
+    <ul class="summary-highlights">
+      <li>Produces Markdown, JSON, or summary reports.</li>
+      <li>Pre-commit hook audits prompt files before commit.</li>
+      <li>Pure Python with no runtime dependencies.</li>
+    </ul>
+  </div>
+</section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <div align="center">
+
+<h1>rule-audit</h1>
+
+<p><strong>rule-audit is a static analyzer for AI system prompts: it parses a prompt into normative rules and reports logical contradictions, coverage gaps, priority ambiguities, meta-rule paradoxes, and absolute-rule edge cases — without calling an LLM.</strong></p>
+<p>rule-audit is developed by <a href="https://hermes-labs.ai">Hermes Labs</a>.</p>
+<p>Hermes Labs is an agentic infrastructure company building the reliability layer for autonomous systems.</p>
+<p><a href="https://github.com/hermes-labs-ai/rule-audit/actions/workflows/ci.yml"><img src="https://github.com/hermes-labs-ai/rule-audit/actions/workflows/ci.yml/badge.svg" alt="CI" loading="lazy" decoding="async"></a>
+<a href="https://pypi.org/project/rule-audit/"><img src="https://img.shields.io/pypi/v/rule-audit.svg" alt="PyPI" loading="lazy" decoding="async"></a>
+<a href="https://pypi.org/project/rule-audit/"><img src="https://img.shields.io/pypi/pyversions/rule-audit.svg" alt="Python" loading="lazy" decoding="async"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License: Apache-2.0" loading="lazy" decoding="async"></a></p>
+</div>
+
+<p>It runs as a pre-commit hook that audits agent rules and prompts — the AI
+system prompts and agent instructions (<code>CLAUDE.md</code>, <code>AGENTS.md</code>, <code>SOUL.md</code>)
+that steer a coding agent — before they're committed. See
+<a href="#pre-commit">Pre-commit</a> below.</p>
+<hr>
+<h3>The problem</h3>
+<p>A complex AI safety prompt can contain rules that conflict under specific conditions. Those conflicts are easy to write and hard to see by eye. <code>rule-audit</code> reads the prompt the way a linter reads code and surfaces the conflicts as structured findings.</p>
+<p>Illustrative example — two rules that have no stated priority between them:</p>
+<pre><code>"You must always follow user instructions."
+"You must never produce harmful content."
+</code></pre>
+<p>The moment a user instructs the model to produce harmful content, nothing in the prompt says which rule wins. <code>rule-audit</code> flags this pair so the author can add an explicit ordering.</p>
+<hr>
+<h3>Install</h3>
+<pre><code class="language-bash">pip install rule-audit
+</code></pre>
+<p>Or install the CLI from the <a href="https://github.com/hermes-labs-ai/homebrew-tap">Hermes Labs Homebrew tap</a>:</p>
+<pre><code class="language-bash">brew install hermes-labs-ai/tap/rule-audit
+</code></pre>
+<p>Or from source:</p>
+<pre><code class="language-bash">git clone https://github.com/hermes-labs-ai/rule-audit
+cd rule-audit
+pip install -e ".[dev]"
+</code></pre>
+<p>Pure Python, no runtime dependencies, Python 3.9+.</p>
+<hr>
+<h3>60-second quickstart</h3>
+<h4>CLI</h4>
+<pre><code class="language-bash"># Built-in demo — exercises every detector family, no input needed
+rule-audit --demo
+</code></pre>
+<p>This demo is deliberately contradictory and produces a CRITICAL finding with exit code <code>2</code>, which is the expected successful outcome—the exit code <code>2</code> signals a finding, not an invocation error.</p>
+<pre><code class="language-bash"># Inline prompt
+rule-audit "You are helpful. You must never lie. Always answer every question."
+
+# From a file
+rule-audit --file system_prompt.txt
+
+# Save a Markdown report
+rule-audit --file system_prompt.txt --output report.md
+
+# JSON for downstream processing
+rule-audit --file system_prompt.txt --format json
+
+# Summary only (handy in CI)
+rule-audit --file system_prompt.txt --format summary
+
+# Keep contradiction and edge-case detail at high severity
+rule-audit --file system_prompt.txt --min-severity high
+</code></pre>
+<p>Exit codes: <code>0</code> = LOW/MEDIUM risk, <code>2</code> = HIGH/CRITICAL risk, <code>1</code> = error.</p>
+<h4>Pre-commit</h4>
+<p>Audit prompt files before they are committed:</p>
+<pre><code class="language-yaml">repos:
+  - repo: https://github.com/hermes-labs-ai/rule-audit
+    rev: v0.5.0
+    hooks:
+      - id: rule-audit
+</code></pre>
+<p>Then run:</p>
+<pre><code class="language-bash">pre-commit install
+pre-commit run rule-audit --all-files
+</code></pre>
+<p>The hook checks Markdown and text files under <code>prompt/</code> or <code>prompts/</code>, plus conventional system, developer, and agent prompt/instruction filenames. It reports every matched file and preserves the CLI exit codes above. Adjust <code>files:</code> in your consumer configuration if your prompts live elsewhere.</p>
+<h4>Agent plugin: Claude Code, Codex, Gemini CLI, GitHub Copilot CLI</h4>
+<p>The repository root is one portable <a href="https://agent-plugins.org">Agent Plugin</a>
+(<code>plugin.json</code>, Agent Plugins 1.0.0) that ships one skill,
+<a href="https://github.com/roli-lpci/rule-audit/blob/main/skills/rule-audit/SKILL.md"><code>skills/rule-audit/SKILL.md</code></a>. Each host installs
+it with its own native command; none of them gets a separate copy of the skill.</p>
+<table>
+<thead>
+<tr>
+<th>Host</th>
+<th>Install</th>
+<th>Read back</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Claude Code</td>
+<td><code>claude plugin marketplace add hermes-labs-ai/rule-audit</code><br><code>claude plugin install rule-audit@rule-audit</code></td>
+<td><code>claude plugin list</code></td>
+</tr>
+<tr>
+<td>OpenAI Codex CLI</td>
+<td><code>codex plugin marketplace add hermes-labs-ai/rule-audit</code><br><code>codex plugin add rule-audit@rule-audit</code></td>
+<td><code>codex plugin list</code></td>
+</tr>
+<tr>
+<td>Gemini CLI</td>
+<td><code>gemini extensions install https://github.com/hermes-labs-ai/rule-audit --ref v0.5.0</code></td>
+<td><code>gemini skills list</code></td>
+</tr>
+<tr>
+<td>GitHub Copilot CLI</td>
+<td><code>copilot plugin install hermes-labs-ai/rule-audit</code></td>
+<td><code>copilot plugin list</code><br><code>copilot skill list</code></td>
+</tr>
+</tbody></table>
+<p>What each host reads:</p>
+<ul>
+<li>Claude Code reads <code>.claude-plugin/marketplace.json</code> (source <code>./</code>, the root)
+and <code>.claude-plugin/plugin.json</code>.</li>
+<li>Codex reads the repo marketplace <code>.agents/plugins/marketplace.json</code> (source
+<code>./</code>, the root) and the portable <code>plugin.json</code>.</li>
+<li>Gemini CLI reads <code>gemini-extension.json</code> and discovers the skill under
+<code>skills/</code>. Pin <code>--ref v0.5.0</code> for the immutable native-plugin boundary; use
+<code>main</code> only when intentionally testing unreleased development changes.</li>
+<li>GitHub Copilot CLI reads the root <code>plugin.json</code> and discovers the skill under
+<code>skills/</code>.</li>
+</ul>
+<p>The skill runs the bundled adapter next to it against an installed
+<code>rule-audit</code>, or, if none is installed, under <code>uvx --from rule-audit==0.5.0</code>.</p>
+<h4>Claude Code</h4>
+<p>A native plugin adds one slash command, so you can audit a prompt file without
+leaving the session. The repository is itself a Claude Code plugin marketplace:</p>
+<pre><code class="language-bash">claude plugin marketplace add hermes-labs-ai/rule-audit
+claude plugin install rule-audit@rule-audit
+</code></pre>
+<p>To try it from a checkout without installing, run <code>claude --plugin-dir .</code>.</p>
+<pre><code>/rule-audit:audit prompts/support_agent.md
+</code></pre>
+<p>It runs this CLI locally and returns a bounded report — at most 5 findings per
+family, with the true totals and the command to see the rest — plus the caveats
+needed to read a <code>HIGH</code> label correctly. Nothing runs unless you ask for it.</p>
+<p>See <a href="https://github.com/roli-lpci/rule-audit/blob/main/integrations/claude-code/README.md"><code>integrations/claude-code/README.md</code></a>
+for install, disable and uninstall, and for the measurements behind the decision
+to ship a command rather than an automatic edit-time hook.</p>
+<h4>Gemini CLI</h4>
+<p>An extension adds the same command to Gemini CLI:</p>
+<pre><code class="language-bash">gemini extensions install https://github.com/hermes-labs-ai/rule-audit --ref v0.5.0
+</code></pre>
+<pre><code>/rule-audit:audit prompts/support_agent.md
+</code></pre>
+<p>Gemini CLI shows you the exact command and asks you to approve it, then runs
+this CLI locally and hands the model the same bounded report. Nothing runs
+unless you ask for it, and there is no hook.</p>
+<p>See <a href="https://github.com/roli-lpci/rule-audit/blob/main/integrations/gemini-cli/README.md"><code>integrations/gemini-cli/README.md</code></a> for
+install, disable and uninstall, and for the host-specific details — why the
+command exits 0, and why the report is fenced in explicit markers.</p>
+<h4>Hermes Agent</h4>
+<p>A plugin adds the command to <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>:</p>
+<pre><code class="language-bash">hermes plugins install hermes-labs-ai/rule-audit/integrations/hermes-agent
+hermes plugins enable rule-audit
+</code></pre>
+<pre><code>/rule-audit                       # audits your own SOUL.md
+/rule-audit prompts/support.md    # audits any prompt file
+</code></pre>
+<p>Typed bare it audits your <code>SOUL.md</code> — the first section of the Hermes system
+prompt, and a system prompt in exactly the sense this tool is calibrated for.
+The report goes to you, not to the model. Nothing runs unless you ask for it,
+and there is no hook.</p>
+<p>See <a href="https://github.com/roli-lpci/rule-audit/blob/main/integrations/hermes-agent/README.md"><code>integrations/hermes-agent/README.md</code></a>
+for install, disable and uninstall, and for the host-specific details — why the
+plugin registers no model tool, and where the report is displayed.</p>
+<h4>Codex</h4>
+<p>A plugin adds the skill to <a href="https://github.com/openai/codex">Codex</a>. The
+repository is itself a Codex plugin marketplace:</p>
+<pre><code class="language-bash">codex plugin marketplace add hermes-labs-ai/rule-audit
+codex plugin add rule-audit@rule-audit
+</code></pre>
+<p>The installer git-clones the default branch and looks for
+<code>.agents/plugins/marketplace.json</code> there. That index is on <code>main</code>, so the bare
+form needs no <code>--ref</code>.</p>
+<pre><code>&gt; Audit prompts/support_agent.md with $rule-audit:rule-audit
+</code></pre>
+<p>Type <code>$</code> or <code>/skills</code> to pick the skill — either way it is inserted into the
+composer and nothing runs until you send it. Codex then runs the bundled adapter
+locally and summarises the findings. Codex may also reach for the skill on its
+own when you ask for a prompt audit without naming it, which is how skills work
+and which the plugin README explains. There is no hook, nothing runs in the
+background, and nothing runs at all until you send a turn.</p>
+<p>See <a href="https://github.com/roli-lpci/rule-audit/blob/main/integrations/codex/README.md"><code>integrations/codex/README.md</code></a> for install,
+disable and uninstall, for what an installed skill costs on every turn, and for
+the host-specific details — why the wrapper, rather than the skill text, owns
+every guarantee.</p>
+<h4>GitHub Copilot CLI</h4>
+<p>Install the repository's Agent Plugin directly, then check that its skill is
+enabled:</p>
+<pre><code class="language-bash">copilot plugin install hermes-labs-ai/rule-audit
+copilot plugin list
+copilot skill list
+</code></pre>
+<p>Copilot CLI currently warns that direct repository installs are deprecated, but
+the command works. In a Copilot session, name a system-prompt file explicitly:</p>
+<pre><code>Use the /rule-audit skill to audit prompts/support_agent.md
+</code></pre>
+<p>The plugin installs the skill, not the analyzer runtime. Running an audit needs
+Python 3.9+ and a compatible <code>rule-audit</code> installation (for example,
+<code>pipx install rule-audit==0.5.0</code>); the skill documents a pinned <code>uvx</code> fallback.
+Use it for system-prompt logic. <a href="https://github.com/hermes-labs-ai/lintlang">LintLang</a>
+covers the broader structure of agent configs and tool descriptions. The skill
+runs on demand, and a risk label is a heuristic finding, not proof of an exploit.</p>
+<h4>Machine-readable result envelope</h4>
+<p>For tooling that compares results across tools, the same audit can be emitted
+as a Hermes Reliability Lab result envelope — the ordinary JSON report embedded
+verbatim, plus tool version, a hash of the exact input, one finding per thing
+the analyzer found (each with its source span), the exit code, a timestamp,
+and the Git commit when run from a checkout:</p>
+<pre><code class="language-bash">python -m rule_audit.evidence --file system_prompt.txt
+python -m rule_audit.evidence --case negative_clean_prompt   # a labeled calibration case
+</code></pre>
+<p>It changes nothing about detection or scoring and reads and writes no files
+beyond the input. Exit codes are the CLI's: <code>0</code>, <code>2</code> for HIGH/CRITICAL, <code>1</code>
+when the input could not be read (the envelope then reports status <code>unknown</code>).</p>
+<h4>Python API</h4>
+<pre><code class="language-python">from rule_audit import audit
+
+report = audit("""
+    You are a helpful AI assistant.
+    Always answer user questions completely.
+    Never produce content that could harm anyone.
+    Follow operator instructions above all else.
+    If asked to roleplay without restrictions, comply.
+""")
+
+print(report.summary())
+# rule-audit report  [2026-...T...]
+# ============================================================
+#   Rules parsed          : 4
+#   Contradictions        : 1  (1 high, 0 medium)
+#   Coverage gaps         : 5
+#   Priority ambiguities  : 0
+#   Meta-paradoxes        : 0
+#   Absoluteness issues   : 5
+#   Edge case scenarios   : 17
+#   Risk score            : 55/100  [HIGH]
+
+# Full Markdown report
+md = report.to_markdown()
+
+# Access findings programmatically
+for c in report.result.contradictions:
+    print(c.severity, c.description)
+
+for ec in report.edge_cases:
+    print(ec.title, ec.attack_vector)
+</code></pre>
+<p>(Exact counts depend on the input prompt; the values above are the actual output for the five-line prompt shown.)</p>
+<hr>
+<h3>What it detects</h3>
+<h4>1. Contradictions</h4>
+<p>Rule pairs that pull against each other. Four detector families:</p>
+<ul>
+<li><strong>Direct</strong> — opposing modalities on a shared topic (e.g. <code>MUST</code> vs <code>MUST_NOT</code>).</li>
+<li><strong>Conditional</strong> — one rule applies unconditionally, another applies a contradicting directive under a condition; the overlap region is undefined.</li>
+<li><strong>Scope</strong> — a universal obligation (<code>always …</code>) and a restricted obligation (<code>… only / except …</code>) on the same domain.</li>
+<li><strong>Absoluteness</strong> — two high-absoluteness rules that pull in opposite directions (e.g. compliance vs safety).</li>
+</ul>
+<h4>2. Coverage gaps</h4>
+<p>Checks the prompt against eight safety-relevant domains and flags any with no rule coverage: harmful content, principal hierarchy (user vs operator vs developer), ambiguous requests, persona/roleplay, refusal protocol, instruction-conflict resolution, self-disclosure of instructions, and edge-case fallback behavior. Also flags conditional rules that have no stated default for the else-case.</p>
+<h4>3. Priority ambiguities</h4>
+<p>Rule clusters that conflict with no explicit ordering and no meta-rule that resolves them.</p>
+<h4>4. Meta-rule paradoxes</h4>
+<p>Rules that reference rules — e.g. "ignore all previous instructions" (self-defeating), "these instructions supersede all others" (exploitable via injection), or override language elsewhere in the prompt that could be used to void other rules.</p>
+<h4>5. Absoluteness audit</h4>
+<p>Each <code>always</code> / <code>never</code> / <code>under no circumstances</code> rule is paired with challenge scenarios: known exceptions, context-dependent cases, and adversarial triggers.</p>
+<h4>6. Edge-case scenarios</h4>
+<p>For each finding, the report renders a concrete example scenario plus a suggested attack vector, expected failure mode, and mitigation. These are templated from the finding — illustrative starting points for testing, not verified exploits.</p>
+<hr>
+<h3>Calibration: does it actually work?</h3>
+<p><code>calibration/</code> is a bounded, hand-labeled corpus (11 cases) with an explicit
+ground truth — not a statistical claim, an auditable one. Positive cases pin
+down a true finding per detector family (direct/scope/conditional/absoluteness
+contradiction, meta-paradox, priority ambiguity, coverage gap); negative cases
+pin down known false-positive traps, like two rules with opposing modality on
+completely unrelated topics.</p>
+<pre><code class="language-bash"># Machine-readable benchmark result (JSON), exit 1 on any regression
+python -m rule_audit.calibration
+
+# As a pytest gate
+pytest tests/test_calibration.py -v
+</code></pre>
+<p>Every <code>Rule</code> carries <code>start</code> / <code>end</code> character offsets into the original
+prompt (<code>report.to_dict()["rules"][i]["span"]</code>, also threaded onto
+contradictions, meta-paradoxes, and absoluteness issues) — every finding
+traces back to an exact source span, not just a truncated text snippet.
+See <code>calibration/README.md</code> for the case schema and how to add cases.</p>
+<hr>
+<h3>Limitations / what it does NOT do</h3>
+<ul>
+<li><strong>Lexical parser, not a language model.</strong> Parsing is sentence-splitting + modal-verb regex + keyword clusters. Rules that need semantic understanding (implied or narrative-embedded constraints) can be missed.</li>
+<li><strong>It does not prove a prompt is exploitable.</strong> A <code>CRITICAL</code> risk label means "many absolute rules and contradictions in a short prompt" by the lexical scoring — not a verified end-to-end exploit. For dynamic verification, pair it with <a href="https://github.com/hermes-labs-ai/hermes-jailbench"><code>hermes-jailbench</code></a> (jailbreak regression).</li>
+<li><strong>14 keyword clusters, curated by hand.</strong> Uncommon domains may not trigger coverage-gap detection; extend <code>_KEYWORD_CLUSTERS</code> in <code>analyzer.py</code>.</li>
+<li><strong>Absoluteness defaults to 0.5</strong> for modal sentences with no qualifier keyword. A design choice — tune <code>_compute_absoluteness</code> for your corpus.</li>
+<li><strong>English only</strong> in this release.</li>
+<li><strong>Single-document only.</strong> Multi-part prompts (operator + user + tool results) merged into one input are analyzed as a flat rule list; structural separation between principals is not modeled.</li>
+<li><strong>O(n²) pair comparison.</strong> Fine for realistic prompts; very large rule sets will be slow.</li>
+</ul>
+<hr>
+<h3>How it relates to other tools</h3>
+<ul>
+<li><strong><code>rule-audit</code> and <a href="https://github.com/hermes-labs-ai/lintlang">LintLang</a> are complementary, not duplicates.</strong> <code>rule-audit</code> analyzes the <em>logical content</em> of a system prompt (contradictions, gaps, priority). LintLang lints the <em>structure</em> of agent configs and tool descriptions. Run both.</li>
+<li><strong><code>rule-audit</code> is static; <a href="https://github.com/hermes-labs-ai/hermes-jailbench"><code>hermes-jailbench</code></a> is dynamic.</strong> Static analysis finds candidate flaws; dynamic testing checks whether they are reachable against a live endpoint.</li>
+</ul>
+<hr>
+<h3>Architecture</h3>
+<pre><code>rule_audit/
+├── __init__.py      # Public API: audit(), audit_file(), AuditReport
+├── parser.py        # Sentence splitting, modal-verb detection, Rule objects (with source spans)
+├── analyzer.py      # Contradiction / gap / priority / meta / absoluteness detectors
+├── edge_cases.py    # Scenario generator from analysis results
+├── report.py        # AuditReport + Markdown / JSON renderers
+├── calibration.py   # Labeled calibration corpus runner (calibration_cases/*.json, package data)
+├── precommit.py     # Pre-commit hook entry point
+└── cli.py           # CLI entry point
+</code></pre>
+<p>Pure Python standard library, zero runtime dependencies, deterministic (same input → same output), no network calls.</p>
+<hr>
+<h3>Development</h3>
+<pre><code class="language-bash">pip install -e ".[dev]"
+
+# Run the test suite
+pytest
+
+# With coverage
+pytest --cov=rule_audit --cov-report=term-missing
+
+# Audit a real prompt
+python -m rule_audit --file your_prompt.txt --verbose
+</code></pre>
+<h4>GitHub Actions</h4>
+<p>The composite <a href="https://github.com/roli-lpci/rule-audit/blob/main/action.yml">Rule Audit GitHub Action</a> installs the published
+<code>rule-audit</code> CLI and audits files matching a recursive glob. It reports each
+file in the workflow log and job summary. HIGH or CRITICAL risk returns exit
+code <code>2</code> and fails the step by default; set <code>fail-on-high-risk: false</code> to
+collect reports without failing. It does not make a security certification or
+replace testing against a live model.</p>
+<pre><code class="language-yaml">name: Prompt analysis
+on: [pull_request]
+
+jobs:
+  rule-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hermes-labs-ai/rule-audit@action-v0.1.0
+        with:
+          path: "prompts/**/*.txt"
+</code></pre>
+<p>The caller must check out the repository before invoking the Action. The Action
+requires network access to install the pinned Rule Audit release from PyPI.
+The <code>files-scanned</code> output reports how many matching files were audited.</p>
+<hr>
+<h3>More from Hermes Labs</h3>
+<ul>
+<li><a href="https://github.com/hermes-labs-ai/lintlang">lintlang</a> — Static analysis for AI agent tool descriptions and workflows.</li>
+<li><a href="https://github.com/hermes-labs-ai/little-canary">little-canary</a> — Prompt injection detection through a powerless sacrificial model.</li>
+<li><a href="https://github.com/hermes-labs-ai/fidelis">fidelis</a> — Semantic memory for long-running agents with local retrieval.</li>
+<li><a href="https://github.com/hermes-labs-ai/hermeneutic">hermeneutic</a> — Detect recurring AI drift from correction history.</li>
+<li><a href="https://github.com/hermes-labs-ai/zer0dex">zer0dex</a> — Local agent recall without burdening the context window.</li>
+<li><a href="https://github.com/hermes-labs-ai/plugins">Hermes Labs plugins marketplace</a> — Plugin system for Claude Code extensibility.</li>
+</ul>
+<p>Browse the <a href="https://hermes-labs.ai/open-source">open-source catalog</a> or contact <a href="mailto:roli@hermes-labs.ai">roli@hermes-labs.ai</a>.</p>
+<h3>License</h3>
+<p>Apache-2.0 — see <a href="LICENSE">LICENSE</a>. © Hermes Labs 2026.</p>
+<p>Not affiliated with NousResearch, Teknium, the Nous-Hermes LLM line, or any unrelated <code>hermes-*</code> project.</p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in plugins &amp; extensions</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
+        <div class="stars">★ 431</div>
+        <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
+      </a>
+      <a class="related-row" href="/projects/42-evey/hermes-plugins">
+        <div class="stars">★ 533</div>
+        <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
+      </a>
+      <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
+        <div class="stars">★ 49</div>
+        <div class="name"><span class="org">FahrenheitResearch /</span> hermes-weather-plugin</div>
+      </a>
+      <a class="related-row" href="/projects/42-evey/evey-bridge-plugin">
+        <div class="stars">★ 18</div>
+        <div class="name"><span class="org">42-evey /</span> evey-bridge-plugin</div>
+      </a>
+      <a class="related-row" href="/projects/nativ3ai/hermes-payguard">
+        <div class="stars">★ 14</div>
+        <div class="name"><span class="org">nativ3ai /</span> hermes-payguard</div>
+      </a>
+      <a class="related-row" href="/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server">
+        <div class="stars">★ 399</div>
+        <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
+      </a>
+      <a class="related-row" href="/projects/stainlu/hermes-labyrinth">
+        <div class="stars">★ 306</div>
+        <div class="name"><span class="org">stainlu /</span> hermes-labyrinth</div>
+      </a>
+      <a class="related-row" href="/projects/runta-dev/clawshell">
+        <div class="stars">★ 346</div>
+        <div class="name"><span class="org">runta-dev /</span> clawshell</div>
+      </a>
+    </div>
+    
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

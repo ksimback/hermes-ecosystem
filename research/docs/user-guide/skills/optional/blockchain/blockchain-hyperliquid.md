@@ -78,7 +78,7 @@ Helper script: `~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_clie
 Invoke through the `terminal` tool:
 
 ```
-python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py <command> [args]
+python ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py <command> [args]
 ```
 
 Add `--json` to any command for machine-readable output.
@@ -111,12 +111,12 @@ For `state`, `spot-balances`, `fills`, `orders`, and `review`, the address is op
 ### 1\. Discover DEXs and Markets
 
 ```
-python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py dexs
+python ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py dexs
 
-python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
+python ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
   markets --limit 15 --sort volume
 
-python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
+python ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
   spots --limit 15
 ```
 
@@ -127,10 +127,10 @@ python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
 ### 2\. Pull Historical Market Data
 
 ```
-python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
+python ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
   candles BTC --interval 1h --hours 72 --limit 48
 
-python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
+python ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
   funding BTC --hours 168 --limit 30
 ```
 
@@ -139,7 +139,7 @@ Time-range endpoints paginate. For larger windows, repeat with a later `startTim
 ### 3\. Inspect Live Order Book
 
 ```
-python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
+python ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
   l2 BTC --levels 10
 ```
 
@@ -148,10 +148,10 @@ Use when asked about book depth, near-term liquidity, or potential market impact
 ### 4\. Review an Account
 
 ```
-python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
+python ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
   state 0xabc...
 
-python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
+python ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
   spot-balances
 ```
 
@@ -160,20 +160,20 @@ python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
 ### 5\. Review Fills and Orders
 
 ```
-python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
+python ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
   fills 0xabc... --hours 72 --limit 25
 
-python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
+python ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
   orders --limit 25
 ```
 
 ### 6\. Generate a Trade Review
 
 ```
-python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
+python ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
   review 0xabc... --hours 72 --fills 50
 
-python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
+python ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
   review --coin BTC --hours 168
 ```
 
@@ -184,10 +184,10 @@ For deeper post-trade analysis: start with `review` to find problem coins or win
 ### 7\. Export a Reusable Dataset
 
 ```
-python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
+python ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
   export BTC --interval 1h --hours 168 --output ./btc-1h-7d.json
 
-python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
+python ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
   export BTC --interval 15m --hours 72 --end-time-ms 1760000000000
 ```
 
@@ -210,7 +210,7 @@ Output JSON contains: schema version, source metadata, exact time window, normal
 ## Verification
 
 ```
-python3 ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
+python ~/.hermes/skills/blockchain/hyperliquid/scripts/hyperliquid_client.py \
   markets --limit 5
 ```
 

@@ -16,7 +16,7 @@ Path
 
 Version
 
-`2.0.0`
+`2.1.0`
 
 Author
 
@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`subagent-driven-development`](/docs/user-guide/skills/optional/software-development/software-development-subagent-driven-development), [`plan`](/docs/user-guide/skills/bundled/software-development/software-development-plan), [`test-driven-development`](/docs/user-guide/skills/bundled/software-development/software-development-test-driven-development), [`github-code-review`](/docs/user-guide/skills/bundled/github/github-github-code-review)
+[`subagent-driven-development`](/docs/user-guide/skills/optional/software-development/software-development-subagent-driven-development), [`test-driven-development`](/docs/user-guide/skills/bundled/software-development/software-development-test-driven-development), [`github`](/docs/user-guide/skills/bundled/software-development/software-development-github)
 
 ## Reference: full SKILL.md
 
@@ -59,7 +59,7 @@ Automated verification pipeline before code lands. Static scans, baseline-aware 
 
 **Skip for:** documentation-only changes, pure config tweaks, or when user says "skip verification".
 
-**This skill vs github-code-review:** This skill verifies YOUR changes before committing. `github-code-review` reviews OTHER people's PRs on GitHub with inline comments.
+**This skill vs github:** This skill verifies YOUR changes before committing. `github` reviews OTHER people's PRs on GitHub with inline comments.
 
 ## Step 1 — Get the diff
 
@@ -154,6 +154,8 @@ Quick scan before dispatching the reviewer:
 
 ## Step 5 — Independent reviewer subagent
 
+**Interactive sessions only.** In a one-shot run (`hermes chat -q`, `--oneshot`, a benchmark harness) there is no one to hand the verdict to and a fresh subagent re-pays the whole system prompt plus a repo re-read: skip Steps 5 and 7, apply the Step 4 checklist to the diff yourself, run the tests, and go to Step 8.
+
 Call `delegate_task` directly — it is NOT available inside execute\_code or scripts.
 
 The reviewer gets ONLY the diff and static scan results. No shared context with the implementer. Fail-closed: unparseable response = fail.
@@ -222,7 +224,7 @@ Suggestions (non-blocking): [list]
 
 ## Step 7 — Auto-fix loop
 
-**Maximum 2 fix-and-reverify cycles.**
+**Maximum 2 fix-and-reverify cycles. Interactive sessions only (see Step 5).**
 
 Spawn a THIRD agent context — not you (the implementer), not the reviewer. It fixes ONLY the reported issues:
 

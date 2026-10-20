@@ -12,13 +12,12 @@ Yuanbao is an enterprise messaging platform primarily used within Tencent and en
 
 -   A Yuanbao account with bot creation permissions
 -   Yuanbao APP\_ID and APP\_SECRET (from platform admin)
--   Python packages: `websockets` and `httpx`
--   For media support: `aiofiles`
+-   Python packages: `websockets` and `httpx`, both core Hermes dependencies
 
-Install the required dependencies:
+If these core dependencies are damaged, repair the selected environment:
 
 ```
-pip install websockets httpx aiofiles
+hermes pm repair
 ```
 
 ## Setup
@@ -386,7 +385,7 @@ Results are delivered to your home channel.
 Run long operations without blocking the conversation:
 
 ```
-/background Analyze all files in the archive
+/bg Analyze all files in the archive
 ```
 
 ### Cross-Platform Messages

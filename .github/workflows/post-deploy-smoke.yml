@@ -70,9 +70,9 @@ jobs:
       statuses: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '24'
 
@@ -84,7 +84,7 @@ jobs:
       # the user-supplied base URL might already be live.
       - name: Wait for Vercel deploy to be ready
         if: github.event_name == 'push' || inputs.target_sha != ''
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           TARGET_SHA: ${{ inputs.target_sha }}
         with:
@@ -114,11 +114,13 @@ jobs:
                 return;
               }
               if (state === 'failure' || state === 'error') {
+                core.exportVariable('SMOKE_BLOCKER', `Vercel reported the deployment of ${sha} as failed, so production is still serving the previous build.`);
                 core.setFailed(`Vercel deploy failed for ${sha} - skipping smoke test`);
                 return;
               }
               await new Promise(r => setTimeout(r, INTERVAL_MS));
             }
+            core.exportVariable('SMOKE_BLOCKER', `Vercel did not report a finished deployment of ${sha} within 10 minutes.`);
             core.setFailed(`Timed out waiting for Vercel deploy (10min)`);
 
       # A catalog deployment can invalidate the previous snapshot (for example,
@@ -144,6 +146,9 @@ jobs:
         env:
           SMOKE_BASE: ${{ inputs.base || 'https://hermesatlas.com' }}
           SMOKE_SAMPLE: ${{ inputs.sample || '25' }}
+          # Raises the upstream release-freshness call from 60 req/hour per
+          # shared runner IP to 5000, which is what was intermittently 403ing.
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -o pipefail
           node scripts/smoke-test-prod.js \
@@ -154,7 +159,7 @@ jobs:
 
       - name: Close smoke alert after recovery
         if: success()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const title = 'Smoke test failure on production';
@@ -184,7 +189,7 @@ jobs:
 
       - name: Post commit status (success)
         if: success() && github.event_name == 'push'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             await github.rest.repos.createCommitStatus({
@@ -197,9 +202,15 @@ jobs:
               target_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
             });
 
+      # Manual dispatches stay quiet, EXCEPT the ones build-pages.yml sends
+      # with target_sha after a bot rebuild commit: those are the deploy check
+      # for that commit. Excluding them meant a failed Vercel deploy of a bot
+      # commit left production stale with no alert (seen 2026-10-12).
       - name: Post commit status (failure) and open / update tracking issue
-        if: failure() && github.event_name != 'workflow_dispatch'
-        uses: actions/github-script@v7
+        if: failure() && (github.event_name != 'workflow_dispatch' || inputs.target_sha != '')
+        uses: actions/github-script@v8
+        env:
+          TARGET_SHA: ${{ inputs.target_sha }}
         with:
           script: |
             const fs = require('fs');
@@ -236,17 +247,32 @@ jobs:
               labels: 'workflow-issue',
             });
             const match = issues.data.find(i => i.title === title);
-            const body = [
-              context.eventName === 'schedule'
-                ? 'Daily production smoke test failed.'
-                : `Production smoke test failed on commit ${context.sha.slice(0,7)}.`,
-              '',
-              `**Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              '',
-              '```',
-              smokeOutput.slice(-3500),
-              '```',
-            ].join('\n');
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            // Set by the wait step when the deploy itself never became ready;
+            // in that case the smoke checks did not run at all.
+            const blocker = process.env.SMOKE_BLOCKER;
+            const body = (blocker
+              ? [
+                  'The production deploy did not complete, so the smoke test could not run.',
+                  '',
+                  blocker,
+                  '',
+                  `**Run:** ${runUrl}`,
+                  '',
+                  '**Fix:** redeploy from the Vercel dashboard (Deployments, failed deployment, Redeploy), or run `vercel redeploy <failed-deployment-url> --target production`. Then re-run this workflow to confirm and close this issue.',
+                ]
+              : [
+                  context.eventName === 'schedule'
+                    ? 'Daily production smoke test failed.'
+                    : `Production smoke test failed on commit ${(process.env.TARGET_SHA || context.sha).slice(0,7)}.`,
+                  '',
+                  `**Run:** ${runUrl}`,
+                  '',
+                  '```',
+                  smokeOutput.slice(-3500),
+                  '```',
+                ]
+            ).join('\n');
 
             if (match) {
               await github.rest.issues.createComment({

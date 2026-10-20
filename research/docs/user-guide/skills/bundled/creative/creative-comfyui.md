@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`stable-diffusion-image-generation`](/docs/user-guide/skills/optional/mlops/mlops-stable-diffusion)
+[`stable-diffusion`](/docs/user-guide/skills/optional/mlops/mlops-stable-diffusion)
 
 ## Reference: full SKILL.md
 
@@ -485,7 +485,7 @@ For users without a capable GPU or who want zero setup. Hosted on RTX 6000 Pro.
 3.  Set the key:
     
     ```
-    export COMFY_CLOUD_API_KEY="comfyui-xxxxxxxxxxxx"
+    export COMFY_CLOUD_API_KEY="your-comfyui-key"
     ```
     
 4.  Run workflows:

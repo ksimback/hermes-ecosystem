@@ -4,10 +4,10 @@
  *
  * Reads all markdown files from research/, repos/, and ECOSYSTEM.md,
  * splits them into ~500-token chunks with metadata, computes embeddings
- * via OpenRouter, and outputs the chunk store (data/chunks-meta.json +
+ * via the LLM provider (lib/llm.js), and outputs the chunk store (data/chunks-meta.json +
  * data/embeddings.bin — see lib/chunk-store.js).
  *
- * Usage: OPENROUTER_API_KEY=... node scripts/build-chunks.js
+ * Usage: NOUS_API_KEY=... node scripts/build-chunks.js
  */
 
 import fs from "fs";
@@ -17,6 +17,7 @@ import { fileURLToPath } from "url";
 import { chunkText } from "../lib/chunk-text.js";
 import { loadChunkStore, writeChunkStore } from "../lib/chunk-store.js";
 import { findLatestReleaseFromMarkdownFiles } from "../lib/latest-release.js";
+import { EMBEDDINGS_URL, LLM_API_KEY } from "../lib/llm.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -30,9 +31,9 @@ const ROOT = path.resolve(__dirname, "..");
 const EMBED_MODEL = "openai/text-embedding-3-small";
 const EMBED_DIMENSIONS = 512;
 
-const API_KEY = process.env.OPENROUTER_API_KEY;
+const API_KEY = LLM_API_KEY;
 if (!API_KEY) {
-  console.error("Error: OPENROUTER_API_KEY environment variable required");
+  console.error("Error: NOUS_API_KEY environment variable required");
   process.exit(1);
 }
 
@@ -68,6 +69,11 @@ async function main() {
   const guideSources = [
     { file: "handbook-hub.md", source: "guide/" },
     { file: "handbook-vs-claude-code.md", source: "guide/vs-claude-code/" },
+    // guide-memory.md existed before this list gained it — the Memory
+    // Guidebook was never chunked for RAG until the modes/desktop pass.
+    { file: "guide-memory.md", source: "guide/memory/" },
+    { file: "guide-modes.md", source: "guide/modes/" },
+    { file: "guide-desktop.md", source: "guide/desktop/" },
   ];
   for (const g of guideSources) {
     const filePath = path.join(ROOT, "drafts", g.file);
@@ -107,7 +113,7 @@ async function main() {
   // Reuse embeddings for unchanged chunks. rebuild-chunks fires on every
   // release-notes merge and repo add — usually a one-file diff — but without a
   // cache every run re-embeds all ~6.5k chunks from scratch (real, recurring
-  // OpenRouter spend that grows with the corpus). Key each chunk by
+  // provider spend that grows with the corpus). Key each chunk by
   // sha256(model + dims + text) so a config change (model/dimensions) correctly
   // invalidates the cache. Float32 round-trips losslessly through the .bin,
   // so cached vectors stay byte-stable across rebuilds.
@@ -262,7 +268,7 @@ function* walkMarkdown(dir) {
 
 async function getEmbeddings(texts) {
   // Retry transient failures: HTTP 429/5xx, network errors, and 200-OK
-  // responses where the body shape is unexpected (OpenRouter occasionally
+  // responses where the body shape is unexpected (the provider occasionally
   // returns errors as 200 with `{error: ...}` instead of `{data: [...]}`).
   // A single batch failure used to crash the whole rebuild — across thousands
   // of chunks that's a near-guaranteed loss.
@@ -270,7 +276,7 @@ async function getEmbeddings(texts) {
   let lastErr;
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
-      const res = await fetch("https://openrouter.ai/api/v1/embeddings", {
+      const res = await fetch(EMBEDDINGS_URL, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${API_KEY}`,

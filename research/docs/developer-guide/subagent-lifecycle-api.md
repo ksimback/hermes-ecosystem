@@ -2,7 +2,9 @@
 
 **Source:** https://hermes-agent.nousresearch.com/docs/developer-guide/subagent-lifecycle-api
 
-Plugins can launch and supervise fresh Hermes child sessions without importing `tools.delegate_tool`, gateway internals, TUI state, or `AIAgent` fields. The service resolves its parent from the current agent turn, so it works in CLI, gateway, non-interactive, and kanban-worker sessions. Launching outside an active agent turn fails closed with `No active Hermes parent session`.
+Plugins can launch and supervise fresh Hermes child sessions without importing `tools.delegate_tool`, gateway internals, TUI state, or `AIAgent` fields. The service resolves its parent from the current agent turn, so it works in CLI, gateway, non-interactive, and kanban-worker sessions. Launching outside an active agent turn fails closed with `No active Hermes parent session`. The facade also works when a plugin runs under `plugins.isolation: host`.
+
+Requests accept `goal`, `context`, `role`, `model`, `provider`, `allowed_toolsets`, `blocked_tools`, `working_directory`, `parent_session_id`, `correlation_id`, `metadata`, and `timeout_seconds`, subject to the restrictions below.
 
 ```
 from agent.subagent_lifecycle import SubagentLaunchRequest
@@ -23,7 +25,9 @@ def launch_review(ctx):
     return service.result(handle)
 ```
 
-`SubagentHandle` is serializable and carries a versioned, opaque capability. Pass it back to `status`, `wait`, `cancel`, `result`, or `reconnect`; malformed or forged handles return `UNKNOWN`/`UNKNOWN_HANDLE` and cannot access a child.
+`SubagentHandle` is serializable and carries a versioned, opaque capability. Requests and handles may also arrive as mappings, including plugin-host wire records. Pass a handle back to `status`, `wait`, `cancel`, `steer`, `result`, or `reconnect`; malformed or forged handles return `UNKNOWN`/`UNKNOWN_HANDLE` and cannot access a child.
+
+`steer(handle, text)` queues text for the child's next iteration boundary and returns `True` while the child accepts steering. It returns `False` for empty text, unknown or forged handles, handles owned by another parent session, or a child that has finished or stopped accepting steering.
 
 The stable states are `PENDING`, `STARTING`, `RUNNING`, `SUCCEEDED`, `FAILED`, `INTERRUPTED`, `CANCEL_REQUESTED`, `CANCELLED`, and `UNKNOWN`.
 
@@ -31,4 +35,8 @@ The stable states are `PENDING`, `STARTING`, `RUNNING`, `SUCCEEDED`, `FAILED`, `
 
 This API is lifecycle-managed asynchronous execution. Child construction and completion use the same host-owned path as `delegate_task`, including parent tool-resolution restoration, memory notification, serialized `subagent_stop` hooks, resource cleanup, and child-cost rollup. It does not change the synchronous `delegate_task` tool, batch delegation, or its gateway/TUI display. The initial implementation retains metadata and terminal results in-process for one hour. After a process restart, `reconnect` returns `RECONNECT_UNAVAILABLE` and never starts a replacement child. Running Python threads also cannot survive process exit; callers must treat those handles as interrupted by process exit.
 
-Requests are fail-closed: goal/context/metadata sizes are capped, unknown or parent-broadening toolsets are rejected, and per-tool blocks, working-directory overrides, and per-launch timeouts are explicitly rejected until Hermes can support them without weakening isolation. Use `allowed_toolsets` to narrow a child; Hermes's existing unsafe-tool block remains enforced.
+Requests are fail-closed: goal/context/metadata sizes are capped, unknown or parent-broadening toolsets are rejected (plugin-registered toolsets count as known), and per-tool blocks, working-directory overrides, and per-launch timeouts are explicitly rejected until Hermes can support them without weakening isolation. Use `allowed_toolsets` to narrow a child; Hermes's existing unsafe-tool block remains enforced.
+
+## Routing
+
+Children follow the `delegation` config (`provider`, `model`, `base_url`, `api_key`, `api_mode`, `request_overrides`) exactly as `delegate_task` children do. The request's `model` overrides the configured model. Its optional `provider` names a configured provider for this launch, with precedence request > delegation config > parent; the selected provider supplies its own credential bundle. An unresolvable provider raises `SubagentLifecycleError` before launch. Core does not expose `provider` to the model: the plugin chooses it, for example from operator config.

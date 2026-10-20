@@ -19,6 +19,7 @@ import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
 import { githubHeaders, fetchReadme, fetchAllMetadata } from "../lib/github.js";
 import { REFRESHED_CONTENT_PATHS } from "../lib/build-artifacts.js";
+import { validateSkills, SKILLS_CATEGORY } from "./validate-skills-json.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -238,6 +239,18 @@ if (fs.existsSync(reportsPath)) {
   reports.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
 }
 
+// Skills Hub curation (data/skills.json). Loaded and validated inside main()
+// so a malformed hand-edit fails the build with the other data gates rather
+// than at import time; held here so the render pass can reach it.
+let skillsData = null;
+
+// Catalog category presentation (order, § numbers, display titles, intro
+// lines) for the generated /ecosystem/ page. Hand-curated; every category in
+// repos.json must have an entry — enforced fail-loud in renderEcosystemPage.
+const categories = JSON.parse(
+  fs.readFileSync(path.join(ROOT, "data", "categories.json"), "utf-8")
+);
+
 let latestHermesVersion = "v0.15.2";
 const latestReleasePath = path.join(ROOT, "data", "latest-release.json");
 if (fs.existsSync(latestReleasePath)) {
@@ -292,15 +305,19 @@ const FAVICON = `<link rel="icon" href="/favicon.ico" sizes="any">
 
 // ── Shared masthead ──
 function renderMasthead(activeNav) {
+  // "newsletter" was dropped when "ecosystem" was added (homepage redesign):
+  // the nav stays at 10 items, and the signup keeps its /#newsletter anchor
+  // via the homepage email-cta + footer links.
   const nav = [
-    { href: "/", label: "map", id: "map" },
+    { href: "/", label: "home", id: "home" },
+    { href: "/ecosystem/", label: "ecosystem", id: "ecosystem" },
     { href: "/lists/", label: "lists", id: "lists" },
+    { href: "/skills/", label: "skills", id: "skills" },
     { href: "/use-cases/", label: "use cases", id: "use-cases" },
     { href: "/guide/", label: "handbook", id: "handbook" },
     { href: "/masterclass/", label: "masterclass", id: "masterclass" },
     { href: "/dev/", label: "dev", id: "dev" },
     { href: "/reports/", label: "reports", id: "reports" },
-    { href: "/#newsletter", label: "newsletter", id: "newsletter" },
     { href: "https://github.com/ksimback/hermes-ecosystem", label: "source", id: "source" },
   ];
   const navHtml = nav
@@ -352,7 +369,7 @@ function refreshSiteChrome() {
   for (const relDir of roots) collect(relDir);
 
   const activeFor = (rel) => {
-    if (rel === "index.html") return "map";
+    if (rel === "index.html") return "home";
     if (rel.startsWith("guide/")) return "handbook";
     if (rel.startsWith("masterclass/")) return "masterclass";
     if (rel.startsWith("dev/")) return "dev";
@@ -636,7 +653,7 @@ function writeLlmsFiles(repos, lists, summaries, reports = []) {
   // ── llms.txt ──
   const llmsTxt = `# Hermes Atlas
 
-> The community-curated ecosystem map for Hermes Agent by Nous Research — ${repos.length}+ tools, skills, plugins, and integrations with live GitHub data and AI-generated summaries. Updated daily. As of ${today}.
+> The decision layer for Hermes Agent by Nous Research — install guidance, mode and skill picks, and a community-curated catalog of ${repos.length}+ tools, skills, plugins, and integrations with live GitHub data and AI-generated summaries. Updated daily. As of ${today}.
 
 Hermes Atlas tracks every open-source project in the Hermes Agent ecosystem across ${categoryCount} categories. Each project has a dedicated page with a prose summary, live star count, README, and category metadata. The full catalog is also available as JSON at ${SITE_URL}/data/repos.json for programmatic access.
 
@@ -644,6 +661,8 @@ Hermes Atlas tracks every open-source project in the Hermes Agent ecosystem acro
 - [Beginner's Guide to Hermes Agent](${SITE_URL}/guide/): Install, pick a model, ship your first workflow, with the best community tool for every step.
 - [Install Hermes Agent](${SITE_URL}/guide/install/): Step-by-step install for macOS, Linux, Windows, and WSL, with troubleshooting.
 - [The Hermes Agent Memory Guidebook](${SITE_URL}/guide/memory/): Kevin Simback's guide to native memory, MemoryProviders, and community memory plug-ins.
+- [How to Run Hermes Agent: Desktop vs CLI vs Docker/VPS vs Bot Gateway](${SITE_URL}/guide/modes/): Every way to run Hermes compared — front-ends share state; the real decision is where the agent lives.
+- [Hermes Desktop: The Complete Guide](${SITE_URL}/guide/desktop/): Install on macOS/Windows/Linux, desktop-only features, plugins, remote/VPS connections, and known rough edges.
 - [Hermes Agent vs. Claude Code](${SITE_URL}/guide/vs-claude-code/): Feature-by-feature comparison for choosing between the two.
 
 ## Masterclass
@@ -663,12 +682,20 @@ A hands-on developer tutorial for building on the Hermes Agent codebase, written
 - [Codebase map & cheat sheet](${SITE_URL}/dev/codebase-map): Where to edit X — key files, the ~/.hermes data dir, and commands.
 - [Skill authoring template](${SITE_URL}/dev/skill-template): A copy-paste SKILL.md with annotated frontmatter.
 
+## Ecosystem Catalog
+- [The full ecosystem catalog](${SITE_URL}/ecosystem/): All ${repos.length} tracked projects across ${categoryCount} categories on one page, with live GitHub data.
+
 ## Top Projects
 ${topProjects.map((r) => `- [${r.owner}/${r.repo}](${SITE_URL}/projects/${r.owner}/${r.repo}): ${r.description} (${(r.stars || 0).toLocaleString()} stars${r.official ? ", official" : ""})`).join("\n")}
 
 ## Curated Lists
 ${lists.map((l) => `- [${l.title}](${SITE_URL}/lists/${l.slug}): ${l.description.slice(0, 180)}`).join("\n")}
-
+${skillsData ? `
+## Skills
+The decision layer over the ${SKILLS_CATEGORY} category: hand-picked groups, one top pick each, install command read from the project's own README, and a verdict per entry. ${skillsData.skills.length} curated entries across ${skillsData.useCases.length} use cases. Updated ${skillsData.updatedAt}, tested against Hermes ${skillsData.testedAgainst}.
+- [Hermes Skills Hub](${SITE_URL}/skills/): Every curated pick, the top pick per use case, and the full ${repos.filter((r) => r.category === SKILLS_CATEGORY).length}-project skills catalog.
+${skillsData.useCases.map((g) => `- [${g.title}](${SITE_URL}/skills/for-${g.slug}): ${g.intent}`).join("\n")}
+` : ""}
 ## Use Cases
 Cross-category repo bundles for a specific buildable outcome ("I want to build X"), each with a rationale and links to real community posts that prove people ship it.
 - [Use cases index](${SITE_URL}/use-cases/): All ${useCases.length} use-case bundles.
@@ -731,6 +758,16 @@ This file is the companion to ${SITE_URL}/llms.txt (the concise index).`);
   } catch {}
 
   try {
+    const modesDraft = fs.readFileSync(path.join(ROOT, "drafts", "guide-modes.md"), "utf-8");
+    sections.push(`# How to Run Hermes Agent (/guide/modes/)\n\nCanonical URL: ${SITE_URL}/guide/modes/\n\n${modesDraft}`);
+  } catch {}
+
+  try {
+    const desktopDraft = fs.readFileSync(path.join(ROOT, "drafts", "guide-desktop.md"), "utf-8");
+    sections.push(`# Hermes Desktop: The Complete Guide (/guide/desktop/)\n\nCanonical URL: ${SITE_URL}/guide/desktop/\n\n${desktopDraft}`);
+  } catch {}
+
+  try {
     const masterclassHtml = fs.readFileSync(path.join(ROOT, "masterclass", "index.html"), "utf-8");
     const stripped = stripHtmlToText(masterclassHtml);
     if (stripped) sections.push(`# Tonbi's Hermes Agent Masterclass (/masterclass/)\n\nCanonical URL: ${SITE_URL}/masterclass/\n\n${stripped}`);
@@ -741,6 +778,26 @@ This file is the companion to ${SITE_URL}/llms.txt (the concise index).`);
     const stripped = stripHtmlToText(reportHtml);
     if (stripped) sections.push(`# State of Hermes — April 2026\n\nCanonical URL: ${SITE_URL}/reports/state-of-hermes-april-2026\n\n${stripped}`);
   } catch {}
+
+  if (skillsData) {
+    const skillLines = skillsData.useCases.map((group) => {
+      const members = skillsData.skills.filter((s) => s.useCases.includes(group.slug));
+      const body = members
+        .map((s) => [
+          `- ${s.owner}/${s.repo} (${s.type})${s.topPick ? " — TOP PICK" : ""}: ${s.verdict}`,
+          s.install ? `  Install: ${s.install}` : null,
+          s.compatibility ? `  Compatibility: ${s.compatibility}` : null,
+          `  URL: ${SITE_URL}/projects/${s.owner}/${s.repo}`,
+        ].filter(Boolean).join("\n"))
+        .join("\n");
+      return `## ${group.title}\n\nCanonical URL: ${SITE_URL}/skills/for-${group.slug}\n\n${group.intent}\n\n${group.description}\n\n${body}`;
+    });
+    sections.push(
+      `# Skills Hub (/skills/)\n\nCanonical URL: ${SITE_URL}/skills/\n\n` +
+      `Hand-curated judgment layer over the ${SKILLS_CATEGORY} category. Updated ${skillsData.updatedAt}, tested against Hermes ${skillsData.testedAgainst}.\n\n` +
+      skillLines.join("\n\n")
+    );
+  }
 
   sections.push(`# Project Catalog (${repos.length} projects)`);
   for (const repo of sorted) {
@@ -779,7 +836,7 @@ This file is the companion to ${SITE_URL}/llms.txt (the concise index).`);
 }
 
 // ── Project page template ──
-function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary, handbookMention) {
+function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary, handbookMention, skillEntry) {
   // Owner-qualified title: several catalog entries share a bare repo name
   // (hermes-desktop, hermes-webui, ...) — without the owner the pairs emit
   // byte-identical <title> tags on different URLs, a duplicate-content signal.
@@ -831,7 +888,7 @@ function renderProjectPage(repo, meta, readmeHtml, relatedRepos, summary, handbo
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "map", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
     { "@type": "ListItem", "position": 2, "name": "${escapeHtml(repo.category.toLowerCase())}", "item": "https://hermesatlas.com${listSlug ? `/lists/${listSlug}` : "/"}" },
     { "@type": "ListItem", "position": 3, "name": "${escapeHtml(repo.repo.toLowerCase())}" }
   ]
@@ -852,10 +909,10 @@ ${FAVICON}
 
 <a class="skip-link" href="#main">Skip to content</a>
 
-${renderMasthead("map")}
+${renderMasthead("ecosystem")}
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span><a href="${listSlug ? `/lists/${listSlug}` : "/"}">${escapeHtml(repo.category.toLowerCase())}</a><span class="sep">/</span>${escapeHtml(repo.repo.toLowerCase())}
+  <a href="/">home</a><span class="sep">/</span><a href="${listSlug ? `/lists/${listSlug}` : "/"}">${escapeHtml(repo.category.toLowerCase())}</a><span class="sep">/</span>${escapeHtml(repo.repo.toLowerCase())}
 </div>
 
 <main id="main">
@@ -879,6 +936,15 @@ ${renderMasthead("map")}
     ${safeExternalUrl(meta.homepage) ? `<a href="${escapeHtml(safeExternalUrl(meta.homepage))}" target="_blank" rel="noopener" class="btn-secondary">homepage</a>` : ""}
   </div>
 </section>
+
+${skillEntry ? `
+<aside class="install-box" aria-label="How to install this skill">
+  <div class="ib-label">install<span class="ib-type">${escapeHtml(skillEntry.type)}</span></div>
+  ${skillEntry.install ? `<code class="ib-cmd">${escapeHtml(skillEntry.install)}</code>` : ""}
+  ${skillEntry.compatibility ? `<p class="ib-compat">${escapeHtml(skillEntry.compatibility)}</p>` : ""}
+  <p class="ib-verdict">${escapeHtml(skillEntry.verdict)}</p>
+  <a class="ib-more" href="/skills/">more picks → the skills hub</a>
+</aside>` : ""}
 
 ${handbookMention ? `
 <aside class="handbook-mention" aria-label="Mentioned in the Hermes Handbook">
@@ -999,7 +1065,7 @@ function renderListPage(list, matchedRepos, listSummaryEntries) {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "map", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
     { "@type": "ListItem", "position": 2, "name": "lists", "item": "https://hermesatlas.com/lists/" },
     { "@type": "ListItem", "position": 3, "name": "${escapeHtml(list.slug)}" }
   ]
@@ -1023,7 +1089,7 @@ ${FAVICON}
 ${renderMasthead("lists")}
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span><a href="/lists/">lists</a><span class="sep">/</span>${escapeHtml(list.slug)}
+  <a href="/">home</a><span class="sep">/</span><a href="/lists/">lists</a><span class="sep">/</span>${escapeHtml(list.slug)}
 </div>
 
 <main id="main">
@@ -1032,6 +1098,7 @@ ${renderMasthead("lists")}
   <h1 class="list-title">${escapeHtml(list.title)}</h1>
   <p class="list-intro">${escapeHtml(list.description)}</p>
   ${list.slug === "best-memory-providers" ? '<p class="list-intro">For the architecture behind these tools, read <a href="/guide/memory/">The Hermes Agent Memory Guidebook</a>.</p>' : ""}
+  ${list.slug === "top-skills" ? '<p class="list-intro">This page ranks the whole category by stars. For picks by what you\'re trying to do — with install commands, compatibility notes, and a verdict per skill — see the <a href="/skills/">Hermes Skills Hub</a>.</p>' : ""}
 </section>
 
 <div class="list-table" aria-label="Ranked list">
@@ -1044,7 +1111,7 @@ ${renderMasthead("lists")}
 </div>
 ${listicleHtml}
 
-<div class="back-link"><a href="/">← back to the map</a></div>
+<div class="back-link"><a href="/">← back home</a></div>
 
 </main>
 
@@ -1098,7 +1165,7 @@ function renderListsIndex(lists, repos) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "map", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 1, name: "home", item: "https://hermesatlas.com/" },
       { "@type": "ListItem", position: 2, name: "lists" },
     ],
   };
@@ -1154,7 +1221,7 @@ ${FAVICON}
 ${renderMasthead("lists")}
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span>lists
+  <a href="/">home</a><span class="sep">/</span>lists
 </div>
 
 <main id="main">
@@ -1173,7 +1240,661 @@ ${renderMasthead("lists")}
   ${listRows}
 </div>
 
-<div class="back-link"><a href="/">← back to the map</a></div>
+<div class="back-link"><a href="/">← back home</a></div>
+
+</main>
+
+${PAGE_FOOTER}
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>`;
+}
+
+// ── Ecosystem catalog (/ecosystem/) ──
+// The full 12-category repo catalog, fully generated from data/repos.json +
+// data/categories.json (row blurbs come from the optional hand-curated
+// `blurb` field). This page replaced the old homepage-embedded catalog that
+// was maintained append-only inside hand-authored HTML.
+function renderEcosystemPage(repos) {
+  const roundedCount = Math.floor(repos.length / 10) * 10;
+  const title = `Hermes Agent Ecosystem — ${roundedCount}+ open-source tools, skills & integrations | Hermes Atlas`;
+  const desc = `The complete Hermes Agent ecosystem catalog — ${roundedCount}+ open-source tools, skills, plugins, workspaces, and integrations across 12 categories, with live GitHub data. Quality-filtered and curated weekly.`;
+  const canonicalUrl = `${SITE_URL}/ecosystem/`;
+  const ogTitle = "The Hermes Agent Ecosystem";
+  const ogSubtitle = `${roundedCount}+ open-source tools, skills, plugins & integrations — live GitHub data`;
+
+  // Fail loud if a catalog category has no presentation entry: a silently
+  // dropped section is exactly the class of bug the old homepage sync hid.
+  const metaByCategory = new Map(categories.map((c) => [c.category, c]));
+  const missingMeta = [...new Set(repos.map((r) => r.category))].filter(
+    (c) => !metaByCategory.has(c)
+  );
+  if (missingMeta.length > 0) {
+    throw new Error(
+      `data/categories.json is missing entries for: ${missingMeta.join(", ")}`
+    );
+  }
+
+  const byCategory = new Map(categories.map((c) => [c.category, []]));
+  for (const r of repos) byCategory.get(r.category).push(r);
+
+  const sections = categories
+    .map((c) => {
+      const catRepos = (byCategory.get(c.category) || []).sort(
+        (a, b) => (b.stars || 0) - (a.stars || 0)
+      );
+      const rows = catRepos.map(renderRepoRow).join("");
+      return `<section class="cat" data-category="${escapeHtml(c.category)}">
+  <div class="cat-meta">
+    <div class="cat-num">${escapeHtml(c.num)}</div>
+    <h2 class="cat-title">${escapeHtml(c.title)}</h2>
+    <p class="cat-desc">${escapeHtml(c.description)}</p>
+    <div class="cat-count"><span class="cat-count-n">${catRepos.length}</span> repos</div>
+  </div>
+  <div class="cat-list">
+${rows.trimEnd()}
+  </div>
+</section>`;
+    })
+    .join("\n\n");
+
+  const breadcrumbLD = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "home", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 2, name: "ecosystem" },
+    ],
+  };
+
+  const collectionLD = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": canonicalUrl,
+    name: "The Hermes Agent Ecosystem — full catalog",
+    description: desc,
+    url: canonicalUrl,
+    isPartOf: { "@id": "https://hermesatlas.com/#website" },
+    mainEntity: { "@id": "https://hermesatlas.com/#catalog" },
+  };
+
+  // The machine-readable catalog Dataset. Canonical home is this page (the
+  // homepage's copy of the same node is retired with the homepage redesign).
+  const datasetLD = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "@id": "https://hermesatlas.com/#catalog",
+    name: "Hermes Agent Ecosystem Catalog",
+    description: `Machine-readable catalog of community-built tools, skills, plugins, workspaces, and integrations for Nous Research's Hermes Agent. ${roundedCount}+ projects across 12 categories with live GitHub metadata and AI-generated summaries.`,
+    url: canonicalUrl,
+    keywords:
+      "Hermes Agent, Nous Research, AI agents, LLM tools, agent skills, MCP servers, agent plugins",
+    license: "https://creativecommons.org/publicdomain/zero/1.0/",
+    isAccessibleForFree: true,
+    creator: { "@id": "https://hermesatlas.com/#organization" },
+    publisher: { "@id": "https://hermesatlas.com/#organization" },
+    distribution: [
+      { "@type": "DataDownload", encodingFormat: "application/json", contentUrl: "https://hermesatlas.com/data/repos.json" },
+      { "@type": "DataDownload", encodingFormat: "application/json", contentUrl: "https://hermesatlas.com/data/summaries.json" },
+      { "@type": "DataDownload", encodingFormat: "application/json", contentUrl: "https://hermesatlas.com/data/list-summaries.json" },
+      { "@type": "DataDownload", encodingFormat: "text/plain", contentUrl: "https://hermesatlas.com/llms-full.txt" },
+      { "@type": "DataDownload", encodingFormat: "application/xml", contentUrl: "https://hermesatlas.com/sitemap.xml" },
+    ],
+  };
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtml(title)}</title>
+<meta name="description" content="${escapeHtml(desc)}">
+<link rel="canonical" href="${canonicalUrl}">
+<meta property="og:title" content="${escapeHtml(ogTitle)}">
+<meta property="og:description" content="${escapeHtml(desc)}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="${canonicalUrl}">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="${escapeHtml(ogImageUrl({ title: ogTitle, subtitle: ogSubtitle, kind: "lists" }))}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${escapeHtml(ogTitle)}">
+<meta name="twitter:image" content="${escapeHtml(ogImageUrl({ title: ogTitle, subtitle: ogSubtitle, kind: "lists" }))}">
+${ldJson(breadcrumbLD)}
+${ldJson(collectionLD)}
+${ldJson(datasetLD)}
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+${FAVICON}
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<link rel="stylesheet" href="/assets/css/ecosystem.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+${renderMasthead("ecosystem")}
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span>ecosystem
+</div>
+
+<main id="main">
+
+<section class="list-page">
+  <h1 class="list-title">The Hermes Agent ecosystem</h1>
+  <p class="list-intro">Every open-source tool, skill, plugin, workspace, and integration in the Hermes Agent ecosystem — <strong>${repos.length} projects across 12 categories</strong>, quality-filtered, with live GitHub data. Know what you want to build? <a href="/use-cases/">Find repos by use case →</a> Looking for skills? <a href="/skills/">Best picks by use case →</a></p>
+</section>
+
+<!-- Catalog search + sort. Progressive enhancement: hidden by default and
+     revealed + wired by initCatalogControls(); with JS off, the full
+     categorized list below stays fully browsable. -->
+<div class="catalog-controls" id="catalog-controls" hidden>
+  <input type="search" id="catalog-search" class="catalog-search" placeholder="filter projects by name or description…" aria-label="Filter projects">
+  <label class="catalog-sort-wrap">
+    <span class="catalog-sort-label">sort</span>
+    <select id="catalog-sort" class="catalog-sort" aria-label="Sort projects">
+      <option value="stars">most stars</option>
+      <option value="name">name a–z</option>
+      <option value="active">recently active</option>
+    </select>
+  </label>
+  <span class="catalog-result-count" id="catalog-result-count" aria-live="polite"></span>
+</div>
+
+${sections}
+
+</main>
+
+<!-- Tooltip (single shared element, positioned via JS) -->
+<div class="tooltip" id="tooltip" role="tooltip">
+  <div class="tt-name" id="tt-name"></div>
+  <div class="tt-desc" id="tt-desc"></div>
+  <div class="tt-link">view project page →</div>
+</div>
+
+${PAGE_FOOTER}
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<script src="/assets/js/ecosystem.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>`;
+}
+
+// ── Skills Hub (/skills/) ──
+// /lists/top-skills ranks the "Skills & Skill Registries" category by stars.
+// This hub is the layer above it: hand-picked groups, one top pick each, the
+// install command verified against the repo's README, and a verdict saying why
+// you'd pick it. Nous Research's own Skills Hub is the registry; this is the
+// judgment. Stars are always read live from the catalog (never from
+// data/skills.json) so the curated file only ever claims what was re-verified
+// by hand — see skillsFreshness().
+
+const SKILL_TYPE_LABELS = {
+  skill: "skill",
+  plugin: "plugin",
+  registry: "registry",
+  collection: "collection",
+};
+
+function skillTypeLabel(type) {
+  return SKILL_TYPE_LABELS[type] || "skill";
+}
+
+// The topic a group is "for" — "Best Hermes Skills for Coding" → "Coding".
+// Used in FAQ questions, which target the "best hermes skill for X" queries.
+function skillsGroupTopic(group) {
+  const m = group.title.match(/\bfor\s+(.+)$/i);
+  return m ? m[1] : group.title;
+}
+
+// Honest freshness: {updatedAt, testedAgainst} come straight from the curated
+// file and are only bumped by a real re-verification pass. When the catalog's
+// latest Hermes release has moved past testedAgainst, say so rather than let
+// the stamp imply the picks were checked against it.
+function skillsFreshness(data) {
+  const base = `Updated ${data.updatedAt} · tested against Hermes ${data.testedAgainst}`;
+  const stale = data.testedAgainst !== latestHermesVersion
+    ? `Hermes ${latestHermesVersion} is out — re-verification pending`
+    : null;
+  return {
+    text: stale ? `${base} · ${stale}` : base,
+    html: `<p class="sk-freshness">${escapeHtml(base)}${stale ? ` · <span class="sk-stale">${escapeHtml(stale)}</span>` : ""}</p>`,
+  };
+}
+
+// Join the curated entries to the live catalog once; every skills surface
+// renders off this model so stars, ordering, and group membership can't drift
+// between the hub and the per-group pages.
+function buildSkillsModel(data, allRepos, metadata) {
+  const repoIndex = new Map(allRepos.map((r) => [`${r.owner}/${r.repo}`, r]));
+  const entries = data.skills.map((skill) => {
+    const key = `${skill.owner}/${skill.repo}`;
+    // NB: `repo` on a skill entry is the repo *name* string — the joined
+    // catalog record goes on `catalogRepo` so it can't clobber it.
+    const catalogRepo = repoIndex.get(key) || null;
+    return {
+      ...skill,
+      key,
+      catalogRepo,
+      stars: metadata?.[key]?.stars ?? catalogRepo?.stars ?? 0,
+    };
+  });
+
+  const byStars = (a, b) =>
+    Number(b.topPick === true) - Number(a.topPick === true) || b.stars - a.stars;
+
+  const groups = data.useCases.map((group) => {
+    const members = entries.filter((e) => e.useCases.includes(group.slug)).sort(byStars);
+    return {
+      ...group,
+      entries: members,
+      topPick: members.find((e) => e.topPick === true) || members[0] || null,
+    };
+  });
+
+  const catalog = allRepos
+    .filter((r) => r.category === SKILLS_CATEGORY)
+    .map((r) => ({ ...r, stars: metadata?.[`${r.owner}/${r.repo}`]?.stars ?? r.stars ?? 0 }))
+    .sort((a, b) => (b.stars || 0) - (a.stars || 0));
+
+  return { entries, groups, catalog, byKey: new Map(entries.map((e) => [e.key, e])) };
+}
+
+function renderSkillInstallBlock(entry) {
+  if (!entry.install) return "";
+  return `<div class="sk-install-label">install</div>
+      <code class="sk-install">${escapeHtml(entry.install)}</code>`;
+}
+
+// Shared row for a skill inside a group section on the hub.
+function renderSkillRow(entry, i) {
+  const rank = String(i + 1).padStart(2, "0");
+  return `<a class="list-row" href="/projects/${entry.owner}/${entry.repo}">
+    <div class="list-rank">${rank}</div>
+    <div class="list-cell-body">
+      <div class="list-cell-name"><span class="org">${escapeHtml(entry.owner)} /</span> ${escapeHtml(entry.repo)}<span class="sk-type">${escapeHtml(skillTypeLabel(entry.type))}</span>${entry.topPick ? ' <span class="sk-pick-flag">top pick</span>' : ""}</div>
+      <div class="list-cell-desc">${escapeHtml(truncate(entry.verdict, 180))}</div>
+    </div>
+    <div class="list-cell-stars">★ ${formatStars(entry.stars)}</div>
+  </a>`;
+}
+
+function renderSkillsHub(data, model) {
+  const title = "Best Hermes Agent Skills — the Skills Hub decision layer | Hermes Atlas";
+  const desc =
+    "The best Hermes Agent skills, picked by use case — coding, cybersecurity, writing, crypto, design, and skill management. Install command, compatibility, and a verdict for every pick.";
+  const canonicalUrl = `${SITE_URL}/skills/`;
+  const ogTitle = "Hermes Skills Hub — Hermes Atlas";
+  const ogSubtitle = "The best Hermes Agent skills by use case, with install commands and verdicts.";
+  const fresh = skillsFreshness(data);
+
+  const topPicks = model.groups
+    .map((g) => ({ group: g, entry: g.topPick }))
+    .filter((x) => x.entry);
+
+  const topPickCards = topPicks
+    .map(({ group, entry }) => `<article class="sk-card">
+      <div class="sk-card-group">${escapeHtml(skillsGroupTopic(group))}</div>
+      <div class="sk-card-head">
+        <div class="sk-card-name"><span class="org">${escapeHtml(entry.owner)} /</span> ${escapeHtml(entry.repo)}</div>
+        <div class="sk-card-stars">★ ${formatStars(entry.stars)}</div>
+      </div>
+      <p class="sk-verdict">${escapeHtml(entry.verdict)}</p>
+      ${renderSkillInstallBlock(entry)}
+      <a class="sk-card-link" href="/projects/${entry.owner}/${entry.repo}">${escapeHtml(entry.repo)} details →</a>
+    </article>`)
+    .join("\n    ");
+
+  const groupSections = model.groups
+    .map((group) => {
+      const shown = group.entries.slice(0, 4);
+      return `
+<section class="uc-section" aria-label="${escapeHtml(group.title)}">
+  <div class="section-label">${escapeHtml(group.title)}</div>
+  <p class="uc-section-note">${escapeHtml(group.description)}</p>
+  <div class="list-table">
+    ${shown.map(renderSkillRow).join("\n    ")}
+  </div>
+  <p class="list-link"><a href="/skills/for-${escapeHtml(group.slug)}">see all ${group.entries.length} picks for ${escapeHtml(skillsGroupTopic(group).toLowerCase())} →</a></p>
+</section>`;
+    })
+    .join("");
+
+  const registries = model.entries
+    .filter((e) => e.type === "registry" || e.type === "collection")
+    .slice()
+    .sort((a, b) => b.stars - a.stars);
+
+  const registriesHtml = registries.length
+    ? `
+<section class="uc-section" aria-label="Registries and collections">
+  <div class="section-label">registries &amp; collections</div>
+  <p class="uc-section-note">Nous Research's own Skills Hub is the registry — the place skills are published and installed from. Atlas is the judgment layer on top of it: which of them are worth installing, and why. These ${registries.length} entries are the other side of that split — search surfaces, taps, and bulk collections that hand you many skills at once rather than solving one problem well.</p>
+  <div class="list-table">
+    ${registries.map(renderSkillRow).join("\n    ")}
+  </div>
+</section>`
+    : "";
+
+  const catalogRows = model.catalog
+    .map((r, i) => {
+      const rank = String(i + 1).padStart(2, "0");
+      return `<a class="list-row" href="/projects/${r.owner}/${r.repo}">
+    <div class="list-rank">${rank}</div>
+    <div class="list-cell-body">
+      <div class="list-cell-name"><span class="org">${escapeHtml(r.owner)} /</span> ${escapeHtml(r.repo)}${r.official ? ' <span class="repo-flag">official</span>' : ""}</div>
+      <div class="list-cell-desc">${escapeHtml((r.description || "").slice(0, 140))}</div>
+    </div>
+    <div class="list-cell-stars">★ ${formatStars(r.stars)}</div>
+  </a>`;
+    })
+    .join("\n    ");
+
+  const collectionLD = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": canonicalUrl,
+    name: "Hermes Skills Hub — the best Hermes Agent skills by use case",
+    description: desc,
+    url: canonicalUrl,
+    isPartOf: { "@id": "https://hermesatlas.com/#website" },
+    dateModified: data.updatedAt,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: topPicks.length,
+      itemListElement: topPicks.map(({ group, entry }, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${SITE_URL}/projects/${entry.owner}/${entry.repo}`,
+        name: `${entry.owner}/${entry.repo}`,
+        description: `Top pick — ${group.title}`,
+      })),
+    },
+  };
+
+  const breadcrumbLD = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "home", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 2, name: "skills" },
+    ],
+  };
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtml(title)}</title>
+<meta name="description" content="${escapeHtml(desc)}">
+<link rel="canonical" href="${canonicalUrl}">
+<meta property="og:title" content="${escapeHtml(ogTitle)}">
+<meta property="og:description" content="${escapeHtml(desc)}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="${canonicalUrl}">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="${escapeHtml(ogImageUrl({ title: ogTitle, subtitle: ogSubtitle, kind: "skills" }))}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${escapeHtml(ogTitle)}">
+<meta name="twitter:image" content="${escapeHtml(ogImageUrl({ title: ogTitle, subtitle: ogSubtitle, kind: "skills" }))}">
+${ldJson(breadcrumbLD)}
+${ldJson(collectionLD)}
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+${FAVICON}
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<link rel="stylesheet" href="/assets/css/use-cases.css">
+<link rel="stylesheet" href="/assets/css/skills.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+${renderMasthead("skills")}
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span>skills
+</div>
+
+<main id="main">
+
+<section class="list-page">
+  <h1 class="list-title">Hermes Agent skills</h1>
+  <p class="list-intro">A registry tells you what exists. This is the decision layer: ${model.entries.length} hand-checked skills, plugins, registries, and collections across ${model.groups.length} use cases — each with the install command taken from its README, what it's compatible with, and a one-line verdict on why you'd pick it over the alternatives.</p>
+  <p class="list-intro sk-lede">Want the whole category ranked by stars instead? That's <a href="/lists/top-skills">the ranked list — top Hermes skills</a>, all ${model.catalog.length} of them.</p>
+  ${fresh.html}
+</section>
+
+<section class="uc-section" aria-label="Top picks">
+  <div class="section-label">top picks — one per use case</div>
+  <p class="uc-section-note">If you only install one thing per category, install these.</p>
+  <div class="sk-card-grid">
+    ${topPickCards}
+  </div>
+</section>
+${groupSections}${registriesHtml}
+
+<section class="uc-section" aria-label="Full skills catalog">
+  <div class="section-label">the full catalog — ${model.catalog.length} projects</div>
+  <p class="uc-section-note">Everything in the Atlas categorized as ${escapeHtml(SKILLS_CATEGORY)}, ranked by live GitHub stars. Entries without a verdict above haven't been through a curation pass yet.</p>
+  <div class="list-table" aria-label="All skills repos">
+    <div class="list-table-head">
+      <div>#</div>
+      <div>project</div>
+      <div class="text-right">stars</div>
+    </div>
+    ${catalogRows}
+  </div>
+</section>
+
+<div class="back-link"><a href="/lists/top-skills">← top skills, ranked by stars</a></div>
+
+</main>
+
+${PAGE_FOOTER}
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>`;
+}
+
+function renderSkillsUseCasePage(data, group, otherGroups) {
+  const title = `${group.title} | Hermes Atlas`;
+  const desc = escapeHtml(truncate(group.description, 160));
+  const canonicalUrl = `${SITE_URL}/skills/for-${group.slug}`;
+  const fresh = skillsFreshness(data);
+  const topic = skillsGroupTopic(group);
+  const pick = group.topPick;
+
+  const entriesHtml = group.entries
+    .map((entry) => `<article class="sk-entry">
+      <div class="sk-entry-head">
+        <h2 class="sk-entry-name"><a href="/projects/${entry.owner}/${entry.repo}"><span class="org">${escapeHtml(entry.owner)} /</span> ${escapeHtml(entry.repo)}</a><span class="sk-type">${escapeHtml(skillTypeLabel(entry.type))}</span>${entry.topPick ? ' <span class="sk-pick-flag">top pick</span>' : ""}</h2>
+        <div class="sk-card-stars">★ ${formatStars(entry.stars)}</div>
+      </div>
+      <div class="sk-entry-body">
+        <p class="sk-verdict">${escapeHtml(entry.verdict)}</p>
+        ${renderSkillInstallBlock(entry)}
+        ${entry.compatibility ? `<p class="sk-compat"><span class="sk-compat-label">works with</span>${escapeHtml(entry.compatibility)}</p>` : ""}
+      </div>
+    </article>`)
+    .join("\n    ");
+
+  // Answers are plain text: they go into FAQPage JSON-LD verbatim and are
+  // escaped once on the way into the visible markup.
+  const faqs = [
+    {
+      q: `What is the best Hermes Agent skill for ${topic.toLowerCase()}?`,
+      a: pick
+        ? `${pick.owner}/${pick.repo}. ${pick.verdict}${pick.install ? ` Install it with: ${pick.install}` : ""}`
+        : `Hermes Atlas tracks ${group.entries.length} options for ${topic.toLowerCase()}; see the ranked picks on this page.`,
+    },
+    {
+      q: "How do I install Hermes skills?",
+      a: "From the Hermes CLI. Running hermes skills install owner/repo/skills/name installs a single skill; hermes skills tap add owner/repo registers a whole repository as a tap, so every skill inside it becomes available. Plugins use hermes plugins install owner/repo --enable. Skills that follow the agentskills.io spec but aren't published to the Skills Hub can be added with npx skills add owner/repo, or cloned straight into your skills directory. Every entry on this page carries the exact command from its own README.",
+    },
+    {
+      q: "How current are these picks?",
+      a: `${fresh.text}. The picks are curated by hand — install commands are read out of each project's README rather than generated, and star counts are refreshed from the GitHub API on every build.`,
+    },
+  ];
+
+  const faqHtml = faqs
+    .map((f) => `<div class="sk-faq-item">
+      <div class="sk-faq-q">${escapeHtml(f.q)}</div>
+      <p class="sk-faq-a">${escapeHtml(f.a)}</p>
+    </div>`)
+    .join("\n    ");
+
+  const collectionLD = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": canonicalUrl,
+    name: group.title,
+    description: group.description,
+    url: canonicalUrl,
+    isPartOf: { "@id": "https://hermesatlas.com/#website" },
+    dateModified: data.updatedAt,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: group.entries.length,
+      itemListOrder: "https://schema.org/ItemListOrderDescending",
+      itemListElement: group.entries.map((entry, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${SITE_URL}/projects/${entry.owner}/${entry.repo}`,
+        name: `${entry.owner}/${entry.repo}`,
+      })),
+    },
+  };
+
+  const breadcrumbLD = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "home", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 2, name: "skills", item: "https://hermesatlas.com/skills/" },
+      { "@type": "ListItem", position: 3, name: group.slug },
+    ],
+  };
+
+  const relatedHtml = otherGroups.length
+    ? `
+<section class="uc-section" aria-label="Other skill use cases">
+  <div class="section-label">other use cases</div>
+  <div class="uc-related">
+    ${otherGroups
+      .map((g) => `<a class="uc-related-link" href="/skills/for-${escapeHtml(g.slug)}">${escapeHtml(g.title)}</a>`)
+      .join("\n    ")}
+  </div>
+</section>`
+    : "";
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtml(title)}</title>
+<meta name="description" content="${desc}">
+<link rel="canonical" href="${canonicalUrl}">
+<meta property="og:title" content="${escapeHtml(group.title)}">
+<meta property="og:description" content="${desc}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="${canonicalUrl}">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="${escapeHtml(ogImageUrl({ title: group.title, subtitle: group.intent, kind: "skills" }))}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${escapeHtml(group.title)}">
+<meta name="twitter:image" content="${escapeHtml(ogImageUrl({ title: group.title, subtitle: group.intent, kind: "skills" }))}">
+${ldJson(breadcrumbLD)}
+${ldJson(collectionLD)}
+${renderFAQPageLD(faqs)}
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+${FAVICON}
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<link rel="stylesheet" href="/assets/css/use-cases.css">
+<link rel="stylesheet" href="/assets/css/skills.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+${renderMasthead("skills")}
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/skills/">skills</a><span class="sep">/</span>${escapeHtml(group.slug)}
+</div>
+
+<main id="main">
+
+<section class="list-page">
+  <h1 class="list-title">${escapeHtml(group.title)}</h1>
+  <p class="uc-intent">“${escapeHtml(group.intent)}”</p>
+  <p class="list-intro sk-lede">${escapeHtml(group.description)}</p>
+  ${fresh.html}
+</section>
+
+<section class="uc-section" aria-label="Ranked picks">
+  <div class="section-label">the picks — ${group.entries.length}</div>
+  <div class="sk-entries">
+    ${entriesHtml}
+  </div>
+</section>
+
+<section class="uc-section" aria-label="How we picked">
+  <div class="section-label">how we picked</div>
+  <p class="sk-method">These are curated by hand, not scraped or ranked by an algorithm. Every entry is a project already accepted into the Atlas catalog; the install command is copied out of that project's own README (not inferred), the compatibility line reflects what the README actually claims to support, and the verdict says what this pick does that its neighbours don't. Star counts come live from the GitHub API on each build. ${escapeHtml(fresh.text)}.</p>
+</section>
+
+<section class="uc-section" aria-label="Frequently asked questions">
+  <div class="section-label">faq</div>
+  <div class="sk-faq">
+    ${faqHtml}
+  </div>
+</section>
+${relatedHtml}
+
+<div class="back-link"><a href="/skills/">← all skills</a></div>
 
 </main>
 
@@ -1314,7 +2035,7 @@ function renderUseCasePage(useCase, repoIndex, storyIndex, relatedUseCases) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "map", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 1, name: "home", item: "https://hermesatlas.com/" },
       { "@type": "ListItem", position: 2, name: "use cases", item: "https://hermesatlas.com/use-cases/" },
       { "@type": "ListItem", position: 3, name: useCase.slug },
     ],
@@ -1359,7 +2080,7 @@ ${FAVICON}
 ${renderMasthead("use-cases")}
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span><a href="/use-cases/">use cases</a><span class="sep">/</span>${escapeHtml(useCase.slug)}
+  <a href="/">home</a><span class="sep">/</span><a href="/use-cases/">use cases</a><span class="sep">/</span>${escapeHtml(useCase.slug)}
 </div>
 
 <main id="main">
@@ -1454,7 +2175,7 @@ function renderUseCasesIndex(useCasesList, storyIndex) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "map", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 1, name: "home", item: "https://hermesatlas.com/" },
       { "@type": "ListItem", position: 2, name: "use cases" },
     ],
   };
@@ -1498,7 +2219,7 @@ ${FAVICON}
 ${renderMasthead("use-cases")}
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span>use cases
+  <a href="/">home</a><span class="sep">/</span>use cases
 </div>
 
 <main id="main">
@@ -1523,7 +2244,7 @@ ${renderMasthead("use-cases")}
   ${rows}
 </div>
 
-<div class="back-link"><a href="/">← back to the map</a></div>
+<div class="back-link"><a href="/">← back home</a></div>
 
 </main>
 
@@ -1581,7 +2302,7 @@ function renderReportsIndex(reports) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "map", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 1, name: "home", item: "https://hermesatlas.com/" },
       { "@type": "ListItem", position: 2, name: "reports" },
     ],
   };
@@ -1644,7 +2365,7 @@ ${FAVICON}
 ${renderMasthead("reports")}
 
 <div class="breadcrumb" aria-label="Breadcrumb">
-  <a href="/">map</a><span class="sep">/</span>reports
+  <a href="/">home</a><span class="sep">/</span>reports
 </div>
 
 <main id="main">
@@ -1663,7 +2384,7 @@ ${renderMasthead("reports")}
   ${reportRows}
 </div>
 
-<div class="back-link"><a href="/">← back to the map</a></div>
+<div class="back-link"><a href="/">← back home</a></div>
 
 </main>
 
@@ -1684,7 +2405,7 @@ ${PAGE_FOOTER}
 // without touching this function), and <lastmod> is the file's real last
 // change: today if this build rewrote it, otherwise its last git commit date.
 // Stamping everything "today" trains crawlers to ignore the signal entirely.
-function generateSitemap(projectPages, listPages, reportPages = [], useCasePages = []) {
+function generateSitemap(projectPages, listPages, reportPages = [], useCasePages = [], skillGroups = []) {
   const entry = (urlPath, relFile, changefreq, priority) =>
     `  <url><loc>${SITE_URL}${urlPath}</loc><changefreq>${changefreq}</changefreq><priority>${priority}</priority><lastmod>${lastmodFor(relFile)}</lastmod></url>\n`;
 
@@ -1720,6 +2441,10 @@ function generateSitemap(projectPages, listPages, reportPages = [], useCasePages
     urls += entry(`/projects/${page.owner}/${page.repo}`, `projects/${page.owner}/${page.repo}.html`, "weekly", "0.8");
   }
 
+  // The full catalog page — the homepage's former primary content, now its
+  // own routed destination.
+  urls += entry("/ecosystem/", "ecosystem/index.html", "daily", "0.9");
+
   urls += entry("/lists/", "lists/index.html", "weekly", "0.7");
   for (const list of listPages) {
     urls += entry(`/lists/${list.slug}`, `lists/${list.slug}.html`, "weekly", "0.6");
@@ -1730,14 +2455,23 @@ function generateSitemap(projectPages, listPages, reportPages = [], useCasePages
     urls += entry(`/use-cases/${uc.slug}`, `use-cases/${uc.slug}.html`, "weekly", "0.7");
   }
 
+  // The Skills Hub outranks every other section by search demand, hence 0.9.
+  if (skillGroups.length > 0) {
+    urls += entry("/skills/", "skills/index.html", "weekly", "0.9");
+    for (const group of skillGroups) {
+      urls += entry(`/skills/for-${group.slug}`, `skills/for-${group.slug}.html`, "weekly", "0.8");
+    }
+  }
+
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}</urlset>\n`;
 }
 
-// ── Render a single homepage repo-row block ──
-function renderHomepageRepoRow(r) {
+// ── Render a single catalog repo-row block (used by /ecosystem/) ──
+function renderRepoRow(r) {
   const stars = (r.stars || 0).toLocaleString("en-US");
   const flag = r.official ? ' <span class="repo-flag">official</span>' : "";
-  const desc = (r.description || "").trim();
+  // Hand-curated catalog blurb wins over the raw GitHub description.
+  const desc = (r.blurb || r.description || "").trim();
   const descPunctuated = desc.endsWith(".") ? desc : desc + ".";
   return `    <a class="repo-row" href="/projects/${r.owner}/${r.repo}" data-github="https://github.com/${r.owner}/${r.repo}" data-desc="${escapeHtml(desc)}">
       <div class="repo-stars">★ ${stars}</div>
@@ -1750,153 +2484,22 @@ function renderHomepageRepoRow(r) {
 `;
 }
 
-// ── Sync homepage repo-rows from data/repos.json (append-only) ──
+// ── Bake live stats into the static homepage ──
 //
-// The homepage (index.html) is statically rendered HTML. Auto-discovered
-// repos that get merged via validate-repo-suggestion.yml only update
-// data/repos.json — they don't touch index.html, so the homepage drifts
-// behind the data file. This function detects every repo in repos.json
-// missing from index.html and appends a new <a class="repo-row"> block
-// into the matching <section class="cat" data-category="...">. Existing
-// rows are never modified, preserving hand-curated descriptions and
-// ordering. Each section's <span class="cat-count-n"> is also rewritten
-// from the live count.
-function syncHomepageRepos(repos) {
-  console.log("\nSyncing homepage repo-rows from repos.json...");
+// The homepage is a hand-authored decision router (the catalog moved to the
+// generated /ecosystem/ page — see renderEcosystemPage). masthead-fetch.js /
+// homepage.js live-update these spans in the browser, but non-JS crawlers
+// (GPTBot, ClaudeBot, PerplexityBot) index the baked values, which otherwise
+// sit frozen at whatever the page was hand-authored with. This replaces the
+// old append-only row-sync machinery, which died with the homepage catalog
+// (and took the mixed-EOL trap with it).
+function bakeHomepageStats(repos) {
+  console.log("\nBaking live stats into index.html...");
   const indexPath = path.join(ROOT, "index.html");
   let html = fs.readFileSync(indexPath, "utf-8");
-  const NL = html.includes("\r\n") ? "\r\n" : "\n";
 
-  // Prune stale repo-rows before syncing. The append-only add logic below never
-  // removes rows, so entries pruned from data/repos.json (dead/renamed repos)
-  // and any duplicate rows left behind by double-submission linger as broken
-  // links. Drop any repo-row whose owner/repo is not in repos.json, and collapse
-  // duplicate rows to the first occurrence. Only touches <a class="repo-row">
-  // anchors — the hand-curated featured hero uses different markup.
-  const validKeys = new Set(repos.map((r) => `${r.owner}/${r.repo}`));
-  const seenRows = new Set();
-  let removedInvalid = 0;
-  let removedDup = 0;
-  html = html.replace(
-    /\n[ \t]*<a class="repo-row" href="\/projects\/([^"]+)"[\s\S]*?<\/a>/g,
-    (block, key) => {
-      if (!validKeys.has(key)) {
-        removedInvalid++;
-        return "";
-      }
-      if (seenRows.has(key)) {
-        removedDup++;
-        return "";
-      }
-      seenRows.add(key);
-      return block;
-    }
-  );
-  if (removedInvalid || removedDup) {
-    console.log(`  Pruned ${removedInvalid} dead + ${removedDup} duplicate repo-rows`);
-  }
-
-  const onPage = new Set(
-    [...html.matchAll(/href="\/projects\/([^"]+)"/g)].map((m) => m[1])
-  );
-
-  // Refresh stale star counts on existing rendered rows. The append-only
-  // policy preserves hand-curated descriptions, but star counts are pure
-  // live data — without this pass they stay frozen at the value the row
-  // had when first added, even after data/repos.json gets refreshed by
-  // the GraphQL pass in main(). Touches only the ★ NNNN text inside each
-  // <div class="repo-stars">; everything else is left as-is.
-  const repoByKey = new Map(repos.map((r) => [`${r.owner}/${r.repo}`, r]));
-  let rowsRefreshed = 0;
-  html = html.replace(
-    /(data-github="https:\/\/github\.com\/([^"]+)"[^>]*>\s*<div class="repo-stars">★ )([0-9,]+)(<\/div>)/g,
-    (full, prefix, key, oldStars, suffix) => {
-      const r = repoByKey.get(key);
-      if (!r || typeof r.stars !== "number") return full;
-      const newStars = r.stars.toLocaleString("en-US");
-      if (newStars === oldStars) return full;
-      rowsRefreshed++;
-      return prefix + newStars + suffix;
-    }
-  );
-  if (rowsRefreshed > 0) {
-    console.log(`  Refreshed star counts on ${rowsRefreshed} existing rows`);
-  }
-
-  const missingByCategory = {};
-  const queuedMissing = new Set();
-  for (const r of repos) {
-    const key = `${r.owner}/${r.repo}`;
-    if (!onPage.has(key) && !queuedMissing.has(key)) {
-      queuedMissing.add(key);
-      (missingByCategory[r.category] = missingByCategory[r.category] || []).push(r);
-    }
-  }
-  const missingCount = Object.values(missingByCategory).reduce((a, b) => a + b.length, 0);
-
-  if (missingCount === 0) {
-    console.log("  Already in sync (0 entries to add)");
-  } else {
-    const closeNeedle = `${NL}  </div>${NL}`;
-    for (const [category, missing] of Object.entries(missingByCategory)) {
-      missing.sort((a, b) => (b.stars || 0) - (a.stars || 0));
-      let newRowsHtml = missing.map(renderHomepageRepoRow).join("");
-      if (NL === "\r\n") newRowsHtml = newRowsHtml.replace(/\n/g, "\r\n");
-
-      const sectionStartTag = `<section class="cat" data-category="${category}">`;
-      const sectionStart = html.indexOf(sectionStartTag);
-      if (sectionStart === -1) {
-        console.warn(`  ⚠ Section not found: ${category} — skipping ${missing.length} repos`);
-        continue;
-      }
-      const sectionEnd = html.indexOf("</section>", sectionStart);
-      const insertBefore = html.lastIndexOf(closeNeedle, sectionEnd);
-      if (insertBefore === -1 || insertBefore < sectionStart) {
-        console.warn(`  ⚠ Could not locate cat-list end in section: ${category}`);
-        continue;
-      }
-
-      html =
-        html.slice(0, insertBefore) +
-        NL +
-        newRowsHtml.trimEnd() +
-        html.slice(insertBefore);
-      console.log(`  ${category}: +${missing.length}`);
-    }
-  }
-
-  // Refresh per-category counts from repos.json, which is the public source
-  // of truth used by smoke-test-prod.js and external consumers. Some homepage
-  // sections intentionally omit or retain hand-curated rows (for example the
-  // featured Hermes Agent hero), so rendered row counts are not reliable
-  // catalog counts.
-  const categoryTotals = repos.reduce((acc, r) => {
-    acc.set(r.category, (acc.get(r.category) || 0) + 1);
-    return acc;
-  }, new Map());
-  const sectionRe = /<section class="cat" data-category="([^"]+)">([\s\S]*?)<\/section>/g;
-  let sm;
-  while ((sm = sectionRe.exec(html)) !== null) {
-    const category = sm[1];
-    const sectionContent = sm[2];
-    const expectedCount = categoryTotals.get(category) || 0;
-    const countMatch = sectionContent.match(/<span class="cat-count-n">(\d+)<\/span>/);
-    if (countMatch && parseInt(countMatch[1], 10) !== expectedCount) {
-      const absoluteIdx = sm.index + sm[0].indexOf(countMatch[0]);
-      html =
-        html.slice(0, absoluteIdx) +
-        `<span class="cat-count-n">${expectedCount}</span>` +
-        html.slice(absoluteIdx + countMatch[0].length);
-      // Re-prime the regex to re-scan from current position since string length changed
-      sectionRe.lastIndex = absoluteIdx;
-    }
-  }
-
-  // Bake the current Hermes version into the static homepage spans from the
-  // authoritative release notes (data/latest-release.json). Keeps the pre-JS
-  // fallback fresh — the /api/stars fetch still live-updates it in the browser,
-  // but without this the baked value drifts stale (it was stuck at v0.10.0 while
-  // the API's live release field was returning null). No-op when unchanged.
+  // Hermes version from the authoritative release notes
+  // (data/latest-release.json) — the /api/stars release field can null out.
   try {
     const lr = JSON.parse(
       fs.readFileSync(path.join(ROOT, "data", "latest-release.json"), "utf-8")
@@ -1916,10 +2519,7 @@ function syncHomepageRepos(repos) {
     console.warn(`  Could not bake Hermes version into index.html: ${e.message}`);
   }
 
-  // Bake catalog-derived counters into the static homepage. masthead-fetch.js /
-  // homepage.js live-update these spans in the browser, but non-JS crawlers
-  // (GPTBot, ClaudeBot, PerplexityBot) index the baked values — which otherwise
-  // sit frozen at whatever count the page had when the span was hand-authored.
+  // Catalog-derived counters (masthead count, stats row, hero prose).
   const roundedCount = Math.floor(repos.length / 10) * 10;
   html = html
     .replace(/(<span id="meta-count">)[^<]*(<\/span>)/, `$1${repos.length}·repos$2`)
@@ -1929,16 +2529,8 @@ function syncHomepageRepos(repos) {
     .replace(/\(\d{2,3}\+ tools\)/g, `(${roundedCount}+ tools)`)
     .replace(/\b\d{2,3}\+ projects across/g, `${roundedCount}+ projects across`);
 
-  const flagship = repos.find((r) => r.owner === "NousResearch" && r.repo === "hermes-agent");
-  if (flagship && typeof flagship.stars === "number") {
-    html = html.replace(
-      /(<span class="big star" id="hero-stars">)[^<]*(<\/span>)/,
-      `$1${formatStars(flagship.stars)}$2`
-    );
-  }
-
   if (writePage(indexPath, html)) {
-    console.log(`  ✓ Wrote index.html${missingCount > 0 ? ` (+${missingCount} new rows)` : ""}`);
+    console.log("  ✓ Wrote index.html (stats baked)");
   }
 }
 
@@ -2101,6 +2693,25 @@ async function main() {
     }
     console.log(`  Loaded ${Object.keys(handbookMentions).length} handbook mentions`);
   } catch { console.log("  No handbook-mentions.json found"); }
+
+  // Skills Hub data (new, hand-curated — data/skills.json). Optional until
+  // it's added; gate it here the same way validate-skills-json.js gates CI
+  // so a bad hand-edit fails the build instead of shipping silently broken.
+  const skillsPath = path.join(ROOT, "data", "skills.json");
+  let skillsModel = null;
+  if (fs.existsSync(skillsPath)) {
+    skillsData = JSON.parse(fs.readFileSync(skillsPath, "utf-8"));
+    const skillsErrors = validateSkills(skillsData, repos, useCases);
+    if (skillsErrors.length > 0) {
+      throw new Error(`data/skills.json validation failed:\n- ${skillsErrors.join("\n- ")}`);
+    }
+    // Built here, before project pages render: the per-project install box
+    // reads the same joined model the hub does.
+    skillsModel = buildSkillsModel(skillsData, repos, metadata);
+    console.log(`  Loaded data/skills.json (${skillsData.skills.length} skills)`);
+  } else {
+    console.log("  data/skills.json not present; skills hub skipped");
+  }
   console.log();
 
   // Ensure output directories exist
@@ -2171,7 +2782,8 @@ async function main() {
       readmeHtml,
       relatedRepos,
       summaries[key] || null,
-      handbookMentions[key] || null
+      handbookMentions[key] || null,
+      skillsModel?.byKey.get(key) || null
     );
 
     // Write file
@@ -2219,7 +2831,7 @@ async function main() {
 
   // Sync homepage repo-rows from repos.json (auto-discovered repos only update
   // data/repos.json; index.html drifts unless this catches missing entries)
-  syncHomepageRepos(repos);
+  bakeHomepageStats(repos);
 
   // Re-stamp version/star/date facts in hand-authored guide pages + drafts.
   // Must run before writeLlmsFiles (which bundles the drafts and guide HTML)
@@ -2250,6 +2862,12 @@ async function main() {
 
   // Generate the lists index page (/lists/)
   writePage(path.join(listsDir, "index.html"), renderListsIndex(lists, repos));
+
+  // Full catalog page (/ecosystem/) — generated from repos.json + categories.json
+  console.log("\nGenerating /ecosystem/ catalog page...");
+  const ecosystemDir = path.join(ROOT, "ecosystem");
+  if (!fs.existsSync(ecosystemDir)) fs.mkdirSync(ecosystemDir, { recursive: true });
+  writePage(path.join(ecosystemDir, "index.html"), renderEcosystemPage(repos));
   console.log(`  index (${lists.length} lists)`);
 
   // Generate use-case pages (/use-cases/)
@@ -2308,6 +2926,37 @@ async function main() {
     console.log("\nNo data/use-cases.json found — skipping use-case pages");
   }
 
+  // Generate the Skills Hub (/skills/ + /skills/for-*)
+  if (skillsModel) {
+    console.log("\nGenerating skills hub...");
+    const skillsDir = path.join(ROOT, "skills");
+    fs.mkdirSync(skillsDir, { recursive: true });
+
+    writePage(path.join(skillsDir, "index.html"), renderSkillsHub(skillsData, skillsModel));
+    console.log(`  index (${skillsModel.entries.length} curated, ${skillsModel.catalog.length} in catalog)`);
+
+    for (const group of skillsModel.groups) {
+      const others = skillsModel.groups.filter((g) => g.slug !== group.slug);
+      const html = renderSkillsUseCasePage(skillsData, group, others);
+      writePage(path.join(skillsDir, `for-${group.slug}.html`), html);
+      console.log(`  for-${group.slug} (${group.entries.length} picks)`);
+    }
+
+    // Orphan cleanup — a group removed from data/skills.json must not keep
+    // serving a stale page (same failure mode as PR #148 on project pages).
+    const canonicalSkills = new Set([
+      "index.html",
+      ...skillsModel.groups.map((g) => `for-${g.slug}.html`),
+    ]);
+    for (const file of fs.readdirSync(skillsDir)) {
+      if (!file.endsWith(".html") || canonicalSkills.has(file)) continue;
+      fs.unlinkSync(path.join(skillsDir, file));
+      console.log(`  Removed orphan: skills/${file}`);
+    }
+  } else {
+    console.log("\nNo data/skills.json found — skipping skills hub");
+  }
+
   // Generate reports index page
   if (reports.length > 0) {
     console.log("\nGenerating reports index...");
@@ -2319,7 +2968,7 @@ async function main() {
 
   // Generate sitemap
   console.log("\nGenerating sitemap.xml...");
-  const sitemap = generateSitemap(repos, lists, reports, useCases);
+  const sitemap = generateSitemap(repos, lists, reports, useCases, skillsModel?.groups || []);
   fs.writeFileSync(path.join(ROOT, "sitemap.xml"), sitemap, "utf-8");
   console.log(`  ${(sitemap.match(/<url>/g) || []).length} URLs (${changedPages.size} pages changed this build)`);
 

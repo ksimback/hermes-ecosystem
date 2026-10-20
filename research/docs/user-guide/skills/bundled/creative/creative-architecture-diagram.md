@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`concept-diagrams`](/docs/user-guide/skills/optional/creative/creative-concept-diagrams), [`excalidraw`](/docs/user-guide/skills/bundled/creative/creative-excalidraw)
+[`concept-diagrams`](/docs/user-guide/skills/optional/creative/creative-concept-diagrams), [`excalidraw`](/docs/user-guide/skills/optional/creative/creative-excalidraw)
 
 ## Reference: full SKILL.md
 
