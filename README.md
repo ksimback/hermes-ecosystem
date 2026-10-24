@@ -106,6 +106,10 @@ NOUS_API_KEY=... node scripts/test-rag.js
 | `CHAT_MODEL` | Override primary LLM model | No (default: `openai/gpt-6-luna`) |
 | `CHAT_FALLBACK_MODELS` | Comma-separated fallback chain | No (default: `anthropic/claude-haiku-5.5`) |
 | `LLM_BASE_URL` / `LLM_API_KEY` | Point at another OpenAI-compatible gateway | No (default: Nous Portal) |
+| `CHAT_PROVIDER` | Set `minimax` for direct MiniMax answer generation; embeddings and query rewriting still require the gateway key above | No (default: shared gateway) |
+| `MINIMAX_API_KEY` | MiniMax API key (required when `CHAT_PROVIDER=minimax`) | No |
+| `MINIMAX_REGION` | MiniMax regional endpoint (`global_en` or `cn_zh`) | No (default: `global_en`) |
+| `MINIMAX_MODELS` | Comma-separated MiniMax model list; the first entry is used, including explicit custom or legacy IDs | No (default: `MiniMax-M3.1-Flash,MiniMax-M3`) |
 
 ## Contributing
 

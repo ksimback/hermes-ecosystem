@@ -3,6 +3,13 @@ import { combinedRetrievalScore, enrichChunkMetadata } from "../lib/rag-scoring.
 import { buildLatestReleaseBlock, detectLatestReleaseQuery } from "../lib/latest-release.js";
 import { parseChunkStore } from "../lib/chunk-store.js";
 import { matchUseCases, buildUseCaseBlock, inferCategory } from "../lib/use-case-match.js";
+import {
+  chatProviderConfig,
+  streamChatRequest,
+  chatStreamDelta,
+  chatStreamModel,
+  chatStreamUsage,
+} from "../lib/chat-provider.js";
 import { collectSourceLinks } from "../lib/source-links.js";
 import {
   LLM_API_KEY,
@@ -237,6 +244,11 @@ function mmrSelect(candidates, queryEmbedding, k, lambda = 0.6) {
 
 const LLM_KEY = LLM_API_KEY;
 
+// MiniMax is opt-in for answer generation. Embeddings and query rewriting
+// continue to use the shared gateway configuration in lib/llm.js.
+const CHAT_CFG = chatProviderConfig(process.env);
+const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY;
+
 // Model config — primary + fallbacks, tried in order by the loop in the
 // handler. The provider (Nous Portal, see lib/llm.js) has no server-side
 // fallback: a request names exactly one model.
@@ -286,7 +298,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  if (!LLM_KEY) {
+  if (!LLM_KEY || (CHAT_CFG.provider === "minimax" && !MINIMAX_API_KEY)) {
     return res.status(500).json({ error: "Chat not configured — missing API key" });
   }
 
@@ -558,9 +570,21 @@ ${retrievedContext}${useCaseBlock}${repoMetadataBlock}`;
     let actualModel = null; // The model that actually answered
     let usage = null; // Token usage from the final SSE chunk (usage.include)
     let lastFailureStatus = null;
+    const modelChain = CHAT_CFG.provider === "minimax"
+      ? [CHAT_CFG.model]
+      : [PRIMARY_MODEL, ...FALLBACK_MODELS];
 
-    for (const model of [PRIMARY_MODEL, ...FALLBACK_MODELS]) {
-      const llmRes = await fetchChatCompletion({
+    for (const model of modelChain) {
+      const llmRes = CHAT_CFG.provider === "minimax"
+        ? await streamChatRequest({
+          ...CHAT_CFG,
+          apiKey: MINIMAX_API_KEY,
+          model,
+          messages,
+          maxTokens: MAX_TOKENS,
+          signal: ac.signal,
+        })
+        : await fetchChatCompletion({
         model,
         apiKey: LLM_KEY,
         signal: ac.signal,
@@ -688,13 +712,14 @@ async function streamCompletion(llmRes, res) {
           return out;
         }
 
-        if (parsed.model && !out.model) out.model = parsed.model;
+        const model = chatStreamModel(parsed);
+        if (model && !out.model) out.model = model;
 
-        // Usage arrives on the final chunk (the one that may have an empty
-        // choices array). Overwrite so we keep the most complete object seen.
-        if (parsed.usage) out.usage = parsed.usage;
+        // Messages streams split input and output usage across events.
+        const usage = chatStreamUsage(parsed);
+        if (usage) out.usage = { ...out.usage, ...usage };
 
-        const content = parsed.choices?.[0]?.delta?.content;
+        const content = chatStreamDelta(parsed);
         if (content) {
           out.content += content;
           res.write(content);
