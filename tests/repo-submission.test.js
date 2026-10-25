@@ -3,6 +3,7 @@ import fs from "node:fs";
 import { test } from "node:test";
 
 import {
+  findBranchAdditions,
   findSubmissionCandidate,
   mergeSubmissionCandidate,
 } from "../lib/repo-submission.js";
@@ -32,6 +33,19 @@ test("findSubmissionCandidate isolates the one branch-only repo", () => {
     () => findSubmissionCandidate([existing], [existing, candidate, repo("example", "second")]),
     /Expected one repo addition/,
   );
+});
+
+test("findBranchAdditions diffs against the fork point, not current main", () => {
+  const kept = repo("example", "kept");
+  const removedOnMain = repo("example", "removed-on-main");
+  const added = repo("Example", "Added");
+  // The branch forked when removed-on-main still existed; it must not come
+  // back as an addition just because main has since dropped it.
+  const base = [kept, removedOnMain];
+  const branch = [kept, removedOnMain, added];
+  assert.deepEqual(findBranchAdditions(base, branch), [added]);
+  // Keys compare case-insensitively, matching repoKey everywhere else.
+  assert.deepEqual(findBranchAdditions([repo("example", "added")], [added]), []);
 });
 
 test("GitHubClient preserves HTTP status for recovery decisions", async () => {
