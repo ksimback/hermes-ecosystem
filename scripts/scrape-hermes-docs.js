@@ -89,20 +89,31 @@ turndown.addRule("fencedCodeBlock", {
   },
 });
 
+// Upstream returns sporadic 503s that outlast a few seconds; one unrecovered
+// page fails the whole mirror run. Exponential backoff (2s..16s, ~30s worst
+// case per page) rides those out, and a Retry-After header wins when sent.
+const MAX_ATTEMPTS = 5;
+
 async function fetchHtml(urlPath) {
   const url = BASE + urlPath;
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    let retryAfterMs = 0;
     try {
       const res = await fetch(url, {
         headers: { "User-Agent": USER_AGENT, Accept: "text/html" },
         redirect: "follow",
       });
       if (res.status === 404) return null;
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) {
+        retryAfterMs = Math.min(Number(res.headers.get("retry-after")) * 1000 || 0, 60000);
+        throw new Error(`HTTP ${res.status}`);
+      }
       return await res.text();
     } catch (e) {
-      if (attempt === 3) throw new Error(`fetch ${url}: ${e.message}`);
-      await new Promise((r) => setTimeout(r, 800 * attempt));
+      if (attempt === MAX_ATTEMPTS) throw new Error(`fetch ${url}: ${e.message}`);
+      const delay = retryAfterMs || 1000 * 2 ** attempt;
+      console.warn(`  retry ${attempt}/${MAX_ATTEMPTS - 1} ${urlPath} after ${e.message} (${delay}ms)`);
+      await new Promise((r) => setTimeout(r, delay));
     }
   }
 }
