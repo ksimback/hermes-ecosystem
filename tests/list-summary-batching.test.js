@@ -6,7 +6,24 @@ import {
   mergeEntryMaps,
   findMissingEntries,
   pickSingleEntry,
+  buildListPrompt,
 } from "../lib/list-summary-batching.js";
+
+test("buildListPrompt shows kept entries as read-only context only when given", () => {
+  const list = { title: "Top Skills" };
+  const members = [{ owner: "a", repo: "new", stars: 5, description: "A new skill." }];
+  const full = buildListPrompt(list, members, {});
+  assert.doesNotMatch(full, /Already written/);
+  const incremental = buildListPrompt(list, members, {}, {
+    "b/kept": "Kept description that must not be rewritten.",
+  });
+  assert.match(incremental, /Already written for the other projects[^\n]*do not rewrite/);
+  assert.match(incremental, /- b\/kept: Kept description that must not be rewritten\./);
+  // The kept repo is context, not a project to describe.
+  assert.doesNotMatch(incremental.split("Already written")[0], /b\/kept/);
+  // An empty kept map is identical to the full-pass prompt.
+  assert.equal(buildListPrompt(list, members, {}, {}), full);
+});
 
 test("chunkList splits into chunks of at most the given size", () => {
   const items = Array.from({ length: 34 }, (_, i) => i);

@@ -62,11 +62,11 @@ Nix owns runtime installation and updates.
 
 [Signed APT repository](/docs/getting-started/termux), then `pkg install hermes-agent`
 
-Prerelease package with Python, Node, and TUI. Not built by default: only releases cut with `--include-termux` update the APT channel. Run the gateway in a Termux session; Android can terminate background processes.
+Prerelease package with Python, Node, and TUI. Not built by default: only releases cut with `--with termux` (and `windows` and `macos-arm64`) update the APT channel. Run the gateway in a Termux session; Android can terminate background processes.
 
 ### Build targets and support priority
 
-Stable releases build the macOS desktop bundle for Apple Silicon (`arm64`) only. The Intel macOS (`x64`) bundle and the Termux APT package are **not built by default**: a release includes them only when it is cut with `release.py release --include-macos-intel` or `--include-termux`. A release without macOS Intel replaces the one shared macOS stable update feed with an arm64-only feed, so Intel Macs installed from a desktop bundle get no update until a release is cut with `--include-macos-intel`. A release without Termux leaves the Termux APT channel on its previous release. The `Hermes-Setup.dmg` bootstrap installer is built for Apple Silicon only, so on an Intel Mac it reports "not supported on this Mac". Intel Macs can install the [CLI](/docs/getting-started/installation#linux--macos--wsl2--android-termux) and run `hermes desktop`, or use a `darwin-x64` bundle from a release that included it. Linux desktop packaging is disabled in the release workflow, although local AppImage builds and native Linux PM bundle checks exist.
+Stable releases build the macOS desktop bundle for Apple Silicon (`arm64`) only. The Intel macOS (`x64`) bundle and the Termux APT package are **not built by default**: a release includes them only when it is cut with `release.py release --with macos-intel` or `--with termux`. A release without macOS Intel replaces the one shared macOS stable update feed with an arm64-only feed, so Intel Macs installed from a desktop bundle get no update until a release is cut with `--with macos-intel`. A release without Termux leaves the Termux APT channel on its previous release. The `Hermes-Setup.dmg` bootstrap installer is built for Apple Silicon only, so on an Intel Mac it reports "not supported on this Mac". Intel Macs can install the [CLI](/docs/getting-started/installation#linux--macos--wsl2) and run `hermes desktop`, or use a `darwin-x64` bundle from a release that included it. Linux desktop packaging is disabled in the release workflow, although local AppImage builds and native Linux PM bundle checks exist.
 
 ## Unsupported
 
@@ -74,7 +74,7 @@ These platforms and distribution methods are **not** supported. We suggest that 
 
 -   Android / Termux on non-aarch64 devices (aarch64 is [supported](/docs/getting-started/termux) via our APT package)
 -   installs via the AUR (we might upstream patches if it helps out <3)
--   32-bit x86 macOS. Intel x86\_64 desktop bundles are built only for releases cut with `--include-macos-intel`.
+-   32-bit x86 macOS. Intel x86\_64 desktop bundles are built only for releases cut with `--with macos-intel`.
 -   installs via `pypi` (e.g. `uv tool install hermes-agent`, `pip install hermes-agent`, etc.)
 -   installs via `brew` (`brew install hermes-agent`)
 

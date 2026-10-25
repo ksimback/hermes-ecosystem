@@ -166,7 +166,7 @@ computer_use(action="click", element=7, delivery_mode="foreground")
 
 ## Page content is a separate toolset
 
-`computer_use` is desktop-only: it does not expose a typed route for browser page content (no `cua_browser_*` actions). For reading or acting on a page's DOM — navigation, clicking a link by text, typed input into a form field — use the separate `browser_navigate`/`browser_click`/`browser_type`/`browser_snapshot` tools (or `browser_exec` when the Browser Use CLI backend is active); their own schemas document the current contract. Reserve `computer_use` for browser _chrome_ (the address bar, permission prompts, extension popups, native dialogs) and anything else on screen that isn't page content.
+`computer_use` is desktop-only: it does not expose a typed route for browser page content (no `cua_browser_*` actions). For reading or acting on a page's DOM — navigation, clicking a link by text, typed input into a form field — use the separate `browser_exec` tool (Python CDP helpers driving a headless Chromium); its own schema documents the current contract. Reserve `computer_use` for browser _chrome_ (the address bar, permission prompts, extension popups, native dialogs) and anything else on screen that isn't page content.
 
 ### Key shortcuts vary per platform
 
@@ -320,7 +320,7 @@ Anything else weird
 
 ## When NOT to use `computer_use`
 
--   **Web automation you can do via separate headless `browser_*` tools** — those use a real headless Chromium and are more reliable than driving the user's GUI browser. Reach for `computer_use` specifically when the task needs the user's actual native apps (Finder/Explorer/Files, Mail/ Outlook/Thunderbird, native chat clients, Figma, Logic, games, anything non-web).
+-   **Web automation you can do via the separate headless `browser_exec` tool** — it drives a real headless Chromium and are more reliable than driving the user's GUI browser. Reach for `computer_use` specifically when the task needs the user's actual native apps (Finder/Explorer/Files, Mail/ Outlook/Thunderbird, native chat clients, Figma, Logic, games, anything non-web).
 -   **File edits** — use `read_file` / `write_file` / `patch`, not `type` into an editor window.
 -   **Shell commands** — use `terminal`, not `type` into Terminal.app / Windows Terminal / gnome-terminal.
 

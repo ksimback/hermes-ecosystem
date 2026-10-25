@@ -72,7 +72,7 @@ Session storage
 
 Browser stack
 
-`tools/browser_tool.py`, `tools/browser_supervisor.py`, `tools/browser_cdp_tool.py`
+`tools/browser_use_cli.py` (`browser_exec`), `tools/browser_session*.py`, `tools/browser_launcher.py`, `tools/browser_supervisor.py`, `tools/browser_cdp_tool.py`
 
 [Browser Supervisor](/docs/developer-guide/browser-supervisor)
 

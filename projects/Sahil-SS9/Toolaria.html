@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sahil-SS9/Toolaria — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="Toolaria is a Hermes Agent plugin that implements a spill-to-disk pattern for oversized tool results. It stores large outputs in a SHA256-addressed blob store…">
+<meta name="description" content="Toolaria is a single-purpose Hermes Agent plugin that stores oversized MCP or web tool results in a SHA256-addressed blob store and returns a compact excerpt…">
 <link rel="canonical" href="https://hermesatlas.com/projects/Sahil-SS9/Toolaria">
 <meta property="og:title" content="Sahil-SS9/Toolaria — Hermes Atlas">
-<meta property="og:description" content="Toolaria is a Hermes Agent plugin that implements a spill-to-disk pattern for oversized tool results. It stores large outputs in a SHA256-addressed blob store…">
+<meta property="og:description" content="Toolaria is a single-purpose Hermes Agent plugin that stores oversized MCP or web tool results in a SHA256-addressed blob store and returns a compact excerpt…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/Sahil-SS9/Toolaria">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Sahil-SS9/Toolaria — Hermes Atlas">
-<meta name="twitter:description" content="Toolaria is a Hermes Agent plugin that implements a spill-to-disk pattern for oversized tool results. It stores large outputs in a SHA256-addressed blob store…">
+<meta name="twitter:description" content="Toolaria is a single-purpose Hermes Agent plugin that stores oversized MCP or web tool results in a SHA256-addressed blob store and returns a compact excerpt…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=Toolaria&amp;subtitle=Rescue+oversized+tool+results+before+they+flood+context.+SHA256-addressed+blob+store+with+per-session+indexes&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/Sahil-SS9/Toolaria#software",
   "name": "Toolaria",
-  "description": "Toolaria is a Hermes Agent plugin that implements a spill-to-disk pattern for oversized tool results. It stores large outputs in a SHA256-addressed blob store and provides the model with a compact excerpt and a fetch handle to prevent context window flooding.",
+  "description": "Toolaria is a single-purpose Hermes Agent plugin that stores oversized MCP or web tool results in a SHA256-addressed blob store and returns a compact excerpt with a fetch handle. The model can retrieve selected slices using `rescuer_fetch`, inspect structural outlines, search content, or pass the full result to another tool by reference.",
   "url": "https://hermesatlas.com/projects/Sahil-SS9/Toolaria",
   "codeRepository": "https://github.com/Sahil-SS9/Toolaria",
   "applicationCategory": "BrowserApplication",
@@ -47,13 +47,13 @@
     "name": "Sahil-SS9",
     "url": "https://github.com/Sahil-SS9"
   },
-  "dateModified": "2026-09-17T01:07:43.000Z",
+  "dateModified": "2026-10-13T23:17:59.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 20
+    "userInteractionCount": 22
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">255·repos</span>
+    <span id="meta-count">285·repos</span>
     <span id="meta-version">hermes·v0.21.5</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -120,11 +120,11 @@
   <p class="project-desc">Rescue oversized tool results before they flood context. SHA256-addressed blob store with per-session indexes</p>
 
   <div class="meta-row">
-    <span class="stars">★ 20</span>
+    <span class="stars">★ 22</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-09-17</span>
+    <span><span class="meta-label">updated</span>2026-10-13</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Toolaria is a Hermes Agent plugin that implements a spill-to-disk pattern for oversized tool results. It stores large outputs in a SHA256-addressed blob store and provides the model with a compact excerpt and a fetch handle to prevent context window flooding.</p>
+    <p class="summary-text">Toolaria is a single-purpose Hermes Agent plugin that stores oversized MCP or web tool results in a SHA256-addressed blob store and returns a compact excerpt with a fetch handle. The model can retrieve selected slices using `rescuer_fetch`, inspect structural outlines, search content, or pass the full result to another tool by reference.</p>
     <ul class="summary-highlights">
-      <li>Stores oversized results in a SHA256-addressed blob store.</li>
-      <li>Provides structural maps, semantic search, and pass-by-reference tool arguments.</li>
-      <li>Functions as a zero-config plugin for Hermes Agent.</li>
+      <li>Rescues oversized tool results before they enter the context window.</li>
+      <li>Supports outline, search, range, grep, stat, and full fetch modes.</li>
+      <li>Passes stored results to downstream tools using `tla:&lt;id&gt;`.</li>
     </ul>
   </div>
 </section>
@@ -203,7 +203,8 @@ result flows tool to tool and never re-enters the context window.</li>
 <td><code>outline</code> then <code>search "failed"</code> returns the matching rows with line numbers</td>
 </tr>
 </tbody></table>
-<p>What the model actually sees when the result lands (truncated):</p>
+<p>An example rescue handle (captured before derived JSON navigation; current
+handles count navigation lines rather than the raw JSON wrapper):</p>
 <pre><code>[Toolaria: tool result rescued. tool=web_extract; size=171,874 chars; lines=1; type=json array[2000]; blob=5ddff67d]
 Preview (first 6 / last 3 lines); this is a preview, NOT the full output:
 [JSON excerpt: array[2000]]
@@ -468,6 +469,21 @@ treating the preview as complete.</p>
 <td><code>{tool_name: label}</code> overrides for the built-in tool→label map</td>
 </tr>
 </tbody></table>
+<h4>Shared-store cleanup</h4>
+<p>On POSIX systems, a private <code>.store.lock</code> serialises cleanup with blob/index
+publication and metadata updates across processes. A sweep cannot delete a
+blob between its byte write and session-reference save, or use a stale live
+reference snapshot while another process adopts it. The lock is re-entrant
+within a thread and released automatically when an operation or process exits.
+Do not remove the lock file while the store is in use.</p>
+<p>TTL cleanup collects live references in one index pass. Size-cap eviction
+updates references in a batch, instead of rereading every index for every
+removed blob. Already-removed files are harmless, and a failed initial sweep
+is logged without disabling an otherwise usable store.</p>
+<p>Upgrade and restart <strong>all processes sharing a <code>store_path</code></strong> together: older
+clients do not participate in this advisory lock. Use a local filesystem with
+working POSIX <code>flock</code> semantics. Where POSIX locking is unavailable, Toolaria
+logs a warning and coordinates threads only; use one process per store.</p>
 <h4>Excerpt budget contract</h4>
 <p><code>excerpt_max_chars</code> is an <strong>exact cap</strong> on the excerpt block that lands in
 the rescue handle — for every payload kind (JSON, HTML, code, text), the
@@ -583,6 +599,26 @@ memory tools are explicitly excluded and never intercepted.</p>
 <td>Full content (refused over <code>full_fetch_max_chars</code> by default)</td>
 </tr>
 </tbody></table>
+<h4>JSON and MCP navigation</h4>
+<p><code>range</code>, <code>grep</code>, <code>chain</code>, <code>search</code>, <code>outline</code> and the inline preview use the
+same derived line view. For a named MCP tool (<code>mcp_…</code>), an envelope containing
+<strong>only</strong> a string-valued <code>result</code> field is decoded once. Single-line JSON
+objects/arrays are then formatted with line breaks, preserving every JSON
+token: number spellings, duplicate keys, string escapes and order are not
+rewritten. Existing multi-line content keeps its line coordinates. Envelopes
+with extra metadata and arbitrary non-MCP <code>result</code> fields are not unwrapped.</p>
+<p>A derived response identifies its view and line count. Use its zero-based
+line numbers for follow-up <code>range</code> calls. <code>lines</code> in the rescue header is the
+navigation line count; <code>size</code> still describes the original result. Very large
+individual string values remain subject to the existing per-line scan and
+response caps. Invalid or excessively deep JSON falls back to its original
+representation rather than being repaired or guessed.</p>
+<p>The original bytes, content ID, integrity hash, <code>stat</code> size, <code>full</code> response
+and <code>tla:</code> expansion stay unchanged. Old outline/chunk caches are rebuilt on
+first use; embeddings are tied to the actual chunks, not merely their count.
+Credential masking happens before previews, summaries and snippet truncation,
+and encrypted blobs never acquire plaintext navigation sidecars. No blob
+migration or cache deletion by the operator is required.</p>
 <p>If a blob has been swept after its retention window, <code>rescuer_fetch</code> returns a
 short message naming the source tool and advising the model to re-run it, rather
 than a bare error.</p>
@@ -662,15 +698,15 @@ handle. Swept-blob guidance is scoped to the owning session.</li>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
-        <div class="stars">★ 426</div>
+        <div class="stars">★ 436</div>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 526</div>
+        <div class="stars">★ 536</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
-        <div class="stars">★ 48</div>
+        <div class="stars">★ 49</div>
         <div class="name"><span class="org">FahrenheitResearch /</span> hermes-weather-plugin</div>
       </a>
       <a class="related-row" href="/projects/42-evey/evey-bridge-plugin">
@@ -682,7 +718,7 @@ handle. Swept-blob guidance is scoped to the owning session.</li>
         <div class="name"><span class="org">nativ3ai /</span> hermes-payguard</div>
       </a>
       <a class="related-row" href="/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server">
-        <div class="stars">★ 399</div>
+        <div class="stars">★ 401</div>
         <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
       </a>
       <a class="related-row" href="/projects/stainlu/hermes-labyrinth">

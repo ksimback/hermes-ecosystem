@@ -135,6 +135,10 @@ CLI or gateway tears down an active session identity.
 
 CLI or gateway moves from an old session identity to a new one.
 
+`on_session_delete`
+
+A session delete or deliberate archive committed (`reason` says which).
+
 Common fields include `session_id`, `completed`, `interrupted`, `reason`, `old_session_id`, and `new_session_id` where available.
 
 `on_session_end` is turn/run scoped. It is not necessarily the final lifetime boundary for a chat identity. Use `on_session_finalize` and `on_session_reset` for lifecycle cleanup that must happen once per session identity.
@@ -386,6 +390,6 @@ Use `session_id`, `turn_id`, `api_request_id`, and `tool_call_id` for span corre
 
 ## Existing Consumers
 
-The bundled Langfuse plugin demonstrates direct hook-based observability for turns, provider requests, and tool calls.
+The official [Langfuse catalog plugin](https://github.com/NousResearch/hermes-official-plugins/tree/main/langfuse) demonstrates direct hook-based observability for turns, provider requests, and tool calls.
 
 The native NeMo Relay SDK integration maps Hermes session, turn, LLM, and tool lifecycles to Relay. Relay's discovered user and system configuration, or an explicit file selected with `HERMES_NEMO_RELAY_PLUGINS_TOML`, can add [ATOF, ATIF, or OTEL](https://docs.nvidia.com/nemo/relay/configure-plugins/observability/about) exporters and execution middleware; see [Relay shared metrics](/docs/developer-guide/relay-shared-metrics).

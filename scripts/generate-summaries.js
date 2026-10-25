@@ -20,7 +20,7 @@ import { fileURLToPath } from "url";
 import { githubHeaders, fetchReadme } from "../lib/github.js";
 import { callLLMJSON, LLM_API_KEY, PRIMARY_MODEL } from "../lib/llm.js";
 import {
-  listSummaryNeedsRegeneration,
+  listMembersNeedingEntries,
   pruneObjectKeys,
   validateListEntries,
 } from "../lib/summary-pruning.js";
@@ -290,8 +290,10 @@ async function main() {
       console.log(`  ${list.slug}: pruned ${removedEntries.length} orphaned entries`);
     }
 
-    // Check if any member repo's summary changed
-    const needsRegen = listSummaryNeedsRegeneration({
+    // Regenerate only the members whose entry is missing or stale; every
+    // other entry is kept verbatim (#958). A full pass only on a new list or
+    // a SUMMARY_VERSION bump.
+    const { full, keys: staleKeys } = listMembersNeedingEntries({
       listSummary: listSummaries[list.slug],
       memberKeys,
       summaries,
@@ -299,12 +301,21 @@ async function main() {
       changedKeys: changedRepoKeys,
     });
 
-    if (!needsRegen) {
+    if (staleKeys.length === 0) {
       console.log(`  ${list.slug}: up to date, skipping`);
       continue;
     }
 
-    console.log(`  ${list.slug}: generating (${memberRepos.length} projects)...`);
+    const staleSet = new Set(staleKeys);
+    const keptEntries = full
+      ? {}
+      : Object.fromEntries(
+          Object.entries(listEntries || {}).filter(([key]) => !staleSet.has(key)),
+        );
+    console.log(
+      `  ${list.slug}: generating ${staleKeys.length}/${memberRepos.length} entries` +
+        (full ? " (full pass)..." : ", keeping the rest..."),
+    );
     try {
       // Rank by stars across the whole list, THEN chunk, so chunk membership
       // follows the global star order the single-call prompt used to present.
@@ -312,20 +323,28 @@ async function main() {
       // more JSON than maxTokens 3200 can emit, truncating the response
       // mid-string; batching keeps every call well under the cap.
       const rankedMembers = memberRepos
-        .slice()
+        .filter((r) => staleSet.has(`${r.owner}/${r.repo}`))
         .sort((a, b) => (b.stars || 0) - (a.stars || 0));
       const chunks = chunkList(rankedMembers, LIST_CHUNK_SIZE);
       const chunkMaps = [];
       for (const chunk of chunks) {
         const chunkEntries = await callLLMJSON({
           system: SYSTEM_PROMPT,
-          user: buildListPrompt(list, chunk, summaries),
+          user: buildListPrompt(list, chunk, summaries, keptEntries),
           maxTokens: 3200,
         });
         chunkMaps.push(chunkEntries);
         if (chunks.length > 1) await sleep(DELAY_MS);
       }
-      const entries = mergeEntryMaps(chunkMaps);
+      // The model may echo a kept entry back despite the prompt; only stale
+      // keys are taken from its output, so a kept entry is never reworded.
+      const generated = mergeEntryMaps(chunkMaps);
+      const echoed = Object.keys(generated).filter((key) => memberKeys.has(key) && !staleSet.has(key));
+      for (const key of echoed) delete generated[key];
+      if (echoed.length > 0) {
+        console.warn(`  ${list.slug}: ignored ${echoed.length} kept entr${echoed.length === 1 ? "y" : "ies"} echoed by the model`);
+      }
+      const entries = { ...keptEntries, ...generated };
 
       // A model can return valid JSON that silently omits a member's key
       // (run 33409296779 dropped one repo out of 34 and failed the whole
@@ -347,7 +366,7 @@ async function main() {
           const key = `${member.owner}/${member.repo}`;
           const retryEntries = await callLLMJSON({
             system: SYSTEM_PROMPT,
-            user: buildListPrompt(list, [member], summaries),
+            user: buildListPrompt(list, [member], summaries, keptEntries),
             maxTokens: 3200,
           });
           // Only ever writes the key we asked for — a stray key must not

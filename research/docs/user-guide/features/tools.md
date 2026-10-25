@@ -42,9 +42,9 @@ Execute commands and manipulate files.
 
 **Browser**
 
-`browser_navigate`, `browser_snapshot`, `browser_vision`
+`browser_exec`, `browser_cdp`, `browser_dialog`, `browser_vault`
 
-Interactive browser automation with text and vision support.
+Browser automation: `browser_exec` drives Chromium with Python over CDP (screenshots included). The Camofox browser is a separate catalog plugin (`hermes plugins install camofox`).
 
 **Media**
 
@@ -134,7 +134,7 @@ Remote server
 
 Sandboxing, keep agent away from its own code
 
-`singularity`
+`singularity` (plugin)
 
 HPC containers
 
@@ -163,7 +163,7 @@ Cloud execution with snapshot-backed filesystem persistence
 ```
 # In ~/.hermes/config.yaml
 terminal:
-  backend: local    # or: docker, ssh, singularity, modal, daytona, vercel_sandbox
+  backend: local    # or: docker, ssh, modal, daytona, vercel_sandbox, or a plugin backend (singularity)
   cwd: "."          # Working directory
   timeout: 180      # Command timeout in seconds
 ```
@@ -224,7 +224,11 @@ TERMINAL_SSH_KEY=~/.ssh/id_rsa
 
 ### Singularity/Apptainer
 
+An official plugin ([`singularity`](https://github.com/NousResearch/hermes-official-plugins/tree/main/singularity)), formerly built in; `hermes update` installs it for profiles that already use it.
+
 ```
+hermes plugins install singularity
+
 # Pre-build SIF for parallel workers
 apptainer build ~/python.sif docker://python:3.11-slim
 
@@ -275,7 +279,7 @@ Configure CPU, memory, disk, and persistence for all container backends:
 
 ```
 terminal:
-  backend: docker  # or singularity, modal, daytona, vercel_sandbox
+  backend: docker  # or modal, daytona, vercel_sandbox, singularity (plugin)
   container_cpu: 1              # CPU cores (default: 1)
   container_memory: 5120        # Memory in MB (default: 5GB)
   container_disk: 51200         # Disk in MB (default: 50GB)
@@ -315,6 +319,19 @@ process(action="write", session_id="proc_abc123", data="y")  # Send input
 ```
 
 PTY mode (`pty=true`) enables interactive CLI tools like Codex and Claude Code.
+
+A foreground command whose only backgrounding is a trailing `&` (for example `python3 -m http.server 8765 &` or `cd app && npm start > app.log 2>&1 &`) runs as `background=true` with the `&` removed, and the result carries an `auto_backgrounded` note with the `session_id`. It goes through the same approval checks as any background command. Shapes that mix in other commands (`server & curl ...`, `a; b &`, multi-line scripts), `nohup`/`disown`/`setsid` wrappers, command substitutions (`$(...)`, backticks, `<(...)`) and commands whose approval category would change without the `&` are still refused with guidance, because Hermes cannot safely tell which part should keep running.
+
+### Repeated waits on a quiet process
+
+When the agent calls `process(action="wait")` or `process(action="poll")` twice in a row on a process that is still running and has printed nothing new, Hermes turns on `notify_on_complete` for that process and the result tells the agent to stop checking: the exit (code and final output) arrives later as its own message, so the agent can do other work or end its turn instead of spending a model call on every unchanged check. New output, the process exiting, or any other action on that process resets the count.
+
+This applies where a completion can reach the agent: the interactive CLI (including interactive `hermes chat -q`), the TUI and desktop app, and messaging chats. Non-interactive `hermes chat -q`, one-shot `hermes -z`, cron jobs, Kanban workers, stateless API requests and delegated subagents keep the previous behaviour because they cannot receive a later completion, as does any profile with `display.background_process_notifications: off` (completions never start an agent turn there). Checking a process whose completion goes to someone else (another session's process, or a subagent's process that was not handed off) also stays plain polling. Admin-managed settings and `${VAR}` values count. To keep plain polling everywhere, set:
+
+```
+terminal:
+  process_wait_auto_notify: false
+```
 
 Completed background commands retain their exit status and captured output in the active profile. Resume the conversation that launched the command (or its compressed continuation), then use the original `session_id` with `process(action="log")` for output and `process(action="poll")` for exit status. Unrelated conversations and requests without a bound owning session cannot read retained receipts, even with an exact process handle. `process(action="list")` also includes retained results for the current task or conversation.
 

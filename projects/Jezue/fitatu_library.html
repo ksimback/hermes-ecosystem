@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jezue/fitatu_library — Hermes Agent Integrations &amp; Bridges | Hermes Atlas</title>
+<meta name="description" content="fitatu-api is an unofficial Python client for Fitatu that can read and update food diaries, activities, body measurements, water, goals, summaries, and food…">
+<link rel="canonical" href="https://hermesatlas.com/projects/Jezue/fitatu_library">
+<meta property="og:title" content="Jezue/fitatu_library — Hermes Atlas">
+<meta property="og:description" content="fitatu-api is an unofficial Python client for Fitatu that can read and update food diaries, activities, body measurements, water, goals, summaries, and food…">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/Jezue/fitatu_library">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=fitatu_library&amp;subtitle=Unofficial+Python+API+client+for+Fitatu+%E2%80%94+built+for+AI+agents+and+automation&amp;kind=project+%C2%B7+integrations">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jezue/fitatu_library — Hermes Atlas">
+<meta name="twitter:description" content="fitatu-api is an unofficial Python client for Fitatu that can read and update food diaries, activities, body measurements, water, goals, summaries, and food…">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=fitatu_library&amp;subtitle=Unofficial+Python+API+client+for+Fitatu+%E2%80%94+built+for+AI+agents+and+automation&amp;kind=project+%C2%B7+integrations">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "integrations &amp; bridges", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 3, "name": "fitatu_library" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/Jezue/fitatu_library#software",
+  "name": "fitatu_library",
+  "description": "fitatu-api is an unofficial Python client for Fitatu that can read and update food diaries, activities, body measurements, water, goals, summaries, and food catalog data. It also provides tools for AI agents and an MCP server that makes those tools available to MCP hosts.",
+  "url": "https://hermesatlas.com/projects/Jezue/fitatu_library",
+  "codeRepository": "https://github.com/Jezue/fitatu_library",
+  "applicationCategory": "CommunicationApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
+  "author": {
+    "@type": "Organization",
+    "name": "Jezue",
+    "url": "https://github.com/Jezue"
+  },
+  "dateModified": "2026-10-23T08:39:50.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 21
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">285·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/">integrations &amp; bridges</a><span class="sep">/</span>fitatu_library
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">Jezue</span><span class="slash">/</span>fitatu_library
+  </h1>
+  <p class="project-desc">Unofficial Python API client for Fitatu — built for AI agents and automation</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 21</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
+    
+    <span><span class="meta-label">updated</span>2026-10-23</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/Jezue/fitatu_library" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    <a href="https://pypi.org/project/fitatu-api/" target="_blank" rel="noopener" class="btn-secondary">homepage</a>
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">fitatu-api is an unofficial Python client for Fitatu that can read and update food diaries, activities, body measurements, water, goals, summaries, and food catalog data. It also provides tools for AI agents and an MCP server that makes those tools available to MCP hosts.</p>
+    <ul class="summary-highlights">
+      <li>Includes 47 tools for Fitatu diary operations.</li>
+      <li>MCP server supports stdio and HTTP.</li>
+      <li>Requires Python 3.11 or newer.</li>
+    </ul>
+  </div>
+</section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <p align="center">
+  <img src="https://raw.githubusercontent.com/Jezue/fitatu_library/main/docs/assets/banner.png" alt="fitatu-api: your Fitatu food diary for AI agents (unofficial)" width="100%">
+</p>
+
+<h2>fitatu-api</h2>
+
+
+<p><img src="https://img.shields.io/pypi/v/fitatu-api" alt="PyPI" loading="lazy" decoding="async">
+<img src="https://img.shields.io/pypi/pyversions/fitatu-api" alt="Python" loading="lazy" decoding="async">
+<img src="https://img.shields.io/badge/status-alpha-orange" alt="Status" loading="lazy" decoding="async">
+<img src="https://img.shields.io/badge/license-MIT-green" alt="License" loading="lazy" decoding="async">
+<img src="https://github.com/Jezue/fitatu_library/actions/workflows/ci.yml/badge.svg" alt="CI" loading="lazy" decoding="async">
+<a href="https://mcprush.com/to/fitatu-mcp?ref=badge"><img src="https://mcprush.com/badge/fitatu-mcp/score.svg" alt="Fitatu MCP on mcprush" loading="lazy" decoding="async"></a></p>
+<p>An unofficial Python client for the API of <a href="https://www.fitatu.com">Fitatu</a>, the calorie
+counter, built to be driven by AI agents and scripts. It reads and writes the food diary,
+activities, body measurements and water, reads and sets goals, and reads summaries and the food
+catalog.
+<code>FitatuTools</code> turns the diary into tools a language model can call. The session handling
+follows <a href="https://github.com/cyberjunky/python-garminconnect">python-garminconnect</a>: log in once,
+keep one session file, let the client refresh it.</p>
+<blockquote>
+<p><strong>Unofficial.</strong> This project is not affiliated with or endorsed by Fitatu Sp. z o.o. The API
+was reverse-engineered from the Fitatu apps and can change without notice. Automated access
+may break Fitatu's Terms of Service; check them, and use the library only with your own
+account and at your own risk. The MIT licence covers this code, not the Fitatu service, its
+API or its data.</p>
+</blockquote>
+<h3>Install</h3>
+<p>Python 3.11 or newer; the only dependency is <code>requests</code> (and <code>tzdata</code> on Windows).</p>
+<pre><code class="language-bash">pip install fitatu-api                                     # the library and the fitatu-api command
+pip install "fitatu-api[mcp]"                              # plus fitatu-mcp, the MCP server
+pip install "git+https://github.com/Jezue/fitatu_library"   # unreleased changes from main
+</code></pre>
+<p>To work on the library or run its tests offline, clone it instead: <code>git clone https://github.com/Jezue/fitatu_library &amp;&amp; cd fitatu_library &amp;&amp; pip install -e ".[dev]"</code>.</p>
+<h3>Quick start</h3>
+<pre><code class="language-bash">fitatu-api login   # asks for e-mail and password, writes ~/.fitatu/session.json
+</code></pre>
+<p>Signed up with Apple or Facebook? Then the account has no password: copy the session from the
+web app with <code>fitatu-api import-session</code> instead, as described under
+<a href="#authentication--session-file">Authentication &amp; session file</a>.</p>
+<pre><code class="language-python">from datetime import date
+
+from fitatu_api import FitatuApiClient
+
+with FitatuApiClient.from_session() as client:  # closes the HTTP connections at the end
+    user_id = client.auth.fitatu_user_id
+    today = date.today()
+
+    day = client.planner.get_day(user_id, today)
+    for meal_key, meal in day["dietPlan"].items():
+        for row in meal["items"]:
+            print(meal_key, row["name"], row["energy"], row["planDayDietItemId"])
+
+    egg = client.search_food("jajko kurze", limit=1)[0]  # search rows carry the id as foodId
+    added = client.planner.add_product_to_day_meal(
+        user_id, today, meal_type="breakfast", product_id=egg["foodId"],
+        measure_id=egg["measure"]["measureId"], measure_quantity=2,  # 2 of the hit's measure
+    )
+    print("added row", added["row_id"])
+</code></pre>
+<p>How writes, row ids and removals work: <a href="https://github.com/Jezue/fitatu_library/blob/main/docs/PLANNER.md">docs/PLANNER.md</a>.</p>
+<p>To copy a catering diet's menu into the diary (safe to run again), use <code>catering_sync.py</code> from
+the repository: <a href="https://github.com/Jezue/fitatu_library/blob/main/docs/PLANNER.md#importing-a-catering-menu">Importing a catering menu</a>.</p>
+<h3>For AI agents</h3>
+<p><code>FitatuTools</code> exposes 47 tools (read the day, search food, log food, weight, water,
+workouts, private recipes and products, ...) with JSON Schema inputs and read-only / destructive / idempotent annotations.
+<code>call()</code> never raises: it returns <code>{"ok": true, "data": ...}</code> or <code>{"ok": false, "error": {"error_type", "message", "retryable", "hint", ...}}</code>, so the model can read what went wrong.
+<code>SYSTEM_PROMPT</code> is the recommended system prompt: the rules the model needs on top of the tool
+descriptions (read before writing, users' own meal names, <code>data.ok</code>, confirmations). The model
+asks <code>get_today</code> for the date, in the account's time zone.</p>
+<pre><code class="language-python">import json
+
+import anthropic
+
+from fitatu_api import FitatuTools
+from fitatu_api.agent import READ_ONLY_TOOLS, SYSTEM_PROMPT, anthropic_tools  # openai_tools() for OpenAI
+
+client = anthropic.Anthropic()
+messages = [{"role": "user", "content": "How many kcal did I eat today?"}]
+# Only the read tools, as this loop runs tool calls without asking the user: call() refuses
+# any other tool, which the model can still name.
+with FitatuTools.from_session(tools=READ_ONLY_TOOLS) as tools:
+    while True:
+        response = client.messages.create(
+            model="claude-opus-5-5",
+            max_tokens=16000,
+            system=SYSTEM_PROMPT,
+            tools=anthropic_tools(READ_ONLY_TOOLS),
+            messages=messages,
+        )
+        messages.append({"role": "assistant", "content": response.content})
+        if response.stop_reason != "tool_use":
+            break
+        results = [
+            {
+                "type": "tool_result",
+                "tool_use_id": block.id,
+                "content": json.dumps(tools.call(block.name, block.input)),
+            }
+            for block in response.content
+            if block.type == "tool_use"
+        ]
+        messages.append({"role": "user", "content": results})
+if response.stop_reason != "end_turn":  # max_tokens or refusal: the answer is cut or missing
+    raise RuntimeError(f"the model stopped early: {response.stop_reason}")
+print("".join(block.text for block in response.content if block.type == "text"))
+</code></pre>
+<p>The write tools (log food, update, move, copy and delete rows, weight, water, workouts, private
+recipes and products) need a loop
+that asks the user before destructive calls; it is in
+<a href="https://github.com/Jezue/fitatu_library/blob/main/docs/AGENTS.md">docs/AGENTS.md</a>, with the
+tool table, the calls never to expose (session tokens, catalog writes), how to make writes safe
+to repeat, what to do per <code>error_type</code>, the OpenAI variant, long-running hosts, and how to try
+the tools without an account against the offline test backend.</p>
+<h4>MCP</h4>
+<p><code>fitatu-mcp</code> serves the same tools to Claude Code, Claude Desktop and other MCP hosts over
+stdio, with <code>SYSTEM_PROMPT</code> as its instructions and three Polish slash commands
+(<code>podsumowanie_dnia</code>, <code>przeglad_tygodnia</code>, <code>zaloguj_posilek</code>):</p>
+<pre><code class="language-bash">pipx install "fitatu-api[mcp]"
+fitatu-api login
+claude mcp add fitatu --scope user -- fitatu-mcp   # fitatu-mcp --read-only: the read tools only
+</code></pre>
+<p><code>fitatu-mcp --http</code> serves the same tools over HTTP, with a token, for n8n, another computer or
+Docker (the repository has a <code>Dockerfile</code>):
+<a href="https://github.com/Jezue/fitatu_library/blob/main/docs/AGENTS.md#remote-http-and-docker">docs/AGENTS.md</a>.</p>
+<p>Without an account, <code>fitatu-mcp --demo</code> (or <code>FitatuTools.demo()</code>) serves a small made-up diary
+kept in memory. For Claude Desktop, each <a href="https://github.com/Jezue/fitatu_library/releases/latest">GitHub release</a>
+has <code>fitatu-&lt;version&gt;.mcpb</code>, installed with a double click (log in with <code>fitatu-api login</code> first). Without installing anything, <code>uvx --from "fitatu-api[mcp]" fitatu-mcp</code> runs the server. It is
+listed in the <a href="https://registry.modelcontextprotocol.io">MCP Registry</a> as
+<code>io.github.Jezue/fitatu-api</code> (<code>server.json</code>). For Hermes Agent and other hosts that read
+<a href="https://agentskills.io">Agent Skills</a>, <a href="https://github.com/Jezue/fitatu_library/blob/main/skills/fitatu-diary/SKILL.md"><code>skills/fitatu-diary/SKILL.md</code></a>
+tells the agent how to set the server up and use its tools well.</p>
+<p>The host's permission prompt is the confirmation step, so keep it on for the destructive tools.
+Claude Desktop, uvx and what the server does:
+<a href="https://github.com/Jezue/fitatu_library/blob/main/docs/AGENTS.md#mcp">docs/AGENTS.md</a>.</p>
+<h3>What it covers</h3>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Client (<code>FitatuApiClient</code>)</th>
+<th>Agent tools</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Food diary</td>
+<td><code>client.planner</code>: read a day, add products, recipes, custom rows and search hits, update, move, copy, remove; the day's note</td>
+<td><code>get_day</code>, <code>add_food</code>, <code>add_foods</code>, <code>add_custom_item</code>, <code>update_item</code>, <code>move_item</code>, <code>copy_meal</code>, <code>preview_removal</code>, <code>remove_items</code>, <code>set_note</code></td>
+</tr>
+<tr>
+<td>Activities</td>
+<td><code>planner.add_activity</code> / <code>remove_activity</code>, <code>client.activities</code> (catalog, search, recent)</td>
+<td><code>search_activity</code>, <code>add_activity</code>, <code>remove_activity</code></td>
+</tr>
+<tr>
+<td>Foods</td>
+<td><code>search_food</code>, <code>get_product_details</code>, <code>get_recipe</code>, recipe catalog and its search, <code>client.foods</code> (favourites, recent)</td>
+<td><code>search_food</code>, <code>search_recipes</code>, <code>get_recipe</code>, <code>find_by_barcode</code>, <code>get_food_measures</code>, <code>get_recent_foods</code>, <code>get_favorite_foods</code>, <code>set_favorite</code></td>
+</tr>
+<tr>
+<td>The user's own foods</td>
+<td><code>search_user_food</code>, <code>create_product</code>, <code>update_product</code>, <code>delete_product</code>, <code>create_recipe</code>, <code>update_recipe</code>, <code>delete_recipe</code></td>
+<td><code>get_my_foods</code>; <code>create_food</code>, <code>update_food</code>, <code>delete_food</code> and the recipe tools for the user's own private foods only</td>
+</tr>
+<tr>
+<td>Measurements</td>
+<td><code>client.measurements</code>: weight and body sizes per day, history, charts</td>
+<td><code>get_weight_history</code>, <code>get_body_measurements</code>, <code>get_measurement_history</code>, <code>log_weight</code>, <code>log_measurements</code></td>
+</tr>
+<tr>
+<td>Water</td>
+<td><code>client.water</code></td>
+<td><code>get_water</code>, <code>set_water</code></td>
+</tr>
+<tr>
+<td>Summary and export</td>
+<td><code>client.summary</code>: range totals, nutrient per day, top products, diary export</td>
+<td><code>get_range_summary</code>, <code>get_progress</code>, <code>get_top_foods</code>, <code>get_report</code>, <code>get_shopping_list</code> (worked out from the planned rows)</td>
+</tr>
+<tr>
+<td>Fasting and habits</td>
+<td><code>client.fasting</code> (schemes, eating periods per day), <code>client.habits</code> (catalog, the user's habits, good days); read only</td>
+<td><code>get_fasting</code>, <code>get_habits</code>, <code>get_good_days</code></td>
+</tr>
+<tr>
+<td>Goals and settings</td>
+<td><code>client.user_settings</code>: targets, BMR/TMR, profile</td>
+<td><code>get_targets</code>, <code>set_targets</code> (the manual or automatic goal, macro split, glass size), <code>get_profile</code> (height, weight, goal, BMI, Premium; nothing that identifies the user)</td>
+</tr>
+<tr>
+<td>Catalog writes</td>
+<td><code>create_recipe(shared=True)</code>, <code>set_product_proposal</code>, duplicate cleanup</td>
+<td>none, on purpose</td>
+</tr>
+</tbody></table>
+<p><code>FitatuLibrary</code>, which wraps most of these as <code>*_via_api</code> methods that return <code>{"status": ...}</code>
+instead of raising, is deprecated and will be removed in 1.0: for results that never raise use
+<code>FitatuTools</code> (<code>{"ok": true, "data": ...}</code>), otherwise the client. Every public call with its stability is listed in
+<a href="https://github.com/Jezue/fitatu_library/blob/main/docs/API_REFERENCE.md">docs/API_REFERENCE.md</a>.</p>
+<h4>Free and Premium accounts</h4>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Free account</th>
+<th>Premium</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Diary: read, log, update, move, copy, remove food, notes, activities, water, weight, body measurements</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Search, barcode, food measures, recipe search by words and <code>max_energy_kcal</code>, recipes in full, private recipes and products, favourites, recent foods</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Recipe search filters (<code>min_protein_g</code>, <code>max_carbohydrate_g</code>, <code>max_cooking_time</code>, <code>diets</code>, <code>meal</code>) and premium catalog recipes (<code>get_recipe</code>, <code>get_food_measures</code>, <code>add_food</code>, <code>add_foods</code>; the shopping list leaves out their ingredients)</td>
+<td>❌ "needs Fitatu Premium": the tools follow the app</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Goals: read and set (<code>get_targets</code>, <code>set_targets</code>), progress (<code>get_progress</code>), reports (<code>get_report</code>), range totals (<code>get_range_summary</code>)</td>
+<td>✅ (progress: a request per day, at most 31 days)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Weight and body measurement history, profile, fasting and habits (read), shopping list</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Top foods (<code>get_top_foods</code>, <code>summary.get_top_products()</code>)</td>
+<td>❌ 403: needs Fitatu Premium</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Diary export (<code>fitatu-api export</code>, <code>summary.export_diary()</code>)</td>
+<td>❌ 403: "needs Fitatu Premium"</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Protein / fat / carbohydrate day by day (<code>summary.get_nutrient_by_day()</code>; energy works on both)</td>
+<td>❌ 403 (<code>get_progress</code> reads around it)</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<p>Nearly everything works on an account without Fitatu Premium. Fitatu answers 403 without it to
+(checked live 2026-10-15):</p>
+<ul>
+<li><code>summary.get_nutrient_by_day()</code> for protein, fat and carbohydrate (energy works on any account);</li>
+<li><code>summary.get_top_products()</code>, and so the <code>get_top_foods</code> tool;</li>
+<li><code>summary.export_diary()</code>, and so <code>fitatu-api export</code>, which then says so in one line.</li>
+</ul>
+<p>Fitatu serves the recipe search filters and premium catalog recipes to any account, but its app
+keeps them for Premium, and so do the tools: they check the account's <code>accessControl</code> flags and
+answer a <code>forbidden</code> error without them. The client itself does not check.</p>
+<p><code>get_progress</code> and <code>get_report</code> work on every account: when the macros' day-by-day route is
+refused, they read each day's own summary instead (a request per day, at most 31 days), and
+<code>get_report</code> gives <code>top_foods</code> null with a <code>top_foods_note</code>. A free account's macro goals are a
+range (<code>target_min</code> below <code>target_max</code>); on a Premium account a one-day summary gave the two
+equal (the day-by-day route <code>get_progress</code> reads there agrees, checked live). It takes a manual
+goal and its own macro split too (<code>set_targets</code>, checked live 2026-10-15); with a split, its
+macro goals are single numbers. <code>fitatu-api doctor</code>
+says whether the account has a premium plan. See
+<a href="https://github.com/Jezue/fitatu_library/blob/main/docs/AGENTS.md#free-and-premium-accounts">Free and Premium accounts</a>
+in docs/AGENTS.md for the tools.</p>
+<h3>Command line</h3>
+<p><code>fitatu-api</code> (also <code>python -m fitatu_api</code>) works on the session file, <code>$FITATU_SESSION</code> or
+<code>~/.fitatu/session.json</code>:</p>
+<pre><code class="language-bash">fitatu-api login            # or import-session, see Authentication &amp; session file below
+fitatu-api status           # the session: file, user id, host, token expiry; sends nothing
+fitatu-api doctor           # checks the session, the clock and the client version with Fitatu
+fitatu-api logout           # deletes the session file after asking (--yes: without asking)
+fitatu-api tools            # the agent tools: name, read / write / destructive, what it does
+fitatu-api tools --json     # the same tools in the Anthropic API format, anthropic_tools()
+fitatu-api call get_day '{"date": "2026-10-14"}'
+fitatu-api export --from 2026-10-01 --to 2026-10-14 --format csv -o diary.csv  # needs Fitatu Premium
+</code></pre>
+<p><code>status</code> prints where the session comes from (the file and its permissions, or
+<code>$FITATU_SESSION_JSON</code>), the user id, API host, locales, when the bearer token expires and
+whether there is a refresh token, without sending anything; <code>--check</code> also reads the profile
+once. <code>doctor</code> checks the setup with Fitatu, one <code>ok</code> / <code>WARN</code> / <code>FAIL</code> line each: the session
+file's permissions, the refresh token (it refreshes the bearer once and saves it, as any
+refresh does), this computer's clock against the fresh token's issue time, a profile read,
+whether a premium plan runs (not until when, nor its price), and whether Fitatu's web app is still at the version the library sends (<code>GET /upgrade-application/WEB/&lt;version&gt;</code>); it exits with 1 when a check failed and prints no
+token, user id or home directory, so its output can go into a bug report. <code>logout</code> deletes the
+session file; stop <code>fitatu-mcp</code> and other processes that use it first, as they would write
+their refreshed tokens back. Fitatu has no call the library knows of that revokes tokens.
+None of these commands prints a token. <code>fitatu-api --version</code> prints the version.</p>
+<p><code>call</code> runs one tool through <code>FitatuTools.call()</code> and prints its envelope as JSON; the exit
+status is 0 when <code>ok</code> is true and 1 when it is false. Only the read tools (<code>READ_ONLY_TOOLS</code>)
+run unless <code>--allow-writes</code> is given. <code>export</code> saves Fitatu's diary export (<code>csv</code>, <code>xls</code>, <code>pdf</code>
+or <code>txt</code>) to a new file readable only by you (0600); it does not replace an existing file
+without <code>--overwrite</code>, and a range with nothing logged writes no file and exits with 1.
+<code>fitatu-api COMMAND --help</code> describes each command. Logs go to stderr, from WARNING unless
+<code>fitatu-api --log-level DEBUG COMMAND</code> or <code>FITATU_LOG_LEVEL</code> says otherwise (see
+<a href="#privacy--logging">Privacy &amp; logging</a>).</p>
+<h3>Authentication &amp; session file</h3>
+<p><code>fitatu-api login [--email ADDRESS] [-o PATH] [--base-url URL]</code> (also <code>python -m fitatu_api login</code>) logs in, reads your profile for the account's locales and timezone, and writes the
+session file. It reads <code>FITATU_EMAIL</code> and
+<code>FITATU_PASSWORD</code> when they are set and prompts otherwise. Accounts without a password use
+<code>fitatu-api import-session</code> (below).</p>
+<ul>
+<li><p><strong>Where.</strong> <code>fitatu-api login</code>, <code>fitatu-api import-session</code>, <code>FitatuApiClient.from_session()</code>,
+<code>FitatuTools.from_session()</code> and the deprecated <code>FitatuLibrary.from_session()</code> use the same file: the path
+you pass (<code>-o</code> for the CLI), else <code>$FITATU_SESSION</code>, else <code>$FITATU_SESSION_PATH</code>, else
+<code>~/.fitatu/session.json</code>. A missing file raises <code>FitatuAuthError</code> telling you to run
+<code>fitatu-api login</code>.</p>
+</li>
+<li><p><strong>What.</strong> JSON with <code>bearer_token</code>, <code>refresh_token</code>, <code>fitatu_user_id</code>, <code>base_url</code> (the
+region's API host), <code>app_locale</code>, <code>app_searchlocale</code>, <code>app_storagelocale</code>, <code>app_timezone</code>
+and a schema version. The client's identity (API key, app version, ...) is not stored; it
+comes from the library.</p>
+</li>
+<li><p><strong>Permissions.</strong> The file is written owner-only (0600), in a directory created 0700, through
+a temporary file that replaces it, so a reader never sees half a session. It holds live
+tokens: treat it like a password.</p>
+</li>
+<li><p><strong>Tokens.</strong> Checked live on 2026-10-13: the bearer token is a JWT that lives one hour. The
+refresh token is an opaque string that Fitatu does not rotate: <code>POST /token/refresh</code> returns
+a new bearer token and the same refresh token, which keeps working, and older bearer tokens
+stay valid until they expire. <code>POST /login</code> answers a wrong e-mail or password with 422, not</p>
+<ol start="401">
+<li></li>
+</ol>
+</li>
+<li><p><strong>Refresh and write-back.</strong> The client refreshes the bearer token 60 seconds before it
+expires (from the JWT <code>exp</code>) and once after a 401, one refresh at a time. The tokens are
+merged into the session file, so the next process starts with them; a process that shares
+the file picks up a pair another one saved, e.g. after <code>fitatu-api login</code> ran again. Pass
+<code>persist_tokens=False</code> to keep the file untouched. A pair of another account (a login to
+another account with the same file) is not picked up: the running client keeps its own tokens
+and stops writing to the file, so that login stays. When a token fresh from Fitatu already
+looks expired, the computer's clock runs fast: the client then logs one warning and refreshes
+only after a 401.</p>
+</li>
+<li><p><strong>Logging in again.</strong> When Fitatu rejects the refresh token, calls raise <code>FitatuAuthError</code>
+(<code>error_type</code> <code>auth</code>). Run <code>fitatu-api login</code> (or <code>import-session</code>) again; a running client
+picks the new pair up from the file the next time it needs a refresh.</p>
+</li>
+<li><p><strong>Accounts without a password.</strong> Accounts created with Apple or Facebook (Apple's "Hide my
+e-mail" addresses included) have no password for <code>fitatu-api login</code>. Copy the session from
+the web app instead:</p>
+<ol>
+<li><p>Log in at <a href="https://www.fitatu.com/app/">https://www.fitatu.com/app/</a> with Apple or Facebook.</p>
+</li>
+<li><p>Open the browser's developer console on that page and run the line below. It copies only
+the tokens and your user id; the web app's <code>localStorage.user</code> also holds your e-mail,
+nickname and more.</p>
+<pre><code class="language-js">copy(JSON.stringify((u =&gt; ({token: u.token, refresh_token: u.refresh_token, id: u.id}))(JSON.parse(localStorage.user))))
+</code></pre>
+</li>
+<li><p>On macOS run <code>pbpaste | fitatu-api import-session</code>. On Linux or Windows paste it into a
+file, run <code>fitatu-api import-session &lt; file</code> (PowerShell:
+<code>Get-Content file | fitatu-api import-session</code>) and delete the file.</p>
+</li>
+</ol>
+<p><code>import-session [-o PATH] [--base-url URL]</code> reads the JSON from stdin (a session file of
+this library works too), checks both tokens with Fitatu by refreshing the bearer once (so the
+saved one is good for an hour), reads the account's locales and timezone like <code>login</code> and
+writes the session file the same way.
+Nothing else from the input is saved. The token is a full account credential: do not paste
+it anywhere else.</p>
+</li>
+<li><p><strong>Containers and cron.</strong> Where no writable session file fits, put the session JSON itself
+in <code>FITATU_SESSION_JSON</code>: <code>fitatu-api login --print</code> (or <code>import-session --print</code>) prints it
+to stdout instead of writing a file, for a secret store. <code>from_session()</code> without a path
+takes it before any file, and keeps the tokens it refreshes in memory: Fitatu does not
+rotate the refresh token, so the same value works for every run until the refresh token
+itself expires (how long it lives is not known yet) or you log in again.</p>
+</li>
+<li><p><strong>Facade (deprecated).</strong> <code>FitatuLibrary.from_session()</code> loads the same file and writes refreshed tokens
+back to it. <code>FitatuLibrary(session_data, session_path=...)</code> does the same for a session
+dict, and copies the current pair into <code>session_data</code> after every call.</p>
+</li>
+<li><p><strong>From Python.</strong> <code>FitatuApiClient.login(email, password, token_store_path=path)</code> logs in and
+merges the whole session into <code>path</code>.</p>
+</li>
+</ul>
+<h3>Regions &amp; headers</h3>
+<p>The API host is the session's <code>base_url</code>, else the host of the account's storage locale:
+<code>pl_PL</code> becomes <code>https://pl-pl.fitatu.com/api</code>, <code>de_DE</code> becomes <code>https://de-de.fitatu.com/api</code>.
+<code>fitatu-api login</code> logs in on <code>https://pl-pl.fitatu.com/api</code> and stores the storage locale's
+host; with <code>--base-url</code> it logs in there and stores that URL.</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Headers</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Required</td>
+<td><code>API-Key</code>, <code>API-Secret</code>, <code>Authorization: Bearer &lt;jwt&gt;</code></td>
+<td>The key and secret are static app values (403 without them); <code>Authorization</code> is needed on user routes (401).</td>
+</tr>
+<tr>
+<td>Semantic</td>
+<td><code>APP-SearchLocale</code>, <code>APP-Locale</code>, <code>APP-StorageLocale</code>, <code>APP-Timezone</code></td>
+<td><code>APP-SearchLocale</code> and the <code>locale</code> query parameter change search results. The others describe the user. All four come from the session, which <code>login()</code> fills from the profile; a session without them sends the <code>pl_PL</code> / <code>Europe/Warsaw</code> defaults.</td>
+</tr>
+<tr>
+<td>Identification</td>
+<td><code>APP-OS</code>, <code>APP-Version</code>, <code>APP-UUID</code>, <code>API-Cluster</code>, <code>User-Agent</code></td>
+<td>Only identify the client. The library always sends one constant web-app profile (<code>WEB_CLIENT_PROFILE</code> in <code>constants.py</code>), never stored in sessions.</td>
+</tr>
+</tbody></table>
+<p>If Fitatu changes what the web app sends (its version, or the API key and secret) before a
+release of the library follows, set <code>FITATU_CLIENT_PROFILE</code> to a JSON object with the keys of
+<code>WEB_CLIENT_PROFILE</code> to change, e.g. <code>FITATU_CLIENT_PROFILE='{"app_version": "4.14.0"}'</code>. Any
+other key or a value that is not plain text is refused with a <code>FitatuValidationError</code>
+(<code>fitatu-mcp</code> then does not start). <code>fitatu-api doctor</code> says whether the version is still the
+newest.</p>
+<p>Login (<code>POST /login</code> with <code>_username</code> and <code>_password</code>) and refresh (<code>POST /token/refresh</code> with
+<code>{"refresh_token": ...}</code>) go through the same request path and send the same headers, without
+<code>Authorization</code>; at login the locale headers are still the <code>pl_PL</code> defaults. There is no
+request signing, and Firebase App Check is not enforced; the library does not send it.</p>
+<p>Credentials only go to <code>https</code> hosts under <code>fitatu.com</code>: any other <code>base_url</code> or absolute URL
+raises <code>FitatuValidationError</code> before a request is made, and <code>Authorization</code> is only sent to
+URLs under <code>base_url</code> or <code>https://fitatu.com/api</code>. Redirects are not followed: a 3xx answer is
+a <code>FitatuApiError</code>, so a request body never goes on to another host.</p>
+<h3>Errors, retries, rate limits</h3>
+<p>The library's errors are <code>FitatuApiError</code> subclasses. <code>describe_error(exc)</code> turns any
+exception into the JSON-safe dict that <code>FitatuTools.call()</code> (and the deprecated <code>FitatuLibrary</code>) return.</p>
+<table>
+<thead>
+<tr>
+<th>Exception</th>
+<th>Raised when</th>
+<th><code>error_type</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>FitatuValidationError</code> (also a <code>ValueError</code>)</td>
+<td>An argument is invalid; nothing was sent.</td>
+<td><code>validation</code></td>
+</tr>
+<tr>
+<td><code>FitatuNotFoundError</code></td>
+<td>The id, meal or row you named is not there: the library found that in what it read (the message lists what is there), or the server answered 404 (<code>status_code</code> 404).</td>
+<td><code>not_found</code></td>
+</tr>
+<tr>
+<td><code>FitatuAuthError</code></td>
+<td>401 after a refresh, a rejected refresh token, no session file, or a wrong e-mail or password at login (Fitatu answers 422); <code>hint</code> then points to <code>import-session</code>.</td>
+<td><code>auth</code></td>
+</tr>
+<tr>
+<td><code>FitatuRateLimitError</code></td>
+<td>429 after retries; <code>retry_after</code> holds the server's wait in seconds.</td>
+<td><code>rate_limit</code></td>
+</tr>
+<tr>
+<td><code>FitatuConnectionError</code></td>
+<td>No HTTP response (DNS, timeout, connection reset).</td>
+<td><code>network</code></td>
+</tr>
+<tr>
+<td><code>FitatuMaintenanceError</code></td>
+<td>Fitatu's <code>technical-break</code> header; <code>display_from</code> / <code>display_to</code>.</td>
+<td><code>maintenance</code></td>
+</tr>
+<tr>
+<td><code>FitatuPlannerSyncError</code></td>
+<td>The day sync answered 202 but rejected a day; <code>results</code> has the per-day errors.</td>
+<td><code>sync_rejected</code></td>
+</tr>
+<tr>
+<td><code>FitatuPremiumRequiredError</code></td>
+<td>A tool for what the Fitatu app keeps for Premium, on an account without it; nothing was sent for it.</td>
+<td><code>forbidden</code></td>
+</tr>
+<tr>
+<td><code>FitatuApiError</code></td>
+<td>Any other HTTP error: <code>status_code</code>, <code>body</code>, <code>codename</code> (e.g. <code>NUMBER_OF_USES_EXCEEDED</code>).</td>
+<td><code>forbidden</code> (403), <code>validation</code> (400/409/422), <code>server</code></td>
+</tr>
+</tbody></table>
+<p>Messages read <code>METHOD /path -&gt; status CODENAME: server message</code>. In <code>describe_error()</code>'s message
+the user id is <code>&lt;user&gt;</code> (<code>GET /diet-plan/&lt;user&gt;/days -&gt; 403</code>), and with <code>user_id=</code> (which
+<code>FitatuTools.call()</code> passes) wherever else it appears, so a result does not carry it to the
+model provider. A 403 whose body is an HTML page comes from a firewall in front of the API (e.g.
+Cloudflare), not from Fitatu's premium or key checks, and its <code>hint</code> says so. Any other exception, such as a <code>TypeError</code> raised inside the
+library, is <code>unexpected</code>: a bug to report, since <code>FitatuTools.call()</code> checks the arguments first.</p>
+<p>Retries: network errors, 429, 500/502/503/504 and Cloudflare's 520 to 524 are retried for <code>GET</code>, <code>HEAD</code> and <code>OPTIONS</code>,
+and for writes marked idempotent: the day sync (all planner writes; it upserts by row id),
+<code>water.set_day</code>, <code>measurements.set_day</code>, <code>measurements.delete_day</code> and <code>foods.set_favorite</code>.
+Other writes (catalog writes, settings, login, refresh) are sent once. Up to
+<code>retry_max_attempts=3</code> attempts with exponential backoff from <code>retry_base_delay_seconds=0.5</code>.
+A <code>Retry-After</code> of up to 30 seconds is honoured; a longer one is not waited for, and the error
+is raised at once (<code>FitatuRateLimitError</code> with <code>retry_after</code> for a 429). During a technical
+break nothing is retried or refreshed. Inside <code>with client.time_limit(seconds):</code> the requests
+end within that time in all: a retry whose wait would leave it less than 2 seconds is not made, each request's
+timeout is cut to the time left, and a request with no time left is not sent
+(<code>FitatuConnectionError</code>). <code>FitatuTools</code> runs every call in one of 45 seconds (<code>call_timeout</code>).</p>
+<p>Most writes make several requests, which counts when you budget against 429s: the tools read
+the day before every diary write, and updates, moves, removals and activity writes read it
+again afterwards to set <code>ok</code>. Requests per agent tool call, before retries and token refreshes:</p>
+<table>
+<thead>
+<tr>
+<th>Requests</th>
+<th>Tools</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td><code>get_today</code></td>
+</tr>
+<tr>
+<td>1</td>
+<td>the other read tools; <code>set_water</code>; <code>set_favorite</code>; <code>preview_removal</code> and <code>remove_items</code> with <code>dry_run</code>; <code>delete_recipe</code> of a recipe already deleted, <code>delete_food</code> of a product already deleted</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>get_range_summary</code>, <code>get_profile</code>, <code>get_fasting</code> (3 when the settings name the scheme by id), <code>get_habits</code>, <code>find_by_barcode</code> (1 without a product hit), <code>add_food</code> for a recipe in portions (plus 1 for the Premium flags, the first such call in 10 minutes; without Fitatu Premium 1 more, as it reads the recipe first), <code>add_custom_item</code>, <code>log_weight</code>, <code>delete_recipe</code>, <code>set_targets</code>, <code>create_food</code>, <code>delete_food</code>; <code>add_foods</code>, plus 1 for each item with <code>unit</code> or <code>measure_id</code> and, without Fitatu Premium, for each recipe in portions (and 1 for the Premium flags as for <code>add_food</code>); <code>create_recipe</code>, plus 1 for each ingredient; <code>search_recipes</code> with a filter but <code>max_energy_kcal</code>, and <code>get_recipe</code> and <code>get_food_measures</code> of a premium recipe, the first such call on a <code>FitatuTools</code> in 10 minutes (it reads the account's Premium flags; 1 afterwards)</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>add_food</code> with <code>unit</code> or <code>measure_id</code> (reads the food first), <code>log_measurements</code> (reads the size unit from the profile), <code>copy_meal</code> within a day, <code>remove_items</code>, <code>add_activity</code>, <code>remove_activity</code>, <code>set_note</code>, <code>update_food</code>; <code>update_recipe</code>, plus 1 for each new ingredient</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>update_item</code>, <code>move_item</code> within a day, <code>copy_meal</code> to another day</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>get_progress</code> (any range up to 62 days; without Fitatu Premium, see below)</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>move_item</code> to another day</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>get_report</code> (one more for every further 41 weigh-ins in the range)</td>
+</tr>
+<tr>
+<td>1 a day</td>
+<td><code>get_shopping_list</code>, plus 1 for each recipe planned in the range (and 1 for the Premium flags when one is premium); <code>get_progress</code> and <code>get_report</code> without Fitatu Premium, plus 1 for the range (none for a single day) and <code>get_report</code>'s weigh-ins, and the first such call on a <code>FitatuTools</code> in 10 minutes 1 more, which Fitatu refuses</td>
+</tr>
+</tbody></table>
+<h3>Privacy &amp; logging</h3>
+<p>The library logs through the standard <code>logging</code> module and configures no handlers. The
+<code>fitatu-api</code> command and <code>fitatu-mcp</code> log to stderr, never stdout (which carries the command's
+result, or the MCP protocol): the library from WARNING, or from the level that <code>--log-level DEBUG|INFO|WARNING|ERROR</code> (for <code>fitatu-api</code> before the command, e.g. <code>fitatu-api --log-level DEBUG call get_today</code>) or <code>FITATU_LOG_LEVEL</code> sets; other libraries from WARNING.</p>
+<ul>
+<li><code>INFO</code> (<code>fitatu_api.client</code>): auth events as JSON lines: login (user id), token refresh
+start, success and failure, and <code>clear_auth</code>, with a non-secret state snapshot (user id,
+locales, timezone, host, token expiry, whether tokens are present).</li>
+<li><code>WARNING</code> (<code>fitatu_api.client</code>): <code>fitatu.request.error</code> for a request that failed for good on
+a network error, a 429 or a 5xx, after its retries; <code>fitatu.auth.clock_skew</code> (a token fresh
+from Fitatu looks expired, so the local clock is off; refreshing ahead of expiry stops) and
+<code>fitatu.auth.store_other_account</code> (the session file now holds another account's tokens; the
+client keeps its own). From <code>fitatu_api.agent</code>, <code>fitatu_api.facade</code> and
+<code>fitatu_api.mcp_server</code>, a call whose result reports an <code>unexpected</code> error (with the
+traceback), an <code>auth</code> or a <code>maintenance</code> error: <code>get_day failed (auth): ...</code>. From
+<code>fitatu_api.auth</code>, a token store (usually the session file) that could not be read. From
+<code>fitatu_api.mcp_server</code> under <code>--http</code>, each request refused for its token, with the client's
+address (never the token); uvicorn adds its start and stop lines.</li>
+<li><code>DEBUG</code> (<code>fitatu_api.client</code>): every request as JSON lines: <code>fitatu.request.start</code> (method,
+path, query parameters such as search phrases), <code>fitatu.request.retry</code> before each retry's
+wait (the failed <code>attempt</code>, <code>delay_seconds</code>, and the <code>reason</code>: the status or the network
+error's type), then <code>fitatu.request.ok</code> or <code>fitatu.request.error</code> (status, <code>attempt</code>,
+<code>elapsed_ms</code> since the start, and the first 300 characters of an error body; a 4xx stays at
+DEBUG, since the caller gets it as an exception and some, such as a 404, are expected). From
+<code>fitatu_api.planner</code>, one line per planner write (user id, day, meal, food id, a custom
+row's name and kcal); from the tool layers, every other error a result reports. Paths
+contain the user id and dates.</li>
+</ul>
+<p>Request bodies, passwords and tokens are never logged: values under keys containing <code>token</code>,
+<code>secret</code>, <code>password</code> or <code>authorization</code> are replaced with <code>[redacted]</code>, and the auth context
+keeps tokens and the API secret out of its <code>repr</code>. Error messages carry up to 200 characters of
+the server's message; the full response body is in <code>exc.body</code>, which <code>describe_error()</code> and
+the error results of <code>FitatuTools</code> (and the deprecated <code>FitatuLibrary</code>) leave out. A token that is not a valid header value (e.g. pasted with a
+newline) is reported without quoting it.</p>
+<h3>Testing</h3>
+<pre><code class="language-bash">pip install -e ".[dev]"
+pytest -q
+</code></pre>
+<p>The suite runs offline. <code>tests/fixtures/api_recording.json</code> holds real API responses (scrubbed
+of personal data) for the day sync, measurements, summaries, search and settings;
+<code>tests/fake_server.py</code> is a fake backend built from them, and <code>tests/test_recorded_contract.py</code>
+fails if the fake drifts from the recording. How the recording is made and refreshed:
+<a href="https://github.com/Jezue/fitatu_library/blob/main/tests/fixtures/README.md">tests/fixtures/README.md</a>.</p>
+<p>The live suite (<code>tests/test_live_all.py</code>) runs against a real account and <strong>writes to it</strong>:</p>
+<pre><code class="language-bash">FITATU_RUN_LIVE_TESTS=1 pytest tests/test_live_all.py
+</code></pre>
+<p>It uses the session file that <code>fitatu-api login</code> wrote (or <code>$FITATU_SESSION</code>) and saves
+refreshed tokens back to it; with <code>$FITATU_SESSION_JSON</code> set, that session is used instead and
+refreshed tokens are not saved. Optional: <code>FITATU_LIVE_DAY</code> (after today; default a year from
+today), <code>FITATU_LIVE_MEAL_KEY</code> (<code>snack</code>), <code>FITATU_LIVE_PRODUCT_ID</code>, <code>FITATU_LIVE_RECIPE_ID</code>,
+<code>FITATU_LIVE_MEASUREMENT_DAY</code> (<code>2020-01-01</code>; skipped if it has a measurement) and
+<code>FITATU_LIVE_RUN_WRITE_ACCOUNT=1</code>.</p>
+<p>Each test deletes exactly the rows it added on <code>FITATU_LIVE_DAY</code> and fails if one is left; a
+day on or before today is refused. Water and the note on that day are set back, and the weight
+and measurements written on <code>FITATU_LIVE_MEASUREMENT_DAY</code> are deleted. <code>-k ReadOnly</code> runs only
+the tests that read.
+Logging catalog foods adds them to the account's recent foods, which is not undone. With
+<code>FITATU_LIVE_RUN_WRITE_ACCOUNT=1</code> the suite also changes and restores the water glass size and the
+daily goals (Fitatu keeps the restored goals as a new version from today), and creates, then
+deletes, a private product and two private recipes (one through the tools, logged on
+<code>FITATU_LIVE_DAY</code> and removed) and a private product through the tools (logged on
+<code>FITATU_LIVE_DAY</code>, changed, removed). Product and recipe deletes are soft, so like the recent
+foods they are not fully undone: they stay on the account, marked deleted and hidden from your
+foods and searches. The full list is in the module docstring of <code>tests/test_live_all.py</code>. Never point <code>FITATU_LIVE_DAY</code> at a day with entries you care about.</p>
+<p><code>scripts/check_contract.py</code> tells, reading only, whether the live API still answers with the
+structure the recording holds: it prints route and key names, never values, and exits 1 when a
+key is gone, a type changed or a route fails. The <em>Live contract</em> workflow runs it and the
+read-only live tests every Monday with a throwaway account's session in the <code>FITATU_SESSION_JSON</code>
+secret, and skips without it:
+<a href="https://github.com/Jezue/fitatu_library/blob/main/CONTRIBUTING.md#detecting-api-changes">CONTRIBUTING.md</a>.</p>
+<p><code>scripts/eval_agent.py</code> scores how well a Claude model uses the tools on the demo diary (29
+tasks in Polish and English; needs <code>ANTHROPIC_API_KEY</code> and costs API usage, so CI does not run
+it): <a href="https://github.com/Jezue/fitatu_library/blob/main/docs/AGENTS.md#evaluating-a-model">docs/AGENTS.md</a>.</p>
+<h3>Documentation</h3>
+<ul>
+<li><a href="https://github.com/Jezue/fitatu_library/blob/main/docs/AGENTS.md">docs/AGENTS.md</a>: tools, safe writes, error handling and the MCP server for agents.</li>
+<li><a href="https://github.com/Jezue/fitatu_library/blob/main/docs/PLANNER.md">docs/PLANNER.md</a>: the day sync contract, ids, and the result of every diary write.</li>
+<li><a href="https://github.com/Jezue/fitatu_library/blob/main/docs/API_REFERENCE.md">docs/API_REFERENCE.md</a>: every public class and method with its stability.</li>
+<li><a href="https://github.com/Jezue/fitatu_library/blob/main/docs/APP_4_17_1_API_CATALOG.md">docs/APP_4_17_1_API_CATALOG.md</a>: every route of the Fitatu Android app 4.17.1, from a decompile.</li>
+<li><a href="https://github.com/Jezue/fitatu_library/blob/main/docs/RELEASING.md">docs/RELEASING.md</a>: release steps for maintainers.</li>
+<li><a href="https://github.com/Jezue/fitatu_library/blob/main/CHANGELOG.md">CHANGELOG.md</a></li>
+</ul>
+<p>Bugs and questions: <a href="https://github.com/Jezue/fitatu_library/issues">GitHub issues</a>. Security
+problems are reported privately: <a href="https://github.com/Jezue/fitatu_library/blob/main/SECURITY.md">SECURITY.md</a>.
+Setup, checks and rules for pull requests:
+<a href="https://github.com/Jezue/fitatu_library/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>.</p>
+<h3>License</h3>
+<p>MIT, see <a href="https://github.com/Jezue/fitatu_library/blob/main/LICENSE">LICENSE</a>. It covers this
+code only, not the Fitatu service, its API or the data it returns.</p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in integrations &amp; bridges</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/teknium1/hermes-miniverse">
+        <div class="stars">★ 58</div>
+        <div class="name"><span class="org">teknium1 /</span> hermes-miniverse</div>
+      </a>
+      <a class="related-row" href="/projects/Ridwannurudeen/hermes-council">
+        <div class="stars">★ 52</div>
+        <div class="name"><span class="org">Ridwannurudeen /</span> hermes-council</div>
+      </a>
+      <a class="related-row" href="/projects/gizdusum/hermes-blockchain-oracle">
+        <div class="stars">★ 6</div>
+        <div class="name"><span class="org">gizdusum /</span> hermes-blockchain-oracle</div>
+      </a>
+      <a class="related-row" href="/projects/kevinmarmstrong/hermes-claude-code-rc">
+        <div class="stars">★ 4</div>
+        <div class="name"><span class="org">kevinmarmstrong /</span> hermes-claude-code-rc</div>
+      </a>
+      <a class="related-row" href="/projects/AaronWong1999/hermesclaw">
+        <div class="stars">★ 750</div>
+        <div class="name"><span class="org">AaronWong1999 /</span> hermesclaw</div>
+      </a>
+      <a class="related-row" href="/projects/Codename-11/hermes-relay">
+        <div class="stars">★ 388</div>
+        <div class="name"><span class="org">Codename-11 /</span> hermes-relay</div>
+      </a>
+      <a class="related-row" href="/projects/kfa-ai/hermes-timetree-sync">
+        <div class="stars">★ 1</div>
+        <div class="name"><span class="org">kfa-ai /</span> hermes-timetree-sync</div>
+      </a>
+      <a class="related-row" href="/projects/BORT-AGENTS/hermes-bort">
+        <div class="stars">★ 3</div>
+        <div class="name"><span class="org">BORT-AGENTS /</span> hermes-bort</div>
+      </a>
+    </div>
+    
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

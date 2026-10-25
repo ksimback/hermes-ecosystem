@@ -454,7 +454,7 @@ The profile's own `config.yaml` / `.env`
 
 Documented default — never the launch profile's cached value
 
-Cloud-SDK credential clients (Bedrock boto3 clients + model discovery, Azure Entra credential), credential-fetched catalogs (DeepInfra, Copilot context limits, Nous reasoning caps, Ramp Router efforts, xAI / OpenRouter image models, custom-endpoint `/models`), Camofox VNC address, computer-use aux-vision routing, remote-backend probe text, learned image token costs, `display.skin`, guest-mint back-off, banner skills, Yuanbao "active" adapter, Langfuse client
+Cloud-SDK credential clients (Bedrock boto3 clients + model discovery, Azure Entra credential), credential-fetched catalogs (DeepInfra, Copilot context limits, Nous reasoning caps, Ramp Router efforts, xAI / OpenRouter image models, custom-endpoint `/models`), computer-use aux-vision routing, remote-backend probe text, learned image token costs, `display.skin`, guest-mint back-off, banner skills, Yuanbao "active" adapter, Langfuse client
 
 The profile's own `.env` / `config.yaml` / `<home>/cache`
 
@@ -553,6 +553,8 @@ What is **shared** by design: the process, its PID/lock and `gateway_state.json`
 The served set controls `/p/<profile>/` API and webhook prefixes, runtime status, profile-route eligibility, and which profiles the in-process cron scheduler ticks (the Desktop backend's ticker re-enumerates the same set on every cycle — a profile created or deleted while Desktop runs joins or leaves the ticked set without a restart — and stands down for any profile a running multiplexer or its own gateway already serves). A multiplexer started as `hermes -p <name> gateway run` always ticks its own profile's cron store as well.
 
 The served set is **live**. A profile created while the multiplexer is running (`hermes profile create`, the dashboard, Desktop or the TUI) is served at once: the creator pings the multiplexer over its control socket, and the multiplexer also rescans `profiles/` every 30 seconds as a safety net. The new profile's adapters are built the moment its `config.yaml`/`.env` carries a bot token (creators usually create first, then add the token), `served_profiles` in the default profile's `gateway_state.json` is updated, and `hermes -p <name> gateway status` reports it as served — no restart, and the other profiles' adapters and in-flight turns are untouched. Deleting a profile stops and unroutes its adapters the same way, and `hermes profile rename` unroutes the old name before the directory moves and hot-serves the new one (the old name is not resurrected by the adapters or the cron ticker that were still bound to it). The one-credential-one-poller rule still applies: a hot-added profile that reuses another profile's token is parked with a `duplicate_credential` error, never started as a second poller.
+
+Hot-serving also grows the multiplexer's **profile reservation**: the new profile's `gateway.lock` is taken and its own session authority is built, so `hermes -p <name>` finds the multiplexer as its owner (no stray per-profile daemon) and the next `hermes gateway restart` reserves the whole set cleanly. A profile whose `state.db` cannot be opened is **parked** — logged as `Profile '<name>' not served`, left out of `served_profiles` — and every other profile keeps booting; fix the store and re-run `hermes profile create` or wait for the periodic rescan.
 
 ### Routing shared-bot chats to profiles (`profile_routes`)
 
@@ -918,6 +920,8 @@ hermes config set gateway.auto_multiplex_migration false
 ```
 
 `hermes update` then leaves per-profile gateways exactly as they are, with no output and no changes, however eligible the install looks. The setting lives in config, so it survives updates — the decision is made once rather than re-litigated on every release. It is read from the effective config like every other setting, so a value pinned in the managed scope (`/etc/hermes/config.yaml`) wins over the profile's own file. It governs the **automatic** path only: `hermes gateway migrate --multiplex` is an explicit request and still migrates (and is the supported way to opt back in). Absent or `true` keeps the default behaviour described above.
+
+The same setting covers a gateway that booted with only the default profile. Normally, once you create a second profile (Desktop's New Agent or `hermes profile create`), that gateway starts serving every profile in place, with no restart. With `auto_multiplex_migration: false` it keeps serving only its own profile, and the new profile is refused with that reason until you run `hermes gateway migrate --multiplex` or set the key back to `true`. The key is re-read on every profile rescan, so setting it back takes effect within about 30 seconds, with no restart.
 
 The explicit command is different: `hermes gateway migrate --multiplex` with two or more profiles and **no** standalone secondary gateway still applies the one remaining step — it sets `gateway.multiplex_profiles: true` and (re)starts the default gateway. You asked for multiplex; you get multiplex.
 

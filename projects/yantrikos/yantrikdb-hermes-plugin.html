@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>yantrikos/yantrikdb-hermes-plugin — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="YantrikDB Hermes Plugin connects YantrikDB memory to Hermes Agent as a standalone plugin. Its default backend runs in-process, and recalled results include…">
+<meta name="description" content="YantrikDB Hermes Plugin provides YantrikDB as a memory provider for Hermes Agent. Its embedded backend runs without a separate server, and the plugin supports…">
 <link rel="canonical" href="https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin">
 <meta property="og:title" content="yantrikos/yantrikdb-hermes-plugin — Hermes Atlas">
-<meta property="og:description" content="YantrikDB Hermes Plugin connects YantrikDB memory to Hermes Agent as a standalone plugin. Its default backend runs in-process, and recalled results include…">
+<meta property="og:description" content="YantrikDB Hermes Plugin provides YantrikDB as a memory provider for Hermes Agent. Its embedded backend runs without a separate server, and the plugin supports…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="yantrikos/yantrikdb-hermes-plugin — Hermes Atlas">
-<meta name="twitter:description" content="YantrikDB Hermes Plugin connects YantrikDB memory to Hermes Agent as a standalone plugin. Its default backend runs in-process, and recalled results include…">
+<meta name="twitter:description" content="YantrikDB Hermes Plugin provides YantrikDB as a memory provider for Hermes Agent. Its embedded backend runs without a separate server, and the plugin supports…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=yantrikdb-hermes-plugin&amp;subtitle=YantrikDB+memory+provider+for+NousResearch%2Fhermes-agent+%E2%80%94+self-maintaining+memory+with+benchmarked+recall%2C+self-tuning+ranking%2C+contradiction+tracking%2C+proactive+hygiene%2C+and+expla&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin#software",
   "name": "yantrikdb-hermes-plugin",
-  "description": "YantrikDB Hermes Plugin connects YantrikDB memory to Hermes Agent as a standalone plugin. Its default backend runs in-process, and recalled results include reasons explaining why they were retrieved. The README also describes memory features for canonicalization, contradiction tracking, and recency-aware ranking.",
+  "description": "YantrikDB Hermes Plugin provides YantrikDB as a memory provider for Hermes Agent. Its embedded backend runs without a separate server, and the plugin supports memory recall with scoring reasons, duplicate canonicalization, and contradiction tracking.",
   "url": "https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin",
   "codeRepository": "https://github.com/yantrikos/yantrikdb-hermes-plugin",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "yantrikos",
     "url": "https://github.com/yantrikos"
   },
-  "dateModified": "2026-10-05T06:08:09.000Z",
+  "dateModified": "2026-10-14T14:37:00.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 96
+    "userInteractionCount": 95
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">255·repos</span>
+    <span id="meta-count">285·repos</span>
     <span id="meta-version">hermes·v0.21.5</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -120,11 +120,11 @@
   <p class="project-desc">YantrikDB memory provider for NousResearch/hermes-agent — self-maintaining memory with benchmarked recall, self-tuning ranking, contradiction tracking, proactive hygiene, and explainable recall.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 96</span>
+    <span class="stars">★ 95</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-10-05</span>
+    <span><span class="meta-label">updated</span>2026-10-14</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">YantrikDB Hermes Plugin connects YantrikDB memory to Hermes Agent as a standalone plugin. Its default backend runs in-process, and recalled results include reasons explaining why they were retrieved. The README also describes memory features for canonicalization, contradiction tracking, and recency-aware ranking.</p>
+    <p class="summary-text">YantrikDB Hermes Plugin provides YantrikDB as a memory provider for Hermes Agent. Its embedded backend runs without a separate server, and the plugin supports memory recall with scoring reasons, duplicate canonicalization, and contradiction tracking.</p>
     <ul class="summary-highlights">
-      <li>Default in-process backend; no separate server required.</li>
+      <li>Embedded backend is the default; an HTTP backend is also available.</li>
       <li>Recall results include a why_retrieved reason.</li>
-      <li>Supports canonicalization and contradiction tracking.</li>
+      <li>Includes contradiction tracking and memory canonicalization.</li>
     </ul>
   </div>
 </section>
@@ -170,7 +170,7 @@
 <p>This repository <strong>is</strong> the canonical distribution. Per Hermes maintainer guidance, new memory providers aren't being merged upstream — the recommended pattern is standalone plugins that users install via <code>pip</code> and register with their Hermes home directory. That keeps the version cadence, CI gating, issue triage, and review cycle on the plugin author's side, so fixes ship the same day they're ready instead of waiting on upstream review bandwidth.</p>
 <p><img src="https://raw.githubusercontent.com/yantrikos/yantrikdb-hermes-plugin/main/assets/demos/self-directing/demo.gif" alt="Self-directing memory loop: gap → task → agenda → learn → close" loading="lazy" decoding="async"></p>
 <h3>Quick install</h3>
-<pre><code class="language-bash">pip install yantrikdb-hermes-plugin   # ~10 MB, in the same Python env as Hermes
+<pre><code class="language-bash">pip install yantrikdb-hermes-plugin   # ~23 MB download, no torch; same Python env as Hermes
 yantrikdb-hermes install              # registers the plugin with Hermes
 hermes memory setup                   # → select "yantrikdb"
 </code></pre>
@@ -340,7 +340,7 @@ echo "YANTRIKDB_AUTO_MOUNT_PACKS=wordpress-expert-0.2.0.ydbpack" &gt;&gt; ~/.her
 <h4>Option A — <code>hermes plugins install</code> (v0.4.5+, one command for the plugin source)</h4>
 <pre><code class="language-bash">source ~/.hermes/hermes-agent/venv/bin/activate
 hermes plugins install yantrikos/yantrikdb-hermes-plugin
-pip install yantrikdb                    # ~10 MB; in the same Python env as Hermes
+pip install yantrikdb                    # ~23 MB download; same Python env as Hermes
 hermes memory setup                      # → Select "yantrikdb" and press Enter
 hermes memory status                     # → Provider: yantrikdb  Status: available ✓
 </code></pre>
@@ -421,7 +421,7 @@ echo "YANTRIKDB_EMBEDDER_MODEL2VEC=minishlab/potion-multilingual-128M" &gt;&gt; 
 echo "YANTRIKDB_EMBEDDER_HF=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2" &gt;&gt; ~/.hermes/.env
 </code></pre>
 <blockquote>
-<p><strong>Embedder dependencies and Hermes updates.</strong> <code>model2vec</code>, <code>sentence-transformers</code>, and anything a custom <code>YANTRIKDB_EMBEDDER_CLASS</code> imports are <em>not</em> in the plugin manifest's <code>pip_dependencies</code> (only <code>yantrikdb</code> and <code>requests</code> are), so they are not installed for you. Recent Hermes versions build each plugin's environment from that manifest alone, so a package you installed by hand into that environment is dropped the next time Hermes regenerates it (for example on <code>hermes update</code>), and memory fails with <code>No module named '...'</code> until you reinstall it. If the embedder you configured stops loading after an update, reinstall its dependencies into the plugin's environment (<code>uv pip install --python &lt;plugin-env&gt;/bin/python model2vec</code>). The error message names the interpreter and <code>sys.path</code> it searched. Hermes runs plugins with <code>-I</code>, so <code>PYTHONPATH</code> and user-site installs don't help. The bundled default and <code>YANTRIKDB_EMBEDDER=potion-base-*</code> need no extra packages and are unaffected.</p>
+<p><strong>Embedder dependencies and Hermes updates.</strong> <code>model2vec</code> is declared as a hard runtime dependency in the plugin manifest's <code>pip_dependencies</code> (and <code>pyproject.toml</code>'s <code>[project] dependencies</code>) on <code>main</code>, fixing #92 so it survives Hermes' uv-managed environment regeneration — <code>hermes update</code> will no longer silently drop it once this ships in the next release (current published release is v0.27.1; this fix is merged but unreleased). Until then, <code>model2vec</code> can still be dropped on <code>hermes update</code> and may need reinstalling. Only <code>sentence-transformers</code> (which pulls in PyTorch) and anything a custom <code>YANTRIKDB_EMBEDDER_CLASS</code> imports remain outside the manifest: if you configure <code>YANTRIKDB_EMBEDDER_HF</code>, reinstall its dependencies into the plugin's environment after a regeneration (<code>uv pip install --python &lt;plugin-env&gt;/bin/python 'yantrikdb-hermes-plugin[sentence-transformers]'</code> or <code>sentence-transformers</code>). If an embedder stops loading after an update, the error message names the interpreter (<code>sys.executable</code>) and <code>sys.path</code> it searched. Hermes runs plugins with <code>-I</code>, so <code>PYTHONPATH</code> and user-site installs don't help. The bundled default and <code>YANTRIKDB_EMBEDDER=potion-base-*</code> need no extra packages and are unaffected.</p>
 </blockquote>
 <h4>Optional: quiet the HuggingFace embedder</h4>
 <p><code>YANTRIKDB_EMBEDDER_HF</code> uses <code>sentence-transformers</code>, which by default emits noise to stdout — tqdm progress bars on every encode and a one-time HF Hub auth warning at startup. The plugin disables the per-encode progress bars internally (v0.4.12+). For the rest, add to your <code>.env</code>:</p>
@@ -730,7 +730,7 @@ EOF
 <tr>
 <td><code>pip install</code> footprint</td>
 <td>wheel + requests</td>
-<td>wheel + 2 small libs (~10 MB total)</td>
+<td>wheel + yantrikdb + requests (~23 MB download, no torch); grows to ~53 MB once <code>model2vec</code> lands as a hard dependency in the next release (merged to <code>main</code>, unreleased — #92)</td>
 </tr>
 </tbody></table>
 <p>Even embedded p99 tail latency is faster than HTTP p50 — bad-case embedded beats typical-case HTTP. Long-running soak validation is in progress upstream (<a href="https://github.com/yantrikos/yantrikdb">yantrikos/yantrikdb saga task #2</a>); these numbers are 100-iteration micro-benchmarks, not 24-hour production traces.</p>
@@ -774,7 +774,7 @@ YANTRIKDB_INTEGRATION_TOKEN=ydb_... \
   python -m pytest tests/integration/ -v         # live integration
 </code></pre>
 <h3>Status</h3>
-<p><strong>v0.27.0</strong> (current, 2026-09-19) — a multiplexed Hermes gateway now reads each profile's <code>YANTRIKDB_*</code> settings from that profile's own <code>.env</code> instead of the launch profile's environment; v0.26.0 fixed <code>think()</code> (consolidation, conflict scan) failing on every call on the embedded backend with engine 0.15.3 and later. Engine range <code>&gt;=0.12.1,&lt;0.24.0</code>. 500+ tests, CI on Python 3.11–3.14. <strong>Standalone-by-design</strong> per Hermes maintainer guidance — Hermes is not accepting new memory providers upstream; standalone plugins installed via <code>pip</code> are the recommended pattern. PR <a href="https://github.com/NousResearch/hermes-agent/pull/9989">#9989</a> closed 2026-05-13 with that resolution.</p>
+<p><strong>v0.27.1</strong> (current, 2026-10-05) — embedder <code>ImportError</code>s now name <code>sys.executable</code>/<code>sys.path</code>; the v0.27.0 multiplexed gateway reads each profile's <code>YANTRIKDB_*</code> settings from that profile's own <code>.env</code> instead of the launch profile's environment; v0.26.0 fixed <code>think()</code> (consolidation, conflict scan) failing on every call on the embedded backend with engine 0.15.3 and later. <code>model2vec</code> becoming a manifest hard dependency (fixes #92) is merged to <code>main</code>, pending the next release (unreleased). Engine range <code>&gt;=0.12.1,&lt;0.24.0</code>. 500+ tests, CI on Python 3.11–3.14. <strong>Standalone-by-design</strong> per Hermes maintainer guidance — Hermes is not accepting new memory providers upstream; standalone plugins installed via <code>pip</code> are the recommended pattern. PR <a href="https://github.com/NousResearch/hermes-agent/pull/9989">#9989</a> closed 2026-05-13 with that resolution.</p>
 <h4>Release cadence</h4>
 <table>
 <thead>
@@ -859,14 +859,19 @@ YANTRIKDB_INTEGRATION_TOKEN=ydb_... \
 <td>2026-09-19</td>
 <td>Multiplexed gateway keeps each profile's settings separate</td>
 </tr>
+<tr>
+<td>v0.27.1</td>
+<td>2026-10-05</td>
+<td>Embedder ImportErrors name <code>sys.executable</code>/<code>sys.path</code></td>
+</tr>
 </tbody></table>
-<p>58 tagged releases in total; every one is in the <a href="https://github.com/yantrikos/yantrikdb-hermes-plugin/blob/main/yantrikdb/CHANGELOG.md">CHANGELOG</a>.</p>
+<p>59 tagged releases in total; every one is in the <a href="https://github.com/yantrikos/yantrikdb-hermes-plugin/blob/main/yantrikdb/CHANGELOG.md">CHANGELOG</a> (<code>model2vec</code> becoming a manifest hard dependency, fixes #92, is merged to <code>main</code> as the next one, v0.27.2, not yet tagged/released).</p>
 <h4>Durability signals</h4>
 <p>The maintainer doesn't promise "I won't quit" — promises like that aren't testable. What's testable:</p>
 <ul>
 <li>Every release ships with tests + CI (Python 3.11 / 3.12 / 3.13 / 3.14) + tagged CHANGELOG + a publish gate where the full test suite + ruff + mypy must pass before the wheel uploads to PyPI.</li>
 <li>First user issue on this repo (multilingual embedding support) was filed and shipped to PyPI the same day — 25 minutes from raised to released.</li>
-<li>Underlying yantrikdb engine: ~8.2k/mo PyPI downloads; flagship server repo has 175 GitHub stars. Cross-stack ownership (engine + HTTP server + MCP server + this plugin) — 14+ months of parallel maintenance, not a one-week hobby.</li>
+<li>Underlying yantrikdb engine: ~6.7k/mo PyPI downloads; flagship server repo has 176 GitHub stars. Cross-stack ownership (engine + HTTP server + MCP server + this plugin) — 7+ months of parallel maintenance, not a one-week hobby.</li>
 <li>Independent recognition: accepted into the <a href="https://cursor.directory/plugins/yantrikdb">Cursor Directory</a> (300k+ developer reach) and (sibling project) the Anthropic MCP Directory.</li>
 <li>Substrate design deposited as a peer-citable preprint: <a href="https://doi.org/10.5281/zenodo.20128887">10.5281/zenodo.20128887</a>.</li>
 </ul>
@@ -906,11 +911,11 @@ YANTRIKDB_INTEGRATION_TOKEN=ydb_... \
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 67.0K</div>
+        <div class="stars">★ 67.8K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 48.8K</div>
+        <div class="stars">★ 53.7K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -918,23 +923,23 @@ YANTRIKDB_INTEGRATION_TOKEN=ydb_... \
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 381</div>
+        <div class="stars">★ 382</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
-        <div class="stars">★ 210</div>
+        <div class="stars">★ 212</div>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/Signet-AI/signetai">
-        <div class="stars">★ 305</div>
+        <div class="stars">★ 313</div>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 300</div>
+        <div class="stars">★ 308</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
-        <div class="stars">★ 51</div>
+        <div class="stars">★ 52</div>
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
     </div>

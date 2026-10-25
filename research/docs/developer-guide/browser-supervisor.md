@@ -5,9 +5,9 @@
 The CDP supervisor closes two long-standing gaps in Hermes' browser tooling:
 
 1.  **Native JS dialogs** (`alert`/`confirm`/`prompt`/`beforeunload`) block the page's JS thread. Without supervision, the agent has no way to know a dialog is open — subsequent tool calls hang or throw opaque errors.
-2.  **Cross-origin iframes (OOPIFs)** are invisible to top-level `Runtime.evaluate`. The agent can see iframe nodes in the DOM snapshot but can't click, type, or eval inside them without a CDP session attached to the child target.
+2.  **Cross-origin iframes (OOPIFs)** are invisible to top-level `Runtime.evaluate`. The agent can see iframe nodes in the DOM but can't click, type, or eval inside them without a CDP session attached to the child target.
 
-The supervisor solves both by holding a persistent WebSocket to the backend's CDP endpoint per browser task, surfacing pending dialogs and frame structure into `browser_snapshot`, and exposing a `browser_dialog` tool for explicit responses.
+The supervisor solves both by holding a persistent WebSocket to the backend's CDP endpoint per browser task, tracking pending dialogs and frame structure in its snapshot, and exposing a `browser_dialog` tool for explicit responses.
 
 ## Backend support
 
@@ -21,7 +21,7 @@ Frame tree
 
 OOPIF `Runtime.evaluate` via `browser_cdp(frame_id=...)`
 
-Local Chrome (`--remote-debugging-port`) / `/browser connect`
+Local Chromium (launched by Hermes for `browser_exec`) / `/browser connect`
 
 ✓
 
@@ -41,21 +41,11 @@ Browserbase
 
 ✓
 
-Camofox
-
-✗ no CDP (REST-only)
-
-✗
-
-partial via DOM snapshot
-
-✗
-
 **Browserbase quirk.** Browserbase's CDP proxy uses Playwright internally and auto-dismisses native dialogs within ~10ms, so `Page.handleJavaScriptDialog` can't keep up. The supervisor injects a bridge script via `Page.addScriptToEvaluateOnNewDocument` that overrides `window.alert`/`confirm`/`prompt` with a synchronous XHR to a magic host (`hermes-dialog-bridge.invalid`). `Fetch.enable` intercepts those XHRs before they touch the network — the dialog becomes a `Fetch.requestPaused` event the supervisor captures, and `respond_to_dialog` fulfills via `Fetch.fulfillRequest` with a JSON body the injected script decodes.
 
 From the page's perspective, `prompt()` still returns the agent-supplied string. From the agent's perspective, it's the same `browser_dialog(action=...)` API either way.
 
-Camofox is unsupported — no CDP surface, REST-only.
+The Camofox catalog plugin (`hermes plugins install camofox`) drives a REST-only browser with no CDP surface, so the supervisor does not apply to it.
 
 ## Architecture
 
@@ -78,7 +68,7 @@ Thread-safe state access via a snapshot lock; tool handlers (sync) read the froz
 
 ### Lifecycle
 
--   **Start:** `SupervisorRegistry.get_or_start(task_id, cdp_url)` — called by `browser_navigate`, Browserbase session create, `/browser connect`. Idempotent.
+-   **Start:** `SupervisorRegistry.get_or_start(task_id, cdp_url)` — called when `browser_exec` attaches to a session (local, cloud provider or CDP override) and on `/browser connect`. Idempotent.
 -   **Stop:** session teardown or `/browser disconnect`. Cancels the asyncio task, closes the WebSocket, discards state.
 -   **Dropped endpoint:** after a successful attach the supervisor reconnects with backoff (≤10 s) but gives up after `MAX_POST_ATTACH_RECONNECT_FAILURES` consecutive failures — one final warning, the thread exits and the registry entry is dropped. A dead local Chrome (its task finished) therefore never leaves a retrying thread behind; the next browser call starts a fresh supervisor.
 -   **Rebind:** if the CDP URL changes (user reconnects to a new Chrome), the old supervisor is stopped and a fresh one started — state is never reused across endpoints.
@@ -87,8 +77,8 @@ Thread-safe state access via a snapshot lock; tool handlers (sync) read the froz
 
 Configurable via `config.yaml` under `browser.dialog_policy`:
 
--   **`must_respond`** (default) — capture, surface in `browser_snapshot`, wait for explicit `browser_dialog(action=...)` call. After a 300s safety timeout with no response, auto-dismiss and log. Prevents a buggy agent from stalling forever.
--   `auto_dismiss` — record and dismiss immediately; agent sees it after the fact via `browser_state` inside `browser_snapshot`.
+-   **`must_respond`** (default) — capture, surface in `pending_dialogs`, wait for explicit `browser_dialog(action=...)` call. After a 300s safety timeout with no response, auto-dismiss and log. Prevents a buggy agent from stalling forever.
+-   `auto_dismiss` — record and dismiss immediately; it shows up after the fact in `recent_dialogs`.
 -   `auto_accept` — record and accept (useful for `beforeunload` where the workflow wants to navigate away cleanly).
 
 Policy is per-task; no per-dialog overrides.
@@ -128,11 +118,11 @@ browser_dialog(action, prompt_text=None, dialog_id=None)
 -   `prompt_text=...` → text to supply to a `prompt()` dialog
 -   `dialog_id=...` → disambiguate when multiple dialogs are queued (rare)
 
-Tool is response-only. The agent reads pending dialogs from `browser_snapshot` output before calling.
+Tool is response-only. With a single pending dialog, `dialog_id` can be omitted.
 
-### `browser_snapshot` extension
+### Supervisor snapshot
 
-Adds three optional fields to the existing snapshot output when a supervisor is attached:
+`CDPSupervisor.snapshot()` carries three fields while a supervisor is attached:
 
 ```
 {
@@ -161,15 +151,13 @@ Adds three optional fields to the existing snapshot output when a supervisor is 
 -   **`frame_tree`** — frame structure including cross-origin (OOPIF) children. Capped at 30 entries + OOPIF depth 2 to bound snapshot size on ad-heavy pages. `truncated: true` surfaces when limits were hit; agents needing the full tree can use `browser_cdp` with `Page.getFrameTree`.
     
 
-No new tool schema surface for any of these — the agent reads the snapshot it already requests.
-
 ### Availability gating
 
-Both surfaces gate on `_browser_cdp_check` (supervisor can only run when a CDP endpoint is reachable). On Camofox / no-backend sessions, the dialog tool is hidden and the snapshot omits the new fields — no schema bloat.
+`browser_dialog` and `browser_cdp` gate on CDP reachability (the supervisor can only run when a CDP endpoint is reachable). Without one, the dialog tool is hidden — no schema bloat.
 
 ## Cross-origin iframe interaction
 
-`browser_cdp(frame_id=...)` routes CDP calls (notably `Runtime.evaluate`) through the supervisor's already-connected WebSocket using the OOPIF's child `sessionId`. Agents pick frame\_ids out of `browser_snapshot.frame_tree.children[]` where `is_oopif=true` and pass them to `browser_cdp`. For same-origin iframes (no dedicated CDP session), the agent uses `contentWindow`/`contentDocument` from a top-level `Runtime.evaluate` instead — the supervisor surfaces an error pointing at that fallback when `frame_id` belongs to a non-OOPIF.
+`browser_cdp(frame_id=...)` routes CDP calls (notably `Runtime.evaluate`) through the supervisor's already-connected WebSocket using the OOPIF's child `sessionId`. Agents pick frame\_ids out of the supervisor's `frame_tree.children[]` where `is_oopif=true` (or from `Page.getFrameTree` via `browser_cdp`) and pass them to `browser_cdp`. For same-origin iframes (no dedicated CDP session), the agent uses `contentWindow`/`contentDocument` from a top-level `Runtime.evaluate` instead — the supervisor surfaces an error pointing at that fallback when `frame_id` belongs to a non-OOPIF.
 
 On Browserbase, this is the only reliable path for iframe interaction — stateless CDP connections (opened per `browser_cdp` call) hit signed-URL expiry, while the supervisor's long-lived connection keeps a valid session.
 
@@ -178,13 +166,13 @@ On Browserbase, this is the only reliable path for iframe interaction — statel
 -   `tools/browser_supervisor.py` — `CDPSupervisor`, `SupervisorRegistry`, `PendingDialog`, `FrameInfo`
 -   `tools/browser_supervisor_capture.py` — `CapturedCDP` / `CapturedCDPInvalid`, the trusted-plugin CDP seam behind `SUPERVISOR_REGISTRY.capture`
 -   `tools/browser_dialog_tool.py` — `browser_dialog` tool handler
--   `tools/browser_tool.py` — `browser_navigate` start-hook, `browser_snapshot` merge, `/browser connect` reattach, `_cleanup_browser_session` teardown
+-   `tools/browser_session_cdp.py` — `ensure_cdp_supervisor` / `stop_cdp_supervisor`, `/browser connect` reattach, dialog-policy config
+-   `tools/browser_session_lifecycle.py` — per-session teardown (supervisor stopped first)
 -   `toolsets.py` — registers `browser_dialog` in `browser`, `hermes-acp`, `hermes-api-server`, and core toolsets (gated on CDP reachability)
 -   `hermes_cli/config.py` — `browser.dialog_policy` and `browser.dialog_timeout_s` defaults
 
 ## Non-goals
 
--   Detection/interaction for Camofox (upstream gap; tracked separately)
 -   Streaming dialog/frame events live to the user (would require gateway hooks)
 -   Persisting dialog history across sessions (in-memory only)
 -   Per-iframe dialog policies (agent can express this via `dialog_id`)

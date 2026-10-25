@@ -100,7 +100,7 @@ Downloads share a lock per partial URL. A failed or paused transfer cannot publi
 
 A built-in feature requests a project extra through `pm.ensure_import`. Directory plugins declare Python requirements in `pyproject.toml`. Without an authored project file, PM combines the legacy `pip_dependencies` and `python_dependencies` lists from `plugin.yaml` or `plugin.yml`. An old PM-generated project file does not override those lists. Consent, dependency membership, and currency checks use the same declaration reader.
 
-PM prepares core requirements, enabled extras, and enabled plugin requirements together. It seeds resolution from the existing lock. Compatible transitive versions can change, but declared constraints and exact pins remain binding. Each candidate gets a fresh workspace with explicit source, lock seed, and prepared environment inputs. The generated workspace and extended lock remain outside shipped source. Repair copies the recorded workspace and lock, including plugin build inputs, rather than resolving against edited live manifests.
+PM prepares core requirements, enabled extras, and enabled plugin requirements together. It seeds resolution from the existing lock. Compatible transitive versions can change, but declared constraints and exact pins remain binding. Each candidate gets a fresh workspace with explicit source, lock seed, and prepared environment inputs. The generated workspace and extended lock remain outside shipped source. The workspace is solved only for the platform and architecture of the interpreter it installs into, so a plugin dependency with no wheels for another platform (onnxruntime or torch on Android) does not block it; the shipped lock keeps its full platform coverage. Repair copies the recorded workspace and lock, including plugin build inputs, rather than resolving against edited live manifests.
 
 Plugin enablement and staged code updates are submitted as data to the isolated PM worker. Under the installation lock, it discovers the proposed dependency union, validates the candidate, and publishes configuration or plugin files and metadata with the environment selection. It rejects inputs changed during preparation. A durable journal permits recovery before application imports, including code-only updates that do not require a new environment.
 
@@ -349,7 +349,7 @@ Ask a ready PM worker whether application dependencies are current. Return false
 
 `pm.build_env` is the command-line interface for explicit builds and lock work. Run `python -m pm.build_env --help` for its supported options. By default, project builds use the committed lock. `--resolve` resolves before building. `--python` selects an explicit build interpreter. `--sealed` removes build-time `.pth` references. `--offline` and `--cache` control dependency acquisition.
 
-For application environment builds, PM must already be able to start in the invoking Python. These builds are not an interpreter bootstrap. They do not modify a running application's imports or replace its selected environment. Nix's declarative uv2nix builds remain Nix-owned. Package-manager commands for unrelated projects or agent sandboxes do not manage Hermes itself.
+For application environment builds, PM must already be able to start in the invoking Python. These builds are not an interpreter bootstrap. They do not modify a running application's imports or replace its selected environment. Nix's declarative uv2nix builds remain Nix-owned: `nix develop` still builds its dependencies with uv2nix, then re-homes that venv onto the interpreter `pm/lock.json` pins (uv2nix cannot build against a tarball interpreter). The shell's uv, node, npm, ripgrep and ffmpeg are the lock's builds too. Package-manager commands for unrelated projects or agent sandboxes do not manage Hermes itself.
 
 ## Commands
 
@@ -367,11 +367,11 @@ Effect
 
 `pm install [names...]`
 
-Install named packages. With no names, provision required tools plus Python, put those tools on PATH, and then sync the `all` extra. A bare install also installs the default optional tools (`agent-browser` and Chromium, `cua-driver`); a failed download of these prints a warning and does not fail the install. Naming a package you declined earlier undoes that choice.
+Install named packages. With no names, provision required tools plus Python, put those tools on PATH, and then sync the `all` extra. A bare install also installs the default optional tools (`chromium`, the browser Hermes launches, and `cua-driver`); a failed download of these prints a warning and does not fail the install. Naming a package you declined earlier undoes that choice.
 
 `pm install --without NAME`
 
-Do a bare install without the default optional package `NAME` (`agent-browser` or `cua-driver`), and record that choice. Later bare installs and `hermes update` also leave it out. The installers' `--skip-browser` / `-SkipBrowser` and `--skip-computer-use` / `-SkipComputerUse` use this.
+Do a bare install without the default optional package `NAME` (`chromium` or `cua-driver`), and record that choice. Later bare installs and `hermes update` also leave it out. The installers' `--skip-browser` / `-SkipBrowser` and `--skip-computer-use` / `-SkipComputerUse` (`--without cua-driver`) use this. The browser opt-out passes the legacy name `--without agent-browser`, which every PM release accepts and this one reads as `chromium`; a choice recorded under that name still skips `chromium`.
 
 `pm install --tools-only`
 
@@ -413,11 +413,11 @@ Relock `uv.lock` from `pyproject.toml`. Changes no environment; writes nothing w
 
 `pm lock --bump NAME VERSION`
 
-Resolve and hash supported target artifacts, then write the tool pin to `pm/lock.json`.
+Resolve and hash supported target artifacts, write the tool pin to `pm/lock.json`, and regenerate the bootstrap pins in `scripts/install.sh` and `scripts/install.ps1`.
 
 `pm update [names...]`
 
-Query upstream versions, change tool pins, and install changed tools.
+Query upstream versions, change tool pins, regenerate the installers' bootstrap pins, and install changed tools.
 
 `pm update --check`
 
@@ -426,6 +426,10 @@ Query without writing. Exit 1 can mean updates exist; inspect output to distingu
 `pm update --target TARGET`
 
 Resolve versions for the specified target.
+
+`pm update --skip-target TARGET`
+
+Leave TARGET's pins unchanged (repeatable), for example `linux-arm64-bionic` while the termux pool lags upstream. Later runs still report the package as current. `pm lock --bump NAME VERSION` re-pins every target at a version, and `pm update --termux` repins a retired `linux-arm64-bionic` row.
 
 `pm update --uv` / `--npm`
 
@@ -447,15 +451,15 @@ The complete desktop builder also builds the JavaScript surfaces, generates laun
 
 ## Network retries
 
-PM retries transient HTTP failures during tool downloads, artifact hashing and version lookups. Each probe or transfer gets at most four attempts. Backoff waits are 1, 2 and 4 seconds. A `Retry-After` header can extend a wait, up to 30 seconds. Each retry reports its cause, delay and next attempt in the log.
+PM retries transient HTTP failures during tool downloads, artifact hashing and version lookups. Probes and non-resumable transfers get at most four attempts. Their backoff waits are 1, 2 and 4 seconds. A `Retry-After` header can extend these waits up to 30 seconds. Resumable transfers renew their retry budget when they save new progress; four failures without new progress stop retries. With a pinned mirror available, waits above 30 seconds switch to that mirror. The last source honors `Retry-After` up to five minutes and stops for longer waits. Each retry logs its cause, delay and consecutive failures without progress.
 
-Retryable HTTP statuses are 408, 429, 500, 502, 503 and 504. Connection resets, timeouts, temporary DNS failures and interrupted response bodies also retry. Ranged downloads retain completed bytes. Servers without range support require a fresh stream. Pause interrupts backoff and preserves the partial download.
+Retryable HTTP statuses are 408, 429, 500, 502, 503 and 504. Connection resets, timeouts, temporary DNS failures and interrupted response bodies also retry. Ranged downloads checkpoint every five seconds and after each attempt. A failed periodic checkpoint logs a warning and retries later; the final checkpoint is required. Servers without range support require a fresh stream. Pause interrupts backoff and preserves the partial download.
 
 PM does not retry bad hashes, certificate failures, local filesystem errors or other permanent failures. A successful probe followed by a range GET 403 or 404 retains the CDN fallback: one serial attempt at the missing ranges. Extraction, verification and publication are not repeated. Python and npm package requests remain under uv and npm's own retry policies.
 
 ## Release age and package mirrors
 
-Every Python package Hermes itself depends on must be at least three days old when Hermes locks it (uv's `exclude-newer`, enforced by CI's lock check), so a freshly published, possibly compromised release cannot reach `uv.lock`. Users install from that lock. Installing or enabling a plugin keeps every package Hermes locks at its locked version and never re-checks dates, so package mirrors that publish no upload times work. Set a mirror with `index-url` in `pip.conf`, which Hermes passes to uv, or with `UV_INDEX_URL`.
+Every Python package Hermes itself depends on must be at least three days old when Hermes locks it (uv's `exclude-newer`, enforced by CI's lock check), so a freshly published, possibly compromised release cannot reach `uv.lock`. Users install from that lock, and installing or enabling a plugin never re-checks dates, so package mirrors that publish no upload times work. The one exemption is CA trust stores (`certifi`): a release that distrusts a compromised CA is locked the day it ships, since waiting keeps the bad root trusted. Set a mirror with `index-url` in `pip.conf`, which Hermes passes to uv, or with `UV_INDEX_URL`.
 
 `hermes pm lock` is the one step that applies the check. Run against a mirror without upload times, it stops with `has no publish time`; use `https://pypi.org/simple` for that step.
 

@@ -57,9 +57,11 @@ Use the [Termux APT package](/docs/getting-started/termux) on aarch64 Android de
 
 ### What the source installer does
 
-The scripts clone the source, bootstrap uv, and delegate dependency preparation to PM. PM provides pinned Python, Node.js, npm, ripgrep, and FFmpeg. The source installation selects the `all` Python extra, not every optional extra. PM also installs the browser and computer-use tools by default: `agent-browser` and its pinned Chromium, and `cua-driver` (the computer-use driver, on macOS, Windows and glibc Linux). If a download fails, the install still completes and prints the command to retry. The default browser driver (browser-harness, the engine of the Browser Use CLI) is a regular Python dependency, so every install, the Desktop app included, already has it. Other optional tools use their feature-specific installation paths.
+The scripts clone the source, bootstrap uv, and delegate dependency preparation to PM. PM provides pinned Python, Node.js, npm, ripgrep, and FFmpeg. The source installation selects the `all` Python extra, not every optional extra. PM also installs the browser and computer-use tools by default: a pinned Chromium (Chrome for Testing) that Hermes launches for local browsing, and `cua-driver` (the computer-use driver, on macOS, Windows and glibc Linux). If a download fails, the install still completes and prints the command to retry. The browser driver behind `browser_exec` (browser-harness, the engine of the Browser Use CLI) is a regular Python dependency, so every install, the Desktop app included, already has it. Where PM has no Chromium build (Android/Termux, musl Linux), Hermes uses a system `chromium` on `PATH` instead. Other optional tools use their feature-specific installation paths.
 
-To leave the browser tools out, pass `--skip-browser` on POSIX or `-SkipBrowser` on Windows; for the computer-use driver, `--skip-computer-use` / `-SkipComputerUse`. Hermes remembers these choices: later installs and `hermes update` do not add them back. Run `hermes pm install agent-browser` or `hermes pm install cua-driver` to install them and undo the choice.
+A new install lands on the latest stable release, the channel `hermes update` follows from then on (see [Updating](/docs/getting-started/updating)). To install the tip of `main` instead, pass `--channel main` on POSIX or `-Channel main` on Windows (or set `HERMES_INSTALL_CHANNEL=main` first, for the one-liners).
+
+To leave the browser tools out, pass `--skip-browser` on POSIX or `-SkipBrowser` on Windows; for the computer-use driver, `--skip-computer-use` / `-SkipComputerUse`. Hermes remembers these choices: later installs and `hermes update` do not add them back. Run `hermes pm install chromium` or `hermes pm install cua-driver` to install them and undo the choice.
 
 The scripts create a launcher and prepare the data directory. Interactive runs also invoke setup and gateway configuration. `--non-interactive` on POSIX, or `-NonInteractive` on Windows, skips stages that need input. The optional `--include-desktop` / `-IncludeDesktop` stage builds the desktop from source.
 
@@ -181,7 +183,7 @@ For a source checkout, start with the [PM developer workflow](/docs/reference/pa
 
 Run the source installer as the intended service user. Its home, tool store, configuration, and launcher must belong to that user.
 
-1.  As an administrator, install the source-build prerequisites and any Linux libraries needed by the selected browser backend.
+1.  As an administrator, install the source-build prerequisites and any Linux libraries Chromium needs (only if the service will browse locally).
     
 2.  As the service user, run the regular installer:
     

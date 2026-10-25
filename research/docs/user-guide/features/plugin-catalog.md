@@ -8,7 +8,7 @@ The plugin catalog is a curated, human-reviewed directory of Hermes plugins you 
 hermes plugins install <name>
 ```
 
-Browse it visually at **[/docs/plugins](/docs/plugins)** — entries are shelved by category (Memory, Desktop, Platforms, Web & Browser, Tools, Voice, Automation, Models), with search, tier filters (Official / Community), capability chips, and copyable install commands for every entry.
+Browse it visually at **[/docs/plugins](/docs/plugins)** — entries are shelved by category (Memory, Desktop, Platforms, Web & Browser, Tools, Voice, Automation, Models), with search, tier filters (Official / Verified / Community), capability chips, and copyable install commands for every entry.
 
 Every entry also has its own page at `/docs/plugins/<name>` (click a card): the full description and any disclosure, the pinned commit, tools, hooks and environment variables, the Desktop install button and CLI command, optional screenshots and the README from the reviewed commit, plus a **More by this author** shelf. Authors have a page at `/docs/plugins/by/<maintainer>` listing everything they maintain in the catalog. Both are generated at build time from the same catalog files, so a merged PR is the only way a page changes.
 
@@ -46,7 +46,7 @@ Path to the plugin inside the repo for monorepos — a plain relative path match
 
 `tier`
 
-`official` (maintained by NousResearch) or `community`
+`official` (maintained by NousResearch), `verified` (verified by the Nous team to come from the reputable company whose product it integrates), or `community`. Only Nous maintainers set `official` or `verified`
 
 `category`
 
@@ -62,7 +62,7 @@ Declared tools, hooks, middleware, and required env vars
 
 `requires_hermes`
 
-Minimum Hermes version, e.g. `>=0.19` (optional)
+Minimum Hermes version, e.g. `>=0.19` (optional). Enforced: installing on an older Hermes is refused with the version it needs, and `hermes plugins update` keeps the installed version until you update Hermes. `search` and `info` still list the entry, marked as needing a newer Hermes
 
 `platforms`
 
@@ -74,7 +74,7 @@ Human name shown on cards, e.g. `NVIDIA App` (optional; defaults to `name`)
 
 `onboarding`
 
-`true` offers the plugin on the desktop onboarding card, beside the hosted connectors, on the platforms it lists. Curated: official entries only (optional, default `false`)
+`true` offers the plugin on the desktop onboarding card, beside the hosted connectors, on the platforms it lists. Curated: official or verified entries only (optional, default `false`)
 
 `docs_url`
 
@@ -107,7 +107,7 @@ The catalog is designed so you know exactly what you're installing:
 -   **Human-merged admission.** Every entry (and every pin update) lands via a pull request reviewed by a maintainer. Nothing enters the catalog automatically.
 -   **Exact SHA pins.** Entries pin a specific commit, not a branch. A plugin author pushing new code to their repo does **not** change what the catalog installs — updating the pin requires another reviewed PR.
 -   **Scanned at admission, trusted at install.** Admission CI runs the same security scanner the installer runs (`hermes plugins validate` includes a `security scan` check): a `dangerous` verdict fails the entry, `caution` findings are listed for the reviewer. Because the reviewer saw them, a catalog install checked out at exactly the pinned SHA does not stop to ask about `caution` again; `dangerous` still blocks, and anything installed from a raw URL or at another revision gets the normal prompt.
--   **Desktop plugins run with the app's authority — review is the boundary.** A plugin's `desktop/plugin.js` is evaluated inside the Desktop app itself, in the same realm as the app's own code: there is no sandbox, and it can do anything the app can (gateway RPC, the full `window.hermesDesktop` bridge, storage of other plugins). What protects you is the trust model above — a human read the exact pinned commit, and the install is that commit — plus two tripwires: admission's `desktop surface` lint refuses the obvious moves outside the plugin SDK (patching built-in prototypes, `eval`, importing anything other than `@hermes/plugin-sdk`/`react`, including remote scripts), and the app's loader refuses every non-SDK import again at load time. The lint reads a `<script` regex — a literal, or the pattern string of a `new RegExp(...)` passed straight to `.replace()`/`.split()`/`.match()` or used as `.test()`/`.exec()` — as the sanitiser it is, not as injection; a `<script` string written into the DOM, including one built from `new RegExp(...).source`, still fails. Treat the lint as a review aid, not a guarantee; give Desktop halves the same scrutiny you'd give a Python half.
+-   **Desktop plugins run with the app's authority — review is the boundary.** A plugin's `desktop/plugin.js` is evaluated inside the Desktop app itself, in the same realm as the app's own code: there is no sandbox, and it can do anything the app can (gateway RPC, the full `window.hermesDesktop` bridge, storage of other plugins). What protects you is the trust model above — a human read the exact pinned commit, and the install is that commit — plus two tripwires: admission's `desktop surface` lint refuses the obvious moves outside the plugin SDK (`eval`, importing anything other than `@hermes/plugin-sdk`/`react`, including remote scripts), and the app's loader refuses every non-SDK import again at load time. The lint reads a `<script` regex — a literal, or the pattern string of a `new RegExp(...)` passed straight to `.replace()`/`.split()`/`.match()` or used as `.test()`/`.exec()` — as the sanitiser it is, not as injection; a `<script` string written into the DOM, including one built from `new RegExp(...).source`, still fails. Treat the lint as a review aid, not a guarantee; give Desktop halves the same scrutiny you'd give a Python half.
 -   **No runtime overrides of Hermes.** Listed plugins extend Hermes through its public surfaces (hooks, middleware, provider profiles, Desktop SDK slots) and never replace core functions, methods or Desktop UI in place: two plugins patching the same seam would break each other, and a core release could break both. Admission's `no core override` check refuses Python that rebinds Hermes modules, classes or their tables at runtime, and the `desktop surface` lint refuses `desktop/plugin.js` code that queries the app's own markup to restyle, hide, click or rewrite core UI.
 -   **Capability declarations.** Entries state up front which tools, hooks, and middleware the plugin provides and which environment variables (API keys etc.) it needs, so you can judge its blast radius before installing.
 -   **Removed list.** Plugins pulled from the catalog (for example after a security incident) go on `plugin-catalog/removed.yaml` with a reason and date. Matching is by name or repository identity — `git@`, `ssh://`, `http://` and `www.` spellings of the same repo all match. The installer refuses to install anything on the removed list, and a plugin that lands on the list _after_ you installed it stops updating, cannot be enabled and is refused at load time (`hermes plugins remove <name>`, or reinstall with `--allow-removed` to keep it knowingly).
@@ -136,7 +136,7 @@ hermes plugins install touchdesigner
 hermes plugins enable touchdesigner   # same as: hermes plugins enable td
 ```
 
-In the Desktop app a package with both an agent half and a Desktop half (`desktop/plugin.js`) is one row with one switch per half. Turning the package on (the install dialog's **Enable agent plugin after install**, or the row's **Agent** switch) turns its Desktop half on as well, unless you switched that half off yourself. Turning it off stays per half, because the Desktop half is shared by every profile.
+In the Desktop app a package with both an agent half and a Desktop half (`desktop/plugin.js`) is one row with one switch per half. Turning the package on (installing it from the install dialog, which turns it on, or the row's **Agent** switch) turns its Desktop half on as well, unless you switched that half off yourself. Turning it off stays per half, because the Desktop half is shared by every profile.
 
 Portable packages can also carry a stdio MCP server. The `snyk` entry pins the Snyk CLI (`npx -y snyk@<version> mcp`) and bundles the `snyk-security-scan` skill, so one install gives Hermes code, dependency, container and IaC scanning plus the workflow for using it; the catalog name and manifest name match:
 

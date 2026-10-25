@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>aidatatools-dev/astro-agents-mcp — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
-<meta name="description" content="Astro Agents is a hosted MCP server that computes Western and Vedic astrology charts for AI agents, resolving time zones and historical offsets from…">
+<meta name="description" content="Astro Agents provides a hosted MCP server and REST API for Western and Vedic astrology calculations. It returns structured results with stated calculation…">
 <link rel="canonical" href="https://hermesatlas.com/projects/aidatatools-dev/astro-agents-mcp">
 <meta property="og:title" content="aidatatools-dev/astro-agents-mcp — Hermes Atlas">
-<meta property="og:description" content="Astro Agents is a hosted MCP server that computes Western and Vedic astrology charts for AI agents, resolving time zones and historical offsets from…">
+<meta property="og:description" content="Astro Agents provides a hosted MCP server and REST API for Western and Vedic astrology calculations. It returns structured results with stated calculation…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/aidatatools-dev/astro-agents-mcp">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="aidatatools-dev/astro-agents-mcp — Hermes Atlas">
-<meta name="twitter:description" content="Astro Agents is a hosted MCP server that computes Western and Vedic astrology charts for AI agents, resolving time zones and historical offsets from…">
+<meta name="twitter:description" content="Astro Agents provides a hosted MCP server and REST API for Western and Vedic astrology calculations. It returns structured results with stated calculation…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=astro-agents-mcp&amp;subtitle=Deterministic+Western+%2B+Vedic+astrology+MCP+server+for+AI+agents.+JPL+DE440%2C+no+LLM%2C+SHA-256+verifiable+results.+x402+%2B+MPP.&amp;kind=project+%C2%B7+skills">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/aidatatools-dev/astro-agents-mcp#software",
   "name": "astro-agents-mcp",
-  "description": "Astro Agents is a hosted MCP server that computes Western and Vedic astrology charts for AI agents, resolving time zones and historical offsets from coordinates. It uses NASA/JPL DE440 positions and returns deterministic results with SHA-256 input and result hashes that can be recomputed via a verification tool or REST endpoint. The repository documents the service and carries its MCP registry manifest; the engine runs at the hosted endpoint.",
+  "description": "Astro Agents provides a hosted MCP server and REST API for Western and Vedic astrology calculations. It returns structured results with stated calculation conventions and SHA-256 input and result hashes; the repository documents the service and includes its MCP registry manifest.",
   "url": "https://hermesatlas.com/projects/aidatatools-dev/astro-agents-mcp",
   "codeRepository": "https://github.com/aidatatools-dev/astro-agents-mcp",
   "applicationCategory": "DeveloperApplication",
@@ -45,7 +45,7 @@
     "name": "aidatatools-dev",
     "url": "https://github.com/aidatatools-dev"
   },
-  "dateModified": "2026-10-06T19:29:24.000Z",
+  "dateModified": "2026-10-25T15:31:34.000Z",
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
   }
@@ -72,7 +72,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">255·repos</span>
+    <span id="meta-count">285·repos</span>
     <span id="meta-version">hermes·v0.21.5</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -115,7 +115,7 @@
     
     
     
-    <span><span class="meta-label">updated</span>2026-10-06</span>
+    <span><span class="meta-label">updated</span>2026-10-25</span>
   </div>
 
   <div class="actions">
@@ -132,11 +132,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Astro Agents is a hosted MCP server that computes Western and Vedic astrology charts for AI agents, resolving time zones and historical offsets from coordinates. It uses NASA/JPL DE440 positions and returns deterministic results with SHA-256 input and result hashes that can be recomputed via a verification tool or REST endpoint. The repository documents the service and carries its MCP registry manifest; the engine runs at the hosted endpoint.</p>
+    <p class="summary-text">Astro Agents provides a hosted MCP server and REST API for Western and Vedic astrology calculations. It returns structured results with stated calculation conventions and SHA-256 input and result hashes; the repository documents the service and includes its MCP registry manifest.</p>
     <ul class="summary-highlights">
-      <li>MCP endpoint at astro-agent.dev/mcp, no auth</li>
-      <li>Deterministic results with verifiable SHA-256 hashes</li>
-      <li>Per-call REST payment via x402 or MPP</li>
+      <li>Resolves time zones and historical offsets from coordinates.</li>
+      <li>Offers tools for charts, transits, aspects, and Vedic calculations.</li>
+      <li>Supports MCP and REST; REST payments use x402 or MPP.</li>
     </ul>
   </div>
 </section>
@@ -257,6 +257,9 @@
 }
 </code></pre>
 <p><strong>Hermes Agent</strong> (Nous Research):</p>
+<pre><code class="language-bash">hermes plugins install aidatatools-dev/astro-agents-mcp --enable   # MCP server + astrology skill
+</code></pre>
+<p>Without <code>--enable</code> Hermes installs the plugin disabled; <code>hermes plugins enable astro-agents</code> turns it on. Or by hand:</p>
 <pre><code class="language-bash">hermes mcp add astro-agents --url https://astro-agent.dev/mcp   # answer "n" to the authentication prompt
 hermes skills install aidatatools-dev/astro-agents-mcp/skills/astrology   # optional: when and how to use the tools
 </code></pre>
@@ -290,23 +293,23 @@ hermes skills install aidatatools-dev/astro-agents-mcp/skills/astrology   # opti
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
-        <div class="stars">★ 34.3K</div>
+        <div class="stars">★ 35.0K</div>
         <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
       </a>
       <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
-        <div class="stars">★ 5.0K</div>
+        <div class="stars">★ 5.2K</div>
         <div class="name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
       </a>
       <a class="related-row" href="/projects/wondelai/skills">
-        <div class="stars">★ 2.4K</div>
+        <div class="stars">★ 2.5K</div>
         <div class="name"><span class="org">wondelai /</span> skills</div>
       </a>
       <a class="related-row" href="/projects/DougTrajano/pydantic-ai-skills">
-        <div class="stars">★ 378</div>
+        <div class="stars">★ 381</div>
         <div class="name"><span class="org">DougTrajano /</span> pydantic-ai-skills</div>
       </a>
       <a class="related-row" href="/projects/Agents365-ai/drawio-skill">
-        <div class="stars">★ 10.1K</div>
+        <div class="stars">★ 10.4K</div>
         <div class="name"><span class="org">Agents365-ai /</span> drawio-skill</div>
       </a>
       <a class="related-row" href="/projects/smartcontractkit/chainlink-agent-skills">
@@ -314,11 +317,11 @@ hermes skills install aidatatools-dev/astro-agents-mcp/skills/astrology   # opti
         <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
       </a>
       <a class="related-row" href="/projects/tlehman/litprog-skill">
-        <div class="stars">★ 272</div>
+        <div class="stars">★ 276</div>
         <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
       </a>
       <a class="related-row" href="/projects/esaradev/icarus-plugin">
-        <div class="stars">★ 154</div>
+        <div class="stars">★ 158</div>
         <div class="name"><span class="org">esaradev /</span> icarus-plugin</div>
       </a>
     </div>

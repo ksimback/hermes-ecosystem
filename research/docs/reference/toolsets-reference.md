@@ -54,9 +54,9 @@ Purpose
 
 `browser`
 
-`browser_back`, `browser_cdp`, `browser_click`, `browser_console`, `browser_dialog`, `browser_exec`, `browser_get_images`, `browser_navigate`, `browser_press`, `browser_scroll`, `browser_snapshot`, `browser_type`, `browser_vault`, `browser_vision`
+`browser_cdp`, `browser_dialog`, `browser_exec`, `browser_vault`
 
-Core browser automation. `browser_cdp` and `browser_dialog` are gated at runtime — registered only when a CDP endpoint is reachable at session start (via `/browser connect`, `browser.cdp_url` config, Browserbase, or Camofox). `browser_dialog` works together with the `pending_dialogs` and `frame_tree` fields that `browser_snapshot` adds when a CDP supervisor is attached. `browser_exec` replaces the other browser tools when `browser.backend` is `browser-use`; `browser_vault` rides with the browser for credential forms and is deferred behind tool search by default. Quick lookups belong to the `web`/`search` toolsets — `web_search` is deliberately NOT a member, so `disabled_toolsets: [browser]` cannot strip it (#64503).
+Core browser automation. `browser_exec` drives the browser by running Python with pre-imported helpers (offered only to sessions that also have `terminal`); `browser_cdp`, `browser_dialog` and `browser_vault` operate on the same browser session. `browser_vault` rides with the browser for credential forms and is deferred behind tool search by default. Disabling this toolset is how you turn browsing off. Quick lookups belong to the `web`/`search` toolsets — `web_search` is deliberately NOT a member, so `disabled_toolsets: [browser]` cannot strip it (#64503).
 
 `clarify`
 
@@ -168,9 +168,9 @@ Persistent cross-session memory management.
 
 `desktop_ui`
 
-`annotate_preview`, `apply_layout`, `close_terminal`, `desktop_preview`, `drive_preview`, `focus_pane`, `gui_tour`, `react_to_message`, `read_terminal`, `read_window_below`, `show_tip`
+`annotate_preview`, `close_terminal`, `desktop_preview`, `drive_preview`, `focus_pane`, `gui_tour`, `react_to_message`, `read_terminal`, `read_window_below`, `set_theme`, `show_tip`
 
-Affordances that act on the Hermes desktop app itself — read/close the embedded terminal pane, open, read, close, interact with, and annotate the in-app browser, identify the OS window behind the app, reveal a pane, react to a message, run a guided tour (highlight + narrate UI elements in the app or the preview pane), and apply a layout preset. Enabled for sessions whose source is the desktop app, whichever backend it's connected to (local, SSH, URL, or Hermes Cloud). Never present on CLI, TUI, messaging, or cron sessions.
+Affordances that act on the Hermes desktop app itself — read/close the embedded terminal pane, open, read, close, interact with, and annotate the in-app browser, identify the OS window behind the app, reveal a pane, react to a message, run a guided tour (highlight + narrate UI elements in the app or the preview pane), and set the accent colour, light/dark mode and layout (or show a picker card for the user to choose). Enabled for sessions whose source is the desktop app, whichever backend it's connected to (local, SSH, URL, or Hermes Cloud). Never present on CLI, TUI, messaging, or cron sessions.
 
 `project`
 
@@ -201,18 +201,6 @@ Web search only (without extract).
 `session_search`
 
 Search past conversation sessions.
-
-`setup`
-
-`setup_choose`
-
-Onboarding-only surface of the desktop setup profile: ask the user one question or picker card at a time. The setup profile's own config enables it (`platform_toolsets.cli`), and only desktop sessions get its tools. `all` does not include it. Not listed by `hermes tools`.
-
-`start_chat`
-
-`start_chat`
-
-Start a new desktop chat in an existing profile (this chat's own profile when none is named) and send it its first message, so the task runs there in view of the user. Every call opens another chat. A profile's own config enables it (`platform_toolsets.cli`), and only desktop sessions get its tool. `all` does not include it. Not listed by `hermes tools`. Subagents never get it.
 
 `skills`
 

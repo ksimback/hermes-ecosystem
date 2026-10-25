@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>jyje/hermes-agent-helm — Hermes Agent Deployment &amp; Infra | Hermes Atlas</title>
+<meta name="description" content="jyje/hermes-agent-helm provides a Helm chart for running Hermes Agent on Kubernetes. It supports provider configuration through values, Discord or Telegram…">
+<link rel="canonical" href="https://hermesatlas.com/projects/jyje/hermes-agent-helm">
+<meta property="og:title" content="jyje/hermes-agent-helm — Hermes Atlas">
+<meta property="og:description" content="jyje/hermes-agent-helm provides a Helm chart for running Hermes Agent on Kubernetes. It supports provider configuration through values, Discord or Telegram…">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/jyje/hermes-agent-helm">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-agent-helm&amp;subtitle=%F0%9F%91%A9%F0%9F%8F%BB%E2%80%8D%F0%9F%92%BB+Hermes+Agent+on+Kubernetes+-+sign+in+with+Codex%2FCopilot%2C+run+agent+teams%2C+stay+lightweight.&amp;kind=project+%C2%B7+deployment">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="jyje/hermes-agent-helm — Hermes Atlas">
+<meta name="twitter:description" content="jyje/hermes-agent-helm provides a Helm chart for running Hermes Agent on Kubernetes. It supports provider configuration through values, Discord or Telegram…">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-agent-helm&amp;subtitle=%F0%9F%91%A9%F0%9F%8F%BB%E2%80%8D%F0%9F%92%BB+Hermes+Agent+on+Kubernetes+-+sign+in+with+Codex%2FCopilot%2C+run+agent+teams%2C+stay+lightweight.&amp;kind=project+%C2%B7+deployment">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "deployment &amp; infra", "item": "https://hermesatlas.com/lists/deployment-options" },
+    { "@type": "ListItem", "position": 3, "name": "hermes-agent-helm" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/jyje/hermes-agent-helm#software",
+  "name": "hermes-agent-helm",
+  "description": "jyje/hermes-agent-helm provides a Helm chart for running Hermes Agent on Kubernetes. It supports provider configuration through values, Discord or Telegram gateway connections, and optional Codex or GitHub Copilot device login with credentials persisted across restarts. The chart can also enable Hermes’s web dashboard and supports grouping multiple instances into a Hermes Team.",
+  "url": "https://hermesatlas.com/projects/jyje/hermes-agent-helm",
+  "codeRepository": "https://github.com/jyje/hermes-agent-helm",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
+  "author": {
+    "@type": "Organization",
+    "name": "jyje",
+    "url": "https://github.com/jyje"
+  },
+  "dateModified": "2026-10-24T12:00:21.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 15
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">285·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/lists/deployment-options">deployment &amp; infra</a><span class="sep">/</span>hermes-agent-helm
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">jyje</span><span class="slash">/</span>hermes-agent-helm
+  </h1>
+  <p class="project-desc">👩🏻‍💻 Hermes Agent on Kubernetes - sign in with Codex/Copilot, run agent teams, stay lightweight.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 15</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
+    
+    <span><span class="meta-label">updated</span>2026-10-24</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/jyje/hermes-agent-helm" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    <a href="https://jyje.github.io/hermes-agent-helm" target="_blank" rel="noopener" class="btn-secondary">homepage</a>
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">jyje/hermes-agent-helm provides a Helm chart for running Hermes Agent on Kubernetes. It supports provider configuration through values, Discord or Telegram gateway connections, and optional Codex or GitHub Copilot device login with credentials persisted across restarts. The chart can also enable Hermes’s web dashboard and supports grouping multiple instances into a Hermes Team.</p>
+    <ul class="summary-highlights">
+      <li>Install from OCI registry or published Helm repository.</li>
+      <li>Includes provider-specific values examples.</li>
+      <li>CI installs the chart on an ephemeral kind cluster.</li>
+    </ul>
+  </div>
+</section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <div align="center">
+
+<h2>jyje/hermes-agent-helm</h2>
+<img height="240" src="https://raw.githubusercontent.com/jyje/hermes-agent-helm/main/docs/images/hermes-agent-helm.png" alt="Kubernetes × Hermes Agent">
+
+<p>👩🏻‍💻 Hermes Agent on Kubernetes - sign in with Codex/Copilot, run agent teams, stay lightweight.</p>
+<p><a href="https://github.com/jyje/hermes-agent-helm"><img src="https://img.shields.io/github/stars/jyje/hermes-agent-helm?style=social" alt="GitHub Repo stars" loading="lazy" decoding="async"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" loading="lazy" decoding="async"></a>
+<a href="https://helm.sh"><img src="https://img.shields.io/badge/Helm-3%2B-0F1689?logo=helm&amp;logoColor=white" alt="Helm" loading="lazy" decoding="async"></a>
+<a href="https://kubernetes.io"><img src="https://img.shields.io/badge/Kubernetes-326CE5?logo=kubernetes&amp;logoColor=white" alt="Kubernetes" loading="lazy" decoding="async"></a>
+<a href="https://artifacthub.io/packages/search?repo=hermes-agent"><img src="https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/hermes-agent" alt="Artifact Hub" loading="lazy" decoding="async"></a>
+<a href="https://github.com/jyje/hermes-agent-helm/releases/latest"><img src="https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fjyje.github.io%2Fhermes-agent-helm%2Findex.yaml&amp;query=%24.entries%5B%22hermes-agent%22%5D%5B0%5D.appVersion&amp;label=Hermes%20Agent&amp;color=blue" alt="Hermes Agent appVersion" loading="lazy" decoding="async"></a></p>
+<p><a href="https://github.com/jyje/hermes-agent-helm/blob/main/README.md">English</a> · <a href="https://github.com/jyje/hermes-agent-helm/blob/main/README-ko.md">한국어</a> · <a href="https://github.com/jyje/hermes-agent-helm/blob/main/README-ja.md">日本語</a> · <a href="https://github.com/jyje/hermes-agent-helm/blob/main/README-zh.md">简体中文</a></p>
+<p><strong>🚀 <a href="https://github.com/jyje/hermes-agent-helm/blob/main/docs/advanced/teams/index.md">Hermes Team</a></strong> · <a href="https://github.com/jyje/hermes-agent-helm/blob/main/charts/hermes-agent/README.md">Chart docs</a> · <a href="https://github.com/jyje/hermes-agent-helm/blob/main/CONTRIBUTING.md">CONTRIBUTING</a> · <a href="https://github.com/jyje/hermes-agent-helm/blob/main/SECURITY.md">SECURITY</a> · <a href="https://github.com/jyje/hermes-agent-helm/blob/main/AGENTS.md">AGENTS</a></p>
+<hr>
+<p><strong>Found <a href="https://github.com/jyje/hermes-agent-helm">this project</a> useful? Please give it a <a href="https://github.com/jyje/hermes-agent-helm">⭐ on GitHub</a> - it helps others find it.</strong></p>
+</div>
+
+<h3>Summary</h3>
+<p><img src="https://raw.githubusercontent.com/jyje/hermes-agent-helm/main/docs/images/hermes-agent-helm-flow.png" alt="Flow of Hermes Agent" loading="lazy" decoding="async"></p>
+<p>Run <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> on Kubernetes
+with one <code>helm install</code>. Pick a provider from the ready-to-adapt values examples
+(every built-in provider, plus any OpenAI-compatible endpoint such as
+<a href="https://github.com/BerriAI/litellm">LiteLLM</a>), connect Discord or Telegram, and
+the agent stays up.</p>
+<p>Sign in with ChatGPT/Codex or GitHub Copilot from a chat message: the chart sends
+the one-time code to your channel and reuses the login after restarts. It scales
+down to a single small node, and when you want more hands you can group several
+instances into a full <a href="https://github.com/jyje/hermes-agent-helm/blob/main/docs/advanced/teams/index.md"><strong>Hermes Team</strong></a> on the same
+cluster.</p>
+<p>Each release is installed on a fresh kind cluster before and after it ships, so
+it is verified to run, not just render. A <strong>community-powered</strong> chart, not an
+official Nous Research release.</p>
+<p>Prefer a browser? Hermes ships its own <strong>web dashboard</strong> (chat in the full
+terminal UI, past sessions, models, skills, cron jobs and settings). The chart
+can switch it on and publish it at a URL of your own through an Ingress or
+HTTPRoute, behind a password, Nous Portal OAuth, or your own OpenID Connect
+sign-in. The diagram shows how the pieces fit; see
+<a href="https://github.com/jyje/hermes-agent-helm/blob/main/docs/advanced/integrations/dashboard.md">Dashboard sign-in and Ingress</a> to set it up.</p>
+<p align="center"><a href="https://raw.githubusercontent.com/jyje/hermes-agent-helm/main/docs/images/dashboard-architecture.png"><img src="https://raw.githubusercontent.com/jyje/hermes-agent-helm/main/docs/images/dashboard-architecture.png" alt="Architecture: Browser to Ingress to Service port 9119 to the hermes dashboard process, which runs next to hermes gateway run in one pod and shares the HERMES_HOME volume" width="900"></a></p>
+
+<h3>Quick Start</h3>
+<ol>
+<li><p><strong>OCI (recommended)</strong> — install directly from the registry, no <code>helm repo add</code> needed:</p>
+<pre><code class="language-bash">helm install hermes-agent oci://ghcr.io/jyje/hermes-agent-helm/hermes-agent \
+  --namespace hermes-agent --create-namespace \
+  --set-string env.OPENAI_API_KEY='sk-...' \
+  --wait
+</code></pre>
+</li>
+<li><p><strong>Helm Repository</strong> - a Helm repository is also published to GitHub Pages, if you'd rather add it once and install by name:</p>
+<pre><code class="language-bash">helm repo add hermes-agent https://jyje.github.io/hermes-agent-helm
+helm repo update
+helm install hermes-agent hermes-agent/hermes-agent \
+  --namespace hermes-agent --create-namespace \
+  --set-string env.OPENAI_API_KEY='sk-...' \
+  --wait
+</code></pre>
+</li>
+</ol>
+<p>Optionally pin <code>--version</code> to a specific <a href="https://github.com/jyje/hermes-agent-helm/releases">released chart version</a> instead of latest.</p>
+<p>To install from this repo's source instead (e.g. to try an unreleased
+change), see <a href="#development">Development</a> below.</p>
+<h3>Why this chart</h3>
+<ul>
+<li><strong>All of Hermes's Provider Support, via <code>values.yaml</code>.</strong> Hermes itself
+already supports <code>openai-api</code>, <code>anthropic</code>, <code>gemini</code>, <code>openrouter</code>, <code>nvidia</code>,
+<code>deepseek</code>, and any OpenAI-compatible endpoint (e.g.
+<a href="https://github.com/BerriAI/litellm">LiteLLM</a>) through environment
+variables - this chart just exposes that config through <code>values.yaml</code> and
+ships ready-to-adapt examples per provider, with no provider baked into the
+templates.</li>
+<li><strong>Chat-first gateway and account login.</strong> Supply a Discord or Telegram bot
+token and the chart runs Hermes's outbound gateway with a Kubernetes-managed
+lifecycle. For <strong>GitHub Copilot</strong> and <strong>OpenAI Codex</strong>, its optional
+device-login bootstrap sends the one-time link and code to the Discord or
+Telegram home channel (or logs), then persists refreshable credentials in
+<code>HERMES_HOME</code>. An opt-in ready message tells you when the agent is up. Approve
+once; normal Pod restarts reuse the stored login. All four combinations of the
+two providers and the two messengers were run on a real cluster.</li>
+<li><strong>Lightweight → Production.</strong> Sized for homelab / single-node / edge clusters
+out of the box (one replica, modest requests, a small PVC), and ready for
+production by scaling <em>up</em> - not <em>out</em>. Hermes is a single-instance personal
+agent (one <code>HERMES_HOME</code>, one gateway, one memory), so you don't replicate a
+pod; you run several well-managed instances and group them into a <strong>team</strong>
+that shares context over a common gateway channel. See
+<a href="https://github.com/jyje/hermes-agent-helm/blob/main/docs/advanced/teams/reference.md">Hermes teams</a>.</li>
+<li><strong>Verified End-to-End.</strong> CI installs the chart on an ephemeral <strong>kind</strong>
+cluster and runs the bundled test Job (<code>hermes doctor</code>). When the
+<code>NVIDIA_API_KEY</code> repository secret is available, it also runs a <strong>live
+<code>hermes chat</code> round-trip</strong> against NVIDIA NIM - not a mock.
+Leader teams have also completed a live human → leader → member → leader
+round-trip on Discord (threads) and on Telegram.</li>
+</ul>
+<div align="center">
+  <img src="https://raw.githubusercontent.com/jyje/hermes-agent-helm/main/docs/images/demos/team-k9s-pods.png" alt="A leader-orchestrated Hermes team (august, may, march) running on a kind cluster, shown in k9s">
+  <p><em>Deployment evidence: leader <code>august</code> and members
+  <code>may</code>/<code>march</code> running as independent releases on kind.
+  This screenshot does not by itself prove the multi-turn mention loop; see
+  <a href="docs/advanced/teams/reference.md">Hermes teams</a> for the current status.</em></p>
+</div>
+
+<p>For the full resource breakdown, configuration model, and provider-by-provider
+install examples (including messenger integrations), see
+<a href="https://github.com/jyje/hermes-agent-helm/blob/main/charts/hermes-agent/README.md">charts/hermes-agent/README.md</a>.</p>
+<h3>Production Checklist</h3>
+<p>None of this is on by default - defaults stay lightweight (see above). Each
+row below is something you turn on deliberately, and each points at what
+actually backs the claim, so you can judge it yourself instead of taking a
+<code>production-ready</code> label on faith.</p>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>How</th>
+<th>Verified by</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pod Security Standards</td>
+<td><code>-f charts/hermes-agent/values-hardened.yaml</code></td>
+<td>hardened kind scenario (PSS <code>restricted</code>)</td>
+</tr>
+<tr>
+<td>Egress control</td>
+<td><code>networkPolicy.enabled=true</code></td>
+<td>rendered-policy assertion in CI</td>
+</tr>
+<tr>
+<td>Kernel isolation</td>
+<td><code>runtimeClassName: gvisor</code> (or another sandboxed runtime)</td>
+<td>cluster-dependent - documented only</td>
+</tr>
+<tr>
+<td>Secret management</td>
+<td>the <a href="https://github.com/jyje/hermes-agent-helm/blob/main/charts/hermes-agent/values-bitwarden.yaml">Bitwarden example</a> or <a href="examples/argocd/#sealedsecret-walkthrough-nvidia-nim--discord">SealedSecret walkthrough</a></td>
+<td>Bitwarden: CI's values-examples smoke test · SealedSecret: documented only</td>
+</tr>
+<tr>
+<td>Upgrade safety</td>
+<td><code>bootstrap.overwrite=false</code> is the default; migrations back up the persistent config</td>
+<td>Kind CI verifies migration, backup, overwrite and preserve paths</td>
+</tr>
+</tbody></table>
+<h3>Full Installation</h3>
+<h4>OCI (recommended)</h4>
+<pre><code class="language-bash"># render the chart and check its templates before installing
+helm template hermes-agent oci://ghcr.io/jyje/hermes-agent-helm/hermes-agent \
+  --set-string env.OPENAI_API_KEY='sk-...'
+
+# install with the generic defaults (set your provider key)
+# release name == chart name keeps resources clean (hermes-agent-0, not hermes-agent-hermes-agent-0)
+helm upgrade --install hermes-agent oci://ghcr.io/jyje/hermes-agent-helm/hermes-agent \
+  --namespace hermes-agent --create-namespace \
+  --set-string env.OPENAI_API_KEY='sk-...' --wait
+
+# run the install test (doctor-style Job)
+helm test hermes-agent -n hermes-agent
+kubectl logs -n hermes-agent -l app.kubernetes.io/component=test --tail=-1
+</code></pre>
+<h4>Helm Repository</h4>
+<pre><code class="language-bash"># add the Helm Repository and fetch the latest chart index
+helm repo add hermes-agent https://jyje.github.io/hermes-agent-helm
+helm repo update
+
+# render the chart and check its templates before installing
+helm template hermes-agent hermes-agent/hermes-agent \
+  --set-string env.OPENAI_API_KEY='sk-...'
+
+# install with the generic defaults (set your provider key)
+helm upgrade --install hermes-agent hermes-agent/hermes-agent \
+  --namespace hermes-agent --create-namespace \
+  --set-string env.OPENAI_API_KEY='sk-...' --wait
+
+# run the install test (doctor-style Job)
+helm test hermes-agent -n hermes-agent
+kubectl logs -n hermes-agent -l app.kubernetes.io/component=test --tail=-1
+</code></pre>
+<p>See <a href="https://github.com/jyje/hermes-agent-helm/blob/main/charts/hermes-agent/README.md">charts/hermes-agent/README.md</a> for the full
+values table, the "More examples" table (<code>values-*.yaml</code> for every supported
+provider plus Discord/Telegram and LiteLLM - copy the raw YAML and pass it with
+<code>-f</code>), and an <a href="examples/argocd/">ArgoCD example</a>.</p>
+<h3>Automation</h3>
+<p>Three things this repository automates that affect you as a chart user:</p>
+<ul>
+<li><strong>Upstream tracking.</strong> A scheduled job checks for a newer Hermes image every
+six hours and opens an <code>appVersion</code> update pull request. It never publishes a
+release on its own: the update goes through the same review and Changesets
+path as any other chart change.</li>
+<li><strong>Signed releases.</strong> Publishing produces a cosign-signed OCI artifact
+alongside the Helm repository index.</li>
+<li><strong>Post-release verification.</strong> After every release, CI installs the published
+artifact from OCI, verifies its signature, and runs the chart's own test suite
+against it.</li>
+</ul>
+<p>Every workflow, its triggers, and how they connect is documented in the
+<a href="https://github.com/jyje/hermes-agent-helm/blob/main/docs/contributing/ci.md">CI guide</a>.</p>
+<h3>Development</h3>
+<p>Clone the repo and install from the local chart path (a relative path, not
+the published registry) to check a change before opening a PR:</p>
+<pre><code class="language-bash">git clone https://github.com/jyje/hermes-agent-helm.git
+cd hermes-agent-helm
+
+# render &amp; lint
+make template
+make lint
+
+# install from the local chart source
+helm upgrade --install hermes-agent ./charts/hermes-agent \
+  --namespace hermes-agent --create-namespace \
+  --set-string env.OPENAI_API_KEY='sk-...' --wait
+
+# run the install test (doctor-style Job)
+helm test hermes-agent -n hermes-agent
+kubectl logs -n hermes-agent -l app.kubernetes.io/component=test --tail=-1
+
+# or start from a ready-made example (provider, Discord/Telegram, LiteLLM, ...)
+helm upgrade --install hermes-agent ./charts/hermes-agent \
+  --namespace hermes-agent --create-namespace \
+  -f charts/hermes-agent/values-anthropic-and-discord.yaml \
+  --set-string env.ANTHROPIC_API_KEY='sk-ant-...' \
+  --set-string env.DISCORD_BOT_TOKEN='...' --wait
+</code></pre>
+<p>Branch model, release process, and further local checks (<code>make docs</code> /
+<code>make test</code>) are covered in <a href="https://github.com/jyje/hermes-agent-helm/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>; chart design
+principles are in <a href="https://github.com/jyje/hermes-agent-helm/blob/main/AGENTS.md">AGENTS.md</a>.</p>
+<h3>Roadmap</h3>
+<p>This chart deploys and manages <strong>one</strong> agent well; teams via an ArgoCD
+ApplicationSet are how you scale today, and a CRD-based operator is a
+long-term, not-started candidate. See <a href="https://github.com/jyje/hermes-agent-helm/blob/main/docs/about/roadmap.md">docs/about/roadmap.md</a>.</p>
+<h3>Contributing</h3>
+<p>Issues, PRs, and ideas are all welcome - start with
+<a href="https://github.com/jyje/hermes-agent-helm/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> (branch model, local checks, release flow).
+Every merged contribution is credited in the changelog and release notes.</p>
+<p>Thanks to everyone who has contributed to and starred this project ⭐</p>
+<a href="https://github.com/jyje/hermes-agent-helm/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=jyje/hermes-agent-helm" alt="Contributors">
+</a>
+
+<hr>
+<blockquote>
+<p>Banner © <a href="https://github.com/NousResearch/hermes-agent">Nous Research</a> (MIT).</p>
+</blockquote>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in deployment &amp; infra</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/AbuZar-Ansarii/Hermes-Agent-On-Android">
+        <div class="stars">★ 261</div>
+        <div class="name"><span class="org">AbuZar-Ansarii /</span> Hermes-Agent-On-Android</div>
+      </a>
+      <a class="related-row" href="/projects/ultraworkers/hermes-agent-helm-chart">
+        <div class="stars">★ 152</div>
+        <div class="name"><span class="org">ultraworkers /</span> hermes-agent-helm-chart</div>
+      </a>
+      <a class="related-row" href="/projects/marshallrichards/ClawPhone">
+        <div class="stars">★ 549</div>
+        <div class="name"><span class="org">marshallrichards /</span> ClawPhone</div>
+      </a>
+      <a class="related-row" href="/projects/numtide/llm-agents.nix">
+        <div class="stars">★ 2.2K</div>
+        <div class="name"><span class="org">numtide /</span> llm-agents.nix</div>
+      </a>
+      <a class="related-row" href="/projects/TheAiSingularity/hermesclaw">
+        <div class="stars">★ 73</div>
+        <div class="name"><span class="org">TheAiSingularity /</span> hermesclaw</div>
+      </a>
+      <a class="related-row" href="/projects/0xrsydn/nix-hermes-agent">
+        <div class="stars">★ 46</div>
+        <div class="name"><span class="org">0xrsydn /</span> nix-hermes-agent</div>
+      </a>
+      <a class="related-row" href="/projects/xmbshwll/hermes-agent-docker">
+        <div class="stars">★ 48</div>
+        <div class="name"><span class="org">xmbshwll /</span> hermes-agent-docker</div>
+      </a>
+      <a class="related-row" href="/projects/JackTheGit/hermes-autonomous-server">
+        <div class="stars">★ 19</div>
+        <div class="name"><span class="org">JackTheGit /</span> hermes-autonomous-server</div>
+      </a>
+    </div>
+    <p class="list-link"><a href="/lists/deployment-options">see all deployment &amp; infra →</a></p>
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

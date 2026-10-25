@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>arcmira/mcp — Hermes Agent Integrations &amp; Bridges | Hermes Atlas</title>
+<meta name="description" content="Arcmira provides a remote MCP server for searching YouTube and podcast transcripts, retrieving timestamped passages, reading surrounding transcript lines, and…">
+<link rel="canonical" href="https://hermesatlas.com/projects/arcmira/mcp">
+<meta property="og:title" content="arcmira/mcp — Hermes Atlas">
+<meta property="og:description" content="Arcmira provides a remote MCP server for searching YouTube and podcast transcripts, retrieving timestamped passages, reading surrounding transcript lines, and…">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/arcmira/mcp">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=mcp&amp;subtitle=YouTube+transcript+search+for+your+AI.+Find+who+said+what+with+timestamps%2C+mentions%2C+sponsors%2C+and+recommendations.+Remote+MCP+and+agent+skills.&amp;kind=project+%C2%B7+integrations">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="arcmira/mcp — Hermes Atlas">
+<meta name="twitter:description" content="Arcmira provides a remote MCP server for searching YouTube and podcast transcripts, retrieving timestamped passages, reading surrounding transcript lines, and…">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=mcp&amp;subtitle=YouTube+transcript+search+for+your+AI.+Find+who+said+what+with+timestamps%2C+mentions%2C+sponsors%2C+and+recommendations.+Remote+MCP+and+agent+skills.&amp;kind=project+%C2%B7+integrations">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "integrations &amp; bridges", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 3, "name": "mcp" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/arcmira/mcp#software",
+  "name": "mcp",
+  "description": "Arcmira provides a remote MCP server for searching YouTube and podcast transcripts, retrieving timestamped passages, reading surrounding transcript lines, and finding mentions, appearances, endorsements, ad reads, sponsors, and mention trends. Agents can also set up YouTube monitors; the README describes sign-in through an MCP host or authentication with an account key.",
+  "url": "https://hermesatlas.com/projects/arcmira/mcp",
+  "codeRepository": "https://github.com/arcmira/mcp",
+  "applicationCategory": "CommunicationApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "TypeScript",
+  "author": {
+    "@type": "Organization",
+    "name": "arcmira",
+    "url": "https://github.com/arcmira"
+  },
+  "dateModified": "2026-10-23T01:17:21.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 75
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">285·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/">integrations &amp; bridges</a><span class="sep">/</span>mcp
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">arcmira</span><span class="slash">/</span>mcp
+  </h1>
+  <p class="project-desc">YouTube transcript search for your AI. Find who said what with timestamps, mentions, sponsors, and recommendations. Remote MCP and agent skills.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 75</span>
+    <span><span class="meta-label">lang</span>TypeScript</span>
+    
+    
+    <span><span class="meta-label">updated</span>2026-10-23</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/arcmira/mcp" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    <a href="https://arcmira.com" target="_blank" rel="noopener" class="btn-secondary">homepage</a>
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">Arcmira provides a remote MCP server for searching YouTube and podcast transcripts, retrieving timestamped passages, reading surrounding transcript lines, and finding mentions, appearances, endorsements, ad reads, sponsors, and mention trends. Agents can also set up YouTube monitors; the README describes sign-in through an MCP host or authentication with an account key.</p>
+    <ul class="summary-highlights">
+      <li>Search YouTube and podcast transcripts for timestamped quotes.</li>
+      <li>Analyze mentions, appearances, recommendations, sponsors, and momentum.</li>
+      <li>Create and update YouTube monitors through the MCP tools.</li>
+    </ul>
+  </div>
+</section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h2>Arcmira MCP for YouTube and podcast transcript search</h2>
+<p>Search YouTube video and podcast transcripts, retrieve timestamped quotes, find entity mentions and media appearances, inspect organic endorsements and ad reads, and monitor new mentions with your agent.</p>
+<p><a href="https://arcmira.com">Arcmira</a> · <a href="https://arcmira.com/docs">API docs</a> · <a href="https://arcmira.com/docs/mcp-server">MCP setup</a></p>
+<h3>Connect Arcmira</h3>
+<p>Add the remote MCP server at <code>https://mcp.arcmira.com/mcp</code> and sign in through your host. For setup instructions, use <a href="https://arcmira.com/agent-setup">Connect your agent</a>.</p>
+<p>For a coding agent, paste:</p>
+<pre><code class="language-text">Fetch and execute the appropriate instructions to set me up for Arcmira from https://arcmira.com/agent-setup/prompt.md
+</code></pre>
+<h3>Run your first search</h3>
+<p>Ask your agent:</p>
+<blockquote>
+<p>Search YouTube and podcast transcripts for GPU financing over the last 60 days. Return the relevant quotes with speakers when available, publication dates, transcript sources, and timestamped links. Read the surrounding exchanges before summarizing what the sources imply.</p>
+</blockquote>
+<p>The agent calls <code>arcmira_describe</code> once to load the client reference, then runs a program with <code>arcmira_execute_read</code>. Return structured fields for further analysis and a compact, sourced answer for the reader.</p>
+<pre><code class="language-javascript">const query = "GPU financing";
+const hits = await arcmira.search({
+  query, after: arcmira.daysAgo(60), before: arcmira.today(), limit: 5,
+});
+return { query, window: hits.window, passages: hits.chunks };
+</code></pre>
+<p>The search supports up to 20 passages, but full passages can exceed the execute tool's output budget. If the result is truncated, request fewer passages or return only the fields needed for the next step. Keep selected text intact and retain its source link.</p>
+<h3>Choose the method for the task</h3>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Client method</th>
+<th>What to retain</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Search YouTube and podcast transcripts for quotes</td>
+<td><code>arcmira.search</code></td>
+<td>Passage text, attribution when available, publication date, watch URL</td>
+</tr>
+<tr>
+<td>Read the surrounding transcript</td>
+<td><code>arcmira.transcript</code></td>
+<td>State, timestamped lines, source, speaker mapping</td>
+</tr>
+<tr>
+<td>Find mentions of a person, company, product or topic</td>
+<td><code>arcmira.mentions</code></td>
+<td>Entity, description, source video, position, appearance flag</td>
+</tr>
+<tr>
+<td>Count a person's media appearances</td>
+<td><code>arcmira.occurrences</code> with <code>mode: "appearances"</code></td>
+<td>Counted window, episode counts by channel</td>
+</tr>
+<tr>
+<td>Compare mention momentum</td>
+<td><code>arcmira.momentum</code></td>
+<td>Current/prior counts, change, verdict, returned window</td>
+</tr>
+<tr>
+<td>Find organic endorsements or ad reads</td>
+<td><code>arcmira.recommendations</code></td>
+<td>Classification, verbatim quote, source and position</td>
+</tr>
+<tr>
+<td>Find recurring channel sponsors</td>
+<td><code>arcmira.sponsors</code></td>
+<td>Sponsor, ad-read count, video count, first/latest dates</td>
+</tr>
+<tr>
+<td>Set up YouTube monitoring</td>
+<td><code>arcmira.monitors</code> through <code>arcmira_execute_write</code></td>
+<td>Monitor, tracked entities, delivery settings</td>
+</tr>
+</tbody></table>
+<p>Resolve names before applying entity or channel ID filters. Plain keyword search does not need a resolver call. The MCP client's argument names differ from the HTTP and SDK names; use the reference returned by <code>arcmira_describe</code>.</p>
+<h3>Continue the research</h3>
+<p><a href="https://arcmira.com/docs/workflows/investment-research">Continue the investment research workflow</a>. You will learn how to follow a search result into competing explanations, inspect the surrounding exchange, verify claims against disclosures, and write a brief with the questions that remain unresolved.</p>
+<p>Speaker identification and commercial classifications can be incomplete. Check the linked source. Missing a source or a capability your workflow needs? Use <code>arcmira_feedback</code> to describe it, why it matters, and what better support would be worth. <a href="https://arcmira.com/docs/feedback#help-shape-the-index">Help shape the index</a>.</p>
+<p><a href="plugins/arcmira">Plugin and skills</a> · <a href="https://github.com/arcmira/mcp/issues/new?template=plugin-feedback.yml">Share plugin feedback</a> · <a href="plugins/arcmira#keep-it-updated">Update installed skills</a></p>
+<h3>Authentication options</h3>
+<p>Two ways in. Hosts that speak the MCP authorization spec sign you in; everything else sends a key.</p>
+<p><strong>Sign in through the host.</strong> Add <code>https://mcp.arcmira.com/mcp</code> with no key. The server answers 401 with an OAuth challenge, the host registers itself against <code>api.arcmira.com</code>, opens arcmira.com for sign-in and consent, and connects with a token that carries the permissions you allowed. Tokens refresh on their own; revoke a host under Settings, Connected apps.</p>
+<pre><code class="language-bash">claude mcp add --transport http --scope user arcmira https://mcp.arcmira.com/mcp
+</code></pre>
+<pre><code class="language-bash">codex mcp add arcmira --url https://mcp.arcmira.com/mcp
+</code></pre>
+<p>Claude Desktop, claude.ai, ChatGPT, and Cursor: add the URL as a custom connector or MCP server with no headers and follow the sign-in prompt. Per-host steps are on <a href="https://arcmira.com/agent-setup">https://arcmira.com/agent-setup</a>.</p>
+<p><strong>Send a key.</strong> Any client that cannot do the sign-in sends a bearer token instead, and the server skips OAuth.</p>
+<p>An account key (<code>arc_sk_...</code>) comes from <a href="https://arcmira.com">https://arcmira.com</a>. Plan and scopes decide what each tool returns. With no account and no browser, sign up from the API. Post an email address, then post the six digit code from that inbox back.</p>
+<pre><code class="language-bash">curl -X POST "https://api.arcmira.com/v1/signups?src=mcp-tool" \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"agent@example.com"}'
+
+curl -X POST "https://api.arcmira.com/v1/signups/verify" \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"agent@example.com","code":"482913"}'
+</code></pre>
+<pre><code class="language-bash">claude mcp add --transport http --scope user arcmira https://mcp.arcmira.com/mcp --header "Authorization: Bearer $ARCMIRA_API_KEY"
+</code></pre>
+<pre><code class="language-json">{
+  "mcpServers": {
+    "arcmira": {
+      "url": "https://mcp.arcmira.com/mcp",
+      "headers": { "Authorization": "Bearer arc_sk_..." }
+    }
+  }
+}
+</code></pre>
+<p>The 401 body carries that signup call under <code>error.data.unlock.action</code>, so an agent that cannot sign in can create an account and reconnect. Discovery: <code>https://mcp.arcmira.com/.well-known/oauth-protected-resource</code> names the authorization server; <code>https://api.arcmira.com/.well-known/oauth-authorization-server</code> lists its endpoints.</p>
+<h3>Tools</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Input</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>arcmira_describe</code></td>
+<td><code>topic?</code></td>
+<td>The arcmira client reference: the id rule, which method answers which question, every method with arguments and return fields, worked example programs, the quirks that cost answers, the usage and monitor rules, error codes, and doc links. About 25,000 characters; <code>topic</code> narrows it to one method and its examples. Never bills.</td>
+</tr>
+<tr>
+<td><code>arcmira_execute_read</code></td>
+<td><code>code</code></td>
+<td>What the program printed plus its return value. The code is the body of an async function with <code>arcmira</code> and <code>ArcmiraError</code> in scope. Reads, Premium transcripts included, and the user's monitors. Limits: 30 seconds, 40 API calls, and 12,000 characters of output in total, 3,000 per string, and 100 items per array.</td>
+</tr>
+<tr>
+<td><code>arcmira_execute_write</code></td>
+<td><code>code</code></td>
+<td>The same as <code>arcmira_execute_read</code>, with the account writes added: <code>arcmira.monitors.create</code>, <code>arcmira.monitors.update</code> (including <code>paused</code>), <code>arcmira.monitors.addEntities</code>, <code>arcmira.monitors.addName</code> and <code>arcmira.monitors.attachTrackers</code>. Nothing is deleted.</td>
+</tr>
+<tr>
+<td><code>arcmira_feedback</code></td>
+<td><code>category</code>, <code>note</code>, <code>request_id?</code>, <code>call_id?</code></td>
+<td>One <code>POST /v1/feedback</code> of type <code>experience</code>. <code>category</code> is <code>wrong_entity</code>, <code>bad_data</code>, <code>missing</code>, <code>slow</code>, <code>confusing</code> or <code>other</code>; <code>note</code> says what happened. Returns the feedback id.</td>
+</tr>
+</tbody></table>
+<p>Every tool also takes an optional <code>intent</code>, at most 300 characters: the user's request in a few words. A host that omits it loses nothing. See <a href="#what-we-log">What we log</a>.</p>
+<p>Only <code>arcmira_describe</code> is annotated read-only. Both program tools can start Premium transcription, which uses credits from the plan and then the on-demand budget, so neither is read-only. Only <code>arcmira_execute_write</code> is destructive, because it can overwrite monitor settings and pause monitors; a Premium read only adds. Both can request arbitrary public videos and carry open-world annotations. Feedback adds a stored record and is an additive write. These labels describe possible effects; the <code>execute_read</code> name identifies the client access level, not a guarantee of no side effects.</p>
+<p>Metered reads use credits from your plan, then the on-demand budget you set in the dashboard. Arcmira enforces that budget on every read, and no tool takes a spending amount. A search uses 4 credits per passage it returns past the first 5, a captions read 4 credits per started 15 minutes of its window, and a Premium transcript 300 credits per started 15 minutes of the whole video. A Premium read that starts a transcription reports its <code>charge</code> (credits, and whether they came from the plan, on-demand usage, or both). <code>arcmira.quote(video)</code> returns that price beforehand and uses no credits; it is a price check, not a spoken quote. When the plan or budget blocks a read, the tool result is an error (<code>isError: true</code>) with the API's <code>code</code> (<code>paid_plan_required</code>, <code>quota_exceeded</code>, <code>spend_limit_exceeded</code>, <code>member_limit</code>, <code>fair_use_cap</code> or <code>on_demand_paused</code>), a <code>message</code> that states what was reached and what lifts it, and <code>unlock</code> when a plan or setting change lifts it. The server gives the agent these facts, not a script for what to say.</p>
+<p>A Premium transcript is one read in <code>arcmira_execute_read</code>:</p>
+<pre><code class="language-javascript">const t = await arcmira.transcript("cdLeJU_1UH8", { quality: "premium" });
+return t.state === "ready" ? t.lines : { state: t.state, eta_seconds: t.eta_seconds, note: t.note };
+</code></pre>
+<p>When the video is not transcribed yet, <code>GET /v1/transcripts/{video_id}?quality=premium</code> starts transcribing it and answers <code>202</code> with the job and <code>Retry-After</code>. The client reads again at <code>Retry-After</code> until 22 seconds into the program, a wait all Premium reads in one program share. Reading again never uses credits twice. Still <code>pending</code> after that: the result carries <code>eta_seconds</code>, and the same read in a later program returns the lines. A failed transcription comes back as <code>state</code> <code>failed</code> or <code>refunded</code> with the reason, and the read does not start another unless it passes <code>retry: true</code>, which an agent sends only when the user asks. A plan without Premium throws <code>paid_plan_required</code>; a budget that blocks the read throws <code>spend_limit_exceeded</code> or <code>quota_exceeded</code>, and the price rides on the error as <code>quote</code>. <code>start</code> and <code>end</code> never lower a Premium charge.</p>
+<p>Results that are empty, an error, truncated or a resolve <code>ask</code> carry <code>call_id</code> (<code>mcpc_...</code>), which <code>arcmira_feedback</code> takes to name the call.</p>
+<p>The client covers the same tasks as the CLI and SDKs. Argument names differ; use these MCP signatures:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Fronts</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>arcmira.resolve(q, { type?, context?, limit? })</code></td>
+<td><code>GET /v1/entities/resolve</code></td>
+<td>A name, <code>@handle</code>, URL or <code>UC</code> id to one of three answers: <code>best</code>, <code>suggested</code> (with <code>reason</code> and <code>evidence</code>), or <code>ask</code> with options</td>
+</tr>
+<tr>
+<td><code>arcmira.search({ query, channelIds?, about?, speakerIds?, kind?, entityIds?, after?, before?, source?, limit? })</code></td>
+<td><code>GET /v1/search</code></td>
+<td>Spoken slices for one topic, or about an entity, or spoken by a person, with watch links and dates</td>
+</tr>
+<tr>
+<td><code>arcmira.mentions({ entityId, channelId?, mode?, after?, before?, limit?, cursor? })</code></td>
+<td><code>GET /v1/mentions</code></td>
+<td>Has X mentioned Y, first seen, last seen. <code>mode</code>: <code>both</code> (default), <code>mentions</code>, or <code>appearances</code> (people only).</td>
+</tr>
+<tr>
+<td><code>arcmira.momentum(entityId, { days? })</code></td>
+<td><code>GET /v1/entities/{id}/momentum</code></td>
+<td>The last <code>days</code> (7 to 365, default 30) against the prior <code>days</code>, with a verdict and top shows for that window. 10 credits a call.</td>
+</tr>
+<tr>
+<td><code>arcmira.sponsors(channelId, { minAdReads?, status?, limit? })</code></td>
+<td><code>GET /v1/channels/{id}/sponsors</code></td>
+<td>Recurring sponsors of one show</td>
+</tr>
+<tr>
+<td><code>arcmira.recommendations(entityId, { kind?, channelId?, after?, before?, limit?, cursor? })</code></td>
+<td><code>GET /v1/recommendations?entity_id=</code></td>
+<td>Who recommends one entity, sponsored or organic, with the quote</td>
+</tr>
+<tr>
+<td><code>arcmira.episodes(channelId, { limit?, after?, before? })</code></td>
+<td><code>GET /v1/channels/{id}/videos</code></td>
+<td>Newest indexed episodes, with the <code>video_id</code> the others take</td>
+</tr>
+<tr>
+<td><code>arcmira.transcript(videoIdOrUrl, { quality?, language?, timestamps?, start?, end? })</code></td>
+<td><code>GET /v1/transcripts/{video_id}</code>, read again at <code>Retry-After</code> while a Premium transcription is pending</td>
+<td>The transcript of one video, captions or Premium, whole or a window</td>
+</tr>
+<tr>
+<td><code>arcmira.occurrences({ channelIds?, entityIds?, videoIds?, types?, mode?, after?, before?, limit? })</code></td>
+<td><code>GET /v1/mentions/counts</code></td>
+<td>What shows talk about, what they share, what one episode mentions. <code>mode</code>: <code>mentions</code>, <code>appearances</code>, or <code>both</code>; <code>limit</code>: 1 to 40.</td>
+</tr>
+<tr>
+<td><code>arcmira.quote(videoIdOrUrl)</code></td>
+<td><code>GET /v1/transcripts/{video_id}/quote</code></td>
+<td>A price check, not a spoken quote: the credits a Premium read of the whole video would use, and any on-demand cents. Uses no credits</td>
+</tr>
+<tr>
+<td><code>arcmira.status({ channelId? })</code></td>
+<td><code>GET /v1/channels/{id}/coverage</code>, <code>GET /v1/me</code></td>
+<td>Coverage and the index date, or the account the key spends (<code>account</code>, <code>role</code>), plan, credits and on-demand budget</td>
+</tr>
+<tr>
+<td><code>arcmira.monitors.list()</code></td>
+<td><code>GET /v1/monitors</code></td>
+<td>The user's monitors, with delivery settings and tracker counts</td>
+</tr>
+<tr>
+<td><code>arcmira.monitors.trackers(monitorId)</code></td>
+<td><code>GET /v1/monitors/{id}/trackers</code></td>
+<td>What one monitor already follows</td>
+</tr>
+<tr>
+<td><code>arcmira.monitors.create({ name, notify_frequency, notify_emails?, notify_slack?, ... })</code></td>
+<td><code>POST /v1/monitors</code></td>
+<td>A new monitor. Write tool only</td>
+</tr>
+<tr>
+<td><code>arcmira.monitors.update(monitorId, { ..., paused? })</code></td>
+<td><code>PATCH /v1/monitors/{id}</code></td>
+<td>Delivery changes, or a pause. Write tool only</td>
+</tr>
+<tr>
+<td><code>arcmira.monitors.addEntities(monitorId, entityIds, { personMatchMode? })</code></td>
+<td><code>POST /v1/monitors/{id}/entities</code></td>
+<td>Follows up to 90 entity ids in one call: reuses or creates each tracker by id and attaches it. An id that cannot attach says why (<code>entity_not_found</code>, <code>entity_type_not_trackable</code>, <code>tracker_limit_reached</code>, <code>tracked_in_another_monitor</code>). Write tool only</td>
+</tr>
+<tr>
+<td><code>arcmira.monitors.addName(monitorId, [{ name, type, personMatchMode? }])</code></td>
+<td><code>POST /v1/monitors/{id}/entities</code> with <code>names</code></td>
+<td>Follows up to 90 exact names before they are indexed (a show by its <code>UC</code> id), with one result per name as <code>addEntities</code> gives. Write tool only</td>
+</tr>
+<tr>
+<td><code>arcmira.monitors.attachTrackers(monitorId, trackerIds)</code></td>
+<td><code>POST /v1/monitors/{id}/trackers</code></td>
+<td>Moves trackers another monitor holds, after the user agrees. Write tool only</td>
+</tr>
+<tr>
+<td><code>arcmira.integrations.slack()</code></td>
+<td><code>GET /v1/integrations/slack</code></td>
+<td>The connected Slack workspaces, with the id and default channel a monitor delivers to</td>
+</tr>
+</tbody></table>
+<p><code>arcmira.today()</code> and <code>arcmira.daysAgo(n)</code> give ISO dates from the server clock for date windows. Windows are half-open, as on the API: <code>after</code> is the first day counted and <code>before</code> the first day left out, so August is <code>{ after: "2026-08-01", before: "2026-09-01" }</code>. Every dated result echoes <code>window: { after, before }</code>. Option names are the client's; request and response fields are the API's, so a monitor takes <code>notify_frequency</code> because <code>monitors.list()</code> returns it.</p>
+<p>Filters take verbatim ids only. A name where an id belongs throws <code>id_required</code> before any network call, and the message names the fix. Resolve first, then query. <code>resolve</code> answers <code>best</code> (the name means one row), <code>suggested</code> (one row stands out; say you assumed it and why), or <code>ask</code> (several fit; let the user pick):</p>
+<pre><code class="language-javascript">const r = await arcmira.resolve("Linear");
+const e = r.best ?? r.suggested;
+if (!e) return { ask: r.ask };
+const m = await arcmira.momentum(e.id);
+return { entity: e.name, id: e.id, assumed: Boolean(r.suggested), why: r.suggested?.evidence ?? null, verdict: m.verdict, last30: m.volume.mentions_30d, prior30: m.volume.mentions_prior_30d, as_of: m.as_of };
+</code></pre>
+<p>Example prompts once the server is connected:</p>
+<ul>
+<li>Which brands sponsor both TBPN and the All-In Podcast?</li>
+<li>How hot is Linear, the project management tool, on the spoken web right now?</li>
+<li>Find a moment on TBPN from the last 90 days where someone talks about stablecoins, and quote it.</li>
+<li>Who is speaking in the first minute of the latest TBPN episode, according to the Premium transcript?</li>
+<li>On TBPN, how many episodes mentioned Cursor in July versus August?</li>
+</ul>
+<p>Good first ids: TBPN is channel <code>UC-DRzaGnL_vtBUpCFH5M0tg</code>, All-In Podcast is <code>UCESLZhusAkFfsNsApnjF_Cg</code>, Ramp is <code>ent_14</code>.</p>
+<h3>The sandbox</h3>
+<p><code>arcmira_execute_read</code> and <code>arcmira_execute_write</code> run the program in a fresh <a href="https://developers.cloudflare.com/dynamic-workers/">Dynamic Worker</a> isolate. The isolate's only network is the parent's outbound proxy, which adds the caller's credential to what it forwards, so the program never holds the key, and refuses anything outside the tool's allowlist with <code>outbound_refused</code>:</p>
+<ul>
+<li><code>arcmira_execute_read</code>: <code>GET https://api.arcmira.com/v1/*</code>. A Premium transcription starts inside the transcript <code>GET</code>.</li>
+<li><code>arcmira_execute_write</code>: the read set, plus <code>POST</code> and <code>PATCH</code> under <code>/v1/monitors</code> and <code>PATCH</code> under <code>/v1/trackers</code>. Never <code>DELETE</code>, and never the webhook secret rotation. A tracker is created inside a monitor, so nothing posts to <code>/v1/trackers</code>.</li>
+</ul>
+<p>The proxy enforces this in the Worker, so a raw <code>fetch()</code> gets the same answer as a client method. A write method called from <code>arcmira_execute_read</code> throws <code>write_tool_required</code> before any request. The isolate gets 5 seconds of CPU, the tool waits 30 seconds of wall time, the client stops at 40 API calls with <code>call_budget</code>, and the rendered output is cut at 12,000 characters in total, 3,000 per string and 100 items per array, with <code>truncated_arrays</code> naming each cut array and a <code>recovery</code> line that says how to get every row. A syntax error comes back as <code>syntax_error</code> with the function-body rule; a thrown error as <code>program_error</code> with its message.</p>
+<p>The result is valid bounded JSON with <code>ok</code> and <code>value</code> or <code>error</code> first, then actual <code>calls</code>, <code>rate_limit</code>, <code>api_build</code>, truncation facts and capped logs. Large results retain continuation and recovery fields. Execution metadata uses the same meter. Timeout reports <code>calls: null</code> and <code>outcome_uncertain: true</code>; in-flight reads may still finish and consume rows. Authentication 429/503 asks clients to retry with the same credential; only invalid credentials trigger reconnect.</p>
+<h3>Gates</h3>
+<p>A gate inside a program throws an <code>ArcmiraError</code> with the API's error fields, and the execute tools return it as <code>ERROR</code> with <code>isError: true</code>:</p>
+<pre><code>{"ok":false,"error":{"code":"recommendations_not_enabled","message":"Sponsor recommendations require Pro.","gate":"plan"},"calls":1,"outcome_uncertain":false}
+</code></pre>
+<p>Switch on <code>code</code>. <code>unlock.url</code> names the plan or setting that lifts a gate, and <code>rate_limited</code> carries <code>retry_after_seconds</code>. A 200 that withheld something (Premium transcript text, the paid-versus-organic split, sponsors past the free slice) is a normal result carrying the same body under <code>access</code>. The full catalog is at <a href="https://arcmira.com/docs/errors">https://arcmira.com/docs/errors</a>.</p>
+<p>Every result, gates included, carries the key's budget after the call under <code>_meta["arcmira.com/rate_limit"]</code> as <code>{ "limit": 20, "remaining": 17, "reset": 1788819360 }</code>, read from the API's RateLimit headers, and <code>_meta["arcmira.com/build"]</code>: <code>server</code>, <code>deploy</code>, <code>api</code> (the API build that answered) and <code>client</code> (the host's name from its handshake, forwarded to the API as <code>x-arcmira-client</code>).</p>
+<h3>What we log</h3>
+<p>Each tool call is logged to Arcmira's product analytics (PostHog), linked to the account that made it, so we can see how the tools are used and fix what fails. One record per call holds:</p>
+<ul>
+<li>the tool name, the host's name and version, the server version, and how long the call took;</li>
+<li>the input: the program text of either execute tool (first 4,000 characters), the <code>arcmira_describe</code> topic, or the <code>arcmira_feedback</code> category and note;</li>
+<li><code>intent</code>, when the agent sends it;</li>
+<li>the outcome, not the result: ok or the error code, the result size, whether it was truncated, and the API routes the call made (<code>GET /v1/search</code>, not its query string).</li>
+</ul>
+<p>Before the record is stored, the API replaces anything that looks like a credential or an email address (<code>arc_</code> keys, <code>Bearer</code> tokens, <code>sk-</code> keys, addresses) with <code>[redacted]</code>. Results, transcript text and logs printed by a program are never logged. A call with no valid credential is not logged. The record is sent after the result, so logging never delays or changes an answer; a record that fails to send is dropped.</p>
+<h3>Upgrading</h3>
+<p>Upgrade notes for every release, the 0.7 tool renames and the 0.10 field changes included, are in <a href="https://github.com/arcmira/mcp/blob/main/CHANGELOG.md">CHANGELOG.md</a>.</p>
+<h3>Plugin</h3>
+<p><code>plugins/arcmira</code> bundles the MCP URL and six skills for Claude Code, Codex, Cursor, Agent Plugins hosts and Gemini CLI:</p>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>arcmira</code></td>
+<td>The shared procedure and id rule, which task skill fits which ask, and a pointer to <code>arcmira_describe</code> for the method reference</td>
+</tr>
+<tr>
+<td><code>sponsor-research</code></td>
+<td>Who sponsors a show, or which shows a brand sponsors, how often, since when</td>
+</tr>
+<tr>
+<td><code>company-watch</code></td>
+<td>Sets up a monitor: the entities and topic spellings to follow, the user's monitors first, then the delivery they want</td>
+</tr>
+<tr>
+<td><code>find-quotes</code></td>
+<td>Exact spoken quotes with speaker, date, a timestamped link, clip start and end</td>
+</tr>
+<tr>
+<td><code>person-research</code></td>
+<td>Interview or meeting prep: appearances, a person's own words, who discusses them</td>
+</tr>
+<tr>
+<td><code>compare-shows</code></td>
+<td>Two shows side by side: size, topics, overlap, shared sponsors</td>
+</tr>
+</tbody></table>
+<p>Every skill starts from names, never ids: each program resolves the name, returns <code>ask</code> options when several entities fit and none stands out, says when it assumed one, and names the entity it used. Every skill ends with the monitor line (monitors can follow what it found, and what an alert uses) and the feedback line. The skills are generated from <code>src/reference.ts</code> and <code>src/skills.ts</code> by <code>scripts/build-skill.ts</code>; CI fails when a file drifts or a program calls a method the reference does not document, and <code>pnpm examples:check</code> runs every program against production.</p>
+<pre><code class="language-bash">claude plugin marketplace add arcmira/mcp
+claude plugin install arcmira@arcmira
+</code></pre>
+<h3>Stay up to date</h3>
+<p>Arcmira ships changes weekly. Keep auto-update on.</p>
+<ul>
+<li><p><strong>The MCP server needs nothing.</strong> It is remote: hosts fetch its tools and instructions on connect, and <code>arcmira_describe</code> returns the reference from the server on every call, opening with a version line. The MCP server alone is always current.</p>
+</li>
+<li><p><strong>Claude Code plugin.</strong> Auto-update is off by default for a third-party marketplace. Turn it on: run <code>/plugin</code>, open <strong>Marketplaces</strong>, pick <code>arcmira</code>, and choose <strong>Enable auto-update</strong>. Or set it in <code>~/.claude/settings.json</code>:</p>
+<pre><code class="language-json">{ "extraKnownMarketplaces": { "arcmira": { "source": { "source": "github", "repo": "arcmira/mcp" }, "autoUpdate": true } } }
+</code></pre>
+<p>Update now: <code>claude plugin update arcmira@arcmira</code>.</p>
+</li>
+<li><p><strong>Codex plugin.</strong> <code>codex plugin marketplace upgrade arcmira</code>, then restart Codex.</p>
+</li>
+<li><p><strong>Skills installed with <code>npx skills add arcmira/mcp</code>.</strong> <code>npx skills update</code>.</p>
+</li>
+</ul>
+<p>Each release bumps the version in every plugin manifest (a test enforces it), because Claude Code only updates a plugin whose version changed.</p>
+<h3>Gemini CLI</h3>
+<p>Install the remote connection and core Arcmira reference from this repository:</p>
+<pre><code class="language-bash">gemini extensions install https://github.com/arcmira/mcp
+</code></pre>
+<p>The root <code>gemini-extension.json</code> points to the same remote MCP and loads the <code>arcmira</code> skill as its context file, like the plugin bundle. Sign in through the MCP authorization flow. The root extension does not separately install the five optional task skills.</p>
+<h3>Develop</h3>
+<pre><code class="language-bash">pnpm install
+pnpm dev            # wrangler dev on :8790 with a local Worker Loader
+pnpm test           # node:test, sandbox programs run under a fake loader
+pnpm typecheck
+pnpm manifest:check # every client call matches the live OpenAPI document
+pnpm skill:check    # every plugins/arcmira/skills/*/SKILL.md matches src/reference.ts and src/skills.ts
+ARCMIRA_KEY=arc_sk_... pnpm examples:check   # every worked program and read task-skill program runs against production
+pnpm sandbox:check  # src/sandbox/client-source.ts matches src/sandbox/client.js
+ARCMIRA_KEY=arc_sk_... node --experimental-strip-types scripts/smoke.ts http://localhost:8790/mcp
+</code></pre>
+<p><code>src/reference.ts</code> is the steering surface: the <code>arcmira_describe</code> text, the server instructions and the <code>arcmira</code> skill all come from it.</p>
+<p>Copyright Arcmira. All rights reserved for the server (see <code>LICENSE</code>); <code>plugins/arcmira</code> is Apache-2.0.</p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in integrations &amp; bridges</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/teknium1/hermes-miniverse">
+        <div class="stars">★ 58</div>
+        <div class="name"><span class="org">teknium1 /</span> hermes-miniverse</div>
+      </a>
+      <a class="related-row" href="/projects/Ridwannurudeen/hermes-council">
+        <div class="stars">★ 52</div>
+        <div class="name"><span class="org">Ridwannurudeen /</span> hermes-council</div>
+      </a>
+      <a class="related-row" href="/projects/gizdusum/hermes-blockchain-oracle">
+        <div class="stars">★ 6</div>
+        <div class="name"><span class="org">gizdusum /</span> hermes-blockchain-oracle</div>
+      </a>
+      <a class="related-row" href="/projects/kevinmarmstrong/hermes-claude-code-rc">
+        <div class="stars">★ 4</div>
+        <div class="name"><span class="org">kevinmarmstrong /</span> hermes-claude-code-rc</div>
+      </a>
+      <a class="related-row" href="/projects/AaronWong1999/hermesclaw">
+        <div class="stars">★ 750</div>
+        <div class="name"><span class="org">AaronWong1999 /</span> hermesclaw</div>
+      </a>
+      <a class="related-row" href="/projects/Codename-11/hermes-relay">
+        <div class="stars">★ 388</div>
+        <div class="name"><span class="org">Codename-11 /</span> hermes-relay</div>
+      </a>
+      <a class="related-row" href="/projects/kfa-ai/hermes-timetree-sync">
+        <div class="stars">★ 1</div>
+        <div class="name"><span class="org">kfa-ai /</span> hermes-timetree-sync</div>
+      </a>
+      <a class="related-row" href="/projects/BORT-AGENTS/hermes-bort">
+        <div class="stars">★ 3</div>
+        <div class="name"><span class="org">BORT-AGENTS /</span> hermes-bort</div>
+      </a>
+    </div>
+    
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

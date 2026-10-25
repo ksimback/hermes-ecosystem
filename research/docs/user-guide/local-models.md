@@ -8,7 +8,7 @@ Nothing leaves your computer: no account, no API key, and no network access afte
 
 ## Desktop availability and downloads
 
-The desktop Local Models interface is enabled for canary builds. Other desktop builds require the `--local` launch flag. A runtime can already be bundled; its absence triggers the managed-tool install path, not an arbitrary latest llama.cpp download.
+Local Models is on by default in the desktop app on macOS, Windows, and Linux (x64 and arm64), on every release channel. On other platforms, launch the app with `--local` to show it. A runtime can already be bundled; its absence triggers the managed-tool install path, not an arbitrary latest llama.cpp download.
 
 Use **Pause** and **Resume** on engine installs, engine updates, catalog models, Hugging Face downloads, and quickstart. Paused jobs remain visible when you leave and reopen Local Models. Pause stops the transfer at a chunk boundary; unpacking, verification, and server activation are separate phases.
 

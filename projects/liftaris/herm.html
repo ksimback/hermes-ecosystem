@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>liftaris/herm — Hermes Agent Workspaces &amp; GUIs | Hermes Atlas</title>
-<meta name="description" content="Herm is a terminal user interface and dashboard for the Hermes Agent gateway. It provides an operator-focused interface for chatting, managing sessions, and…">
+<meta name="description" content="Herm is a terminal dashboard and chat interface for Hermes Agent, built with OpenTUI and Bun. It supports chatting and session management, inspecting Hermes…">
 <link rel="canonical" href="https://hermesatlas.com/projects/liftaris/herm">
 <meta property="og:title" content="liftaris/herm — Hermes Atlas">
-<meta property="og:description" content="Herm is a terminal user interface and dashboard for the Hermes Agent gateway. It provides an operator-focused interface for chatting, managing sessions, and…">
+<meta property="og:description" content="Herm is a terminal dashboard and chat interface for Hermes Agent, built with OpenTUI and Bun. It supports chatting and session management, inspecting Hermes…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/liftaris/herm">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="liftaris/herm — Hermes Atlas">
-<meta name="twitter:description" content="Herm is a terminal user interface and dashboard for the Hermes Agent gateway. It provides an operator-focused interface for chatting, managing sessions, and…">
+<meta name="twitter:description" content="Herm is a terminal dashboard and chat interface for Hermes Agent, built with OpenTUI and Bun. It supports chatting and session management, inspecting Hermes…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=herm&amp;subtitle=The+Hermes+TUI+built+with+OpenTUI&amp;kind=project+%C2%B7+workspaces">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/liftaris/herm#software",
   "name": "herm",
-  "description": "Herm is a terminal user interface and dashboard for the Hermes Agent gateway. It provides an operator-focused interface for chatting, managing sessions, and overseeing Hermes home components like skills and toolsets.",
+  "description": "Herm is a terminal dashboard and chat interface for Hermes Agent, built with OpenTUI and Bun. It supports chatting and session management, inspecting Hermes home settings and operational surfaces, and managing kanban work without leaving the terminal.",
   "url": "https://hermesatlas.com/projects/liftaris/herm",
   "codeRepository": "https://github.com/liftaris/herm",
   "applicationCategory": "DesktopEnhancementApplication",
@@ -47,7 +47,7 @@
     "name": "liftaris",
     "url": "https://github.com/liftaris"
   },
-  "dateModified": "2026-07-29T08:24:03.000Z",
+  "dateModified": "2026-10-24T05:15:47.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">255·repos</span>
+    <span id="meta-count">285·repos</span>
     <span id="meta-version">hermes·v0.21.5</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-07-29</span>
+    <span><span class="meta-label">updated</span>2026-10-24</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Herm is a terminal user interface and dashboard for the Hermes Agent gateway. It provides an operator-focused interface for chatting, managing sessions, and overseeing Hermes home components like skills and toolsets.</p>
+    <p class="summary-text">Herm is a terminal dashboard and chat interface for Hermes Agent, built with OpenTUI and Bun. It supports chatting and session management, inspecting Hermes home settings and operational surfaces, and managing kanban work without leaving the terminal.</p>
     <ul class="summary-highlights">
-      <li>Provides a TUI for chatting and managing Hermes Agent sessions.</li>
-      <li>Includes a kanban board for agentic work and task management.</li>
-      <li>Supports managing profiles, skills, cron jobs, and toolsets.</li>
+      <li>Connects to the Hermes Agent gateway.</li>
+      <li>Includes tabs for profiles, sessions, skills, cron, and memory.</li>
+      <li>Provides kanban boards, task details, diagnostics, and dispatch controls.</li>
     </ul>
   </div>
 </section>
@@ -197,8 +197,10 @@ bun add -g herm-tui@next   # bleeding edge, every dev push
 <pre><code class="language-bash">herm       # fresh session
 herm -c    # resume last session
 </code></pre>
-<p>Attach to an already-running Hermes dashboard instead of spawning a local
-gateway subprocess:</p>
+<p>Herm attaches to the current profile's running Hermes gateway by default. If no
+owner is running, it uses <code>hermes gateway ensure</code> to start one. It never stops or
+restarts an existing owner. Closing Herm detaches the view without ending its work.</p>
+<p>Use an explicit remote dashboard instead:</p>
 <pre><code class="language-bash">herm --gateway-url 'ws://127.0.0.1:9119/api/ws?token=...'
 </code></pre>
 <p>HTTP(S) dashboard URLs are normalized to WS(S) and <code>/api/ws</code> is appended after
@@ -293,8 +295,7 @@ internals or unexported source paths.</p>
 <li>Press <code>Ctrl+K</code> for the command palette.</li>
 <li>Type <code>/</code> for the slash popover.</li>
 <li>Type <code>/theme</code> to browse built-in themes.</li>
-<li>Type <code>/keys</code> to view and rebind keybindings, including OpenCode-compatible
-bindings.</li>
+<li>Type <code>/keys</code> to view and rebind keybindings.</li>
 <li>Use <code>Tab</code> / <code>Shift+Tab</code> to move between top-level tabs. Arrow keys navigate
 within a tab.</li>
 </ul>
@@ -336,11 +337,11 @@ runtime Herm operates</li>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/outsourc-e/hermes-workspace">
-        <div class="stars">★ 6.7K</div>
+        <div class="stars">★ 6.8K</div>
         <div class="name"><span class="org">outsourc-e /</span> hermes-workspace</div>
       </a>
       <a class="related-row" href="/projects/fathah/hermes-desktop">
-        <div class="stars">★ 14.4K</div>
+        <div class="stars">★ 14.5K</div>
         <div class="name"><span class="org">fathah /</span> hermes-desktop</div>
       </a>
       <a class="related-row" href="/projects/sanchomuzax/hermes-webui">
@@ -348,7 +349,7 @@ runtime Herm operates</li>
         <div class="name"><span class="org">sanchomuzax /</span> hermes-webui</div>
       </a>
       <a class="related-row" href="/projects/Euraika-Labs/pan-ui">
-        <div class="stars">★ 97</div>
+        <div class="stars">★ 100</div>
         <div class="name"><span class="org">Euraika-Labs /</span> pan-ui</div>
       </a>
       <a class="related-row" href="/projects/abundantbeing/hermes-browser-extension">
@@ -364,7 +365,7 @@ runtime Herm operates</li>
         <div class="name"><span class="org">Felix-Forever /</span> hermes-agent-desktop</div>
       </a>
       <a class="related-row" href="/projects/jazzyalex/agent-sessions">
-        <div class="stars">★ 898</div>
+        <div class="stars">★ 916</div>
         <div class="name"><span class="org">jazzyalex /</span> agent-sessions</div>
       </a>
     </div>

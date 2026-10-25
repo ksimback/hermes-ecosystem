@@ -586,39 +586,19 @@ Firecrawl browser session TTL in seconds (default: 300)
 
 `BROWSER_CDP_URL`
 
-Chrome DevTools Protocol URL for local browser (set via `/browser connect`, e.g. `ws://localhost:9222`)
+Chrome DevTools Protocol endpoint the browser tools attach to instead of launching Chromium (set via `/browser connect`, e.g. `ws://localhost:9222`; same as `browser.cdp_url`)
 
-`CAMOFOX_URL`
+`CAMOFOX_*`
 
-Camofox local anti-detection browser server address (default: `http://localhost:9377`). Address only — it does not select Camofox as the backend; pick Camofox in `hermes tools` (`browser.cloud_provider: camofox`)
-
-`CAMOFOX_API_KEY`
-
-Optional bearer token sent as Authorization header to a remote/authenticated Camofox server
-
-`CAMOFOX_USER_ID`
-
-Optional externally managed Camofox user ID for shared visible sessions
-
-`CAMOFOX_SESSION_KEY`
-
-Optional Camofox session key used when creating tabs for `CAMOFOX_USER_ID`
-
-`CAMOFOX_ADOPT_EXISTING_TAB`
-
-Set to `true` to reuse an existing Camofox tab before creating a new one
+Read only by the Camofox plugin (`hermes plugins install camofox`); core Hermes ignores them.
 
 `BROWSER_INACTIVITY_TIMEOUT`
 
 Browser session inactivity timeout in seconds
 
-`AGENT_BROWSER_ARGS`
+`AGENT_BROWSER_*`
 
-Extra Chromium launch flags (comma- or newline-separated). Hermes auto-injects `--no-sandbox,--disable-dev-shm-usage` when running as root or on AppArmor-restricted unprivileged user namespaces (Ubuntu 23.10+, DGX Spark, many container images); set this manually only to override or add other flags.
-
-`AGENT_BROWSER_ENGINE`
-
-Local browser engine: `auto` (default — Chromium-family via CDP), `lightpanda` (Browser Use mode spawns `lightpanda serve`; the built-in tools pass `--engine lightpanda` to agent-browser), or `chrome`. Same as `browser.engine` in config.yaml.
+No longer read. On update, values in the profile's `.env` are copied into config when the key is unset (`browser.engine: auto` and `browser.headed: false` count as unset; a relative `AGENT_BROWSER_PROFILE` becomes an absolute path): `AGENT_BROWSER_EXECUTABLE_PATH` → `browser.executable_path`, `AGENT_BROWSER_PROFILE` → `browser.user_data_dir`, `AGENT_BROWSER_ARGS` → `browser.chromium_args`, `AGENT_BROWSER_HEADED` → `browser.headed`, `AGENT_BROWSER_ENGINE` → `browser.engine`.
 
 `FAL_KEY`
 
@@ -626,7 +606,7 @@ Image generation ([fal.ai](https://fal.ai/))
 
 `KREA_API_KEY`
 
-Krea API key for Krea 2 image generation ([krea.ai](https://krea.ai/))
+Krea API key for Krea 3 and Krea 2 image generation ([krea.ai](https://krea.ai/))
 
 `GROQ_API_KEY`
 
@@ -780,7 +760,7 @@ Tenor API key for GIF search.
 
 ### Langfuse Observability
 
-Environment variables for the bundled [`observability/langfuse`](/docs/user-guide/features/built-in-plugins#observabilitylangfuse) plugin. Set these in `~/.hermes/.env`. The plugin must also be enabled (`hermes plugins enable observability/langfuse`, or check the box in `hermes plugins`) before any of these take effect.
+Environment variables for the official [`langfuse`](https://github.com/NousResearch/hermes-official-plugins/tree/main/langfuse) catalog plugin (formerly bundled as `observability/langfuse`). Set these in `~/.hermes/.env`. The plugin must be installed (`hermes plugins install langfuse`) before any of these take effect.
 
 Variable
 
@@ -817,6 +797,10 @@ Per-field truncation for serialized payloads (default: `12000`)
 `HERMES_LANGFUSE_MAX_DEPTH`
 
 Nesting depth kept in captured tool inputs/outputs before values become `<max-depth>` (default: `4`; invalid values warn and keep the default)
+
+`HERMES_LANGFUSE_CAPTURE`
+
+Content capture mode: `metadata` (no content), `sanitized` (default: secret redaction + truncation) or `full` (truncation only)
 
 `HERMES_LANGFUSE_DEBUG`
 
@@ -858,7 +842,7 @@ Description
 
 `TERMINAL_ENV`
 
-Backend: `local`, `docker`, `ssh`, `singularity`, `modal`, `daytona`, `vercel_sandbox`
+Backend: `local`, `docker`, `ssh`, `modal`, `daytona`, `vercel_sandbox`, or a plugin backend (`singularity`)
 
 `HERMES_DOCKER_BINARY`
 
@@ -890,7 +874,7 @@ Advanced opt-in: mount the launch cwd into Docker `/workspace` (`true`/`false`, 
 
 `TERMINAL_SINGULARITY_IMAGE`
 
-Singularity image or `.sif` path
+Singularity image or `.sif` path (read by the [`singularity` plugin](https://github.com/NousResearch/hermes-official-plugins/tree/main/singularity))
 
 `TERMINAL_MODAL_IMAGE`
 
@@ -944,7 +928,7 @@ SSH port (default: 22)
 
 Path to private key
 
-## Container Resources (Docker, Singularity, Modal, Daytona)
+## Container Resources (Docker, Modal, Daytona, container plugin backends)
 
 Variable
 
@@ -2660,7 +2644,7 @@ Max concurrent image **encode/resize** bursts across the whole process (override
 
 `HERMES_RESTART_DRAIN_TIMEOUT`
 
-Gateway: seconds to wait for active runs to drain on `/restart` before forcing the restart (default: `900`).
+Gateway: overrides `agent.restart_drain_timeout`, the seconds in-flight chat turns may keep running once the gateway stops or restarts before they are interrupted (default: `0`, interrupt at once). See [Gateway Restart Drain](/docs/user-guide/configuration#gateway-restart-drain).
 
 `HERMES_GATEWAY_PLATFORM_CONNECT_TIMEOUT`
 
@@ -2780,7 +2764,7 @@ Skip auto-injection of `AGENTS.md`, `SOUL.md`, `.cursorrules`, memory, and prelo
 
 `HERMES_SAFE_MODE`
 
-Troubleshooting mode: disable ALL customizations — skips plugin discovery, MCP server loading, and shell-hook registration. Set automatically by `--safe-mode` (which also sets the two flags above).
+Legacy in-process troubleshooting switch: skips plugin discovery, MCP server loading, and shell-hook registration for that process. `hermes chat --safe-mode` no longer sets it — the gateway freezes the safe policy into the session and executes it in an isolated worker instead, so the running daemon's environment is never mutated.
 
 `HERMES_TOOL_PROGRESS`
 
@@ -2808,7 +2792,7 @@ Set by the kanban dispatcher when spawning a worker (task UUID). Workers and the
 
 `HERMES_ACP_SKIP_CONFIGURED_MCP`
 
-Set by an [ACP host](/docs/user-guide/features/acp#host-integration) on the Hermes subprocess it spawns. `1` skips starting the globally configured `config.yaml` MCP servers before the ACP JSON-RPC loop, for hosts that pass the session's MCP servers through `session/new` themselves. Servers supplied by the ACP session are still registered; any other value keeps the default. Don't set manually.
+Obsolete. No longer read, and has no effect. `hermes acp` is a viewer of the gateway daemon and never starts `config.yaml` MCP servers itself. The gateway starts its profile's `mcp_servers` at boot (filtered for ACP by `platform_toolsets.acp`), and the editor's `session/new` `mcpServers` are attached by the gateway either way. See [ACP host integration](/docs/user-guide/features/acp#host-integration).
 
 `HERMES_API_TIMEOUT`
 
@@ -3076,7 +3060,7 @@ API key paired with `AUXILIARY_VISION_BASE_URL`
 
 note
 
-`AUXILIARY_WEB_EXTRACT_*` variables are obsolete: `web_extract` and browser snapshots no longer use an auxiliary LLM. Long pages and snapshots are truncated deterministically with the full text stored on disk for `read_file` paging.
+`AUXILIARY_WEB_EXTRACT_*` variables are obsolete: `web_extract` no longer uses an auxiliary LLM. Long pages are truncated deterministically with the full text stored on disk for `read_file` paging.
 
 For task-specific direct endpoints, Hermes uses the task's configured API key or `OPENAI_API_KEY`. It does not reuse `OPENROUTER_API_KEY` for those custom endpoints.
 

@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>liaohch3/claude-tap — Hermes Agent Developer Tools | Hermes Atlas</title>
-<meta name="description" content="claude-tap is a local proxy and trace viewer designed to inspect API traffic and agent context for AI coding agents. It allows users to view system prompts,…">
+<meta name="description" content="claude-tap is a local proxy and trace viewer for inspecting API traffic and agent context from AI coding clients. It can run a client through the proxy or…">
 <link rel="canonical" href="https://hermesatlas.com/projects/liaohch3/claude-tap">
 <meta property="og:title" content="liaohch3/claude-tap — Hermes Atlas">
-<meta property="og:description" content="claude-tap is a local proxy and trace viewer designed to inspect API traffic and agent context for AI coding agents. It allows users to view system prompts,…">
+<meta property="og:description" content="claude-tap is a local proxy and trace viewer for inspecting API traffic and agent context from AI coding clients. It can run a client through the proxy or…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/liaohch3/claude-tap">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="liaohch3/claude-tap — Hermes Atlas">
-<meta name="twitter:description" content="claude-tap is a local proxy and trace viewer designed to inspect API traffic and agent context for AI coding agents. It allows users to view system prompts,…">
+<meta name="twitter:description" content="claude-tap is a local proxy and trace viewer for inspecting API traffic and agent context from AI coding clients. It can run a client through the proxy or…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=claude-tap&amp;subtitle=Intercept+and+inspect+Coding+Agent+API+traffic+from+Claude+Code%2C+Codex+CLI%2C+Gemini+CLI%2C+Cursor+CLI%2C+OpenCode%2C+Kimi%2FKimi+Code%2C+Pi%2C+and+Hermes+in+a+local+trace+viewer.&amp;kind=project+%C2%B7+developer+tools">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/liaohch3/claude-tap#software",
   "name": "claude-tap",
-  "description": "claude-tap is a local proxy and trace viewer designed to inspect API traffic and agent context for AI coding agents. It allows users to view system prompts, conversation history, tool schemas, and token usage while keeping traces on the local machine.",
+  "description": "claude-tap is a local proxy and trace viewer for inspecting API traffic and agent context from AI coding clients. It can run a client through the proxy or listen to local app transcripts, and can export trace sessions as self-contained HTML viewers.",
   "url": "https://hermesatlas.com/projects/liaohch3/claude-tap",
   "codeRepository": "https://github.com/liaohch3/claude-tap",
   "applicationCategory": "DeveloperApplication",
@@ -47,13 +47,13 @@
     "name": "liaohch3",
     "url": "https://github.com/liaohch3"
   },
-  "dateModified": "2026-10-10T06:00:44.000Z",
+  "dateModified": "2026-10-25T21:35:44.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 3277
+    "userInteractionCount": 3309
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">255·repos</span>
+    <span id="meta-count">285·repos</span>
     <span id="meta-version">hermes·v0.21.5</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-10-10</span>
+    <span><span class="meta-label">updated</span>2026-10-25</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">claude-tap is a local proxy and trace viewer designed to inspect API traffic and agent context for AI coding agents. It allows users to view system prompts, conversation history, tool schemas, and token usage while keeping traces on the local machine.</p>
+    <p class="summary-text">claude-tap is a local proxy and trace viewer for inspecting API traffic and agent context from AI coding clients. It can run a client through the proxy or listen to local app transcripts, and can export trace sessions as self-contained HTML viewers.</p>
     <ul class="summary-highlights">
-      <li>Supports Claude Code, Codex, Gemini CLI, and Cursor CLI among others.</li>
-      <li>Provides a self-contained HTML viewer for exported trace sessions.</li>
-      <li>Redacts common authentication headers before recording.</li>
+      <li>Inspect prompts, tool calls, streaming responses, and token usage.</li>
+      <li>Compare adjacent requests to see changes in context.</li>
+      <li>Redacts common auth headers before recording traces.</li>
     </ul>
   </div>
 </section>
@@ -746,6 +746,7 @@ claude-tap --tap-no-launch --tap-port 8080
 # Disable browser auto-open for live and generated viewers
 claude-tap --tap-no-open
 </code></pre>
+<p>If <code>urlsplit()</code> raises <code>ValueError</code> while rendering a Dashboard session, the affected string and that response's text previews are shown as <code>REDACTED</code>. Existing recognition and nesting limits still apply. JSONL, compact, and HTML downloads preserve the stored capture, including any authentication-header sanitization applied during recording.</p>
 <p>In proxy-only mode, start your client in another terminal and point its base URL or proxy settings at the local proxy. Use the <a href="https://github.com/liaohch3/claude-tap/blob/main/docs/support-matrix.md">client support matrix</a> for exact wiring.</p>
 <p>When used as VSCode Claude Code's <code>claudeProcessWrapper</code>, claude-tap honors the Claude binary path passed by the extension.</p>
 <p>On macOS, <code>claude-tap build-macos-app</code> creates a local <code>Claude Tap.app</code> bundle. The app runs as a menu bar item with a compact status board, Start Monitor / Stop Monitor controls, and a shortcut to the full dashboard. Start Monitor asks for confirmation, launches local reverse proxies for Claude Code and Codex CLI, then writes temporary base-URL settings into <code>~/.claude/settings.json</code> and <code>~/.codex/config.toml</code> so newly opened sessions are captured. Codex custom providers are routed through the selected provider's <code>base_url</code>; Claude Bedrock custom gateways are routed when they do not point at native AWS Bedrock endpoints. Native AWS Bedrock endpoints are left unchanged because reverse-mode URL rewriting would break SigV4 signing. Stop Monitor restores the config files byte-for-byte. If the app is force-killed, run <code>claude-tap monitor-restore</code> to restore configs and clean up monitor processes recorded by the app.</p>
@@ -860,11 +861,11 @@ claude-tap --tap-no-open
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/colbymchenry/codegraph">
-        <div class="stars">★ 73.8K</div>
+        <div class="stars">★ 75.3K</div>
         <div class="name"><span class="org">colbymchenry /</span> codegraph</div>
       </a>
       <a class="related-row" href="/projects/Salomondiei08/oh-my-hermes">
-        <div class="stars">★ 874</div>
+        <div class="stars">★ 877</div>
         <div class="name"><span class="org">Salomondiei08 /</span> oh-my-hermes</div>
       </a>
       <a class="related-row" href="/projects/adityahimaone/hermes-agent-rtk-caveman">
@@ -876,15 +877,15 @@ claude-tap --tap-no-open
         <div class="name"><span class="org">junhoyeo /</span> tokscale</div>
       </a>
       <a class="related-row" href="/projects/joeynyc/hermes-skins">
-        <div class="stars">★ 600</div>
+        <div class="stars">★ 620</div>
         <div class="name"><span class="org">joeynyc /</span> hermes-skins</div>
       </a>
       <a class="related-row" href="/projects/AlexAI-MCP/hermes-CCC">
-        <div class="stars">★ 135</div>
+        <div class="stars">★ 134</div>
         <div class="name"><span class="org">AlexAI-MCP /</span> hermes-CCC</div>
       </a>
       <a class="related-row" href="/projects/unmodeled-tyler/vessel-browser">
-        <div class="stars">★ 136</div>
+        <div class="stars">★ 137</div>
         <div class="name"><span class="org">unmodeled-tyler /</span> vessel-browser</div>
       </a>
       <a class="related-row" href="/projects/Abruptive/Ankh.md">

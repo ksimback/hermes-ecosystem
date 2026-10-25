@@ -15,7 +15,7 @@ Not using OpenAI Codex? `hermes setup --portal` configures a non-Codex backend w
 -   Run OpenAI agent turns against your **ChatGPT subscription** (no API key required) using the same auth flow Codex CLI uses.
 -   Use **Codex's own toolset and sandbox** — `shell` for terminal/read/write/search, `apply_patch` for structured edits, `update_plan` for planning, all running inside seatbelt/landlock sandboxing.
 -   **Native Codex plugins** — Linear, GitHub, Gmail, Calendar, Canva, etc. — installed via `codex plugin` are auto-migrated and active in your Hermes session.
--   **Hermes' richer tools come along** — web\_search, web\_extract, browser automation, vision, image generation, skills, and TTS work via an MCP callback. Codex calls back into Hermes for tools it doesn't have built in.
+-   **Hermes' richer tools come along** — web\_search, web\_extract, vision, image generation, skills, and TTS work via an MCP callback. Codex calls back into Hermes for tools it doesn't have built in.
 -   **Memory and skill nudges keep working** — Codex's events are projected into Hermes' message shape so the self-improvement loop sees a normal-looking transcript.
 -   **Your Hermes persona rides along** — the composed system prompt (SOUL.md, MEMORY.md/USER.md, per-channel `system_prompt` overrides) is sent to the codex thread once as developer instructions when the thread starts, and Codex's built-in personality is disabled so it cannot compete with yours.
 
@@ -59,7 +59,6 @@ What's NOT migrated:
 Hermes registers itself as an MCP server so codex can call back for tools codex doesn't ship with. Available via the callback:
 
 -   **`web_search`** / **`web_extract`** — Firecrawl-backed; tends to be cleaner than scraping for structured content.
--   **`browser_navigate` / `browser_click` / `browser_type` / `browser_press` / `browser_snapshot` / `browser_scroll` / `browser_back` / `browser_get_images` / `browser_console` / `browser_vision`** — full browser automation via Camofox or Browserbase.
 -   **`vision_analyze`** — call a separate vision model to inspect an image (different from codex's `view_image` which loads it into the conversation).
 -   **`image_generate`** — image generation through Hermes' image\_gen plugin chain.
 -   **`skill_view` / `skills_list`** — read from Hermes' skill library.
@@ -92,7 +91,7 @@ What works inside a codex-runtime worker:
 
 -   Codex's full toolset (shell, apply\_patch, update\_plan, view\_image, web\_search) — the worker does its actual task work natively
 -   The migrated codex plugins — Linear, GitHub, etc.
--   The Hermes tool callback for browser\_\*, vision, image\_gen, skills, TTS
+-   The Hermes tool callback for web, vision, image\_gen, skills, TTS
 
 What also works because the MCP callback exposes them:
 
@@ -130,11 +129,11 @@ yes
 
 yes (via MCP callback)
 
-Browser automation (Camofox/Browserbase)
+Browser automation (`browser_exec`, `browser_cdp`, `browser_dialog`, `browser_vault`)
 
 yes
 
-yes (via MCP callback)
+not available — not exposed through the MCP callback
 
 `vision_analyze`, `image_generate`
 
@@ -604,7 +603,7 @@ What's NOT migrated:
 
 ## Hermes tool callback (the new MCP server)
 
-Codex's built-in toolset covers shell/file ops/patches but doesn't have web search, browser automation, vision, image generation, etc. To keep those usable in a codex turn, Hermes registers itself as an MCP server in `~/.codex/config.toml`:
+Codex's built-in toolset covers shell/file ops/patches but doesn't have web search, vision, image generation, etc. To keep those usable in a codex turn, Hermes registers itself as an MCP server in `~/.codex/config.toml`:
 
 ```
 [mcp_servers.hermes-tools]
@@ -617,9 +616,9 @@ tool_timeout_sec = 600.0
 
 When the model calls `web_search` (or another exposed Hermes tool), codex spawns the `hermes_tools_mcp_server` subprocess via stdio, the request is dispatched through `model_tools.handle_function_call()`, and the result is projected back to codex like any other MCP response.
 
-**Tools available via the callback:** `web_search`, `web_extract`, `browser_navigate`, `browser_click`, `browser_type`, `browser_press`, `browser_snapshot`, `browser_scroll`, `browser_back`, `browser_get_images`, `browser_console`, `browser_vision`, `vision_analyze`, `image_generate`, `skill_view`, `skills_list`, `text_to_speech`.
+**Tools available via the callback:** `web_search`, `web_extract`, `vision_analyze`, `image_generate`, `skill_view`, `skills_list`, `text_to_speech`.
 
-**Tools NOT available:** `delegate_task`, `memory`, `session_search`, `todo`. These need the running AIAgent context to dispatch (mid-loop state) and a stateless MCP callback can't drive them. Use the default Hermes runtime (`/codex-runtime auto`) when you need these.
+**Tools NOT available:** `delegate_task`, `memory`, `session_search`, `todo`, and the browser tools. These need the running AIAgent context to dispatch (mid-loop state) and a stateless MCP callback can't drive them. Use the default Hermes runtime (`/codex-runtime auto`) when you need these.
 
 ## Disabling
 
@@ -696,7 +695,7 @@ If you find a bug, [open an issue](https://github.com/NousResearch/hermes-agent/
                                                         ▼
         ┌──────────────────────────────────────────────────────────┐
         │  hermes_tools_mcp_server.py (subprocess on demand)        │
-        │   web_search, web_extract, browser_*, vision_analyze,    │
+        │   web_search, web_extract, vision_analyze,               │
         │   image_generate, skill_view, skills_list, text_to_speech│
         └──────────────────────────────────────────────────────────┘
 ```

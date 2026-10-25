@@ -293,7 +293,7 @@ Alias:   ~/.local/bin/work
 hermes profile alias <name> [options]
 ```
 
-Regenerates the shell alias script at `~/.local/bin/<name>`. Useful if the alias was accidentally deleted or if you need to update it after moving your Hermes installation.
+Regenerates the shell alias script at `~/.local/bin/<name>` (`<name>.bat` on Windows). Useful if the alias was accidentally deleted or if you need to update it after moving your Hermes installation.
 
 Argument / Option
 
@@ -305,7 +305,7 @@ Profile to create/update the alias for.
 
 `--remove`
 
-Remove the wrapper script instead of creating it.
+Remove the wrapper script instead of creating it. Also removes an orphan alias whose profile was deleted: pass the alias name (`hermes doctor` lists them).
 
 `--name <alias>`
 

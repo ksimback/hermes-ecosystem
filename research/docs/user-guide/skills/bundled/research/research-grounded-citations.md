@@ -65,7 +65,7 @@ Skip inline citations when the retrieval is incidental to another task — a qui
 
 ## Prerequisites
 
-None beyond the standard toolset. `scripts/sources.py` is stdlib-only Python 3. Retrieval comes from whatever is configured: `web_search`, `web_extract`, `browser_navigate`, or `terminal` (curl, CLIs).
+None beyond the standard toolset. `scripts/sources.py` is stdlib-only Python 3. Retrieval comes from whatever is configured: `web_search`, `web_extract`, `browser_exec`, or `terminal` (curl, CLIs).
 
 Ledger location: `$HERMES_HOME/cache/citations/ledger.json` (profile-aware). Override per task with `--ledger <path>` or `HERMES_CITATION_LEDGER`.
 
@@ -134,7 +134,7 @@ Check a draft's citations
 
 ① **Reset the ledger** at the start of a task that will produce a grounded answer or document. Skip the reset when continuing work whose ids are already in a draft — reusing the ledger keeps the numbering stable.
 
-② **Register every source at retrieval time.** After each `web_search` / `web_extract` / `browser_navigate` / fetch, pass the URLs to `sources.py add` (or pipe the raw JSON through `sources.py ingest`). Do this _before_ writing prose. Registering later, from memory, is the failure mode this skill exists to prevent.
+② **Register every source at retrieval time.** After each `web_search` / `web_extract` / `browser_exec` / fetch, pass the URLs to `sources.py add` (or pipe the raw JSON through `sources.py ingest`). Do this _before_ writing prose. Registering later, from memory, is the failure mode this skill exists to prevent.
 
 ③ **Write cite-while-drafting.** Place the bracketed id(s) immediately after each sentence the source supports:
 

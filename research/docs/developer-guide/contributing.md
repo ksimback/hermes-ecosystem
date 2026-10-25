@@ -63,7 +63,7 @@ Choose the highest (least-footprint) rung that correctly solves the problem:
 3.  **Service-gated tool (`check_fn`)** — needs structured params/returns AND only appears when a prerequisite is configured (Home Assistant tools, memory-provider tools). This rung gates reachability/opt-in process-wide; a capability that varies per SESSION (who is watching) is a named toolset folded in by the toolset resolver, not a `check_fn` — see `tools/AGENTS.md` § "Surface capability is a property of the SESSION".
 4.  **Plugin** — third-party/niche/user-specific; lives in `~/.hermes/plugins/` or a pip package, discovered at runtime.
 5.  **MCP server (in the catalog)** — genuinely a tool but not core-fundamental. Zero permanent core-schema footprint, reusable by any MCP host, reached via the built-in MCP client.
-6.  **New core tool** — only when fundamental, broadly useful to nearly every user, and unreachable via terminal + file or an MCP server (terminal, read\_file, web\_search, browser\_navigate).
+6.  **New core tool** — only when fundamental, broadly useful to nearly every user, and unreachable via terminal + file or an MCP server (terminal, read\_file, web\_search, browser\_exec).
 
 ## Common contribution paths
 

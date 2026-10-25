@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>plur-ai/plur — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="PLUR is a local-first memory layer for AI agents that stores memory as plain-text YAML engrams on disk, shared across MCP tools such as Claude Code, Codex, and…">
+<meta name="description" content="PLUR provides persistent, shared memory for AI agents through plain-text YAML engrams that users can inspect, correct, and delete. It runs locally and…">
 <link rel="canonical" href="https://hermesatlas.com/projects/plur-ai/plur">
 <meta property="og:title" content="plur-ai/plur — Hermes Atlas">
-<meta property="og:description" content="PLUR is a local-first memory layer for AI agents that stores memory as plain-text YAML engrams on disk, shared across MCP tools such as Claude Code, Codex, and…">
+<meta property="og:description" content="PLUR provides persistent, shared memory for AI agents through plain-text YAML engrams that users can inspect, correct, and delete. It runs locally and…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/plur-ai/plur">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="plur-ai/plur — Hermes Atlas">
-<meta name="twitter:description" content="PLUR is a local-first memory layer for AI agents that stores memory as plain-text YAML engrams on disk, shared across MCP tools such as Claude Code, Codex, and…">
+<meta name="twitter:description" content="PLUR provides persistent, shared memory for AI agents through plain-text YAML engrams that users can inspect, correct, and delete. It runs locally and…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=plur&amp;subtitle=Shared+memory+for+AI+agents&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/plur-ai/plur#software",
   "name": "plur",
-  "description": "PLUR is a local-first memory layer for AI agents that stores memory as plain-text YAML engrams on disk, shared across MCP tools such as Claude Code, Codex, and Cursor. It installs via npm packages @plur-ai/cli and @plur-ai/mcp, requires Node.js 20 or newer, and runs search locally after a one-time model download. The README reports retrieval recall of 95.6% R@5 on LongMemEval-S with its default hybrid stack.",
+  "description": "PLUR provides persistent, shared memory for AI agents through plain-text YAML engrams that users can inspect, correct, and delete. It runs locally and integrates with MCP tools, including Claude Code, Codex, and Cursor.",
   "url": "https://hermesatlas.com/projects/plur-ai/plur",
   "codeRepository": "https://github.com/plur-ai/plur",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "plur-ai",
     "url": "https://github.com/plur-ai"
   },
-  "dateModified": "2026-10-07T14:45:55.000Z",
+  "dateModified": "2026-10-25T18:38:40.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 300
+    "userInteractionCount": 308
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">255·repos</span>
+    <span id="meta-count">285·repos</span>
     <span id="meta-version">hermes·v0.21.5</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -120,11 +120,11 @@
   <p class="project-desc">Shared memory for AI agents</p>
 
   <div class="meta-row">
-    <span class="stars">★ 300</span>
+    <span class="stars">★ 308</span>
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-10-07</span>
+    <span><span class="meta-label">updated</span>2026-10-25</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">PLUR is a local-first memory layer for AI agents that stores memory as plain-text YAML engrams on disk, shared across MCP tools such as Claude Code, Codex, and Cursor. It installs via npm packages @plur-ai/cli and @plur-ai/mcp, requires Node.js 20 or newer, and runs search locally after a one-time model download. The README reports retrieval recall of 95.6% R@5 on LongMemEval-S with its default hybrid stack.</p>
+    <p class="summary-text">PLUR provides persistent, shared memory for AI agents through plain-text YAML engrams that users can inspect, correct, and delete. It runs locally and integrates with MCP tools, including Claude Code, Codex, and Cursor.</p>
     <ul class="summary-highlights">
-      <li>Stores agent memory as plain-text YAML engrams on disk</li>
-      <li>Local search after one-time model download; keyword fallback</li>
-      <li>README reports 95.6% R@5 on LongMemEval-S (N=500)</li>
+      <li>Stores agent memories as plain YAML files.</li>
+      <li>Supports local search, with keyword search as a fallback.</li>
+      <li>Provides CLI setup and an MCP server.</li>
     </ul>
   </div>
 </section>
@@ -534,6 +534,49 @@ plur outbox --flush    # retry now
 <p>The same thing is available to agents as <code>plur_outbox</code> (<code>{flush: true}</code> to
 retry), and <code>plur status</code> reports the pending count. Neither surface prints the
 target URL or the token.</p>
+<h3>The folder map</h3>
+<p><code>~/.plur/folders.yaml</code> records what PLUR does in each folder, and every
+integration follows it:</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>plur: on</code></td>
+<td>Memory works here as usual</td>
+</tr>
+<tr>
+<td><code>plur: off</code></td>
+<td>PLUR does nothing here</td>
+</tr>
+<tr>
+<td><code>plur: ask</code></td>
+<td>Ask once per session</td>
+</tr>
+<tr>
+<td><code>scope: &lt;s&gt;</code></td>
+<td>Default scope for memories saved here</td>
+</tr>
+<tr>
+<td><code>trusted: true</code></td>
+<td>This folder's <code>.plur.yaml</code> may set its scope and team server</td>
+</tr>
+<tr>
+<td><code>plur: remote-only</code> + <code>scope: &lt;s&gt;</code></td>
+<td>Memories go only to the team server, in <code>&lt;s&gt;</code>; your personal memories are neither read nor written there (see the docs for what stays on disk)</td>
+</tr>
+</tbody></table>
+<pre><code>plur folders set ~/client-work --remote-only --scope group:acme/client
+plur folders set ~/private --off
+plur folders list
+</code></pre>
+<p>The file starts with a commented example of every setting, and the CLI keeps
+your comments and order when it writes. Details, including exactly what a
+remote-only folder refuses and what happens when the team server is down:
+<a href="https://github.com/plur-ai/plur/blob/main/docs/folder-map.md">docs/folder-map.md</a>.</p>
 <h3>The memory receipt</h3>
 <p><code>plur receipt</code> (and the <code>plur_receipt</code> MCP tool) show what your memory actually did — counted from PLUR's own retrieval history, never estimated:</p>
 <pre><code>Your Memory Receipt
@@ -798,7 +841,7 @@ O(N) cost this tier otherwise avoids. The adapter says so once at schema init;
 longer selected automatically.</p>
 <h3>Requirements</h3>
 <ul>
-<li><strong>Node.js 18+</strong></li>
+<li><strong>Node.js 22+</strong> (22.21+ or 24+ behind an HTTPS proxy, with <code>NODE_USE_ENV_PROXY=1</code>)</li>
 <li><strong>2GB RAM minimum</strong> — the embedding model (ONNX runtime) needs ~1GB for installation. On servers with less RAM, embeddings are skipped and search falls back to BM25 keyword matching.</li>
 </ul>
 <h3>Development</h3>
@@ -830,11 +873,11 @@ pnpm install &amp;&amp; pnpm build &amp;&amp; pnpm test
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 67.0K</div>
+        <div class="stars">★ 67.8K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 48.8K</div>
+        <div class="stars">★ 53.7K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -842,23 +885,23 @@ pnpm install &amp;&amp; pnpm build &amp;&amp; pnpm test
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 381</div>
+        <div class="stars">★ 382</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
-        <div class="stars">★ 210</div>
+        <div class="stars">★ 212</div>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/Signet-AI/signetai">
-        <div class="stars">★ 305</div>
+        <div class="stars">★ 313</div>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
-        <div class="stars">★ 51</div>
+        <div class="stars">★ 52</div>
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
       <a class="related-row" href="/projects/garrytan/gbrain">
-        <div class="stars">★ 30.8K</div>
+        <div class="stars">★ 31.2K</div>
         <div class="name"><span class="org">garrytan /</span> gbrain</div>
       </a>
     </div>

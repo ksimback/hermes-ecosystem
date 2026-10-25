@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hermes-labs-ai/little-canary — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="Little Canary screens untrusted prompts for signs of injection by sending the text to a powerless canary model with no tools or credentials, then inspecting…">
+<meta name="description" content="Little Canary screens untrusted text by sending it to a powerless canary model and checking whether the input changed its behavior. It returns PASS, FLAG, or…">
 <link rel="canonical" href="https://hermesatlas.com/projects/hermes-labs-ai/little-canary">
 <meta property="og:title" content="hermes-labs-ai/little-canary — Hermes Atlas">
-<meta property="og:description" content="Little Canary screens untrusted prompts for signs of injection by sending the text to a powerless canary model with no tools or credentials, then inspecting…">
+<meta property="og:description" content="Little Canary screens untrusted text by sending it to a powerless canary model and checking whether the input changed its behavior. It returns PASS, FLAG, or…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/hermes-labs-ai/little-canary">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="hermes-labs-ai/little-canary — Hermes Atlas">
-<meta name="twitter:description" content="Little Canary screens untrusted prompts for signs of injection by sending the text to a powerless canary model with no tools or credentials, then inspecting…">
+<meta name="twitter:description" content="Little Canary screens untrusted text by sending it to a powerless canary model and checking whether the input changed its behavior. It returns PASS, FLAG, or…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=little-canary&amp;subtitle=Detects+prompt+injection+by+its+effect+on+a+sacrificial+canary+model%2C+not+just+pattern+matching%3A+untrusted+input+hits+a+powerless+model+first%2C+a+behavioral+check+reads+the+residue%2C&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/hermes-labs-ai/little-canary#software",
   "name": "little-canary",
-  "description": "Little Canary screens untrusted prompts for signs of injection by sending the text to a powerless canary model with no tools or credentials, then inspecting the model's response for behavioral changes. It returns a PASS, FLAG, or BLOCK verdict for the host to enforce, with structural pattern checks running alongside. The README states the project publishes its corpora and method rather than a detection-rate headline.",
+  "description": "Little Canary screens untrusted text by sending it to a powerless canary model and checking whether the input changed its behavior. It returns PASS, FLAG, or BLOCK verdicts for a host to enforce, and also runs structural checks for known suspicious patterns.",
   "url": "https://hermesatlas.com/projects/hermes-labs-ai/little-canary",
   "codeRepository": "https://github.com/hermes-labs-ai/little-canary",
   "applicationCategory": "BrowserApplication",
@@ -47,13 +47,13 @@
     "name": "hermes-labs-ai",
     "url": "https://github.com/hermes-labs-ai"
   },
-  "dateModified": "2026-10-08T09:56:37.000Z",
+  "dateModified": "2026-10-24T08:54:24.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 39
+    "userInteractionCount": 41
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">255·repos</span>
+    <span id="meta-count">285·repos</span>
     <span id="meta-version">hermes·v0.21.5</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -120,11 +120,11 @@
   <p class="project-desc">Detects prompt injection by its effect on a sacrificial canary model, not just pattern matching: untrusted input hits a powerless model first, a behavioral check reads the residue, and it returns block, flag, or pass before your primary model acts. Inbound preflight sensor, not a guarantee.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 39</span>
+    <span class="stars">★ 41</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-10-08</span>
+    <span><span class="meta-label">updated</span>2026-10-24</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Little Canary screens untrusted prompts for signs of injection by sending the text to a powerless canary model with no tools or credentials, then inspecting the model's response for behavioral changes. It returns a PASS, FLAG, or BLOCK verdict for the host to enforce, with structural pattern checks running alongside. The README states the project publishes its corpora and method rather than a detection-rate headline.</p>
+    <p class="summary-text">Little Canary screens untrusted text by sending it to a powerless canary model and checking whether the input changed its behavior. It returns PASS, FLAG, or BLOCK verdicts for a host to enforce, and also runs structural checks for known suspicious patterns.</p>
     <ul class="summary-highlights">
-      <li>Sends untrusted text to a canary model first</li>
-      <li>Returns PASS, FLAG, or BLOCK verdicts</li>
-      <li>Structural checks run alongside behavioral screening</li>
+      <li>StructuralFilter checks known patterns without a model or network call.</li>
+      <li>Live canary screening can use a local model through Ollama.</li>
+      <li>The project publishes evaluation corpora and reproduction commands.</li>
     </ul>
   </div>
 </section>
@@ -313,7 +313,7 @@ little-canary demo --live --backend ollama --model qwen2.5:1.5b --endpoint http:
   -d '{"text":"untrusted text"}'
 </code></pre>
 <p>The service binds to loopback only and exposes <code>GET /health</code>. Its JSON response exposes <code>safe</code>, <code>degraded</code>, <code>canary_status</code>, <code>analysis_status</code>, and optional <code>advisory</code> data. Read those fields before forwarding input; the disposition labels below summarize CLI and host behavior rather than a JSON <code>Result</code> field.</p>
-<p>Python apps can skip HTTP and call <code>SecurityPipeline.check()</code> directly — see the <a href="https://github.com/hermes-labs-ai/little-canary/blob/main/examples/">example integrations</a>.</p>
+<p>Python apps can skip HTTP and call <code>SecurityPipeline.check()</code> directly — see the <a href="https://github.com/hermes-labs-ai/little-canary/tree/main/examples">example integrations</a>.</p>
 <p>The default remains <code>qwen2.5:1.5b</code>. Select an installed model with <code>serve --canary-model</code>, <code>demo --model</code>, or Python's <code>SecurityPipeline(canary_model=...)</code>; the Hermes Agent plugin reads <code>LITTLE_CANARY_MODEL</code>. Locally exercised alternatives are <code>qwen3.5:2b-q4_K_M</code>, <code>LiquidAI/lfm2.5-1.2b-instruct:q4_k_m</code>, and <code>gemma3:1b</code>. Pull weights with <code>ollama pull &lt;tag&gt;</code> and check each model's license. These are selectable models, not performance guarantees; see the <a href="https://github.com/hermes-labs-ai/little-canary/blob/main/benchmarks/README.md">evaluation guidance</a>.</p>
 <h3>Pre-screen a batch of documents or messages</h3>
 <blockquote>
@@ -398,17 +398,17 @@ Failed canary coverage can include a <code>coverage_reason</code> in the layer r
 </thead>
 <tbody><tr>
 <td><strong>Claude Code</strong></td>
-<td><a href="https://github.com/hermes-labs-ai/little-canary/blob/main/plugins/claude-code">Plugin</a> screens <code>UserPromptSubmit</code></td>
+<td><a href="https://github.com/hermes-labs-ai/little-canary/tree/main/plugins/claude-code">Plugin</a> screens <code>UserPromptSubmit</code></td>
 <td>Yes</td>
 </tr>
 <tr>
 <td><strong>OpenCode</strong></td>
-<td><a href="https://github.com/hermes-labs-ai/little-canary/blob/main/plugins/opencode">Plugin</a> flags submitted <code>chat.message</code> text</td>
+<td><a href="https://github.com/hermes-labs-ai/little-canary/tree/main/plugins/opencode">Plugin</a> flags submitted <code>chat.message</code> text</td>
 <td>No — advisory warning only</td>
 </tr>
 <tr>
 <td><strong>Pi</strong></td>
-<td><a href="https://github.com/hermes-labs-ai/little-canary/blob/main/plugins/pi">Extension</a> screens submitted <code>input</code></td>
+<td><a href="https://github.com/hermes-labs-ai/little-canary/tree/main/plugins/pi">Extension</a> screens submitted <code>input</code></td>
 <td>Yes — when the service returns an unsafe verdict</td>
 </tr>
 <tr>
@@ -423,7 +423,7 @@ Failed canary coverage can include a <code>coverage_reason</code> in the layer r
 </tr>
 <tr>
 <td><strong>OpenClaw</strong></td>
-<td><a href="https://github.com/hermes-labs-ai/little-canary/blob/main/plugins/openclaw">Native plugin</a>, install below</td>
+<td><a href="https://github.com/hermes-labs-ai/little-canary/tree/main/plugins/openclaw">Native plugin</a>, install below</td>
 <td>Yes — current prompt only, not history or tool results</td>
 </tr>
 <tr>
@@ -501,15 +501,15 @@ for verification, cache fallback, model selection, and hook limits.</p>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
-        <div class="stars">★ 426</div>
+        <div class="stars">★ 436</div>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 526</div>
+        <div class="stars">★ 536</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
-        <div class="stars">★ 48</div>
+        <div class="stars">★ 49</div>
         <div class="name"><span class="org">FahrenheitResearch /</span> hermes-weather-plugin</div>
       </a>
       <a class="related-row" href="/projects/42-evey/evey-bridge-plugin">
@@ -521,7 +521,7 @@ for verification, cache fallback, model selection, and hook limits.</p>
         <div class="name"><span class="org">nativ3ai /</span> hermes-payguard</div>
       </a>
       <a class="related-row" href="/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server">
-        <div class="stars">★ 399</div>
+        <div class="stars">★ 401</div>
         <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
       </a>
       <a class="related-row" href="/projects/stainlu/hermes-labyrinth">

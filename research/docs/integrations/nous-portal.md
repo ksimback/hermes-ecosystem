@@ -122,7 +122,7 @@ High-quality TTS without a separate OpenAI key. Enables [voice mode](/docs/user-
 
 Browser Use
 
-Headless Chromium sessions for `browser_navigate`, `browser_click`, `browser_type`, `browser_vision`. No Browserbase account needed.
+Headless cloud Chromium sessions that `browser_exec` drives over CDP. No Browserbase account needed.
 
 **Cloud terminal sandbox**
 

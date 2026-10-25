@@ -438,11 +438,11 @@ Add MCP tool servers
 
 See [MCP Servers](#mcp-servers)
 
-Enable Discord/Telegram/Slack
+Add an optional extra the package does not ship
 
 `extraDependencyGroups`
 
-`[ "messaging" ]`
+`[ "google-meet" ]`
 
 Mount host directories into container
 
@@ -836,7 +836,7 @@ macOS has no equivalent option. A `launchd` agent with `RunAtLoad` starts at log
 
 ### Running the Desktop / Dashboard Backend
 
-`gateway.enable` runs the messaging gateway for Telegram, Discord, Slack and the other platforms. Hermes Desktop and the web dashboard connect to a _different_ process, which is `hermes serve` or `hermes dashboard`. `backend.mode` runs that process with the gateway:
+`gateway.enable` runs the messaging gateway for Telegram, Discord, Slack and the other platforms. A Hermes Desktop **remote** connection and the web dashboard connect to a _different_ process, which is `hermes serve` or `hermes dashboard`. (A Desktop running on the same host attaches to the gateway itself via `hermes gateway ensure`.) `backend.mode` runs that process with the gateway:
 
 ```
 {
@@ -1048,12 +1048,14 @@ The package's `site-packages` is added to PYTHONPATH in the hermes wrapper. `imp
 
 ### Optional Dependency Groups (`extraDependencyGroups`)
 
-For optional extras declared in hermes-agent's `pyproject.toml`, use `extraDependencyGroups` to include them in the sealed venv at build time. This is required for any extra not in the default `[all]` set — on Nix, runtime installation into the read-only store is not possible.
+For optional extras declared in hermes-agent's `pyproject.toml`, use `extraDependencyGroups` to include them in the sealed venv at build time. This is required for any extra the selected package does not already ship — on Nix, runtime installation into the read-only store is not possible.
 
 ```
-# Enable Discord, Telegram, Slack
-services.hermes-agent.extraDependencyGroups = [ "messaging" ];
+# Add Google Meet support on top of what the package ships
+services.hermes-agent.extraDependencyGroups = [ "google-meet" ];
 ```
+
+`extraDependencyGroups` and `extraPythonPackages` **add to** the groups the selected package ships; they never replace them. The `default` package already ships `messaging`, `voice`, `exa` and the other groups in the table below, so naming one of those changes nothing. The same holds for `pkgs.hermes-agent.override { extraDependencyGroups = [ ... ]; }`. For a smaller build, start from a smaller package: `package = inputs.hermes-agent.packages.${system}.minimal;` (or `#messaging`), or `.override { defaultDependencyGroups = [ ]; }` to drop the shipped groups and list only the ones you want.
 
 These groups join the core dependency resolution at build time. Conflicting requirements can still fail that resolution. The table lists common groups; `pyproject.toml` is authoritative for the complete list and platform markers.
 
@@ -1170,7 +1172,9 @@ External flakes can override the package directly:
     nixpkgs.overlays = [ hermes-agent.overlays.default ];
     # Then:
     #   pkgs.hermes-agent.override { extraPythonPackages = [...]; }
-    #   pkgs.hermes-agent.override { extraDependencyGroups = [ "voice" ]; }
+    #   pkgs.hermes-agent.override { extraDependencyGroups = [ "google-meet" ]; }
+    # Both add to the groups the default package ships. To drop those:
+    #   pkgs.hermes-agent.override { defaultDependencyGroups = [ ]; }
   };
 }
 ```
@@ -1196,7 +1200,7 @@ A build-time collision check prevents plugin packages from shadowing core hermes
 
 ### Dev Shell
 
-The flake provides an editable Python environment with the lock-derived interpreter and the `dev` dependency group. `HERMES_PYTHON` points to its interpreter. It does not install Python dependencies into a repository-local `.venv`. The shell also provides Node.js and runtime tools. Its npm hook refreshes JS workspaces when their inputs change.
+The flake provides an editable Python venv with the `dev` dependency group, running on the interpreter `pm/lock.json` pins. `HERMES_PYTHON` and `VIRTUAL_ENV` point at it, and it needs no `PYTHONPATH`. It does not install Python dependencies into a repository-local `.venv`. The shell also provides Node.js and runtime tools. Its npm hook refreshes JS workspaces when their inputs change.
 
 ```
 cd hermes-agent
@@ -1589,7 +1593,7 @@ Python packages added to PYTHONPATH for entry-point plugin discovery. Use the se
 
 `[]`
 
-pyproject.toml optional extras to include in the sealed venv (e.g. `["voice"]`). Resolved by uv — no collisions
+pyproject.toml optional extras added to the groups `package` already ships (e.g. `["google-meet"]`). Resolved by uv — no collisions
 
 `restart`
 
@@ -1609,7 +1613,7 @@ The systemd `RestartSec=` value. macOS does not use it.
 
 ### Backend (`hermes serve` / `hermes dashboard`)
 
-This option runs the process that Hermes Desktop and the web dashboard connect to, with the gateway. You cannot use it with `container.enable`.
+This option runs the process that a remote Hermes Desktop connection and the web dashboard connect to, with the gateway. You cannot use it with `container.enable`.
 
 Option
 

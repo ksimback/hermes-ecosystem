@@ -17,7 +17,7 @@ Model provider plugins are the third kind of **provider plugin**. The others are
 3.  **Installed plugins** — `$HERMES_HOME/plugins/<name>/` (where `hermes plugins install owner/repo` clones) — imported only when `plugin.yaml` declares `kind: model-provider`; every other kind there belongs to the general PluginManager
 4.  **Legacy single-file** — `<repo>/providers/<name>.py` — back-compat for out-of-tree editable installs
 
-Steps 2 and 3 are **per profile home**: one process that serves several profiles (the multiplex gateway, the Desktop app's `hermes serve`) resolves the plugins of whichever profile's `$HERMES_HOME` is bound at lookup time, and a plugin installed in one profile is not visible from another. Install the plugin in every profile that should use it (`hermes -p <profile> plugins install ...`).
+Steps 2 and 3 are **per profile home**: one process that serves several profiles (the multiplex gateway a local Desktop attaches to, a `hermes serve` backend) resolves the plugins of whichever profile's `$HERMES_HOME` is bound at lookup time, and a plugin installed in one profile is not visible from another. Install the plugin in every profile that should use it (`hermes -p <profile> plugins install ...`).
 
 **User plugins override bundled plugins of the same name** because `register_provider()` is last-writer-wins. Drop a `$HERMES_HOME/plugins/model-providers/gmi/` directory to replace the built-in GMI profile without touching the repo.
 
@@ -205,6 +205,12 @@ Default inference endpoint
 str
 
 Explicit catalog URL (falls back to `{base_url}/models`)
+
+`supports_streaming`
+
+`bool | None`
+
+`None` (default) preserves transport defaults; `True` opts streaming-capable `external_process` clients into host streaming; `False` disables provider streaming. ACP URLs and session-level streaming disables still take precedence. Only opt in when the client implements the selected API mode's streaming contract, including cancellation and cleanup.
 
 `auth_type`
 

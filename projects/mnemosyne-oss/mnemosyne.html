@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>mnemosyne-oss/mnemosyne — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Mnemosyne is a SQLite-backed memory layer for AI agents that installs via pip and requires no external services. It works with MCP clients such as Cursor,…">
+<meta name="description" content="Mnemosyne is a Python memory layer for AI agents, using SQLite and requiring no external services. It offers a Python API, a command-line interface, and MCP…">
 <link rel="canonical" href="https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne">
 <meta property="og:title" content="mnemosyne-oss/mnemosyne — Hermes Atlas">
-<meta property="og:description" content="Mnemosyne is a SQLite-backed memory layer for AI agents that installs via pip and requires no external services. It works with MCP clients such as Cursor,…">
+<meta property="og:description" content="Mnemosyne is a Python memory layer for AI agents, using SQLite and requiring no external services. It offers a Python API, a command-line interface, and MCP…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="mnemosyne-oss/mnemosyne — Hermes Atlas">
-<meta name="twitter:description" content="Mnemosyne is a SQLite-backed memory layer for AI agents that installs via pip and requires no external services. It works with MCP clients such as Cursor,…">
+<meta name="twitter:description" content="Mnemosyne is a Python memory layer for AI agents, using SQLite and requiring no external services. It offers a Python API, a command-line interface, and MCP…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=mnemosyne&amp;subtitle=Zero-cloud+AI+memory+that+works+everywhere.+SQLite-backed.+One+pure-Python+dependency.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne#software",
   "name": "mnemosyne",
-  "description": "Mnemosyne is a SQLite-backed memory layer for AI agents that installs via pip and requires no external services. It works with MCP clients such as Cursor, Claude Code, Codex, and Windsurf, as well as OpenWebUI, OpenClaw, and Python agents through a direct SDK. The README reports BEAM benchmark results measured on v3.0.0 and notes that LongMemEval results are pending.",
+  "description": "Mnemosyne is a Python memory layer for AI agents, using SQLite and requiring no external services. It offers a Python API, a command-line interface, and MCP support, with integrations documented for several agent platforms.",
   "url": "https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne",
   "codeRepository": "https://github.com/mnemosyne-oss/mnemosyne",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "mnemosyne-oss",
     "url": "https://github.com/mnemosyne-oss"
   },
-  "dateModified": "2026-10-12T01:39:44.000Z",
+  "dateModified": "2026-10-25T13:07:54.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 3390
+    "userInteractionCount": 3517
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">255·repos</span>
+    <span id="meta-count">285·repos</span>
     <span id="meta-version">hermes·v0.21.5</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -120,11 +120,11 @@
   <p class="project-desc">Zero-cloud AI memory that works everywhere. SQLite-backed. One pure-Python dependency.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 3.4K</span>
+    <span class="stars">★ 3.5K</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-10-12</span>
+    <span><span class="meta-label">updated</span>2026-10-25</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Mnemosyne is a SQLite-backed memory layer for AI agents that installs via pip and requires no external services. It works with MCP clients such as Cursor, Claude Code, Codex, and Windsurf, as well as OpenWebUI, OpenClaw, and Python agents through a direct SDK. The README reports BEAM benchmark results measured on v3.0.0 and notes that LongMemEval results are pending.</p>
+    <p class="summary-text">Mnemosyne is a Python memory layer for AI agents, using SQLite and requiring no external services. It offers a Python API, a command-line interface, and MCP support, with integrations documented for several agent platforms.</p>
     <ul class="summary-highlights">
-      <li>SQLite-backed memory layer; one pure-Python dependency</li>
-      <li>Integrates via MCP, native providers, or Python SDK</li>
-      <li>BEAM results reported for v3.0.0; LongMemEval pending</li>
+      <li>Stores and recalls memories in SQLite.</li>
+      <li>Supports MCP clients and direct Python use.</li>
+      <li>Includes CLI commands for memory operations and sync.</li>
     </ul>
   </div>
 </section>
@@ -813,7 +813,7 @@ hermes config set memory.provider mnemosyne
 <pre><code class="language-bash">hermes memory status
 </code></pre>
 <p>Do <strong>not</strong> use <code>hermes tools disable memory</code>: that disables the memory toolset, including provider tools. In current Hermes versions, built-in memory and an external provider are separate mechanisms; <code>hermes memory off</code> disables the external provider only. Keep existing built-in memory as a rollback/reference point during a transition and confirm the active provider with <code>hermes memory status</code>.</p>
-<p>See <a href="https://github.com/mnemosyne-oss/mnemosyne/blob/main/docs/hermes-integration.md">docs/hermes-integration.md</a> for the full setup guide.</p>
+<p>See <a href="https://github.com/mnemosyne-oss/mnemosyne/blob/main/docs/hermes-integration.md">docs/hermes-integration.md</a> for the full setup guide. For multiple Hermes profiles, agent teams, or group chats (Telegram, SimpleX, etc.), see <a href="https://github.com/mnemosyne-oss/mnemosyne/blob/main/docs/hermes-integration.md#multiple-profiles-agent-teams-and-group-chats">Multiple Profiles, Agent Teams, and Group Chats</a>.</p>
 <h4>Tool discovery</h4>
 <p>The provider tool inventory is version-specific. Confirm the active provider with <code>hermes memory status</code>, then inspect the runtime tool surface:</p>
 <pre><code class="language-bash">hermes tools list | grep mnemosyne_
@@ -897,11 +897,11 @@ mnemosyne sync-status --remote https://my-vps:8765
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 67.0K</div>
+        <div class="stars">★ 67.8K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 48.8K</div>
+        <div class="stars">★ 53.7K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -909,23 +909,23 @@ mnemosyne sync-status --remote https://my-vps:8765
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 381</div>
+        <div class="stars">★ 382</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
-        <div class="stars">★ 210</div>
+        <div class="stars">★ 212</div>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/Signet-AI/signetai">
-        <div class="stars">★ 305</div>
+        <div class="stars">★ 313</div>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 300</div>
+        <div class="stars">★ 308</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
-        <div class="stars">★ 51</div>
+        <div class="stars">★ 52</div>
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
     </div>

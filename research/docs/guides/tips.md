@@ -214,7 +214,7 @@ Hermes checks every command against a curated list of dangerous patterns before 
 
 warning
 
-When running in a container backend (Docker, Singularity, Modal, Daytona), dangerous command checks are **skipped** because the container is the security boundary. Make sure your container images are properly locked down.
+When running in a container backend (Docker, Modal, Daytona, or a container plugin such as Singularity), dangerous command checks are **skipped** because the container is the security boundary. Make sure your container images are properly locked down.
 
 ### Use Allowlists for Messaging Bots
 
