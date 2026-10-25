@@ -69,6 +69,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse as parseHtml } from "node-html-parser";
+import { expectedCatalogCounts, findPendingRemovals } from "../lib/smoke-catalog.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -258,6 +259,20 @@ if (PREVIEW_MODE) {
 function isPending(repo) {
   return pendingProjectPaths.has(`/projects/${repo.owner}/${repo.repo}`);
 }
+// The mirror image: project pages still on disk for entries this checkout
+// removed. The un-rebuilt deployment still renders them, so the catalog
+// counts in sections 3 and 4 must include them (see lib/smoke-catalog.js).
+let pendingRemovalPaths = [];
+if (PREVIEW_MODE) {
+  const pagePaths = [];
+  for (const owner of await fs.readdir(path.join(ROOT, "projects"), { withFileTypes: true })) {
+    if (!owner.isDirectory()) continue;
+    for (const file of await fs.readdir(path.join(ROOT, "projects", owner.name))) {
+      if (file.endsWith(".html")) pagePaths.push(`/projects/${owner.name}/${file.slice(0, -5)}`);
+    }
+  }
+  pendingRemovalPaths = findPendingRemovals(pagePaths, repos);
+}
 
 // ---------- Section runners ----------
 
@@ -274,6 +289,15 @@ if (PREVIEW_MODE) {
       )
     );
     for (const p of pendingProjectPaths) console.log(c.yellow(`    - ${p}`));
+  }
+  if (pendingRemovalPaths.length > 0) {
+    console.log(
+      c.yellow(
+        `  ${pendingRemovalPaths.length} project pages have no repos.json entry ` +
+          `(removed by this PR, pruned post-merge) — still counted in catalog checks:`
+      )
+    );
+    for (const p of pendingRemovalPaths) console.log(c.yellow(`    - ${p}`));
   }
 }
 if (BYPASS_SECRET) console.log(c.dim(`  deployment-protection bypass: header set`));
@@ -516,11 +540,17 @@ await section("3. Generated discovery artifacts are current", async () => {
     fail("llms.txt freshness", `HTTP ${llms.status}`, `${BASE}/llms.txt`);
   } else {
     const text = await llms.text();
-    const catalogCount = new RegExp(`\\b${repos.length}\\+?\\s+(?:tracked\\s+)?(?:tools|projects|repos)\\b`, "i");
+    const { total } = expectedCatalogCounts({
+      repos,
+      pendingPaths: pendingProjectPaths,
+      removals: pendingRemovalPaths.map((p) => ({ path: p })),
+    });
+    const pendingNote = total === repos.length ? "" : ` (repos.json has ${repos.length}; built count pending post-merge rebuild)`;
+    const catalogCount = new RegExp(`\\b${total}\\+?\\s+(?:tracked\\s+)?(?:tools|projects|repos)\\b`, "i");
     if (catalogCount.test(text)) {
-      pass("llms.txt freshness", `states ${repos.length}-project catalog`);
+      pass("llms.txt freshness", `states ${total}-project catalog${pendingNote}`);
     } else {
-      fail("llms.txt freshness", `does not state this checkout's ${repos.length}-project catalog`, `${BASE}/llms.txt`);
+      fail("llms.txt freshness", `does not state the ${total}-project catalog this checkout builds${pendingNote}`, `${BASE}/llms.txt`);
     }
   }
 });
@@ -536,18 +566,19 @@ await section("4. /ecosystem/ category counts match data/repos.json", async () =
   const html = await r.text();
   const root = parseHtml(html);
 
-  // Group repos.json by category for the reference count.
-  const byCat = new Map();
-  for (const repo of repos) {
-    const cat = repo.category || "(uncategorized)";
-    byCat.set(cat, (byCat.get(cat) || 0) + 1);
-  }
-
   const sections = root.querySelectorAll('section.cat[data-category]');
   if (sections.length === 0) {
     fail("/ecosystem/ sections", "no <section.cat[data-category]> found on /ecosystem/", "is the catalog page structure unchanged?");
     return;
   }
+
+  // Group repos.json by category for the reference count. A pending removal
+  // is attributed to whichever rendered section still links to its page.
+  const removals = pendingRemovalPaths.map((p) => {
+    const sec = sections.find((s) => s.querySelector(`a[href="${p}"]`));
+    return { path: p, category: sec ? sec.getAttribute("data-category") : null };
+  });
+  const { byCat } = expectedCatalogCounts({ repos, pendingPaths: pendingProjectPaths, removals });
 
   const seenCats = new Set();
   for (const sec of sections) {
