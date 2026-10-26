@@ -98,12 +98,18 @@ function renderFeaturedSection(pick, repo, summary, weekStart) {
 const RECENT_WINDOW = 12; // weeks of history to exclude from re-featuring
 const MIN_STARS = 15;
 const MAX_STARS = 3000; // above this = general mega-repo, not a "community pick"
+// Never featured, by --auto or by hand: Hermes Atlas's own repo is the site
+// itself, so spotlighting it on the homepage is redundant.
+const NEVER_FEATURE = new Set(["ksimback/hermes-ecosystem"]);
+function isNeverFeatured(r) {
+  return NEVER_FEATURE.has(`${r.owner}/${r.repo}`.toLowerCase());
+}
 function isHermesNative(r) {
   return /hermes/i.test(`${r.owner} ${r.repo}`);
 }
 function inBand(r) {
   const s = r.stars || 0;
-  return !r.official && isHermesNative(r) && s >= MIN_STARS && s <= MAX_STARS;
+  return !r.official && !isNeverFeatured(r) && isHermesNative(r) && s >= MIN_STARS && s <= MAX_STARS;
 }
 function pickAuto(repos, featured) {
   const recent = new Set(
@@ -142,6 +148,13 @@ function main() {
 
   let repo;
   if (arg === "--auto") {
+    // A pick already made for this week (e.g. a manual override) wins; the
+    // scheduled run must not overwrite it.
+    const thisWeek = mondayOf(new Date());
+    if (featured[0]?.weekStart === thisWeek) {
+      console.log(`--auto: ${featured[0].slug} is already featured for the week of ${thisWeek}; leaving it`);
+      return;
+    }
     repo = pickAuto(repos, featured);
     if (!repo) {
       console.error("✗ --auto found no eligible repo to feature");
@@ -153,6 +166,10 @@ function main() {
     repo = repos.find((r) => r.owner === owner && r.repo === repoName);
     if (!repo) {
       console.error(`✗ ${arg} not found in data/repos.json`);
+      process.exit(1);
+    }
+    if (isNeverFeatured(repo)) {
+      console.error(`✗ ${arg} is on the never-feature list (NEVER_FEATURE in scripts/rotate-featured.js)`);
       process.exit(1);
     }
   }
