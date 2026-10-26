@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import { test } from "node:test";
 
 import {
@@ -41,6 +42,7 @@ test("generated artifact manifest covers current build outputs", () => {
     ...REFRESHED_CONTENT_PATHS,
     "dev/",
     "privacy/",
+    "about/",
     "masterclass/",
     "projects/",
     "lists/",
@@ -67,6 +69,23 @@ test("every hand-authored page refreshed by the build is staged", () => {
     assert.ok(
       GENERATED_ARTIFACT_PATHS.includes(outputPath),
       `${outputPath} is missing from the generated artifact manifest`
+    );
+  }
+});
+
+test("every root refreshSiteChrome rewrites is staged", () => {
+  // refreshSiteChrome() restamps nav/footer on these hand-authored trees; a
+  // root missing from the manifest leaves an unstaged change and fails the
+  // bot commit (the /about launch did exactly this).
+  const src = fs.readFileSync("scripts/build-pages.js", "utf-8");
+  const m = src.match(/const roots = \[([^\]]*)\];/);
+  assert.ok(m, "refreshSiteChrome roots list not found in build-pages.js");
+  const roots = [...m[1].matchAll(/"([^"]+)"/g)].map((r) => r[1]);
+  assert.ok(roots.length > 0);
+  for (const root of roots) {
+    assert.ok(
+      GENERATED_ARTIFACT_PATHS.some((p) => p === `${root}/` || p.startsWith(`${root}/`)),
+      `${root}/ is refreshed by build-pages but missing from the generated artifact manifest`
     );
   }
 });
