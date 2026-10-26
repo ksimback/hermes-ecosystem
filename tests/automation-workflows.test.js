@@ -159,6 +159,9 @@ test("PR smoke waits for the Vercel build before probing its deployment URL", ()
   assert.match(workflow, /Wait for exact preview artifact/);
   assert.match(workflow, /cmp --silent data\/repos\.json/);
   assert.match(workflow, /cmp --silent llms\.txt/);
+  // The checkout must be the commit Vercel deployed, or main moving under an
+  // open PR makes the exact-artifact comparison wait forever.
+  assert.match(workflow, /uses: actions\/checkout@v5\s+with:\s+ref: \$\{\{ github\.event\.pull_request\.head\.sha \}\}/);
 });
 
 test("page build skips noise-only commits except on the daily schedule, failing open", () => {

@@ -47,7 +47,15 @@ jobs:
 
     steps:
       - name: Checkout
+        # Check out the PR head, not the default refs/pull/N/merge ref. Vercel
+        # builds the preview from the head commit, and every comparison below
+        # (the exact-artifact wait and smoke-test-prod.js --preview) assumes
+        # "deployment == this checkout". With the merge ref, any bot rebuild
+        # on main changes the checkout's repos.json/llms.txt, so the artifact
+        # wait times out until the branch is updated.
         uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Setup Node
         uses: actions/setup-node@v5
