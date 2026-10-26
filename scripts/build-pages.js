@@ -345,8 +345,12 @@ function renderMasthead(activeNav) {
 }
 
 // ── Shared footer ──
+// FOOTER_LINKS is also stamped onto hand-authored pages by refreshSiteChrome(),
+// so "about" (what the site is, how to submit a project, how to get in touch)
+// is a plain link on every page without growing the 10-item nav.
+const FOOTER_LINKS = `<div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="/about">about</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues/new?template=suggest-repo.yml">suggest a repo</a> · <a href="/privacy">privacy</a></div>`;
 const PAGE_FOOTER = `<footer class="page-footer">
-  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  ${FOOTER_LINKS}
   <div>v2 · 2026.04</div>
 </footer>`;
 
@@ -355,7 +359,7 @@ const PAGE_FOOTER = `<footer class="page-footer">
 // document itself (not injected client-side) for keyboard users and crawlers.
 function refreshSiteChrome() {
   const targets = ["index.html", "404.html"];
-  const roots = ["guide", "dev", "reports", "privacy", "masterclass"];
+  const roots = ["guide", "dev", "reports", "privacy", "about", "masterclass"];
 
   const collect = (relDir) => {
     const absDir = path.join(ROOT, relDir);
@@ -383,13 +387,12 @@ function refreshSiteChrome() {
     if (!fs.existsSync(abs)) continue;
     const original = fs.readFileSync(abs, "utf-8");
     if (!/<header class="masthead">/.test(original)) continue;
-    const next = original.replace(
-      /<header class="masthead">[\s\S]*?<\/header>/,
-      renderMasthead(activeFor(rel)),
-    );
+    const next = original
+      .replace(/<header class="masthead">[\s\S]*?<\/header>/, renderMasthead(activeFor(rel)))
+      .replace(/<div class="fn-left">hermes atlas · curated by[\s\S]*?<\/div>/, FOOTER_LINKS);
     if (next !== original && writePage(abs, next)) refreshed++;
   }
-  console.log(`  refreshed shared masthead on ${refreshed} hand-authored page(s)`);
+  console.log(`  refreshed shared masthead + footer on ${refreshed} hand-authored page(s)`);
 }
 
 // ── Split owner/repo for display ──
@@ -656,6 +659,9 @@ function writeLlmsFiles(repos, lists, summaries, reports = []) {
 > The decision layer for Hermes Agent by Nous Research — install guidance, mode and skill picks, and a community-curated catalog of ${repos.length}+ tools, skills, plugins, and integrations with live GitHub data and AI-generated summaries. Updated daily. As of ${today}.
 
 Hermes Atlas tracks every open-source project in the Hermes Agent ecosystem across ${categoryCount} categories. Each project has a dedicated page with a prose summary, live star count, README, and category metadata. The full catalog is also available as JSON at ${SITE_URL}/data/repos.json for programmatic access.
+
+## About
+- [About Hermes Atlas](${SITE_URL}/about): What the site is and who it's for, what gets listed (projects built for or integrated with Hermes Agent), how the data stays current, how to submit a project (free), and how to get in touch.
 
 ## Guide
 - [Beginner's Guide to Hermes Agent](${SITE_URL}/guide/): Install, pick a model, ship your first workflow, with the best community tool for every step.
@@ -1395,7 +1401,7 @@ ${renderMasthead("ecosystem")}
 
 <section class="list-page">
   <h1 class="list-title">The Hermes Agent ecosystem</h1>
-  <p class="list-intro">Every open-source tool, skill, plugin, workspace, and integration in the Hermes Agent ecosystem — <strong>${repos.length} projects across 12 categories</strong>, quality-filtered, with live GitHub data. Know what you want to build? <a href="/use-cases/">Find repos by use case →</a> Looking for skills? <a href="/skills/">Best picks by use case →</a></p>
+  <p class="list-intro">Every open-source tool, skill, plugin, workspace, and integration built for or integrated with Hermes Agent — <strong>${repos.length} projects across 12 categories</strong>, quality-filtered, with live GitHub data (<a href="/about">what gets listed</a>). Know what you want to build? <a href="/use-cases/">Find repos by use case →</a> Looking for skills? <a href="/skills/">Best picks by use case →</a></p>
 </section>
 
 <!-- Catalog search + sort. Progressive enhancement: hidden by default and
@@ -2435,6 +2441,7 @@ function generateSitemap(projectPages, listPages, reportPages = [], useCasePages
   for (const r of reportPages) {
     urls += entry(`/reports/${r.slug}`, `reports/${r.slug}.html`, "monthly", "0.7");
   }
+  urls += entry("/about", "about/index.html", "monthly", "0.5");
   urls += entry("/privacy", "privacy/index.html", "yearly", "0.3");
 
   for (const page of projectPages) {
