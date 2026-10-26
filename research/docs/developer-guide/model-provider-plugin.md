@@ -258,7 +258,7 @@ Per-model capability declarations in the `model_overrides` schema — see [Decla
 
 `dict[str, str]`
 
-Sent on every request (e.g. Copilot's `Editor-Version`); also forwarded by the default `fetch_models()` catalog request
+Sent on every request (e.g. Copilot's `Editor-Version`); also forwarded by the default `fetch_models()` catalog request. A value that is costly to compute at import (a User-Agent carrying the release) can be deferred with `providers.base.LazyHeaders({"User-Agent": lambda: hermes_user_agent("MyAgent")})`, a `dict` whose callable values run on first read (`hermes_user_agent` is in `hermes_cli.version_info`)
 
 `fixed_temperature`
 
