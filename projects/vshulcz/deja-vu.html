@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>vshulcz/deja-vu — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="deja-vu is a local memory tool that indexes coding-agent session transcripts stored on disk and returns relevant history through MCP and hooks. It provides…">
+<meta name="description" content="deja indexes coding-agent session histories stored on disk locally and makes relevant history available through MCP and hooks, without LLM calls. It provides…">
 <link rel="canonical" href="https://hermesatlas.com/projects/vshulcz/deja-vu">
 <meta property="og:title" content="vshulcz/deja-vu — Hermes Atlas">
-<meta property="og:description" content="deja-vu is a local memory tool that indexes coding-agent session transcripts stored on disk and returns relevant history through MCP and hooks. It provides…">
+<meta property="og:description" content="deja indexes coding-agent session histories stored on disk locally and makes relevant history available through MCP and hooks, without LLM calls. It provides…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/vshulcz/deja-vu">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="vshulcz/deja-vu — Hermes Atlas">
-<meta name="twitter:description" content="deja-vu is a local memory tool that indexes coding-agent session transcripts stored on disk and returns relevant history through MCP and hooks. It provides…">
+<meta name="twitter:description" content="deja indexes coding-agent session histories stored on disk locally and makes relevant history available through MCP and hooks, without LLM calls. It provides…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=deja-vu&amp;subtitle=Coding+agent+memory+for+Claude+Code%2C+Codex%2C+Cursor+and+40+more%2C+built+from+the+session+history+already+on+your+disk.+Local+search%2C+MCP+and+hooks%2C+no+LLM%2C+one+Go+binary.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/vshulcz/deja-vu#software",
   "name": "deja-vu",
-  "description": "deja-vu is a local memory tool that indexes coding-agent session transcripts stored on disk and returns relevant history through MCP and hooks. It provides searchable session history across supported agents, with optional semantic recall and tools for resuming, handing off, syncing, and managing sessions.",
+  "description": "deja indexes coding-agent session histories stored on disk locally and makes relevant history available through MCP and hooks, without LLM calls. It provides terminal search across sessions, with options to filter, resume or hand off sessions, and recover deleted chats.",
   "url": "https://hermesatlas.com/projects/vshulcz/deja-vu",
   "codeRepository": "https://github.com/vshulcz/deja-vu",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "vshulcz",
     "url": "https://github.com/vshulcz"
   },
-  "dateModified": "2026-11-01T06:22:04.000Z",
+  "dateModified": "2026-11-01T13:33:50.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 1343
+    "userInteractionCount": 1344
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">deja-vu is a local memory tool that indexes coding-agent session transcripts stored on disk and returns relevant history through MCP and hooks. It provides searchable session history across supported agents, with optional semantic recall and tools for resuming, handing off, syncing, and managing sessions.</p>
+    <p class="summary-text">deja indexes coding-agent session histories stored on disk locally and makes relevant history available through MCP and hooks, without LLM calls. It provides terminal search across sessions, with options to filter, resume or hand off sessions, and recover deleted chats.</p>
     <ul class="summary-highlights">
-      <li>Indexes existing session history across 43 agents.</li>
-      <li>Searches sessions through a terminal interface or CLI.</li>
-      <li>Runs locally as a Go binary.</li>
+      <li>Searches histories from 43 supported agents.</li>
+      <li>Tracks code changes, commands, and edited spans.</li>
+      <li>Redacts credentials during indexing.</li>
     </ul>
   </div>
 </section>
@@ -162,21 +162,31 @@
 
 <p align="center"><b>Your coding agents stop re-debugging what you already fixed.</b></p>
 
-<p align="center">Claude Code, Codex, Cursor and 40 more agents already save every session to disk.
-deja indexes all of it, months back, and hands the part that matters
-to whichever agent is working now.</p>
+<p align="center">Claude Code, Codex, Cursor, OpenClaw, Gemini CLI, OpenCode, Hermes and 36 more agents already save every session to disk.<br>
+deja indexes all of it locally and hands the relevant history back over MCP and hooks — no LLM, one Go binary.</p>
 
 <p align="center">English | <a href="docs/readme/README.zh.md">简体中文</a> | <a href="docs/readme/README.zh-TW.md">繁體中文</a> | <a href="docs/readme/README.ja.md">日本語</a> | <a href="docs/readme/README.ko.md">한국어</a> | <a href="docs/readme/README.es.md">Español</a> | <a href="docs/readme/README.pt.md">Português</a> | <a href="docs/readme/README.fr.md">Français</a> | <a href="docs/readme/README.de.md">Deutsch</a> | <a href="docs/readme/README.ru.md">Русский</a> | <a href="docs/readme/README.tr.md">Türkçe</a> | <a href="docs/readme/README.hi.md">हिन्दी</a></p>
 
-<p align="center"><img src="https://raw.githubusercontent.com/vshulcz/deja-vu/main/assets/demo.gif" width="720" alt="The same question put to the same agent twice: without memory it has no record of it, with deja it answers with the decision from eight months earlier"></p>
+<p align="center">
+  <a href="https://trendshift.io/repositories/83640"><img src="https://trendshift.io/api/badge/trendshift/repositories/83640/daily?language=Go" alt="#1 Go Repository Of The Day" width="250" height="55"></a>
+</p>
 
-<p align="center"><sub><em>Nobody searched anything — the agent called deja itself. Two real runs against a synthetic corpus: nobody's history is published.</em></sub></p>
+<p align="center">
+  <a href="https://github.com/vshulcz/deja-vu/actions/workflows/ci.yml"><img src="https://github.com/vshulcz/deja-vu/actions/workflows/ci.yml/badge.svg?branch=main&amp;event=push" alt="CI"></a>
+  <a href="https://github.com/vshulcz/deja-vu/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/coverage-88%25-brightgreen" alt="Coverage"></a>
+  <a href="https://github.com/vshulcz/deja-vu/releases"><img src="https://img.shields.io/github/v/release/vshulcz/deja-vu" alt="Release"></a>
+  <a href="https://mcptoplist.com/server/io.github.vshulcz%2Fdeja-vu"><img src="https://mcptoplist.com/badge/io.github.vshulcz%2Fdeja-vu.svg" alt="MCP Toplist"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
+</p>
+
+<p align="center"><a href="https://vshulcz.github.io/deja-vu/">Docs</a> · <a href="https://vshulcz.github.io/deja-vu/view/">Live browser demo</a> · <a href="https://vshulcz.github.io/deja-vu/guide/benchmarks.html">Benchmarks</a> · <a href="https://vshulcz.github.io/deja-vu/guide/compare.html">How it compares</a> · <a href="docs/INTEGRATING.md">Building it into your tool</a></p>
+
+<p align="center"><img src="https://raw.githubusercontent.com/vshulcz/deja-vu/main/assets/demo.gif" width="720" alt="The same question put to the same agent twice: without memory it has no record of it, with deja it answers with the decision from eight months earlier"></p>
 
 <pre><code class="language-sh">curl -fsSL https://raw.githubusercontent.com/vshulcz/deja-vu/main/install.sh | sh
 deja install --auto
 </code></pre>
-<p align="center"><sub>macOS and Linux; ten seconds to install, about ten to index ·
-<a href="#install">Windows, Homebrew, npm and the rest</a></sub></p>
+<p align="center"><sub>macOS and Linux · <a href="#install">Windows, Homebrew, npm and plugin marketplaces</a></sub></p>
 
 <table align="center">
 <tbody><tr>
@@ -186,79 +196,40 @@ deja install --auto
 </tr>
 </tbody></table>
 
-<p align="center"><sub>I maintain deja-vu, so every driver, the corpus and the scoring rule are in this repository ·
-<a href="https://vshulcz.github.io/deja-vu/guide/day-zero.html">the head-to-head, and how to re-run a row you doubt</a> ·
-<a href="https://vshulcz.github.io/deja-vu/guide/benchmarks.html">every run</a></sub></p>
+<p align="center"><sub>Every driver, corpus and scoring rule is in this repository: <a href="https://vshulcz.github.io/deja-vu/guide/day-zero.html">head-to-head</a> · <a href="https://vshulcz.github.io/deja-vu/guide/benchmarks.html">all benchmark runs</a></sub></p>
 
-<p align="center">
-  <a href="https://github.com/vshulcz/deja-vu/actions/workflows/ci.yml"><img src="https://github.com/vshulcz/deja-vu/actions/workflows/ci.yml/badge.svg?branch=main&amp;event=push" alt="CI"></a>
-  <a href="https://github.com/vshulcz/deja-vu/releases"><img src="https://img.shields.io/github/v/release/vshulcz/deja-vu" alt="Release"></a>
-  <a href="https://mcptoplist.com/server/io.github.vshulcz%2Fdeja-vu"><img src="https://mcptoplist.com/badge/io.github.vshulcz%2Fdeja-vu.svg" alt="MCP Toplist"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
-</p>
-
-<p align="center"><a href="https://vshulcz.github.io/deja-vu/">Docs</a> · <a href="https://vshulcz.github.io/deja-vu/guide/benchmarks.html">Benchmarks</a> · <a href="https://vshulcz.github.io/deja-vu/guide/compare.html">How it compares</a> · <a href="docs/INTEGRATING.md">Building it into your tool</a></p>
-
-<p align="center"><sub>Found it useful? <a href="https://github.com/vshulcz/deja-vu">Star deja-vu on GitHub</a>.</sub></p>
-
-<p>deja-vu (vshulcz/deja-vu) is a local memory tool for coding agents: it indexes the session transcripts Claude Code, Codex, Cursor and 40 other agents already wrote to disk and hands relevant history back over MCP and hooks. No LLM, one Go binary.</p>
 <h3>Search it yourself</h3>
-<p><code>deja</code> with no arguments in a terminal opens a search over every agent's history. It starts
-on the sessions behind your uncommitted change, then the recent ones in this project, and
-the list narrows as you type.</p>
+<p><code>deja</code> with no arguments opens a terminal search across every agent's history — starting with
+the sessions behind your uncommitted changes, then recent work in the current project.</p>
 <p align="center"><img src="https://raw.githubusercontent.com/vshulcz/deja-vu/main/assets/tui.gif" width="720" alt="Typing a search in the deja screen, reading the session it found, and continuing that session in another agent"></p>
 
 <ul>
-<li><code>↑↓</code> picks a session, <code>↵</code> opens it at the match, <code>n</code> and <code>N</code> step through the matches, <code>esc</code> goes back. Inside a session, <code>/</code> finds a word and <code>]</code> <code>[</code> jump between the turns you asked.</li>
-<li>The box takes filters: an agent with a colon (<code>codex:</code>), <code>today</code>, <code>yesterday</code>, <code>week</code>, <code>month</code>, and <code>in:&lt;project&gt;</code>.</li>
-<li><code>^s</code> lists the results newest first under day headings, and back to best match first. <code>deja search --sort date</code> does the same from a script.</li>
-<li><code>r</code> resumes the session in the agent that wrote it. <code>o</code> continues it in any other agent, which starts with what the session asked, decided and left open.</li>
-<li><code>tab</code> switches between this project, all projects and Deleted, the sessions their agent deleted that deja still holds; <code>R</code> puts one back.</li>
-<li><code>D</code> erases a session from its agent and from deja, after asking (<code>deja delete &lt;id&gt;</code> from a script).</li>
-<li><code>?</code> lists every key, <code>^k</code> has the rest (copy the session id or project path, forget a session), <code>q</code> quits from the list; <code>esc</code> steps back and quits from an empty search box.</li>
+<li><strong>Navigate:</strong> <code>↑↓</code> picks a session, <code>↵</code> opens at the match, <code>/</code> searches inside a session, <code>]</code> <code>[</code> jump between turns, <code>^s</code> toggles date/relevance sort (<code>deja search --sort date</code>).</li>
+<li><strong>Filter:</strong> by agent (<code>codex:</code>), time (<code>today</code>, <code>yesterday</code>, <code>week</code>, <code>month</code>), or project (<code>in:&lt;project&gt;</code>).</li>
+<li><strong>Resume or hand off:</strong> <code>r</code> reopens the session in its native agent; <code>o</code> continues it in another agent with its goal, decisions and open work.</li>
+<li><strong>Recover deleted chats:</strong> <code>tab</code> switches between this project, all projects, and <strong>Deleted</strong> (sessions an agent purged that deja still holds); <code>R</code> restores one, <code>D</code> deletes (<code>deja delete &lt;id&gt;</code>), <code>?</code> lists all keys.</li>
 </ul>
-<p>With <code>DEJA_TUI=0</code> it prints the text summary instead, which is also <code>deja brief</code>. Piped, it
-prints what is indexed and which command to run next.</p>
+<p>Prefer a browser? <code>deja view</code> exports the store — sessions, the recall audit trail, and promoted notes — into one local HTML file (<a href="https://vshulcz.github.io/deja-vu/view/">try the live demo</a>). With <code>DEJA_TUI=0</code> (or <code>deja brief</code>), <code>deja</code> prints a plain-text summary.</p>
 <h3>Highlights</h3>
 <ul>
-<li><strong>Starts full.</strong> Months of history from before you installed it are searchable on day one: <code>deja "connection pool exhausted"</code> over gigabytes.</li>
-<li><strong>One memory, every agent.</strong> A fix found in Codex comes back in Claude Code, Cursor or opencode; all <a href="#supported-harnesses">forty-three agents</a> read the same index.</li>
-<li><strong>Nobody has to ask.</strong> Recall arrives at session start, before a file is edited or a command runs, and after a command fails.</li>
-<li><strong>Survives compaction.</strong> Over 43 measured compactions the summary kept 77% of the decisions and 0.2% of the commands; deja hands back the rest (<a href="https://github.com/vshulcz/deja-vu/blob/main/docs/compaction.md">how</a>).</li>
-<li><strong>Indexes the work, not just the talk.</strong> The files each turn opened, the commands with their exit status, the exact spans an edit replaced.</li>
-<li><strong>Knows what held.</strong> <code>deja promote &lt;id&gt; --state rejected</code> marks a reverted decision, and every later hit says it was tried and why it was dropped; <code>--state accepted</code> takes the mark back.</li>
-<li><strong>Says when the ground moved.</strong> A hit reports <em>4 files this session touched have changed since</em>, and stays quiet when it cannot tell.</li>
-<li><strong>Local and private.</strong> No model and no server; embeddings only if you turn on <a href="#semantic-recall-optional">semantic recall</a>. Keys and tokens are stripped as the index is built (<a href="#privacy">privacy</a>).</li>
-<li><strong>Moves with you.</strong> <code>deja sync ssh laptop</code> between machines, no cloud in between; <code>deja handoff --to codex</code> to continue in another agent.</li>
-<li><strong>One Go binary.</strong> macOS, Linux and Windows, through Homebrew, Scoop, winget, npm or <code>go install</code>.</li>
+<li><strong>Starts full on day one.</strong> Months of existing transcripts across all <a href="#supported-harnesses">forty-three agents</a> are searchable immediately — fix a bug in Codex and Claude Code, Cursor or OpenCode recalls it.</li>
+<li><strong>Automatic recall via hooks &amp; MCP.</strong> Surfaces prior sessions at session start, before a file edit or command runs, and when a command fails.</li>
+<li><strong>Survives compaction.</strong> Over 43 measured compactions, summaries kept 77% of decisions and 0.2% of commands; deja hands back the rest (<a href="https://github.com/vshulcz/deja-vu/blob/main/docs/compaction.md">how</a>).</li>
+<li><strong>Indexes code changes, not just chat.</strong> Tracks opened files, commands with exit codes, and exact <code>Edit</code> spans (<code>deja blame &lt;file&gt;:&lt;line&gt;</code>, <code>deja restore &lt;path&gt;</code>).</li>
+<li><strong>Tracks decision lifecycle &amp; staleness.</strong> <code>deja promote &lt;id&gt; --state rejected</code> marks a reverted approach so later hits warn why it was dropped (<code>--state accepted</code> takes the mark back), and hits report when files touched by a session have changed since.</li>
+<li><strong>Local and private by default.</strong> Zero LLM calls, no cloud account, and automatic credential redaction at index time (<a href="#privacy">privacy</a>).</li>
 </ul>
 <h4>Your own work, wrapped</h4>
-<p><code>deja stats --card</code> draws it in the terminal; give it a filename and it writes an
-SVG for a profile README. To post it anywhere else, <a href="https://vshulcz.github.io/deja-vu/card/">turn it into a
-PNG</a> — that page converts it in your own
-browser.</p>
+<p><code>deja stats --card</code> draws your yearly agent activity in the terminal or writes an SVG for your GitHub profile (<a href="https://vshulcz.github.io/deja-vu/card/">convert to PNG in browser</a>).</p>
 <p align="center"><img src="https://raw.githubusercontent.com/vshulcz/deja-vu/main/docs/assets/stats-card-demo.svg" width="600" alt="deja stats card: a year of agent sessions as a heatmap, the agents they came from, and the longest one"></p>
 
-<p>The full feature reference lives in the <a href="https://vshulcz.github.io/deja-vu/">docs</a>.</p>
 <h3>Install</h3>
-<p>The two commands at the top are the whole install on macOS and Linux:</p>
-<pre><code class="language-sh">curl -fsSL https://raw.githubusercontent.com/vshulcz/deja-vu/main/install.sh | sh
-deja install --auto
-</code></pre>
-<p>The script puts the binary in <code>~/.local/bin</code>. If that directory is not on your <code>PATH</code> yet, the second command is not found in the same shell: run the <code>next:</code> line the script prints, which has the full path, or open a new shell once the <code>PATH</code> line is added.</p>
+<p><code>install.sh</code> places the <code>deja</code> binary in <code>~/.local/bin</code>, and <code>deja install --auto</code> wires MCP recall and hooks into every detected agent and builds the initial index (~10s).</p>
 <p align="center"><img src="https://raw.githubusercontent.com/vshulcz/deja-vu/main/assets/banner.png" width="700" alt="What deja prints after the first index: the mark, the agents it found, and a query taken from your own history"></p>
 
-<p>Ten seconds to install, about ten to index, and it is useful. The second command wires MCP
-recall into every agent it finds, turns on session-start recall where the agent supports
-it, and builds the first index so the next session does not pay for it.</p>
-<p>Start a new agent session and ask it something you worked on months ago:</p>
-<blockquote>
-<p>have we dealt with jwt refresh rotation before? check your memory</p>
-</blockquote>
-<p>It does not have to be asked, either — with auto-recall the agent already knows what you
-solved in that project when the session opens. To look for yourself, run <code>deja</code>.</p>
+<p>Open a new session in any wired agent and it already knows what you solved in that repository — or ask it directly (<code>have we dealt with jwt refresh rotation before?</code>).</p>
 <details>
-<summary>Other ways to install, and what to do if you want less than all of it</summary>
+<summary><b>Homebrew, Windows (Scoop / winget), npm, plugin marketplaces, and binary-only setup</b></summary>
 
 <p><code>brew install deja-vu</code>, <code>go install github.com/vshulcz/deja-vu/cmd/deja@latest</code>,
 or <code>npx @vshulcz/deja-vu "query"</code> to try it without installing anything. Desktop apps that
@@ -422,7 +393,7 @@ as usual. <code>deja search &lt;query&gt;</code> skips the suggestion.</p>
 </tr>
 <tr>
 <td><code>deja view</code></td>
-<td>Your whole memory as one local HTML file. No server, and the file never leaves the machine.</td>
+<td>Your whole memory as one local HTML file (<a href="https://vshulcz.github.io/deja-vu/view/">live demo</a>). No server, and the file never leaves the machine.</td>
 </tr>
 <tr>
 <td><code>deja stats</code></td>
@@ -1250,62 +1221,6 @@ credentials, write an append-only <code>records.bin</code> plus token buckets, a
 sync all read that one index. Details in <a href="https://github.com/vshulcz/deja-vu/blob/main/docs/ARCHITECTURE.md">docs/ARCHITECTURE.md</a>.</p>
 <h3>FAQ</h3>
 <details>
-<summary><b>Does anything leave my machine?</b></summary>
-
-<p>No, unless you ask it to. See the
-<a href="https://github.com/vshulcz/deja-vu/blob/main/docs/SECURITY-MODEL.md#data-flows">data flows</a>.</p>
-</details>
-
-<details>
-<summary><b>What about secrets already in my logs?</b></summary>
-
-<p>They stay in the original harness files, which
-are your agent's data; <code>deja secrets</code> names the sessions that carry them so you can rotate
-and delete, and <code>--scrub</code> rewrites the transcripts it can reach. Known shapes — AWS keys, <code>api_key=</code>/<code>token=</code> assignments, bearer
-tokens and bare JWTs, PEM blocks, provider tokens, high-entropy values — are stripped as
-the index is built, so they do not reach digests, shares or sync exports. Pattern matching
-is not secret detection: a shape it does not know can pass through. See the
-<a href="https://github.com/vshulcz/deja-vu/blob/main/docs/SECURITY-MODEL.md#redaction-boundary">security model</a>.</p>
-</details>
-
-<details>
-<summary><b>Will it slow my agent down?</b></summary>
-
-<p>A recall is a lexical lookup against a local index:
-0.7–0.8 ms median, and nothing waits on a model. A hook adds the process start and a
-freshness check over your stores on top of that: about 0.2 s end to end on a 1.9 GB
-store. On an index of 19k sessions the per-prompt hook takes 107 ms at the median,
-and a recall through <code>deja mcp</code> 85 ms.</p>
-</details>
-
-<details>
-<summary><b>Can I stop it reindexing on its own?</b></summary>
-
-<p>Yes. On a busy server, <code>DEJA_NO_AUTO_INDEX=1</code> or <code>"auto_index": false</code> in
-<code>~/.config/deja/policy.json</code> stops every automatic update. Search, MCP recall and hooks
-answer from the last finished index and say when it was updated, and nothing deja starts
-on its own writes it. Run <code>deja index</code> from cron or a systemd timer.</p>
-</details>
-
-<details>
-<summary><b>Can I index for search only?</b></summary>
-
-<p>Yes. <code>DEJA_SEARCH_ONLY=1</code> or <code>"search_only": true</code> in <code>~/.config/deja/policy.json</code> skips
-mining fixes, commands and co-occurrence, about a fifth of a build's CPU; it takes effect
-on the next <code>deja index</code>. Search, recall and blame work as before; <code>deja fix</code> says the
-index is search-only. The <code>DEJA_INDEX_*</code> switches
-that keep commands, tool output, paths and edits out of the index, and what each one
-turns off, are in the <a href="https://vshulcz.github.io/deja-vu/guide/commands.html#what-the-index-keeps">commands guide</a>.</p>
-</details>
-
-<details>
-<summary><b>Do I have to change how I work?</b></summary>
-
-<p>No. The agent calls recall itself, and with
-auto-recall it already knows the project's prior decisions when the session opens.</p>
-</details>
-
-<details>
 <summary><b>How is this different from the other memory tools?</b></summary>
 
 <table>
@@ -1349,10 +1264,19 @@ knows only what an agent chose to save. The
 </details>
 
 <details>
+<summary><b>Will it slow my agent down?</b></summary>
+
+<p>A recall is a lexical lookup against a local index:
+0.7–0.8 ms median, and nothing waits on a model. A hook adds the process start and a
+freshness check over your stores on top of that: about 0.2 s end to end on a 1.9 GB
+store. On an index of 19k sessions the per-prompt hook takes 107 ms at the median,
+and a recall through <code>deja mcp</code> 85 ms.</p>
+</details>
+
+<details>
 <summary><b>Where is Claude Code session history stored, and can I search it?</b></summary>
 
-<p>Under
-<code>~/.claude/projects</code>, one JSONL file per session; Codex keeps <code>~/.codex/sessions</code>, Cursor a
+<p>Under <code>~/.claude/projects</code>, one JSONL file per session; Codex keeps <code>~/.codex/sessions</code>, Cursor a
 SQLite <code>state.vscdb</code>. deja reads them all in place: bare <code>deja</code> opens a screen to search
 and read them, <code>deja search</code> does it from a script, <code>deja last</code> lists the recent
 sessions of every agent, and <code>deja view</code> opens the whole history as one local page. Paths
@@ -1362,38 +1286,27 @@ for each agent: <a href="https://vshulcz.github.io/deja-vu/guide/where-sessions-
 <details>
 <summary><b>My Claude Code session history disappeared. Is it gone?</b></summary>
 
-<p>Claude Code deletes transcripts
-older than 30 days (<code>cleanupPeriodDays</code> in <code>~/.claude/settings.json</code>), and <code>claude --resume</code> lists
+<p>Claude Code deletes transcripts older than 30 days (<code>cleanupPeriodDays</code> in <code>~/.claude/settings.json</code>), and <code>claude --resume</code> lists
 only what is left. A session deja indexed before the cleanup stays searchable after the
 file is gone, and the weekly note at session start says how many it kept, with an id
 <code>deja resume &lt;id&gt; --write-back</code> puts back. Details: <a href="https://vshulcz.github.io/deja-vu/guide/session-files-on-disk.html">session files on disk</a>.</p>
 </details>
 
 <details>
-<summary><b>What about Windows?</b></summary>
+<summary><b>Can I stop it reindexing on its own, or index for search only?</b></summary>
 
-<p>Builds exist and CI runs the suite there. macOS and Linux are the
-battle-tested paths. Field reports welcome in <a href="https://github.com/vshulcz/deja-vu/issues/9">#9</a>.</p>
+<p>Yes. <code>DEJA_NO_AUTO_INDEX=1</code> or <code>"auto_index": false</code> in <code>~/.config/deja/policy.json</code> stops every automatic update; search, MCP recall and hooks answer from the last finished index.</p>
+<p><code>DEJA_SEARCH_ONLY=1</code> or <code>"search_only": true</code> in <code>~/.config/deja/policy.json</code> skips mining fixes, commands and co-occurrence (~20% of a build's CPU). The <code>DEJA_INDEX_*</code> switches that keep commands, tool output, paths and edits out of the index are in the <a href="https://vshulcz.github.io/deja-vu/guide/commands.html#what-the-index-keeps">commands guide</a>.</p>
 </details>
 
 <details>
 <summary><b>One project is spread over several checkouts. Can recall treat them as one?</b></summary>
 
-<p>A project is named after the directory an agent ran in, so every checkout of a
-monorepo, and every worktree made for a task, is a project of its own, and the
-hooks recall only from the one they stand in. List the trees in
-<code>~/.config/deja/projects</code>, one <code>&lt;path&gt; = &lt;name&gt;</code> per line:</p>
+<p>List the trees in <code>~/.config/deja/projects</code>, one <code>&lt;path&gt; = &lt;name&gt;</code> per line:</p>
 <pre><code class="language-text">~/work/monorepo = work
 ~/work/worktrees = work
 </code></pre>
-<p>Every directory under a listed path is then that project, for indexing, the
-hooks and recall alike; the longest matching path wins. Editing the file renames
-nothing already indexed: <code>deja index</code> and <code>deja doctor</code> say when a rebuild is
-due, and <code>deja index --rebuild</code> files the sessions whose transcripts are still on
-disk under the new name. Sessions indexed before the file existed still match
-from their own checkout until then; kept sessions whose transcript is gone, and
-<code>deja remember</code> notes, keep the name they were filed under. The exclude file wins: a repository excluded by
-its own name stays out, and a pattern for the alias name excludes the whole tree.</p>
+<p>Every directory under a listed path is then that project, for indexing, the hooks and recall alike; the longest matching path wins. Run <code>deja index --rebuild</code> to re-file existing transcripts under the new name. The exclude file still wins over project aliases.</p>
 </details>
 
 <details>
@@ -1409,28 +1322,18 @@ Windows the notes are in <code>%AppData%\deja</code>).</p>
 </details>
 
 <h3>Guides</h3>
-<p>Written for the situation rather than the feature:</p>
 <ul>
-<li><a href="https://vshulcz.github.io/deja-vu/guide/does-my-agent-remember.html">Does your agent remember previous conversations?</a> — what each agent keeps between sessions, and what it drops</li>
-<li><a href="https://vshulcz.github.io/deja-vu/guide/session-files-on-disk.html">Session files on disk</a> — how big <code>~/.claude/projects</code> gets, and what deleting it costs</li>
-<li><a href="https://vshulcz.github.io/deja-vu/guide/lost-context.html">The agent lost the context you had</a> — after a crash, a clear, or a session that came back empty</li>
-<li><a href="https://vshulcz.github.io/deja-vu/guide/context-window-full.html">The context window is full</a> — what compaction keeps, measured, and what to do instead</li>
-<li><a href="https://vshulcz.github.io/deja-vu/guide/resume-a-session.html">Resuming yesterday's session</a> — find it across every agent, reopen it in the one that owns it</li>
-<li><a href="https://vshulcz.github.io/deja-vu/guide/repeated-mistakes.html">The agent repeats a mistake you already fixed</a></li>
-<li><a href="https://vshulcz.github.io/deja-vu/guide/find-a-session.html">Finding the session where you solved it</a></li>
-<li><a href="https://vshulcz.github.io/deja-vu/guide/forgetting.html">Why agents forget between sessions</a> · <a href="https://vshulcz.github.io/deja-vu/guide/where-sessions-are-stored.html">Where each agent keeps its history</a></li>
-<li><a href="https://vshulcz.github.io/deja-vu/guide/recover-a-deleted-session.html">Recovering a deleted Claude Code session</a> · <a href="https://vshulcz.github.io/deja-vu/guide/no-conversation-found-claude-code.html">Claude Code: No conversation found with session ID</a> · <a href="https://vshulcz.github.io/deja-vu/guide/codex-resume-session.html">Codex resume session</a> · <a href="https://vshulcz.github.io/deja-vu/guide/delete-old-claude-sessions.html">Deleting old Claude Code sessions</a></li>
-<li><a href="https://vshulcz.github.io/deja-vu/guide/day-zero.html">What each memory tool knows the day you install it</a> · <a href="https://vshulcz.github.io/deja-vu/guide/compare.html">Memory plugins compared</a></li>
-<li><a href="https://vshulcz.github.io/deja-vu/guide/after-compaction.html">What compaction drops</a> · <a href="https://vshulcz.github.io/deja-vu/guide/switching-agents.html">Switching agents</a> · <a href="https://vshulcz.github.io/deja-vu/guide/auditing-agents.html">Auditing an agent</a> · <a href="https://vshulcz.github.io/deja-vu/guide/export-conversations.html">Exporting a conversation</a> · <a href="https://vshulcz.github.io/deja-vu/guide/sync-across-machines.html">Across machines</a> · <a href="https://vshulcz.github.io/deja-vu/guide/token-cost.html">What memory costs</a></li>
+<li><strong>Context &amp; recovery:</strong> <a href="https://vshulcz.github.io/deja-vu/guide/does-my-agent-remember.html">Does your agent remember previous conversations?</a> · <a href="https://vshulcz.github.io/deja-vu/guide/lost-context.html">The agent lost the context you had</a> · <a href="https://vshulcz.github.io/deja-vu/guide/context-window-full.html">The context window is full</a> · <a href="https://vshulcz.github.io/deja-vu/guide/after-compaction.html">What compaction drops</a> · <a href="https://vshulcz.github.io/deja-vu/guide/forgetting.html">Why agents forget between sessions</a></li>
+<li><strong>Resuming &amp; finding:</strong> <a href="https://vshulcz.github.io/deja-vu/guide/resume-a-session.html">Resuming yesterday's session</a> · <a href="https://vshulcz.github.io/deja-vu/guide/find-a-session.html">Finding the session where you solved it</a> · <a href="https://vshulcz.github.io/deja-vu/guide/repeated-mistakes.html">The agent repeats a mistake you already fixed</a> · <a href="https://vshulcz.github.io/deja-vu/guide/switching-agents.html">Switching agents</a></li>
+<li><strong>Session files &amp; cleanup:</strong> <a href="https://vshulcz.github.io/deja-vu/guide/session-files-on-disk.html">Session files on disk</a> · <a href="https://vshulcz.github.io/deja-vu/guide/where-sessions-are-stored.html">Where each agent keeps its history</a> · <a href="https://vshulcz.github.io/deja-vu/guide/recover-a-deleted-session.html">Recovering a deleted Claude Code session</a> · <a href="https://vshulcz.github.io/deja-vu/guide/no-conversation-found-claude-code.html">Claude Code: No conversation found with session ID</a> · <a href="https://vshulcz.github.io/deja-vu/guide/codex-resume-session.html">Codex resume session</a> · <a href="https://vshulcz.github.io/deja-vu/guide/delete-old-claude-sessions.html">Deleting old Claude Code sessions</a></li>
+<li><strong>Comparisons &amp; operations:</strong> <a href="https://vshulcz.github.io/deja-vu/guide/day-zero.html">What each memory tool knows the day you install it</a> · <a href="https://vshulcz.github.io/deja-vu/guide/compare.html">Memory plugins compared</a> · <a href="https://vshulcz.github.io/deja-vu/guide/token-cost.html">What memory costs</a> · <a href="https://vshulcz.github.io/deja-vu/guide/auditing-agents.html">Auditing an agent</a> · <a href="https://vshulcz.github.io/deja-vu/guide/export-conversations.html">Exporting a conversation</a> · <a href="https://vshulcz.github.io/deja-vu/guide/sync-across-machines.html">Across machines</a></li>
 </ul>
-<p>Per harness: <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-claude-code.html">Claude Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-codex.html">Codex</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-cursor.html">Cursor</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-windsurf.html">Windsurf</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-opencode.html">opencode</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-dsh.html">DeepSeek Harness</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kimi.html">Kimi Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-zed.html">Zed</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-grok.html">Grok Build</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-gemini.html">Gemini CLI</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-qwen.html">Qwen Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-openclaw.html">OpenClaw</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-goose.html">Goose</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-cline.html">Cline</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-pi.html">pi</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-hermes.html">Hermes</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-copilot.html">Copilot CLI</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-copilot-chat.html">Copilot Chat</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-aider.html">aider</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-amp.html">Amp</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-antigravity.html">Antigravity</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-continue.html">Continue</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-crush.html">Crush</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-roo.html">Roo Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kilocode.html">Kilo Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kiro.html">Kiro</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-cherrystudio.html">Cherry Studio</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-omp.html">Oh My Pi</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-prime.html">prime-agent</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-senpi.html">Senpi</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kimchi.html">Kimchi</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-commandcode.html">Command Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-zcode.html">ZCode</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-gjc.html">gjc</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-codewhale.html">CodeWhale</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-reasonix.html">Reasonix</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-trae.html">TRAE CLI</a></p>
-<h3>Try it on your own history</h3>
-<pre><code class="language-sh">curl -fsSL https://raw.githubusercontent.com/vshulcz/deja-vu/main/install.sh | sh
-deja install --auto
-</code></pre>
-<p>Ten seconds to install, about ten to index. The next session your agent opens, it
-already knows what you solved in that project — including everything from before
-you installed this.</p>
+<details>
+<summary><b>Per-harness setup guides (Claude Code, Codex, Cursor, OpenClaw, Hermes…)</b></summary>
+
+<p><a href="https://vshulcz.github.io/deja-vu/guide/memory-for-claude-code.html">Claude Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-codex.html">Codex</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-cursor.html">Cursor</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-windsurf.html">Windsurf</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-opencode.html">opencode</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-dsh.html">DeepSeek Harness</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kimi.html">Kimi Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-zed.html">Zed</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-grok.html">Grok Build</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-gemini.html">Gemini CLI</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-qwen.html">Qwen Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-openclaw.html">OpenClaw</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-goose.html">Goose</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-cline.html">Cline</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-pi.html">pi</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-hermes.html">Hermes</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-copilot.html">Copilot CLI</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-copilot-chat.html">Copilot Chat</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-aider.html">aider</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-amp.html">Amp</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-antigravity.html">Antigravity</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-continue.html">Continue</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-crush.html">Crush</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-roo.html">Roo Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kilocode.html">Kilo Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kiro.html">Kiro</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-cherrystudio.html">Cherry Studio</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-omp.html">Oh My Pi</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-prime.html">prime-agent</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-senpi.html">Senpi</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kimchi.html">Kimchi</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-commandcode.html">Command Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-zcode.html">ZCode</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-gjc.html">gjc</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-codewhale.html">CodeWhale</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-reasonix.html">Reasonix</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-trae.html">TRAE CLI</a></p>
+</details>
+
 <h3>Contributing</h3>
 <p><code>make build test lint</code>, then <a href="https://github.com/vshulcz/deja-vu/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>. Adding a harness starts in
 the <a href="https://github.com/vshulcz/deja-vu/blob/main/docs/ARCHITECTURE.md#source-parsers">parser registry</a>. Priorities and non-goals are in
@@ -1459,7 +1362,7 @@ anywhere, and how to exclude a project or forget a session is under
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 57.0K</div>
+        <div class="stars">★ 57.2K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
