@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>mnemosyne-oss/mnemosyne — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Mnemosyne is a Python memory layer for AI agents, using a SQLite database and requiring no external services. It can be used through a Python API, a…">
+<meta name="description" content="Mnemosyne is a Python memory layer for AI agents, using SQLite and requiring no external services. It can be used through a Python API, command-line tools, or…">
 <link rel="canonical" href="https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne">
 <meta property="og:title" content="mnemosyne-oss/mnemosyne — Hermes Atlas">
-<meta property="og:description" content="Mnemosyne is a Python memory layer for AI agents, using a SQLite database and requiring no external services. It can be used through a Python API, a…">
+<meta property="og:description" content="Mnemosyne is a Python memory layer for AI agents, using SQLite and requiring no external services. It can be used through a Python API, command-line tools, or…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="mnemosyne-oss/mnemosyne — Hermes Atlas">
-<meta name="twitter:description" content="Mnemosyne is a Python memory layer for AI agents, using a SQLite database and requiring no external services. It can be used through a Python API, a…">
+<meta name="twitter:description" content="Mnemosyne is a Python memory layer for AI agents, using SQLite and requiring no external services. It can be used through a Python API, command-line tools, or…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=mnemosyne&amp;subtitle=Zero-cloud+AI+memory+that+works+everywhere.+SQLite-backed.+One+pure-Python+dependency.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne#software",
   "name": "mnemosyne",
-  "description": "Mnemosyne is a Python memory layer for AI agents, using a SQLite database and requiring no external services. It can be used through a Python API, a command-line interface, or MCP, with setup guides for several agent platforms.",
+  "description": "Mnemosyne is a Python memory layer for AI agents, using SQLite and requiring no external services. It can be used through a Python API, command-line tools, or integrations including MCP, and supports storing and recalling information.",
   "url": "https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne",
   "codeRepository": "https://github.com/mnemosyne-oss/mnemosyne",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "mnemosyne-oss",
     "url": "https://github.com/mnemosyne-oss"
   },
-  "dateModified": "2026-11-01T17:49:16.000Z",
+  "dateModified": "2026-11-01T21:14:11.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">282·repos</span>
+    <span id="meta-count">283·repos</span>
     <span id="meta-version">hermes·v0.21.5</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Mnemosyne is a Python memory layer for AI agents, using a SQLite database and requiring no external services. It can be used through a Python API, a command-line interface, or MCP, with setup guides for several agent platforms.</p>
+    <p class="summary-text">Mnemosyne is a Python memory layer for AI agents, using SQLite and requiring no external services. It can be used through a Python API, command-line tools, or integrations including MCP, and supports storing and recalling information.</p>
     <ul class="summary-highlights">
-      <li>Stores and recalls memories through a Python API and CLI.</li>
-      <li>Provides an MCP server over stdio, SSE, and Streamable HTTP.</li>
-      <li>Includes commands for exporting, importing, and syncing memories.</li>
+      <li>SQLite-backed storage with no external services required</li>
+      <li>Python API and command-line tools for memory operations</li>
+      <li>Integrations include MCP, Claude Code, Cursor, and OpenClaw</li>
     </ul>
   </div>
 </section>
@@ -799,6 +799,7 @@ for gates, conservative reservation and cost-logging limits.</p>
 <td>Wraps core library with plugin manifest + entry points; degrades instead of exiting on core init errors. Run <code>hermes config set memory.provider mnemosyne</code> after install.</td>
 </tr>
 </tbody></table>
+<p>API embeddings require NumPy in the interpreter running Mnemosyne. For an API-only installation, use <code>python -m pip install mnemosyne-memory numpy</code> (or add <code>numpy</code> alongside <code>mnemosyne-memory[mcp]</code>). FastEmbed and a local model are not required. Missing or broken NumPy is reported before any embedding request; after installing or repairing it, calls can retry without restarting.</p>
 <p><strong>Hardware guidance:</strong> Core alone runs on a Raspberry Pi 4 (4 GB) with ~300 MB free for LLM. <code>[embeddings]</code> needs at least 2 GB free RAM. <code>[all]</code> recommends 8 GB+.</p>
 <blockquote>
 <p><strong>Privacy note on remote embedding endpoints.</strong> Embeddings go to a remote API whenever <code>MNEMOSYNE_EMBEDDING_API_URL</code> points at a custom (non-OpenRouter) endpoint, the model name is API-shaped (<code>openai/*</code>, <code>text-embedding*</code>), or <code>MNEMOSYNE_EMBEDDINGS_VIA_API</code> is truthy; on the OpenRouter default (or an OpenRouter URL) the last two are what route, and with no URL set the OpenRouter default is used. That service receives the text of your memories and of your recall queries (working-memory content, summaries, annotations, and search queries) for vectorization. For privacy-sensitive or local-first deployments prefer a local-embedding profile (<code>[embeddings]</code> or <code>[all]</code>); use a remote endpoint only when you accept that the embedding provider sees your content.</p>
@@ -904,7 +905,7 @@ mnemosyne sync-status --remote https://my-vps:8765
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 57.6K</div>
+        <div class="stars">★ 57.7K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
