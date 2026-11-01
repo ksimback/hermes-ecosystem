@@ -47,7 +47,7 @@ Return behavior
 
 `pre_llm_call`
 
-May return a string or `{"context": "..."}` to inject ephemeral context into the current user message.
+May return a string or `{"context": "..."}` to inject ephemeral context into the current user message, or `{"action": "block", "message": "..."}` to end the turn before any inference request (the message becomes the reply and the prompt is stored as a withheld placeholder; see [Event Hooks](/docs/user-guide/features/hooks)). A callback that raises or times out is skipped, so it never blocks.
 
 `pre_tool_call`
 
