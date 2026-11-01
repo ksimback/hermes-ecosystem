@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>nesquena/hermes-webui — Hermes Agent Workspaces &amp; GUIs | Hermes Atlas</title>
-<meta name="description" content="Hermes WebUI is a browser-based interface for Hermes Agent, designed to provide near-parity with its CLI using the existing agent setup and models. It has a…">
+<meta name="description" content="Hermes Web UI is a lightweight, dark-themed browser interface for Hermes Agent, with a three-panel layout for sessions, chat, and workspace files. The README…">
 <link rel="canonical" href="https://hermesatlas.com/projects/nesquena/hermes-webui">
 <meta property="og:title" content="nesquena/hermes-webui — Hermes Atlas">
-<meta property="og:description" content="Hermes WebUI is a browser-based interface for Hermes Agent, designed to provide near-parity with its CLI using the existing agent setup and models. It has a…">
+<meta property="og:description" content="Hermes Web UI is a lightweight, dark-themed browser interface for Hermes Agent, with a three-panel layout for sessions, chat, and workspace files. The README…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/nesquena/hermes-webui">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="nesquena/hermes-webui — Hermes Atlas">
-<meta name="twitter:description" content="Hermes WebUI is a browser-based interface for Hermes Agent, designed to provide near-parity with its CLI using the existing agent setup and models. It has a…">
+<meta name="twitter:description" content="Hermes Web UI is a lightweight, dark-themed browser interface for Hermes Agent, with a three-panel layout for sessions, chat, and workspace files. The README…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-webui&amp;subtitle=Hermes+WebUI%3A+The+best+way+to+use+Hermes+Agent+from+the+web+or+from+your+phone%21&amp;kind=project+%C2%B7+workspaces">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/nesquena/hermes-webui#software",
   "name": "hermes-webui",
-  "description": "Hermes WebUI is a browser-based interface for Hermes Agent, designed to provide near-parity with its CLI using the existing agent setup and models. It has a three-panel layout for sessions, chat, and workspace files, with controls and session tools in the Hermes Control Center; the README says it can be accessed securely through an SSH tunnel.",
+  "description": "Hermes Web UI is a lightweight, dark-themed browser interface for Hermes Agent, with a three-panel layout for sessions, chat, and workspace files. The README says it provides nearly full parity with the CLI, uses the existing Hermes setup and models, and can be accessed securely through an SSH tunnel.",
   "url": "https://hermesatlas.com/projects/nesquena/hermes-webui",
   "codeRepository": "https://github.com/nesquena/hermes-webui",
   "applicationCategory": "DesktopEnhancementApplication",
@@ -47,13 +47,13 @@
     "name": "nesquena",
     "url": "https://github.com/nesquena"
   },
-  "dateModified": "2026-10-31T10:43:42.000Z",
+  "dateModified": "2026-11-01T06:01:05.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 19312
+    "userInteractionCount": 19321
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-10-31</span>
+    <span><span class="meta-label">updated</span>2026-11-01</span>
   </div>
 
   <div class="actions">
@@ -141,10 +141,10 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes WebUI is a browser-based interface for Hermes Agent, designed to provide near-parity with its CLI using the existing agent setup and models. It has a three-panel layout for sessions, chat, and workspace files, with controls and session tools in the Hermes Control Center; the README says it can be accessed securely through an SSH tunnel.</p>
+    <p class="summary-text">Hermes Web UI is a lightweight, dark-themed browser interface for Hermes Agent, with a three-panel layout for sessions, chat, and workspace files. The README says it provides nearly full parity with the CLI, uses the existing Hermes setup and models, and can be accessed securely through an SSH tunnel.</p>
     <ul class="summary-highlights">
-      <li>Three-panel layout for sessions, chat, and workspace files</li>
-      <li>Uses the existing Hermes agent setup and models</li>
+      <li>Three-panel interface with sessions, chat, and workspace browsing</li>
+      <li>Includes model, profile, and workspace controls</li>
       <li>Built with Python and vanilla JavaScript; no build step</li>
     </ul>
   </div>
@@ -438,6 +438,7 @@ Clicking a session tag chip filters the list without opening the conversation.</
 <li>Download as Markdown transcript, full JSON export, or import from JSON</li>
 <li>Create a public read-only share link for the active conversation from the Control Center; shared pages show a sanitized transcript snapshot without workspace, profile, or live controls</li>
 <li>Sessions persist across page reloads and SSH tunnel reconnects</li>
+<li>Model and reasoning-effort selections are restored per session; new-session defaults and legacy-session reasoning fallback use that session's profile configuration, including an authoritative <code>HERMES_CONFIG_PATH</code> for root; named profiles use their own <code>config.yaml</code> unless the override resolves inside that profile home</li>
 <li>Browser tab title reflects the active session name</li>
 <li>CLI session bridge -- CLI sessions from hermes-agent's SQLite store appear in the sidebar with a gold "cli" badge; click to import with full history and reply normally</li>
 <li>Token/cost display -- input tokens, output tokens, estimated cost shown per conversation (toggle in Settings or <code>/usage</code> command)</li>
@@ -590,6 +591,7 @@ before the session's named-profile Gateway ownership is known.</p>
 <li><strong>Profiles</strong> -- create, switch, delete agent profiles; clone config</li>
 <li><strong>Todos</strong> -- live task list from the current session; hidden while the in-chat task list toggle is on, which also disables the workspace-panel Todos tab</li>
 <li><strong>Insights</strong> -- token, cost, and skill-usage analytics; period presets (7/30/90/365 days) plus a <strong>Custom range</strong> with start/end date pickers</li>
+<li><strong>Artifacts</strong> -- files changed in the session and Skills Used, with a separate skill count and per-skill use counts</li>
 <li><strong>Spaces</strong> -- add, rename, remove workspaces; quick-switch from topbar</li>
 </ul>
 <h4>Mobile responsive</h4>
@@ -968,18 +970,9 @@ docker compose -f docker-compose.three-container.yml up -d
 <tr>
 <td>WebUI can't see <code>~/.hermes</code> after <code>sudo docker compose</code></td>
 <td><code>${HOME}</code> expanded to the root user's home (#3006)</td>
-<td>Run Compose as your user, or pass absolute <code>HERMES_HOME</code>/<code>HERMES_WORKSPACE</code> with <code>sudo -E</code></td>
+<td>Run Comp</td>
 </tr>
 </tbody></table>
-<p>For the deep dive on each of these, see <a href="https://github.com/nesquena/hermes-webui/blob/main/docs/docker.md"><code>docs/docker.md</code></a>.</p>
-<blockquote>
-<p><strong>Note:</strong> By default, Docker Compose binds to <code>127.0.0.1</code> (localhost only).
-To expose on a network, change the port to <code>"8787:8787"</code> in <code>docker-compose.yml</code>
-and set <code>HERMES_WEBUI_PASSWORD</code> to enable authentication.</p>
-</blockquote>
-<hr>
-<h3>Running tests</h3>
-<p>Tests discover the repo and the </p>
 <hr>
 <p><em>README truncated. <a href="https://github.com/nesquena/hermes-webui#readme">Continue reading on GitHub</a></em></p>
 
@@ -1022,7 +1015,7 @@ and set <code>HERMES_WEBUI_PASSWORD</code> to enable authentication.</p>
         <div class="name"><span class="org">Felix-Forever /</span> hermes-agent-desktop</div>
       </a>
       <a class="related-row" href="/projects/jazzyalex/agent-sessions">
-        <div class="stars">★ 928</div>
+        <div class="stars">★ 930</div>
         <div class="name"><span class="org">jazzyalex /</span> agent-sessions</div>
       </a>
     </div>

@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EKKOLearnAI/ekko-studio — Hermes Agent Workspaces &amp; GUIs | Hermes Atlas</title>
-<meta name="description" content="Ekko Studio is a local-first AI workspace available as a desktop app and self-hosted web console. It supports multi-agent chat, group collaboration, visual…">
+<meta name="description" content="Ekko Studio is a local-first AI workspace for multi-agent chat, coding, and visual workflows, available as a desktop app and self-hosted web console. It…">
 <link rel="canonical" href="https://hermesatlas.com/projects/EKKOLearnAI/ekko-studio">
 <meta property="og:title" content="EKKOLearnAI/ekko-studio — Hermes Atlas">
-<meta property="og:description" content="Ekko Studio is a local-first AI workspace available as a desktop app and self-hosted web console. It supports multi-agent chat, group collaboration, visual…">
+<meta property="og:description" content="Ekko Studio is a local-first AI workspace for multi-agent chat, coding, and visual workflows, available as a desktop app and self-hosted web console. It…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/EKKOLearnAI/ekko-studio">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="EKKOLearnAI/ekko-studio — Hermes Atlas">
-<meta name="twitter:description" content="Ekko Studio is a local-first AI workspace available as a desktop app and self-hosted web console. It supports multi-agent chat, group collaboration, visual…">
+<meta name="twitter:description" content="Ekko Studio is a local-first AI workspace for multi-agent chat, coding, and visual workflows, available as a desktop app and self-hosted web console. It…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=ekko-studio&amp;subtitle=Ekko+Studio+is+a+local-first+AI+workspace+for+multi-agent+chat%2C+coding%2C+and+visual+workflows%2C+available+on+desktop+and+the+web.&amp;kind=project+%C2%B7+workspaces">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/EKKOLearnAI/ekko-studio#software",
   "name": "ekko-studio",
-  "description": "Ekko Studio is a local-first AI workspace available as a desktop app and self-hosted web console. It supports multi-agent chat, group collaboration, visual workflows, and integrations with Hermes Agent, Ekko Agent, and coding agents.",
+  "description": "Ekko Studio is a local-first AI workspace for multi-agent chat, coding, and visual workflows, available as a desktop app and self-hosted web console. It supports Hermes Agent, Ekko Agent, and coding-agent integrations, with features including session management, platform-channel configuration, workflows, files, voice, and usage views.",
   "url": "https://hermesatlas.com/projects/EKKOLearnAI/ekko-studio",
   "codeRepository": "https://github.com/EKKOLearnAI/ekko-studio",
   "applicationCategory": "DesktopEnhancementApplication",
@@ -46,13 +46,13 @@
     "name": "EKKOLearnAI",
     "url": "https://github.com/EKKOLearnAI"
   },
-  "dateModified": "2026-10-31T12:42:37.000Z",
+  "dateModified": "2026-11-01T05:09:57.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 11624
+    "userInteractionCount": 11628
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -123,7 +123,7 @@
     <span><span class="meta-label">lang</span>TypeScript</span>
     
     
-    <span><span class="meta-label">updated</span>2026-10-31</span>
+    <span><span class="meta-label">updated</span>2026-11-01</span>
   </div>
 
   <div class="actions">
@@ -140,11 +140,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Ekko Studio is a local-first AI workspace available as a desktop app and self-hosted web console. It supports multi-agent chat, group collaboration, visual workflows, and integrations with Hermes Agent, Ekko Agent, and coding agents.</p>
+    <p class="summary-text">Ekko Studio is a local-first AI workspace for multi-agent chat, coding, and visual workflows, available as a desktop app and self-hosted web console. It supports Hermes Agent, Ekko Agent, and coding-agent integrations, with features including session management, platform-channel configuration, workflows, files, voice, and usage views.</p>
     <ul class="summary-highlights">
-      <li>Manages persistent sessions with streaming responses and tool traces.</li>
-      <li>Builds executable visual workflows with schedules and approval gates.</li>
-      <li>Available as a desktop app, npm CLI package, and Docker image.</li>
+      <li>Desktop app, npm CLI, and Docker distribution</li>
+      <li>Supports shared chats, group chat, and visual workflows</li>
+      <li>Includes configuration for 10 platform channels</li>
     </ul>
   </div>
 </section>
@@ -789,6 +789,21 @@ and package installs such as <code>pip install hermes-agent</code>.</p>
 <td>DSH configuration helper startup/readiness budget in milliseconds, including its native authentication/frontend probes. Set a positive integer up to <code>2147483647</code>; invalid values use the default. For slower plugin-heavy starts, use e.g. <code>360000</code>. The two per-request probe timeouts stay at 5 seconds.</td>
 </tr>
 <tr>
+<td><code>EKKO_STUDIO_DSH_ACP_TIMEOUT_MS</code></td>
+<td><code>60000</code></td>
+<td>Per-request budget for DSH ACP initialization, session creation/restoration and configuration. For slow starts, use e.g. <code>240000</code>. Prompt generation has no request timeout; session close keeps its separate 10-second budget. Compatibility alias: <code>HERMES_DSH_ACP_TIMEOUT_MS</code>.</td>
+</tr>
+<tr>
+<td><code>EKKO_STUDIO_ACP_TIMEOUT_MS</code></td>
+<td><code>60000</code></td>
+<td>Independent per-request budget for other native ACP agents' initialization, session creation/restoration and model/effort selection. Prompt generation has no request timeout. Compatibility alias: <code>HERMES_ACP_TIMEOUT_MS</code>.</td>
+</tr>
+<tr>
+<td><code>EKKO_STUDIO_AGENT_MODEL_DISCOVERY_TIMEOUT_MS</code></td>
+<td><code>20000</code></td>
+<td>Total deadline for each native model-discovery subprocess, across all request/response exchanges, independent of both ACP chat request budgets. For slow discovery, use e.g. <code>240000</code>. An explicit internal <code>timeoutMs</code> override takes precedence over both environment names. Compatibility alias: <code>HERMES_AGENT_MODEL_DISCOVERY_TIMEOUT_MS</code>.</td>
+</tr>
+<tr>
 <td><code>HERMES_AGENT_BRIDGE_STOP_ON_SHUTDOWN</code></td>
 <td>enabled</td>
 <td>Stop the bridge broker during Studio shutdown and restart. Set <code>0</code>, <code>false</code>, <code>no</code>, or <code>off</code> to keep the bridge across restarts.</td>
@@ -924,6 +939,23 @@ and package installs such as <code>pip install hermes-agent</code>.</p>
 <td>Frontend Vite dev server port.</td>
 </tr>
 </tbody></table>
+<p>For the three <code>EKKO_STUDIO_*_TIMEOUT_MS</code> settings above, Studio uses the first
+valid value: the new name, then its <code>HERMES_*</code> compatibility alias, then the
+listed default. Values are converted with <code>Number</code> and must be integer
+milliseconds in <code>1..2147483647</code>; missing, empty, zero, negative, fractional,
+non-finite or overflowing values are skipped. This preserves legacy numeric
+parsing (including surrounding whitespace, scientific notation and hexadecimal).
+The old names remain supported; existing <code>HERMES_DSH_READY_TIMEOUT_MS</code>, state
+paths, authentication and Hermes Agent settings are unchanged. The new prefix
+identifies these budgets as Studio-owned Coding Agent settings.</p>
+<p>Set them in the <strong>Studio server process environment</strong> and restart the server.
+For npm, for example: <code>EKKO_STUDIO_DSH_ACP_TIMEOUT_MS=240000 ekko-studio-web restart</code>.
+For Desktop, fully quit the app and launch it with the variables in its environment;
+remote Desktop clients must configure the remote server. Adding them only to a
+Hermes profile's <code>.env</code> or to an agent subprocess does not configure Studio's
+parent-process timers. The supplied <a href="https://github.com/EKKOLearnAI/ekko-studio/blob/main/docs/docker.md">Docker Compose setup</a>
+forwards both new and legacy names from the shell or Compose <code>.env</code>; recreate the
+container after changing them. With <code>docker run</code>, pass them explicitly using <code>-e</code>.</p>
 <h4>CLI Commands</h4>
 <p><code>hermes-web-ui</code> remains an alias for the <code>ekko-studio-web</code> commands below.</p>
 <table>
@@ -1079,7 +1111,7 @@ artifacts, documentation, and associated files in this repository.</p>
         <div class="name"><span class="org">Felix-Forever /</span> hermes-agent-desktop</div>
       </a>
       <a class="related-row" href="/projects/jazzyalex/agent-sessions">
-        <div class="stars">★ 928</div>
+        <div class="stars">★ 930</div>
         <div class="name"><span class="org">jazzyalex /</span> agent-sessions</div>
       </a>
     </div>

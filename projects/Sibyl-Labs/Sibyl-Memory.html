@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sibyl-Labs/Sibyl-Memory — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Sibyl Memory is a local-first agent memory system with a SQLite-backed, five-tier schema and FTS5 search; the README says it uses no vector database or…">
+<meta name="description" content="Sibyl Memory is a local-first memory SDK with a SQLite-backed, five-tier schema and FTS5 search. Its packages provide a CLI, Hermes Agent integration, an MCP…">
 <link rel="canonical" href="https://hermesatlas.com/projects/Sibyl-Labs/Sibyl-Memory">
 <meta property="og:title" content="Sibyl-Labs/Sibyl-Memory — Hermes Atlas">
-<meta property="og:description" content="Sibyl Memory is a local-first agent memory system with a SQLite-backed, five-tier schema and FTS5 search; the README says it uses no vector database or…">
+<meta property="og:description" content="Sibyl Memory is a local-first memory SDK with a SQLite-backed, five-tier schema and FTS5 search. Its packages provide a CLI, Hermes Agent integration, an MCP…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/Sibyl-Labs/Sibyl-Memory">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Sibyl-Labs/Sibyl-Memory — Hermes Atlas">
-<meta name="twitter:description" content="Sibyl Memory is a local-first agent memory system with a SQLite-backed, five-tier schema and FTS5 search; the README says it uses no vector database or…">
+<meta name="twitter:description" content="Sibyl Memory is a local-first memory SDK with a SQLite-backed, five-tier schema and FTS5 search. Its packages provide a CLI, Hermes Agent integration, an MCP…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=Sibyl-Memory&amp;subtitle=Durable%2C+file-based+long-term+memory+for+AI+agents.+Five-package+plugin+family%3A+SDK%2C+CLI%2C+MCP+server%2C+Hermes+adapter%2C+and+a+LangGraph+BaseStore.+No+vector+database%2C+no+embeddings.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/Sibyl-Labs/Sibyl-Memory#software",
   "name": "Sibyl-Memory",
-  "description": "Sibyl Memory is a local-first agent memory system with a SQLite-backed, five-tier schema and FTS5 search; the README says it uses no vector database or embedding model. Its five packages provide an SDK, command-line interface, Hermes integration, MCP server, and LangGraph BaseStore adapter.",
+  "description": "Sibyl Memory is a local-first memory SDK with a SQLite-backed, five-tier schema and FTS5 search. Its packages provide a CLI, Hermes Agent integration, an MCP server, and a LangGraph BaseStore adapter; the README says the system uses no vector database or embedding model.",
   "url": "https://hermesatlas.com/projects/Sibyl-Labs/Sibyl-Memory",
   "codeRepository": "https://github.com/Sibyl-Labs/Sibyl-Memory",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "Sibyl-Labs",
     "url": "https://github.com/Sibyl-Labs"
   },
-  "dateModified": "2026-10-14T21:57:28.000Z",
+  "dateModified": "2026-11-01T04:10:10.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-10-14</span>
+    <span><span class="meta-label">updated</span>2026-11-01</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Sibyl Memory is a local-first agent memory system with a SQLite-backed, five-tier schema and FTS5 search; the README says it uses no vector database or embedding model. Its five packages provide an SDK, command-line interface, Hermes integration, MCP server, and LangGraph BaseStore adapter.</p>
+    <p class="summary-text">Sibyl Memory is a local-first memory SDK with a SQLite-backed, five-tier schema and FTS5 search. Its packages provide a CLI, Hermes Agent integration, an MCP server, and a LangGraph BaseStore adapter; the README says the system uses no vector database or embedding model.</p>
     <ul class="summary-highlights">
-      <li>Stores memory locally in a SQLite file</li>
-      <li>Includes FTS5 search and a five-tier schema</li>
-      <li>Offers SDK, CLI, Hermes, MCP, and LangGraph packages</li>
+      <li>Stores memory locally in a single file on disk.</li>
+      <li>Provides five packages built around one schema family.</li>
+      <li>Supports Linux, macOS, and Windows through WSL2.</li>
     </ul>
   </div>
 </section>
@@ -182,7 +182,7 @@
 <p><strong>Runs on</strong> Linux, macOS (Apple Silicon and Intel), and Windows through WSL2. Native Windows is not supported.</p>
 <p><code>sibyl-memory-client</code> is a local-first agentic memory SDK. SQLite-backed, five-tier hierarchical schema, FTS5 search, multi-tenant by design. No vector database. No embedding model. No external retrieval service. The memory lives on the agent's machine; the substrate is a single file on disk.</p>
 <blockquote>
-<p><strong>Privacy disclosure.</strong> Your memory content never leaves the machine. The plugin talks to <code>api.sibyllabs.org</code> for these things only: activation (<code>sibyl init</code>); a daily account check-in that renews this computer's access (account id, this computer's sign-in token, plugin version, OS family; no memory content); a size check when a free account nears its cap (account id, sign-in token, the database's byte size and the proposed delta); and, unless you opt out with <code>SIBYL_MEMORY_TELEMETRY=0</code>, an aggregate count of memory operations. The size check and the count also carry this computer's signed access token (account id, tier, cap, device hash, account flags; no personal data). An account is required to use the memory tools; your local data is always readable with <code>sibyl memory</code>. Verified against the source in <code>sibyl-memory-client/src/sibyl_memory_client/</code> (<code>_entitlement.py</code>, <code>_capcheck.py</code>, <code>_heartbeat.py</code>).</p>
+<p><strong>Privacy disclosure.</strong> Your memory content never leaves the machine. The plugin talks to <code>api.sibyllabs.org</code> for these things only: activation (<code>sibyl init</code>); a daily account check-in that renews this computer's access (account id, this computer's sign-in token, plugin version, OS family; no memory content); a size check when a free account nears its cap (account id, sign-in token, the database's byte size and the proposed delta); and an aggregate count of memory operations (the MCP server and CLI send it unless you opt out with <code>SIBYL_MEMORY_TELEMETRY=0</code>; Hermes, since 0.6.0, only if you opt in with <code>SIBYL_MEMORY_TELEMETRY=1</code>). The size check and the count also carry this computer's signed access token (account id, tier, cap, device hash, account flags; no personal data). An account is required to use the memory tools; your local data is always readable with <code>sibyl memory</code>. Verified against the source in <code>sibyl-memory-client/src/sibyl_memory_client/</code> (<code>_entitlement.py</code>, <code>_capcheck.py</code>, <code>_heartbeat.py</code>).</p>
 </blockquote>
 <p>The other four packages ride on top: <code>sibyl-memory-cli</code> for activation and tier management, <code>sibyl-memory-hermes</code> for Hermes Agent integration, <code>sibyl-memory-mcp</code> for any MCP-compatible client (Claude Code, Codex, Cursor, Continue), and <code>sibyl-memory-langgraph</code> as a LangGraph <code>BaseStore</code> adapter.</p>
 <p>The architecture was benchmarked publicly on <a href="https://blog.sibylcap.com/longmemeval-v2">LongMemEval Oracle</a> (ICLR 2025, University of Michigan, 500 questions) and placed <strong>#2 overall at 95.6%</strong>, tied with Chronos (PwC), beating Mastra, MemMachine, Hindsight, Mem0, Supermemory, Zep, and the Oracle baseline. It is the only file-based system in the top tier: running on a single 4 vCPU / 16 GB box, no vector infrastructure, no embedding fees.</p>
@@ -269,9 +269,11 @@ sibyl setup hermes    # installs the plugin and sets memory.provider: sibyl
 </code></pre>
 <p>For MCP (Claude Code, Codex, Cursor, Continue, ...):</p>
 <pre><code class="language-bash">pip install sibyl-memory-mcp sibyl-memory-cli
-sibyl setup claude-code    # or: sibyl setup codex
-# other MCP clients: register a server named sibyl-memory with command sibyl-memory-mcp
+sibyl setup claude-code    # or: sibyl setup codex | cursor | grokbot
+sibyl doctor               # end-to-end check: start, list tools, save, recall, delete a test memory
+# other MCP clients: sibyl setup --print-config prints a ready mcpServers block
 </code></pre>
+<p>The Hermes plugin-catalog package lives in <code>sibyl-memory-hermes/hermes-catalog/</code>; the catalog listing is pending.</p>
 <p>Full documentation at <a href="https://docs.sibyllabs.org/memory/">docs.sibyllabs.org/memory</a>.</p>
 <hr>
 <h3>Architecture</h3>
@@ -375,6 +377,11 @@ once.</p>
 <td>no (<code>/sibyl-save</code> still offers skills when you run it)</td>
 <td>yes</td>
 </tr>
+<tr>
+<td>Skill signals (0.10): Sibyl also notices a tool sequence your agent repeats (in Claude Code the whole workflow, for example <code>Read -&gt; Edit -&gt; Bash</code>; in Codex, Cursor and Hermes the memory tools only) and an entity rewritten again and again, and proposes a skill for it the same way. It keeps one small local file, <code>~/.sibyl-memory/signals.json</code>: tool and MCP server names in plain text, argument names and entity names only as hashes, never a value, never a prompt or a file path; nothing leaves your computer. <code>sibyl skills signals</code> shows its size, <code>clear</code> deletes it, <code>off</code> stops it. In Claude Code a proposal from the workflow appears at the next session start at the earliest</td>
+<td>no (nothing is recorded)</td>
+<td>yes</td>
+</tr>
 </tbody></table>
 <p>The procedures are vendored, with attribution, from the public MIT repos
 <a href="https://github.com/Sibyl-Labs/sibyl-save">sibyl-save</a> and
@@ -404,11 +411,11 @@ or environment variable turns the automation on for a free account.</p>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 68.1K</div>
+        <div class="stars">★ 68.2K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 56.8K</div>
+        <div class="stars">★ 57.0K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">

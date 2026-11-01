@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Diabloluo/hermes-hud — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
-<meta name="description" content="Hermes HUD is a local-first, read-only monitoring plugin for the Hermes Agent dashboard that provides real-time observability of system health, token usage,…">
+<meta name="description" content="Hermes HUD is a user-level plugin for the official Hermes Dashboard that provides views for agent activity, health, token usage and costs, conversations,…">
 <link rel="canonical" href="https://hermesatlas.com/projects/Diabloluo/hermes-hud">
 <meta property="og:title" content="Diabloluo/hermes-hud — Hermes Atlas">
-<meta property="og:description" content="Hermes HUD is a local-first, read-only monitoring plugin for the Hermes Agent dashboard that provides real-time observability of system health, token usage,…">
+<meta property="og:description" content="Hermes HUD is a user-level plugin for the official Hermes Dashboard that provides views for agent activity, health, token usage and costs, conversations,…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/Diabloluo/hermes-hud">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Diabloluo/hermes-hud — Hermes Atlas">
-<meta name="twitter:description" content="Hermes HUD is a local-first, read-only monitoring plugin for the Hermes Agent dashboard that provides real-time observability of system health, token usage,…">
+<meta name="twitter:description" content="Hermes HUD is a user-level plugin for the official Hermes Dashboard that provides views for agent activity, health, token usage and costs, conversations,…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-hud&amp;subtitle=Local+real-time+observability+dashboard+for+Hermes+Agent%3A+timeline%2C+health%2C+token%2Fcost%2C+sessions%2C+skills%2C+cron%2C+channels%2C+errors+%26+incidents+%E2%80%94+local-first%2C+read-only%2C+zero+outbound&amp;kind=project+%C2%B7+skills">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/Diabloluo/hermes-hud#software",
   "name": "hermes-hud",
-  "description": "Hermes HUD is a local-first, read-only monitoring plugin for the Hermes Agent dashboard that provides real-time observability of system health, token usage, and session activity. It operates as a user-level extension using a shared snapshot cache and WebSocket events to display metrics without outbound telemetry.",
+  "description": "Hermes HUD is a user-level plugin for the official Hermes Dashboard that provides views for agent activity, health, token usage and costs, conversations, skills, scheduled tasks, channels, errors, and system storage. It reads Hermes core data without modifying it, stores its own telemetry locally, and the README states that it sends no outbound telemetry.",
   "url": "https://hermesatlas.com/projects/Diabloluo/hermes-hud",
   "codeRepository": "https://github.com/Diabloluo/hermes-hud",
   "applicationCategory": "DeveloperApplication",
@@ -47,7 +47,7 @@
     "name": "Diabloluo",
     "url": "https://github.com/Diabloluo"
   },
-  "dateModified": "2026-10-21T12:08:18.000Z",
+  "dateModified": "2026-11-01T01:44:35.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-10-21</span>
+    <span><span class="meta-label">updated</span>2026-11-01</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes HUD is a local-first, read-only monitoring plugin for the Hermes Agent dashboard that provides real-time observability of system health, token usage, and session activity. It operates as a user-level extension using a shared snapshot cache and WebSocket events to display metrics without outbound telemetry.</p>
+    <p class="summary-text">Hermes HUD is a user-level plugin for the official Hermes Dashboard that provides views for agent activity, health, token usage and costs, conversations, skills, scheduled tasks, channels, errors, and system storage. It reads Hermes core data without modifying it, stores its own telemetry locally, and the README states that it sends no outbound telemetry.</p>
     <ul class="summary-highlights">
-      <li>Provides real-time tracking of token costs, session history, and skill analytics.</li>
-      <li>Enforces strict read-only data access with local log desensitization.</li>
-      <li>Supports optional incident alerting via Telegram and Feishu.</li>
+      <li>Provides a multi-tab dashboard with WebSocket updates and polling fallback.</li>
+      <li>Separates actual, estimated, and unpriced costs.</li>
+      <li>Optional alerts can be sent to Telegram and Feishu.</li>
     </ul>
   </div>
 </section>
@@ -333,10 +333,17 @@ hermes cron add --script hud_alert.py --schedule '*/5 * * * *' --no-agent
 </ul>
 <h3>📊 数据口径</h3>
 <ul>
+<li>API 字段的可空性、费用完整性与采样状态见 <a href="https://github.com/Diabloluo/hermes-hud/blob/main/docs/architecture/HUD_API_DATA_CONTRACT.md">HUD API 数据契约</a>；调用方不得把未知值转换成零费用或健康状态。</li>
 <li><strong>费用三类分开</strong>：<code>实际</code>（provider 账单）/ <code>估算</code>（按模型价表）/ <code>未计价</code>。无账单数据时一律标"本地估算"</li>
 <li><strong>主/辅不重复计数</strong>：主会话读 <code>sessions</code>，辅助调用只读 <code>session_model_usage.task != ''</code>
 （<code>task=''</code> 是主会话重复记账，不计入），API calls 用数据库 <code>api_call_count</code> 累计</li>
 <li><strong>统计时区</strong>：<code>HUD_TIMEZONE</code>（如 <code>Asia/Shanghai</code>）&gt; 系统本地时区 &gt; UTC；DB 的 UTC epoch 仅查询时转换</li>
+<li><strong>日志时区</strong>：errors.log 有明确偏移时按偏移解析；无偏移时用生产进程本地时区。
+若日志来自不同的进程时区，设置 <code>HUD_LOG_TIMEZONE</code>（IANA 名称）。DST 歧义/不存在时间需明确偏移；无法解析的计数显示未知或不完整，未来记录不计入。</li>
+<li><strong>快照采样</strong>：Gateway/活跃会话仍随 2 秒快照更新；全库统计、launchd/进程诊断每 30 秒共享采样，跨语言复用。
+数据库替换/时区变更/跨午夜立即重采，WAL 内新数据最迟下一周期可见；诊断后台刷新，API 提供采样时间。
+诊断 <code>ready</code> 为正常样本；30 秒到期后的 <code>refreshing</code> 沿用上次结果，不因正常刷新产生健康告警。
+样本年龄达到 60 秒（<code>stale</code>）、首次待采集（<code>pending</code>）或采集失败（<code>unavailable</code>）才显示未知；刷新完成后下次读取使用新结果。</li>
 <li><strong>state.db 全程只读</strong>：<code>mode=ro</code> + 短超时 + <code>query_only</code>，不锁 Gateway</li>
 <li><strong>事故计数</strong>：<code>observations</code> 为观测次数、<code>state_changes</code> 为实质状态变化次数，
 不把 2 秒轮询的观测数当作"事故触发次数"</li>
@@ -397,15 +404,15 @@ hermes cron add --script hud_alert.py --schedule '*/5 * * * *' --no-agent
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
-        <div class="stars">★ 35.3K</div>
+        <div class="stars">★ 35.4K</div>
         <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
       </a>
       <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
-        <div class="stars">★ 5.3K</div>
+        <div class="stars">★ 5.4K</div>
         <div class="name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
       </a>
       <a class="related-row" href="/projects/wondelai/skills">
-        <div class="stars">★ 2.5K</div>
+        <div class="stars">★ 2.6K</div>
         <div class="name"><span class="org">wondelai /</span> skills</div>
       </a>
       <a class="related-row" href="/projects/DougTrajano/pydantic-ai-skills">
