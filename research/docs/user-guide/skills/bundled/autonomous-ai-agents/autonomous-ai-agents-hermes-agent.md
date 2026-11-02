@@ -16,7 +16,7 @@ Path
 
 Version
 
-`3.2.0`
+`3.3.0`
 
 Author
 
@@ -157,6 +157,10 @@ Secret redaction, PII, approval modes, "reset permissions"
 Delegation, cron, curator, kanban
 
 `references/background-systems.md`
+
+`hermes project` workspaces, multi-folder projects, desktop sidebar groups
+
+`references/projects-and-folders.md`
 
 MCP servers (add, catalog, `hermes mcp`)
 

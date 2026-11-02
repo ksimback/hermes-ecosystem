@@ -2062,7 +2062,7 @@ Absolute path to a Python interpreter for the backend, checked before Electron a
 
 `HERMES_DESKTOP_DEV_SERVER`
 
-Vite dev-server URL the Electron shell loads instead of the packaged bundle (e.g. `http://127.0.0.1:5174`). Set automatically by `npm run dev`; only relevant when hacking on the app.
+Vite dev-server URL the Electron shell loads instead of the packaged bundle (e.g. `http://127.0.0.1:5174`). Set automatically by `npm run dev`; only relevant when hacking on the app. A backend that inherits it also trusts that renderer's origin for CORS and WebSocket upgrades.
 
 `HERMES_DESKTOP_CDP_PORT`
 
