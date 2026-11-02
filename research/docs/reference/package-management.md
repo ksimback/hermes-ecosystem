@@ -387,7 +387,7 @@ Print installed packages' PM-contributed environment values as JSON. It does not
 
 `pm doctor`
 
-Check installed tool identities, files, and digests against the lock.
+Check installed tool identities, files, and digests against the lock, and look for corrupt entries in PM's uv cache. `--repair` removes those entries so they are fetched again.
 
 `pm repair`
 
@@ -478,6 +478,7 @@ Every Python package Hermes itself depends on must be at least three days old wh
 -   **New environment requires restart:** restart the affected Hermes process. Do not add a second site-packages tree to its live imports.
 -   **Dependency conflict:** read `hermes pm status`. Correct the plugin requirements before retrying admission.
 -   **Damaged Python dependencies:** run `hermes pm repair`, then restart Hermes. Repair replays the selected generation's saved workspace and lock without parsing plugin configuration. An unreadable record or missing saved lock fails without selecting a reduced dependency set. Before a generation exists, repair uses the shipped or committed lock and recorded feature set.
+-   **Corrupt cached package** (`The wheel is invalid`, `RECORD file is invalid`): a machine stop during an install can leave a uv cache entry whose files are empty or NUL-filled. Installs remove the damaged package from PM's uv cache and retry on their own; `hermes pm doctor` reports such entries and `hermes pm doctor --repair` removes them. If the same package is still invalid after a fresh download, the package source is serving a broken wheel.
 -   **Interrupted dependency install:** startup requests the same PM repair before dependency activation. Automatic attempts are bounded; `pm repair` retries explicitly. A failed repair preserves the previous selection and its retry marker.
 -   **Damaged Python executable or application source:** repair or reinstall through the package owner. PM cannot run without those files. Signed payload files are never modified by dependency repair.
 -   **Unknown package or extra:** use the declared name. `pm install` takes package names, not Python extra names or pip specifications.

@@ -152,7 +152,7 @@ Manage external secret sources (currently Bitwarden Secrets Manager) for pulling
 
 `hermes migrate`
 
-Diagnose and (optionally) rewrite `config.yaml` to replace references to retired models or deprecated settings (e.g. `migrate xai`).
+Move over from another agent (`migrate grok-bot`, `migrate claude-code`, ... or bare to detect), or rewrite `config.yaml` for retired models and deprecated settings (`migrate xai`).
 
 `hermes codex-runtime`
 
@@ -1080,14 +1080,22 @@ Turn off the Bitwarden integration.
 ## `hermes migrate`
 
 ```
-hermes migrate <type>
+hermes migrate                 # find another agent's setup here and offer to import it
+hermes migrate <agent>         # openclaw, claude-code, codex, cursor, grok-bot or openbot
+hermes migrate <type>          # xai, relay
 ```
 
-Diagnose and (optionally) rewrite the active `config.yaml` to replace references to retired models or deprecated settings. A timestamped backup of the original `config.yaml` is taken before any rewrite (skip with `--no-backup`).
+Bare `hermes migrate` looks for OpenClaw, Claude Code, Codex CLI, Cursor, Grok Bot and OpenBot on this computer and offers to import what it finds, the same step a first `hermes setup` runs (without setup's own choices: OpenClaw keys come over only with `hermes migrate openclaw --migrate-secrets`). `hermes migrate <agent>` imports from that agent even when nothing is detected: it installs the [`agent-importers`](/docs/user-guide/import-from-other-agents) plugin from the catalog when it is missing, then runs `hermes import-agent <agent>` (preview, then confirmation). It takes `--source`, `--dry-run`, `--overwrite` and `-y`; `grok-bot` and `openbot` also take `--activate-routines` and `--bot <name>`; `openclaw` takes `--migrate-secrets` (API keys and bot tokens come over only with it, unlike first-run setup, which passes it).
+
+The `xai` and `relay` types diagnose and (optionally) rewrite the active `config.yaml` to replace references to retired models or deprecated settings. A timestamped backup of the original `config.yaml` is taken before any rewrite (skip with `--no-backup`).
 
 Subcommand
 
 Description
+
+`openclaw`, `claude-code`, `codex`, `cursor`, `grok-bot`, `openbot`
+
+Import that agent's setup (see above).
 
 `xai`
 
@@ -1106,8 +1114,6 @@ Rewrite `config.yaml` in-place (default: dry-run, no writes).
 `--no-backup`
 
 Skip the timestamped backup of `config.yaml` when applying.
-
-> Not to be confused with `hermes import-agent openclaw` (one-shot import of OpenClaw configuration into Hermes) — `hermes migrate` is the top-level config-rewrite command.
 
 ## `hermes codex-runtime`
 
