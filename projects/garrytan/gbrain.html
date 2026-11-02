@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>garrytan/gbrain — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="GBrain stores explicit facts with sources, supports corrections and withdrawal, and makes memory available across agents. It offers keyless memory and keyword…">
+<meta name="description" content="GBrain stores facts with their sources and supports corrections, withdrawal, and access across agents. It offers keyless memory and keyword retrieval, with…">
 <link rel="canonical" href="https://hermesatlas.com/projects/garrytan/gbrain">
 <meta property="og:title" content="garrytan/gbrain — Hermes Atlas">
-<meta property="og:description" content="GBrain stores explicit facts with sources, supports corrections and withdrawal, and makes memory available across agents. It offers keyless memory and keyword…">
+<meta property="og:description" content="GBrain stores facts with their sources and supports corrections, withdrawal, and access across agents. It offers keyless memory and keyword retrieval, with…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/garrytan/gbrain">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="garrytan/gbrain — Hermes Atlas">
-<meta name="twitter:description" content="GBrain stores explicit facts with sources, supports corrections and withdrawal, and makes memory available across agents. It offers keyless memory and keyword…">
+<meta name="twitter:description" content="GBrain stores facts with their sources and supports corrections, withdrawal, and access across agents. It offers keyless memory and keyword retrieval, with…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=gbrain&amp;subtitle=Garry%27s+Opinionated+OpenClaw%2FHermes+Agent+Brain&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/garrytan/gbrain#software",
   "name": "gbrain",
-  "description": "GBrain stores explicit facts with sources, supports corrections and withdrawal, and makes memory available across agents. It offers keyless memory and keyword retrieval, with optional semantic search, synthesis, and background enrichment; it is MIT-licensed and can be self-hosted.",
+  "description": "GBrain stores facts with their sources and supports corrections, withdrawal, and access across agents. It offers keyless memory and keyword retrieval, with optional semantic search, synthesis, and background enrichment; it is MIT-licensed and can be self-hosted.",
   "url": "https://hermesatlas.com/projects/garrytan/gbrain",
   "codeRepository": "https://github.com/garrytan/gbrain",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "garrytan",
     "url": "https://github.com/garrytan"
   },
-  "dateModified": "2026-11-01T21:21:55.000Z",
+  "dateModified": "2026-11-02T06:25:58.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 31428
+    "userInteractionCount": 31439
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-01</span>
+    <span><span class="meta-label">updated</span>2026-11-02</span>
   </div>
 
   <div class="actions">
@@ -141,9 +141,9 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">GBrain stores explicit facts with sources, supports corrections and withdrawal, and makes memory available across agents. It offers keyless memory and keyword retrieval, with optional semantic search, synthesis, and background enrichment; it is MIT-licensed and can be self-hosted.</p>
+    <p class="summary-text">GBrain stores facts with their sources and supports corrections, withdrawal, and access across agents. It offers keyless memory and keyword retrieval, with optional semantic search, synthesis, and background enrichment; it is MIT-licensed and can be self-hosted.</p>
     <ul class="summary-highlights">
-      <li>Stores sourced facts and supports corrections and withdrawal.</li>
+      <li>Stores explicit facts with provenance and supports corrections.</li>
       <li>Shares memory across agents.</li>
       <li>Optional semantic search, synthesis, and background enrichment.</li>
     </ul>
@@ -233,9 +233,15 @@ catch up before assuming any of this is still current.
 <pre><code class="language-bash">curl -sSL https://gbrainio.terminalwire.sh | bash
 gbrainio terminal connect      # in a new terminal
 gbrainio workspace new         # pick a plan in the browser
-claude mcp add --transport http --scope user gbrain https://gbrain.io/mcp
-codex mcp add gbrain --url https://gbrain.io/mcp
+curl -fsSL https://bun.sh/install | bash   # skip if Bun 1.4.4+ is installed
+export PATH="$HOME/.bun/bin:$PATH"
+bun install -g github:garrytan/gbrain#latest-stable   # the gbrain CLI only; no local brain
+# Claude Code (an existing gbrain entry is kept):
+(claude mcp get gbrain &gt;/dev/null 2&gt;&amp;1 || claude mcp add --transport http --scope user gbrain https://gbrain.io/mcp) &amp;&amp; gbrain setup claude-code --instructions-only
+# Codex (an existing gbrain entry is kept):
+(codex mcp get gbrain &gt;/dev/null 2&gt;&amp;1 || codex mcp add gbrain --url https://gbrain.io/mcp) &amp;&amp; gbrain setup codex --instructions-only
 </code></pre>
+<p><code>gbrain setup &lt;harness&gt; --instructions-only</code> tells the agent the brain is there; agents seldom call an MCP server nobody told them about. It writes the <a href="https://github.com/garrytan/gbrain/blob/main/docs/guides/setup.md#brain-first-instructions">brain-first block</a> into <code>~/.claude/CLAUDE.md</code> or Codex's <code>AGENTS.md</code> (a non-empty <code>AGENTS.override.md</code> instead when Codex has one) with a per-turn rule hook, and leaves the MCP entry alone; the same command with <code>--no-instructions</code> added takes them out.</p>
 <p>The installer is a shell script for macOS and Linux; read it before you run it.</p>
 </blockquote>
 <h4>Here's how to self-host it</h4>
@@ -442,11 +448,11 @@ for installation, data flow, per-harness limitations, and removal.</p>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 68.2K</div>
+        <div class="stars">★ 68.3K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 57.7K</div>
+        <div class="stars">★ 57.8K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">

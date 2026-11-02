@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>yantrikos/yantrikdb-hermes-plugin — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="YantrikDB Hermes Plugin provides YantrikDB as a memory provider for Hermes Agent. Its embedded backend runs without a separate server, and the plugin supports…">
+<meta name="description" content="YantrikDB Hermes Plugin connects YantrikDB memory to Hermes Agent, with an in-process backend as the default and an HTTP backend also available. It supports…">
 <link rel="canonical" href="https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin">
 <meta property="og:title" content="yantrikos/yantrikdb-hermes-plugin — Hermes Atlas">
-<meta property="og:description" content="YantrikDB Hermes Plugin provides YantrikDB as a memory provider for Hermes Agent. Its embedded backend runs without a separate server, and the plugin supports…">
+<meta property="og:description" content="YantrikDB Hermes Plugin connects YantrikDB memory to Hermes Agent, with an in-process backend as the default and an HTTP backend also available. It supports…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="yantrikos/yantrikdb-hermes-plugin — Hermes Atlas">
-<meta name="twitter:description" content="YantrikDB Hermes Plugin provides YantrikDB as a memory provider for Hermes Agent. Its embedded backend runs without a separate server, and the plugin supports…">
+<meta name="twitter:description" content="YantrikDB Hermes Plugin connects YantrikDB memory to Hermes Agent, with an in-process backend as the default and an HTTP backend also available. It supports…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=yantrikdb-hermes-plugin&amp;subtitle=YantrikDB+memory+provider+for+NousResearch%2Fhermes-agent+%E2%80%94+self-maintaining+memory+with+benchmarked+recall%2C+self-tuning+ranking%2C+contradiction+tracking%2C+proactive+hygiene%2C+and+expla&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin#software",
   "name": "yantrikdb-hermes-plugin",
-  "description": "YantrikDB Hermes Plugin provides YantrikDB as a memory provider for Hermes Agent. Its embedded backend runs without a separate server, and the plugin supports memory recall with scoring reasons, duplicate canonicalization, and contradiction tracking.",
+  "description": "YantrikDB Hermes Plugin connects YantrikDB memory to Hermes Agent, with an in-process backend as the default and an HTTP backend also available. It supports memory recall with per-result scoring reasons, along with canonicalization, contradiction tracking, and maintenance features such as consolidation and forgetting.",
   "url": "https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin",
   "codeRepository": "https://github.com/yantrikos/yantrikdb-hermes-plugin",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "yantrikos",
     "url": "https://github.com/yantrikos"
   },
-  "dateModified": "2026-10-14T14:37:00.000Z",
+  "dateModified": "2026-11-01T23:25:30.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-10-14</span>
+    <span><span class="meta-label">updated</span>2026-11-01</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">YantrikDB Hermes Plugin provides YantrikDB as a memory provider for Hermes Agent. Its embedded backend runs without a separate server, and the plugin supports memory recall with scoring reasons, duplicate canonicalization, and contradiction tracking.</p>
+    <p class="summary-text">YantrikDB Hermes Plugin connects YantrikDB memory to Hermes Agent, with an in-process backend as the default and an HTTP backend also available. It supports memory recall with per-result scoring reasons, along with canonicalization, contradiction tracking, and maintenance features such as consolidation and forgetting.</p>
     <ul class="summary-highlights">
-      <li>Embedded backend is the default; an HTTP backend is also available.</li>
+      <li>Default backend runs in-process; no separate server is required.</li>
       <li>Recall results include a why_retrieved reason.</li>
-      <li>Includes contradiction tracking and memory canonicalization.</li>
+      <li>Includes contradiction tracking and memory maintenance features.</li>
     </ul>
   </div>
 </section>
@@ -647,7 +647,7 @@ EOF
 <li><code>fixtures/corpus_1k.json</code>, <code>fixtures/queries_1k.json</code> — the deterministic corpus + queries used</li>
 </ul>
 <p><strong>How to re-run it</strong> — clone the repo, <code>scp tests/comparison/</code> to a Hermes-installed machine, <code>python3 runner_scale.py --all</code>. The harness will skip-with-honest-reason for any provider whose <code>is_available()</code> returns False (e.g. missing API key); for the ones that initialise, it produces a fresh <code>findings_scale.yaml</code>. Pull requests welcomed when accounts unlock more rows.</p>
-<p>Five lifecycle hooks: <code>on_session_end</code> auto-consolidates, <code>on_pre_compress</code> preserves high-salience memories through context compression, <code>on_memory_write</code> mirrors built-in <code>MEMORY.md</code> / <code>USER.md</code> additions, <strong><code>on_turn_start</code> (v0.10.0) adapts the prompt budget</strong> to the context Hermes reports as remaining — injecting less as the window fills, and exactly as much as before when the host says nothing — and <strong><code>on_delegation</code> (v0.10.0) persists what sub-agents found</strong> — Hermes calls it when a delegated child returns, and no other memory provider implements it, so elsewhere a sub-agent's finding dies with its session. Stored as an episodic memory in the parent's namespace, stamped with the child session id; bounded, fail-soft, disable with <code>YANTRIKDB_CAPTURE_DELEGATIONS=false</code>.</p>
+<p>Five lifecycle hooks: <code>on_session_end</code> auto-consolidates, <code>on_pre_compress</code> preserves high-salience memories through context compression, <code>on_memory_write</code> mirrors built-in <code>MEMORY.md</code> / <code>USER.md</code> additions, <strong><code>on_turn_start</code> (v0.10.0) adapts the prompt budget</strong> to the context Hermes reports as remaining — injecting less as the window fills, and exactly as much as before when the host says nothing — and <strong><code>on_delegation</code> (v0.10.0) persists what sub-agents found</strong> — Hermes calls it when a delegated child returns, and no other memory provider implements it, so elsewhere a sub-agent's finding dies with its session. Stored as an episodic memory in the parent's namespace, stamped with the child session id; bounded, fail-soft, disable with <code>YANTRIKDB_CAPTURE_DELEGATIONS=false</code>. The pre-compression gist write can be disabled with <code>YANTRIKDB_COMPRESSION_GIST=false</code>.</p>
 <h3>Skills (opt-in, v0.3.0+)</h3>
 <p>Skills are <strong>procedural memory</strong>: reusable patterns the agent distills from observed success and pulls back next session. They live in YantrikDB's shared <code>skill_substrate</code> namespace alongside skills authored by other consumers (Lane B SDK, server handlers, WisePick). Hermes-authored skills are tagged <code>metadata.source=hermes</code> so any downstream consumer can filter them in or out cleanly.</p>
 <p><strong>Disabled by default.</strong> Adding the plugin to an existing Hermes install doesn't change the tool schema the model sees. Enable explicitly when you want the agentic skill loop:</p>
@@ -911,11 +911,11 @@ YANTRIKDB_INTEGRATION_TOKEN=ydb_... \
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 68.2K</div>
+        <div class="stars">★ 68.3K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 57.7K</div>
+        <div class="stars">★ 57.8K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
