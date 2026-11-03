@@ -1070,7 +1070,7 @@ Empty by default, and narrower than `allow_private_urls`: only the declared bloc
 The dangerous-command detector also flags two content-level shapes that a destructive-verb list misses:
 
 -   A `curl`/`wget` request body that carries a secret: a secret-named variable (`-d "k=$OPENAI_API_KEY"`) or a credential file (`-F file=@.env`, `-T ~/.ssh/id_rsa`, `--post-file=/etc/passwd`), or a credential file piped into an uploading `curl`/`wget`. An `Authorization` header is ordinary API use and is not flagged.
--   Invisible or bidirectional Unicode control characters (zero-width spaces, right-to-left overrides, isolates), which make the command you approve differ from the one that runs. Emoji joiner sequences are not flagged.
+-   Invisible or bidirectional Unicode control characters (zero-width spaces, right-to-left overrides, isolates, and variation selectors that do not follow an emoji), which make the command you approve differ from the one that runs. Emoji joiner sequences, keycap emoji (`1️⃣`, `#️⃣`), and an emoji's own presentation selector (as in folder names like `ℹ️ Info`) are not flagged.
 
 Both go through the normal approval flow like every other dangerous pattern.
 

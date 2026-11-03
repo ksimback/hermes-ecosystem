@@ -1226,6 +1226,10 @@ Accept messages from other Slack bots: `none` (default), `mentions`, or `all`. T
 
 Require an explicit @mention for Slack thread replies while preserving top-level free-response channels
 
+`SLACK_THREAD_FOLLOWUP_SILENCE`
+
+Let a bare silence marker stand on unaddressed Slack channel-thread replies instead of posting the unexpected-silence notice (default `false`)
+
 `SLACK_HOME_CHANNEL`
 
 Default Slack channel for cron delivery
