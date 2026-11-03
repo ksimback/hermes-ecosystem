@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DanielLi202/hermes-tag — Hermes Agent Integrations &amp; Bridges | Hermes Atlas</title>
-<meta name="description" content="Hermes Tag is a context-selection layer for Hermes on Feishu/Lark, Slack, and DingTalk. It retrieves specific images, notes, and relevant replies when…">
+<meta name="description" content="Hermes Tag is a context-selection layer for Hermes on Feishu/Lark and Slack, with reduced capability on DingTalk. It responds when mentioned, selecting…">
 <link rel="canonical" href="https://hermesatlas.com/projects/DanielLi202/hermes-tag">
 <meta property="og:title" content="DanielLi202/hermes-tag — Hermes Atlas">
-<meta property="og:description" content="Hermes Tag is a context-selection layer for Hermes on Feishu/Lark, Slack, and DingTalk. It retrieves specific images, notes, and relevant replies when…">
+<meta property="og:description" content="Hermes Tag is a context-selection layer for Hermes on Feishu/Lark and Slack, with reduced capability on DingTalk. It responds when mentioned, selecting…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/DanielLi202/hermes-tag">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="DanielLi202/hermes-tag — Hermes Atlas">
-<meta name="twitter:description" content="Hermes Tag is a context-selection layer for Hermes on Feishu/Lark, Slack, and DingTalk. It retrieves specific images, notes, and relevant replies when…">
+<meta name="twitter:description" content="Hermes Tag is a context-selection layer for Hermes on Feishu/Lark and Slack, with reduced capability on DingTalk. It responds when mentioned, selecting…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-tag&amp;subtitle=Post+images%2C+add+notes%2C+let+the+thread+run%2C+then+%40+it+%E2%80%94+Hermes+Tag+pulls+the+few+messages+that+matter+%28originals+%2B+your+notes+%2B+relevant+replies%29%2C+not+your+last+line%2C+not+your+whol&amp;kind=project+%C2%B7+integrations">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/DanielLi202/hermes-tag#software",
   "name": "hermes-tag",
-  "description": "Hermes Tag is a context-selection layer for Hermes on Feishu/Lark, Slack, and DingTalk. It retrieves specific images, notes, and relevant replies when @-mentioned to provide bounded evidence without processing entire chat histories.",
+  "description": "Hermes Tag is a context-selection layer for Hermes on Feishu/Lark and Slack, with reduced capability on DingTalk. It responds when mentioned, selecting relevant earlier messages and images rather than using only the trigger message or the full transcript; it also provides per-chat memory and admin controls for retained data.",
   "url": "https://hermesatlas.com/projects/DanielLi202/hermes-tag",
   "codeRepository": "https://github.com/DanielLi202/hermes-tag",
   "applicationCategory": "CommunicationApplication",
@@ -47,7 +47,7 @@
     "name": "DanielLi202",
     "url": "https://github.com/DanielLi202"
   },
-  "dateModified": "2026-10-28T05:45:05.000Z",
+  "dateModified": "2026-11-03T10:18:54.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">284·repos</span>
+    <span id="meta-count">285·repos</span>
     <span id="meta-version">hermes·v0.21.5</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-10-28</span>
+    <span><span class="meta-label">updated</span>2026-11-03</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Tag is a context-selection layer for Hermes on Feishu/Lark, Slack, and DingTalk. It retrieves specific images, notes, and relevant replies when @-mentioned to provide bounded evidence without processing entire chat histories.</p>
+    <p class="summary-text">Hermes Tag is a context-selection layer for Hermes on Feishu/Lark and Slack, with reduced capability on DingTalk. It responds when mentioned, selecting relevant earlier messages and images rather than using only the trigger message or the full transcript; it also provides per-chat memory and admin controls for retained data.</p>
     <ul class="summary-highlights">
-      <li>Provides per-chat memory isolation</li>
-      <li>Supports Feishu, Slack, and DingTalk</li>
-      <li>Uses Tier-0 short-term and Tier-1 long-term memory</li>
+      <li>Selects bounded context across messages and images</li>
+      <li>Scopes long-term memory to each chat</li>
+      <li>Provides redacted audit events and chat data controls</li>
     </ul>
   </div>
 </section>
@@ -168,19 +168,35 @@
 <ol>
 <li><strong>Late @, full context.</strong> You can scatter context before you ever invoke it — images, a note, other people's replies — and when you finally @-mention it, it reconstructs the right bounded evidence across time and media: the images' originals, your note, and the relevant discussion. Not just your trigger message; not the whole transcript.</li>
 <li><strong>Per-chat memory, by design.</strong> Long-term memory is built only from @-mention interactions and stays scoped to that chat — one chat's memory never leaks into another, and never becomes your whole account history. There is no cross-channel "workspace memory"; that isolation is the privacy promise.</li>
-<li><strong>Auditable, and it never stores your message bodies.</strong> <code>/tag admin audit</code> returns redacted events (scope, time, counts — never message text); <code>/tag admin clear|disable</code> removes a chat's retained data. The <code>enabled_chats</code> allowlist is the only storage and processing boundary.</li>
+<li><strong>Auditable, with redacted audit events.</strong> <code>/tag admin audit</code> returns redacted events (scope, time, counts — never message text); <code>/tag admin clear|disable</code> removes a chat's retained data. The <code>enabled_chats</code> allowlist is the only storage and processing boundary.</li>
 </ol>
 <p>The <code>ContextSelector</code> chooses bounded evidence with <code>focused_reply</code>, <code>thread</code>, <code>deictic_recent</code>, and <code>plain</code> scopes instead of dumping the transcript. That means no full-history RAG and no ambient auto-answering.</p>
 <p><strong>Shipped now vs. roadmap.</strong> Shipped: bounded multimodal evidence, Tier-0/Tier-1 memory, per-chat isolation, admin lifecycle, and redacted audit — on Feishu/Lark and Slack. DingTalk is also supported, but with <strong>reduced capability</strong>: DingTalk bots only receive messages that @-mention them in groups (no equivalent of Feishu's <code>im:message.group_msg</code>), so ambient group context (Tier-0) isn't available there — see <a href="https://github.com/DanielLi202/hermes-tag/blob/main/docs/dingtalk.md">docs/dingtalk.md</a>. Roadmap: deeper connector/source-binding parity. The Claude-Tag comparison is the goal we measure against, not a claim that every Claude-Tag feature already ships.</p>
 <p>This repository, the Python/pip package, and the manifest name are all <code>hermes-tag</code>.</p>
 <h3>Security &amp; Risk Warnings (Read Before Use)</h3>
 <ul>
-<li>The <code>enabled_chats</code> allowlist is the storage and processing boundary.</li>
-<li>All messages in enabled chats may be buffered locally as Tier-0 short-term context.</li>
-<li>Only @-mention interactions create Tier-1 long-term memory.</li>
-<li>The declared <code>encryption_posture</code> is <code>plaintext-db-on-local-disk</code>.</li>
-<li>Admins can run <code>/tag admin clear</code> or <code>/tag admin disable</code> to remove retained plugin data for a chat, and <code>/tag admin audit</code> to inspect redacted activity.</li>
-<li>Audit events record startup, storage, admin, standing-job, and lifecycle actions — never message bodies.</li>
+<li><p>The <code>enabled_chats</code> allowlist is the storage and processing boundary.</p>
+</li>
+<li><p><strong>Tier-0 stores message text.</strong> Each message the bot receives in an enabled chat is kept as Tier-0 short-term context, <strong>including its text</strong>. On Feishu this happens only when <code>granted_scopes</code> includes <code>im:message.group_msg</code>; on Slack and DingTalk it always happens. Defaults: 500 rows per chat (<code>tier0_max_count</code>). Rows older than 24 hours (<code>tier0_ttl_seconds</code>) are deleted the next time a message is stored for that chat, so a quiet chat can keep them longer.</p>
+</li>
+<li><p><strong>Tier-1 stores the question and the reply.</strong> Each @-mention turn writes a Tier-1 memory of the form <code>question=&lt;message text&gt;; conclusion=&lt;reply text&gt;</code>. Every turn in a DM counts as a mention. Once a chat passes <code>tier1_max_count</code> (100 by default), older memories are merged. Tier-1 has no time limit.</p>
+</li>
+<li><p>Both are kept in a plaintext SQLite file (declared <code>encryption_posture: plaintext-db-on-local-disk</code>), at <code>&lt;hermes home&gt;/plugin-data/hermes-tag/&lt;platform&gt;-tag.sqlite3</code> or your <code>db_path</code>. Attachments on stored messages are copied into the sibling <code>&lt;sqlite file&gt;.media</code> directory. Media from quoted messages is downloaded through the bundled adapter into Hermes's media cache, one new file per download. The plugin deletes all of these files: after the turn, or on clear or eviction if they are kept as Tier-0 context.</p>
+</li>
+<li><p>On Feishu it makes these Feishu Open API calls of its own, with the bot's credentials:</p>
+<ul>
+<li><code>application.v6.scope.list</code>, once per process, to check whether the app really holds <code>im:message.group_msg</code> as <code>granted_scopes</code> claims;</li>
+<li><code>im.v1.message.get</code> plus message-resource downloads, for quoted messages;</li>
+<li>a DM to each configured admin when that check finds a mismatch or an available upgrade.</li>
+</ul>
+<p>On Slack and DingTalk it makes no API calls of its own.</p>
+</li>
+<li><p><code>/tag standing confirm</code> (admin-only) creates a Hermes cron job. The job runs on its schedule and posts to the chat until it is cancelled or paused.</p>
+</li>
+<li><p><code>/tag admin clear</code> and <code>/tag admin disable</code> delete a chat's Tier-0, Tier-1 and media, and cancel the cron jobs behind its standing jobs. They do not reset the Hermes conversation; send <code>/new</code> for that.</p>
+</li>
+<li><p>Audit events (<code>/tag admin audit</code>) record startup, storage, admin, standing-job and lifecycle actions: ids, counts and fixed strings, never message text. They are kept after a clear. Rows written by earlier versions that held a context preview are scrubbed when the store opens.</p>
+</li>
 </ul>
 <p>Read <a href="https://github.com/DanielLi202/hermes-tag/blob/main/SECURITY.md">SECURITY.md</a> and <a href="docs/design/">docs/design/</a> before enabling a pilot chat.</p>
 <h3>Requirements / Compatibility</h3>
@@ -328,7 +344,7 @@ platforms:
         <div class="name"><span class="org">kevinmarmstrong /</span> hermes-claude-code-rc</div>
       </a>
       <a class="related-row" href="/projects/AaronWong1999/hermesclaw">
-        <div class="stars">★ 758</div>
+        <div class="stars">★ 757</div>
         <div class="name"><span class="org">AaronWong1999 /</span> hermesclaw</div>
       </a>
       <a class="related-row" href="/projects/Codename-11/hermes-relay">
