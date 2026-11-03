@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>rafreid/keryx — Hermes Agent Workspaces &amp; GUIs | Hermes Atlas</title>
-<meta name="description" content="Keryx is a read-only visual activity monitor for Hermes Agent. It reads Hermes records and displays activity in a live 3D force-graph dashboard, with panels…">
+<meta name="description" content="Keryx is a read-only visual monitor for Hermes Agent that reads the agent’s records and presents them in a 3D activity dashboard. It serves a web page and…">
 <link rel="canonical" href="https://hermesatlas.com/projects/rafreid/keryx">
 <meta property="og:title" content="rafreid/keryx — Hermes Atlas">
-<meta property="og:description" content="Keryx is a read-only visual activity monitor for Hermes Agent. It reads Hermes records and displays activity in a live 3D force-graph dashboard, with panels…">
+<meta property="og:description" content="Keryx is a read-only visual monitor for Hermes Agent that reads the agent’s records and presents them in a 3D activity dashboard. It serves a web page and…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/rafreid/keryx">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="rafreid/keryx — Hermes Atlas">
-<meta name="twitter:description" content="Keryx is a read-only visual activity monitor for Hermes Agent. It reads Hermes records and displays activity in a live 3D force-graph dashboard, with panels…">
+<meta name="twitter:description" content="Keryx is a read-only visual monitor for Hermes Agent that reads the agent’s records and presents them in a 3D activity dashboard. It serves a web page and…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=keryx&amp;subtitle=Live%2C+read-only+3D+activity+monitor+for+Hermes+Agent%3A+sessions%2C+tools%2C+subagents%2C+models+and+cron+jobs+from+the+agent%27s+own+records.+An+Aflux+Systems+LLC+open-source+project.&amp;kind=project+%C2%B7+workspaces">
 <script type="application/ld+json">
 {
@@ -35,19 +35,19 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/rafreid/keryx#software",
   "name": "keryx",
-  "description": "Keryx is a read-only visual activity monitor for Hermes Agent. It reads Hermes records and displays activity in a live 3D force-graph dashboard, with panels for sessions, tasks, analytics, and logs.",
+  "description": "Keryx is a read-only visual monitor for Hermes Agent that reads the agent’s records and presents them in a 3D activity dashboard. It serves a web page and refreshes its panels when Hermes files change; the dashboard includes an attention list and views for sessions, tasks, analytics, and logs.",
   "url": "https://hermesatlas.com/projects/rafreid/keryx",
   "codeRepository": "https://github.com/rafreid/keryx",
   "applicationCategory": "DesktopEnhancementApplication",
   "operatingSystem": "Cross-platform",
-  "programmingLanguage": "Python",
+  "programmingLanguage": "JavaScript",
   "license": "https://spdx.org/licenses/MIT.html",
   "author": {
     "@type": "Organization",
     "name": "rafreid",
     "url": "https://github.com/rafreid"
   },
-  "dateModified": "2026-11-02T21:07:19.000Z",
+  "dateModified": "2026-11-03T05:25:24.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -121,10 +121,10 @@
 
   <div class="meta-row">
     <span class="stars">★ 1</span>
-    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">lang</span>JavaScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-02</span>
+    <span><span class="meta-label">updated</span>2026-11-03</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Keryx is a read-only visual activity monitor for Hermes Agent. It reads Hermes records and displays activity in a live 3D force-graph dashboard, with panels for sessions, tasks, analytics, and logs.</p>
+    <p class="summary-text">Keryx is a read-only visual monitor for Hermes Agent that reads the agent’s records and presents them in a 3D activity dashboard. It serves a web page and refreshes its panels when Hermes files change; the dashboard includes an attention list and views for sessions, tasks, analytics, and logs.</p>
     <ul class="summary-highlights">
-      <li>Reads Hermes files without writing to them or contacting the agent.</li>
-      <li>Updates panels when Hermes files change.</li>
-      <li>Supports 2D and 3D graph views, light and dark themes.</li>
+      <li>Reads Hermes records without writing to them or contacting the agent</li>
+      <li>Updates panels through a server-sent-events stream</li>
+      <li>Supports light and dark themes, keyboard use, and reduced motion</li>
     </ul>
   </div>
 </section>
@@ -165,8 +165,9 @@ Keryx reads the agent's own records (its SQLite state, cron store and logs) with
 <li><strong>Read-only.</strong> Keryx opens Hermes' files, never writes them, and never talks to the agent.</li>
 <li><strong>Live.</strong> A server-sent-events stream pushes an update whenever a Hermes file changes; every panel refreshes on that one clock.</li>
 <li><strong>One rule for the picture.</strong> Shape says <em>what</em> a thing is, colour says <em>how it is doing</em>, position says <em>when</em> it started.</li>
-<li><strong>Triage first.</strong> One ranked attention list says what needs a look, and every line leads to the node or the tab that explains it.</li>
-<li><strong>Works on a phone, in both themes.</strong> The graph and the panel take turns at full width; light and dark are both designed, not inverted.</li>
+<li><strong>Triage first.</strong> The attention list is grouped into needs action, watch and info, says since when, and every line leads to the node or the tab that explains it.</li>
+<li><strong>Honest about liveness.</strong> A strip under the header says when Keryx last heard from the backend and goes amber, then red, within half a minute of the backend going away. It never shows "live" over a dead connection.</li>
+<li><strong>Works on a phone, from the keyboard, in both themes.</strong> The graph and the panel take turns at full width; every card, row and section is a real control; light and dark are both designed, not inverted; reduced motion is honoured.</li>
 </ul>
 <h3>Screenshots</h3>
 <p>All screenshots are taken from the synthetic fixture the tests use, never from a real install.</p>
@@ -194,18 +195,36 @@ Keryx reads the agent's own records (its SQLite state, cron store and logs) with
 <td>Tasks: delegations, scheduled jobs, incidents, the delivery queue.</td>
 </tr>
 <tr>
-<td><img src="https://raw.githubusercontent.com/rafreid/keryx/main/docs/img/logs.png" alt="The logs tab: error-level lines, one tagged with the session that logged it" loading="lazy" decoding="async"></td>
-<td><img src="https://raw.githubusercontent.com/rafreid/keryx/main/docs/img/light.png" alt="The light theme in 2D: the same graph with labels and rings in the light palette" loading="lazy" decoding="async"></td>
+<td><img src="https://raw.githubusercontent.com/rafreid/keryx/main/docs/img/logs.png" alt="The logs tab: error-level lines on a 24-hour clock, one tagged with the session that logged it" loading="lazy" decoding="async"></td>
+<td><img src="https://raw.githubusercontent.com/rafreid/keryx/main/docs/img/light.png" alt="The light theme: the same selected session with every graph and panel colour in the light palette" loading="lazy" decoding="async"></td>
 </tr>
 <tr>
 <td>Logs: every file Hermes writes, filtered by level; session-tagged lines link to their session.</td>
-<td>The light theme, 2D view.</td>
+<td>The light theme: every accent reads at 5:1 or better.</td>
 </tr>
 </tbody></table>
-<p align="center"><img src="https://raw.githubusercontent.com/rafreid/keryx/main/docs/img/phone-panel.png" width="280" alt="Keryx on a phone: the overview panel at full width with the attention list"> <img src="https://raw.githubusercontent.com/rafreid/keryx/main/docs/img/phone-map.png" width="280" alt="Keryx on a phone: the map view, with the session cards above the 2D graph"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/rafreid/keryx/main/docs/img/phone-panel.png" width="280" alt="Keryx on a phone: a one-row header, the health counts in the map / panel bar, and the overview panel with its grouped attention list"> <img src="https://raw.githubusercontent.com/rafreid/keryx/main/docs/img/phone-map.png" width="280" alt="Keryx on a phone: the map view, with the session cards above the 2D graph"></p>
 
+<h3>What's new in 2.9</h3>
+<p>2.9 is a graph release that came out of a visual and interaction review of the 3D view (14 findings, all addressed). Nothing changed in what Keryx reads; the picture got honest colours, legible labels and depth. 2.8's usability changes are in the <a href="https://github.com/rafreid/keryx/blob/main/CHANGELOG.md#28">changelog</a>.</p>
+<ul>
+<li><strong>Colours that mean one thing.</strong> A running session is green even while it is busy: "active" (touched in the last 5 min) is now a halo ring and link particles, not a red fill that read as failure. Every node and link colour is a CSS token with a light-theme value that clears 3:1 on the page, where the old dark-theme hexes fell to 1.3:1. Switching theme repaints the 3D background too.</li>
+<li><strong>Labels you can read.</strong> Text stays about 11 px on screen at any zoom. The overview labels the hub, the platforms, running and waiting sessions and the newest four; everything is labelled when you zoom in; a label that would overprint another is hidden; nothing outside the hovered or selected neighbourhood keeps one. Tool labels say <code>write_file ×3 · 1 failed</code>.</li>
+<li><strong>Depth in the 3D view.</strong> A thin stem drops from every session to the floor ring, so height (start time) reads at any angle; the overview sits at 42° instead of 31°; a ring marks the selected node; fog follows the camera distance so what is behind the structure fades a little at every zoom.</li>
+<li><strong>A tighter frame and a lit hub.</strong> The overview fits the sessions and platforms to 62 % of the canvas instead of 40 %. The hub is accent-coloured in both themes, where it used to be a black sphere on the light page.</li>
+<li><strong>Phone map.</strong> The map refits when the phone rotates or the panel is resized, labels only the sessions that matter when zoomed out, and the history trail stays out of the way (the browser's back button does the same job).</li>
+<li><strong>Less work per frame.</strong> Label textures are redrawn only when their size or colour changes, instead of twice per label per frame; the 2D canvas pauses its loop under reduced motion.</li>
+</ul>
 <h3>Quick start</h3>
-<p>You need a Hermes Agent install whose data directory you can read, and either Docker or Python 3.11+. Node is <strong>not</strong> required: a prebuilt image is published for every release.</p>
+<p>You need a Hermes Agent install whose data directory you can read, on the same machine, and Docker. A prebuilt image is published for every release, so Node is <strong>not</strong> required. (Python 3.11+ works without Docker, but that path builds the front end from source and needs Node 18+ once.)</p>
+<p>Nothing to clone: run the published image against your Hermes data directory (<code>~/.hermes</code> for a native install; for Hermes in Docker use the host directory you mount at <code>/opt/data</code> and the uid that owns it, see <a href="#doing-it-by-hand">Doing it by hand</a>):</p>
+<pre><code class="language-bash">docker run -d --name keryx --restart unless-stopped \
+  --user "$(id -u):$(id -g)" \
+  -v ~/.hermes:/opt/data \
+  -p 127.0.0.1:9120:9120 \
+  ghcr.io/rafreid/keryx:latest
+</code></pre>
+<p>Or clone the repository and let the quick-start script find the directory, its owner and Docker for you:</p>
 <pre><code class="language-bash">git clone https://github.com/rafreid/keryx.git
 cd keryx
 ./quickstart.sh
@@ -229,7 +248,7 @@ cd keryx
 </tr>
 <tr>
 <td><code>./quickstart.sh --python</code></td>
-<td>skip Docker and run uvicorn directly</td>
+<td>skip Docker and run uvicorn directly (builds the front end first: Node 18+ once)</td>
 </tr>
 <tr>
 <td><code>HERMES_HOME=/srv/hermes ./quickstart.sh</code></td>
@@ -244,7 +263,7 @@ HERMES_HOME=~/.hermes HERMES_UID=$(id -u) HERMES_GID=$(id -g) docker compose up 
 # Hermes in Docker with its data at /opt/hermes-data, owned by uid 10000
 HERMES_HOME=/opt/hermes-data docker compose up -d
 </code></pre>
-<p>If Hermes already runs from a compose file, paste the <code>keryx</code> service from <a href="https://github.com/rafreid/keryx/blob/main/docker-compose.yml">docker-compose.yml</a> into it and mount the same host directory you give Hermes. The image is <code>ghcr.io/rafreid/keryx:latest</code>; add <code>HERMES_DASHBOARD_URL=http://&lt;host&gt;:9119</code> to get links into the Hermes dashboard.</p>
+<p>If Hermes already runs from a compose file, paste the <code>keryx</code> service from <a href="https://github.com/rafreid/keryx/blob/main/docker-compose.yml">docker-compose.yml</a> into it and mount the same host directory you give Hermes. The image is <code>ghcr.io/rafreid/keryx:latest</code> (or a version tag such as <code>2.9.0</code>, one per <a href="https://github.com/rafreid/keryx/releases">release</a>); add <code>HERMES_DASHBOARD_URL=http://&lt;host&gt;:9119</code> to get links into the Hermes dashboard.</p>
 <p><strong>Python.</strong></p>
 <pre><code class="language-bash">cd frontend &amp;&amp; npm install &amp;&amp; npm run build &amp;&amp; cd ..     # once; writes backend/static
 cd backend
@@ -268,7 +287,11 @@ docker compose pull keryx &amp;&amp; docker compose up -d keryx      # Docker
 </thead>
 <tbody><tr>
 <td>Header</td>
-<td>the title dot shows the worst health check; a <strong>health</strong> pill counts the red and amber ones and opens every check; only checks that are not green stay inline. Checks: gateway (heartbeat, Hermes' own process state and version from <code>gateway_state.json</code>, a pending restart), one per messaging platform as the gateway reports it, cron (incidents, missed slots, undelivered results), error log, sessions, the kanban board when it has tasks, storage. Token totals with the spend, <code>~</code> when estimated. The browser's timezone is named beside the title.</td>
+<td>the title dot shows the worst health check; a <strong>health</strong> pill counts the red and amber ones and opens every check (Esc or a click outside closes it); the single worst check stays inline with "N more in health". Checks: gateway (heartbeat, Hermes' own process state and version from <code>gateway_state.json</code>, a pending restart), one per messaging platform as the gateway reports it, cron (incidents, missed slots, undelivered results), error log, sessions, the kanban board when it has tasks, storage. Token totals with the spend, <code>~</code> when estimated.</td>
+</tr>
+<tr>
+<td>Connection strip</td>
+<td>under the header, the one place that says whether the picture is current: <strong>live · checked 3s ago · last change 4m ago</strong>, <strong>reconnecting… showing data from 14:02</strong> (amber, the stream went quiet or failed and Keryx is polling), <strong>backend unreachable since 14:02 · showing the last snapshot</strong> (red), or <strong>live updates paused</strong>. The backend pings the stream every 15 s; 30 s of silence counts as stalled. The browser's timezone sits at its right end. On a phone only the non-green states take the room.</td>
 </tr>
 <tr>
 <td>Right now</td>
@@ -276,11 +299,11 @@ docker compose pull keryx &amp;&amp; docker compose up -d keryx      # Docker
 </tr>
 <tr>
 <td>Attention</td>
-<td>one ranked list of everything red or amber (failing cron jobs, platforms that are not connected, silent kanban workers, undelivered results, log errors, a pending gateway restart, orphaned sessions) and, last, the sessions waiting for you. Each line selects the node or opens the tab.</td>
+<td>everything red or amber (failing cron jobs, platforms that are not connected, silent kanban workers, undelivered results, log errors, a pending gateway restart, orphaned sessions) in three groups, <strong>needs action</strong>, <strong>watch</strong> and <strong>info</strong> (the sessions waiting for you), each with a count and "since 9d" where the data knows when it began. Each line selects the node or opens the tab. The bell on a line mutes it on this device until its text changes; muted lines sit behind "N muted · show". Keryx never writes any of this to Hermes.</td>
 </tr>
 <tr>
 <td>Graph</td>
-<td>Hermes at the centre, the platforms it talks on around it, each session in its platform's wedge with its tools clustered around it, subagents in orbit, models on a shelf, cron jobs below. 3D or 2D; labels scale with distance. A clickable ruler along the bottom filters by when a session started.</td>
+<td>Hermes at the centre, the platforms it talks on around it, each session in its platform's wedge with its tools clustered around it, subagents in orbit, models on a shelf, cron jobs below. 3D or 2D; labels keep a readable size at any zoom and give way to each other instead of overprinting; in 3D a stem drops from each session to the floor ring, and the selected node wears a ring. A clickable ruler along the bottom filters by when a session started.</td>
 </tr>
 <tr>
 <td>Selected node</td>
@@ -312,11 +335,15 @@ docker compose pull keryx &amp;&amp; docker compose up -d keryx      # Docker
 </tr>
 <tr>
 <td>Phone</td>
-<td>under 800px the graph and the panel take turns at full width behind a map / panel toggle; screens under 1200px start in 2D.</td>
+<td>under 800px the header is one row (title, live toggle, a "…" sheet with the window, view, alerts, sound, QR, help and theme), the red and amber counts sit in the map / panel bar and open the Overview, and the graph and the panel take turns at full width. Screens under 1200px start in 2D; every control is at least 40 px tall. The map refits when the phone rotates, labels only the sessions that matter when zoomed out, and hides the history trail (the browser's back button does the same).</td>
+</tr>
+<tr>
+<td>No data yet</td>
+<td>when there is no <code>state.db</code> behind the backend the graph gives way to a setup card naming the directory Keryx looked in and the two fixes (<code>HERMES_HOME</code> under docker compose, <code>HERMES_DATA</code> from source, <code>HERMES_UID</code>/<code>HERMES_GID</code> for permissions). The card goes away on its own when the file appears.</td>
 </tr>
 <tr>
 <td>First run</td>
-<td>a card explains shape, colour and position, the glyphs, and where the data comes from; the <code>?</code> in the header brings it back.</td>
+<td>a card explains shape, colour and position, the glyphs, where the data comes from and the keyboard; the <code>?</code> in the header brings it back. It also holds the <strong>reduce motion</strong> switch: Keryx follows the system's reduced-motion setting (no breathing nodes, link particles or pulsing dots, 2D by default) and the switch overrides it for this browser.</td>
 </tr>
 <tr>
 <td>Notifications</td>
@@ -327,10 +354,10 @@ docker compose pull keryx &amp;&amp; docker compose up -d keryx      # Docker
 <p><strong>Reading a session.</strong> The trace is shown as turns: your question, a collapsible <strong>steps · N</strong> block (every tool call with a kind glyph, a one-line title such as the command or path, duration, exit code, and <code>+added −removed</code> for file edits; Hermes' own events; intermediate notes), then Hermes' reply. An <strong>outline</strong> lists every question with its step count, failures and edits and jumps to it. <strong>all / chat / changes</strong> shows the whole thing, the conversation alone, or only the file edits. <strong>find in session</strong> dims everything that does not match. <strong>💭</strong> shows the model's reasoning where the provider returned it (hidden by default, head of each one, searchable and exported while shown). <strong>⎘ md</strong> copies the session as Markdown and <strong>⤓</strong> downloads it. Busy turns start collapsed; failed or running ones start open.</p>
 <p><strong>Session colours:</strong> <strong>running</strong>, <strong>waiting for you</strong> (open, last message is Hermes' reply: the next move is yours), <strong>stale</strong> (mid-turn and idle for 30 min), <strong>ended</strong>, <strong>closed by user</strong>, <strong>orphaned</strong> (killed by a gateway restart), <strong>failed</strong> (ended with tool errors). Tool failures come from the JSON result Hermes stores, not keyword matching.</p>
 <h3>Using it</h3>
-<p><strong>Reading the graph.</strong> Hover highlights a neighbourhood. Click a node to select it; sessions fan their tools out in a ring facing you. Click a platform to collapse it. Search dims everything that does not match. The legend in the overview tab has checkboxes to hide any kind or status.</p>
-<p><strong>Time.</strong> The window selector (last hour to all time) sets what is loaded. The replay bar re-queries the graph as of any moment in the window. The ruler along the bottom of the graph is clickable: each label keeps only the sessions that started in that span, and the stats bar reads "showing N of M". Times are shown in your browser's zone (named in the header); analytics days are counted in UTC.</p>
+<p><strong>Reading the graph.</strong> Hover highlights a neighbourhood. Click a node to select it; an accent ring marks it, and sessions fan their tools out in a ring facing you. Click a platform to collapse it. Search dims everything that does not match, and only the matches keep their labels. Anything touched in the last five minutes wears a halo and sends particles along its links; its fill keeps the status colour. The legend in the overview tab has checkboxes to hide any kind or status.</p>
+<p><strong>Time.</strong> The window selector (last hour to all time) sets what is loaded. The replay bar re-queries the graph as of any moment in the window. The ruler along the bottom of the graph is clickable: each label keeps only the sessions that started in that span, and the stats bar reads "showing N of M". Times are shown in your browser's zone on a 24-hour clock (the zone is named at the right end of the connection strip); analytics days are counted in UTC.</p>
 <p><strong>Spacing.</strong> ⇔ spacing scales rings, link lengths and repulsion together (compact / normal / airy / wide, or a slider). ⌖ recenter frames the whole graph again. Both settings are remembered per browser.</p>
-<p><strong>Navigation history.</strong> Every selection (graph click, now-card, side-panel link, toast) is a browser history entry that remembers the selection, the side-panel tab and the camera pose just before the move. The trail under the toolbar shows <code>‹ back</code>, the last few stops (click one to jump there) and <code>› forward</code>. The URL hash (<code>#session:…</code>, <code>#cron:…</code>) is a deep link: share it, or scan it from the 📱 QR popover, and the page opens on that node.</p>
+<p><strong>Navigation history.</strong> Every selection (graph click, now-card, side-panel link, toast) is a browser history entry that remembers the selection, the side-panel tab and the camera pose just before the move. The <strong>history</strong> trail under the toolbar shows <code>‹ back</code>, the last few stops (click one to jump there) and <code>› forward</code>; it is the path you took, not a breadcrumb of where you are, which is why tabs and nodes mix in it. The URL hash (<code>#session:…</code>, <code>#cron:…</code>) is a deep link: share it, or scan it from the phone-icon QR popover, and the page opens on that node.</p>
 <p><strong>Keyboard.</strong></p>
 <table>
 <thead>
@@ -365,11 +392,17 @@ docker compose pull keryx &amp;&amp; docker compose up -d keryx      # Docker
 </tr>
 <tr>
 <td><code>Esc</code></td>
-<td>clear the selection</td>
+<td>clear the selection, or close an open popover</td>
+</tr>
+<tr>
+<td><code>Tab</code>, <code>Enter</code> / <code>Space</code></td>
+<td>reach and activate every card, attention line, section header, trace step and kanban card</td>
 </tr>
 </tbody></table>
-<p>Every icon button carries a label for screen readers and a visible focus ring.</p>
-<p><strong>Other buttons.</strong> 🔔 enables desktop notifications; 🔈 adds a short sound per notification (synthesised in the browser, off by default). 📱 shows a QR code of the current page for your phone; Keryx ships a web-app manifest, so "add to home screen" keeps it as an app there. <code>?</code> reopens the first-run card. ☾/☀ toggles the theme. ⤓ diagnostics (overview tab) downloads a redacted snapshot to attach to a bug report.</p>
+<p>Every control is a real button with a label for screen readers and a visible focus ring; section headers announce whether they are open. The graph canvas itself cannot be read by a screen reader; it is labelled to say so and points to the Sessions, Tasks and Board tabs, which list the same things.</p>
+<p><strong>Other buttons.</strong> The bell enables desktop notifications; the speaker adds a short sound per notification (synthesised in the browser, off by default). The phone icon shows a QR code of the current page for your phone; Keryx ships a web-app manifest, so "add to home screen" keeps it as an app there. <code>?</code> reopens the first-run card. The moon / sun toggles the theme. Screens wider than 1600 px show a word next to each icon. ⤓ diagnostics (overview tab, marked "safe to share") downloads a JSON snapshot of counts, versions and check results to attach to a bug report; it never contains messages, prompts, memory or keys.</p>
+<p><strong>Side panel.</strong> The tabs carry icons and wrap rather than scroll, so none is ever hidden. Drag the panel's left edge to widen it (420 to 640 px); the width is remembered per browser.</p>
+<p><strong>Language.</strong> Keryx is English only. Absolute dates and times follow the browser's locale on a 24-hour clock; relative times ("4m ago"), counts and abbreviations ("58.0k") are English.</p>
 <h3>Configuration</h3>
 <p>All settings are environment variables.</p>
 <table>
@@ -421,7 +454,7 @@ docker compose pull keryx &amp;&amp; docker compose up -d keryx      # Docker
 <td>last-resort context window for the gauge. Keryx first uses <code>model.context_length</code> from Hermes' config.yaml, then the window Hermes probed and cached in <code>context_length_cache.yaml</code>, then a small built-in table; only a model none of those know falls back to this value, and the gauge says so</td>
 </tr>
 </tbody></table>
-<p>Colours and labels live in <code>frontend/src/util.js</code>; rebuild after changing them.</p>
+<p>Graph colours are the <code>--n-*</code>, <code>--s-*</code>, <code>--l-*</code> and <code>--active</code> tokens in <code>frontend/src/styles.css</code> (one block per theme; the legend, the canvas and the WebGL view all read them) and the labels are in <code>frontend/src/util.js</code>; rebuild after changing either. Light-theme accents read at 5:1 or better at 12 px, and every graph colour at 3:1 or better; <code>tokens.test.js</code> checks both.</p>
 <h3>What Keryx reads</h3>
 <p>Everything comes from the Hermes data directory, read-only: <code>state.db</code> (and its WAL, including Hermes' full-text index <code>messages_fts</code> when present), <code>gateway_state.json</code> (the gateway's own process and per-platform state), <code>context_length_cache.yaml</code> and the <code>model:</code> section of <code>config.yaml</code> (context windows), <code>kanban.db</code> and <code>kanban/boards/*/kanban.db</code> (the task queue), <code>plugin-data/hermes-achievements/state.json</code> (achievement unlocks), <code>cron/jobs.json</code>, <code>cron/executions.db</code>, <code>cron/incidents.db</code>, <code>cron/deliveries.db</code>, <code>cron/ticker_heartbeat</code>, <code>logs/*.log</code>, <code>skills/.usage.json</code> (the skill ledger) and, only with <code>KERYX_SHOW_MEMORY=1</code>, <code>memories/MEMORY.md</code>, <code>memories/USER.md</code> and the <code>memory:</code> section of <code>config.yaml</code>. Files that an older Hermes does not write are skipped, and columns are feature-detected, so Keryx works across Hermes versions. The volume is mounted read-write only because SQLite in WAL mode must be able to create its <code>-shm</code> file; Keryx itself never writes.</p>
 <h3>Security</h3>
@@ -465,6 +498,18 @@ docker compose pull keryx &amp;&amp; docker compose up -d keryx      # Docker
 <td><code>KERYX_TOKEN</code> is set on the server; paste it once.</td>
 </tr>
 <tr>
+<td>The graph says "No Hermes data found"</td>
+<td>the same cause as <code>"state_db": false</code> above; the card names the directory Keryx looked in and goes away on its own once <code>state.db</code> appears there.</td>
+</tr>
+<tr>
+<td>The strip under the header says "reconnecting…" or "backend unreachable"</td>
+<td>the page has not heard from the backend for 30 s (it pings every 15 s). Reconnecting means Keryx is polling and the stream will be retried in a minute; unreachable means the polls fail too: check <code>docker compose ps keryx</code> and the host. The data shown is the last snapshot, dated in the strip.</td>
+</tr>
+<tr>
+<td>Nodes do not breathe and links carry no particles</td>
+<td>the system's reduced-motion setting is on, or the "reduce motion" switch in the help card (<code>?</code>) is ticked; untick it there to override the system setting for this browser.</td>
+</tr>
+<tr>
 <td>Sessions tab says <code>slow search (no FTS index)</code></td>
 <td>your Hermes predates the <code>messages_fts</code> index; Keryx falls back to a <code>LIKE</code> scan, which works but is slower on a big <code>state.db</code>.</td>
 </tr>
@@ -483,7 +528,7 @@ docker compose pull keryx &amp;&amp; docker compose up -d keryx      # Docker
 npm install
 KERYX_API=http://localhost:9120 npm run dev     # Vite dev server with /api proxied to a running backend
 npm run build                                  # production build into backend/static
-npm test                                       # vitest: layout, turns, grouping, notification, sound and plural logic
+npm test                                       # vitest: layout, turns, grouping, notifications, sounds, connection state, attention triage, keyboard helpers, time formats
 </code></pre>
 <p>Backend tests build a miniature Hermes data directory (state.db, cron store, logs) in a temp folder and run the real builders and routes against it:</p>
 <pre><code class="language-bash">cd backend
@@ -501,7 +546,7 @@ docs/      the project website (GitHub Pages) and screenshots
 <ul>
 <li><code>GET /api/graph?hours=24[&amp;at=&lt;epoch&gt;]</code>  nodes/links; <code>at</code> replays the graph as of that moment; <code>aliases</code> maps compacted segment ids to their node</li>
 <li><code>GET /api/now</code>  running + waiting sessions digest</li>
-<li><code>GET /api/status</code>  health checks (platform checks carry <code>kind: "platform"</code>), the ranked <code>attention</code> list (<code>severity</code>, <code>source</code>, <code>label</code>, <code>detail</code>, <code>node</code> or <code>tab</code>), dashboard links, and <code>hermes</code> (gateway state, desired state, version, pid, served profiles, restart requested) from <code>gateway_state.json</code>, or <code>null</code> without it</li>
+<li><code>GET /api/status</code>  health checks (platform checks carry <code>kind: "platform"</code>), the ranked <code>attention</code> list (<code>severity</code>, <code>source</code>, <code>label</code>, <code>detail</code>, <code>node</code> or <code>tab</code>, and <code>since</code> when the data knows when the condition began), dashboard links, <code>hermes</code> (gateway state, desired state, version, pid, served profiles, restart requested) from <code>gateway_state.json</code>, or <code>null</code> without it, and <code>data.state_db</code>. Without a <code>state.db</code> the payload is a setup state: one red <code>data</code> check, one attention line and <code>data.state_db: false</code></li>
 <li><code>GET /api/cost?hours=24</code>  tokens/cost per model; <code>cost_basis</code> says whether the money is provider-reported (<code>actual</code>), priced from a table (<code>estimated</code>), <code>included</code> in a subscription or <code>unknown</code></li>
 <li><code>GET /api/tasks</code>  delegations (goals, children, duration, delivery), cron jobs (next run, history, missed slots, open incidents), scheduler heartbeat, incidents, delivery queue, kanban counts</li>
 <li><code>GET /api/kanban?board=&lt;slug&gt;&amp;archived=0</code>  the kanban board as lanes in Hermes' workflow order, every task with links, comment count, latest run and a <code>stale</code> flag for silent workers; <code>boards</code> lists the others</li>
@@ -515,7 +560,7 @@ docs/      the project website (GitHub Pages) and screenshots
 <li><code>GET /api/logs?file=&lt;stem of any logs/*.log&gt;&amp;level=WARNING&amp;q=text&amp;lines=200</code>  entries carry the session id when Hermes logged the line inside a session</li>
 <li><code>GET /api/diagnostics</code>  redacted JSON snapshot for bug reports</li>
 <li><code>GET /api/qr?text=</code>  SVG QR code</li>
-<li><code>GET /api/stream?hours=24</code>  server-sent events, one <code>update</code> per data change; one watcher serves every connected client</li>
+<li><code>GET /api/stream?hours=24</code>  server-sent events, one <code>update</code> per data change and a <code>ping</code> every 15 s while nothing changes, so a client can tell a quiet stream from a dead one; one watcher serves every connected client</li>
 <li><code>GET /api/health</code>  liveness</li>
 </ul>
 <h3>Credits</h3>
@@ -559,7 +604,7 @@ docs/      the project website (GitHub Pages) and screenshots
         <div class="name"><span class="org">Eynzof /</span> Hermes-CN-Desktop</div>
       </a>
       <a class="related-row" href="/projects/Felix-Forever/hermes-agent-desktop">
-        <div class="stars">★ 67</div>
+        <div class="stars">★ 68</div>
         <div class="name"><span class="org">Felix-Forever /</span> hermes-agent-desktop</div>
       </a>
       <a class="related-row" href="/projects/jazzyalex/agent-sessions">

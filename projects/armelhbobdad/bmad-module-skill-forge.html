@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>armelhbobdad/bmad-module-skill-forge — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
-<meta name="description" content="Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents. Its workflows can produce skills with…">
+<meta name="description" content="Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents. It can generate skills through…">
 <link rel="canonical" href="https://hermesatlas.com/projects/armelhbobdad/bmad-module-skill-forge">
 <meta property="og:title" content="armelhbobdad/bmad-module-skill-forge — Hermes Atlas">
-<meta property="og:description" content="Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents. Its workflows can produce skills with…">
+<meta property="og:description" content="Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents. It can generate skills through…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/armelhbobdad/bmad-module-skill-forge">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="armelhbobdad/bmad-module-skill-forge — Hermes Atlas">
-<meta name="twitter:description" content="Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents. Its workflows can produce skills with…">
+<meta name="twitter:description" content="Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents. It can generate skills through…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=bmad-module-skill-forge&amp;subtitle=A+standalone+BMAD+module+that+transforms+code+repositories%2C+documentation+websites%2C+and+developer+discourse+into+agentskills.io-compliant%2C+version-pinned%2C+provenance-backed+agent+s&amp;kind=project+%C2%B7+skills">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/armelhbobdad/bmad-module-skill-forge#software",
   "name": "bmad-module-skill-forge",
-  "description": "Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents. Its workflows can produce skills with source citations or documentation URLs, test them, and export them.",
+  "description": "Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents. It can generate skills through workflows that range from a quick, best-effort path to a tested, provenance-traced path, with source citations when available.",
   "url": "https://hermesatlas.com/projects/armelhbobdad/bmad-module-skill-forge",
   "codeRepository": "https://github.com/armelhbobdad/bmad-module-skill-forge",
   "applicationCategory": "DeveloperApplication",
@@ -46,7 +46,7 @@
     "name": "armelhbobdad",
     "url": "https://github.com/armelhbobdad"
   },
-  "dateModified": "2026-11-02T21:22:33.000Z",
+  "dateModified": "2026-11-03T05:56:02.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -123,7 +123,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     
     
-    <span><span class="meta-label">updated</span>2026-11-02</span>
+    <span><span class="meta-label">updated</span>2026-11-03</span>
   </div>
 
   <div class="actions">
@@ -147,11 +147,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents. Its workflows can produce skills with source citations or documentation URLs, test them, and export them.</p>
+    <p class="summary-text">Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents. It can generate skills through workflows that range from a quick, best-effort path to a tested, provenance-traced path, with source citations when available.</p>
     <ul class="summary-highlights">
-      <li>Creates agent instructions from repositories, docs, and developer discourse</li>
-      <li>Supports automated and step-by-step skill workflows</li>
-      <li>Includes skill testing and export</li>
+      <li>Supports repository and documentation inputs</li>
+      <li>Offers automated and step-by-step skill workflows</li>
+      <li>Can produce multiple scoped skills from one source</li>
     </ul>
   </div>
 </section>
@@ -195,14 +195,14 @@ results = cognee.search("What does Cognee do?", mode="graph")
 <pre><code class="language-python">import cognee
 
 # Agent follows the skill instruction:
-# `search(query_text: str, query_type: SearchType = GRAPH_COMPLETION) -&gt; List[SearchResult]`
-# [AST:cognee/api/v1/search/search.py:L27]
+# `search(query_text: str, query_type: SearchType = SearchType.HYBRID_COMPLETION, ...) -&gt; list[SearchResult]`
+# [AST:cognee/api/v1/search/search.py:L41]
 results = await cognee.search(
     query_text="What does Cognee do?",
     query_type=cognee.SearchType.GRAPH_COMPLETION
 )
 </code></pre>
-<p>The skill told the agent the real function name, the real parameters, and that the call is async, all traced to the exact source line. This example is from the real <a href="https://github.com/armelhbobdad/oh-my-skills/blob/main/skills/oms-cognee/1.0.0/oms-cognee/SKILL.md"><code>oms-cognee</code></a> skill in <a href="https://github.com/armelhbobdad/oh-my-skills"><strong>oh-my-skills</strong></a>, SKF's reference output. That skill predates provenance labels that follow the tool: its provenance map records <code>search</code> as read by eye, which SKF 3.0.0 cites as <code>[SRC:...]</code>, keeping <code>[AST:...]</code> for a definition an ast-grep rule matched. The <a href="#verifying-a-skill"><strong>Verifying a Skill</strong></a> section below shows how to walk the citation chain yourself.</p>
+<p>The skill told the agent the real function name, the real parameters, and that the call is async, all traced to the exact source line. This example is from the real <a href="https://github.com/armelhbobdad/oh-my-skills/blob/main/skills/oms-cognee/1.6.2/oms-cognee/SKILL.md"><code>oms-cognee</code></a> skill in <a href="https://github.com/armelhbobdad/oh-my-skills"><strong>oh-my-skills</strong></a>, SKF's reference output. Its provenance map records <code>search</code> as an ast-grep match at that line, which is what <code>[AST:...]</code> means; an export SKF reads by eye instead is cited <code>[SRC:...]</code>. The <a href="#verifying-a-skill"><strong>Verifying a Skill</strong></a> section below shows how to walk the citation chain yourself.</p>
 <h3>Install</h3>
 <p>Linux, Windows, and macOS supported (<a href="https://armelhbobdad.github.io/bmad-module-skill-forge/getting-started/#platform-support">platform details</a>). Requires <a href="https://nodejs.org/">Node.js</a> &gt;= 22, <a href="https://www.python.org/">Python</a> &gt;= 3.11, and <a href="https://docs.astral.sh/uv/">uv</a> (Python package runner).</p>
 <pre><code class="language-bash">npx bmad-module-skill-forge install
