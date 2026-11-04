@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`teams-meeting-pipeline`](/docs/user-guide/skills/bundled/productivity/productivity-teams-meeting-pipeline), [`google-workspace`](/docs/user-guide/skills/bundled/productivity/productivity-google-workspace), [`notion`](/docs/user-guide/skills/optional/productivity/productivity-notion)
+[`teams-meeting-pipeline`](/docs/user-guide/skills/bundled/productivity/productivity-teams-meeting-pipeline), [`google-workspace`](/docs/user-guide/skills/bundled/productivity/productivity-google-workspace)
 
 ## Reference: full SKILL.md
 
@@ -112,7 +112,7 @@ Done when every action has supported fields or visible unresolved values.
 
 ### 4\. Reconcile existing records
 
-Load the user's tracker connector (`notion`, `github-issues`, or whichever system owns the work). Search for matching open items before creating anything — recurring meetings breed duplicate tickets. Preserve conflicts in owner/date/status for confirmation rather than silently overwriting. Done when proposed creates vs updates are distinguished.
+Load the user's tracker connector (Notion, `github-issues`, or whichever system owns the work). Search for matching open items before creating anything — recurring meetings breed duplicate tickets. Preserve conflicts in owner/date/status for confirmation rather than silently overwriting. Done when proposed creates vs updates are distinguished.
 
 ### 5\. Prepare the follow-up package
 

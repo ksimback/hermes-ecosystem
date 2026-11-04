@@ -141,7 +141,7 @@ Skill is **hidden** when ANY listed toolset **is** available
 
 Skill is **hidden** when ANY listed tool **is** available
 
-**Use case for `fallback_for_*`:** Create a skill that serves as a workaround when a primary tool isn't available. For example, a `duckduckgo-search` skill with `fallback_for_tools: [web_search]` only shows when the web search tool (which requires an API key) is not configured.
+**Use case for `fallback_for_*`:** Create a skill that serves as a workaround when a primary tool isn't available. For example, a curl-based search skill with `fallback_for_tools: [web_search]` only shows when the `web_search` tool is disabled.
 
 **Use case for `requires_*`:** Create a skill that only makes sense when certain tools are present. For example, a web scraping workflow skill with `requires_toolsets: [web]` won't clutter the prompt when web tools are disabled.
 

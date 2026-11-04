@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`obsidian`](/docs/user-guide/skills/bundled/note-taking/note-taking-obsidian), [`notion`](/docs/user-guide/skills/optional/productivity/productivity-notion)
+[`obsidian`](/docs/user-guide/skills/bundled/note-taking/note-taking-obsidian)
 
 ## Reference: full SKILL.md
 

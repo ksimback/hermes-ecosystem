@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`duckduckgo-search`](/docs/user-guide/skills/optional/research/research-duckduckgo-search), [`domain-intel`](/docs/user-guide/skills/optional/research/research-domain-intel)
+[`domain-intel`](/docs/user-guide/skills/optional/research/research-domain-intel)
 
 ## Reference: full SKILL.md
 

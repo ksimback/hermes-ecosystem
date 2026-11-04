@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`pdf`](/docs/user-guide/skills/bundled/productivity/productivity-pdf), [`microsoft-office`](/docs/user-guide/skills/bundled/productivity/productivity-microsoft-office), [`notion`](/docs/user-guide/skills/optional/productivity/productivity-notion)
+[`pdf`](/docs/user-guide/skills/bundled/productivity/productivity-pdf), [`microsoft-office`](/docs/user-guide/skills/bundled/productivity/productivity-microsoft-office)
 
 ## Reference: full SKILL.md
 
@@ -96,7 +96,7 @@ Present structured facts, high-risk clauses, low-confidence fields, and proposed
 
 ### 7\. Create and verify records
 
-Use the user's approved destination — `notion`, a calendar, a spreadsheet via `xlsx`, or another task tracker. Attach document/page provenance and avoid copying unnecessary sensitive text. Read records back from the provider and verify owner/date/link. If a write times out ambiguously, search for the expected record before retrying. Done when every approved action is verified.
+Use the user's approved destination — Notion, a calendar, a spreadsheet via `xlsx`, or another task tracker. Attach document/page provenance and avoid copying unnecessary sensitive text. Read records back from the provider and verify owner/date/link. If a write times out ambiguously, search for the expected record before retrying. Done when every approved action is verified.
 
 ## Pitfalls
 

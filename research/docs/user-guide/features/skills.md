@@ -264,7 +264,7 @@ Skill is **hidden** when the listed toolsets are unavailable. Shown when they're
 
 Same, but checks individual tools.
 
-**Example:** The built-in `duckduckgo-search` skill uses `fallback_for_toolsets: [web]`. When you have `FIRECRAWL_API_KEY` set, the web toolset is available and the agent uses `web_search` — the DuckDuckGo skill stays hidden. If the API key is missing, the web toolset is unavailable and the DuckDuckGo skill automatically appears as a fallback.
+**Example:** a curl-based search skill declaring `fallback_for_toolsets: [web]` stays hidden while the web toolset is available and appears only when it is disabled, so the agent still has a search path.
 
 Skills without any conditional fields behave exactly as before — they're always shown.
 
@@ -785,7 +785,7 @@ Default taps (browsable without any setup):
     
 -   [NVIDIA/skills](https://github.com/NVIDIA/skills) — NVIDIA-verified skills (signed `skill.oms.sig` + governance `skill-card.md`)
     
--   [wandb/skills](https://github.com/wandb/skills), [qdrant/skills](https://github.com/qdrant/skills), [pinecone-io/skills](https://github.com/pinecone-io/skills) — each vendor's own skills for its product
+-   [wandb/skills](https://github.com/wandb/skills), [qdrant/skills](https://github.com/qdrant/skills), [pinecone-io/skills](https://github.com/pinecone-io/skills), [makenotion/skills](https://github.com/makenotion/skills), [Airtable/skills](https://github.com/Airtable/skills), [Shopify/Shopify-AI-Toolkit](https://github.com/Shopify/Shopify-AI-Toolkit) — each vendor's own skills for its product
     
 -   [garrytan/gstack](https://github.com/garrytan/gstack)
     
@@ -921,7 +921,7 @@ Built-in trust, no third-party warning
 
 `trusted`
 
-Trusted registries/repos such as `openai/skills`, `anthropics/skills`, `huggingface/skills`, `NVIDIA/skills`, `wandb/skills`, `qdrant/skills`, `pinecone-io/skills`
+Trusted registries/repos such as `openai/skills`, `anthropics/skills`, `huggingface/skills`, `NVIDIA/skills`, `wandb/skills`, `qdrant/skills`, `pinecone-io/skills`, `makenotion/skills`, `Airtable/skills`, `Shopify/Shopify-AI-Toolkit`
 
 More permissive policy than community sources
 

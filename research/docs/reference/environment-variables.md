@@ -696,6 +696,10 @@ Semantic long-term memory with profile recall and session ingest ([supermemory.a
 
 Daytona cloud sandboxes ([daytona.io](https://daytona.io/))
 
+`SPRITES_TOKEN`
+
+Sprites cloud sandboxes, read by the [`sprites` plugin](https://github.com/NousResearch/hermes-plugin-sprites) ([fly.io/sprites](https://fly.io/sprites))
+
 `VERCEL_TOKEN`
 
 Vercel Sandbox access token ([vercel.com](https://vercel.com/))
@@ -724,21 +728,15 @@ Description
 
 `NOTION_API_KEY`
 
-`notion`
+Teams meeting pipeline
 
-Notion integration token.
+Notion integration token for the Notion sink.
 
 `LINEAR_API_KEY`
 
 `linear`
 
 Linear personal API key.
-
-`AIRTABLE_API_KEY`
-
-`airtable`
-
-Airtable personal access token.
 
 `TENOR_API_KEY`
 
@@ -830,7 +828,7 @@ Description
 
 `TERMINAL_ENV`
 
-Backend: `local`, `docker`, `ssh`, `modal`, `daytona`, `vercel_sandbox`, or a plugin backend (`singularity`)
+Backend: `local`, `docker`, `ssh`, `modal`, `daytona`, `vercel_sandbox`, or a plugin backend (`singularity`, `sprites`)
 
 `HERMES_DOCKER_BINARY`
 

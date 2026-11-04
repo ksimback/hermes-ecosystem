@@ -49,10 +49,6 @@ Plan-in-code fan-outs, adversarial verification, waves.
 
 Delegate coding to xAI Grok Build CLI (features, PRs).
 
-[**honcho**](/docs/user-guide/skills/optional/autonomous-ai-agents/autonomous-ai-agents-honcho)
-
-Configure and troubleshoot Honcho memory for Hermes.
-
 [**opencode**](/docs/user-guide/skills/optional/autonomous-ai-agents/autonomous-ai-agents-opencode)
 
 Delegate coding to OpenCode CLI (features, PR review).
@@ -489,10 +485,6 @@ Skill
 
 Description
 
-[**mpp-agent**](/docs/user-guide/skills/optional/payments/payments-mpp-agent)
-
-Pay HTTP 402 APIs via Machine Payments Protocol (MPP).
-
 [**stripe-link-cli**](/docs/user-guide/skills/optional/payments/payments-stripe-link-cli)
 
 Agent payments via Stripe Link — cards, SPT, approvals.
@@ -506,10 +498,6 @@ Provision SaaS services + sync creds via Stripe Projects.
 Skill
 
 Description
-
-[**airtable**](/docs/user-guide/skills/optional/productivity/productivity-airtable)
-
-Airtable REST API via curl. Records CRUD, filters, upserts.
 
 [**box**](/docs/user-guide/skills/optional/productivity/productivity-box)
 
@@ -535,10 +523,6 @@ Build self-updating dashboards from live sources.
 
 Spaced-repetition flashcards: create, review, quiz, export.
 
-[**notion**](/docs/user-guide/skills/optional/productivity/productivity-notion)
-
-Notion API + ntn CLI: pages, databases, markdown, Workers.
-
 [**property-listings**](/docs/user-guide/skills/optional/productivity/productivity-property-listings)
 
 Present property and rental listings as desktop cards.
@@ -546,10 +530,6 @@ Present property and rental listings as desktop cards.
 [**shop**](/docs/user-guide/skills/optional/productivity/productivity-shop)
 
 Shop catalog search, checkout, order tracking, returns.
-
-[**shopify**](/docs/user-guide/skills/optional/productivity/productivity-shopify)
-
-Query Shopify Admin/Storefront GraphQL APIs via curl.
 
 [**siyuan**](/docs/user-guide/skills/optional/productivity/productivity-siyuan)
 
@@ -585,10 +565,6 @@ Passive recon of subdomains, SSL certs, WHOIS, and DNS.
 
 Drug discovery: ChEMBL search, drug-likeness, interactions.
 
-[**duckduckgo-search**](/docs/user-guide/skills/optional/research/research-duckduckgo-search)
-
-Free keyless web, news, and image search via ddgs.
-
 [**gitnexus-explorer**](/docs/user-guide/skills/optional/research/research-gitnexus-explorer)
 
 Serve an interactive codebase knowledge graph web UI.
@@ -620,10 +596,6 @@ Read RSS, Atom, JSON feeds; discover feeds behind a page.
 [**scrapling**](/docs/user-guide/skills/optional/research/research-scrapling)
 
 Scrape sites with stealth browsing and Cloudflare bypass.
-
-[**searxng-search**](/docs/user-guide/skills/optional/research/research-searxng-search)
-
-Free keyless meta-search aggregating 70+ engines.
 
 ## security
 

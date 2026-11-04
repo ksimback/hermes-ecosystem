@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`shopify`](/docs/user-guide/skills/optional/productivity/productivity-shopify), [`maps`](/docs/user-guide/skills/bundled/productivity/productivity-maps)
+[`maps`](/docs/user-guide/skills/bundled/productivity/productivity-maps)
 
 ## Reference: full SKILL.md
 

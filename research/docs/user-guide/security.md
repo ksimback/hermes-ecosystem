@@ -384,7 +384,7 @@ Podman remote daemon redirect
 
 info
 
-**Container bypass**: When running in `docker`, `modal`, `daytona`, or `vercel_sandbox` backends (or a container plugin backend such as `singularity`), dangerous command checks are **skipped** because the container itself is the security boundary. Destructive commands inside a container can't harm the host.
+**Container bypass**: When running in `docker`, `modal`, `daytona`, or `vercel_sandbox` backends (or a container plugin backend such as `singularity` or `sprites`), dangerous command checks are **skipped** because the container itself is the security boundary. Destructive commands inside a container can't harm the host.
 
 ### `execute_code` Scripts
 
@@ -775,6 +775,14 @@ Container
 ❌ Skipped
 
 HPC environments
+
+**sprites** (plugin)
+
+Cloud microVM
+
+❌ Skipped
+
+Stateful cloud sandboxes
 
 **modal**
 

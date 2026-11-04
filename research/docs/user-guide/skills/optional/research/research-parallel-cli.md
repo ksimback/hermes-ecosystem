@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`duckduckgo-search`](/docs/user-guide/skills/optional/research/research-duckduckgo-search), [`mcporter`](/docs/user-guide/skills/optional/mcp/mcp-mcporter)
+[`mcporter`](/docs/user-guide/skills/optional/mcp/mcp-mcporter)
 
 ## Reference: full SKILL.md
 

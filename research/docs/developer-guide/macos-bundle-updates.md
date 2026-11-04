@@ -20,9 +20,9 @@ Existing tagged clients retain their native feed URLs. The generic `apps/desktop
 
 Retirement is a different operation from a native update: the old channel points to a qualified official destination, not to a differently named package in its own native feed. The explicit migration action must preserve user state and verify destination readiness before removing the preview application. Keeping the qualified receiver manifest immutable lets an offline preview migrate after the destination channel has advanced; the destination subsequently owns updates.
 
-The current workflow builds the bundled variant, on ARM64 and Intel runners. Light has separate client/feed routing but no release matrix leg in this change.
+The current workflow builds the bundled variant on ARM64 runners only; there is no Intel (x64) leg. Light has separate client/feed routing but no release matrix leg in this change.
 
-`python -m scripts.releases.r2 finalize` requires one metadata file for each architecture, named `arm64-CHANNEL-mac.yml` and `x64-CHANNEL-mac.yml`. It rejects wrong versions, variants, architectures, hashes and inconsistent legacy path fields. Each referenced ZIP/DMG is streamed back and checked against its SHA-512 and size. Publication checks the live version, conditionally replaces its ETag, and reads back the resulting feed. Same-tag macOS artifacts cannot be overwritten with different bytes. Mutable feeds use `Cache-Control: no-store`. Canary retention protects the artifacts and blockmaps referenced by live feeds. An unreadable feed prevents pruning.
+`python -m scripts.releases.r2 finalize` requires exactly one metadata file, named `arm64-CHANNEL-mac.yml`. It rejects wrong versions, variants, architectures, hashes and inconsistent legacy path fields. Each referenced ZIP/DMG is streamed back and checked against its SHA-512 and size. Publication checks the live version, conditionally replaces its ETag, and reads back the resulting feed. Same-tag macOS artifacts cannot be overwritten with different bytes. Mutable feeds use `Cache-Control: no-store`. Canary retention protects the artifacts and blockmaps referenced by live feeds. An unreadable feed prevents pruning.
 
 ## Client lifecycle
 
@@ -37,7 +37,7 @@ The existing `release-signing` environment supplies:
 -   `CLOUDFLARE_R2_ACCOUNT_ID`, `CLOUDFLARE_R2_ACCESS_KEY_ID`, `CLOUDFLARE_R2_SECRET_ACCESS_KEY`: bucket access secrets.
 -   `CLOUDFLARE_R2_BUCKET`, `CLOUDFLARE_R2_PUBLIC_URL`: repository/environment vars.
 
-Publishing requires the Apple credentials. The existing after-sign hook owns notarization, so electron-builder's second notarization path is disabled. The publish gate verifies the signature, stapled ticket and Gatekeeper assessment. The Darwin publish job waits for both native builds and serializes channel writes.
+Publishing requires the Apple credentials. The existing after-sign hook owns notarization, so electron-builder's second notarization path is disabled. The publish gate verifies the signature, stapled ticket and Gatekeeper assessment. The Darwin publish job waits for the arm64 build and its smoke, and serializes channel writes.
 
 ## Verification limits
 

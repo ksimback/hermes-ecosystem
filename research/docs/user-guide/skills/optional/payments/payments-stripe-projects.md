@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`stripe-link-cli`](/docs/user-guide/skills/optional/payments/payments-stripe-link-cli), [`mpp-agent`](/docs/user-guide/skills/optional/payments/payments-mpp-agent)
+[`stripe-link-cli`](/docs/user-guide/skills/optional/payments/payments-stripe-link-cli)
 
 ## Reference: full SKILL.md
 

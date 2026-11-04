@@ -36,7 +36,7 @@ Tags
 
 Related skills
 
-[`obsidian`](/docs/user-guide/skills/bundled/note-taking/note-taking-obsidian), [`notion`](/docs/user-guide/skills/optional/productivity/productivity-notion), [`airtable`](/docs/user-guide/skills/optional/productivity/productivity-airtable), [`google-workspace`](/docs/user-guide/skills/bundled/productivity/productivity-google-workspace), [`email-inbox-triage`](/docs/user-guide/skills/bundled/email/email-email-inbox-triage)
+[`obsidian`](/docs/user-guide/skills/bundled/note-taking/note-taking-obsidian), [`google-workspace`](/docs/user-guide/skills/bundled/productivity/productivity-google-workspace), [`email-inbox-triage`](/docs/user-guide/skills/bundled/email/email-email-inbox-triage)
 
 ## Reference: full SKILL.md
 
@@ -70,7 +70,7 @@ Load `google-workspace` or the relevant calendar connector. Inspect the complete
 
 ### 3\. Clear capture inboxes
 
-Review the task inbox, notes (`obsidian`, `notion`), flagged email (`email-inbox-triage` owns thread-level triage), and other declared capture points. Convert each item to next action, project, waiting, scheduled, someday, reference, archive, or delete proposal. Do not mutate until scope is approved. Done when remaining unprocessed items are counted and stated.
+Review the task inbox, notes (`obsidian`, Notion), flagged email (`email-inbox-triage` owns thread-level triage), and other declared capture points. Convert each item to next action, project, waiting, scheduled, someday, reference, archive, or delete proposal. Do not mutate until scope is approved. Done when remaining unprocessed items are counted and stated.
 
 ### 4\. Reconcile active projects
 
