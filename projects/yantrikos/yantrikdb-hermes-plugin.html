@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>yantrikos/yantrikdb-hermes-plugin — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="YantrikDB is a memory provider for Hermes Agent, available as a standalone plugin with an in-process backend by default. It supports memory recall with…">
+<meta name="description" content="YantrikDB Hermes Plugin provides YantrikDB as a memory provider for Hermes Agent. Its README describes embedded and HTTP backends, explainable recall with…">
 <link rel="canonical" href="https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin">
 <meta property="og:title" content="yantrikos/yantrikdb-hermes-plugin — Hermes Atlas">
-<meta property="og:description" content="YantrikDB is a memory provider for Hermes Agent, available as a standalone plugin with an in-process backend by default. It supports memory recall with…">
+<meta property="og:description" content="YantrikDB Hermes Plugin provides YantrikDB as a memory provider for Hermes Agent. Its README describes embedded and HTTP backends, explainable recall with…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="yantrikos/yantrikdb-hermes-plugin — Hermes Atlas">
-<meta name="twitter:description" content="YantrikDB is a memory provider for Hermes Agent, available as a standalone plugin with an in-process backend by default. It supports memory recall with…">
+<meta name="twitter:description" content="YantrikDB Hermes Plugin provides YantrikDB as a memory provider for Hermes Agent. Its README describes embedded and HTTP backends, explainable recall with…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=yantrikdb-hermes-plugin&amp;subtitle=YantrikDB+memory+provider+for+NousResearch%2Fhermes-agent+%E2%80%94+self-maintaining+memory+with+benchmarked+recall%2C+self-tuning+ranking%2C+contradiction+tracking%2C+proactive+hygiene%2C+and+expla&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin#software",
   "name": "yantrikdb-hermes-plugin",
-  "description": "YantrikDB is a memory provider for Hermes Agent, available as a standalone plugin with an in-process backend by default. It supports memory recall with per-result explanations, duplicate canonicalization, contradiction tracking, and maintenance features such as consolidation and forgetting.",
+  "description": "YantrikDB Hermes Plugin provides YantrikDB as a memory provider for Hermes Agent. Its README describes embedded and HTTP backends, explainable recall with scoring reasons, and memory features for canonicalization, contradiction tracking, and maintenance.",
   "url": "https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin",
   "codeRepository": "https://github.com/yantrikos/yantrikdb-hermes-plugin",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "yantrikos",
     "url": "https://github.com/yantrikos"
   },
-  "dateModified": "2026-11-03T15:52:06.000Z",
+  "dateModified": "2026-11-04T15:34:24.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">288·repos</span>
+    <span id="meta-count">289·repos</span>
     <span id="meta-version">hermes·v0.21.5</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-03</span>
+    <span><span class="meta-label">updated</span>2026-11-04</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">YantrikDB is a memory provider for Hermes Agent, available as a standalone plugin with an in-process backend by default. It supports memory recall with per-result explanations, duplicate canonicalization, contradiction tracking, and maintenance features such as consolidation and forgetting.</p>
+    <p class="summary-text">YantrikDB Hermes Plugin provides YantrikDB as a memory provider for Hermes Agent. Its README describes embedded and HTTP backends, explainable recall with scoring reasons, and memory features for canonicalization, contradiction tracking, and maintenance.</p>
     <ul class="summary-highlights">
-      <li>Default in-process backend requires no separate server.</li>
-      <li>Recall results include scoring reasons.</li>
-      <li>Supports contradiction tracking and duplicate canonicalization.</li>
+      <li>Embedded backend is the default; no separate server is required.</li>
+      <li>Recall results include a why_retrieved reason.</li>
+      <li>Includes contradiction tracking and memory maintenance features.</li>
     </ul>
   </div>
 </section>
@@ -306,7 +306,7 @@ echo "YANTRIKDB_AUTO_MOUNT_PACKS=wordpress-expert-0.2.0.ydbpack" &gt;&gt; ~/.her
 <p>The agent drives it with <code>yantrikdb_packs</code>: <code>inspect</code> a pack's manifest before trusting it, <code>mount</code> for the session, <code>install</code> to keep it across restarts, <code>unmount</code> / <code>uninstall</code> to reverse. While mounted, the pack's constitution and coverage are injected into the system prompt (capped, and scaled by the adaptive budget) and <strong>recall reaches the pack's records</strong>, not just its rules.</p>
 <p>Mounting is refused when a pack's vectors come from a different embedding space — that refusal is what stops confidently wrong answers, so it's reported rather than forced. Packs are embedded-mode only; in HTTP mode the database lives on the server and packs are the operator's business there.</p>
 <h4>Context cost</h4>
-<p>Tool schemas are re-sent on every request, so the tool surface is a per-turn cost. Since v0.10.0 the default profile is <code>core</code> — 7 tools, <del>1.7k tokens — instead of all 18 (</del>3.6k):</p>
+<p>Tool schemas are re-sent on every request, so the tool surface is a per-turn cost. Since v0.10.0 the default profile is <code>core</code> — 8 tools, <del>1.7k tokens — instead of all 19 (</del>3.6k). (Tool counts verified against <code>CORE_TOOL_NAMES</code>/<code>ALL_TOOL_SCHEMAS</code> in <code>yantrikdb/__init__.py</code> as of v0.28.0, which added <code>yantrikdb_links</code> to both; the ≈tokens/turn figures predate that addition and haven't been re-measured.)</p>
 <table>
 <thead>
 <tr>
@@ -317,12 +317,12 @@ echo "YANTRIKDB_AUTO_MOUNT_PACKS=wordpress-expert-0.2.0.ydbpack" &gt;&gt; ~/.her
 </thead>
 <tbody><tr>
 <td><code>core</code> (default)</td>
-<td>7</td>
+<td>8</td>
 <td>~1,725</td>
 </tr>
 <tr>
 <td><code>full</code></td>
-<td>18</td>
+<td>19</td>
 <td>~3,606</td>
 </tr>
 </tbody></table>
@@ -926,7 +926,7 @@ YANTRIKDB_INTEGRATION_TOKEN=ydb_... \
 <ul>
 <li>Every release ships with tests + CI (Python 3.11 / 3.12 / 3.13 / 3.14) + tagged CHANGELOG + a publish gate where the full test suite + ruff + mypy must pass before the wheel uploads to PyPI.</li>
 <li>First user issue on this repo (multilingual embedding support) was filed and shipped to PyPI the same day — 25 minutes from raised to released.</li>
-<li>Underlying yantrikdb engine: ~6.7k/mo PyPI downloads; flagship server repo has 176 GitHub stars. Cross-stack ownership (engine + HTTP server + MCP server + this plugin) — 7+ months of parallel maintenance, not a one-week hobby.</li>
+<li>Underlying yantrikdb engine: ~4.9k/mo PyPI downloads (pypistats <code>overall</code>, trailing 30 days); flagship server repo has 179 GitHub stars. Cross-stack ownership (engine + HTTP server + MCP server + this plugin) — 8+ months of parallel maintenance, not a one-week hobby.</li>
 <li>Independent recognition: accepted into the <a href="https://cursor.directory/plugins/yantrikdb">Cursor Directory</a> (300k+ developer reach) and (sibling project) the Anthropic MCP Directory.</li>
 <li>Substrate design deposited as a peer-citable preprint: <a href="https://doi.org/10.5281/zenodo.20128887">10.5281/zenodo.20128887</a>.</li>
 </ul>
@@ -970,7 +970,7 @@ YANTRIKDB_INTEGRATION_TOKEN=ydb_... \
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 58.7K</div>
+        <div class="stars">★ 58.8K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
