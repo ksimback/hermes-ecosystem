@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>plastic-labs/honcho — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Honcho is memory infrastructure for stateful agents, with a FastAPI server and Python and TypeScript SDKs. It stores conversations and events, processes them…">
+<meta name="description" content="Honcho is memory infrastructure for stateful agents. It stores conversations and events, processes them in the background to update peer representations, and…">
 <link rel="canonical" href="https://hermesatlas.com/projects/plastic-labs/honcho">
 <meta property="og:title" content="plastic-labs/honcho — Hermes Atlas">
-<meta property="og:description" content="Honcho is memory infrastructure for stateful agents, with a FastAPI server and Python and TypeScript SDKs. It stores conversations and events, processes them…">
+<meta property="og:description" content="Honcho is memory infrastructure for stateful agents. It stores conversations and events, processes them in the background to update peer representations, and…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/plastic-labs/honcho">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="plastic-labs/honcho — Hermes Atlas">
-<meta name="twitter:description" content="Honcho is memory infrastructure for stateful agents, with a FastAPI server and Python and TypeScript SDKs. It stores conversations and events, processes them…">
+<meta name="twitter:description" content="Honcho is memory infrastructure for stateful agents. It stores conversations and events, processes them in the background to update peer representations, and…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=honcho&amp;subtitle=+Memory+library+for+building+stateful+agents&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/plastic-labs/honcho#software",
   "name": "honcho",
-  "description": "Honcho is memory infrastructure for stateful agents, with a FastAPI server and Python and TypeScript SDKs. It stores conversations and events, processes them in the background to update peer representations, and lets applications query context, search results, or natural-language answers.",
+  "description": "Honcho is memory infrastructure for stateful agents. It stores conversations and events, processes them in the background to update peer representations, and lets applications query context, search results, or natural-language answers. It offers Python and TypeScript SDKs, a CLI for local use, and a FastAPI server that can be self-hosted.",
   "url": "https://hermesatlas.com/projects/plastic-labs/honcho",
   "codeRepository": "https://github.com/plastic-labs/honcho",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "plastic-labs",
     "url": "https://github.com/plastic-labs"
   },
-  "dateModified": "2026-11-04T16:41:40.000Z",
+  "dateModified": "2026-11-04T19:57:11.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 7940
+    "userInteractionCount": 7943
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Honcho is memory infrastructure for stateful agents, with a FastAPI server and Python and TypeScript SDKs. It stores conversations and events, processes them in the background to update peer representations, and lets applications query context, search results, or natural-language answers.</p>
+    <p class="summary-text">Honcho is memory infrastructure for stateful agents. It stores conversations and events, processes them in the background to update peer representations, and lets applications query context, search results, or natural-language answers. It offers Python and TypeScript SDKs, a CLI for local use, and a FastAPI server that can be self-hosted.</p>
     <ul class="summary-highlights">
-      <li>Tracks peers, sessions, and messages over time.</li>
-      <li>Offers managed, local, and self-hosted deployment options.</li>
-      <li>Includes a CLI and agent-tool integrations.</li>
+      <li>Tracks peers, sessions, messages, and changing representations over time.</li>
+      <li>Provides Python and TypeScript SDKs and a CLI.</li>
+      <li>Can be used as a managed service, locally, or self-hosted.</li>
     </ul>
   </div>
 </section>
@@ -631,6 +631,10 @@ uv run python scripts/generate_jwt.py --admin
 # Admin token expiring in 24 hours
 uv run python scripts/generate_jwt.py --admin --expires 24h
 
+# Admin token for a tenant -- required when MULTI_TENANT is enabled, since a
+# token with no tenant claim is rejected for every caller, admin included
+uv run python scripts/generate_jwt.py --admin --tenant acme
+
 # Workspace-scoped token
 uv run python scripts/generate_jwt.py --workspace my-workspace --expires 30d
 
@@ -663,6 +667,40 @@ uv run fastapi run --host 0.0.0.0 src/main.py   # on a server
 
 
 <p>Contributors: install the git hooks with <code>uv run pre-commit install --hook-type pre-commit --hook-type commit-msg --hook-type pre-push</code>. Tests only run at push time, so a clean commit is not a clean push. Deploying to Fly.io: see <a href="https://honcho.dev/docs/v3/contributing/self-hosting#deploying-on-fly-io">Self-hosting docs → Deploying on Fly.io</a>.</p>
+<h4>Multi-tenant mode</h4>
+<p><code>MULTI_TENANT=true</code> makes one Honcho serve many tenants on one database, with
+row-level security scoping every query to the tenant bound on the connection.
+Honcho does not create the roles itself; the startup validator checks them and
+refuses to boot otherwise. The database needs these roles (the first and the
+last may be one role):</p>
+<ul>
+<li>the migration role (<code>DB_OWNER_CONNECTION_URI</code>, falling back to
+<code>DB_CONNECTION_URI</code> when unset), which owns the schema and runs
+<code>alembic upgrade head</code>, created <code>WITH LOGIN BYPASSRLS</code>. Message search runs
+through a <code>SECURITY DEFINER</code> function owned by this role: the full-text and
+<code>ILIKE</code> operators are not leakproof, so under RLS the content indexes cannot
+serve them, and the function reads as its owner, pinned to the bound tenant. If the function was
+created by a role without <code>BYPASSRLS</code>, boot fails with the repair:
+<code>ALTER FUNCTION message_text_matches_page(...) OWNER TO &lt;the BYPASSRLS role&gt;</code>
+(the full signature is in the error);</li>
+<li>the app role (<code>DB_CONNECTION_URI</code>), an ordinary role with no <code>BYPASSRLS</code>, which
+every tenant-scoped query runs as. It needs <code>GRANT EXECUTE ON FUNCTION message_text_matches_page(...) TO &lt;app role&gt;</code>, which <code>alembic upgrade head</code>
+grants with the flag on: EXECUTE is revoked from PUBLIC so no other role can
+reach the function's RLS bypass, and boot fails with the exact statement when
+the grant is missing;</li>
+<li>the service role (<code>DB_SERVICE_CONNECTION_URI</code>), <code>WITH LOGIN BYPASSRLS</code>, for the
+cross-tenant background work (the deriver claim, the reconciler).</li>
+</ul>
+<p>Every tenant table needs <code>ENABLE</code> and <code>FORCE ROW LEVEL SECURITY</code>, a policy
+<code>USING (tenant_id = current_setting('app.tenant', true)) WITH CHECK (...)</code>, and
+<code>SELECT, INSERT, UPDATE, DELETE</code> granted to the app and service roles. With the
+flag on, <code>alembic upgrade head</code> applies all of that itself after the revisions
+run, so a release that adds a tenant table needs nothing by hand; the roles come
+from <code>DB_CONNECTION_URI</code> and <code>DB_SERVICE_CONNECTION_URI</code>. The connection must
+not go through a transaction-mode pooler. Self-hosted single-tenant installs
+leave the flag off; none of this applies then.</p>
+<p>A single-tenant instance can still name the tenant that owns its data with
+<code>TENANT_ID</code>, with the flag off.</p>
 <h3>Configuration</h3>
 <p>Honcho uses a flexible configuration system that supports both TOML files and environment variables. Configuration values are loaded in priority order: <strong>environment variables &gt; <code>.env</code> file &gt; <code>config.toml</code> &gt; defaults</strong>.</p>
 <p>Copy the example file to get started:</p>
