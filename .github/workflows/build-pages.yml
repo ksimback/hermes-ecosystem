@@ -3,9 +3,14 @@ name: Build Project & List Pages
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
+# A newer run supersedes a running one. Merging a catalog addition starts this
+# workflow (push on data/repos.json) and rebuild-chunks.yml, which dispatches it
+# again a few minutes later. Each run regenerates everything from latest main,
+# so finishing the older run only adds a second bot commit and a second Vercel
+# production deploy. git push is atomic, so a cancelled run never half-pushes.
 concurrency:
   group: build-pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 on:
   schedule:
