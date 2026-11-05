@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>vshulcz/deja-vu — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="deja-vu indexes coding-agent session histories stored on disk and makes them searchable locally. It can return relevant past sessions through MCP and hooks,…">
+<meta name="description" content="deja indexes coding-agent session histories locally and makes them searchable through a terminal interface, MCP, and hooks. It can surface relevant past…">
 <link rel="canonical" href="https://hermesatlas.com/projects/vshulcz/deja-vu">
 <meta property="og:title" content="vshulcz/deja-vu — Hermes Atlas">
-<meta property="og:description" content="deja-vu indexes coding-agent session histories stored on disk and makes them searchable locally. It can return relevant past sessions through MCP and hooks,…">
+<meta property="og:description" content="deja indexes coding-agent session histories locally and makes them searchable through a terminal interface, MCP, and hooks. It can surface relevant past…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/vshulcz/deja-vu">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="vshulcz/deja-vu — Hermes Atlas">
-<meta name="twitter:description" content="deja-vu indexes coding-agent session histories stored on disk and makes them searchable locally. It can return relevant past sessions through MCP and hooks,…">
+<meta name="twitter:description" content="deja indexes coding-agent session histories locally and makes them searchable through a terminal interface, MCP, and hooks. It can surface relevant past…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=deja-vu&amp;subtitle=Claude+Code+memory%2C+Codex+memory%2C+Cursor+memory%2C+OpenCode+memory%2C+Gemini+CLI+memory%2C+Windsurf+memory+%26+Cline+memory+across+44+agents.+AI+coding+memory%2C+Claude+Code+history%2C+Cursor+&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/vshulcz/deja-vu#software",
   "name": "deja-vu",
-  "description": "deja-vu indexes coding-agent session histories stored on disk and makes them searchable locally. It can return relevant past sessions through MCP and hooks, and provides a terminal interface for searching, resuming, or handing off sessions.",
+  "description": "deja indexes coding-agent session histories locally and makes them searchable through a terminal interface, MCP, and hooks. It can surface relevant past sessions, track code changes and decisions, and resume or hand off sessions; the README says it uses no LLM and redacts credentials during indexing.",
   "url": "https://hermesatlas.com/projects/vshulcz/deja-vu",
   "codeRepository": "https://github.com/vshulcz/deja-vu",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "vshulcz",
     "url": "https://github.com/vshulcz"
   },
-  "dateModified": "2026-11-04T19:19:26.000Z",
+  "dateModified": "2026-11-05T06:08:21.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 1401
+    "userInteractionCount": 1406
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Go</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-04</span>
+    <span><span class="meta-label">updated</span>2026-11-05</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">deja-vu indexes coding-agent session histories stored on disk and makes them searchable locally. It can return relevant past sessions through MCP and hooks, and provides a terminal interface for searching, resuming, or handing off sessions.</p>
+    <p class="summary-text">deja indexes coding-agent session histories locally and makes them searchable through a terminal interface, MCP, and hooks. It can surface relevant past sessions, track code changes and decisions, and resume or hand off sessions; the README says it uses no LLM and redacts credentials during indexing.</p>
     <ul class="summary-highlights">
-      <li>Indexes existing transcripts across 43 listed agents.</li>
-      <li>Supports search filters by agent, time, and project.</li>
-      <li>Runs without LLM calls or a cloud account.</li>
+      <li>Searches session histories across 43 agents.</li>
+      <li>Hooks and MCP surface relevant past sessions.</li>
+      <li>Indexes locally with no LLM calls.</li>
     </ul>
   </div>
 </section>
@@ -239,7 +239,7 @@ take MCP servers as bundles can open the <code>.mcpb</code> from the
 <p>Codex CLI, opencode, Claude Code, Qwen and OpenClaw can also install the plugin
 bundle directly from their own marketplaces or registries (see
 <a href="#harnesses-with-a-package-of-their-own">Harnesses with a package of their own</a>,
-plus <a href="cursor-plugin/"><code>cursor-plugin/</code></a> for Cursor). Copilot CLI installs the
+plus <a href="cursor-plugin/"><code>cursor-plugin/</code></a> for Cursor and <a href="antigravity-plugin/"><code>antigravity-plugin/</code></a> for Antigravity). Copilot CLI installs the
 marketplace bundle too, though it takes only the skill there — use
 <code>deja install copilot-auto</code> for hooks and MCP:</p>
 <pre><code class="language-sh">codex plugin marketplace add https://github.com/vshulcz/deja-vu &amp;&amp; codex plugin add deja-vu@deja-vu
@@ -1007,6 +1007,16 @@ for people who install extensions there rather than from a CLI:</p>
 <td><code>/plugins install https://github.com/vshulcz/deja-vu</code></td>
 </tr>
 <tr>
+<td>Gemini CLI</td>
+<td>extension <code>@vshulcz/deja</code>, in the <a href="https://geminicli.com/extensions/">Gemini CLI Extensions Gallery</a></td>
+<td><code>gemini extensions install https://github.com/vshulcz/deja-vu</code></td>
+</tr>
+<tr>
+<td>Antigravity</td>
+<td>plugin <code>deja-vu</code> (<a href="antigravity-plugin/"><code>antigravity-plugin/</code></a>)</td>
+<td><code>agy plugin install deja-vu</code></td>
+</tr>
+<tr>
 <td>Codex CLI</td>
 <td>plugin <code>deja-vu</code></td>
 <td><code>codex plugin marketplace add https://github.com/vshulcz/deja-vu</code> then <code>codex plugin add deja-vu@deja-vu</code></td>
@@ -1314,10 +1324,23 @@ file is gone, and the weekly note at session start says how many it kept, with a
 </details>
 
 <details>
-<summary><b>Can I stop it reindexing on its own, or index for search only?</b></summary>
+<summary><b>What files live in ~/.config/deja, and what can I set in them?</b></summary>
 
-<p>Yes. <code>DEJA_NO_AUTO_INDEX=1</code> or <code>"auto_index": false</code> in <code>~/.config/deja/policy.json</code> stops every automatic update; search, MCP recall and hooks answer from the last finished index.</p>
-<p><code>DEJA_SEARCH_ONLY=1</code> or <code>"search_only": true</code> in <code>~/.config/deja/policy.json</code> skips mining fixes, commands and co-occurrence (~20% of a build's CPU). The <code>DEJA_INDEX_*</code> switches that keep commands, tool output, paths and edits out of the index are in the <a href="https://vshulcz.github.io/deja-vu/guide/commands.html#what-the-index-keeps">commands guide</a>.</p>
+<p>Under <code>~/.config/deja</code> (or <code>$XDG_CONFIG_HOME/deja</code>):</p>
+<ul>
+<li><strong><code>policy.json</code></strong> (<code>DEJA_POLICY_FILE</code> moves it) — JSON object with four optional keys:<ul>
+<li><code>"activations"</code>: per-surface origin rules for <code>"search"</code>, <code>"mcp"</code> and <code>"auto"</code> (hooks), keyed by <code>"local"</code>, <code>"imported"</code>, <code>"imported:&lt;group&gt;"</code> or <code>"*"</code> (<code>true</code>/<code>false</code>). <code>DEJA_AUTORECALL_LOCAL_ONLY=1</code> sets <code>activations.auto.imported</code> to <code>false</code>.</li>
+<li><code>"ignore"</code>: array of shell globs matched against session path and project to exclude from recall and <code>sync</code> (default <code>["*/.claude/jobs/*"]</code>).</li>
+<li><code>"auto_index"</code>: <code>false</code> stops automatic index updates on search, MCP recall and hooks (same as <code>DEJA_NO_AUTO_INDEX=1</code>).</li>
+<li><code>"search_only"</code>: <code>true</code> skips mining fixes, commands and co-occurrence, saving ~20% of build CPU (same as <code>DEJA_SEARCH_ONLY=1</code>).</li>
+</ul>
+</li>
+<li><strong><code>exclude</code></strong> — one project name or path pattern per line to skip at index time and <code>sync export</code>, or <code>harness:&lt;name&gt;</code> (e.g. <code>harness:opencode</code>) to skip a store (<code>DEJA_EXCLUDE_PROJECTS</code>, <code>DEJA_EXCLUDE_HARNESSES</code>).</li>
+<li><strong><code>projects</code></strong> — one <code>&lt;path&gt; = &lt;name&gt;</code> per line to group multiple checkouts or worktrees as one project.</li>
+<li><strong><code>rules.md</code></strong> — standing instructions copied into each installed agent's global rules file by <code>deja rules sync</code>.</li>
+<li><strong>State files written by deja</strong> — <code>peers.json</code> (<code>deja sync ssh</code>), <code>settled.json</code> (<code>deja friction --settle</code>), <code>tombstones</code> (<code>deja forget</code>), <code>wiring.json</code> and <code>bin/deja-hook</code> (<code>deja install</code>).</li>
+</ul>
+<p>Hook recall mode is set by <code>DEJA_RECALL</code>: <code>safe</code> (default, 2 KB cap and up to 3 sessions from the current project at session start), <code>aggressive</code> (4 KB cap and up to 6 sessions across projects), or <code>off</code> (silences all hooks). The <code>DEJA_INDEX_*</code> switches and full configuration table are in the <a href="https://vshulcz.github.io/deja-vu/guide/commands.html#configuration">commands guide</a>.</p>
 </details>
 
 <details>
@@ -1383,7 +1406,7 @@ anywhere, and how to exclude a project or forget a session is under
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 58.8K</div>
+        <div class="stars">★ 58.9K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">

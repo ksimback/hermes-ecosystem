@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>arcmira/mcp — Hermes Agent Integrations &amp; Bridges | Hermes Atlas</title>
-<meta name="description" content="Arcmira MCP lets agents search YouTube and podcast transcripts, retrieve timestamped passages and surrounding transcript lines, and find mentions, media…">
+<meta name="description" content="Arcmira MCP lets agents search YouTube and podcast transcripts, retrieve timestamped quotes, inspect mentions and media appearances, and find endorsements, ad…">
 <link rel="canonical" href="https://hermesatlas.com/projects/arcmira/mcp">
 <meta property="og:title" content="arcmira/mcp — Hermes Atlas">
-<meta property="og:description" content="Arcmira MCP lets agents search YouTube and podcast transcripts, retrieve timestamped passages and surrounding transcript lines, and find mentions, media…">
+<meta property="og:description" content="Arcmira MCP lets agents search YouTube and podcast transcripts, retrieve timestamped quotes, inspect mentions and media appearances, and find endorsements, ad…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/arcmira/mcp">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="arcmira/mcp — Hermes Atlas">
-<meta name="twitter:description" content="Arcmira MCP lets agents search YouTube and podcast transcripts, retrieve timestamped passages and surrounding transcript lines, and find mentions, media…">
+<meta name="twitter:description" content="Arcmira MCP lets agents search YouTube and podcast transcripts, retrieve timestamped quotes, inspect mentions and media appearances, and find endorsements, ad…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=mcp&amp;subtitle=YouTube+transcript+search+for+your+AI.+Find+who+said+what+with+timestamps%2C+mentions%2C+sponsors%2C+and+recommendations.+Remote+MCP+and+agent+skills.&amp;kind=project+%C2%B7+integrations">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/arcmira/mcp#software",
   "name": "mcp",
-  "description": "Arcmira MCP lets agents search YouTube and podcast transcripts, retrieve timestamped passages and surrounding transcript lines, and find mentions, media appearances, endorsements, ad reads, and sponsors. It also supports setting up YouTube monitoring, with access through host sign-in or an account key.",
+  "description": "Arcmira MCP lets agents search YouTube and podcast transcripts, retrieve timestamped quotes, inspect mentions and media appearances, and find endorsements, ad reads, and sponsors. It also supports YouTube mention monitoring through a remote MCP server, with sign-in or bearer-key authentication.",
   "url": "https://hermesatlas.com/projects/arcmira/mcp",
   "codeRepository": "https://github.com/arcmira/mcp",
   "applicationCategory": "CommunicationApplication",
@@ -46,7 +46,7 @@
     "name": "arcmira",
     "url": "https://github.com/arcmira"
   },
-  "dateModified": "2026-11-03T19:16:27.000Z",
+  "dateModified": "2026-11-04T20:01:25.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -123,7 +123,7 @@
     <span><span class="meta-label">lang</span>TypeScript</span>
     
     
-    <span><span class="meta-label">updated</span>2026-11-03</span>
+    <span><span class="meta-label">updated</span>2026-11-04</span>
   </div>
 
   <div class="actions">
@@ -140,11 +140,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Arcmira MCP lets agents search YouTube and podcast transcripts, retrieve timestamped passages and surrounding transcript lines, and find mentions, media appearances, endorsements, ad reads, and sponsors. It also supports setting up YouTube monitoring, with access through host sign-in or an account key.</p>
+    <p class="summary-text">Arcmira MCP lets agents search YouTube and podcast transcripts, retrieve timestamped quotes, inspect mentions and media appearances, and find endorsements, ad reads, and sponsors. It also supports YouTube mention monitoring through a remote MCP server, with sign-in or bearer-key authentication.</p>
     <ul class="summary-highlights">
-      <li>Search transcripts and retrieve timestamped quotes.</li>
-      <li>Find mentions, appearances, endorsements, ad reads, and sponsors.</li>
-      <li>Set up YouTube monitoring through agent tools.</li>
+      <li>Search transcripts and retrieve timestamped passages.</li>
+      <li>Inspect mentions, appearances, endorsements, and sponsors.</li>
+      <li>Create and manage YouTube monitors.</li>
     </ul>
   </div>
 </section>
@@ -502,10 +502,11 @@ claude plugin install arcmira@arcmira
 <p>Install the remote connection and core Arcmira reference from this repository:</p>
 <pre><code class="language-bash">gemini extensions install https://github.com/arcmira/mcp
 </code></pre>
-<p>Sign in when Gemini prompts for MCP authorization. The extension loads the core Arcmira reference. To also install skills for finding quotes, comparing shows, researching people and sponsors, and monitoring companies, run these commands in the project where you want to use them.</p>
-<pre><code class="language-bash">gemini skills install https://github.com/arcmira/mcp --path plugins/arcmira/skills --scope workspace
+<p>Sign in when Gemini prompts for MCP authorization. The extension loads the core Arcmira reference. To also install skills for finding quotes, comparing shows, researching people and sponsors, and monitoring companies, copy the skills bundled with your installed extension into the project where you want to use them.</p>
+<pre><code class="language-bash">gemini skills install ~/.gemini/extensions/arcmira/plugins/arcmira/skills --scope workspace
 gemini skills list
 </code></pre>
+<p>If Gemini uses a different extension directory, run <code>gemini extensions list</code> and use the Arcmira path it displays. Repeat the skill install after updating the extension to refresh the workspace copies.</p>
 <h3>Develop</h3>
 <pre><code class="language-bash">pnpm install
 pnpm dev            # wrangler dev on :8790 with a local Worker Loader
@@ -551,7 +552,7 @@ ARCMIRA_KEY=arc_sk_... node --experimental-strip-types scripts/smoke.ts http://l
         <div class="name"><span class="org">AaronWong1999 /</span> hermesclaw</div>
       </a>
       <a class="related-row" href="/projects/Codename-11/hermes-relay">
-        <div class="stars">★ 420</div>
+        <div class="stars">★ 422</div>
         <div class="name"><span class="org">Codename-11 /</span> hermes-relay</div>
       </a>
       <a class="related-row" href="/projects/kfa-ai/hermes-timetree-sync">
