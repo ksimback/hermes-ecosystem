@@ -400,7 +400,7 @@ Own DM/group policy (`dm_policy` / `group_policy` / allowlists)
 
 Resolve an approval from a native button
 
-`from tools.approval import resolve_gateway_approval`
+`from tools.approval import resolve_gateway_approval_card` (pass the card's request id; `resolve_gateway_approval` answers the oldest pending request)
 
 Native clarify buttons
 

@@ -152,7 +152,9 @@ Use the **Move up** and **Move down** arrows beside a room to choose its positio
     
 -   Bots pull each other in with `@name`, and escalate real judgment calls to you with `@user` — the group row shows a **needs you** badge when that happens. Pending questions and command approvals also light that badge; resolving the last prompt clears only prompt attention, not an independent mention. A command approval in the room answers on the click itself — `once`, `session`, `always` or `deny` sends at once, with no second button to find. Prompts follow a renamed room, while disbanding retires them even if a member's in-flight poll arrives later.
     
--   Hard caps (10 messages per send, 3 rounds) keep rooms from spinning.
+-   Hard caps (10 messages per send, 3 rounds) keep rooms from spinning. On a gateway-owned room the cap pauses the discussion instead of ending it: the room shows **Paused after N messages** with **Continue** (one more budget of rounds and messages for the same discussion, up to 5 times, still available after a gateway restart) and **Stop**. Sending a new message in that thread also moves on.
+    
+-   **Who answers a message that names nobody** is a Room settings choice on gateway-owned rooms: **Everyone** (the default), a **lead** that hands the message on, or **Pick who answers automatically**. The automatic choice makes one short tool-less model call over the room purpose and notes, each member's role (its profile description) and the last few messages, and the room shows **Assigned to X** above the replies. @mentions, `@all`/`@everyone`, scheduled posts and replies inside an existing thread never reach that call, and a failed or unreadable answer falls back to everyone. Route the call to a cheap model with `auxiliary.group_router` (`hermes model` → auxiliary → Group router).
     
 -   Each member keeps its own persistent room session, so room context survives like any other conversation.
     
@@ -183,6 +185,16 @@ Bots message each other with attribution, and you can hand work off from any cha
 Local messages also reach a Bot Chat that stays open in Desktop or the TUI, and so do messages relayed from another machine. The receiving backend keeps ownership: it reads durable ingress on its existing notification poller, admits immediately when idle, or waits until the running turn and already queued human prompts finish. A `queued` acknowledgement confirms durable admission, **not** a completed reply. The target profile retains the delivery ID and receipt under `runtime/bot_live_delivery/`; `settled` confirms completion. A crashed or cancelled imported turn is not automatically replayed, and pending work pinned to a departed owner remains inspectable rather than being silently rerun. Do not resend a delivery whose outcome is unknown. Older backends without live-delivery capability retain the existing ownership refusal; restart that backend after upgrading.
 
 -   **Staying silent** — a Bot that has nothing to add may end a turn with one of the [intentional silence tokens](/docs/user-guide/messaging/#intentional-silence-tokens) (`[SILENT]`, `NO_REPLY`, …). The Bot Chat keeps that turn in its transcript but renders nothing, and a teammate that messaged it gets an empty reply instead of the token. Failed turns and prose that merely mentions a token are shown as-is.
+    
+-   **Exchanges end on their own** — two Bots cannot keep each other busy forever. A message a Bot sends back to the Bot that messaged it goes notify-only automatically (as with `expects_reply: false`: marked `[no reply needed]`, no wake-up for the sender), on every route: local, another Desktop connection, or a registered peer. The Bot that receives it cannot message that sender back in the same turn. The runtime also counts every bot-to-bot exchange since your last message: inside a Bot's turn each `message_agent` call is one more message, and past `gateway.bot_loop_guard.max_hops` (default 4) a further call is refused and nothing is sent. Sending the same message to the same teammate twice in one exchange is refused as a repeat; a send that never left (the teammate's machine was offline) does not count, so retrying it later works. The count lives in the delivery itself, not in anything the model writes, and survives context compression and background reviews; your next message starts a fresh exchange. Set `bot_replies_expect_reply: true` to let Bots answer each other's replies (still capped by `max_hops`), or `enabled: false` to turn every rule off.
+    
+
+```
+gateway:
+  bot_loop_guard:
+    max_hops: 4                       # bot-to-bot messages per exchange, Bot Mode and messaging platforms
+    bot_replies_expect_reply: false   # true: a bot's reply to a bot may be answered
+```
 
 The backend teaches each Bot's canonical Bot Chat session the messaging protocol automatically at prompt-build time — including when a teammate opens it headlessly from the CLI. Only the canonical Bot Chat gets the protocol section; your regular sessions and your SOUL.md stay untouched. This is controlled by `agent.bot_mode_protocol` in `config.yaml` (default: on):
 

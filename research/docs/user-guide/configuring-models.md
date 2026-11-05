@@ -118,10 +118,6 @@ For `approval_mode: smart` — a fast/cheap model (haiku, flash, gpt-5-mini) dec
 
 The `/review` reviewer subagent. `auto` uses the main model; pin a different (often stronger) model for reviews. See [Review model](/docs/user-guide/features/delegation#review-model).
 
-**Skills Hub**
-
-`hermes skills search` uses this. Usually fine at `auto`.
-
 **MCP**
 
 MCP tool routing. Usually fine at `auto`.

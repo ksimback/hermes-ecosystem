@@ -151,7 +151,6 @@ Auxiliary tasks such as:
 
 -   vision
 -   context compression summaries
--   skills hub operations
 -   MCP helper operations
 -   memory flushes
 

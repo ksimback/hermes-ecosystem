@@ -469,12 +469,6 @@ Context compression summaries
 
 `auxiliary.compression`
 
-Skills Hub
-
-Skill search and discovery
-
-`auxiliary.skills_hub`
-
 MCP
 
 MCP helper operations
@@ -552,10 +546,6 @@ auxiliary:
     fallback_chain:              # optional, task-specific fallback policy
       - provider: openrouter
         model: inclusionai/ring-2.6-1t:free
-
-  skills_hub:
-    provider: "auto"
-    model: ""
 
   mcp:
     provider: "auto"
@@ -797,12 +787,6 @@ Context compression
 Layered (see above); degrades to no-summary if all layers unavailable
 
 `auxiliary.compression`
-
-Skills hub
-
-Layered (see above)
-
-`auxiliary.skills_hub`
 
 MCP helpers
 

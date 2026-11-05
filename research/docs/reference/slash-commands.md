@@ -46,9 +46,9 @@ Clear screen and start a new session
 
 Show conversation history (respects `/timestamps`)
 
-`/save`
+`/save <json|md|html> [filename] [redact]`
 
-Save the current conversation
+Export the current session as a JSON snapshot, a Markdown transcript, or a standalone HTML page (`markdown` and `snapshot` are accepted aliases). `redact` scrubs API keys, tokens, and credentials before writing and always comes last, after the optional filename: `/save md notes.md redact`. The file is written on your machine, even when the session runs on a remote gateway (an older gateway without `session.export` can only save default-named JSON on its own host). CLI and TUI: `filename` resolves against the current directory, otherwise the file is auto-named under `~/.hermes/sessions/saved/`. Desktop opens a save dialog (pre-filled with `filename` when given). A bare `/save` prints usage in the classic CLI and saves JSON in the TUI and Desktop.
 
 `/prompt` (alias: `/compose`)
 
@@ -346,9 +346,9 @@ Re-scan `~/.hermes/skills/` for newly installed or removed skills
 
 Reload `.env` variables into the running session (picks up new API keys without restarting)
 
-`/plugins`
+`/plugins [update|auto-update [on|off]]`
 
-List installed plugins and their status
+List installed plugins and their status; `update` updates every plugin that has an update, `auto-update` shows or sets unattended plugin updates
 
 `/pet [list|<slug>]`
 
@@ -596,6 +596,10 @@ Manually compress conversation context. `/compress here [N]` keeps the most rece
 
 **Telegram DM only.** Manage user-managed multi-session topic mode. `/topic` enables it or shows status; `/topic off` disables it and clears bindings; `/topic help` shows usage; `/topic <session-id>` inside a topic restores a previous session. See [Multi-session DM mode](/docs/user-guide/messaging/telegram#multi-session-dm-mode-topic).
 
+`/save <json|md|html> [filename] [redact]`
+
+Export the current session as JSON, Markdown, or HTML and send the file into the chat as a document. Bare `/save` shows usage; `redact` scrubs secrets first.
+
 `/title [name]`
 
 Set or show the session title.
@@ -806,7 +810,7 @@ Invoke any installed skill by name.
 
 ## Notes
 
--   `/skin`, `/snapshot`, `/export`, `/import`, `/reload`, `/tools`, `/toolsets`, `/browser`, `/config`, `/cron`, `/platforms`, `/paste`, `/image`, `/statusbar`, `/battery`, `/focus`, `/plugins`, `/indicator`, `/wake`, `/journey`, `/redraw`, `/clear`, `/history`, `/save`, `/copy`, `/handoff`, `/prompt`, `/pet`, `/hatch`, `/timestamps`, `/subscription`, and `/quit` are **CLI-only** commands.
+-   `/skin`, `/snapshot`, `/export`, `/import`, `/reload`, `/tools`, `/toolsets`, `/browser`, `/config`, `/cron`, `/platforms`, `/paste`, `/image`, `/statusbar`, `/battery`, `/focus`, `/plugins`, `/indicator`, `/wake`, `/journey`, `/redraw`, `/clear`, `/history`, `/copy`, `/handoff`, `/prompt`, `/pet`, `/hatch`, `/timestamps`, `/subscription`, and `/quit` are **CLI-only** commands.
 -   `/skills` is **CLI-only for search/browse/install**; its write-approval review subcommands (`pending`, `approve`, `reject`, `diff`, `approval`) also work on messaging platforms when `skills.write_approval` is on. `/memory` works on **both** surfaces.
 -   `/verbose` is **CLI-only by default**, but can be enabled for messaging platforms by setting `display.tool_progress_command: true` in `config.yaml`. When enabled, it cycles the `display.tool_progress` mode and saves to config.
 -   `/focus` and `/verbose` share one suppression path (`display.tool_progress`), so they can never contradict each other: `/focus on` pins tool progress to `off` and stashes your mode under `display.focus_saved_tool_progress`; `/focus off` restores it; cycling `/verbose` while focus is on takes the mode back and clears the focus badge. Focus view is display-only — it never changes conversation history, the system prompt, or anything sent to the model, so it has zero prompt-cache impact.
