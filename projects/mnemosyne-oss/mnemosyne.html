@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>mnemosyne-oss/mnemosyne — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Mnemosyne is a memory layer for agent frameworks, using SQLite without requiring external services. It offers a Python SDK and integrations including MCP…">
+<meta name="description" content="Mnemosyne is a Python memory layer for AI agents that stores data in SQLite and does not require external services. It can be used through a Python SDK, a…">
 <link rel="canonical" href="https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne">
 <meta property="og:title" content="mnemosyne-oss/mnemosyne — Hermes Atlas">
-<meta property="og:description" content="Mnemosyne is a memory layer for agent frameworks, using SQLite without requiring external services. It offers a Python SDK and integrations including MCP…">
+<meta property="og:description" content="Mnemosyne is a Python memory layer for AI agents that stores data in SQLite and does not require external services. It can be used through a Python SDK, a…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="mnemosyne-oss/mnemosyne — Hermes Atlas">
-<meta name="twitter:description" content="Mnemosyne is a memory layer for agent frameworks, using SQLite without requiring external services. It offers a Python SDK and integrations including MCP…">
+<meta name="twitter:description" content="Mnemosyne is a Python memory layer for AI agents that stores data in SQLite and does not require external services. It can be used through a Python SDK, a…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=mnemosyne&amp;subtitle=Zero-cloud+AI+memory+that+works+everywhere.+SQLite-backed.+One+pure-Python+dependency.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne#software",
   "name": "mnemosyne",
-  "description": "Mnemosyne is a memory layer for agent frameworks, using SQLite without requiring external services. It offers a Python SDK and integrations including MCP support, an OpenWebUI bridge, and an OpenClaw provider.",
+  "description": "Mnemosyne is a Python memory layer for AI agents that stores data in SQLite and does not require external services. It can be used through a Python SDK, a command-line interface, or MCP, with setup guides listed for several agent platforms.",
   "url": "https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne",
   "codeRepository": "https://github.com/mnemosyne-oss/mnemosyne",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "mnemosyne-oss",
     "url": "https://github.com/mnemosyne-oss"
   },
-  "dateModified": "2026-11-05T10:11:10.000Z",
+  "dateModified": "2026-11-06T06:50:28.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 3591
+    "userInteractionCount": 3592
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-05</span>
+    <span><span class="meta-label">updated</span>2026-11-06</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Mnemosyne is a memory layer for agent frameworks, using SQLite without requiring external services. It offers a Python SDK and integrations including MCP support, an OpenWebUI bridge, and an OpenClaw provider.</p>
+    <p class="summary-text">Mnemosyne is a Python memory layer for AI agents that stores data in SQLite and does not require external services. It can be used through a Python SDK, a command-line interface, or MCP, with setup guides listed for several agent platforms.</p>
     <ul class="summary-highlights">
-      <li>Stores and recalls information through a Python API.</li>
-      <li>MCP server supports stdio, SSE, and Streamable HTTP transports.</li>
-      <li>Includes CLI commands for memory sync, export, and import.</li>
+      <li>SQLite-backed memory with no external services required</li>
+      <li>Provides Python SDK, CLI, and MCP access</li>
+      <li>Includes commands for storing, recalling, and syncing memories</li>
     </ul>
   </div>
 </section>
@@ -804,15 +804,7 @@ for gates, conservative reservation and cost-logging limits.</p>
 <blockquote>
 <p><strong>Privacy note on remote embedding endpoints.</strong> Embeddings go to a remote API whenever <code>MNEMOSYNE_EMBEDDING_API_URL</code> points at a custom (non-OpenRouter) endpoint, the model name is API-shaped (<code>openai/*</code>, <code>text-embedding*</code>), or <code>MNEMOSYNE_EMBEDDINGS_VIA_API</code> is truthy; on the OpenRouter default (or an OpenRouter URL) the last two are what route, and with no URL set the OpenRouter default is used. That service receives the text of your memories and of your recall queries (working-memory content, summaries, annotations, and search queries) for vectorization. For privacy-sensitive or local-first deployments prefer a local-embedding profile (<code>[embeddings]</code> or <code>[all]</code>); use a remote endpoint only when you accept that the embedding provider sees your content.</p>
 </blockquote>
-<p><strong>Install (Hermes users):</strong></p>
-<pre><code class="language-bash">source ~/.hermes/hermes-agent/venv/bin/activate
-python -m ensurepip --upgrade
-python -m pip install --upgrade pip
-python -m pip install mnemosyne-hermes
-mkdir -p ~/.hermes/plugins/mnemosyne
-ln -sfn "$(~/.hermes/hermes-agent/venv/bin/python -c 'import pathlib, mnemosyne_hermes; print(pathlib.Path(mnemosyne_hermes.__file__).resolve().parent)')"/* ~/.hermes/plugins/mnemosyne/
-hermes config set memory.provider mnemosyne
-</code></pre>
+<p><strong>Install (Hermes users):</strong> Select the active Hermes home and runtime interpreter using the <a href="https://github.com/mnemosyne-oss/mnemosyne/blob/main/docs/hermes-integration.md">Hermes integration guide</a>. Follow the package-installation, installer and provider-status commands for your chosen route in that guide; persistent wrappers install the packages into a separate side environment. POSIX symlink mode links the package directory; native Windows, persistent wrappers and legacy recovery use their selected interpreter or route-specific executable. Do not link individual package files. Set <code>memory.provider</code> to <code>mnemosyne</code>, then check <code>hermes memory status</code> for the same home. Existing per-file plugin directories require the <a href="https://github.com/mnemosyne-oss/mnemosyne/blob/main/docs/hermes-integration.md#recover-a-legacy-per-file-plugin-directory">ownership-checked recovery</a> before installation.</p>
 <p>After installing, verify the provider in the active Hermes profile and start a new session or restart the gateway:</p>
 <pre><code class="language-bash">hermes memory status
 </code></pre>
@@ -929,7 +921,7 @@ mnemosyne sync-status --remote https://my-vps:8765
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
-        <div class="stars">★ 51</div>
+        <div class="stars">★ 52</div>
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
     </div>
