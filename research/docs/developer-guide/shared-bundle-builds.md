@@ -30,7 +30,7 @@ Select products and package them for their target
 
 `scripts/bundles/`, `Dockerfile`, `nix/`, and `scripts/termux/`
 
-Providers retain their package managers and locks. Product builders do not install missing dependencies or download inputs. The Node dependency provider uses one locked workspace union. Nix supplies its own npm and Python inputs. Termux supplies bionic tools and wheels. Shared recipes do not imply identical bytes, dependency selections, or Python environments across targets.
+Providers retain their package managers and locks. Product builders do not install missing dependencies or download inputs. The Node dependency provider uses one locked workspace union. Nix supplies its own Node and Python inputs. Termux supplies bionic tools and wheels. Shared recipes do not imply identical bytes, dependency selections, or Python environments across targets.
 
 Product
 
@@ -74,9 +74,9 @@ The desktop UI compiler does not depend on the dashboard. A bundled desktop sele
 
 Source updates and source UI launches use the same dependency provider and product builders. `hermes_cli/source_build.py` selects the workspace union, prepares it once, then invokes the shared recipes. An update builds TUI and web, plus the local desktop app when one was present before the update. Desktop packaging still belongs to the local desktop adapter.
 
-The current-checkout retry, pulled-checkout, and ZIP update paths all use `update_cmd_maint._prepare_updated_checkout`: one PM dependency sync, then a fresh process on the selected interpreter for the frontend builds. Build failure aborts completion; an existing stale product is not a successful update. There is no updater-specific npm cache, fallback install, extra refresh, or memory-provider reinstall. PM owns the complete Python union.
+The current-checkout retry, pulled-checkout, and ZIP update paths all use `update_cmd_maint._prepare_updated_checkout`: one PM dependency sync, then a fresh process on the selected interpreter for the frontend builds. Build failure aborts completion; an existing stale product is not a successful update. There is no updater-specific pnpm store, fallback install, extra refresh, or memory-provider reinstall. PM owns the complete Python union.
 
-Build a desktop distribution from a clean checkout at its release tag. Start with a host Python that can run the entrypoint and Git; preparation acquires the pinned Python, Node and npm through PM. Native compilers/SDKs remain host inputs:
+Build a desktop distribution from a clean checkout at its release tag. Start with a host Python that can run the entrypoint and Git; preparation acquires the pinned Python, Node and pnpm through PM. Native compilers/SDKs remain host inputs:
 
 ```
 python -m scripts.bundles.desktop --tag=vX.Y.Z
@@ -116,7 +116,7 @@ This command prepares and builds TUI/web products if none are supplied. It also 
 
 `--ref` selects the agent source snapshot. Automatic frontend compilation uses a temporary snapshot of that same revision. Explicit frontend products must come from the selected revision.
 
-`hermes pm bundle --out /work/agent-payload --ref HEAD` stages native tools, the application environment, and the agent. That PM command does not build frontends. `npm run payload --workspace apps/desktop` uses the stage driver that includes them. Neither command creates an Electron installer.
+`hermes pm bundle --out /work/agent-payload --ref HEAD` stages native tools, the application environment, and the agent. That PM command does not build frontends. `pnpm --dir apps/desktop run payload` uses the stage driver that includes them. Neither command creates an Electron installer.
 
 ### Split PM Bundle preparation and assembly
 
@@ -132,7 +132,7 @@ python -S -B scripts/bundles/native_build.py \
 
 Use a clean checkout at the selected revision. `--ref` defaults to `HEAD`; `--commit` accepts an exact full SHA instead. Work, cache and output must be separate; preparation claims a previously absent work directory. Without `--prepare-only`, the driver also assembles. `--prepared` takes no new selection or path arguments and validates the native receipt before assembly; it never bootstraps or repairs dependencies. The receipt and lock are output siblings (`agent-payload.prepared.json`, `agent-payload.prepare.lock`), not shipped files. Assembly deliberately supplies no frontend products, as with `hermes pm bundle`.
 
-The `payload-test` producer on the existing cache action selects only `tools`, `python/runtime` and `native`. It excludes source `node_modules`, npm caches, icon environments and packagers. PM's managed tool bootstrap still includes Node and npm, but does not run desktop `npm ci`. Native compiler identity and Windows ARM64 prerequisites use the shared owner once. Cache hits always undergo provider admission; native SDK/compiler prerequisites still belong to the host. PR jobs only restore; saves require successful preparation on the default-branch trusted lane with no alternate source ref. No signing or publication is added.
+The `payload-test` producer on the existing cache action selects only `tools`, `python/runtime` and `native`. It excludes source `node_modules`, pnpm stores, icon environments and packagers. PM's managed tool bootstrap still includes Node and npm, but does not install the desktop workspace dependencies. Native compiler identity and Windows ARM64 prerequisites use the shared owner once. Cache hits always undergo provider admission; native SDK/compiler prerequisites still belong to the host. PR jobs only restore; saves require successful preparation on the default-branch trusted lane with no alternate source ref. No signing or publication is added.
 
 For Termux, tools and the wheelhouse are prerequisites:
 
@@ -231,9 +231,9 @@ Native payloads contain `hermes-agent`, `tools`, `venv`, `pm-runtime`, `bin`, `u
 
 Docker keeps its existing TUI product at `/opt/hermes/ui-tui` and web output at `/opt/hermes/hermes_cli/web_dist`. The assembler also plants its shared TUI asset layout beneath `hermes_cli/tui_dist`. Venv command symlinks preserve the paths used by s6 and the privilege-drop shim.
 
-The Docker frontend stage owns npm dependencies and compilation. The runtime stage copies only the frontend products and the locked TypeScript package for runtime linting. Node/npm and Photon's separately installed sidecar dependencies remain runtime inputs. Python dependency preparation precedes the application source copy. Actual cache-hit and layer-size claims require build evidence.
+The Docker frontend stage owns pnpm workspace dependencies and compilation. The runtime stage copies only the frontend products and the locked TypeScript package for runtime linting. Node/npm and Photon's separately installed sidecar dependencies remain runtime inputs. Python dependency preparation precedes the application source copy. Actual cache-hit and layer-size claims require build evidence.
 
-Nix retains `importNpmLock`, uv2nix, platform overrides, and store references. Its builders run during derivation builds, not evaluation. Per-product source filters keep frontend, Python, and resource inputs separate. Nix wrappers consume the assembler's command map and retain their PATH and extra-Python collision policies.
+Nix retains `fetchPnpmDeps`, uv2nix, platform overrides, and store references. Its builders run during derivation builds, not evaluation. Per-product source filters keep frontend, Python, and resource inputs separate. Nix wrappers consume the assembler's command map and retain their PATH and extra-Python collision policies.
 
 **Nix wheel policy:** `nix/python.nix:128–135` sets `HERMES_NIX_BUILD=1` only for the Hermes derivation. `setup.py:34–72` rejects general Hermes wheel/sdist builds. The shared assembler uses the installed Nix code without another copy. Other providers use source-layout code and metadata, not a public Hermes wheel.
 
@@ -262,7 +262,7 @@ PM binary download archives and the native uv wheel cache have different consume
 
 The native cache behavior is in `scripts/bundles/native.py`. Removing all caches from a payload can break offline environment reconstruction.
 
-Desktop transport selects PM tool entries, Python download/wheel caches, npm's content-addressed downloads, prepared workspace dependencies, and native/package tool inputs through `scripts/ci/desktop_build_cache.py`. It does not select the workdir, virtual environments, live user home, signing tokens, or products. The signature-result cache is separate. Native wheel partitions depend on observed compiler/SDK/OpenSSL identity; incomplete identity deliberately forgoes warm reuse. This is not a fully pinned host SDK.
+Desktop transport selects PM tool entries, Python download/wheel caches, pnpm's content-addressable store, prepared workspace dependencies, and native/package tool inputs through `scripts/ci/desktop_build_cache.py`. It does not select the workdir, virtual environments, live user home, signing tokens, or products. The signature-result cache is separate. Native wheel partitions depend on observed compiler/SDK/OpenSSL identity; incomplete identity deliberately forgoes warm reuse. This is not a fully pinned host SDK.
 
 Cache keys are lookup hints, not authorization. Native builders have separate release and commit execution jobs with literal `cache-mode: write` and `cache-mode: read`, respectively. GitHub enforces these permissions on scoped cache tokens, so commit builds cannot save caches even from their own scripts. Both branches share their matrix, environment, and steps through YAML anchors. The original `build-win32` and `build-darwin` IDs aggregate the branches: after successful validation and input archiving, exactly the selected branch must succeed and the other must be skipped. A failed, cancelled, or unexpectedly skipped selected build fails the aggregate; it cannot permit publication. Existing publication dependencies keep using those IDs. A skipped save or a different key prefix alone cannot prevent a script from poisoning a writer namespace. Default-branch canary dispatch retains default-branch cache scope; changing a checkout SHA does not change the workflow ref's cache scope. See GitHub's [cache access contract](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching#controlling-cache-access-with-cache-mode).
 

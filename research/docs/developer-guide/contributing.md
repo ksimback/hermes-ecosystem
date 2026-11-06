@@ -92,6 +92,10 @@ Current development uses PM's pinned interpreter. The broader `>=3.11,<3.15` pac
 
 Use the PM pin or a version accepted by root `package.json` engines
 
+**pnpm**
+
+Exactly the root `package.json` `devEngines` pin; `source ./activate` provides it
+
 ### PM developer environment
 
 Use the [PM developer workflow](/docs/reference/package-management#developer-workflow) for preparation, activation, everyday commands, dependency changes, and test environments. Select your development home before setup so experimental code does not migrate production data.
@@ -139,14 +143,14 @@ For an isolated development instance, select a disposable `HERMES_HOME` before s
 
 ### JavaScript workspaces and website
 
-From the repository root, run `npm ci` for the desktop, TUI, dashboard, and shared JS workspaces. The website is separate:
+From the repository root, run `pnpm install --frozen-lockfile` for the desktop, TUI, dashboard, and shared JS workspaces. Root `package.json` pins pnpm in `devEngines` (`source ./activate` provides that exact version). Hermes's builds and `hermes update` refuse any other pnpm version; a direct `pnpm install` does not check it. The root `preinstall` script refuses `npm install`. The website is a separate npm project:
 
 ```
 npm ci --prefix website
 npm run build:fast --prefix website
 ```
 
-Use a Node/npm version accepted by the corresponding `package.json` engines. Native desktop dependencies can also require the platform build toolchain.
+Use a Node version accepted by the corresponding `package.json` engines. Native desktop dependencies can also require the platform build toolchain.
 
 Logos and icons are generated from `assets/nous-girl-*.svg` and `assets/backgrounds/`. `node scripts/generate-icons.mjs` renders them with the Hermes runtime Python (`HERMES_PYTHON`, else `python` on PATH): Pillow and resvg-py are core dependencies. Do not commit generated PNG/ICO/ICNS outputs.
 

@@ -229,7 +229,7 @@ Verify the interpreter and source before doing work:
 python -c "import sys, pm; print(sys.executable); print(pm.__file__)"
 python -c "import httpx; print(httpx.__file__)"
 node --version
-npm --version
+pnpm --version
 hermes --version
 ```
 
@@ -248,14 +248,16 @@ python -m pm.cli status
 
 These commands use the selected development home. A source-file edit is visible to the next process. Restart the affected CLI, gateway, or backend after edits. Reinstalling every dependency is unnecessary for a Python-only source change.
 
-For the JavaScript workspaces, run `npm ci` once at the repository root, then run the relevant workspace command. For example:
+For the JavaScript workspaces, run `pnpm install --frozen-lockfile` once at the repository root, then run the relevant workspace command. For example:
 
 ```
-npm run build --workspace ui-tui
-npm run dev --workspace apps/desktop
+pnpm --dir ui-tui run build
+pnpm --dir apps/desktop run dev
 ```
 
-The website is separate: `npm ci --prefix website`, then `npm run build:fast --prefix website`. PM activation supplies tools, not these `node_modules` directories or built assets. Native desktop builds have additional requirements in the [desktop build guide](https://github.com/NousResearch/hermes-agent/blob/main/apps/desktop/BUILDING.md).
+Activation provides the pnpm version root `package.json` pins in `devEngines`. Hermes's builds and `hermes update` refuse any other pnpm version (a direct `pnpm install` does not check it), and the root `preinstall` script refuses `npm install` (npx and other npm commands only warn).
+
+The website is a separate npm project: `npm ci --prefix website`, then `npm run build:fast --prefix website`. PM activation supplies tools, not these `node_modules` directories or built assets. Native desktop builds have additional requirements in the [desktop build guide](https://github.com/NousResearch/hermes-agent/blob/main/apps/desktop/BUILDING.md).
 
 ### Refresh dependencies without changing branches
 
@@ -447,9 +449,9 @@ Resolve versions for the specified target.
 
 Leave TARGET's pins unchanged (repeatable), for example `linux-arm64-bionic` while the termux pool lags upstream. Later runs still report the package as current. `pm lock --bump NAME VERSION` re-pins every target at a version, and `pm update --termux` repins a retired `linux-arm64-bionic` row.
 
-`pm update --uv` / `--npm`
+`pm update --uv` / `--pnpm`
 
-Also refresh the Python or npm dependency resolution.
+Also refresh the Python dependency resolution (`uv.lock`) or the JavaScript one (`pnpm-lock.yaml`).
 
 `pm update --termux [--check]`
 
@@ -471,13 +473,15 @@ PM retries transient HTTP failures during tool downloads, artifact hashing and v
 
 Retryable HTTP statuses are 408, 429, 500, 502, 503 and 504. Connection resets, timeouts, temporary DNS failures and interrupted response bodies also retry. Ranged downloads checkpoint every five seconds and after each attempt. A failed periodic checkpoint logs a warning and retries later; the final checkpoint is required. Servers without range support require a fresh stream. Pause interrupts backoff and preserves the partial download.
 
-PM does not retry bad hashes, certificate failures, local filesystem errors or other permanent failures. A successful probe followed by a range GET 403 or 404 retains the CDN fallback: one serial attempt at the missing ranges. Extraction, verification and publication are not repeated. Python and npm package requests remain under uv and npm's own retry policies.
+PM does not retry bad hashes, certificate failures, local filesystem errors or other permanent failures. A successful probe followed by a range GET 403 or 404 retains the CDN fallback: one serial attempt at the missing ranges. Extraction, verification and publication are not repeated. Python and JavaScript package requests remain under uv and pnpm's own retry policies.
 
 ## Release age and package mirrors
 
 Every Python package Hermes itself depends on must be at least three days old when Hermes locks it (uv's `exclude-newer`, enforced by CI's lock check), so a freshly published, possibly compromised release cannot reach `uv.lock`. Users install from that lock, and installing or enabling a plugin never re-checks dates, so package mirrors that publish no upload times work. The one exemption is CA trust stores (`certifi`): a release that distrusts a compromised CA is locked the day it ships, since waiting keeps the bad root trusted. Set a mirror with `index-url` in `pip.conf`, which Hermes passes to uv, or with `UV_INDEX_URL`.
 
 `hermes pm lock` is the one step that applies the check. Run against a mirror without upload times, it stops with `has no publish time`; use `https://pypi.org/simple` for that step.
+
+JavaScript workspace dependencies follow the same rule through `minimumReleaseAge` in `pnpm-workspace.yaml` (in minutes: `20160` is 14 days), with exemptions listed in `minimumReleaseAgeExclude`. CI enforces it when it installs `pnpm-lock.yaml`; source, bundle and Docker installs trust the committed lock.
 
 ## Diagnostics
 

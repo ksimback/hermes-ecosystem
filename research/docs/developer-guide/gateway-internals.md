@@ -138,10 +138,6 @@ Cross-session message mirroring for `send_message`
 
 Token lock management for profile-scoped gateway instances
 
-`gateway/builtin_hooks/`
-
-Extension point for always-registered hooks (none shipped)
-
 `gateway/platform_registry.py`
 
 Adapter registry, factories, and deferred (lazy) loaders for bundled platform plugins
@@ -451,7 +447,7 @@ Agent finishes and returns response
 
 Any slash command is executed
 
-Hooks are discovered from `gateway/builtin_hooks/` (an extension point — currently empty in the shipped distribution; `_register_builtin_hooks()` is a no-op stub) and `<profile home>/hooks/` (user-installed; `~/.hermes/hooks/` for the default profile, one directory per served profile under multiplexing — paths resolve at call time, never at import). Each hook is a directory with a `HOOK.yaml` manifest and `handler.py`.
+Hooks are discovered from `<profile home>/hooks/` (user-installed; `~/.hermes/hooks/` for the default profile, one directory per served profile under multiplexing — paths resolve at call time, never at import). Each hook is a directory with a `HOOK.yaml` manifest and `handler.py`.
 
 ## Memory Provider Integration
 

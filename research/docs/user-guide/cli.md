@@ -283,6 +283,10 @@ Emacs-style alternate binding for the external editor (same behavior as `Ctrl+G`
 
 Clear a typed draft first (even while the agent works); with an empty prompt, interrupt the agent (double-press within 2s to force exit)
 
+`Esc Esc`
+
+With a draft: discard it (Up recalls it). On an idle, empty prompt: open the **backtrack** picker (same as `/rewind`). `↑`/`↓` move through your earlier prompts (newest first, with a preview); `Enter` edits the selected prompt and resends it, cutting the session back to just before it only when you send (cancel with `Esc Esc` or `Ctrl+C` and nothing is removed); `f` forks a new session from just before that prompt with it prefilled, leaving the original untouched; `Esc` closes the picker.
+
 `Ctrl+T` / `F6`
 
 Open the full-screen live work monitor (subagents and background processes) without losing the composer draft. The live dock appears automatically above the status bar; arrows select a worker or process, `Enter` shows its recent log, `s` steers a worker, and `x` requests stop with confirmation. See [Monitoring subagents](/docs/user-guide/features/delegation#monitoring-running-subagents-agents).

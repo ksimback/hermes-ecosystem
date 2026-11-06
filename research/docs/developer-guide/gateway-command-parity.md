@@ -6,7 +6,7 @@ Every local client (classic CLI, Ink TUI, Desktop, ACP) attaches to the one gate
 
 **Gateway (`slash.exec`)**: `read` = the real handler runs for a local session (proved by `tests/gateway/test_session_read_commands.py`); `control` = admission-fenced write (`/approve` `/deny` resolve this session's waiting approval, `tests/gateway/test_session_approval_commands.py`); `refused`. **Notes**: `per-session setting (gateway handler)` = the messaging handler runs and applies the setting to this local session (its next turn and `config.get`), saving config.yaml only where the handler does; `client-local (cli_only)` commands are terminal/UI features of a client.
 
-104 registry commands: 29 control, 19 read, 56 refused.
+105 registry commands: 29 control, 19 read, 57 refused.
 
 Command
 
@@ -979,6 +979,20 @@ slash.exec
 slash.exec
 
 slash.exec
+
+`/rewind`
+
+refused
+
+HermesCLI.\_handle\_rewind\_command
+
+local
+
+unavailable: terminal
+
+slash.exec: refused
+
+client-local (cli\_only)
 
 `/rollback`
 

@@ -40,11 +40,11 @@ hermes webapp
 
 The gateway then serves the Webapp at `http://127.0.0.1:9120` (see [Configuration → Webapp](/docs/user-guide/configuration#webapp) for the host and port). `hermes webapp` builds the bundle when it is out of date, starts the gateway if it is not running, and opens a one-use sign-in link. Chats run on that gateway, the same process that serves the CLI, the native Desktop and messaging, so every surface sees one conversation with one queue.
 
-**Signing in.** The link works once, within 60 seconds. The browser exchanges it for a sign-in that it keeps in that tab, so reloading keeps you signed in, and so does a gateway restart. A fresh tab or a bare URL shows instructions instead of access: run `hermes webapp` again for a new link. **New Window**, profile windows and session pop-outs hand the sign-in over with their own one-use link. On Linux the gateway checks that the browser's connection belongs to your OS user; on Windows the link travels only in the browser launcher's command line, which other standard users cannot read. On macOS, the BSDs and illumos neither holds, so the command writes the link into a page only your OS user can read (in the gateway home's `webapp` folder) and opens that page: the launcher sees only its path. On macOS a browser can open where you don't see it (over SSH, on the Mac's own screen): if none did, run `hermes webapp --no-open` for the link. Where it cannot open a browser (`--no-open`, an SSH session on the BSDs or illumos) and on WSL (where the Windows browser reaches the gateway through WSL's relay), it prints the one-use link for you to open instead; until it is used it signs a browser in as you, so keep it private. `hermes webapp --sign-out` signs out every tab at once: their open connections close, Bot Desktop viewers included, and each shows the sign-in instructions. Behind the sign-in gate (below) it also signs out every browser that signed in with a dashboard account; each must sign in again. The account tokens such a login keeps in its cookies work on the Webapp only as that login (the gateway refuses them as a bearer token, on a connection's URL and on its token refresh), so they end with it. A native Hermes app that signed in to the gateway on its own stays signed in.
+**Signing in.** The link works once, within 60 seconds. The browser exchanges it for a sign-in that it keeps in that tab, so reloading keeps you signed in, and so does a gateway restart. A fresh tab or a bare URL shows instructions instead of access: run `hermes webapp` again for a new link. **New Window**, profile windows and session pop-outs hand the sign-in over with their own one-use link. On Linux the gateway checks that the browser's connection belongs to your OS user; on Windows the link travels only in the browser launcher's command line, which other standard users cannot read. On macOS, the BSDs and illumos neither holds, so the command writes the link into a page only your OS user can read (in the gateway home's `webapp` folder) and opens that page: the launcher sees only its path. On macOS a browser can open where you don't see it (over SSH, on the Mac's own screen): if none did, run `hermes webapp --no-open` for the link. Where it cannot open a browser (`--no-open`, an SSH session on the BSDs or illumos) and on WSL (where the Windows browser reaches the gateway through WSL's relay), it prints the one-use link for you to open instead; until it is used it signs a browser in as you, so keep it private. `hermes webapp --sign-out` signs out every tab at once: their open connections close, Bot Desktop viewers included, and each shows the sign-in instructions. Behind the sign-in gate (below) it also signs out every browser that signed in with a dashboard account; each must sign in again. The account tokens such a login keeps in its cookies work on the Webapp only as that login (the gateway refuses them as a bearer token, on a connection's URL and on its token refresh), so they end with it. A native Hermes app that signed in to the gateway on its own stays signed in. The deployment session token (`HERMES_DASHBOARD_SESSION_TOKEN`, see [Deployment session-token provider](/docs/user-guide/features/web-dashboard#deployment-session-token-provider-token-only-deployments)) also works there on its own, as a bearer token, in the `X-Hermes-Session-Token` header (what Desktop sends on REST) or on a connection's URL, while the session-token provider is enabled.
 
 For a named profile, `hermes -p work webapp` opens the Webapp on `work`. Profiles the default gateway serves share its Webapp; a standalone profile's own gateway serves its own when its config turns it on.
 
-**From another machine.** Set `webapp.host` to `0.0.0.0`; the gateway then requires the [dashboard sign-in gate](/docs/user-guide/features/web-dashboard#authentication-gated-mode) (username and password for a trusted LAN or VPN, OAuth/OIDC for anything internet-facing). Behind a reverse proxy or tunnel you run, keep the loopback host and set `webapp.public_url` to the address it serves instead; that requires the same sign-in. `hermes webapp` then opens the Webapp's address, where you sign in with your dashboard account: `webapp.public_url` when set; on the LAN, the address **Web Access → Start** registered Nous sign-in for, while it is still this machine's address and the Webapp's port; else the loopback address (a password provider, or sign-in you set up by hand for that address). One-use links serve only a Webapp that needs no sign-in. HTTPS is strongly recommended remotely.
+**From another machine.** Set `webapp.host` to `0.0.0.0`; the gateway then requires the [dashboard sign-in gate](/docs/user-guide/features/web-dashboard#authentication-gated-mode) (username and password for a trusted LAN or VPN, OAuth/OIDC for anything internet-facing). Behind a reverse proxy or tunnel you run on the same machine, keep the loopback host and set `webapp.public_url` to the address it serves instead; that requires the same sign-in. A proxy in another container or on another machine cannot reach that loopback address: see [Docker → Behind a tunnel or reverse proxy](/docs/user-guide/docker#webapp-behind-a-proxy). `hermes webapp` then opens the Webapp's address, where you sign in with your dashboard account: `webapp.public_url` when set; on the LAN, the address **Web Access → Start** registered Nous sign-in for, while it is still this machine's address and the Webapp's port; else the loopback address (a password provider, or sign-in you set up by hand for that address). One-use links serve only a Webapp that needs no sign-in. HTTPS is strongly recommended remotely.
 
 **What plain HTTP loses.** Browsers turn off features that need a secure context on a plain-HTTP address other than loopback (`http://localhost` and `http://127.0.0.1` count as secure): the bot screen viewer, the microphone (dictation, live voice and the remote wake word), reading the clipboard (terminal paste, pasting an image) and system notifications. The bot screen and live voice say so instead of opening. `hermes webapp` and `hermes webapp --status` print a note when the address a browser opens (`webapp.public_url`, else the LAN address **Start** registered sign-in for) is plain HTTP on another host. To keep these features, open the Webapp over HTTPS (`webapp.public_url`) or through an SSH tunnel to `127.0.0.1`.
 
@@ -434,7 +434,7 @@ Description
 
 `--skip-build`
 
-Skip npm install/package and launch the existing unpacked app from `apps/desktop/release`
+Skip pnpm install/package and launch the existing unpacked app from `apps/desktop/release`
 
 `--force-build`
 
@@ -674,12 +674,12 @@ To **use a mirror** (e.g. a corporate one, or `npmmirror.com`, the de-facto Elec
 
 ```
 ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ \
-  bash -c 'cd "$HOME/.hermes/hermes-agent/apps/desktop" && CSC_IDENTITY_AUTO_DISCOVERY=false npm run pack'
+  bash -c 'cd "$HOME/.hermes/hermes-agent/apps/desktop" && CSC_IDENTITY_AUTO_DISCOVERY=false pnpm run pack'
 ```
 
-**Other native downloads (e.g. the `get-windows` prebuilt on Windows) that need a mirror:** put the npm keys in `$HERMES_HOME/npmrc` (`%LOCALAPPDATA%\hermes\npmrc` on Windows, `~/.hermes/npmrc` elsewhere) — for example `node_get_windows_binary_host_mirror=https://<mirror>/sindresorhus/get-windows/releases/download/`. Every `npm ci`/`npm run` the updater spawns (desktop, web and TUI builds) points `NPM_CONFIG_USERCONFIG` at that file when it exists, so the config survives `hermes update`; the repo-root `.npmrc` is git-tracked and gets autostashed on every update, and `~/.npmrc` may be missed because the desktop hand-off inherits the GUI's environment. An `NPM_CONFIG_USERCONFIG` you set yourself is never overridden.
+**Other native downloads (e.g. the `get-windows` prebuilt on Windows) that need a mirror:** put the npm keys in `$HERMES_HOME/npmrc` (`%LOCALAPPDATA%\hermes\npmrc` on Windows, `~/.hermes/npmrc` elsewhere) — for example `node_get_windows_binary_host_mirror=https://<mirror>/sindresorhus/get-windows/releases/download/`. Every dependency install and build the updater spawns (desktop, web and TUI builds) points `NPM_CONFIG_USERCONFIG` at that file when it exists (pnpm reads its registry and auth from it) and hands its other keys to dependency install scripts as `npm_config_<key>` environment variables, so the config survives `hermes update`; `~/.npmrc` may be missed because the desktop hand-off inherits the GUI's environment. An `NPM_CONFIG_USERCONFIG` you set yourself is never overridden.
 
-**If `get-windows` is missing or half-installed:** the build no longer fails — it prints `[stage-native-deps] get-windows not installed ... read_window_below will be unavailable in this build` and ships without the `read_window_below` tool. When the package directory exists but is not loadable (a Windows in-place update interrupted by a running Hermes window, `TAR_ENTRY_ERROR` in the install log), the same warning names the directory, and the next `hermes desktop --force-build` or update removes it before its npm install so the package is re-extracted — close every Hermes window and gateway first so the extract is not interrupted again. A package whose native binding or macOS helper is missing is likewise shipped without window enumeration rather than failing the build.
+**If `get-windows` is missing or half-installed:** the build no longer fails — it prints `[stage-native-deps] get-windows not installed ... read_window_below will be unavailable in this build` and ships without the `read_window_below` tool. When the package directory exists but is not loadable (a Windows in-place update interrupted by a running Hermes window, `TAR_ENTRY_ERROR` in the install log), the same warning names the directory, and the next `hermes desktop --force-build` or update removes it before its pnpm install so the package is re-extracted — close every Hermes window and gateway first so the extract is not interrupted again. A package whose native binding or macOS helper is missing is likewise shipped without window enumeration rather than failing the build.
 
 To clear a corrupt cached zip by hand:
 
@@ -693,26 +693,26 @@ rm -f "$HOME/.cache/electron"/electron-*.zip            # Linux
 If you want to hack on the app itself, install workspace deps from the repo root once, then run the dev server from `apps/desktop`:
 
 ```
-npm install          # from repo root — links apps/desktop, web, apps/shared
+pnpm install         # from repo root — links apps/desktop, web, apps/shared
 cd apps/desktop
-npm run dev          # Vite renderer + Electron, which boots the Python backend
+pnpm run dev         # Vite renderer + Electron, which boots the Python backend
 ```
 
 Point the app at a specific checkout, or sandbox it from your real config:
 
 ```
-HERMES_DESKTOP_HERMES_ROOT=/path/to/clone npm run dev
-HERMES_HOME=$HOME/.hermes/cache/scratch/throwaway npm run dev
-npm run dev:fake-boot   # exercise the startup overlay with deterministic delays
+HERMES_DESKTOP_HERMES_ROOT=/path/to/clone pnpm run dev
+HERMES_HOME=$HOME/.hermes/cache/scratch/throwaway pnpm run dev
+pnpm run dev:fake-boot   # exercise the startup overlay with deterministic delays
 ```
 
 Build installers:
 
 ```
-npm run dist:mac     # DMG + zip
-npm run dist:win     # NSIS + MSI
-npm run dist:linux   # AppImage + deb + rpm
-npm run pack         # unpacked app under release/ (no installer)
+pnpm run dist:mac     # DMG + zip
+pnpm run dist:win     # NSIS + MSI
+pnpm run dist:linux   # AppImage + deb + rpm
+pnpm run pack         # unpacked app under release/ (no installer)
 ```
 
 macOS/Windows signing and notarization run automatically when the relevant credentials are present in the environment (`CSC_LINK` / `CSC_KEY_PASSWORD` / `APPLE_*` for macOS, `WIN_CSC_*` for Windows).

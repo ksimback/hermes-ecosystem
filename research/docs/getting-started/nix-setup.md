@@ -1220,7 +1220,7 @@ A build-time collision check prevents plugin packages from shadowing core hermes
 
 ### Dev Shell
 
-The flake provides an editable Python venv with the `dev` dependency group, running on the interpreter `pm/lock.json` pins. `HERMES_PYTHON` and `VIRTUAL_ENV` point at it, and it needs no `PYTHONPATH`. It does not install Python dependencies into a repository-local `.venv`. The shell also provides Node.js and runtime tools. Its npm hook refreshes JS workspaces when their inputs change.
+The flake provides an editable Python venv with the `dev` dependency group, running on the interpreter `pm/lock.json` pins. `HERMES_PYTHON` and `VIRTUAL_ENV` point at it, and it needs no `PYTHONPATH`. It does not install Python dependencies into a repository-local `.venv`. The shell also provides Node.js and runtime tools. Its pnpm hook refreshes JS workspaces when their inputs change.
 
 ```
 cd hermes-agent
@@ -1237,7 +1237,7 @@ The included `.envrc` activates the dev shell automatically:
 ```
 cd hermes-agent
 direnv allow    # one-time
-# Nix reuses its built Python environment; the npm hook checks JS inputs.
+# Nix reuses its built Python environment; the pnpm hook checks JS inputs.
 ```
 
 ### Flake Checks

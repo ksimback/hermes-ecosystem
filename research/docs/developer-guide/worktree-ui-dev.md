@@ -2,7 +2,7 @@
 
 **Source:** https://hermes-agent.nousresearch.com/docs/developer-guide/worktree-ui-dev
 
-The Python core runs fine from any [git worktree](/docs/user-guide/git-worktrees) — `cd` in and `hermes` just works. The two TypeScript surfaces do not: `ui-tui/` and `apps/desktop/` each need a populated `node_modules`, and a fresh `npm ci` per worktree is slow and duplicates gigabytes across every branch you have checked out.
+The Python core runs fine from any [git worktree](/docs/user-guide/git-worktrees) — `cd` in and `hermes` just works. The two TypeScript surfaces do not: `ui-tui/` and `apps/desktop/` each need a populated `node_modules`, and a fresh `pnpm install` per worktree is slow and repeats for every branch you have checked out.
 
 `htui` and `hgui` are two shell helpers that close that gap. Each launches its surface **from the current worktree** while borrowing `node_modules` from one canonical checkout — so a throwaway branch costs a symlink, not an install.
 
@@ -10,7 +10,7 @@ They're developer conveniences, not shipped commands. Drop them in `~/.zshrc`; a
 
 ## The deps-sharing model
 
-One checkout is the **deps checkout** — the one place you actually run `npm install`. Every other worktree links against it, and only re-installs locally when its lockfile diverges (a branch that bumps a dependency must not silently run against stale packages).
+One checkout is the **deps checkout** — the one place you actually run `pnpm install`. Every other worktree links against it, and only re-installs locally when its lockfile diverges (a branch that bumps a dependency must not silently run against stale packages).
 
 Two env vars name the canonical checkout:
 
@@ -49,7 +49,7 @@ htui() {
 
 ## `hgui` — desktop app from the worktree
 
-The desktop app needs dependencies at both the repo root and `apps/desktop/`, a Vite server, and a Python backend. The stock `npm run dev` pins Vite to `5174`; Electron also defaults to CDP port `9222` and takes a single-instance lock on its user-data directory. Changing only the Vite port is not enough to run two desktops.
+The desktop app needs dependencies at both the repo root and `apps/desktop/`, a Vite server, and a Python backend. The stock `pnpm run dev` pins Vite to `5174`; Electron also defaults to CDP port `9222` and takes a single-instance lock on its user-data directory. Changing only the Vite port is not enough to run two desktops.
 
 This **zsh** example gives each launch an explicit slot (`HGUI_SLOT`, default `0`). Use a different slot in each terminal. It uses the [shared helpers](#shared-helpers) below and requires `lsof`:
 
@@ -70,11 +70,11 @@ hgui() (
   deps="${HERMES_GUI_DEPS_CHECKOUT:-$HERMES_MAIN_CHECKOUT}"
   desktop="$root/apps/desktop"
 
-  if cmp -s "$root/package-lock.json" "$deps/package-lock.json"; then
+  if cmp -s "$root/pnpm-lock.yaml" "$deps/pnpm-lock.yaml"; then
     _hermes_link_deps "$desktop" "$deps/apps/desktop" || return 1
     _hermes_link_deps "$root" "$deps" || return 1
   else
-    ( cd "$root" && npm ci ) || return 1
+    ( cd "$root" && pnpm install --frozen-lockfile ) || return 1
   fi
 
   cd "$desktop" || return 1
@@ -91,7 +91,7 @@ hgui() (
 
   # Mirror the dev scripts, replacing their fixed ports. No repo edits needed.
   concurrently -k -n "vite,electron" \
-    "node scripts/assert-root-install.mjs && npm run clean:renderer && vite --host 127.0.0.1 --port $vite_port --strictPort" \
+    "node scripts/assert-root-install.mjs && pnpm run clean:renderer && vite --host 127.0.0.1 --port $vite_port --strictPort" \
     "tsc --build tsconfig.electron.json && wait-on http://127.0.0.1:$vite_port && node scripts/bundle-electron-main.mjs --dev && electron ."
 )
 ```
@@ -176,7 +176,7 @@ _hermes_link_deps() {
 
 Why link only when locks match
 
-A symlink to a divergent `node_modules` is worse than no install — the worktree would build against packages its own lockfile never declared. Byte-comparing `package-lock.json` is the cheap, exact guard: same lock ⇒ safe to borrow; different lock ⇒ `npm ci` locally. Vite realpaths symlinks before enforcing `server.fs.allow`, which is why `apps/desktop/vite.config.ts` whitelists the real `node_modules` location.
+A symlink to a divergent `node_modules` is worse than no install — the worktree would build against packages its own lockfile never declared. Byte-comparing `pnpm-lock.yaml` is the cheap, exact guard: same lock ⇒ safe to borrow; different lock ⇒ `pnpm install --frozen-lockfile` locally. Vite realpaths symlinks before enforcing `server.fs.allow`, which is why `apps/desktop/vite.config.ts` whitelists the real `node_modules` location.
 
 ## See also
 
