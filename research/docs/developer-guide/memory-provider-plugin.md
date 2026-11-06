@@ -285,7 +285,7 @@ That profile was renamed (`hermes_home` is the new directory)
 
 Re-key state stored under the old name
 
-The two profile hooks run on an uninitialized instance with that profile's home and its own `.env` secrets bound. A key that profile's `.env` lacks reads as unset: the caller's environment is never used. An exception (`SystemExit` included) is logged and never fails the create or rename. They run inside the create/rename request on every surface, so do network work on a background thread.
+The two profile hooks run on an uninitialized instance with that profile's home and its own secrets bound: its `.env` plus its configured secret sources (1Password and the like). A key it lacks reads as unset: the caller's environment is never used. An exception (`SystemExit` included) is logged and never fails the create or rename. They run inside the create/rename request on every surface, so do network work on a background thread. Under `plugins.isolation: host`, a plugin host started only for the hook is stopped when it returns.
 
 For native `replace` and `remove`, `metadata["previous_content"]` contains the full entry selected under the native-store lock. Notifications are emitted only after the complete write or batch succeeds. Batch notifications preserve operation order; each operation's previous content reflects earlier operations in that batch. `old_text` is the caller's search text, not the identity of the changed entry. Older Hermes versions can omit `previous_content`. Providers that require exact identity should skip destructive mirroring when it is absent.
 
@@ -429,6 +429,8 @@ def write_config_fields(self, values: dict, hermes_home: str) -> None:
     # json.JSONDecodeError counts) to refuse the save (shown as a 400), e.g. when your file does not parse.
     ...
 ```
+
+Declaring `storage=STORAGE_PROVIDER` without `write_config_fields` makes a save return 501; a provider that fails to load returns 503; an unknown `storage` value shows no panel and refuses saves.
 
 ## Save Config
 

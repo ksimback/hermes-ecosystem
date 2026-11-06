@@ -64,7 +64,7 @@ Remove the last user/assistant exchange
 
 `/rewind [N | fork N]`
 
-**Backtrack** (classic CLI; also `Esc Esc` on an idle, empty prompt). Opens a picker of your earlier prompts, newest first, with a preview of the selected one. `Enter` puts it back in the composer for editing: sending the edit cuts the session back to just before that prompt (the later messages are archived, as with `/undo`) and sends the new text; cancelling with `Esc Esc`, `Ctrl+C` or an empty submit removes nothing. `f` forks instead: a new branched session holding only the history before that prompt, with the prompt prefilled (not sent); the original session is kept as it was. `/rewind N` edits prompt N directly and `/rewind fork N` forks before it.
+**Backtrack** (classic CLI; also `Esc`, `Esc` on an idle, empty prompt: the first shows `esc again to edit previous message`). Opens a transcript browser of your prompts and replies with the latest prompt selected in reverse video: `←`/`→` (`h`/`l`) pick a prompt, `↑`/`↓` (`k`/`j`) and `PgUp`/`PgDn` scroll. `Enter` puts it back in the composer for editing: sending the edit cuts the session back to just before that prompt (the later messages are archived, as with `/undo`) and sends the new text; cancelling with `Esc Esc`, `Ctrl+C` or an empty submit removes nothing. `f` forks instead: a new branched session holding only the history before that prompt, with the prompt prefilled (not sent); the original session is kept as it was. `Esc` or `q` closes. `/rewind N` edits prompt N directly and `/rewind fork N` forks before it.
 
 `/title`
 

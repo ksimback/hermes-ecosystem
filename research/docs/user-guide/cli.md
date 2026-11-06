@@ -283,9 +283,9 @@ Emacs-style alternate binding for the external editor (same behavior as `Ctrl+G`
 
 Clear a typed draft first (even while the agent works); with an empty prompt, interrupt the agent (double-press within 2s to force exit)
 
-`Esc Esc`
+`Esc`, `Esc`
 
-With a draft: discard it (Up recalls it). On an idle, empty prompt: open the **backtrack** picker (same as `/rewind`). `↑`/`↓` move through your earlier prompts (newest first, with a preview); `Enter` edits the selected prompt and resends it, cutting the session back to just before it only when you send (cancel with `Esc Esc` or `Ctrl+C` and nothing is removed); `f` forks a new session from just before that prompt with it prefilled, leaving the original untouched; `Esc` closes the picker.
+**Backtrack** (same as `/rewind`). On an idle, empty prompt the first `Esc` shows `esc again to edit previous message` (it waits for you; any other key cancels it and acts normally), the second opens a **transcript browser**: every prompt (`›`) and reply (`•`) of the session in a panel sized to the screen, the latest prompt selected in reverse video. `←`/`h` and `→`/`l` pick an older/newer prompt, `↑`/`↓` (`k`/`j`) scroll a row and `PgUp`/`PgDn` a page; `Enter` puts the selected prompt back in the composer for editing, and sending the edit cuts the session back to just before it (nothing is removed until you send; cancel with `Esc Esc`, `Ctrl+C` or an empty submit); `f` forks a new session from just before that prompt with it prefilled, leaving the original untouched; `Esc` or `q` closes, and any other key closes the browser and types normally. With a draft, `Esc Esc` discards it instead (Up recalls it).
 
 `Ctrl+T` / `F6`
 

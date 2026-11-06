@@ -286,61 +286,61 @@ developer-guide / plugins docs
 
 whole module
 
-PluginContext (hermes\_cli/plugins.py)
+PluginContext (hermes\_cli/plugins\_context.py)
 
 `agent.plugin_llm`
 
 whole module
 
-PluginContext (hermes\_cli/plugins.py)
+PluginContext (hermes\_cli/plugins\_context.py)
 
 `agent.transcription_provider`
 
 whole module
 
-PluginContext (hermes\_cli/plugins.py)
+PluginContext (hermes\_cli/plugins\_context.py)
 
 `agent.tts_provider`
 
 whole module
 
-PluginContext (hermes\_cli/plugins.py)
+PluginContext (hermes\_cli/plugins\_context.py)
 
 `cron.execution_identity`
 
 whole module
 
-PluginContext (hermes\_cli/plugins.py)
+PluginContext (hermes\_cli/plugins\_context.py)
 
 `hermes_cli.dashboard_auth`
 
 whole module
 
-PluginContext (hermes\_cli/plugins.py)
+PluginContext (hermes\_cli/plugins\_context.py)
 
 `hermes_cli.platform_actions`
 
 whole module
 
-PluginContext (hermes\_cli/plugins.py)
+PluginContext (hermes\_cli/plugins\_context.py)
 
 `hermes_cli.plugins`
 
 `PluginContext`
 
-PluginContext (hermes\_cli/plugins.py)
+PluginContext (hermes\_cli/plugins\_context.py)
 
 `hermes_cli.plugins_ledger`
 
 `PluginRegistration`
 
-PluginContext (hermes\_cli/plugins.py)
+PluginContext (hermes\_cli/plugins\_context.py)
 
 `hermes_cli.plugins_state`
 
 `PluginState`
 
-PluginContext (hermes\_cli/plugins.py)
+PluginContext (hermes\_cli/plugins\_context.py)
 
 `agent.runtime_cwd`
 
