@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>apelabs-dev/hermes-mock-review — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="mock-review is a Hermes plugin for reviewing UI and design options through shareable review boards. Reviewers can approve, request changes, or skip decisions,…">
+<meta name="description" content="mock-review is a Hermes plugin for reviewing UI and design options on a board. Reviewers can approve, request changes, or skip decisions, add notes and pins,…">
 <link rel="canonical" href="https://hermesatlas.com/projects/apelabs-dev/hermes-mock-review">
 <meta property="og:title" content="apelabs-dev/hermes-mock-review — Hermes Atlas">
-<meta property="og:description" content="mock-review is a Hermes plugin for reviewing UI and design options through shareable review boards. Reviewers can approve, request changes, or skip decisions,…">
+<meta property="og:description" content="mock-review is a Hermes plugin for reviewing UI and design options on a board. Reviewers can approve, request changes, or skip decisions, add notes and pins,…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/apelabs-dev/hermes-mock-review">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="apelabs-dev/hermes-mock-review — Hermes Atlas">
-<meta name="twitter:description" content="mock-review is a Hermes plugin for reviewing UI and design options through shareable review boards. Reviewers can approve, request changes, or skip decisions,…">
+<meta name="twitter:description" content="mock-review is a Hermes plugin for reviewing UI and design options on a board. Reviewers can approve, request changes, or skip decisions, add notes and pins,…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-mock-review&amp;subtitle=Review+boards+for+UI+mockups%2C+as+a+Hermes+plugin%3A+mark+decisions%2C+pin+comments%2C+press+Send%2C+and+your+agent+wakes+up+with+the+feedback.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/apelabs-dev/hermes-mock-review#software",
   "name": "hermes-mock-review",
-  "description": "mock-review is a Hermes plugin for reviewing UI and design options through shareable review boards. Reviewers can approve, request changes, or skip decisions, add notes and pins to mockups, then send feedback that wakes the agent in the originating chat.",
+  "description": "mock-review is a Hermes plugin for reviewing UI and design options on a board. Reviewers can approve, request changes, or skip decisions, add notes and pins, then send feedback to wake the agent in the originating chat. Boards display mocks at desktop, tablet, and phone widths in light and dark modes.",
   "url": "https://hermesatlas.com/projects/apelabs-dev/hermes-mock-review",
   "codeRepository": "https://github.com/apelabs-dev/hermes-mock-review",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "apelabs-dev",
     "url": "https://github.com/apelabs-dev"
   },
-  "dateModified": "2026-11-05T05:49:08.000Z",
+  "dateModified": "2026-11-06T19:25:50.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">291·repos</span>
+    <span id="meta-count">292·repos</span>
     <span id="meta-version">hermes·v0.21.5</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-05</span>
+    <span><span class="meta-label">updated</span>2026-11-06</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">mock-review is a Hermes plugin for reviewing UI and design options through shareable review boards. Reviewers can approve, request changes, or skip decisions, add notes and pins to mockups, then send feedback that wakes the agent in the originating chat.</p>
+    <p class="summary-text">mock-review is a Hermes plugin for reviewing UI and design options on a board. Reviewers can approve, request changes, or skip decisions, add notes and pins, then send feedback to wake the agent in the originating chat. Boards display mocks at desktop, tablet, and phone widths in light and dark modes.</p>
     <ul class="summary-highlights">
-      <li>Boards show mocks at desktop, tablet, and phone widths.</li>
-      <li>Supports local, Tailscale, and here.now hosting.</li>
-      <li>Includes CLI commands and agent tools for review rounds.</li>
+      <li>Supports decision marks, notes, and pins on mockups</li>
+      <li>Sends feedback to the originating chat</li>
+      <li>Offers local, tailnet, and here.now hosting</li>
     </ul>
   </div>
 </section>
@@ -243,6 +243,35 @@ the foreground with <code>hermes mockreview serve</code>. The plugin installs no
 <p>Known issue: here.now publishing runs the official skill's Bash helper. On Windows it requires Git Bash on <code>PATH</code>
 with compatible paths, or running Hermes and the plugin inside WSL. Native Windows without Bash cannot publish
 here.now reviews; local hosting does not need Bash. See <a href="https://github.com/apelabs-dev/hermes-mock-review/blob/main/docs/hosting.md#herenow">hosting requirements</a>.</p>
+<h3>Other agents (MCP)</h3>
+<p>Claude Code, Codex and OpenCode can use the same boards without Hermes in the loop: <code>mockreview/mcp.py</code> serves the five
+<code>mock_review_*</code> tools over stdio, so a coding agent can create a board, add a round and read the reviewer's marks
+itself. The canonical command is <code>&lt;abs&gt;/bin/mockreview mcp</code> (the checkout or installed plugin directory);
+<code>python -m mockreview.mcp</code> runs the same server when the package is on the import path. Details:
+<a href="https://github.com/apelabs-dev/hermes-mock-review/blob/main/docs/mcp.md">docs/mcp.md</a>.</p>
+<p>Wake is off for MCP boards by default, because an external CLI has no Hermes session to wake: the agent reads the marks
+with <code>mock_review_feedback</code>. Add <code>--wake</code> plus <code>--platform</code> and <code>--chat-id</code> (or <code>origin_platform</code> and <code>origin_chat_id</code>
+on one call) only when the session context names a real chat. A <code>local</code> link opens on the computer running the board;
+use <code>herenow</code> (password protected by default) or <code>tailnet</code> to open it on a phone.</p>
+<p>Claude Code, project scope (use <code>--mcp-config</code> with a JSON file for a one-off):</p>
+<pre><code>claude mcp add --transport stdio --scope project mock-review -- &lt;abs&gt;/bin/mockreview mcp
+</code></pre>
+<p>Codex, in <code>~/.codex/config.toml</code>:</p>
+<pre><code>[mcp_servers.mock-review]
+command = "python3"
+args = ["&lt;abs&gt;/bin/mockreview", "mcp"]
+</code></pre>
+<p>OpenCode, in <code>opencode.json</code>:</p>
+<pre><code>{
+  "mcp": {
+    "mock-review": {
+      "type": "local",
+      "command": ["&lt;abs&gt;/bin/mockreview", "mcp"],
+      "enabled": true
+    }
+  }
+}
+</code></pre>
 <h3>Commands and reference</h3>
 <p><code>hermes mockreview &lt;command&gt;</code> and the <code>/mockreview</code> slash command (list, open, close, password, settings). The agent uses five
 tools: <code>mock_review_create</code>, <code>mock_review_add_round</code>, <code>mock_review_feedback</code>, <code>mock_review_ack</code> and <code>mock_review_list</code>.</p>
