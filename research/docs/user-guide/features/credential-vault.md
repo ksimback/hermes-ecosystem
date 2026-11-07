@@ -43,6 +43,12 @@ Nothing to enable. If the `op` or `bw` command-line tool is installed and signed
 
 Prefer not to use a detected manager? `hermes vault sources --disable bitwarden`, or the switch in **Settings → Passwords & Logins**.
 
+## Logins saved in your real browser
+
+If you turn on [real-profile browsing](/docs/user-guide/features/browser#real-profile-browsing-use-your-own-logins) (`browser.use_real_profile: true`), the passwords your everyday Chrome / Brave / Edge has saved become a login source too, shown in the Browser bar's key-button picker as **Browser profile — `your browser`** beside the Hermes vault and any 1Password / Bitwarden entries. Pick one and Hermes fills it into the in-app browser just like a vault login.
+
+It is **read-only** and needs no master password: Hermes reads only the site and username from your profile's saved logins, and the password is filled by your own browser (which decrypts its own store) and read back over the debugging protocol at the moment of the fill — the agent never sees it, and it is scrubbed from every tool result and log. Nothing is decrypted or copied out by Hermes, and there is no separate switch: the source appears exactly while real-profile browsing is on, and disappears (along with the profile snapshot) when you turn it off. This is the saved-passwords companion to the real-profile **cookies** that the in-app browser already carries.
+
 ## Paying and filling addresses
 
 Cards and addresses work the same way as logins: saved once (**Settings → Passwords & Logins → Add**, or `hermes vault add`), bound to the checkout site, and filled by the agent on that site only. **Every card fill asks you first**, with the same approval prompt as a dangerous command; declining writes nothing. Headless sessions (cron, webhooks, the API server) cannot confirm and are refused, so a prompt injection that reaches a checkout page can ask, but it cannot spend. Address fills need no confirmation.
