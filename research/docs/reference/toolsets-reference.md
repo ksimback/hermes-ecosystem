@@ -250,12 +250,6 @@ Web search and page content extraction.
 
 Read-only public X discovery via xAI's built-in `x_search` Responses tool. Use the `xurl` skill for authenticated X API reads and account actions. Off by default; opt in via `hermes tools`. Schema only registered when xAI credentials (SuperGrok OAuth or `XAI_API_KEY`) are configured.
 
-`yuanbao`
-
-`yb_query_group_info`, `yb_query_group_members`, `yb_search_sticker`, `yb_send_dm`, `yb_send_sticker`
-
-Yuanbao DM/group actions and sticker search. Registered only on `hermes-yuanbao`.
-
 ## Platform Toolsets
 
 Platform toolsets define the complete tool configuration for a deployment target. Most messaging platforms use the same set as `hermes-cli`:
@@ -344,10 +338,6 @@ Same as `hermes-cli`.
 
 Same as `hermes-cli`.
 
-`hermes-yuanbao`
-
-Adds the five `yb_*` tools (DM/group/sticker) on top of `hermes-cli`.
-
 `hermes-webhook`
 
 Restricted safe subset — only `web_search`, `web_extract`, `vision_analyze`, and `clarify`. Webhook-triggered runs get no terminal, file, or browser access.
@@ -356,7 +346,7 @@ Restricted safe subset — only `web_search`, `web_extract`, `vision_analyze`, a
 
 Internal gateway orchestrator toolset — union of every `hermes-<platform>` toolset; used when the gateway needs to accept any message source.
 
-Platforms provided by plugins get an implicit `hermes-<platform>` bundle that is not part of `hermes-gateway`. For example, `hermes-homeassistant` still resolves once the `homeassistant` catalog plugin is installed, but it is no longer a built-in toolset.
+Platforms provided by plugins get an implicit `hermes-<platform>` bundle that is not part of `hermes-gateway`. For example, `hermes-homeassistant` and `hermes-yuanbao` still resolve once the `homeassistant` / `yuanbao` catalog plugin is installed, but they are no longer built-in toolsets.
 
 ## Dynamic Toolsets
 

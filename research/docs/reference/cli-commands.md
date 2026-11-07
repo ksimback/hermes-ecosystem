@@ -298,6 +298,10 @@ Install or check the Computer Use (cua-driver) backend (macOS/Windows/Linux).
 
 Browse, install, and select [petdex](/docs/user-guide/features/pets) animated pets shown across the CLI, TUI, and desktop app. Subcommands: `list`, `install`, `select`, `show`, `off`, `scale`, `remove`, `doctor`.
 
+`hermes clipboard image`
+
+Write this machine's clipboard image to a file (`--json` for scripts). Device-local: no gateway, no session store.
+
 `hermes sessions`
 
 Browse, export, prune, rename, and delete sessions.
@@ -2933,6 +2937,70 @@ The built-in `computer_use` toolset is the recommended Hermes integration. Regis
 Permission mode and capability-manifest approval belong to runtime launch. In bounded mode Hermes passes Cua's canonical `--capability-manifest` and `--approve-capability-manifest` flags. Every MCP transport owns a private lifecycle session inside its runtime. Public session names label cursor and session state; they do not own or share the runtime.
 
 `hermes update` automatically re-runs the upstream installer at the end of the update if cua-driver is on PATH, so most users will not need to call `--upgrade` manually. Use it when upstream ships a fix you want right now without waiting for the next Hermes update.
+
+## `hermes clipboard`
+
+```
+hermes clipboard image --out PATH [--json]
+```
+
+Writes the clipboard image to `PATH` (created or overwritten) with the same extractor the CLI and TUI use for image paste: macOS `pngpaste`, then `osascript`; Windows PowerShell (`powershell`, then `pwsh`); Linux `powershell.exe` under WSL, then `wl-paste` on Wayland, then `xclip`. The result is a PNG, except that a copied image _file_ (Windows/WSL file drop) is copied as it is. The command reads only this machine's clipboard: it needs no running gateway and reads no session store or profile file, so a client whose gateway runs on another machine calls it where the user is. Under NixOS container mode the command runs inside the managed container, like every `hermes` subcommand, so it cannot see the host's clipboard and `--out` is a path inside the container.
+
+Option
+
+Description
+
+`--out PATH`
+
+File to write (required). Parent directories are created. The image is extracted into a temporary file in the same directory and then renamed onto `PATH`, so on any failure an existing `PATH` is left as it was. An existing file keeps its permission bits (a 0600 temp file stays private); a symlink at `PATH` is replaced by a regular file.
+
+`--json`
+
+Print one JSON object on stdout. Without it, success prints the path and failure prints one stderr line.
+
+Exit code
+
+`reason`
+
+Meaning
+
+`0`
+
+(none, `ok: true`)
+
+The image was written to `path`.
+
+`1`
+
+`no_image`
+
+The clipboard holds no image (or one that could not be converted to PNG).
+
+`3`
+
+`no_tool`
+
+None of this platform's clipboard tools is installed; `tools` lists them in the order tried.
+
+`4`
+
+`write_failed`
+
+`--out` cannot be written: its directory is not writable or cannot be created, an existing `PATH` is a directory or read-only, or the final rename failed.
+
+`2`
+
+(no JSON)
+
+Usage error from the argument parser.
+
+`--json` replies (keys are stable; new keys may be added; read `path` only when `ok` is true):
+
+```
+{"ok": true, "path": "/home/me/paste.png", "mime": "image/png", "bytes": 48213}
+{"ok": false, "reason": "no_image", "message": "the clipboard holds no image"}
+{"ok": false, "reason": "no_tool", "tools": ["wl-paste", "xclip"], "message": "no clipboard tool found; install one of: wl-paste, xclip"}
+```
 
 ## `hermes pets`
 

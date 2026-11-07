@@ -354,7 +354,7 @@ QQ
 
 —
 
-Yuanbao
+Yuanbao (Labs plugin)
 
 ✅
 
@@ -1277,11 +1277,11 @@ QQBot
 
 Full tools including terminal
 
-Yuanbao
+Yuanbao (Labs plugin)
 
 `hermes-yuanbao`
 
-Full tools including terminal
+Full tools + the `yb_*` group/DM/sticker tools from the `yuanbao` Hermes Labs plugin
 
 Microsoft Teams
 
@@ -1508,7 +1508,7 @@ Defaults to `false`. Only platforms whose adapter implements `delete_message` ho
 -   [BlueBubbles Setup (iMessage)](/docs/user-guide/messaging/bluebubbles)
 -   [Photon Setup (iMessage)](/docs/user-guide/messaging/photon)
 -   [QQBot Setup](/docs/user-guide/messaging/qqbot)
--   [Yuanbao Setup](/docs/user-guide/messaging/yuanbao)
+-   [Yuanbao](/docs/user-guide/messaging/yuanbao) (Hermes Labs plugin)
 -   [Microsoft Teams Setup](/docs/user-guide/messaging/teams)
 -   [Teams Meetings Pipeline](/docs/user-guide/messaging/teams-meetings)
 -   [Microsoft Graph Webhook Listener](/docs/user-guide/messaging/msgraph-webhook)

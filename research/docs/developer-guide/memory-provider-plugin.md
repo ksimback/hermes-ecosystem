@@ -149,9 +149,21 @@ Gateway identity fields, included when present.
 
 Active profile name, when available.
 
+`resumed`
+
+`True` when an earlier turn of this session id ran (the agent continues a stored transcript: `--resume`, a gateway chat after a restart, a reopened Desktop/TUI session). `False` for a new session id: a subagent, a cron run, a fresh chat. A `/branch` child seeded with copied history is `True`. A mid-process `/resume` arrives through `on_session_switch()` instead.
+
+`message_count`
+
+Messages already stored for this session id. On TUI/Desktop it can include the prompt being submitted, so a fresh chat may report `1` with `resumed` `False`.
+
 `agent_workspace`, `agent_context`
 
 Runtime agent scope. `agent_workspace` is `hermes`; `agent_context` is `cron` for scheduler runs, `subagent` for `delegate_task` children, else `primary` — skip automatic writes for the non-primary values.
+
+Read optional keys with `kwargs.get(...)`; older Hermes versions omit the newer ones (`resumed`, `message_count`).
+
+`on_turn_start(turn_number, message, **kwargs)` receives `model` (the turn's primary model id at turn start; `""` when unset, a preset name under mixture-of-agents) and the turn's author: `author_id`, `author_name`, `author_is_bot`. Declare only the keywords you need; the manager passes a provider only the ones its signature accepts.
 
 Do not assume `os.getcwd()` identifies the conversation's workspace: one Desktop or gateway backend can serve several sessions. If `cwd` is absent and directory routing is needed, `agent.runtime_cwd.resolve_agent_cwd()` honors the session cwd context, then scoped `terminal.cwd` (carried internally as `TERMINAL_CWD`), then the launch directory. Construction-time workspace metadata does not require changing the process cwd or rebuilding an existing conversation's system prompt.
 

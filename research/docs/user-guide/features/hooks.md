@@ -507,7 +507,7 @@ The contract is deliberately narrow:
 
 -   IDs are global, stable, 1–128 character lowercase identifiers using only letters, numbers, `.`, `_`, and `-`. Duplicate IDs are rejected.
 -   `after_memory` is the only placement anchor. Sections are sorted by ID, rendered after memory/profile context and before session metadata; plugins cannot reorder or replace core prompt content.
--   A callable receives a read-only mapping with `session_id`, `conversation_id`, `model`, `provider`, `platform`, `profile_name`, and `cwd`. It runs **once for a new session**. Its rendered bytes are frozen on compression and recovered from the already-persisted full system prompt after a process restart/resume; plugin state is not re-read for an existing session.
+-   A callable receives a read-only mapping with `session_id`, `conversation_id`, `model`, `provider`, `platform`, `profile_name`, `cwd`, `client` and `client_version` (`client`/`client_version`: the name and version the creating client declared on `session.create`, `""` when it sent none; a self-declared label, so never grant anything on it). It runs **once for a new session**. Its rendered bytes are frozen on compression and recovered from the already-persisted full system prompt after a process restart/resume; plugin state is not re-read for an existing session.
 -   `max_chars` is capped at 4,000 characters. All plugin sections together, including their audit headings, are capped at 8,000 characters and 32 sections. Empty, non-string, oversized, aggregate-over-budget, or raising sections are skipped with a warning; prompt construction continues.
 -   Every accepted section is named in the prompt and logged at session start with its plugin, position, and character count.
 
