@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>garrytan/gbrain — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="GBrain stores explicit facts with their sources, supports corrections and withdrawal, and makes memory available across agents. It starts with keyless memory…">
+<meta name="description" content="GBrain is a self-hostable memory system that stores explicit facts with sources, supports corrections and withdrawal, and shares memory across agents. It…">
 <link rel="canonical" href="https://hermesatlas.com/projects/garrytan/gbrain">
 <meta property="og:title" content="garrytan/gbrain — Hermes Atlas">
-<meta property="og:description" content="GBrain stores explicit facts with their sources, supports corrections and withdrawal, and makes memory available across agents. It starts with keyless memory…">
+<meta property="og:description" content="GBrain is a self-hostable memory system that stores explicit facts with sources, supports corrections and withdrawal, and shares memory across agents. It…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/garrytan/gbrain">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="garrytan/gbrain — Hermes Atlas">
-<meta name="twitter:description" content="GBrain stores explicit facts with their sources, supports corrections and withdrawal, and makes memory available across agents. It starts with keyless memory…">
+<meta name="twitter:description" content="GBrain is a self-hostable memory system that stores explicit facts with sources, supports corrections and withdrawal, and shares memory across agents. It…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=gbrain&amp;subtitle=Garry%27s+Opinionated+OpenClaw%2FHermes+Agent+Brain&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/garrytan/gbrain#software",
   "name": "gbrain",
-  "description": "GBrain stores explicit facts with their sources, supports corrections and withdrawal, and makes memory available across agents. It starts with keyless memory and keyword retrieval, with optional semantic search, synthesis, and background enrichment; it is MIT-licensed and can be self-hosted.",
+  "description": "GBrain is a self-hostable memory system that stores explicit facts with sources, supports corrections and withdrawal, and shares memory across agents. It offers keyword retrieval by default, with optional semantic search, synthesis, and background enrichment; it can also connect to existing agents through MCP.",
   "url": "https://hermesatlas.com/projects/garrytan/gbrain",
   "codeRepository": "https://github.com/garrytan/gbrain",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "garrytan",
     "url": "https://github.com/garrytan"
   },
-  "dateModified": "2026-11-07T06:13:50.000Z",
+  "dateModified": "2026-11-07T13:19:28.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 31599
+    "userInteractionCount": 31607
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">GBrain stores explicit facts with their sources, supports corrections and withdrawal, and makes memory available across agents. It starts with keyless memory and keyword retrieval, with optional semantic search, synthesis, and background enrichment; it is MIT-licensed and can be self-hosted.</p>
+    <p class="summary-text">GBrain is a self-hostable memory system that stores explicit facts with sources, supports corrections and withdrawal, and shares memory across agents. It offers keyword retrieval by default, with optional semantic search, synthesis, and background enrichment; it can also connect to existing agents through MCP.</p>
     <ul class="summary-highlights">
       <li>Stores facts with sources and supports corrections and withdrawal</li>
       <li>Shares memory across agents</li>
-      <li>Offers optional semantic search and synthesis</li>
+      <li>Optional semantic search, synthesis, and background enrichment</li>
     </ul>
   </div>
 </section>
@@ -235,7 +235,7 @@ gbrainio terminal connect      # in a new terminal
 gbrainio workspace new         # pick a plan in the browser
 curl -fsSL https://bun.sh/install | bash   # skip if Bun 1.4.4+ is installed
 export PATH="$HOME/.bun/bin:$PATH"
-bun install -g github:garrytan/gbrain#latest-stable   # the gbrain CLI only; no local brain
+bun install -g github:garrytan/gbrain#stable   # the gbrain CLI only; no local brain
 # Claude Code (an existing gbrain entry is kept):
 (claude mcp get gbrain &gt;/dev/null 2&gt;&amp;1 || claude mcp add --transport http --scope user gbrain https://gbrain.io/mcp) &amp;&amp; gbrain setup claude-code --instructions-only
 # Codex (an existing gbrain entry is kept):
@@ -250,12 +250,13 @@ bun install -g github:garrytan/gbrain#latest-stable   # the gbrain CLI only; no 
 <p>[!WARNING]
 <strong>GBrain is NOT distributed on npm.</strong> The npm <code>gbrain</code> package is unrelated and
 can shadow the real binary, so never run <code>npm install -g gbrain</code> or
-<code>bun add -g gbrain</code>. Install only via <code>bun install -g github:garrytan/gbrain#latest-stable</code>
-or <code>git clone</code> + <code>bun install &amp;&amp; bun link</code>. Installed by mistake? <code>gbrain doctor</code> gives the fix.
+<code>bun add -g gbrain</code>. Install only via <code>bun install -g github:garrytan/gbrain#stable</code>
+(the soaked stable channel; <code>#latest-stable</code> is the alpha line with every release)
+or <code>git clone --branch stable</code> + <code>bun install &amp;&amp; bun link</code>. Installed by mistake? <code>gbrain doctor</code> gives the fix.
 Schema not migrated (<a href="https://github.com/garrytan/gbrain/issues/218">#218</a>)? Run
 <code>gbrain apply-migrations --yes --no-autopilot-install</code>; if it exits 1, run <code>gbrain doctor --json</code>, not another <code>--yes</code> (<code>wedged</code>: relay its fix).</p>
 </blockquote>
-<pre><code class="language-bash">bun install -g github:garrytan/gbrain#latest-stable
+<pre><code class="language-bash">bun install -g github:garrytan/gbrain#stable
 gbrain setup claude-code              # or: gbrain setup codex
 gbrain init --pglite --no-embedding   # any other harness, or no agent
 </code></pre>
@@ -275,7 +276,7 @@ gbrain doctor                         # verify health
 <h4>Optional: a new personal agent</h4>
 <p>To have GBrain create a <strong>new persistent personal agent</strong> with identity files and its own private GitHub repo, open Codex (CLI or ChatGPT desktop) or Claude Code in a new, empty folder and paste:</p>
 <pre><code>Read and follow every step of:
-https://raw.githubusercontent.com/garrytan/gbrain/latest-stable/BOOTSTRAP_FOR_AGENTS.md
+https://raw.githubusercontent.com/garrytan/gbrain/stable/BOOTSTRAP_FOR_AGENTS.md
 Goal: set yourself up as my persistent personal agent in this folder, with gbrain
 as your memory. Interview me before writing any identity file — never invent
 answers. Ask before anything destructive. You are not done until
@@ -450,11 +451,11 @@ for installation, data flow, per-harness limitations, and removal.</p>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 68.5K</div>
+        <div class="stars">★ 68.6K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 59.5K</div>
+        <div class="stars">★ 59.6K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
