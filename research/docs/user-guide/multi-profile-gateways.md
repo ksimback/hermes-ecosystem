@@ -460,7 +460,7 @@ The profile's own `.env` / `config.yaml` / `<home>/cache`
 
 Documented default — never the launch profile's cached value or its credentials
 
-Session-search knobs (`sessions.cjk_fts`, `sessions.search_slow_ms`)
+Session-search knob (`sessions.search_slow_ms`)
 
 The profile's `config.yaml`
 
