@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>armelhbobdad/bmad-module-skill-forge — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
-<meta name="description" content="Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents. It can generate skills through…">
+<meta name="description" content="Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents, with citations to source lines at…">
 <link rel="canonical" href="https://hermesatlas.com/projects/armelhbobdad/bmad-module-skill-forge">
 <meta property="og:title" content="armelhbobdad/bmad-module-skill-forge — Hermes Atlas">
-<meta property="og:description" content="Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents. It can generate skills through…">
+<meta property="og:description" content="Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents, with citations to source lines at…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/armelhbobdad/bmad-module-skill-forge">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="armelhbobdad/bmad-module-skill-forge — Hermes Atlas">
-<meta name="twitter:description" content="Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents. It can generate skills through…">
+<meta name="twitter:description" content="Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents, with citations to source lines at…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=bmad-module-skill-forge&amp;subtitle=A+standalone+BMAD+module+that+transforms+code+repositories%2C+documentation+websites%2C+and+developer+discourse+into+agentskills.io-compliant%2C+version-pinned%2C+provenance-backed+agent+s&amp;kind=project+%C2%B7+skills">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/armelhbobdad/bmad-module-skill-forge#software",
   "name": "bmad-module-skill-forge",
-  "description": "Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents. It can generate skills through workflows that range from a quick, best-effort path to a tested, provenance-traced path, with source citations when available.",
+  "description": "Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents, with citations to source lines at pinned commits or to documentation URLs. It offers workflows to generate, test, and export skills, including a quick path without a provenance map and a fuller workflow with testing and provenance.",
   "url": "https://hermesatlas.com/projects/armelhbobdad/bmad-module-skill-forge",
   "codeRepository": "https://github.com/armelhbobdad/bmad-module-skill-forge",
   "applicationCategory": "DeveloperApplication",
@@ -46,7 +46,7 @@
     "name": "armelhbobdad",
     "url": "https://github.com/armelhbobdad"
   },
-  "dateModified": "2026-11-06T18:43:03.000Z",
+  "dateModified": "2026-11-07T06:07:07.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -123,7 +123,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     
     
-    <span><span class="meta-label">updated</span>2026-11-06</span>
+    <span><span class="meta-label">updated</span>2026-11-07</span>
   </div>
 
   <div class="actions">
@@ -147,11 +147,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents. It can generate skills through workflows that range from a quick, best-effort path to a tested, provenance-traced path, with source citations when available.</p>
+    <p class="summary-text">Skill Forge analyzes code repositories, documentation, and developer discourse to create instruction files for AI agents, with citations to source lines at pinned commits or to documentation URLs. It offers workflows to generate, test, and export skills, including a quick path without a provenance map and a fuller workflow with testing and provenance.</p>
     <ul class="summary-highlights">
-      <li>Supports repository and documentation inputs</li>
-      <li>Offers automated and step-by-step skill workflows</li>
-      <li>Can produce multiple scoped skills from one source</li>
+      <li>Creates agent instruction files from code and documentation</li>
+      <li>Can cite source lines or documentation URLs</li>
+      <li>Includes workflows to test and export skills</li>
     </ul>
   </div>
 </section>
@@ -303,7 +303,7 @@ results = await cognee.search(
 </ol>
 <p>For docs-only skills, the audit shape is the same: <code>provenance-map.json</code> still lists every symbol, but entries cite <code>[EXT:{url}]</code> instead of <code>file:line@SHA</code>, and step 3 becomes "open the doc URL and confirm the signature matches."</p>
 <p>If it doesn't, that's a bug. Open an issue and SKF will republish the skill with a fresh provenance map (a new commit SHA for source skills, a fresh fetch for docs-only). Falsifiability isn't a feature; it's the whole deal.</p>
-<p><strong>Reference output: <a href="https://github.com/armelhbobdad/oh-my-skills">oh-my-skills</a>.</strong> It holds four Deep-tier skills compiled by SKF (cocoindex, cognee, Storybook v10, uitripled), each shipping its full audit trail in-repo. Scores range from 99.0% to 99.49%. Every claim walks to an upstream line in under 60 seconds. Serves as both the worked example for this section and ongoing proof that the pipeline does what it says.</p>
+<p><strong>Reference output: <a href="https://github.com/armelhbobdad/oh-my-skills">oh-my-skills</a>.</strong> It holds four Deep-tier skills compiled by SKF (cocoindex, cognee, Storybook v10, uitripled), each shipping its full audit trail in-repo. On a strict Skill Forge 4.0.0 test of the version each one ships, two pass (cocoindex at 100%, cognee at 99%) and two are blocked (uitripled, Storybook); every report is published, failing ones included. Every claim walks to an upstream line in under 60 seconds. Serves as both the worked example for this section and a public record of what the pipeline gets right and where its test still falls short.</p>
 <h3>Help SKF Improve</h3>
 <p>Every workflow ends with a health check. If it finds a problem in SKF's own instructions, it shows you the findings and, only if you approve, files bug reports as GitHub issues. Duplicates are detected, so reporting a known problem again is safe. Friction notes and gaps go to a local queue unless you choose to submit them too. <strong>Please let workflows run to completion</strong>, or <a href="https://github.com/armelhbobdad/bmad-module-skill-forge/issues/new/choose">open an issue</a> directly. <a href="https://armelhbobdad.github.io/bmad-module-skill-forge/workflows/#terminal-step-health-check">Full details →</a></p>
 <h3>Learn More</h3>

@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>apelabs-dev/hermes-mock-review — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="mock-review is a Hermes plugin for reviewing UI and design options on a board. Reviewers can approve, request changes, or skip decisions, add notes and pins,…">
+<meta name="description" content="mock-review is a Hermes plugin for reviewing UI and design options through shareable review boards. Reviewers can approve, request changes, or skip decisions,…">
 <link rel="canonical" href="https://hermesatlas.com/projects/apelabs-dev/hermes-mock-review">
 <meta property="og:title" content="apelabs-dev/hermes-mock-review — Hermes Atlas">
-<meta property="og:description" content="mock-review is a Hermes plugin for reviewing UI and design options on a board. Reviewers can approve, request changes, or skip decisions, add notes and pins,…">
+<meta property="og:description" content="mock-review is a Hermes plugin for reviewing UI and design options through shareable review boards. Reviewers can approve, request changes, or skip decisions,…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/apelabs-dev/hermes-mock-review">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="apelabs-dev/hermes-mock-review — Hermes Atlas">
-<meta name="twitter:description" content="mock-review is a Hermes plugin for reviewing UI and design options on a board. Reviewers can approve, request changes, or skip decisions, add notes and pins,…">
+<meta name="twitter:description" content="mock-review is a Hermes plugin for reviewing UI and design options through shareable review boards. Reviewers can approve, request changes, or skip decisions,…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-mock-review&amp;subtitle=Review+boards+for+UI+mockups%2C+as+a+Hermes+plugin%3A+mark+decisions%2C+pin+comments%2C+press+Send%2C+and+your+agent+wakes+up+with+the+feedback.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/apelabs-dev/hermes-mock-review#software",
   "name": "hermes-mock-review",
-  "description": "mock-review is a Hermes plugin for reviewing UI and design options on a board. Reviewers can approve, request changes, or skip decisions, add notes and pins, then send feedback to wake the agent in the originating chat. Boards display mocks at desktop, tablet, and phone widths in light and dark modes.",
+  "description": "mock-review is a Hermes plugin for reviewing UI and design options through shareable review boards. Reviewers can approve, request changes, or skip decisions, add notes and pins, then send feedback that wakes the agent in the originating chat. Boards display mocks at desktop, tablet, and phone widths in light and dark modes.",
   "url": "https://hermesatlas.com/projects/apelabs-dev/hermes-mock-review",
   "codeRepository": "https://github.com/apelabs-dev/hermes-mock-review",
   "applicationCategory": "BrowserApplication",
@@ -47,13 +47,13 @@
     "name": "apelabs-dev",
     "url": "https://github.com/apelabs-dev"
   },
-  "dateModified": "2026-11-06T19:25:50.000Z",
+  "dateModified": "2026-11-06T23:24:59.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 3
+    "userInteractionCount": 5
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -120,7 +120,7 @@
   <p class="project-desc">Review boards for UI mockups, as a Hermes plugin: mark decisions, pin comments, press Send, and your agent wakes up with the feedback.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 3</span>
+    <span class="stars">★ 5</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">mock-review is a Hermes plugin for reviewing UI and design options on a board. Reviewers can approve, request changes, or skip decisions, add notes and pins, then send feedback to wake the agent in the originating chat. Boards display mocks at desktop, tablet, and phone widths in light and dark modes.</p>
+    <p class="summary-text">mock-review is a Hermes plugin for reviewing UI and design options through shareable review boards. Reviewers can approve, request changes, or skip decisions, add notes and pins, then send feedback that wakes the agent in the originating chat. Boards display mocks at desktop, tablet, and phone widths in light and dark modes.</p>
     <ul class="summary-highlights">
-      <li>Supports decision marks, notes, and pins on mockups</li>
-      <li>Sends feedback to the originating chat</li>
-      <li>Offers local, tailnet, and here.now hosting</li>
+      <li>Review boards support decision marks, notes, and pinned comments.</li>
+      <li>Sending feedback wakes the agent in the originating chat.</li>
+      <li>Boards render mocks at three widths and in light and dark modes.</li>
     </ul>
   </div>
 </section>
@@ -251,8 +251,9 @@ itself. The canonical command is <code>&lt;abs&gt;/bin/mockreview mcp</code> (th
 <a href="https://github.com/apelabs-dev/hermes-mock-review/blob/main/docs/mcp.md">docs/mcp.md</a>.</p>
 <p>Wake is off for MCP boards by default, because an external CLI has no Hermes session to wake: the agent reads the marks
 with <code>mock_review_feedback</code>. Add <code>--wake</code> plus <code>--platform</code> and <code>--chat-id</code> (or <code>origin_platform</code> and <code>origin_chat_id</code>
-on one call) only when the session context names a real chat. A <code>local</code> link opens on the computer running the board;
-use <code>herenow</code> (password protected by default) or <code>tailnet</code> to open it on a phone.</p>
+on one call) only when the session context names a real chat. A receiver of your own can be supplied through
+<code>MOCKREVIEW_WEBHOOK_URL</code>; see the receiver contract in <a href="https://github.com/apelabs-dev/hermes-mock-review/blob/main/docs/mcp.md#wake-without-hermes">docs/mcp.md</a>. A <code>local</code> link
+opens on the computer running the board; use <code>herenow</code> (password protected by default) or <code>tailnet</code> to open it on a phone.</p>
 <p>Claude Code, project scope (use <code>--mcp-config</code> with a JSON file for a one-off):</p>
 <pre><code>claude mcp add --transport stdio --scope project mock-review -- &lt;abs&gt;/bin/mockreview mcp
 </code></pre>
@@ -264,10 +265,12 @@ args = ["&lt;abs&gt;/bin/mockreview", "mcp"]
 <p>OpenCode, in <code>opencode.json</code>:</p>
 <pre><code>{
   "mcp": {
-    "mock-review": {
-      "type": "local",
-      "command": ["&lt;abs&gt;/bin/mockreview", "mcp"],
-      "enabled": true
+    "servers": {
+      "mock-review": {
+        "type": "local",
+        "command": ["&lt;abs&gt;/bin/mockreview", "mcp"],
+        "disabled": false
+      }
     }
   }
 }
@@ -306,7 +309,8 @@ use the same signing secret as the wake-up.</li>
 reads submitted feedback using your key. It publishes through the official here-now skill's <code>publish.sh</code>.</li>
 <li>Nothing else. There is no telemetry, analytics or update check.</li>
 </ul>
-<p>Credentials. The plugin reads two secrets through Hermes's secret scope and keeps none of its own:
+<p>Credentials. The plugin reads two secrets through Hermes's secret scope, or from the process environment when it runs
+without Hermes (the stdio MCP server), and keeps none of its own:
 <code>MOCKREVIEW_WEBHOOK_SECRET</code> (signs the wake-up request; setup generates it and stores it with <code>hermes config set</code>) and
 <code>HERENOW_API_KEY</code> (optional, here.now hosting only). Both are declared as optional secrets in <code>plugin.yaml</code>.</p>
 <p>Shell commands. <code>bash &lt;here-now skill&gt;/scripts/publish.sh</code> publishes a here.now review, with <code>HERENOW_API_KEY</code> passed in
@@ -356,7 +360,7 @@ See <a href="https://github.com/apelabs-dev/hermes-mock-review/blob/main/docs/ho
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
-        <div class="stars">★ 441</div>
+        <div class="stars">★ 442</div>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
