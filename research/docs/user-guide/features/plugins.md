@@ -462,7 +462,7 @@ Shipped hooks
 
 **Observer**
 
-`post_tool_call`, `post_llm_call`, `pre_api_request`, `post_api_request`, `api_request_error`, `pre_auxiliary_call`, `post_auxiliary_call`, `on_stream_start`, `on_stream_delta`, `on_stream_end`, `on_interim_message`, `on_session_start`, `on_session_end`, `on_session_finalize`, `on_session_reset`, `post_compaction`, `on_session_delete`, `agent_loop_stopped`, `on_skill_lifecycle`, `subagent_start`, `subagent_stop`, `pre_approval_request`, `post_approval_response`, `on_human_input_request`, `on_human_input_resolved`, `pre_command`, `kanban_task_claimed`, `kanban_task_completed`, `kanban_task_blocked`
+`post_tool_call`, `post_llm_call`, `pre_api_request`, `post_api_request`, `api_request_error`, `pre_auxiliary_call`, `post_auxiliary_call`, `on_stream_start`, `on_stream_delta`, `on_stream_end`, `on_interim_message`, `on_session_start`, `on_session_end`, `on_session_finalize`, `on_session_reset`, `post_compaction`, `post_curator_run`, `on_session_delete`, `agent_loop_stopped`, `on_skill_lifecycle`, `subagent_start`, `subagent_stop`, `pre_approval_request`, `post_approval_response`, `on_human_input_request`, `on_human_input_resolved`, `pre_command`, `kanban_task_claimed`, `kanban_task_completed`, `kanban_task_blocked`
 
 These categories describe current behavior rather than defining future naming rules. Plugin middleware remains a separate registry/surface.
 
@@ -1156,12 +1156,12 @@ ctx.inject_message(
 
 **Signature:** `ctx.inject_message(content: str, role: str = "user", *, session_key: str | None = None, origin: Mapping[str, Any] | None = None) -> bool`
 
-When the classic CLI runs plugins in its own process (no gateway session):
+Plugins run in the gateway on every local surface (classic CLI, TUI and Desktop), so an injected message never cancels work in progress:
 
--   If the agent is **idle** (waiting for user input), the message is queued as the next input and starts a new turn.
--   If the agent is **mid-turn** (actively running), the message interrupts the current operation — the same as a user typing a new message and pressing Enter.
+-   If the target session is **idle**, the message starts a new turn.
+-   If it is **mid-turn**, the message waits in that session's queue and runs as the next turn after the current one finishes; the running tool is not interrupted.
 -   For non-`"user"` roles, the content is prefixed with `[role]` (e.g. `[system] ...`).
--   Returns `True` if the message was queued successfully.
+-   Returns `True` when a host accepted the message (see the per-host rules below).
 
 Without a session key (`session_key` and `origin` both omitted), when the plugin runs in the gateway (or its plugin host) — which is where plugins run for classic CLI, TUI and Desktop sessions — the gateway picks the chat:
 

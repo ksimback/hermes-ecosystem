@@ -1467,6 +1467,14 @@ A compaction committed (any path: auto, `/compress`, gateway, Codex, micro, prun
 
 ignored
 
+[`post_curator_run`](/docs/user-guide/features/hooks#post_curator_run)
+
+A curator pass wrote its report directory
+
+`run_dir: str, run_json_path: str, report_md_path: str, dry_run: bool`
+
+ignored
+
 [`gateway_platform_event`](/docs/user-guide/features/hooks#gateway_platform_event)
 
 An authorized platform-native event is normalized at the gateway boundary (Telegram reactions currently)

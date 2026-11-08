@@ -777,6 +777,16 @@ Once per committed compaction, on every path: automatic and manual compaction in
 
 Identifiers and counts only.
 
+`post_curator_run`
+
+Observer
+
+After a curator pass wrote its per-run report (`logs/curator/<run>/run.json` + `REPORT.md`), in the process that ran the pass. Return ignored.
+
+`run_dir`, `run_json_path`, `report_md_path`, `dry_run`
+
+Local filesystem paths; the report names skills.
+
 `agent_loop_stopped`
 
 Observer
@@ -2007,6 +2017,50 @@ Messages before minus after; `None` when unknown.
 **Return value:** Ignored. A callback that raises is logged and skipped; the compaction is already committed and is unaffected. Callbacks are bounded by `plugins.hook_callback_timeout`.
 
 **Use cases:** Re-inject session context after compaction, refresh an external index, count compactions.
+
+### `post_curator_run`
+
+Fires once after a curator pass has written its per-run report directory, so a plugin or shell hook can react to what the curator changed (route new skills to another profile, override an archival, write an audit log) instead of polling `logs/curator/`.
+
+**Callback signature:**
+
+```
+def my_callback(run_dir: str, run_json_path: str, report_md_path: str, dry_run: bool, **kwargs):
+```
+
+Parameter
+
+Type
+
+Description
+
+`run_dir`
+
+`str`
+
+The run's report directory under the profile's `logs/curator/`.
+
+`run_json_path`
+
+`str`
+
+`run.json`, the machine-readable record (added, archived, consolidated, pruned, state transitions, cron rewrites).
+
+`report_md_path`
+
+`str`
+
+`REPORT.md`, the human-readable report.
+
+`dry_run`
+
+`bool`
+
+`True` for a preview (`hermes curator run --dry-run`): the report lists what WOULD change and nothing was archived or rewritten. Check it before acting on the report.
+
+**Fires:** in the process that ran the pass (the gateway's scheduled curator tick, or `hermes curator run`), under that profile, after both files are written. A pass whose report directory could not be created fires nothing.
+
+**Return value:** Ignored. A callback that raises is logged and skipped; the curator pass is unaffected.
 
 ### `agent_loop_stopped`
 
