@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>arcmira/mcp — Hermes Agent Integrations &amp; Bridges | Hermes Atlas</title>
-<meta name="description" content="Arcmira MCP lets AI agents search YouTube and podcast transcripts for quotes, mentions, appearances, recommendations, sponsors, and monitoring. Its remote MCP…">
+<meta name="description" content="Arcmira MCP lets AI agents search YouTube and podcast transcripts for quotes, speaker attributions, and timestamped source links. Its tools also support…">
 <link rel="canonical" href="https://hermesatlas.com/projects/arcmira/mcp">
 <meta property="og:title" content="arcmira/mcp — Hermes Atlas">
-<meta property="og:description" content="Arcmira MCP lets AI agents search YouTube and podcast transcripts for quotes, mentions, appearances, recommendations, sponsors, and monitoring. Its remote MCP…">
+<meta property="og:description" content="Arcmira MCP lets AI agents search YouTube and podcast transcripts for quotes, speaker attributions, and timestamped source links. Its tools also support…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/arcmira/mcp">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="arcmira/mcp — Hermes Atlas">
-<meta name="twitter:description" content="Arcmira MCP lets AI agents search YouTube and podcast transcripts for quotes, mentions, appearances, recommendations, sponsors, and monitoring. Its remote MCP…">
+<meta name="twitter:description" content="Arcmira MCP lets AI agents search YouTube and podcast transcripts for quotes, speaker attributions, and timestamped source links. Its tools also support…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=mcp&amp;subtitle=YouTube+transcript+search+and+monitoring+for+your+AI%3A+exact+quotes%2C+full+transcripts+and+speakers.&amp;kind=project+%C2%B7+integrations">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/arcmira/mcp#software",
   "name": "mcp",
-  "description": "Arcmira MCP lets AI agents search YouTube and podcast transcripts for quotes, mentions, appearances, recommendations, sponsors, and monitoring. Its remote MCP server provides tools for transcript searches and related research, with sign-in or API-key authentication.",
+  "description": "Arcmira MCP lets AI agents search YouTube and podcast transcripts for quotes, speaker attributions, and timestamped source links. Its tools also support transcript context, entity mentions, appearance counts, mention momentum, recommendations, sponsors, and monitoring; users can connect through MCP sign-in or an account key.",
   "url": "https://hermesatlas.com/projects/arcmira/mcp",
   "codeRepository": "https://github.com/arcmira/mcp",
   "applicationCategory": "CommunicationApplication",
@@ -47,7 +47,7 @@
     "name": "arcmira",
     "url": "https://github.com/arcmira"
   },
-  "dateModified": "2026-11-08T07:21:05.000Z",
+  "dateModified": "2026-11-08T08:21:01.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">293·repos</span>
+    <span id="meta-count">294·repos</span>
     <span id="meta-version">hermes·v0.21.5</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Arcmira MCP lets AI agents search YouTube and podcast transcripts for quotes, mentions, appearances, recommendations, sponsors, and monitoring. Its remote MCP server provides tools for transcript searches and related research, with sign-in or API-key authentication.</p>
+    <p class="summary-text">Arcmira MCP lets AI agents search YouTube and podcast transcripts for quotes, speaker attributions, and timestamped source links. Its tools also support transcript context, entity mentions, appearance counts, mention momentum, recommendations, sponsors, and monitoring; users can connect through MCP sign-in or an account key.</p>
     <ul class="summary-highlights">
-      <li>Search transcripts for quotes with timestamps and speaker attribution when available.</li>
-      <li>Find mentions, appearances, recommendations, and recurring sponsors.</li>
-      <li>Create and update monitoring through the MCP write tool.</li>
+      <li>Search transcripts and inspect surrounding exchanges.</li>
+      <li>Find mentions, appearances, recommendations, and sponsors.</li>
+      <li>Set up monitoring for tracked entities.</li>
     </ul>
   </div>
 </section>
@@ -305,7 +305,7 @@ curl -X POST "https://api.arcmira.com/v1/signups/verify" \
 <p><code>https://mcp.arcmira.com/mcp/apps</code> serves only <code>arcmira_youtube_search</code>, <code>arcmira_youtube_transcript</code> and <code>arcmira_feedback</code>, on the same sign-in, for directories that take named tools and no program runner. It sends no server instructions.</p>
 <p>Every tool also takes an optional <code>intent</code>, at most 300 characters: the user's request in a few words. A host that omits it loses nothing. See <a href="#what-we-log">What we log</a>.</p>
 <p><code>arcmira_describe</code>, <code>arcmira_youtube_search</code> and <code>arcmira_youtube_transcript</code> are annotated read-only and idempotent. The two plain tools never start a transcription: <code>arcmira_youtube_transcript</code> sends no <code>quality</code>, so a read uses the account's default, and a Premium default reads only transcripts the account already owns. Both program tools can start Premium transcription, which uses credits from the plan and then the on-demand budget, so neither is read-only. Only <code>arcmira_execute_write</code> is destructive, because it can overwrite monitor settings and pause monitors; a Premium read only adds. Both can request arbitrary public videos and carry open-world annotations. Feedback adds a stored record and is an additive write. These labels describe possible effects; the <code>execute_read</code> name identifies the client access level, not a guarantee of no side effects.</p>
-<p>Metered reads use credits from your plan, then the on-demand budget you set in the dashboard. Arcmira enforces that budget on every read, and no tool takes a spending amount. A search uses 4 credits per passage it returns past the first 5, a captions read 4 credits per started 15 minutes of its window, and a Premium transcript 300 credits per started 15 minutes of the whole video. A Premium read that starts a transcription reports its <code>charge</code> (credits, and whether they came from the plan, on-demand usage, or both). <code>arcmira_youtube_search</code> uses what a search uses. <code>arcmira_youtube_transcript</code> reads the whole video on each call and windows it on the server: the first call is a captions read of the whole video, or nothing for a transcript the account owns, and every later window of the same video and language repeats that read within the API's seven-day dedupe, which uses no credits. Its <code>rows_billed</code> says what the call used, in rows of 4 credits. <code>arcmira.quote(video)</code> returns that price beforehand and uses no credits; it is a price check, not a spoken quote. When the plan or budget blocks a read, the tool result is an error (<code>isError: true</code>) with the API's <code>code</code> (<code>paid_plan_required</code>, <code>quota_exceeded</code>, <code>spend_limit_exceeded</code>, <code>member_limit</code>, <code>fair_use_cap</code> or <code>on_demand_paused</code>), a <code>message</code> that states what was reached and what lifts it, and <code>unlock</code> when a plan or setting change lifts it. The server gives the agent these facts, not a script for what to say.</p>
+<p>Metered reads use credits from your plan, then the on-demand budget you set in the dashboard. Arcmira enforces that budget on every read, and no tool takes a spending amount. A search uses 4 credits per passage it returns past the first 5, a captions read 4 credits per started 15 minutes of its window, and a Premium transcript 300 credits per started 15 minutes of the whole video. A Premium read that starts a transcription reports its <code>charge</code> (credits, and whether they came from the plan, on-demand usage, or both). <code>arcmira_youtube_search</code> uses what a search uses. <code>arcmira_youtube_transcript</code> reads the whole video on each call and windows it on the server: the first call is a captions read of the whole video, or nothing for a transcript the account owns, and every later window of the same video and language repeats that read within the API's seven-day dedupe, which uses no credits. Its <code>rows_billed</code> says what the call used, in rows of 4 credits. <code>arcmira.price(video)</code> returns that price beforehand and uses no credits. When the plan or budget blocks a read, the tool result is an error (<code>isError: true</code>) with the API's <code>code</code> (<code>paid_plan_required</code>, <code>quota_exceeded</code>, <code>spend_limit_exceeded</code>, <code>member_limit</code>, <code>fair_use_cap</code> or <code>on_demand_paused</code>), a <code>message</code> that states what was reached and what lifts it, and <code>unlock</code> when a plan or setting change lifts it. The server gives the agent these facts, not a script for what to say.</p>
 <p>A Premium transcript is one read in <code>arcmira_execute_read</code>:</p>
 <pre><code class="language-javascript">const t = await arcmira.transcript("cdLeJU_1UH8", { quality: "premium" });
 return t.state === "ready" ? t.lines : { state: t.state, eta_seconds: t.eta_seconds, note: t.note };
@@ -367,9 +367,9 @@ return t.state === "ready" ? t.lines : { state: t.state, eta_seconds: t.eta_seco
 <td>What shows talk about, what they share, what one episode mentions. <code>mode</code>: <code>mentions</code>, <code>appearances</code>, or <code>both</code>; <code>limit</code>: 1 to 40.</td>
 </tr>
 <tr>
-<td><code>arcmira.quote(videoIdOrUrl)</code></td>
+<td><code>arcmira.price(videoIdOrUrl)</code></td>
 <td><code>GET /v1/transcripts/{video_id}/quote</code></td>
-<td>A price check, not a spoken quote: the credits a Premium read of the whole video would use, and any on-demand cents. Uses no credits</td>
+<td>The credits a Premium read of the whole video would use, and any on-demand cents. Uses no credits. <code>arcmira.quote</code> is the old name, kept until the next release</td>
 </tr>
 <tr>
 <td><code>arcmira.status({ channelId? })</code></td>
