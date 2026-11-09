@@ -128,7 +128,7 @@ Clones are built in a hidden staging directory beside `profiles/` and published 
 
 Honcho memory + profiles
 
-When Honcho is enabled, clone operations automatically create a dedicated AI peer for the new profile while sharing the same user workspace. Each profile builds its own observations and identity. See [Honcho -- Multi-agent / Profiles](/docs/user-guide/features/memory-providers#honcho) for details.
+Memory providers get a hook when a profile that selects them is created or renamed. Honcho (1.2.0 and later) uses it to give a cloned profile its own AI peer in the same user workspace, and keeps that peer on rename; for an imported profile, run `hermes honcho sync`. Each profile builds its own observations and identity. See [Honcho -- Multi-agent / Profiles](/docs/user-guide/features/memory-providers#honcho) for details.
 
 ## Using profiles
 

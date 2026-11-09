@@ -104,7 +104,7 @@ The `default` package adds ~700 MB to the closure. If you only need messaging pl
 git clone https://github.com/NousResearch/hermes-agent.git
 cd hermes-agent
 nix develop
-hermes setup
+hermes-checkout setup
 ```
 
 * * *
@@ -1222,12 +1222,14 @@ A build-time collision check prevents plugin packages from shadowing core hermes
 
 The flake provides an editable Python venv with the `dev` dependency group, running on the interpreter `pm/lock.json` pins. `HERMES_PYTHON` and `VIRTUAL_ENV` point at it, and it needs no `PYTHONPATH`. It does not install Python dependencies into a repository-local `.venv`. The shell also provides Node.js and runtime tools. Its pnpm hook refreshes JS workspaces when their inputs change.
 
+The shell does not change which `hermes` runs. `hermes` stays your installed Hermes, so you can keep using it while you work on the checkout. `hermes-checkout` runs this checkout's code and takes the same arguments. Give it a separate `HERMES_HOME` when a change touches stored state, because both commands read the same one by default.
+
 ```
 cd hermes-agent
 nix develop
 "$HERMES_PYTHON" -c "import sys; print(sys.executable); print(sys.version)"
-hermes setup
-hermes chat
+hermes-checkout --version
+HERMES_HOME="$PWD/.scratch/home" hermes-checkout chat
 ```
 
 ### direnv (Recommended)
