@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>electricsheephq/lcm-x — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="LCM-X is a lossless context memory extension for Hermes Agent that stores raw messages in SQLite and compacts older context into a hierarchical summary DAG. It…">
+<meta name="description" content="LCM-X is a context engine for Hermes Agent that stores raw messages in SQLite and compacts older context into a hierarchical summary DAG. It keeps the active…">
 <link rel="canonical" href="https://hermesatlas.com/projects/electricsheephq/lcm-x">
 <meta property="og:title" content="electricsheephq/lcm-x — Hermes Atlas">
-<meta property="og:description" content="LCM-X is a lossless context memory extension for Hermes Agent that stores raw messages in SQLite and compacts older context into a hierarchical summary DAG. It…">
+<meta property="og:description" content="LCM-X is a context engine for Hermes Agent that stores raw messages in SQLite and compacts older context into a hierarchical summary DAG. It keeps the active…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/electricsheephq/lcm-x">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="electricsheephq/lcm-x — Hermes Atlas">
-<meta name="twitter:description" content="LCM-X is a lossless context memory extension for Hermes Agent that stores raw messages in SQLite and compacts older context into a hierarchical summary DAG. It…">
+<meta name="twitter:description" content="LCM-X is a context engine for Hermes Agent that stores raw messages in SQLite and compacts older context into a hierarchical summary DAG. It keeps the active…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=lcm-x&amp;subtitle=LCM-X+%E2%80%94+Lossless+Context+Memory+eXtension&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/electricsheephq/lcm-x#software",
   "name": "lcm-x",
-  "description": "LCM-X is a lossless context memory extension for Hermes Agent that stores raw messages in SQLite and compacts older context into a hierarchical summary DAG. It keeps active context bounded and provides tools to search, inspect, and recover compacted messages and payloads in bounded pages.",
+  "description": "LCM-X is a context engine for Hermes Agent that stores raw messages in SQLite and compacts older context into a hierarchical summary DAG. It keeps the active prompt bounded and provides tools to search, inspect, and recover compacted material in bounded pages.",
   "url": "https://hermesatlas.com/projects/electricsheephq/lcm-x",
   "codeRepository": "https://github.com/electricsheephq/lcm-x",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "electricsheephq",
     "url": "https://github.com/electricsheephq"
   },
-  "dateModified": "2026-11-09T07:50:33.000Z",
+  "dateModified": "2026-11-09T16:13:27.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 116
+    "userInteractionCount": 119
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -120,7 +120,7 @@
   <p class="project-desc">LCM-X — Lossless Context Memory eXtension</p>
 
   <div class="meta-row">
-    <span class="stars">★ 116</span>
+    <span class="stars">★ 119</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">LCM-X is a lossless context memory extension for Hermes Agent that stores raw messages in SQLite and compacts older context into a hierarchical summary DAG. It keeps active context bounded and provides tools to search, inspect, and recover compacted messages and payloads in bounded pages.</p>
+    <p class="summary-text">LCM-X is a context engine for Hermes Agent that stores raw messages in SQLite and compacts older context into a hierarchical summary DAG. It keeps the active prompt bounded and provides tools to search, inspect, and recover compacted material in bounded pages.</p>
     <ul class="summary-highlights">
-      <li>Preserves raw messages and summary source lineage.</li>
-      <li>Provides bounded recall and context-budget controls.</li>
-      <li>Supports temporal memory and semantic retrieval.</li>
+      <li>Preserves raw messages before compaction.</li>
+      <li>Summaries retain source lineage.</li>
+      <li>Provides tools for bounded recall and recovery.</li>
     </ul>
   </div>
 </section>
@@ -317,11 +317,11 @@ why, and <a href="https://github.com/electricsheephq/lcm-x/blob/main/docs/agent-
 copy-paste setups per agent type. Externalization and temporal rollups are on by default.</p>
 <h3>Project status</h3>
 <p>The latest stable release is
-<a href="https://github.com/electricsheephq/lcm-x/releases/tag/v0.29.1"><code>v0.29.1</code></a>
-at <code>3a4a08ff501347a79669fab51444c471b09b551d</code>, released 2026-11-03 (plugin <code>hermes-lcm-x</code>, engine <code>lcm-x</code>).
-Compaction gets past a row the host still holds, keeps its 10-minute pause, and
-summarises in store order, and a restart after a cleanup pass no longer stores the
-conversation again. See <a href="https://github.com/electricsheephq/lcm-x/blob/main/docs/project-status.md">project status</a> for the release summary,
+<a href="https://github.com/electricsheephq/lcm-x/releases/tag/v0.29.2"><code>v0.29.2</code></a>
+at <code>261d41ea928eec3dc5b8db13c70f044392adf124</code>, released 2026-11-09 (plugin <code>hermes-lcm-x</code>, engine <code>lcm-x</code>).
+Compaction retries past a contiguity stop at the scan limit and keeps its exit
+headroom, shutdown waits for a running compaction, and a profile's storage opens
+only when that profile is used. See <a href="https://github.com/electricsheephq/lcm-x/blob/main/docs/project-status.md">project status</a> for the release summary,
 the disclosed qualification decisions and current work.
 It requires Hermes 0.21.3 or newer (#1080). It carries
 the v0.23.2 lossless
@@ -1136,7 +1136,7 @@ assistant even when doing so exceeds a configured bound.</p>
 <p>Advanced compaction, assembly, and extraction knobs are defined in <code>config.py</code>.</p>
 <h4>Sensitive-pattern redaction</h4>
 <p>LCM is lossless by default: durable messages, FTS rows, summaries, and payloads
-remain untouched unless `LCM_SENSITIVE_PATTERNS_ENABLED=</p>
+remain untouched unless `LCM_SENSITIVE_PATTERNS</p>
 <hr>
 <p><em>README truncated. <a href="https://github.com/electricsheephq/lcm-x#readme">Continue reading on GitHub</a></em></p>
 
@@ -1155,7 +1155,7 @@ remain untouched unless `LCM_SENSITIVE_PATTERNS_ENABLED=</p>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 60.0K</div>
+        <div class="stars">★ 60.1K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -1175,7 +1175,7 @@ remain untouched unless `LCM_SENSITIVE_PATTERNS_ENABLED=</p>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 313</div>
+        <div class="stars">★ 315</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
