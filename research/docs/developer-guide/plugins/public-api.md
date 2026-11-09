@@ -402,6 +402,18 @@ adding-platform-adapters.md § Public helpers for platform plugins
 
 adding-platform-adapters.md § Public helpers for platform plugins
 
+`gateway.approval_actor`
+
+`approval_refusal`
+
+adding-platform-adapters.md § Public helpers for platform plugins
+
+`gateway.approval_actor`
+
+`refusal_text`
+
+adding-platform-adapters.md § Public helpers for platform plugins
+
 `tools.clarify_gateway`
 
 `get_pending`

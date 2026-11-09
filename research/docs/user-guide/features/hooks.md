@@ -727,6 +727,16 @@ First turn of a new session; return ignored.
 
 Identifiers and routing metadata only.
 
+`on_session_open`
+
+Observer
+
+Once each time a client creates or opens a local session (CLI, TUI, Desktop, ACP, kanban/A2A workers), in the gateway under the session's profile, before its first turn; never for messaging chats. Timeout-bounded; return ignored.
+
+`session_id`, `platform`, `reason` (`create` or `resume`)
+
+Session identifiers only.
+
 `on_session_end`
 
 Observer
@@ -1669,6 +1679,56 @@ def init_session(session_id, model, platform, **kwargs):
 
 def register(ctx):
     ctx.register_hook("on_session_start", init_session)
+```
+
+* * *
+
+### `on_session_open`
+
+Fires when a client **creates or opens** a local session: a new chat in `hermes`, the TUI or Desktop, or `hermes --resume` / the session picker reopening a stored one. Use it to get ready for a conversation before the model sees it, for example a memory plugin pre-loading recent context or a status bar showing the session as open. Distinct from [`on_session_start`](#on_session_start), which fires during the first agent turn and never on a reopen.
+
+**Callback signature:**
+
+```
+def my_callback(session_id: str, platform: str, reason: str, **kwargs):
+```
+
+Parameter
+
+Type
+
+Description
+
+`session_id`
+
+`str`
+
+The session that opened
+
+`platform`
+
+`str`
+
+The surface that created it: `cli`, `tui`, `desktop`, `acp`, ...
+
+`reason`
+
+`str`
+
+`create` while the session has no messages yet (a new chat), `resume` once it has a conversation (a stored chat being reopened)
+
+**Fires:** In the gateway (`gateway/session_open.py`), when a client connection attaches to a local session it was not already attached to. Once per open: a client re-reading a session it already has open, or reconnecting after a dropped socket, does not fire it again. Two clients opening the same session fire it twice. It runs in the profile that owns the session, so on a gateway serving several profiles each profile's plugins see only their own sessions. The callback runs on its own thread: opening the session never waits for it, but the session's next turn does, for up to 5 s or `plugins.hook_callback_timeout` if that is longer; past that the turn proceeds and the callback keeps running. While a callback for a session is still running, further opens of that session wait behind it as a single call: they fire once when it ends, with the latest open's details. `--safe-mode` / `--ignore-user-config` sessions fire nothing. Messaging chats (Telegram, Discord, ...) do not fire it: their first message starts the session, so use `on_session_start` there.
+
+**Return value:** Ignored.
+
+**Example — pre-load memory before the first turn:**
+
+```
+def warm(session_id, platform, reason, **kwargs):
+    _cache[session_id] = load_recent_notes(limit=20)
+
+def register(ctx):
+    ctx.register_hook("on_session_open", warm)
 ```
 
 * * *

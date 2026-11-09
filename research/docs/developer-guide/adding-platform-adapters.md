@@ -246,7 +246,7 @@ Plugin platforms included in enumeration
 
 System prompt hints
 
-`platform_hint` injected into LLM context
+`platform_hint` injected into LLM context; `platform_hint_tool_notes` (`{tool: sentence}`) appended only when the session has that tool
 
 Message chunking
 
@@ -400,7 +400,11 @@ Own DM/group policy (`dm_policy` / `group_policy` / allowlists)
 
 Resolve an approval from a native button
 
-`from tools.approval import resolve_gateway_approval_card` (pass the card's request id; `resolve_gateway_approval` answers the oldest pending request)
+`from tools.approval import resolve_gateway_approval_card` (pass the card's request id; a call without one resolves nothing. Every request starts Deny-only: render through `_send_exec_approval_prompt` so the base `send_exec_approval` can lift the mark once the card shows the whole command. `resolve_gateway_approval` answers the oldest pending request)
+
+Refuse a click from someone other than the approval's requester (when `approvals.approvers` is narrowed)
+
+`from gateway.approval_actor import approval_refusal, refusal_text`: call `approval_refusal(session_key, clicker_id, extra=self.config.extra, request_id=...)` before resolving; a non-`None` result is the requester's name, reply privately with `refusal_text(name)` and leave the approval pending. Then settle with `resolve_gateway_approval_card(session_key, choice, request_id, actor_id=clicker_id, extra=self.config.extra)`, which rechecks the clicker against the entry it settles in the same critical section
 
 Native clarify buttons
 
@@ -594,9 +598,9 @@ ctx.register_platform(
 )
 ```
 
-Why this hook is necessary: built-in platforms (Telegram, Discord, Slack, etc.) ship direct REST helpers in `tools/send_message_tool.py` so cron can deliver without holding the gateway in the same process. Plugin platforms historically depended on `_gateway_runner_ref()`, which returns `None` outside the gateway process, so without `standalone_sender_fn` the cron-side send fails with `No live adapter for platform '<name>'`.
+Why this hook is necessary: the live adapter is only reachable through `_gateway_runner_ref()`, which returns `None` outside the gateway process, so without `standalone_sender_fn` the cron-side send fails with `No live adapter for platform '<name>'`. The bundled platforms use this same hook: Telegram's out-of-process sender (`hermes send`, the `send_message` tool, standalone cron delivery) is `plugins/platforms/telegram/standalone.py::standalone_send` and Signal's is `plugins/platforms/signal/standalone.py`; core reaches them only through the platform registry.
 
-The function receives the same `pconfig` and `chat_id` that the live adapter would, plus optional `thread_id`, `media_files`, and `force_document` keyword arguments. Returning `{"success": True, "message_id": ...}` is treated as a successful delivery; returning `{"error": "..."}` surfaces the message in cron's `delivery_errors`. Exceptions raised inside the function are caught by the dispatcher and reported as `Plugin standalone send failed: <reason>`. Reference implementations live in `plugins/platforms/{irc,teams,google_chat}/adapter.py`.
+The function receives the same `pconfig` and `chat_id` that the live adapter would, plus optional `thread_id`, `media_files`, and `force_document` keyword arguments. Optional keywords added later are forwarded only to a sender that declares them (by name or through `**kwargs`), so a sender written to the signature above keeps working: `notify=True` (cron's `cron.delivery.notify`: this delivery should ring even under a quiet notification mode) is one; Telegram's sender takes it. Returning `{"success": True, "message_id": ...}` is treated as a successful delivery; returning `{"error": "..."}` surfaces the message in cron's `delivery_errors`. Exceptions raised inside the function are caught by the dispatcher and reported as `Plugin standalone send failed: <reason>`. Reference implementations live in `plugins/platforms/{irc,teams,google_chat}/adapter.py`.
 
 ## Surfacing Env Vars in `hermes config`
 

@@ -80,6 +80,12 @@ How one-shot [`hermes chat -q`](/docs/user-guide/cli) sessions behave when they 
 
 How sessions on unattended programmatic platforms (webhook, msgraph\_webhook, api\_server) behave when they trigger a dangerous-command prompt. These surfaces have no human who can answer `/approve`, so instead of blocking for the full approval timeout, `deny` blocks the command instantly (the agent must find another path) and `approve` auto-approves everything in unattended context. Exception: an api\_server session whose client can answer the card (`/v1/runs` and streaming chat completions, via `POST /v1/runs/{id}/approval`) still gets the approval request. Mirrors `cron_mode`.
 
+`approvers`
+
+`["*"]`
+
+Who may answer a pending approval from a messaging chat. `["*"]`: any admitted member. `[]` or a list of user ids: the requester, those ids and the platform admins only — see [Who can answer an approval in a shared chat](#who-can-answer-an-approval-in-a-shared-chat-approvalsapprovers).
+
 `mcp_reload_confirm`
 
 `true`
@@ -423,7 +429,31 @@ On messaging platforms, the agent sends the dangerous command details to the cha
 -   Reply **yes**, **y**, **approve**, **ok**, or **go** to approve
 -   Reply **no**, **n**, **deny**, or **cancel** to deny
 
+A messaging approval never asks you to approve a command you cannot read in full. When the command is too long for the approval card, Hermes first sends the whole command as its own message (split across several messages if needed), and the card says the preview was shortened. If the full command cannot be shown (the send fails, or the command itself contains a triple-backtick fence), the card offers **Deny** only. Review such a command in the CLI or the desktop app. On platforms that cut long messages instead of splitting them (ntfy, DingTalk, Photon, LINE), the plain-text prompt puts the answer instructions before the command. When the command would still be cut, the prompt offers only `/deny` and shows the same "preview shortened" notice.
+
 The `HERMES_EXEC_ASK=1` environment variable is automatically set when running the gateway.
+
+#### Who can answer an approval in a shared chat (`approvals.approvers`)
+
+By default any member admitted to the chat can answer a pending approval, whoever's message raised it. In a group, channel or shared thread you can bind each approval to the person who asked instead:
+
+```
+approvals:
+  approvers: []            # default ["*"]: any admitted member answers
+  # approvers: ["U024BE7LH", "123456789"]   # requester + these chat user ids + admins
+```
+
+With `approvers` narrowed from `["*"]`, only these people can approve or deny a command:
+
+-   the user whose message started the turn that raised it;
+-   the user ids listed in `approvers`, using each platform's own id form (Slack `U…`, Telegram numeric id, Matrix `@user:server`);
+-   the platform's admins of the chat the approval came from: `allow_admin_from` in a DM, `group_allow_admin_from` in a group (the same scopes slash commands use; a DM admin is not a group admin), from the profile whose bot received the chat.
+
+Identical commands raised at the same time by two different requesters get one prompt each, so one requester's answer never decides the other's.
+
+When anyone else clicks a button, adds a reaction, or sends `/approve`, `/deny` or a bare "yes", they get _Only <name> can answer this approval._ The command stays pending, so the requester can still answer it. Where the platform supports a private reply, only the clicker sees that note: a Slack ephemeral message, a Discord ephemeral reply, a Telegram callback alert, a Feishu toast or a Teams card response. Matrix, WhatsApp and the relay post it in the chat instead.
+
+The setting is read when the approval is raised, so with multiplexed profiles each profile's own `config.yaml` decides. Host surfaces (CLI, TUI, Desktop, the API server) answer as the host and are not affected. Matrix keeps its own stricter `MATRIX_APPROVAL_REQUIRE_SENDER` (default on). QQBot already accepts clicks only from the session's own user.
 
 ### Permanent Allowlist
 
