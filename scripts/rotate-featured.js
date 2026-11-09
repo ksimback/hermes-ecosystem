@@ -76,6 +76,7 @@ function renderFeaturedSection(pick, repo, summary, weekStart) {
     <span class="org">${escapeHtml(repo.owner)}</span><span class="slash">/</span>${escapeHtml(repo.repo)}${repo.official ? ' <span class="repo-flag">official</span>' : ""}
   </a>
   <p class="featured-week-desc">${escapeHtml(blurb)}</p>
+  ${repo.securityNote ? `<p class="featured-week-desc"><strong>Security note:</strong> ${escapeHtml(repo.securityNote)}</p>` : ""}
   <div class="featured-week-foot">
     <span class="featured-week-tag featured-week-tag--star">★ ${escapeHtml(stars)}</span>
     <span class="featured-week-tag">${escapeHtml(category)}</span>
