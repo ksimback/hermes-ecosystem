@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>itpartypattaya/hermes-dreaming — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
+<meta name="description" content="Hermes skill/plugin for scheduled deterministic memory consolidation, corroboration and human-guided fact cleanup.">
+<link rel="canonical" href="https://hermesatlas.com/projects/itpartypattaya/hermes-dreaming">
+<meta property="og:title" content="itpartypattaya/hermes-dreaming — Hermes Atlas">
+<meta property="og:description" content="Hermes skill/plugin for scheduled deterministic memory consolidation, corroboration and human-guided fact cleanup.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/itpartypattaya/hermes-dreaming">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-dreaming&amp;subtitle=Nightly+deterministic+memory+consolidation+%28%22dreaming%22%29+skill+for+Hermes+Agent&amp;kind=project+%C2%B7+memory">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="itpartypattaya/hermes-dreaming — Hermes Atlas">
+<meta name="twitter:description" content="Hermes skill/plugin for scheduled deterministic memory consolidation, corroboration and human-guided fact cleanup.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-dreaming&amp;subtitle=Nightly+deterministic+memory+consolidation+%28%22dreaming%22%29+skill+for+Hermes+Agent&amp;kind=project+%C2%B7+memory">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "memory &amp; context", "item": "https://hermesatlas.com/lists/best-memory-providers" },
+    { "@type": "ListItem", "position": 3, "name": "hermes-dreaming" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/itpartypattaya/hermes-dreaming#software",
+  "name": "hermes-dreaming",
+  "description": "Hermes skill/plugin for scheduled deterministic memory consolidation, corroboration and human-guided fact cleanup.",
+  "url": "https://hermesatlas.com/projects/itpartypattaya/hermes-dreaming",
+  "codeRepository": "https://github.com/itpartypattaya/hermes-dreaming",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
+  "author": {
+    "@type": "Organization",
+    "name": "itpartypattaya",
+    "url": "https://github.com/itpartypattaya"
+  },
+  "dateModified": "2026-11-07T12:38:48.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 21
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">310·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/lists/best-memory-providers">memory &amp; context</a><span class="sep">/</span>hermes-dreaming
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">itpartypattaya</span><span class="slash">/</span>hermes-dreaming
+  </h1>
+  <p class="project-desc">Nightly deterministic memory consolidation (&quot;dreaming&quot;) skill for Hermes Agent</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 21</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
+    
+    <span><span class="meta-label">updated</span>2026-11-07</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/itpartypattaya/hermes-dreaming" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">Hermes skill/plugin for scheduled deterministic memory consolidation, corroboration and human-guided fact cleanup.</p>
+    <ul class="summary-highlights">
+      <li>Deterministic corroboration, conflicts and memory-pressure proposals</li>
+      <li>Quiet-night wake gate and controlled Hermes cron installation</li>
+      <li>Forget sweeps, provenance diary and optional cloud judging</li>
+    </ul>
+  </div>
+</section>
+
+<section class="project-summary" aria-label="Security note"><div class="section-label">security note</div><p class="summary-text">Basic static screen: 21878d3 (November 9, 2026), not security certification. Installers create scripts and scheduled jobs. Optional cloud judging sends screened fact/message pairs to a selected provider; off by default. Forget cleanup does not erase session history, Git history or backups.</p></section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h2>hermes-dreaming</h2>
+<p><img src="https://raw.githubusercontent.com/itpartypattaya/hermes-dreaming/main/docs/banner.png" alt="hermes-dreaming — nightly memory consolidation for Hermes Agent" loading="lazy" decoding="async"></p>
+<p><em><a href="https://github.com/itpartypattaya/hermes-dreaming/blob/main/README.ru.md">Русская версия</a></em></p>
+<p>Nightly, deterministic <strong>memory consolidation ("dreaming")</strong> for
+<a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>, in the spirit of OpenClaw dreaming.</p>
+<p>An agent's memory goes wrong in two quiet ways: useful facts never make it into durable memory, and
+durable memory fills up with stale or duplicated entries until the char limit silently stops all
+writes. Every night a Python script looks at what the agent knows and what people actually said, and
+wakes the agent only when there is something to decide. The rules call no LLM and the script never writes
+memory; the agent applies its proposals through the regular <code>memory</code> tool and reports in a few lines. An
+optional cloud judge, off by default, can second-guess the rules' mention count — see
+<a href="#optional-cloud-judge-off-by-default">below</a>.</p>
+<h3>Task outcomes and recorded explanations (3.6.0)</h3>
+<p>With holographic <strong>0.20.0 or later</strong>, read how stored facts helped or failed a task, separately from their truth/trust:</p>
+<pre><code class="language-bash">python3 skills/dreaming/scripts/dream.py --memory-outcomes
+python3 skills/dreaming/scripts/dream.py --memory-explain ATTEMPT_ID --memory-format text
+</code></pre>
+<p>Enable collection in the provider (<code>experience: on</code>; optional <code>experience_trace: on</code>). Add <code>"task_outcomes": true</code>
+to <code>dreaming.json</code> to include count-only summaries in the normal nightly report. Default is off. No additional model
+wakeup or network call is added, no correction text is copied into a lesson cache, and nothing automatically changes
+trust, ranking or MEMORY.md. Revisions count as one active outcome per attempt; these remain agent reports.</p>
+<p>The default is the configured profile store. A scoped store requires an explicit <code>--memory-store</code> already allowed by
+<code>chat_stores.promote_from</code>; reports never join stores, and since 3.7.0 the JSON summary names its store (<code>"store"</code>). Old providers report <code>unsupported</code> and continue normal dreaming.
+See <a href="https://github.com/itpartypattaya/hermes-dreaming/blob/main/docs/experience.md">docs/experience.md</a> for retention, erase boundaries, JSON output and limitations.</p>
+<h3>How it works</h3>
+<p><img src="https://raw.githubusercontent.com/itpartypattaya/hermes-dreaming/main/docs/overview.png" alt="One night: inputs, the deterministic pass with the screen, the wake gate and the agent's turn; the weekly extraction
+and the forget sweep beside it" loading="lazy" decoding="async"></p>
+<ul>
+<li><strong>Corroboration from real conversations.</strong> A fact counts only if humans mention it on distinct
+days. Cron prompts, compaction banners, URLs, untrusted chats and the agent's own threads never
+corroborate anything. Works in the languages the holographic store reads: Chinese, Japanese,
+Korean and Thai are compared by character n-grams, Latin languages by stems without diacritics.</li>
+<li><strong>Scoring</strong> with the OpenClaw weights (relevance, frequency, diversity, recency, consolidation,
+richness) plus a corroboration gate.</li>
+<li><strong>Matching against memory.</strong> Exact, declarative alias rules and stemmed containment in three
+directions; a candidate that repeats an entry with <em>different numbers</em> is a possible update
+(<code>conflicts</code>), not a duplicate. Every candidate carries the nearest entry, which file it lives in
+and its full text, the source of the verbatim span <code>memory patch</code> changes (Hermes ≥ 0.22), plus an
+<code>old_text</code> anchor for the <code>memory replace</code> of Hermes 0.21.</li>
+<li><strong>Screening.</strong> Secrets and prompt-injection are quarantined — by the dream's own rules and by the holographic
+provider's screen (credentials in its 18 languages, token shapes, environment assignments, instructions in any
+language), which the provider applies only to what it stores and recalls next — dated events expire (dates
+and event words in 15 languages, from «14 de noviembre» to 11月14日), near-identical facts in the store reach the agent once.</li>
+<li><strong>A wake gate.</strong> On a quiet night the cron job prints <code>{"wakeAgent": false}</code> and the model never
+starts. A memory file close to its char limit counts as work (<code>memory_pressure</code>) — the limit gates
+writes silently, so otherwise nobody notices until facts stop being recorded.</li>
+<li><strong>A loss guard.</strong> If a large share of memory disappears overnight, or a long entry loses half of itself, the
+next report says so and names the entries that are gone. An entry the agent compressed, reworded, merged into
+another one or split in two is not a loss: its words and numbers are still in the entries it wrote.</li>
+<li><strong>Feedback to retrieval.</strong> A fact you rejected keeps its trust in the fact store, so the
+provider's prefetch goes on offering it. Such facts are listed with a ready
+<code>fact_feedback(unhelpful)</code> call, so a rejection teaches retrieval too.</li>
+<li><strong>Confirmations</strong> (holographic ≥ 0.15.0). A fact people said again — on two different days, in messages that
+hold most of its words and neither negate it nor give it a new number — is listed with a ready <code>fact_feedback(confirmed)</code> call: its trust
+rises a little, and the agent's own conclusion counts as confirmed. Naming the topic is not saying it again, so
+this is rare by design (none of 58 facts on a live family store; the loose rule would have offered 26). It never
+wakes the model. Items also carry the fact's <code>origin</code> — <code>said</code>, <code>confirmed</code> or <code>inferred</code> (an agent's conclusion
+nobody confirmed, asked about rather than written).</li>
+<li><strong>Keywords for search</strong> (opt-in, holographic ≥ 0.6.1). The fact store finds a fact by words it
+does not contain only through its keywords — synonyms, other roots, translations. Facts without
+them are listed a few a night (<code>keywords_needed</code>) with a ready <code>fact_store update</code> call, and the
+extraction run gives keywords right when it adds a fact. Housekeeping: it never wakes the model.
+Keywords and the provider's optional <strong>search by meaning</strong> (holographic ≥ 0.14) do different jobs:
+meaning reaches a paraphrase that shares no words, but only while its endpoint answers; keywords
+live in the store and work offline. The pass reads words either way — vectors are the provider's
+business and never reach its JSON.</li>
+<li><strong>Duplicates across the store</strong> (holographic ≥ 0.19.0). Two facts that say one thing in other words — the
+same thread described twice, a profile stored again by the nightly extraction — are found over the whole store
+and asked about, one pair a night: «D-17: "…" and "…" — look like one fact. Merge?», both texts whole. Only a
+"yes" to that number merges them, through <code>fact_store merge</code> with the versions you were shown; the copy's
+history stays under the fact that remains. Nothing is merged at night, and pairs that differ by one word
+(«утром» / «вечером»), a number, a person or a "not" are not asked about. The extraction run merges a retelling it
+has just stored into the old fact itself, when the provider's hint offers it and nothing new is in it.</li>
+<li><strong>A diary</strong> (<code>memories/DREAMS.md</code>) with provenance for every candidate.</li>
+</ul>
+<h3>Every item gets an outcome</h3>
+<p><img src="https://raw.githubusercontent.com/itpartypattaya/hermes-dreaming/main/docs/lifecycle.png" alt="A candidate is written, rejected or comes back; a memory entry is removed or confirmed" loading="lazy" decoding="async"></p>
+<p>Nothing is asked forever. A promotion is either written or put on the reject list (matched by text;
+<code>dream-reject.py --undo</code> lifts a rejection, and a fact people said again after 180 days comes back as a
+question, <code>reject_reask_days</code>); with no outcome it comes back in 3 days. New facts, conflicts and decay
+questions are shown at most once per 14 days. A memory entry that survived a "still relevant?" question — kept, or rewritten
+in place with a fresh date — counts as confirmed and rests for 90 days. Cooldowns start only when
+the agent actually answered: a night that failed halfway re-shows the same items.</p>
+<p>With holographic ≥ 0.8.0 (<code>stats.fact_history: true</code>) a human's answer about a <strong>fact</strong> goes to the
+store, which keeps the fact's history: "no longer true" → <code>fact_store end</code>, "it changed" → <code>change</code>,
+"that was wrong" → <code>correct</code>, "forget it" → <code>forget</code> (final: the store's fact history goes too) plus removing the
+memory entry that carries it. After a <code>forget</code> the store keeps only a tombstone — the id, never the
+text — and this skill removes its own copies of the fact by that id: the last payload, the reject
+list, the cooldowns, the diary lines (tagged <code>[#&lt;id&gt;]</code> since 2.4.0; older ones through an index of
+line hashes kept while the fact still existed) and the logs of the dream cron jobs. Every pass does
+that first; the <code>no_agent</code> job <code>dream-forget-sweep.py</code> does it every 15 minutes without the model.</p>
+<p>This cleanup covers the store and the skill's own copies listed above. It does not rewrite Git commits,
+external database dumps, system backups or Hermes session history. Those copies need their own cleanup process.
+A report must distinguish successful deletion from the store from a retained external copy; a documented
+history boundary is not removed by retrying the same sweep. The skill does not rewrite repository history.</p>
+<p>A "merge?" question (holographic ≥ 0.19.0) has a number that is never reused. "Yes D-17" → <code>fact_store merge</code>
+with the versions shown; a text that changed since makes the merge refuse (<code>changed_since</code>) and the question is
+asked anew. "They are different" → <code>dream-reject.py --not-duplicates D-17</code>, never asked again (<code>--undo D-17</code>); with
+no terminal in the session the pair simply rests 180 days. A question the agent's report did not name comes back the
+next night. A merge is no forget: the diary keeps its lines, and only the skill's live state lets the copy go.</p>
+<h3>Install</h3>
+<p>Requirements: Hermes Agent ≥ 0.21, Python ≥ 3.9 (standard library only).</p>
+<p><strong>1. The plugin</strong> — a portable Agent Plugins v1 package (<code>plugin.json</code> + <code>skills/dreaming/</code>):</p>
+<pre><code class="language-bash">hermes plugins install hermes-dreaming      # the reviewed, pinned catalog entry
+hermes plugins enable hermes-dreaming
+</code></pre>
+<p>Install <strong>from the catalog, not from a URL</strong> (see below). The cron jobs below are bound to this
+plugin's own skill, so they run exactly the copy you installed (and the catalog reviewed). Plugin
+skills are namespaced and kept out of the system prompt's skill index; the agent finds them with
+<code>skills_list</code> and loads them with <code>skill_view</code>.</p>
+<details><summary>Alternative: a regular skill</summary>
+
+<pre><code class="language-bash">hermes skills install itpartypattaya/hermes-dreaming/skills/dreaming
+</code></pre>
+<p>The skill then lands in <code>~/.hermes/skills/dreaming/</code> and is listed in the skill index. The installer
+scripts below use it only when the plugin is not installed; substitute that path in the commands.</p>
+</details>
+
+<p><strong>2. The gates and the config</strong></p>
+<pre><code class="language-bash">python3 ~/.hermes/plugins/hermes-dreaming/skills/dreaming/scripts/install.py
+</code></pre>
+<p>Hermes runs cron scripts only from <code>~/.hermes/scripts/</code> (a symlink is refused), so the installer
+copies the three gates there, seeds <code>~/.hermes/dreaming.json</code> from the example, does a dry run on
+throw-away copies of the state, and checks the fact source and the core. It is idempotent;
+<code>install.py --check</code> verifies without changing anything — run it after every update, since the copies
+in <code>scripts/</code> can drift from the skill. It also names a job Hermes will not fire: one due more than an hour ago
+(the gateway is not running cron) or one with no next run. <code>dream.py --nightly-status</code> answers the short
+question "is a night coming?" (read-only; the agent runs it when you answer a dream question).</p>
+<pre><code class="language-text">== hermes-dreaming installer ==
+  ✓ dream-precheck.py in place and identical to the skill copy
+  ✓ dream-extract-precheck.py in place and identical to the skill copy
+  ✓ dream-forget-sweep.py in place and identical to the skill copy
+  ✓ config /home/you/.hermes/dreaming.json is valid JSON
+  ✓ dry run: fact source: holographic · facts: 0 · human messages in window: 0
+  ✓ core gives cron jobs memory natively (Hermes &gt;= 0.21) — the extraction job can use fact_store
+  ✓ memory provider 'holographic', fact store present (/home/you/.hermes/memory_store.db)
+  ✓ holographic 0.17: cron jobs may write facts; forgotten facts are swept
+  ✓ the fact store keeps origins and confirmations — items carry `origin`, the confirm section is on
+
+== 9 ok, 0 warning(s), 0 problem(s) ==
+</code></pre>
+<p><strong>3. Edit the config</strong> — the part nobody can do for you:</p>
+<pre><code class="language-bash">$EDITOR ~/.hermes/dreaming.json    # timezone, trusted_chat_ids, agent_names, fact_source
+</code></pre>
+<p>Until <code>trusted_chat_ids</code> lists your group chats, <strong>no group chat corroborates memory</strong> (fail-closed
+by design). If a trusted chat is a forum, list the threads that are not human talk — the agent's own
+alerts, assistant bridges, machine-generated cards — under <code>excluded_threads</code>.</p>
+<p><strong>4. The cron jobs</strong></p>
+<pre><code class="language-bash">~/.hermes/hermes-agent/venv/bin/python \
+    ~/.hermes/plugins/hermes-dreaming/skills/dreaming/scripts/install_cron.py --deliver local --dry-run
+# happy with the plan? run it again without --dry-run
+</code></pre>
+<p>The CLI has no flag for <code>enabled_toolsets</code>, and <code>cron/jobs.json</code> is live scheduler state, so job
+creation goes through the Hermes Python API. The jobs get the plugin skill's qualified name
+straight from Hermes' plugin registry (<code>hermes-dreaming:dreaming</code> on Hermes 0.22.6; earlier cores named
+it <code>agent-plugin-hermes-dreaming-&lt;hash&gt;:dreaming</code>), so the plugin must be enabled first. When Hermes
+renames it, a job bound to the old name runs without the skill: <code>install.py --check</code> reports a stale
+skill binding, and <code>install_cron.py --rebind</code> points the job at the current name; all three gates likewise prefer the plugin's copy of <code>dream.py</code>. Re-running
+<code>install_cron.py</code> updates existing jobs whose prompts exactly match a known shipped template for
+that job's role. Local edits (even whitespace), missing prompts and unknown templates are preserved
+with a warning: compare them with <code>DREAM_PROMPT</code> / <code>EXTRACT_PROMPT</code> in the installed script and
+migrate them manually. No Git checkout or separate migration state is needed. A job that loads
+another skill than this install provides is reported; <code>--rebind</code> also points it at the right skill
+in place, preserving any other attached skills. Prompt synchronization does not require <code>--rebind</code>.
+By default, schedules, delivery, model/provider, paused state and run counters are preserved.
+Explicitly supplied settings that differ from existing jobs are reported. Add <code>--update-existing</code>
+to apply only those supplied settings, for example <code>--update-existing --model cheaper-model</code>.
+<code>--inherit-model --update-existing</code> clears <strong>both</strong> model and provider pins; it cannot be combined
+with explicit model/provider values. Schedule changes support cron expressions to cron expressions;
+Hermes may recalculate the next run and clear pending/quota scheduling state. No job is resumed.</p>
+<p><code>--job-id &lt;exact-id&gt;</code> limits the entire operation to that job, including prompt/rebind/settings
+changes; missing jobs of other roles are not created, and a job of another role the installer cannot
+classify or that runs in the wrong mode is reported without blocking the named one (a job of the same role
+still blocks: both run the same gate script). Repeat it to select several jobs. Duplicates
+are reported with their IDs and active count. Untargeted updates of duplicate roles are refused;
+use explicit IDs to choose which jobs to maintain. Nothing is deleted automatically.</p>
+<p>Use <code>--upgrade --dry-run</code> after updating the plugin, then repeat without <code>--dry-run</code> to repair copied
+gates, synchronize jobs and run an independent final cron/gate check. All targets, config and arguments
+are checked before gate writes; public Hermes schedule validation runs before apply. A direct invocation
+without <code>--upgrade</code> refuses stale copied gates. This is staged work, not an atomic transaction: a
+failure stops later writes, reports partial progress and can be retried. Use <code>install.py --check</code>
+for the additional fact-source, memory and judge checks. <code>--hermes-home &lt;path&gt;</code> selects the same home
+for files, the registry and cron API; choosing an interpreter alone does not choose a data home.</p>
+<p>Use <code>--dry-run</code> to preview the actual creates and updates, including job IDs, changed fields and
+the stock prompt diff. This reads a snapshot of <code>cron/jobs.json</code> without importing the cron API or writing
+anything; it does not reserve that state for a later apply. Do not edit cron configuration at the
+same time as running the installer: Hermes' public update API has no conditional update. The
+installer re-reads before updating and skips edits it observes, but cannot close every race.
+<code>install.py --check</code> reports outdated stock prompts as problems and custom/unknown prompts as
+warnings. It also reports each role's execution mode, paused/terminal state and duplicates. Several
+active jobs of one role or an incorrect execution mode are problems. Missing optional jobs and paused
+jobs are warnings; a correct skill binding alone does not mean the job runs. <code>--force</code> explicitly
+creates additional jobs, with a count warning; it is incompatible with targeted/rebind/settings updates.
+Use
+<code>--deliver telegram:&lt;chat_id&gt;:&lt;thread_id&gt;</code> to receive the report in a chat and
+<code>--extract-schedule ""</code> to leave the extraction out. A third, <code>no_agent</code> job (<code>--sweep-schedule</code>,
+every 15 minutes) cleans the dream's copies of facts the store has forgotten — no model, empty
+output unless it removed something; <code>--sweep-schedule ""</code> skips it. Empty schedules skip this invocation
+only: existing jobs remain enabled, and the installer names them. To pause future starts use
+<code>hermes cron pause &lt;exact-id&gt;</code>; this does not cancel an execution already in progress.</p>
+<p>To persist a smaller installation, set <code>"cron": {"expected_roles": ["night", "sweep"]}</code> in
+<code>dreaming.json</code>. The allowed roles are <code>night</code>, <code>extract</code>, <code>sweep</code>; the default is all three, and <code>[]</code>
+deliberately expects/creates none. Installer and checker share this policy. Excluding a role does
+not pause an existing job: one that is still active is reported. Invalid config is an error, never
+an instruction to fall back to creating all jobs. No prompt/intent sidecar is needed.
+The extraction job is cheap to run weekly — a
+nightly run mostly answers <code>[SILENT]</code> on a small household.</p>
+<p>A job keeps the skill name it was created with. The hash in it comes from the plugin's <code>name</code> in
+<code>plugin.json</code>, so updates and reinstalls keep it. Disabling or removing the plugin does not: the job
+then runs without its skill, and Hermes starts the nightly report with
+<code>⚠️ Skill(s) not found and skipped</code>. <code>install.py --check</code> names such a job; re-enable the plugin, or
+run <code>install_cron.py --rebind</code> against the install you kept. The check reads Hermes' plugin
+registry, so run it with Hermes' interpreter (<code>~/.hermes/hermes-agent/venv/bin/python</code>) — a plain
+<code>python3</code> only gets a warning that it cannot tell.</p>
+<h4>Install from the catalog, not from a URL</h4>
+<pre><code class="language-bash">hermes plugins install hermes-dreaming      # the reviewed, pinned catalog entry
+</code></pre>
+<p><code>hermes plugins install itpartypattaya/hermes-dreaming</code> installs HEAD as a custom, unreviewed
+source, and the next <code>plugins update</code> does a <code>git pull</code> past the pinned SHA. Same code today,
+different trust tomorrow.</p>
+<h4>Docker</h4>
+<p>In a container install the paths differ: the plugin lands under <code>/opt/hermes</code>
+(or wherever <code>HERMES_HOME</code> points) and Hermes' own interpreter is
+<code>/opt/hermes/.venv/bin/python</code>. Run the installers with that interpreter and as
+the uid the gateway runs under — a <code>docker exec</code> as root would leave
+<code>cache/*.json</code> owned by root, and the gateway's own pass then reads them as
+missing. The scripts restore the previous owner when they can, but starting as
+the right user is cleaner.</p>
+<h4>Upgrading from 2.0</h4>
+<p>2.0 bound the jobs to a regular <code>dreaming</code> skill. After installing the plugin, re-run step 2 (the
+gates changed) and then step 4 with <code>--rebind</code>: the existing jobs switch to the plugin's skill without
+losing their schedule, delivery or history.</p>
+<h4>Upgrading from 1.x</h4>
+<p>Version 1 was installed by cloning the repository straight into <code>~/.hermes/skills/dreaming</code>. Version
+2 keeps the skill in <code>skills/dreaming/</code>, so a <code>git pull</code> there would hide <code>SKILL.md</code> one level down.
+Move the old clone away, install with step 1, re-run step 2 (the gates are replaced), and run step 4
+with <code>--rebind</code> so the existing jobs point at the plugin's skill. Your config and state in <code>~/.hermes/cache/</code> stay as they are. The <code>allow_memory</code>
+flag of 1.x jobs is unused since Hermes 0.21 and can stay or go.</p>
+<h3>Writes that wait for a human</h3>
+<p>If your Hermes runs with <code>memory.write_approval: true</code>, a write from a cron session answers
+<code>success: true, staged: true</code> and the file on disk does not change: the entry sits in
+<code>pending/memory/</code> until you approve it. The pass reads that queue, so a candidate already waiting
+is not offered again, an entry whose removal is queued is not asked about, and a queue that is both
+large and old raises a <code>pending_writes</code> alert. Two things follow:</p>
+<ul>
+<li>the nightly report says "sent for approval", not "saved" — believe it;</li>
+<li>enabling the <strong>holographic provider</strong> for the fact store opens a second write channel that the
+approval gate does <strong>not</strong> cover: <code>fact_store</code> writes to <code>memory_store.db</code> directly, including
+from cron, and its prefetch then feeds those facts into ordinary turns. With the gate on, consider
+<code>fact_source: none</code> (the nightly memory review keeps working) — <code>install.py --check</code> says this out
+loud too.</li>
+</ul>
+<h3>Fact sources</h3>
+<p>The dream consolidates <em>candidate</em> facts; where they come from is <code>fact_source</code> in <code>dreaming.json</code>.</p>
+<table>
+<thead>
+<tr>
+<th><code>fact_source</code></th>
+<th>where the facts are</th>
+<th>extraction job</th>
+<th>notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>holographic</code> (default)</td>
+<td>the Hermes holographic provider's SQLite store (<code>memory_store.db</code>, or <code>plugins.hermes-memory-store.db_path</code>)</td>
+<td>✅ via <code>fact_store</code></td>
+<td>enable with <code>memory.provider: holographic</code>; use <strong>0.8.0 or later</strong> — 0.2.0–0.7.x refuse every <code>fact_store</code> write from a cron job, so extraction and keywords store nothing (<code>install.py --check</code> warns). ⚠️ It <strong>left the Hermes core on 2026-10-11</strong> (Hermes v0.21.7): <code>hermes update</code> installs the plugin <a href="https://github.com/itpartypattaya/hermes-plugin-holographic">itpartypattaya/hermes-plugin-holographic</a> from the catalog in its place. The catalog entry may still pin an older release (0.6.1) — check with <code>install.py --check</code>; if that install failed and memory went off, see the plugin's README, "Memory went off after <code>hermes update</code>". With holographic <code>scope: user / chat / thread</code> the facts live in per-user / per-chat files the dream does not read by default and a cron job stores nothing — the report says so; see <a href="#one-database-per-chat">One database per chat</a>. Nothing else about this skill changes</td>
+</tr>
+<tr>
+<td><code>sqlite</code></td>
+<td>any SQLite table: <code>fact_store_path</code>, <code>fact_table</code>, <code>fact_columns</code></td>
+<td>—</td>
+<td>for your own export; opened read-only</td>
+</tr>
+<tr>
+<td><code>jsonl</code></td>
+<td>one JSON object per line: <code>fact_store_path</code>, <code>fact_columns</code></td>
+<td>—</td>
+<td>the simplest export format</td>
+</tr>
+<tr>
+<td><code>none</code></td>
+<td>no fact store</td>
+<td>—</td>
+<td>the memory files alone: "still relevant?", fill level, loss guard</td>
+</tr>
+</tbody></table>
+<p><code>fact_columns</code> maps your names onto <code>id</code> and <code>content</code> (required) and <code>created_at</code>, <code>updated_at</code>
+(ISO or epoch), <code>category</code>, <code>tags</code> (string or list), <code>trust</code> (0..1). Example:
+<code>{"fact_source": "jsonl", "fact_store_path": "exports/facts.jsonl", "fact_columns": {"content": "memory"}}</code>.</p>
+<p>Hosted providers (mem0, Honcho, Supermemory, RetainDB) extract and deduplicate facts on their own
+servers; reading them would need API keys in a cron job for little gain, so there is no adapter. If
+you still want the dream's corroboration over them, export to <code>jsonl</code>.</p>
+<h4>One database per chat</h4>
+<p>holographic with <code>scope: chat</code>, <code>thread</code> or <code>user</code> keeps one database per chat (topic, user) — a bot that serves
+many unrelated groups keeps them apart. Memory files are one for all chats, so the dream does not read those
+databases unless told to, and then only in two steps:</p>
+<pre><code class="language-json">"chat_stores": {"read": true, "promote_from": ["telegram:-1001234567890", "telegram:-1001234567890:42"]}
+</code></pre>
+<ul>
+<li><code>read</code> — every database appears in the report as counts (facts, new ones): no text is read or shown, no ids.</li>
+<li><code>promote_from</code> — the chats (topics with <code>scope: thread</code>, users with <code>scope: user</code>) whose facts join the pass. Each
+is corroborated <strong>only by its own chat</strong>, and that chat's messages corroborate nothing else. Once a promoted
+fact is written to memory, every chat sees it — list only chats where that is what you want. With <code>scope: user</code>
+the plugin files a fact by the turn's author, but Hermes keeps no author per message: a user's facts are
+corroborated by the messages of that user's own sessions (in a group, the session owner stands for the author).</li>
+</ul>
+<p>Such items carry <code>store</code> and ids like <code>telegram--1001234567890#17</code>; the agent writes them only through <code>memory</code>
+(a cron session cannot reach a chat's database), and "forget it" is said in that chat. Extraction stays with the
+shared store. The trust rules do not change: chats in <code>trusted_chat_ids</code> (and private chats, unless
+<code>trust_private_chats: false</code>) still corroborate shared facts and memory entries — on a bot serving many unrelated
+people, trust only the owner's chats.</p>
+<p>Optional live task-outcome reports and recorded retrieval explanations (no second text cache or model calls):
+<a href="https://github.com/itpartypattaya/hermes-dreaming/blob/main/docs/experience.md">docs/experience.md</a>. These reports do not change trust or ranking.</p>
+<h3>Optional cloud judge (off by default)</h3>
+<p>The rules decide that a message mentions a fact when the two share enough words. That is cheap and predictable,
+and often wrong: "Гоша тренирует юниоров" counted for "Гоша не пьёт кофе", a pasted report counted for every fact
+it brushed against. On a frozen test set of 360 pairs, only 37 % of the pairs the rules counted were real
+confirmations. Each false one pushes a fact towards memory or tells the store that people keep saying it.</p>
+<p>The judge is a second opinion on exactly those pairs. For every (fact, message) pair the rules counted, it asks a
+decision model one question — does the message confirm the fact, contradict it, or neither? — and when the answer
+is a confident "no", it takes the pair out of the count. It can never add a pair: what is a candidate is still the
+rules' call, and a night without the judge is decided exactly as before. It is off by default; turned off, its
+code is not even loaded and nothing leaves the machine.</p>
+<p><img src="https://raw.githubusercontent.com/itpartypattaya/hermes-dreaming/main/docs/judge.png" alt="A night with the cloud judge: the rules count pairs, the ones that may leave go to Jev (OpenAI as the fallback), a
+confident &quot;no&quot; takes a pair out; shadow only reports, veto decides the night again; a night covered under half
+applies no veto" loading="lazy" decoding="async"></p>
+<h4>How a night with the judge goes</h4>
+<ol>
+<li><p>The rules decide the night as always and note every pair they counted.</p>
+</li>
+<li><p>Each pair that may leave (see below) goes to the first provider: the fact's text and the person's own words,
+nothing else, with this question and these three answers — the wording the threshold was measured with:</p>
+<pre><code class="language-text">Does the message confirm the fact, contradict it, or neither?
+confirms     the message confirms the fact: the same person or thing, and the fact still holds
+contradicts  the message contradicts the fact: it says the fact is not true or no longer true
+unrelated    the message is about another person or thing, or neither confirms nor denies the fact
+</code></pre>
+</li>
+<li><p>The model picks one answer and returns a probability for each. An answer other than <code>confirms</code> with a
+confidence of at least <code>tau</code> (0.50 by default) is a veto. An answer that does not fit the schema is not used;
+the pair goes once to the second provider, if there is one.</p>
+</li>
+<li><p>In <code>shadow</code> the night publishes what the rules decided, and the report (<code>stats.judge</code>) says how many pairs the
+judge vetoed and how many decisions that would change. In <code>veto</code> the night is decided again without the vetoed
+pairs, and that night is published — promotions, confirmations, fact decays, "said again" after a rejection,
+new facts and conflicts, the evidence quoted. Memory-entry questions (<code>md_decays</code>) never take a veto.</p>
+</li>
+<li><p>A night on which the judge answered for under half of the pairs it could send, or every provider was off,
+applies no veto at all (<code>effective: degraded</code>). Three such nights without two good ones between raise one
+<code>judge_degraded</code> alert a week, so a lost key or a dead network does not go unnoticed.</p>
+</li>
+</ol>
+<h4>The models</h4>
+<p>A decision model is a classifier behind an API: it reads a text, chooses one of the answers it is given and returns
+a probability for each. It writes no text, answers in a few hundred milliseconds and costs a fraction of a cent per
+call. Two are supported; the first one listed in <code>providers</code> is asked first, the second only when the first gives
+no usable answer.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Jev (<code>jev</code>)</th>
+<th>OpenAI Decisions (<code>openai</code>)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Made and served by</td>
+<td>TypeSafe; served by OpenRouter (<code>/api/alpha/decisions</code>, an alpha API)</td>
+<td>OpenAI (<code>/v1/decisions</code>, public beta since 2026-10-06)</td>
+</tr>
+<tr>
+<td>Model</td>
+<td><code>typesafe/jev-1.14</code></td>
+<td><code>gpt-6-luna</code></td>
+</tr>
+<tr>
+<td>Key</td>
+<td><code>OPENROUTER_API_KEY</code></td>
+<td><code>OPENAI_API_KEY</code></td>
+</tr>
+<tr>
+<td>Cost of one call, measured</td>
+<td>about $0.00002 (OpenRouter reports the charge)</td>
+<td>about $0.00002 (~210 input tokens at $0.10 per million; output is free)</td>
+</tr>
+<tr>
+<td>Latency, measured (median / 95th percentile)</td>
+<td>~280 ms / 0.4–1 s</td>
+<td>~290 ms / ~0.4 s</td>
+</tr>
+<tr>
+<td>False confirmations removed (holdout)</td>
+<td>84 % (142 of 169)</td>
+<td>75 % (127 of 169)</td>
+</tr>
+<tr>
+<td>True confirmations removed (holdout)</td>
+<td>none of 101</td>
+<td>none of 101</td>
+</tr>
+<tr>
+<td>Real confirmations among the counted</td>
+<td>0.37 → 0.79</td>
+<td>0.37 → 0.71</td>
+</tr>
+<tr>
+<td>By language, false ones removed (ru / en / zh)</td>
+<td>76 % / 94 % / 85 %</td>
+<td>68 % / 87 % / 74 %</td>
+</tr>
+<tr>
+<td>Data terms, as their documentation stated in October 2026</td>
+<td>not used for training; zero retention only for enterprise</td>
+<td>kept up to 30 days for abuse monitoring; zero retention on approval; not used for training by default</td>
+</tr>
+</tbody></table>
+<p>Jev comes first because it removed more false confirmations with the same zero errors; OpenAI is the fallback for
+the nights Jev's alpha API is down or changes. Check the providers' current terms yourself before you send family
+chats to them: what was sent cannot be recalled.</p>
+<p>How it was measured: before any of this code existed, both providers answered 921 pairs prepared exactly as the
+plugin prepares them — 561 to choose the threshold on, then a holdout of 360 written separately (by another model,
+in Russian, English and Chinese) and frozen before the first run. <code>tau</code> 0.50 is the lowest value tried; the rule
+was the lowest threshold with at most 5 % wrong vetoes and 10 % lost confirmations, and both providers met it
+there. Before the release, the plugin itself replayed those recorded answers and vetoed the same pairs, one by
+one. The whole measurement cost $0.023.</p>
+<p>What it does not prove: the holdout was written by a model and not checked by a person, and live speech is messier
+than written examples. <code>shadow</code> and a labelled sample (below) are how you find out on your own chats. Local models
+were tried first, on the 3.2.0 experiment: Laya (multilingual, on a CPU) was the weakest of all, mDeBERTa-xnli was
+better on its own but added almost nothing as a veto — hence a cloud option, off by default.</p>
+<h4>Turning it on</h4>
+<pre><code class="language-json">"judge": {"mode": "shadow", "providers": ["jev", "openai"], "send_from": "trusted", "send_sources": ["telegram"]}
+</code></pre>
+<p>Put the keys in <code>~/.hermes/.env</code> — Hermes keeps provider keys out of the environment of cron scripts (and
+<code>terminal.env_passthrough</code> refuses them), so the nightly judge reads its own line (<code>OPENROUTER_API_KEY=…</code>,
+<code>OPENAI_API_KEY=…</code>) and no other; a key exported only in your shell works for a pass you run by hand, never at night.
+A key is never printed, logged or written anywhere. <code>install.py --check</code> then shows the mode, where pairs may go and
+whether the night has each key (a key only in the terminal it runs in is named as such), never its value. A section that breaks the schema turns the judge off and says why.</p>
+<h4>What leaves the machine</h4>
+<ul>
+<li><strong>Only from what you list.</strong> <code>send_from</code> is <code>"trusted"</code> (the trusted group chats and, with
+<code>trust_private_chats</code>, private chats) or a list of chat ids; <code>send_sources</code> names the session sources
+(<code>telegram</code>, …); <code>send_fact_stores</code> names promoted chat stores whose facts may be sent, with that chat's own
+messages only; <code>send_no_chat_sessions</code> lets sessions without a chat go. The default lists nothing.</li>
+<li><strong>Only the fact and the person's own words.</strong> The fact's text as stored; the message without the reply quote,
+with a voice transcript unwrapped, without links (with or without <code>https://</code>) and <code>[service brackets]</code>. No ids,
+senders or times. Names inside the texts do leave.</li>
+<li><strong>Nothing risky, nothing long.</strong> A pair whose text holds a secret or an instruction stays home, and so does a long
+one (a fact over 400 characters, words over 600) — such pairs stay counted without a verdict. Long pasted messages
+are a large share of what the rules count on a busy chat, and the judge does not see them.</li>
+<li><strong>To whom.</strong> OpenRouter for <code>jev</code>, OpenAI for <code>openai</code>; with both listed, one pair may reach both.</li>
+</ul>
+<h4>Limits, failures and files</h4>
+<ul>
+<li>At most <code>max_attempts</code> (250) calls, <code>max_cost_usd</code> ($0.05, by the price the provider reports; soft — the last call
+may pass it) and 120 seconds a night, never past the gate's deadline. HTTPS to fixed endpoints, no proxy, no
+redirect, answers of at most 64 KB. A provider without a key, or that refuses it, is off until the next night. An
+answer, cache or health file of the wrong shape is unusable, not fatal; anything else that fails inside the judge
+leaves the night to the rules.</li>
+<li>Its files, in <code>~/.hermes/cache/</code> (0600): <code>dream-judge.json</code> — verdicts for 90 days, keyed by hashes, with fact ids
+and no text, reused only for the same pair with the same text and a provider still listed;
+<code>dream-judge-journal.jsonl</code> — every pair sent, as it was sent, and a record of each night, for 90 days, for your
+review; <code>dream-judge-health.json</code> — one line a night; <code>dream-judge-export-manifest.json</code> — the last review sample,
+until it is scored (90 days at most). A night with the judge off deletes the journal and the health file; the
+forget sweep removes a forgotten fact from all of them, even with the judge off.</li>
+<li>Off the network: <code>--dry-run</code> reads the judge's cache and sends nothing; <code>--explain</code> does not load the judge;
+<code>--judge-replay FILE</code> judges from recorded answers (JSON lines <code>{"provider", "fact", "words", "response"}</code>) and
+writes nothing of the judge. A real night — the gate, <code>hermes cron run</code>, <code>dream.py</code> without <code>--dry-run</code> — sends.</li>
+</ul>
+<h4>From shadow to veto</h4>
+<p>Run <code>shadow</code> for a couple of weeks, then take a blind sample: <code>dream.py --judge-export sample.jsonl</code> writes one
+judged pair per fact, each line only <code>{"id", "fact", "message"}</code>. Label every line in a JSON-lines file
+<code>{"id", "label"}</code> — <code>S</code> (confirms), <code>C</code> (contradicts), <code>U</code> (neither) or <code>?</code> (for someone else to decide) — and run
+<code>dream.py --judge-score labels.jsonl</code>. It answers <code>ready</code> when the upper 95 % bound of wrong vetoes is at most 10 %,
+of lost confirmations at most 20 %, coverage at least 90 % and no wrong veto changed a decision; <code>not_ready</code> when
+the lower bound of wrong vetoes is over 10 %; otherwise <code>continue</code> — label more. When the fallback gave over a fifth
+of the verdicts, each provider has to pass on its own. Switch <code>mode</code> to <code>veto</code> only on <code>ready</code>.</p>
+<h3>Using it by hand</h3>
+<pre><code class="language-bash">S=~/.hermes/plugins/hermes-dreaming/skills/dreaming/scripts
+python3 $S/dream.py --dry-run                 # what tonight's pass would show; writes nothing
+python3 $S/dream.py --explain 42              # why fact 42 scored like that
+python3 $S/dream.py --forget-sweep            # clean the copies of facts the store has forgotten
+python3 $S/dream-reject.py 42 --reason "thread was closed"
+python3 $S/dream-reject.py --list             # what is muted, and how old
+python3 $S/dream-reject.py --undo 42          # lift a rejection (by its key or the fact's id)
+python3 $S/dream-reject.py --from-report --reason "duplicates the system prompt"   # after a manual cleanup
+</code></pre>
+<p>Cleaning durable memory by hand? Reject what you dropped: the facts stay in the store, flip to
+<code>in_memory: false</code>, and the next pass would propose them right back.</p>
+<p>A plain <code>python3</code> may have no PyYAML. The scripts then read config.yaml with a narrow reader of their own. It
+covers block <code>key: value</code> lines, comments and one-line <code>{…}</code>, and it does not guess. If it cannot read the
+<code>memory:</code> block or the holographic plugin's block for sure, that block counts as unread:</p>
+<ul>
+<li>the pass reads no facts unless <code>fact_store_path</code> names the store;</li>
+<li>extraction stays off;</li>
+<li>the report and <code>install.py --check</code> say why.</li>
+</ul>
+<p>Forms it leaves unread include a <code>{…}</code> over several lines, a value on the line after its key, tags, anchors and
+block scalars (<code>|</code>). To read such a config, run the scripts with Hermes' interpreter
+(<code>~/.hermes/hermes-agent/venv/bin/python</code>, which has PyYAML). The scheduled jobs always use it.</p>
+<h4>Verify it end to end</h4>
+<pre><code class="language-bash">hermes cron list                          # the three jobs present and enabled
+hermes cron run &lt;dream job id&gt;            # one real run
+tail -20 ~/.hermes/memories/DREAMS.md     # a section for today
+</code></pre>
+<p>A quiet night prints <code>{"wakeAgent": false}</code> and the agent never starts — the wake gate doing its job.</p>
+<p><code>hermes cron run</code> and the gates are a real night, like <code>dream.py</code> without <code>--dry-run</code>: they write the state,
+mark what they showed and, with the cloud judge on, send pairs to its providers. To look without consequences,
+use <code>dream.py --dry-run</code>.</p>
+<h3>Configuration</h3>
+<p><code>~/.hermes/dreaming.json</code> (or <code>$DREAM_CONFIG</code>); see <code>skills/dreaming/examples/dreaming.example.json</code>.
+Missing file → defaults. A file that is there but is not valid JSON stops the nightly pass and the extraction job
+with <code>dream_error</code>, instead of a night on the defaults (no trusted chats, so a batch of wrong "still relevant?"
+questions and an extraction cursor moved past every group message); <code>--dry-run</code> and <code>install.py --check</code> still read
+past it and say so. Precedence: CLI flag &gt; <code>DREAM_*</code> env &gt; config &gt; default.</p>
+<table>
+<thead>
+<tr>
+<th>field</th>
+<th>meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>timezone</code></td>
+<td>IANA zone for the diary date and day-bucketing of mentions. Not set → Hermes' own <code>timezone</code>, then UTC</td>
+</tr>
+<tr>
+<td><code>trusted_chat_ids</code></td>
+<td>group chats whose messages corroborate memory (<strong>fail-closed</strong>: empty = none)</td>
+</tr>
+<tr>
+<td><code>excluded_threads</code></td>
+<td>threads of a trusted chat that must not corroborate — <code>{"&lt;chat_id&gt;": ["&lt;thread_id&gt;", …]}</code></td>
+</tr>
+<tr>
+<td><code>untrusted_sources</code></td>
+<td>session sources that are machine prompts — <code>cron</code>, <code>subagent</code> and <code>tool</code> are always excluded; add <code>cli</code> when scripts drive the agent</td>
+</tr>
+<tr>
+<td><code>exclude_patterns</code></td>
+<td>regexes; a message whose text matches never corroborates (bridge briefs, forwarded digests — machine text with no source of its own)</td>
+</tr>
+<tr>
+<td><code>trust_private_chats</code>, <code>trust_sessions_without_chat</code></td>
+<td>whether a DM, and a session with no chat metadata, count as human speech (both default <code>true</code>)</td>
+</tr>
+<tr>
+<td><code>agent_names</code>, <code>extra_stopwords</code></td>
+<td>noise words for the tokenizer</td>
+</tr>
+<tr>
+<td><code>alias_rules</code></td>
+<td>declarative "same fact, other words" rules — <code>{"fact": [["a","b"],["c"]], "memory": [["x"]]}</code></td>
+</tr>
+<tr>
+<td><code>fact_source</code>, <code>fact_store_path</code>, <code>fact_table</code>, <code>fact_columns</code></td>
+<td>where candidate facts come from (above). Env: <code>DREAM_FACT_SOURCE</code>, <code>DREAM_FACT_STORE</code></td>
+</tr>
+<tr>
+<td><code>durable_memory_paths</code></td>
+<td>files that already are memory (dedupe targets)</td>
+</tr>
+<tr>
+<td><code>memory_char_limits</code></td>
+<td>char limits of MEMORY.md / USER.md. <strong>Leave it out</strong> and the limits are read from Hermes' own <code>memory.memory_char_limit</code> / <code>user_char_limit</code>; the example's numbers are the core defaults and will misreport an install that raised them</td>
+</tr>
+<tr>
+<td><code>pending.dir</code>, <code>pending.alert_min</code>, <code>pending.alert_days</code></td>
+<td>the approval queue (<code>pending/memory</code>): when ≥<code>alert_min</code> writes have waited longer than <code>alert_days</code>, one alert is raised</td>
+</tr>
+<tr>
+<td><code>pinned_markers</code></td>
+<td>entries with these markers are never asked about</td>
+</tr>
+<tr>
+<td><code>probes</code></td>
+<td>phrases that must stay in MEMORY.md / USER.md (<code>["allergic to peanuts"]</code>); when one disappears — by its text, or every word of it in one sentence of an entry in any form — one <code>probe_missing</code> alert. The loss guard catches a mass loss; this catches the one entry merged away while memory was tidied at its limit. Empty by default</td>
+</tr>
+<tr>
+<td><code>reject_reask_days</code></td>
+<td>a rejected fact (<code>dream-reject.py</code>) is asked about once more when the rejection is older than this (180 days) and the fact was said again since — a new store row and a human mention after it; the item carries <code>previously_rejected</code>. <code>0</code> = never</td>
+</tr>
+<tr>
+<td><code>windows</code>, <code>gates</code>, <code>weights</code></td>
+<td>scoring knobs — <code>references/scoring.md</code>; <code>gates.md_confirmed_cooldown_days</code> (90) is the rest period of a confirmed entry</td>
+</tr>
+<tr>
+<td><code>precheck.memory_full_pct</code></td>
+<td>fill level (%) at which a memory file alone wakes the agent (default 85; <code>0</code> disables)</td>
+</tr>
+<tr>
+<td><code>precheck.timeout_sec</code></td>
+<td>how long the gate waits for <code>dream.py</code> before reporting <code>dream_error</code> (default 600)</td>
+</tr>
+<tr>
+<td><code>corroboration.memory_mb</code></td>
+<td>what one nightly pass may keep of what it read from the window's messages, in MiB (default 256, at least 1; an estimate on the high side). Past it the parts cheapest to read again are let go and read again when a fact needs them — a slower night, the same decisions. Lower it on a small machine; raise it if a large window makes the night slow — <code>references/scoring.md</code>, "Each message is read once a pass"</td>
+</tr>
+<tr>
+<td><code>extract.*</code></td>
+<td>extraction chunking: <code>max_messages</code> 200, <code>max_chars</code> 40000, <code>min_messages</code> 15, <code>backfill_days</code> 60, <code>max_retries</code> 3</td>
+</tr>
+<tr>
+<td><code>diary.heading</code>, <code>diary.keep_sections</code>, <code>diary.path</code></td>
+<td>diary header, rotation and where it lives (<code>memories/DREAMS.md</code>)</td>
+</tr>
+<tr>
+<td><code>memory_loss_alert_fraction</code></td>
+<td>loss-guard threshold (0.25) — applied to the share of lost entries <strong>and</strong> of lost characters</td>
+</tr>
+<tr>
+<td><code>gates.promotion_cooldown_days</code></td>
+<td>rest for a promotion already shown (3 days); without it a candidate the agent could not write came back every night</td>
+</tr>
+<tr>
+<td><code>duplicates.enabled</code>, <code>.min_containment</code>, <code>.per_night</code>, <code>.question_cooldown_days</code>, <code>.max_pair_checks</code>, <code>.max_chars</code></td>
+<td>the "merge?" questions (holographic ≥ 0.19.0, on by default): the share of the shorter fact's words the other must hold (0.7), questions a night (1), rest of an asked pair (180 days), the night's budget of pair checks (200 000; past it the search is skipped with one alert), facts longer than this (2000) take no part — <code>references/scoring.md</code>, "Duplicates across the store"</td>
+</tr>
+<tr>
+<td><code>keywords.enabled</code>, <code>keywords.cap</code></td>
+<td>list facts without keywords for the agent (<code>keywords_needed</code>, at most <code>cap</code> a night, default 10) and ask the extraction run for keywords. Off by default; turn it on with holographic ≥ 0.6.1 — an older provider ignores the parameter, and 0.6.0 re-dated a fact when it got keywords</td>
+</tr>
+<tr>
+<td><code>chat_stores.read</code>, <code>chat_stores.promote_from</code></td>
+<td>holographic <code>scope: user / chat / thread</code> only: list every per-chat database (counts), promote the facts of the listed chats — see <a href="#one-database-per-chat">One database per chat</a></td>
+</tr>
+<tr>
+<td><code>judge.mode</code>, <code>judge.providers</code>, <code>judge.tau</code>, <code>judge.send_*</code>, <code>judge.max_attempts</code>, <code>judge.max_cost_usd</code></td>
+<td>the optional cloud judge: <code>off</code> (default) / <code>shadow</code> / <code>veto</code>; <code>jev</code> and / or <code>openai</code>, the first asked first; the veto threshold, 0.50–1 (default 0.50); what may be sent — <code>send_from</code> (<code>"trusted"</code> or chat ids), <code>send_sources</code>, <code>send_fact_stores</code>, <code>send_no_chat_sessions</code>; the night's limits (250 calls, $0.05). A section that breaks the schema turns the judge off and says why — see <a href="#optional-cloud-judge-off-by-default">Optional cloud judge</a></td>
+</tr>
+</tbody></table>
+<h3>Safety and privacy</h3>
+<p><img src="https://raw.githubusercontent.com/itpartypattaya/hermes-dreaming/main/docs/files.png" alt="Files the skill reads and writes" loading="lazy" decoding="async"></p>
+<ul>
+<li><strong>Network:</strong> none by default. With the <a href="#optional-cloud-judge-off-by-default">cloud judge</a> on, the pass sends
+what its section lists to OpenRouter and / or OpenAI over HTTPS, and nothing anywhere else. <strong>LLM calls:</strong> none
+from the scripts besides that judge's decision call; the only model turn is the agent in the cron session,
+with your model and your tools.</li>
+<li><strong>Reads:</strong> <code>state.db</code> (sessions and messages, opened read-only), the fact store (read-only, per-user
+and per-chat stores too), the memory files, <code>dreaming.json</code> and <code>config.yaml</code>, the approval queue
+(<code>pending/memory</code>), <code>scripts/holo_screen.py</code>, <code>dream_lang.py</code> and <code>dream_yaml.py</code> next to it; the forget
+sweep also <code>cron/jobs.json</code> and the dream jobs' logs; with the judge on, its keys' own lines in <code>.env</code>
+(nothing else of it).</li>
+<li><strong>Script writes:</strong> <code>~/.hermes/cache/dream*.json</code> (the night's payload <code>dream.json</code>, cooldowns, questions,
+reject list, snapshot, extraction cursor, diary index of line hashes, sweep state; with the judge on, its
+<code>dream-judge*</code> files; mode 0600) and a lock
+file, <code>~/.hermes/memories/DREAMS.md</code> (diary; after 90 nights the older sections move to
+<code>DREAMS.md.archive.md</code>), and — only <code>install.py</code> — the three gate copies in <code>~/.hermes/scripts/</code> (0755)
+plus a seeded <code>dreaming.json</code>.
+A state file is written whole or not at all (a temporary file renamed over it). One that is there but is not
+valid JSON is never read as "no state": it is moved aside to <code>&lt;file&gt;.corrupt-&lt;UTC time&gt;</code> with a warning in the
+job's log, and the pass runs without it — look there if rejections or cooldowns seem to have reset.
+Only a run that holds the state lock moves a file aside; <code>dream-reject.py --list</code> reports a broken list and leaves
+it as it is.
+The forget sweep rewrites those files without a forgotten fact and deletes the dream jobs' own logs
+in <code>~/.hermes/cron/output/</code> that mention it, by its id or its verbatim text. The set-aside <code>*.corrupt-*</code> copies
+cannot be parsed, and a write cut short may have cut the fact's text anywhere, so the first sweep after a
+<code>forget</code> deletes all of them; later sweeps delete a copy that mentions a forgotten fact. A copy it cannot delete
+is an error: the gate fails and the next run deletes it. Nothing else.</li>
+<li><strong>The agent writes</strong> memory entries through the <code>memory</code> tool (at most 6 changes a night, of them at
+most 3 new); in the extraction job, candidate facts through <code>fact_store add</code>; keywords through
+<code>fact_store update</code>; trust through <code>fact_feedback</code> (<code>unhelpful</code> for a rejected fact, <code>confirmed</code>). The
+skill deletes nothing from the store; a fact changes or leaves it through <code>fact_store end</code> / <code>change</code> /
+<code>correct</code> / <code>forget</code>, on a human's own words only.</li>
+<li>Message and fact contents are treated as data, never as instructions. Facts, the evidence quoted
+next to them, the messages the extraction job hands over and the "still relevant?" previews are
+all screened for credentials and injection directives; a hit is quarantined (a secret's text is
+published nowhere, an injection keeps a 60-char preview in the full JSON only).
+<strong>The screening is a regex filter, not a guarantee:</strong> it knows the common key shapes
+(<code>sk-</code>, <code>gsk_</code>, <code>ntn_</code>, <code>gho_</code>, AWS, Google, Slack, Telegram, JWT, PEM), credential markers in
+Russian and English, and the injection phrasings the core's own cron scanner looks for, plus the
+holographic provider's screen (<code>scripts/holo_screen.py</code>, a verbatim copy, MIT) — a
+wording nobody has seen yet can still get through. Keep the approval gate on if that matters.
+No tools, hooks, middleware or environment variables are registered.</li>
+<li><strong><code>DREAM_SCRIPT</code> decides what code the gates run.</strong> Set in the environment of the cron jobs, it points all three
+gates at another <code>dream.py</code> instead of the plugin's reviewed copy. It exists for unusual layouts
+(<code>skills.external_dirs</code>); leave it unset otherwise.</li>
+</ul>
+<h3>Repository layout</h3>
+<pre><code class="language-text">plugin.json                          Agent Plugins v1 manifest
+skills/dreaming/
+  SKILL.md                           agent instructions
+  scripts/dream.py                   the pass (never writes memory)
+  scripts/dream_lang.py              stopwords, months, weekdays and dates of every language read
+  scripts/dream_yaml.py              config.yaml reader for a run without PyYAML
+  scripts/dream_judge.py             the optional cloud judge (loaded only when it is on)
+  scripts/holo_screen.py             the holographic provider's screen, a verbatim copy
+  scripts/dream-precheck.py          nightly wake gate        → ~/.hermes/scripts/
+  scripts/dream-extract-precheck.py  extraction gate          → ~/.hermes/scripts/
+  scripts/dream-forget-sweep.py      no_agent forget sweep    → ~/.hermes/scripts/
+  scripts/dream-reject.py            reject list CLI
+  scripts/install.py                 installs and verifies the gates
+  scripts/install_cron.py            creates jobs and synchronizes recognized stock prompts
+  scripts/cron-prompt-history.json   per-role SHA256 allowlist of shipped prompt templates
+  references/scoring.md              signals, gates, sections, state files
+  references/cron-memory.md          what cron sessions may touch
+  examples/                          config and cron job examples
+  tools/vendor_screen.py             makes holo_screen.py from the provider's source
+tests/                               stdlib unittest, synthetic data, no network (the judge's: a fake provider
+                                     on 127.0.0.1)
+docs/                                README images (SVG sources in docs/src/)
+</code></pre>
+<h3>Development</h3>
+<pre><code class="language-bash">python3 -m unittest discover -s tests -v
+</code></pre>
+<p>The tests also run from a copy that keeps <code>tests/</code> next to the skill directory. CI also runs
+<code>ruff check --select E,F,BLE --ignore E501 skills tests</code>, and checks <code>scripts/holo_screen.py</code> against the provider's
+source at the commit the copy names. <code>tests/evals/evals.json</code> holds scenario prompts for checking the agent's
+behaviour against <code>SKILL.md</code> with skill-creator; CI does not run them. Issues and pull requests are welcome.</p>
+<h3>Design notes</h3>
+<ul>
+<li>Corroboration must come from <strong>humans</strong>; machine text never counts.</li>
+<li><strong>Every candidate needs an outcome.</strong> What the agent cannot close at night (there is no terminal
+in the cron session) is closed by cooldowns on the script side, not by agent discipline.</li>
+<li><strong>Text, not ids.</strong> SQLite reuses ids; state is keyed by a text fingerprint, so a re-extracted fact
+is recognised.</li>
+<li><strong>Zero writes is a success.</strong> A night is capped at 6 memory changes, and an entry is changed only
+with text the script hands over verbatim.</li>
+<li>Borrowed ideas: OpenClaw (phases, weights, gates, loss fraction, explain), mem0 (nearest entry</li>
+</ul>
+<hr>
+<p><em>README truncated. <a href="https://github.com/itpartypattaya/hermes-dreaming#readme">Continue reading on GitHub</a></em></p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in memory &amp; context</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/mem0ai/mem0">
+        <div class="stars">★ 68.7K</div>
+        <div class="name"><span class="org">mem0ai /</span> mem0</div>
+      </a>
+      <a class="related-row" href="/projects/vectorize-io/hindsight">
+        <div class="stars">★ 60.0K</div>
+        <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
+      </a>
+      <a class="related-row" href="/projects/greyhaven-ai/autocontext">
+        <div class="stars">★ 1.3K</div>
+        <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
+      </a>
+      <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
+        <div class="stars">★ 385</div>
+        <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
+      </a>
+      <a class="related-row" href="/projects/yoloshii/ClawMem">
+        <div class="stars">★ 212</div>
+        <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
+      </a>
+      <a class="related-row" href="/projects/Signet-AI/signetai">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">Signet-AI /</span> signetai</div>
+      </a>
+      <a class="related-row" href="/projects/plur-ai/plur">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">plur-ai /</span> plur</div>
+      </a>
+      <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
+        <div class="stars">★ 52</div>
+        <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
+      </a>
+    </div>
+    <p class="list-link"><a href="/lists/best-memory-providers">see all memory &amp; context →</a></p>
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="/about">about</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues/new?template=suggest-repo.yml">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

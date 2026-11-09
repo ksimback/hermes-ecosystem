@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>matrixorigin/memoria — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
+<meta name="description" content="Native Hermes memory provider for Memoria Cloud or self-hosted APIs, with bounded recall and opt-in fact capture.">
+<link rel="canonical" href="https://hermesatlas.com/projects/matrixorigin/memoria">
+<meta property="og:title" content="matrixorigin/memoria — Hermes Atlas">
+<meta property="og:description" content="Native Hermes memory provider for Memoria Cloud or self-hosted APIs, with bounded recall and opt-in fact capture.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/matrixorigin/memoria">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=memoria&amp;subtitle=Secure+memory+management+for+AI+Agents+%E2%80%A2+Ensures+data+integrity+%E2%80%A2+Reduces+hallucinations+%E2%80%A2+Maintains+consistent+long-term+context&amp;kind=project+%C2%B7+memory">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="matrixorigin/memoria — Hermes Atlas">
+<meta name="twitter:description" content="Native Hermes memory provider for Memoria Cloud or self-hosted APIs, with bounded recall and opt-in fact capture.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=memoria&amp;subtitle=Secure+memory+management+for+AI+Agents+%E2%80%A2+Ensures+data+integrity+%E2%80%A2+Reduces+hallucinations+%E2%80%A2+Maintains+consistent+long-term+context&amp;kind=project+%C2%B7+memory">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "memory &amp; context", "item": "https://hermesatlas.com/lists/best-memory-providers" },
+    { "@type": "ListItem", "position": 3, "name": "memoria" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/matrixorigin/memoria#software",
+  "name": "memoria",
+  "description": "Native Hermes memory provider for Memoria Cloud or self-hosted APIs, with bounded recall and opt-in fact capture.",
+  "url": "https://hermesatlas.com/projects/matrixorigin/memoria",
+  "codeRepository": "https://github.com/matrixorigin/memoria",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Rust",
+  "license": "https://spdx.org/licenses/Apache-2.0.html",
+  "author": {
+    "@type": "Organization",
+    "name": "matrixorigin",
+    "url": "https://github.com/matrixorigin"
+  },
+  "dateModified": "2026-11-08T03:47:19.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 624
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">310·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/lists/best-memory-providers">memory &amp; context</a><span class="sep">/</span>memoria
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">matrixorigin</span><span class="slash">/</span>memoria
+  </h1>
+  <p class="project-desc">Secure memory management for AI Agents • Ensures data integrity • Reduces hallucinations • Maintains consistent long-term context</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 624</span>
+    <span><span class="meta-label">lang</span>Rust</span>
+    <span><span class="meta-label">license</span>Apache-2.0</span>
+    
+    <span><span class="meta-label">updated</span>2026-11-08</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/matrixorigin/memoria" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    <a href="https://thememoria.ai/" target="_blank" rel="noopener" class="btn-secondary">homepage</a>
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">Native Hermes memory provider for Memoria Cloud or self-hosted APIs, with bounded recall and opt-in fact capture.</p>
+    <ul class="summary-highlights">
+      <li>Bounded cached semantic recall and explicit memory CRUD/feedback tools</li>
+      <li>Opt-in turn capture with durable outbox and deduplication handling</li>
+      <li>Cloud default with configurable self-hosted API and profile-scoped secrets</li>
+    </ul>
+  </div>
+</section>
+
+<section class="project-summary" aria-label="Security note"><div class="section-label">security note</div><p class="summary-text">Basic static screen: f796036 (November 9, 2026), not security certification. Preview integration: cloud recall sends queries and opt-in capture uploads completed turns. The separate CLI installer has opt-out telemetry, a download proxy fallback and conditional checksum verification; prefer pinned, independently verified artifacts.</p></section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <div align="center">
+  <img src="https://raw.githubusercontent.com/matrixorigin/memoria/main/assets/memoria-logo.png" alt="Memoria Logo" width="300">
+
+<h2>Memoria</h2>
+<p>  <strong>The World's First Git for AI Agent Memory</strong></p>
+<p>  <em>Snapshot · Branch · Merge · Rollback — for memory, not code.</em></p>
+<blockquote>
+<p>Git made code safe to change. Memoria makes memory safe to change.</p>
+</blockquote>
+<p>  <a href="https://github.com/matrixorigin/Memoria/actions/workflows/test.yml"><img src="https://github.com/matrixorigin/Memoria/actions/workflows/test.yml/badge.svg" alt="CI" loading="lazy" decoding="async"></a>
+  <a href="https://github.com/matrixorigin/Memoria/releases"><img src="https://img.shields.io/github/v/release/matrixorigin/Memoria?style=flat-square&amp;color=00d4aa" alt="Release" loading="lazy" decoding="async"></a>
+  <a href="https://github.com/matrixorigin/Memoria/stargazers"><img src="https://img.shields.io/github/stars/matrixorigin/Memoria?style=flat-square&amp;color=7C3AED" alt="GitHub Stars" loading="lazy" decoding="async"></a>
+  <a href="https://github.com/matrixorigin/Memoria/releases"><img src="https://img.shields.io/github/downloads/matrixorigin/Memoria/total?style=flat-square" alt="Downloads" loading="lazy" decoding="async"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=flat-square" alt="License" loading="lazy" decoding="async"></a>
+  <a href="https://modelcontextprotocol.io"><img src="https://img.shields.io/badge/Protocol-MCP-7C3AED?style=flat-square" alt="MCP" loading="lazy" decoding="async"></a>
+  <a href="https://github.com/matrixorigin/matrixone"><img src="https://img.shields.io/badge/Powered%20by-MatrixOne-00ADD8?style=flat-square&amp;logo=database" alt="MatrixOne" loading="lazy" decoding="async"></a>
+  <a href="https://arxiv.org/abs/2604.03927"><img src="https://img.shields.io/badge/arXiv-2604.03927-b31b1b?style=flat-square" alt="Paper" loading="lazy" decoding="async"></a></p>
+<p>  <a href="#-quick-start">Quick Start</a> · <a href="#-memoria-in-astra">Memoria in Astra</a> · <a href="#-why-memoria">Why Memoria</a> · <a href="#-research-foundation">Research</a> · <a href="#-see-git-for-data-in-action">See It in Action</a> · <a href="#-api-reference">API Reference</a> · <a href="#-architecture">Architecture</a> · <a href="#-development">Development</a> · <a href="#-citation">Citation</a></p>
+</div>
+
+<hr>
+<h3>Overview</h3>
+<p>Memoria is a <strong>persistent memory layer</strong> for AI agents with Git-level version control.
+Every memory change is tracked, auditable, and reversible — snapshots, branches, merges, and time-travel rollback, all powered by <a href="https://github.com/matrixorigin/matrixone">MatrixOne</a>'s native Copy-on-Write engine.</p>
+<blockquote>
+<p><strong>A core memory component of <a href="https://github.com/matrixorigin/Astra">MatrixOrigin's Astra</a>.</strong></p>
+<p>Astra runs the agent. Memoria helps it remember across sessions. <a href="https://github.com/matrixorigin/matrixone">MatrixOne</a> powers the data storage and search.</p>
+<p><a href="#-memoria-in-astra">Using Astra?</a> · <a href="#-quick-start">Use Memoria with another agent</a></p>
+</blockquote>
+<table>
+<tbody><tr>
+<td align="center" width="33%">
+
+<p><strong>🔀 Git for Memory</strong></p>
+<p>Zero-copy branching, instant snapshots, point-in-time rollback — version control for every memory mutation</p>
+</td>
+<td align="center" width="33%">
+
+<p><strong>🔍 Semantic Search</strong></p>
+<p>Vector + full-text hybrid retrieval finds memories by meaning, not just keywords</p>
+</td>
+<td align="center" width="33%">
+
+<p><strong>🛡️ Self-Governing</strong></p>
+<p>Auto-detects contradictions, quarantines low-confidence memories, maintains audit trails</p>
+</td>
+</tr>
+</tbody></table>
+
+<table>
+<tbody><tr>
+<td align="center" width="33%">
+
+<p><strong>🔒 Private by Default</strong></p>
+<p>Local embedding model option — no data leaves your machine</p>
+</td>
+<td align="center" width="33%">
+
+<p><strong>🧠 Cross-Conversation</strong></p>
+<p>Preferences, facts, and decisions persist across sessions</p>
+</td>
+<td align="center" width="33%">
+
+<p><strong>📋 Full Audit Trail</strong></p>
+<p>Every memory mutation has a snapshot + provenance chain</p>
+</td>
+</tr>
+</tbody></table>
+
+<h4>Supported Agents</h4>
+<p align="center">
+  <a href="https://kiro.dev"><img src="https://img.shields.io/badge/Kiro-00C853?style=for-the-badge&amp;logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHRleHQgeD0iNCIgeT0iMTgiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IndoaXRlIj5LPC90ZXh0Pjwvc3ZnPg==&amp;logoColor=white" alt="Kiro"></a>
+  <a href="https://cursor.sh"><img src="https://img.shields.io/badge/Cursor-000000?style=for-the-badge&amp;logo=cursor&amp;logoColor=white" alt="Cursor"></a>
+  <a href="https://docs.anthropic.com/en/docs/claude-code"><img src="https://img.shields.io/badge/Claude_Code-D97757?style=for-the-badge&amp;logo=anthropic&amp;logoColor=white" alt="Claude Code"></a>
+  <a href="https://openai.com/index/introducing-codex/"><img src="https://img.shields.io/badge/Codex-412991?style=for-the-badge&amp;logo=openai&amp;logoColor=white" alt="Codex"></a>
+  <a href="https://geminicli.com"><img src="https://img.shields.io/badge/Gemini_CLI-4285F4?style=for-the-badge&amp;logo=google&amp;logoColor=white" alt="Gemini CLI"></a>
+  <a href="plugins/openclaw/README.md"><img src="https://img.shields.io/badge/OpenClaw-FF6B6B?style=for-the-badge" alt="OpenClaw"></a>
+  <a href="plugins/hermes/README.md"><img src="https://img.shields.io/badge/Hermes-8B5CF6?style=for-the-badge" alt="Hermes"></a>
+</p>
+
+<p align="center"><i>Works with any MCP-compatible agent</i></p>
+
+<hr>
+<h3>🧠 Memoria in Hermes</h3>
+<p>Memoria is available from the Hermes plugin catalog. Log in at
+<a href="https://thememoria.ai">Memoria</a> and create/copy a memory-service API key, then run:</p>
+<pre><code class="language-bash">hermes plugins install memoria --yes-deps --enable
+hermes memory setup
+hermes memory status
+</code></pre>
+<p>In the interactive setup, select <strong>memoria</strong>, paste your API key at the masked
+prompt, and choose whether to enable automatic capture (off by default). Confirm
+that status reports <code>memoria</code>, installed and <code>available</code>, then exit any existing
+conversation and start a new one with <code>hermes</code>. Status checks local readiness;
+verify a live write using the <a href="https://github.com/matrixorigin/memoria/blob/main/plugins/hermes/README.md">complete Hermes guide</a>.
+The free Memoria Cloud requires no local Memoria server or database. Self-hosting,
+fixed GitHub installation and named profiles are covered in the same guide.</p>
+<hr>
+<h3>🧩 Memoria in Astra</h3>
+<p>In <a href="https://github.com/matrixorigin/Astra">Astra</a>, Memoria stores and retrieves facts, preferences, decisions, and session summaries so agents can reuse knowledge across conversations. Memory changes can be reviewed and rolled back.</p>
+<table>
+<thead>
+<tr>
+<th>How you use it</th>
+<th>Where to start</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Hosted Astra</strong></td>
+<td>Memoria is already running for you. Follow the <a href="https://github.com/matrixorigin/Astra#quick-start">Astra quick start</a>.</td>
+</tr>
+<tr>
+<td><strong>Self-hosted Astra</strong></td>
+<td>Astra's deployment includes compatible Memoria and MatrixOne services. Follow <a href="https://github.com/matrixorigin/Astra#self-host-with-docker">Astra's Docker setup</a>.</td>
+</tr>
+<tr>
+<td><strong>Memoria with other agents</strong></td>
+<td>Use Memoria independently via MCP. Follow the <a href="#-quick-start">Memoria quick start</a> below.</td>
+</tr>
+</tbody></table>
+<p>For example, search your memories from Astra:</p>
+<pre><code class="language-bash">astra memory search "deployment preferences"
+</code></pre>
+<hr>
+<h3>🚀 Quick Start</h3>
+<details open="">
+<summary><b>☁️ Memoria Cloud (Recommended — no Docker, no database)</b></summary>
+<br>
+
+<p><strong>1. Sign up</strong> at <a href="https://thememoria.ai/auth">thememoria.ai</a> and get your token</p>
+<p><strong>2. Install &amp; configure</strong></p>
+<pre><code class="language-bash">curl -sSL https://raw.githubusercontent.com/matrixorigin/Memoria/main/scripts/install.sh | bash
+cd your-project
+memoria init -i   # Select "Remote" mode, paste your token
+</code></pre>
+<p><strong>3. Restart &amp; verify</strong> — restart your AI tool, then ask: <em>"Do you have memory tools available?"</em></p>
+</details>
+
+<details>
+<summary><b>🐳 Self-Hosted (Docker — full data control)</b></summary>
+<br>
+
+<pre><code class="language-bash"># 1. Start MatrixOne + API
+git clone https://github.com/matrixorigin/Memoria.git
+cd Memoria
+docker compose up -d
+
+# 2. Install CLI
+curl -sSL https://raw.githubusercontent.com/matrixorigin/Memoria/main/scripts/install.sh | bash
+
+# 3. Configure your AI tool
+cd your-project
+memoria init -i   # Select "Embedded" mode
+</code></pre>
+<p>Restart your AI tool, then ask: <em>"Do you have memory tools available?"</em></p>
+</details>
+
+<details>
+<summary><b>🦞 OpenClaw Plugin</b></summary>
+<br>
+
+<p>Use the native OpenClaw plugin: <a href="https://github.com/matrixorigin/memoria/blob/main/plugins/openclaw/README.md">OpenClaw Plugin Setup</a></p>
+<pre><code class="language-bash"># ensure memoria CLI exists
+command -v memoria &gt;/dev/null || curl -sSL https://raw.githubusercontent.com/matrixorigin/Memoria/main/scripts/install.sh | bash -s -- -y -d ~/.local/bin
+
+# install &amp; enable
+openclaw plugins install @matrixorigin/memory-memoria
+openclaw plugins enable memory-memoria
+
+# cloud-first setup
+openclaw memoria setup --mode cloud --api-url &lt;MEMORIA_API_URL&gt; --api-key &lt;MEMORIA_API_KEY&gt; --install-memoria
+openclaw memoria health
+</code></pre>
+</details>
+
+<p>Or download binaries directly from <a href="https://github.com/matrixorigin/Memoria/releases">GitHub Releases</a>. For detailed setup, see <a href="https://github.com/matrixorigin/memoria/blob/main/skills/setup/SKILL.md">Setup Skill</a>.</p>
+<hr>
+<h3>💡 Why Memoria?</h3>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Memoria</th>
+<th>Letta / Mem0 / Traditional RAG</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Git-level version control</strong></td>
+<td>Native zero-copy snapshots &amp; branches</td>
+<td>File-level or none</td>
+</tr>
+<tr>
+<td><strong>Isolated experimentation</strong></td>
+<td>One-click branch, merge after validation</td>
+<td>Manual data duplication</td>
+</tr>
+<tr>
+<td><strong>Audit trail</strong></td>
+<td>Full snapshot + provenance on every mutation</td>
+<td>Limited logging</td>
+</tr>
+<tr>
+<td><strong>Semantic retrieval</strong></td>
+<td>Vector + full-text hybrid search</td>
+<td>Vector only</td>
+</tr>
+<tr>
+<td><strong>Self-governance</strong></td>
+<td>Automatic contradiction detection &amp; quarantine</td>
+<td>Manual cleanup</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>🔬 Research Foundation</h3>
+<p>Memoria's Git-for-Data layer is backed by <a href="https://arxiv.org/abs/2604.03927"><strong>Version Control System for Data with MatrixOne</strong></a>, our arXiv paper on bringing Git-like workflows directly into a cloud-native database.</p>
+<p>The paper describes how MatrixOne's immutable storage and MVCC architecture make <code>clone</code>, <code>branch</code> / <code>tag</code>, <code>diff</code>, <code>merge</code>, and <code>revert</code> practical at terabyte scale without loading whole datasets into memory. Memoria applies the same foundation to AI-agent memory, so every memory change can be isolated, reviewed, merged, or rolled back with database-native consistency.</p>
+<hr>
+<h3>🎬 See Git for Data in Action</h3>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/matrixorigin/memoria/main/assets/git4data-story-writing-demo.svg" alt="Animated Memoria Git-for-Data demo showing an author branching a story draft, merging a better plot direction into the main storyline, and rolling back the last two unsatisfying beats." width="100%">
+</p>
+
+<p>A story-writing scenario demonstrates the core concept: an author has accepted story beats on <code>main</code>, opens an experimental branch for a different plot direction, merges the stronger draft back, and rolls back when the newest beats don't work.</p>
+<details>
+<summary><b>What the demo shows</b></summary>
+
+<ul>
+<li><strong>Main storyline</strong> — accepted story beats live on <code>main</code></li>
+<li><strong>Experimental branch</strong> — the author tries a new plot turn without rewriting canon</li>
+<li><strong>Merge</strong> — the stronger draft is promoted back into the main storyline</li>
+<li><strong>Rollback</strong> — the last two bad turns are discarded, and writing resumes from a safe snapshot</li>
+</ul>
+</details>
+
+<hr>
+<h3>📖 Steering Rules</h3>
+<p>Steering rules teach your AI agent <strong>when and how</strong> to use memory tools. Without them, the agent has tools but no guidance — like having a database without knowing the schema.</p>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>memory</code></td>
+<td>Core memory tools — when to store, retrieve, correct, purge</td>
+</tr>
+<tr>
+<td><code>session-lifecycle</code></td>
+<td>Bootstrap at conversation start, cleanup at end</td>
+</tr>
+<tr>
+<td><code>memory-hygiene</code></td>
+<td>Proactive governance, contradiction resolution, snapshot cleanup</td>
+</tr>
+<tr>
+<td><code>memory-branching-patterns</code></td>
+<td>Isolated experiments with branches</td>
+</tr>
+<tr>
+<td><code>goal-driven-evolution</code></td>
+<td>Track goals, plans, progress across conversations</td>
+</tr>
+</tbody></table>
+<p><strong>File locations:</strong> Kiro: <code>.kiro/steering/*.md</code> · Cursor: <code>.cursor/rules/*.mdc</code> · Claude: <code>.claude/rules/*.md</code> · Codex: <code>AGENTS.md</code> · Gemini CLI: <code>GEMINI.md</code> + <code>.gemini/*.md</code></p>
+<p>After upgrading: <code>memoria rules --force</code></p>
+<details>
+<summary><b>Example: Conversation Lifecycle</b></summary>
+
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│  CONVERSATION START                                                         │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ 1. memory_retrieve(query="&lt;user's question&gt;")  ← load context       │   │
+│  │ 2. memory_search(query="GOAL ACTIVE")          ← check active goals │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  MID-CONVERSATION                                                           │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ • User states preference → memory_store(type="profile")             │   │
+│  │ • User corrects a fact   → memory_correct(query="...", new="...")   │   │
+│  │ • Topic shifts           → memory_retrieve(query="&lt;new topic&gt;")     │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  CONVERSATION END                                                           │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ 1. memory_purge(topic="&lt;task&gt;")  ← clean up working memories        │   │
+│  │ 2. memory_store(type="episodic") ← save session summary             │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+</details>
+
+<details>
+<summary><b>Example: Goal-Driven Evolution</b></summary>
+
+<pre><code>You: "I want to add OAuth support to the API"
+
+AI:  → memory_search(query="GOAL OAuth")           ← check for existing goal
+     → memory_store(content="🎯 GOAL: Add OAuth support\nStatus: ACTIVE", type="procedural")
+
+     ... works on implementation, stores progress as working memories ...
+
+     → memory_store(content="✅ STEP 1/3: Added OAuth routes", type="working")
+     → memory_store(content="❌ STEP 2/3: Token refresh failed — need to fix expiry logic", type="working")
+
+... next conversation ...
+
+AI:  → memory_search(query="GOAL ACTIVE")          ← finds OAuth goal
+     → memory_search(query="STEP for GOAL OAuth")  ← loads progress
+     "Last time we were working on OAuth. Step 2 failed on token refresh. Want to continue?"
+
+... goal completed ...
+
+AI:  → memory_correct(query="GOAL OAuth", new_content="🎯 GOAL: OAuth — ✅ ACHIEVED")
+     → memory_store(content="💡 LESSON: Token refresh needs 5min buffer before expiry", type="procedural")
+     → memory_purge(topic="STEP for GOAL OAuth")   ← clean up working memories
+</code></pre>
+</details>
+
+<details>
+<summary><b>Example: Branch for Risky Experiments</b></summary>
+
+<pre><code>You: "Let's try switching from PostgreSQL to SQLite"
+
+AI:  → memory_branch(name="eval_sqlite")
+     → memory_checkout(name="eval_sqlite")
+
+     ... experiments on branch, stores findings ...
+
+     → memory_diff(source="eval_sqlite")     ← preview changes
+     → memory_checkout(name="main")
+     → memory_merge(source="eval_sqlite")    ← or delete if failed
+</code></pre>
+</details>
+
+<hr>
+<h3>📚 API Reference</h3>
+<h4>Core Tools</h4>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>memory_store</code></td>
+<td>Store a new memory</td>
+</tr>
+<tr>
+<td><code>memory_retrieve</code></td>
+<td>Retrieve relevant memories (call at conversation start)</td>
+</tr>
+<tr>
+<td><code>memory_search</code></td>
+<td>Semantic search across all memories</td>
+</tr>
+<tr>
+<td><code>memory_correct</code></td>
+<td>Update an existing memory</td>
+</tr>
+<tr>
+<td><code>memory_purge</code></td>
+<td>Delete by ID or topic keyword</td>
+</tr>
+<tr>
+<td><code>memory_list</code></td>
+<td>List active memories</td>
+</tr>
+<tr>
+<td><code>memory_profile</code></td>
+<td>Get user's memory-derived profile</td>
+</tr>
+<tr>
+<td><code>memory_feedback</code></td>
+<td>Record relevance feedback (useful/irrelevant/outdated/wrong)</td>
+</tr>
+<tr>
+<td><code>memory_capabilities</code></td>
+<td>List available memory tools</td>
+</tr>
+</tbody></table>
+<details>
+<summary><b>Snapshots &amp; Branches</b></summary>
+
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>memory_snapshot</code></td>
+<td>Create named snapshot</td>
+</tr>
+<tr>
+<td><code>memory_snapshots</code></td>
+<td>List snapshots with pagination</td>
+</tr>
+<tr>
+<td><code>memory_snapshot_delete</code></td>
+<td>Delete snapshots by name, prefix, or age</td>
+</tr>
+<tr>
+<td><code>memory_rollback</code></td>
+<td>Restore to snapshot</td>
+</tr>
+<tr>
+<td><code>memory_branch</code></td>
+<td>Create isolated branch</td>
+</tr>
+<tr>
+<td><code>memory_branches</code></td>
+<td>List all branches</td>
+</tr>
+<tr>
+<td><code>memory_checkout</code></td>
+<td>Switch branch</td>
+</tr>
+<tr>
+<td><code>memory_merge</code></td>
+<td>Merge branch back</td>
+</tr>
+<tr>
+<td><code>memory_branch_delete</code></td>
+<td>Delete a branch</td>
+</tr>
+<tr>
+<td><code>memory_diff</code></td>
+<td>Preview merge changes</td>
+</tr>
+</tbody></table>
+</details>
+
+<p>REST clients can use <a href="https://github.com/matrixorigin/memoria/blob/main/docs/snapshot-listing.md">cached-count snapshot listing</a>
+to avoid historical count queries and exclude automatic safety snapshots.</p>
+<details>
+<summary><b>Maintenance</b></summary>
+
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>memory_governance</code></td>
+<td>Quarantine low-confidence memories (1h cooldown)</td>
+</tr>
+<tr>
+<td><code>memory_consolidate</code></td>
+<td>Detect contradictions (30min cooldown)</td>
+</tr>
+<tr>
+<td><code>memory_reflect</code></td>
+<td>Synthesize insights (2h cooldown)</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><code>memory_rebuild_index</code>, <code>memory_observe</code>, <code>memory_get_retrieval_params</code>, <code>memory_tune_params</code>, <code>memory_extract_entities</code>, and <code>memory_link_entities</code> are available via REST API but hidden from MCP tool listing — they are ops/debug tools not intended for agent use.</p>
+</blockquote>
+</details>
+
+<h4>Memory Types</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Use for</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>semantic</code></td>
+<td>Project facts, decisions</td>
+<td>"Uses Go 1.22 with modules"</td>
+</tr>
+<tr>
+<td><code>profile</code></td>
+<td>User preferences</td>
+<td>"Prefers pytest over unittest"</td>
+</tr>
+<tr>
+<td><code>procedural</code></td>
+<td>Workflows, how-to</td>
+<td>"Deploy: make build &amp;&amp; kubectl apply"</td>
+</tr>
+<tr>
+<td><code>working</code></td>
+<td>Temporary task context</td>
+<td>"Currently debugging auth module"</td>
+</tr>
+<tr>
+<td><code>episodic</code></td>
+<td>Session summaries</td>
+<td>"Session: optimized DB, added indexes"</td>
+</tr>
+</tbody></table>
+<p>Full API details: <a href="https://github.com/matrixorigin/memoria/blob/main/skills/api-reference/SKILL.md">API Reference Skill</a></p>
+<p>Retry-safe single-memory writes: <a href="https://github.com/matrixorigin/memoria/blob/main/docs/api/idempotent_store.md">Idempotent store protocol</a>.</p>
+<p>Trusted adapter content preservation: <a href="https://github.com/matrixorigin/memoria/blob/main/docs/api/content_filter_policy.md">Content-filter policy</a>.</p>
+<hr>
+<h3>🔧 Commands</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>memoria init -i</code></td>
+<td>Interactive setup wizard</td>
+</tr>
+<tr>
+<td><code>memoria status</code></td>
+<td>Show config and rule versions</td>
+</tr>
+<tr>
+<td><code>memoria rules</code></td>
+<td>Update steering rules (auto-detect, <code>--tool</code>, or <code>-i</code>)</td>
+</tr>
+<tr>
+<td><code>memoria mcp</code></td>
+<td>Start MCP server</td>
+</tr>
+<tr>
+<td><code>memoria serve</code></td>
+<td>Start REST API server</td>
+</tr>
+<tr>
+<td><code>memoria benchmark</code></td>
+<td>Run benchmark suite</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>🤖 For AI Agents</h3>
+<p>If you're an AI agent helping a user set up Memoria:</p>
+<ol>
+<li><strong>Load the <a href="https://github.com/matrixorigin/memoria/blob/main/skills/setup/SKILL.md">Setup Skill</a></strong> — it has step-by-step instructions</li>
+<li><strong>Ask before acting</strong>: which AI tool? · database mode? · embedding service? <em>(Self-Hosted only)</em></li>
+<li><strong>Run <code>memoria init -i</code></strong> in the user's project directory</li>
+<li><strong>Tell user to restart</strong> their AI tool, then <strong>verify</strong> with <code>memory_retrieve("test")</code></li>
+</ol>
+<blockquote>
+<p><strong>Self-Hosted only:</strong> Configure embedding BEFORE first MCP server start — dimension is locked into schema.</p>
+</blockquote>
+<hr>
+<h3>🏗️ Architecture</h3>
+<pre><code>Cloud / Remote Mode:
+
+┌─────────────┐     MCP (stdio)     ┌──────────────────┐     HTTP/REST     ┌──────────────────┐
+│  AI Agent   │ ◄─────────────────► │  Memoria CLI     │ ◄──────────────► │  Memoria Cloud   │
+│             │   store / retrieve  │  (MCP bridge)    │   Bearer token   │  API Server      │
+└─────────────┘                     └──────────────────┘                  └──────────────────┘
+
+Self-Hosted / Embedded Mode:
+
+┌─────────────┐     MCP (stdio)     ┌──────────────────────────────────────┐     SQL      ┌────────────┐
+│  AI Agent   │ ◄─────────────────► │  Memoria MCP Server                  │ ◄──────────► │ MatrixOne  │
+│             │   store / retrieve  │  ├── Canonical Storage               │  vector +    │  Database  │
+│             │                     │  ├── Retrieval (vector / semantic)   │  fulltext    │            │
+│             │                     │  └── Git-for-Data (snap/branch/merge)│              │            │
+└─────────────┘                     └──────────────────────────────────────┘              └────────────┘
+</code></pre>
+<p>For codebase details, see <a href="https://github.com/matrixorigin/memoria/blob/main/skills/architecture/SKILL.md">Architecture Skill</a>.</p>
+<hr>
+<h3>🛠️ Development</h3>
+<pre><code class="language-bash">make up              # Start MatrixOne + API
+make test            # Run all tests
+make release VERSION=0.2.0   # Bump, tag, push
+</code></pre>
+<p><strong>Developer documentation</strong> (for contributing to Memoria):</p>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/matrixorigin/memoria/blob/main/skills/architecture/SKILL.md">Architecture</a></td>
+<td>Codebase layout, traits, tables</td>
+</tr>
+<tr>
+<td><a href="https://github.com/matrixorigin/memoria/blob/main/skills/api-reference/SKILL.md">API Reference</a></td>
+<td>REST endpoints, request/response</td>
+</tr>
+<tr>
+<td><a href="https://github.com/matrixorigin/memoria/blob/main/skills/deployment/SKILL.md">Deployment</a></td>
+<td>Docker, K8s, multi-instance</td>
+</tr>
+<tr>
+<td><a href="https://github.com/matrixorigin/memoria/blob/main/skills/plugin-development/SKILL.md">Plugin Development</a></td>
+<td>Governance plugins</td>
+</tr>
+<tr>
+<td><a href="https://github.com/matrixorigin/memoria/blob/main/skills/release/SKILL.md">Release</a></td>
+<td>Version bump, CI/CD</td>
+</tr>
+<tr>
+<td><a href="https://github.com/matrixorigin/memoria/blob/main/skills/local-embedding/SKILL.md">Local Embedding</a></td>
+<td>Offline embedding build</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>📝 Citation</h3>
+<p>If you use Memoria in academic work, or refer to its Git-for-Data foundation for AI-agent memory, please cite the MatrixOne paper that describes the underlying data version control design:</p>
+<pre><code class="language-bibtex">@misc{gou2026versioncontrolsystemdata,
+  title={Version Control System for Data with MatrixOne},
+  author={Gou, Hongshen and Tian, Feng and Wang, Long and Deng, Nan and Xu, Peng},
+  year={2026},
+  eprint={2604.03927},
+  archivePrefix={arXiv},
+  primaryClass={cs.DB},
+  doi={10.48550/arXiv.2604.03927},
+  url={https://arxiv.org/abs/2604.03927}
+}
+</code></pre>
+<hr>
+<h3>🌟 Community</h3>
+<p>We'd love your support! If Memoria helps you, consider giving us a star.</p>
+<p><a href="https://star-history.dera.page/#matrixorigin/Memoria&amp;type=Date"><img src="https://star-history.dera.page/svg?repos=matrixorigin/Memoria&amp;type=Date" alt="Star History Chart" loading="lazy" decoding="async"></a></p>
+<p><strong>Contributing</strong> — See the <a href="#-development">developer documentation</a> above and check out our <a href="https://github.com/matrixorigin/Memoria/issues/new/choose">issue templates</a> for bug reports, feature requests, and more.</p>
+<hr>
+<h3>License</h3>
+<p>Apache-2.0 © <a href="https://github.com/matrixorigin">MatrixOrigin</a></p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in memory &amp; context</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/mem0ai/mem0">
+        <div class="stars">★ 68.7K</div>
+        <div class="name"><span class="org">mem0ai /</span> mem0</div>
+      </a>
+      <a class="related-row" href="/projects/vectorize-io/hindsight">
+        <div class="stars">★ 60.0K</div>
+        <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
+      </a>
+      <a class="related-row" href="/projects/greyhaven-ai/autocontext">
+        <div class="stars">★ 1.3K</div>
+        <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
+      </a>
+      <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
+        <div class="stars">★ 385</div>
+        <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
+      </a>
+      <a class="related-row" href="/projects/yoloshii/ClawMem">
+        <div class="stars">★ 212</div>
+        <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
+      </a>
+      <a class="related-row" href="/projects/Signet-AI/signetai">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">Signet-AI /</span> signetai</div>
+      </a>
+      <a class="related-row" href="/projects/plur-ai/plur">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">plur-ai /</span> plur</div>
+      </a>
+      <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
+        <div class="stars">★ 52</div>
+        <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
+      </a>
+    </div>
+    <p class="list-link"><a href="/lists/best-memory-providers">see all memory &amp; context →</a></p>
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="/about">about</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues/new?template=suggest-repo.yml">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
