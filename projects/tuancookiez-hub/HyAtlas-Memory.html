@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tuancookiez-hub/HyAtlas-Memory — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
+<meta name="description" content="Go-based layered memory server with local embeddings, reversible memory history and a Hermes provider and dashboard.">
+<link rel="canonical" href="https://hermesatlas.com/projects/tuancookiez-hub/HyAtlas-Memory">
+<meta property="og:title" content="tuancookiez-hub/HyAtlas-Memory — Hermes Atlas">
+<meta property="og:description" content="Go-based layered memory server with local embeddings, reversible memory history and a Hermes provider and dashboard.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/tuancookiez-hub/HyAtlas-Memory">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=HyAtlas-Memory&amp;subtitle=A+plugin+for+Hermes+to+connect+Hy-Memory+as+a+memory+provider+as+well+as+a+dashboard+view&amp;kind=project+%C2%B7+memory">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="tuancookiez-hub/HyAtlas-Memory — Hermes Atlas">
+<meta name="twitter:description" content="Go-based layered memory server with local embeddings, reversible memory history and a Hermes provider and dashboard.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=HyAtlas-Memory&amp;subtitle=A+plugin+for+Hermes+to+connect+Hy-Memory+as+a+memory+provider+as+well+as+a+dashboard+view&amp;kind=project+%C2%B7+memory">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "memory &amp; context", "item": "https://hermesatlas.com/lists/best-memory-providers" },
+    { "@type": "ListItem", "position": 3, "name": "hyatlas-memory" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/tuancookiez-hub/HyAtlas-Memory#software",
+  "name": "HyAtlas-Memory",
+  "description": "Go-based layered memory server with local embeddings, reversible memory history and a Hermes provider and dashboard.",
+  "url": "https://hermesatlas.com/projects/tuancookiez-hub/HyAtlas-Memory",
+  "codeRepository": "https://github.com/tuancookiez-hub/HyAtlas-Memory",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Go",
+  "license": "https://spdx.org/licenses/Apache-2.0.html",
+  "author": {
+    "@type": "Organization",
+    "name": "tuancookiez-hub",
+    "url": "https://github.com/tuancookiez-hub"
+  },
+  "dateModified": "2026-10-20T09:09:00.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 31
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">310·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/lists/best-memory-providers">memory &amp; context</a><span class="sep">/</span>hyatlas-memory
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">tuancookiez-hub</span><span class="slash">/</span>HyAtlas-Memory
+  </h1>
+  <p class="project-desc">A plugin for Hermes to connect Hy-Memory as a memory provider as well as a dashboard view</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 31</span>
+    <span><span class="meta-label">lang</span>Go</span>
+    <span><span class="meta-label">license</span>Apache-2.0</span>
+    
+    <span><span class="meta-label">updated</span>2026-10-20</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/tuancookiez-hub/HyAtlas-Memory" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">Go-based layered memory server with local embeddings, reversible memory history and a Hermes provider and dashboard.</p>
+    <ul class="summary-highlights">
+      <li>Eight memory layers with reversible retirement and restoration</li>
+      <li>Local BGE embeddings and hybrid retrieval</li>
+      <li>Hermes provider with lite, pro and ultra processing modes</li>
+    </ul>
+  </div>
+</section>
+
+<section class="project-summary" aria-label="Security note"><div class="section-label">security note</div><p class="summary-text">Basic static screen: be1ca8f (November 9, 2026), not security certification. Pro/ultra modes send memory content to the configured model; lite mode avoids LLM calls. Requires a separate server and downloaded runtime/model assets. Keep the service local.</p></section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <p><img src="https://raw.githubusercontent.com/tuancookiez-hub/HyAtlas-Memory/main/assets/hyatlas-v5.0.0-hero.png" alt="HyAtlas Memory 5.0: memory you can take back" loading="lazy" decoding="async"></p>
+<h2>HyAtlas Memory: memory you can take back</h2>
+<blockquote>
+<p><strong>One binary. Eight layers. Three extraction modes.</strong> One Go binary (the embedded release build is about 160 MB because it carries the BGE model), no Python at runtime, in-process BGE embeddings. Release binaries: <strong>Linux amd64 · macOS arm64 · Windows amd64</strong>. Other platforms build from source.</p>
+</blockquote>
+<p>HyAtlas is a complete rewrite of the HyAtlas memory system in pure Go (since v4.0). It replaces the Python floor (venv, zvec, Kuzu, FastAPI, HTTP embed subprocess) with a single binary: an embedded Chromem vector store, in-process BGE-small embeddings via onnxruntime-go, and LLM fact extraction, where <code>HYATLAS_MODE</code> sets how much the server reasons and <code>HYATLAS_SYNC_EXTRACT</code> sets whether a write waits for extraction. The 8-layer memory model (Profile · Raw · Fact · Summary · Knowledge · Schema · Intention · Entity) is implemented in full.</p>
+<p><strong>Current release:</strong> <a href="https://github.com/tuancookiez-hub/HyAtlas-Memory/releases/tag/v5.0.0">v5.0.0</a>, the stable floor; what it changes is in <a href="https://github.com/tuancookiez-hub/HyAtlas-Memory/blob/main/CHANGELOG.md">CHANGELOG.md</a>.</p>
+<p><strong>What it does, in short:</strong></p>
+<ul>
+<li><strong>Writing.</strong> Each conversation turn goes through one LLM call that extracts dated facts, updates or replaces older ones, open intentions with due dates, entity pages and reusable task experiences.</li>
+<li><strong>Remembering in the background.</strong> Summaries are written per episode of work. A background pass merges and retires stale facts (with a reason, reversible), and builds a knowledge graph and patterns that record the facts behind them.</li>
+<li><strong>Recall.</strong> Search understands dates ("last week") and the entities you name, finds long facts by any of their sentences, and shows what a fact replaced.</li>
+<li><strong>Reversible by design.</strong> Replaced, merged, dropped and forgotten memories are retired with a reason, not erased, and can be restored; a note you replace or remove with Hermes's memory tool is forgotten here too. Rows are deleted only when you ask: a delete by id, a bulk delete with <code>HYATLAS_ADMIN=on</code>, or opt-in raw retention.</li>
+<li><strong>Credentials.</strong> HyAtlas uses only the extraction key you give it (<code>llm_key</code>, or <code>HYATLAS_LLM_KEY</code>); it never reads another application's credentials or takes Hermes's sign-in token. The last Python release was <a href="https://github.com/tuancookiez-hub/HyAtlas-Memory/releases/tag/v3.5.0">v3.5.0</a> (Zvec/Kuzu); it is no longer maintained. <a href="https://github.com/tuancookiez-hub/HyAtlas-Memory/blob/main/CHANGELOG.md">CHANGELOG.md</a> has the full history.</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/tuancookiez-hub/HyAtlas-Memory/main/docs/images/whats-new-5.png" alt="What's new in HyAtlas 5.0" loading="lazy" decoding="async"></p>
+<p><img src="https://raw.githubusercontent.com/tuancookiez-hub/HyAtlas-Memory/main/docs/images/modes.png" alt="Three modes across an eight-layer memory: Lite 1/8, Pro 6/8, Ultra 8/8" loading="lazy" decoding="async"></p>
+<p><img src="https://raw.githubusercontent.com/tuancookiez-hub/HyAtlas-Memory/main/docs/images/how-it-works.png" alt="How HyAtlas works: remember, reflect, remind" loading="lazy" decoding="async"></p>
+<hr>
+<h3>Architecture</h3>
+<pre><code class="language-mermaid">flowchart TD
+  H["Hermes turn (plugin)"] --&gt; A["POST /api/v1/add"]
+  A --&gt; RAW["Embed + store L2 raw"]
+  RAW --&gt; CTX["Gather context: 5 related facts (&gt;= 0.70),&lt;br/&gt;open intentions, entity pages"]
+  CTX --&gt; X["Extract (LLM, one call): facts with dates,&lt;br/&gt;replaces / updates, intention with due date,&lt;br/&gt;intentions done, entity pages, task experiences"]
+  X -.-&gt; RC["Reconcile (LLM, opt-in, local models):&lt;br/&gt;update / replace / link similar stored facts"]
+  X --&gt; P["Promote: L3 facts (0.92 restatement fold),&lt;br/&gt;L1 mirror, L7 intention, L8 pages"]
+  P --&gt; NOW["Now page (LLM),&lt;br/&gt;at most every 15 min"]
+  P --&gt; EP["Episode summary (LLM),&lt;br/&gt;after a 30-min gap"]
+  P --&gt; ST[("chromem vectors L1-L8,&lt;br/&gt;long-fact clauses, doc index")]
+  EP --&gt; ST
+  KEY["Plugin hands over its own key&lt;br/&gt;(loopback only, memory only)"] -.-&gt; X
+  CU["Catch-up every 10 min:&lt;br/&gt;turns not yet extracted"] -.-&gt; X
+  FG["Hermes memory replace / remove&lt;br/&gt;-&gt; POST /api/v1/forget"] --&gt; RET["Retire matching rows&lt;br/&gt;(reversible, with a reason)"]
+  RET --&gt; ST
+
+  T["Ticker: 6h, catch-up while due"] --&gt; CL["Topic clusters (0.55),&lt;br/&gt;only changed clusters"]
+  CL --&gt; C["Consolidate (LLM, per cluster): merges,&lt;br/&gt;drops + reason, schemas, L5 edges, arc"]
+  C --&gt; G["Guards: merge &gt;= 0.65, schema dup &gt;= 0.92,&lt;br/&gt;schemas keep their evidence, restore"]
+  G --&gt; ST
+  C --&gt; KG["L5 graph with evidence"]
+  C -.-&gt; XS["Cross-topic pass (LLM, daily):&lt;br/&gt;patterns that span topics"]
+  XS --&gt; G
+
+  Q["POST /api/v1/search"] --&gt; F["Vector (+ long-fact clauses) and stemmed keyword,&lt;br/&gt;fused by rank, weighted by the kind of query"]
+  F --&gt; F2["Dates in the query, entity boost,&lt;br/&gt;graph-assisted recall, idle-time recency,&lt;br/&gt;usage feedback, near-duplicate demotion, MMR diversity"]
+  F2 --&gt; OUT["Now -&gt; pages -&gt; profile (+ schemas behind the facts)&lt;br/&gt;-&gt; proactive -&gt; experiences -&gt; normal,&lt;br/&gt;with event dates and replaced versions"]
+</code></pre>
+<p>Lite mode keeps only the raw write and search: no LLM call at all. Pro adds extraction,
+episodes and the Now page. Ultra adds consolidation, which is what fills L5 and L6.
+Every LLM step goes to the endpoint you configure; nothing else leaves the machine.</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>What it holds</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>L1 Profile</strong></td>
+<td>User preferences, style, constraints (mirrors L3 facts labelled <code>user_preferences</code>)</td>
+</tr>
+<tr>
+<td><strong>L2 Raw</strong></td>
+<td>Every incoming memory as-is</td>
+</tr>
+<tr>
+<td><strong>L3 Fact</strong></td>
+<td>LLM-extracted factual atoms</td>
+</tr>
+<tr>
+<td><strong>L4 Summary</strong></td>
+<td>One summary per episode of work (writes with no gap over <code>HYATLAS_EPISODE_GAP</code>), plus one rolling arc per owner from consolidation</td>
+</tr>
+<tr>
+<td><strong>L5 Knowledge</strong></td>
+<td>Entity/relation graph (JSON-persisted). Built by the ultra slow path from relations corroborated across at least two turns, each with evidence citations</td>
+</tr>
+<tr>
+<td><strong>L6 Schema</strong></td>
+<td>Recurring patterns generalised by the ultra slow path</td>
+</tr>
+<tr>
+<td><strong>L7 Intention</strong></td>
+<td>LLM-extracted current goal / next step</td>
+</tr>
+<tr>
+<td><strong>L8 Entity</strong></td>
+<td>One page per thing that matters (a project, tool, person, place): its current state plus a dated history. Written by each extraction; a changed value moves the old one into history</td>
+</tr>
+</tbody></table>
+<h4>Stack</h4>
+<ul>
+<li><strong>Vector store:</strong> <a href="https://github.com/philippgille/chromem-go">Chromem-go</a> v0.7.0 — embedded, disk-persisted, no server process</li>
+<li><strong>Embeddings:</strong> <code>bge/bge.go</code> — BGE-small-en-v1.5 (384-dim) via onnxruntime-go (cgo). WordPiece tokenizer, mean-pool, L2-normalize. No Python.</li>
+<li><strong>LLM extraction:</strong> Via any OpenAI-compatible endpoint. One structured call per write (pro, ultra) fills L3 Fact, L7 Intention, L8 entity pages and, for user preferences, L1 Profile from the L2 Raw entry. The call is given today's date and shown the owner's few nearest existing facts and open intentions, so it can date a fact (<code>event_at</code>) or an intention (<code>due_at</code>), mark a fact whose value changed as replaced, fold new detail or a repeat of the same event into an existing fact as updated (with a count), and mark an intention as moved on or done; those rows are superseded, not deleted, and record how (<code>superseded_how</code>). An intention is written only for a goal beyond the one exchange, and not again for a turn that just continues an open one. The plugin shows each recalled memory with its date. Blocking or background follows <code>HYATLAS_SYNC_EXTRACT</code>. L5 and L6 come from the separate ultra consolidation pass.</li>
+<li><strong>Graph:</strong> <code>graph/graph.go</code> — exact-match traversal over JSON-persisted nodes and relations, scoped per owner</li>
+<li><strong>HTTP:</strong> Standard Go <code>net/http</code>. No framework.</li>
+</ul>
+<h4>Differences from v3.5 (historical)</h4>
+<p>This table lists differences that the code in this repository shows. It does not
+include benchmark numbers.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>v3.5 (Python)</th>
+<th>v4 and later (Go)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Runtime</td>
+<td>venv, zvec, Kuzu, FastAPI, HTTP embed subprocess</td>
+<td>One binary, no Python</td>
+</tr>
+<tr>
+<td>Release binary</td>
+<td>—</td>
+<td>About 160 MB, embedded (model included). A plain build is small and needs a model folder</td>
+</tr>
+<tr>
+<td>Listening port</td>
+<td><code>19527</code></td>
+<td><code>19528</code> by default</td>
+</tr>
+<tr>
+<td>L4 Summary</td>
+<td>Dormant</td>
+<td>Active</td>
+</tr>
+<tr>
+<td>Restart</td>
+<td>—</td>
+<td>Reloads the doc index and graph from the data directory</td>
+</tr>
+</tbody></table>
+<h4>Repository layout</h4>
+<pre><code>cmd/hyatlas-go/   the server (package main): HTTP API, extraction, consolidation, search;
+                  dashboard/dist is the embedded web dashboard
+bge/              in-process BGE-small embedder (onnxruntime-go)
+graph/            the L5 knowledge graph store
+memory/           layer and mode definitions
+plugins/hyatlas/  the Hermes plugin (memory provider, CLI, Desktop pane, dashboard tab)
+scripts/          the one-line installer and the ONNX export script
+docs/             images and infographic sources
+</code></pre>
+<hr>
+<h3>Quick start (Linux / macOS / Windows)</h3>
+<h4>The one-liner (recommended)</h4>
+<pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/tuancookiez-hub/HyAtlas-Memory/main/scripts/install.sh | bash
+</code></pre>
+<p>The script looks for a prebuilt release asset for your platform
+(<code>hyatlas-go-&lt;tag&gt;-&lt;os&gt;-&lt;arch&gt;</code>). Release assets exist for Linux amd64, macOS
+arm64 and Windows amd64. On any other platform it builds from source, which needs
+Go 1.26+ and a C compiler. The installer refuses an older <code>go</code> instead of switching
+toolchains. It installs the binary to a directory on your <code>PATH</code>, and verifies the
+install by starting the server and probing <code>/healthz</code>.</p>
+<ul>
+<li><p><strong>Release binaries</strong> are embedded builds and already carry the BGE-small model
+and onnxruntime, so the script downloads nothing else for them.</p>
+</li>
+<li><p><strong>Source builds</strong> fetch the model (~133 MB) and the onnxruntime 1.28.1 library
+that matches your CPU (Linux x64 or aarch64, macOS arm64, Windows x64 or arm64). Intel macOS has no
+onnxruntime package for this version, so the installer stops there with a clear error.</p>
+</li>
+<li><p>If the model fetch fails (for example HuggingFace is blocked), the binary is still
+installed, the manual steps are printed, and the script exits with status 1.
+A missing Go or C compiler, or a failed source build, stops the script before
+anything is installed.</p>
+</li>
+<li><p><strong>Source builds clone the tag</strong> named by <code>HYATLAS_VERSION</code>. The default branch is
+built instead only when that tag is missing and <code>HYATLAS_VERSION</code> is not set, and
+the installer warns about it. If you set <code>HYATLAS_VERSION</code> and the tag is missing,
+the install fails.</p>
+</li>
+<li><p><strong>Go 1.26 or newer</strong> is required for source builds. A plain <code>go build</code> with an
+older Go and the default <code>GOTOOLCHAIN=auto</code> fetches the toolchain that <code>go.mod</code>
+names (1.26.5). The installer does not do that: it stops on an older <code>go</code>.</p>
+</li>
+<li><p><strong>Verification</strong> starts the server on a free loopback port and waits about 15
+seconds for <code>/healthz</code>. The last line says which of four outcomes happened:</p>
+<table>
+<thead>
+<tr>
+<th>Final line</th>
+<th>Exit</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>installed and verified</code></td>
+<td>0</td>
+<td>The server answered <code>/healthz</code> with the BGE embedder (an embedded release binary, or a source build with its model).</td>
+</tr>
+<tr>
+<td><code>binary verified, model missing</code></td>
+<td>1</td>
+<td>The server answered <code>/healthz</code> only with the stub embedder (<code>HYATLAS_EMBED_BASE=local</code>). That shows the binary runs, not that embeddings work. The exit code is the model step's.</td>
+</tr>
+<tr>
+<td><code>NOT verified</code></td>
+<td>1</td>
+<td>The server did not answer <code>/healthz</code>. Start <code>hyatlas-go</code> by hand to see its error.</td>
+</tr>
+<tr>
+<td><code>skipped, not verified</code></td>
+<td>0</td>
+<td>A source build with <code>HYATLAS_NO_MODEL=1</code>. Without the model the server cannot start, so nothing was probed.</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><strong>Setup questions.</strong> The installer asks for the mode, the LLM endpoint and the key
+on the terminal. Under <code>curl | bash</code> it asks on <code>/dev/tty</code>. With no terminal at all
+it asks nothing. Any <code>HYATLAS_MODE</code>, <code>HYATLAS_LLM_BASE</code>, <code>HYATLAS_LLM_MODEL</code> or
+<code>HYATLAS_LLM_KEY</code> already exported are saved to <code>$HERMES_HOME/.env</code> (default
+<code>~/.hermes/.env</code>), which is created with mode 0600.</p>
+</li>
+</ul>
+<p>Useful env vars (installer only):</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Purpose</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>HYATLAS_VERSION</code></td>
+<td>Release tag to install. A source build clones this tag (see above)</td>
+<td><code>v5.0.0</code></td>
+</tr>
+<tr>
+<td><code>HYATLAS_INSTALL_DIR</code></td>
+<td>Where the binary goes</td>
+<td><code>~/.local/bin</code> (Windows: <code>%LOCALAPPDATA%\hyatlas</code>)</td>
+</tr>
+<tr>
+<td><code>HYATLAS_MODEL_DIR</code></td>
+<td>Where the installer caches the model (source builds)</td>
+<td><code>~/.hyatlas/models</code> (Windows: <code>%LOCALAPPDATA%\hyatlas\models</code>)</td>
+</tr>
+<tr>
+<td><code>HYATLAS_MODE</code></td>
+<td>Extraction mode written to the Hermes <code>.env</code>: <code>lite</code> | <code>pro</code> | <code>ultra</code>. Any other exported value stops the installer with an error and nothing is written</td>
+<td><code>ultra</code> (asked interactively)</td>
+</tr>
+<tr>
+<td><code>HYATLAS_LLM_BASE</code>, <code>HYATLAS_LLM_MODEL</code>, <code>HYATLAS_LLM_KEY</code></td>
+<td>LLM endpoint, model and key (asked interactively if unset)</td>
+<td><em>(none)</em></td>
+</tr>
+<tr>
+<td><code>HYATLAS_NO_MODEL=1</code></td>
+<td>Skip the model download on source builds</td>
+<td>(downloads)</td>
+</tr>
+</tbody></table>
+<p>The server's own variables (<code>HYATLAS_SYNC_EXTRACT</code>, <code>HYATLAS_CONSOLIDATE_*</code>,
+<code>HYATLAS_RAW_RETENTION</code>, and the rest) are listed in the configuration table below.</p>
+<hr>
+<h4>Manual install (3 steps)</h4>
+<details>
+<summary><strong>Step 1 — Prerequisites</strong> (click to expand)</summary>
+
+<table>
+<thead>
+<tr>
+<th>OS</th>
+<th>What's needed</th>
+<th>Install command</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Linux</strong></td>
+<td>Go 1.26+, gcc (for cgo)</td>
+<td><code>apt install golang-go gcc</code> (or distro equivalent)</td>
+</tr>
+<tr>
+<td><strong>macOS</strong></td>
+<td>Go 1.26+, Xcode CLI tools</td>
+<td><code>xcode-select --install</code> + install Go 1.26+ from <a href="https://go.dev/dl/">go.dev</a></td>
+</tr>
+<tr>
+<td><strong>Windows</strong></td>
+<td>Go 1.26+, MinGW-W64 (for cgo)</td>
+<td><code>winget install BrechtSanders.WinLibs.POSIX.UCRT</code> then restart terminal</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>cgo is required</strong> — onnxruntime-go links against the platform's C runtime via cgo. You need a C compiler (gcc, clang, or MinGW-W64).</p>
+</blockquote>
+</details>
+
+<details>
+<summary><strong>Step 2 — Build</strong></summary>
+
+<pre><code class="language-bash">git clone https://github.com/tuancookiez-hub/HyAtlas-Memory.git
+cd HyAtlas-Memory
+go build -o hyatlas-go ./cmd/hyatlas-go                     # plain build (small; reads the model from a models/ folder at runtime)
+go build -tags embedded -o hyatlas-go ./cmd/hyatlas-go       # embedded build (about 160 MB, model and onnxruntime bundled in)
+</code></pre>
+<blockquote>
+<p><strong>For the embedded build to compile</strong>, <code>cmd/hyatlas-go/models/</code> must contain four files, because
+<code>go:embed</code> lists them by name:
+<code>bge-small-en-v1.5.onnx</code>, <code>bge-small-en-v1.5.onnx.data</code> (an empty file is fine),
+<code>vocab.txt</code>, and the onnxruntime library for your platform: <code>libonnxruntime.so</code>
+on Linux, <code>libonnxruntime.dylib</code> on macOS, <code>onnxruntime.dll</code> on Windows. See
+<a href="#model-assets">Model assets</a> for where to get them.</p>
+</blockquote>
+</details>
+
+<details>
+<summary><strong>Step 3 — Run</strong></summary>
+
+<pre><code class="language-bash"># Local BGE embeddings (the "no Python" path) are the default. Set HYATLAS_MODEL_DIR
+# only for a plain build whose model is not in one of the search-order folders in
+# "Model assets" below. An embedded build ignores it.
+export HYATLAS_EMBED_BASE=bge
+export HYATLAS_MODEL_DIR=/path/to/models
+
+# Required for LLM extraction in pro/ultra. No endpoint is assumed: without all
+# three the server stores the raw trace only and reports llm=unconfigured.
+# Any OpenAI-compatible API works, including a local one.
+export HYATLAS_LLM_BASE="https://inference-api.nousresearch.com/v1"   # example
+export HYATLAS_LLM_MODEL="poolside/laguna-s-2.1:free"                 # example
+export HYATLAS_LLM_KEY="your-nous-agent-key"
+
+./hyatlas-go
+</code></pre>
+<p>The server listens on <code>127.0.0.1:19528</code> (loopback only by default). It has no
+authentication, so keep it on loopback. Use <code>HYATLAS_GO_HOST</code> to change the bind
+address only if you understand the exposure.</p>
+<p><strong>Who may talk to it.</strong> The server refuses requests that a web page could make on
+your behalf, on every bind address:</p>
+<ul>
+<li>A <code>Host</code> header that names a DNS name is refused with 403, including on
+<code>/healthz</code>. Only <code>localhost</code> and IP literals pass. This blocks DNS rebinding.
+To accept a hostname, such as a LAN name or a reverse proxy, list it in
+<code>HYATLAS_ALLOWED_HOSTS</code>. Entries are hostnames (no scheme, and any port in an
+entry is ignored). Then the server accepts that name.</li>
+<li>An <code>Origin</code> header that is not loopback, not the request's own host, and not in
+the allowlist is refused with 403. A <code>null</code> or non-http(s) origin is refused too.</li>
+<li>A request with <code>Sec-Fetch-Site: cross-site</code> is refused with 403.</li>
+<li>Requests with no <code>Origin</code> header (curl, the Hermes plugin) are not affected by the
+<code>Origin</code> rule, and the server's own <code>/dashboard/</code> pages are not affected.</li>
+</ul>
+<p>Each write returns an <code>extraction_status</code>: <code>pending</code> (extraction runs in the
+background), <code>done</code> or <code>failed</code> (the write waited for extraction), <code>unconfigured</code>
+(no LLM endpoint, model or key), or <code>skipped</code> (lite mode).</p>
+<h4>Privacy — what leaves your machine</h4>
+<p>The server binds loopback only, but <strong>loopback is not the whole story</strong>, and the
+default configuration is not fully local:</p>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Goes where</th>
+<th>Default</th>
+<th>How to keep it local</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Memory text</strong> (each write's text, sent for extraction)</td>
+<td>The extraction LLM. Each write is one request, and a failed call or unparseable reply is retried once. From the Hermes plugin, a write is one turn: the user's message and the assistant's text only. Tool calls, tool output, system messages and Hermes compaction summaries are not sent. Each message is capped at 4,000 characters and the turn at 12,000. One extraction call sends at most 16,000 bytes of the write's text (the stored raw row keeps the full text)</td>
+<td><strong>Nowhere</strong> — no endpoint is shipped, so an unconfigured server makes no LLM call and reports <code>unconfigured</code></td>
+<td>Already opt-in: set <code>HYATLAS_LLM_BASE</code>/<code>_MODEL</code>/<code>_KEY</code> to choose where it goes. Point them at a local OpenAI-compatible server to keep it on-machine, or use <code>HYATLAS_MODE=lite</code></td>
+</tr>
+<tr>
+<td><strong>Stored facts and schema patterns</strong> (ultra only)</td>
+<td>The same LLM, by the consolidation pass. One request per owner (<code>user_id</code>/<code>agent_id</code> pair) that is due: one of its topic clusters has changed members since the cluster's last successful call. An owner with one fact, or with nothing due, makes no request. Each request covers one cluster and carries up to <code>HYATLAS_CONSOLIDATE_BATCH</code> (50) facts of that owner, each cut to 400 characters with its fact and turn IDs, plus up to 20 existing schema patterns cut to 200 characters. Facts that a pass merges or drops are superseded: kept and hidden from search, not deleted. Each drop is stored with its reason. Once a day at most per owner (<code>HYATLAS_CROSS_SCHEMA_EVERY</code>, <code>off</code> to disable), one more request sends that owner's schema texts (up to 40, each cut to 300 characters) to look for patterns that span topics</td>
+<td>Nowhere until an endpoint is configured</td>
+<td>Use <code>pro</code> or <code>lite</code></td>
+</tr>
+<tr>
+<td><strong>Embeddings</strong> (each memory's text, and each search query)</td>
+<td>In-process BGE-small (onnxruntime-go)</td>
+<td><strong>Local</strong> — <code>HYATLAS_EMBED_BASE=bge</code>, no network</td>
+<td>Already local. If you set <code>HYATLAS_EMBED_BASE</code> to a URL, the text goes there instead, in every mode, including <code>lite</code></td>
+</tr>
+<tr>
+<td>Stored memories, vector index, graph</td>
+<td><code>HYATLAS_GO_DATA</code> (default <code>./data</code>)</td>
+<td><strong>Local</strong></td>
+<td>Already local</td>
+</tr>
+<tr>
+<td>Telemetry / usage reporting</td>
+<td>—</td>
+<td><strong>None.</strong> The only outbound HTTP the server makes is to the LLM and embedding endpoints you configure</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p>So out of the box: <strong>embeddings and storage are local, and extraction stays off
+until you configure an endpoint.</strong> Once <code>HYATLAS_LLM_BASE</code>, <code>HYATLAS_LLM_MODEL</code>
+and <code>HYATLAS_LLM_KEY</code> are all set, every write in <code>pro</code> or <code>ultra</code> is sent to that
+endpoint to derive facts, summaries and intentions. That is the point of the
+feature, and it means choosing the endpoint is choosing where the text goes. The
+endpoint is yours to choose: any OpenAI-compatible API, including one on your own
+machine. To keep conversation text on the machine, set <code>HYATLAS_MODE=lite</code>: no LLM
+call is made at all, so only the raw trace and local embeddings are stored.
+(<code>lite</code> keeps text local only while <code>HYATLAS_EMBED_BASE</code> is <code>bge</code> or <code>local</code>; an
+HTTP embedder receives the text too.)</p>
+<p>The three modes form a ladder of reasoning scope, not of latency:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>LLM calls</th>
+<th>Reasoning scope</th>
+<th>Layers</th>
+<th>Consolidation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>lite</code></td>
+<td>none</td>
+<td>—</td>
+<td><strong>1 / 8</strong> — L2 Raw only</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>pro</code></td>
+<td>one per write, plus one per episode summary</td>
+<td>within one turn</td>
+<td><strong>6 / 8</strong> — L1, L2, L3, L4, L7, L8</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>ultra</code> <em>(default)</em></td>
+<td>one per write <strong>+</strong> periodic batch</td>
+<td><strong>across memories and time</strong></td>
+<td><strong>8 / 8</strong> at steady state (7 / 8 with <code>HYATLAS_CONSOLIDATE_GRAPH=off</code>)</td>
+<td><strong>yes</strong></td>
+</tr>
+</tbody></table>
+<p>The two systems own disjoint layers:</p>
+<ul>
+<li><strong>System1 (per turn)</strong> — L1 Profile, L2 Raw, L3 Fact, L7 Intention, L8 Entity pages.
+What one turn can actually evidence. L4 Summary comes from <strong>episodes</strong>: the
+writes of one owner with no gap longer than <code>HYATLAS_EPISODE_GAP</code> (30 minutes)
+form one stretch of work, which gets one summary when it ends. That costs one LLM
+call per episode, not per write.</li>
+<li><strong>System2 (slow path)</strong> — L5 Knowledge, L6 Schema. A relation worth keeping is
+corroborated by more than one turn, and a schema is a <em>recurring</em> pattern, so
+neither can come from a single turn. Ultra is the only mode that runs System2,
+which is why it is the only one that fills L5 and L6. <code>HYATLAS_CONSOLIDATE_GRAPH=off</code>
+stops L5 (and the arc).</li>
+</ul>
+<p>Whether a write <em>blocks</em> on its extraction is a separate knob
+(<code>HYATLAS_SYNC_EXTRACT=on|off</code>), not part of the mode. Pro blocks by default and
+ultra does not, but either can be overridden — capability follows the mode,
+latency follows the knob.</p>
+<table>
+<thead>
+<tr>
+<th><code>HYATLAS_SYNC_EXTRACT</code></th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em>(unset)</em></td>
+<td>follow the mode: <code>pro</code> blocks, <code>ultra</code> returns immediately</td>
+</tr>
+<tr>
+<td><code>on</code></td>
+<td>the write waits for extraction and reports <code>done</code> / <code>failed</code></td>
+</tr>
+<tr>
+<td><code>off</code></td>
+<td>the write returns <code>pending</code>; extraction runs behind it</td>
+</tr>
+</tbody></table>
+<p>Ultra-only tuning:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>HYATLAS_CONSOLIDATE_EVERY</code></td>
+<td><code>6h</code></td>
+<td>how often the slow path runs</td>
+</tr>
+<tr>
+<td><code>HYATLAS_CONSOLIDATE_BATCH</code></td>
+<td><code>50</code></td>
+<td>max facts per owner per consolidation call</td>
+</tr>
+<tr>
+<td><code>HYATLAS_CONSOLIDATE_GRAPH</code></td>
+<td>on</td>
+<td><code>off</code> (also <code>false</code>, <code>0</code>, <code>no</code>) stops consolidation writing L5 knowledge edges and the cross-session arc; the prompt then does not ask for them. Each edge is also stored as a searchable L5 memory ("Foxtrot uses Postgres 16")</td>
+</tr>
+<tr>
+<td><code>HYATLAS_CONSOLIDATE_PARALLEL</code></td>
+<td><code>2</code></td>
+<td>calls run at once (1 to 4)</td>
+</tr>
+<tr>
+<td><code>HYATLAS_CONSOLIDATE_CATCHUP</code></td>
+<td><code>20m</code></td>
+<td>interval between passes while clusters are still due</td>
+</tr>
+<tr>
+<td><code>HYATLAS_CONSOLIDATE_RECLUSTER</code></td>
+<td><em>(unset = never)</em></td>
+<td>rebuild an owner's clusters after this long</td>
+</tr>
+<tr>
+<td><code>HYATLAS_RAW_RETENTION</code></td>
+<td><em>(unset = never delete)</em></td>
+<td>age after which uncited L2 Raw is deleted</td>
+</tr>
+</tbody></table>
+<p>Durations are Go durations (<code>30m</code>, <code>6h</code>, <code>2160h</code>) or a plain number of seconds.
+Go has no <code>d</code> unit, so write 90 days as <code>2160h</code>. A value that does not parse is
+logged and treated as unset, so raw decay stays off.</p>
+<p><code>HYATLAS_CONSOLIDATE_BATCH</code> caps the facts one owner sends per call. An owner with
+more facts than the cap is split into several clusters, each its own call.</p>
+<p><code>HYATLAS_RAW_RETENTION</code> is opt-in because it deletes. An L2 raw row is kept if a
+live graph edge cites it (as its primary source or any of its sources), or if a
+live fact (L1 or L3) was extracted from it. Only raw rows that are old and cited by
+nothing are removed. The decay pass runs once per consolidation pass, so raw rows
+can age out only when a pass runs.</p>
+<p>Facts that the ultra pass merges or drops are superseded, not deleted: they keep
+<code>invalid_at</code> and <code>superseded_by</code>, and <code>GET /api/v1/list</code> returns them only with
+<code>include_superseded=true</code>.</p>
+<p>The <code>8 / 8</code> above is steady state, not the first minute. A fresh ultra install
+sits at 6/8 until the slow path first runs, which is up to <code>6h</code> away by default. L5
+is filled only when a pass finds relations corroborated by at least two turns, and L6 only when a pass finds recurring patterns. To run a pass now, instead of waiting for the tick:</p>
+<pre><code class="language-bash">curl -X POST http://127.0.0.1:19528/api/v1/digest
+</code></pre>
+<p>The response wraps the pass in <code>report</code>: <code>digest_ok: true</code>, then <code>report</code> with
+<code>facts_in</code>, <code>owners_run</code>, <code>owners_unchanged</code>, <code>skipped_owners</code>, <code>clusters_run</code>,
+<code>clusters_pending</code>, <code>merged</code>, <code>edges</code>, <code>dropped</code>, <code>schemas</code>, <code>arc</code>, <code>pruned_raw</code>,
+<code>protected_raw</code>, <code>duration_ms</code> and <code>errors</code>. <code>edges</code> counts distinct L5 edges created. Re-citing an existing edge adds
+evidence and is not counted.</p>
+<p><code>/api/v1/status</code> carries <code>consolidations</code> (the number of completed passes) and
+<code>last_consolidated</code> (the last report), so "the slow path ran" is checkable rather
+than something you have to take on faith. Both reset when the server restarts, so
+they count passes since the current process started. <code>consolidations</code> is <code>-1</code> when
+the mode has no slow path (<code>lite</code> and <code>pro</code>). A pass that finds nothing to reconcile
+still reports as run with zero changes, which is what distinguishes it from a pass
+that never happened. An owner whose facts have not changed since its last successful
+pass counts under <code>owners_unchanged</code> and is not sent to the LLM again.</p>
+<p>At the end of a pass, an owner with at least 4 live schemas from at least 2 topics also gets
+a <strong>cross-topic pass</strong>, at most once per <code>HYATLAS_CROSS_SCHEMA_EVERY</code> (24h; the last run is kept
+in <code>consolidate_state.json</code>, so a restart does not repeat it). One extra LLM call, at most once a
+day per owner, sends that owner's schema texts (newest 40) and asks for up to 3 patterns that hold
+across two or more of them. Each is written as a new L6 schema marked <code>cross_topic</code>, with the
+facts behind the schemas it generalises as evidence, unless the owner already has a schema that
+says the same (the 0.92 duplicate guard). Existing schemas are never retired or edited by it.
+The report counts them under <code>cross_schemas</code>.</p>
+<p>Facts are consolidated in <strong>topic clusters</strong> of up to <code>HYATLAS_CONSOLIDATE_BATCH</code>
+facts, built once per owner and kept in <code>consolidate_state.json</code>. An owner here is a
+person: user IDs grouped by <code>HYATLAS_USER_ALIASES</code> are consolidated together, so a
+contradiction between facts written under two of their IDs meets in one call. A new fact joins the
+cluster of its nearest neighbour (similarity 0.55 and up) when that cluster has room,
+otherwise the newest time-ordered cluster. A cluster is due only when its members
+changed since its last successful call, so after the first full coverage a pass
+handles just the clusters that received new facts. A pass runs due clusters across
+owners, up to <code>HYATLAS_CONSOLIDATE_PARALLEL</code> (2) calls at once, and starts no call
+when less time is left in its 10-minute budget than a call takes: 1.25 times the
+median of recent successful calls, at least 3 minutes. While clusters are still due
+(<code>clusters_pending</code> &gt; 0) the next pass runs after <code>HYATLAS_CONSOLIDATE_CATCHUP</code> (20m)
+instead of <code>HYATLAS_CONSOLIDATE_EVERY</code>, and a server started with work pending begins
+with a catch-up pass. How long the first coverage takes depends on the model: on a
+free model with 25-fact clusters a pass ran 7 clusters in 9 minutes, about half a
+day for ~150 clusters. Progress is saved after every cluster. A cluster that fails
+three passes in a row is skipped until its members change or 24 hours pass, and the
+skip is listed in <code>errors</code>; when two or more calls of a pass fail and none succeeds,
+the provider is taken to be down and no cluster is charged. A failed LLM call, merge or supersede makes the cluster
+retry on the next pass. A failed arc, schema, L5 edge or L1 mirror
+write is listed in <code>errors</code> but does not cause a retry, because the facts were
+already reconciled.</p>
+<p>Otherwise the endpoint is yours to choose per the tier you are on — set
+<code>HYATLAS_LLM_BASE</code>, <code>HYATLAS_LLM_MODEL</code> and <code>HYATLAS_LLM_KEY</code> to any
+OpenAI-compatible API, or point <code>HYATLAS_LLM_BASE</code> at a server you host
+(ollama, vLLM, llama.cpp, LM Studio) and leave <code>HYATLAS_EMBED_BASE=bge</code>.</p>
+<p><strong>Nothing is transmitted until all three are set.</strong> There is no default endpoint,
+so a fresh install makes no LLM call at all: writes store the raw trace plus
+local embeddings, status reports <code>llm: "unconfigured"</code>, and each write reports
+<code>extraction_status: "unconfigured"</code>. Once you configure an endpoint, extraction
+runs on every write in <code>pro</code> and <code>ultra</code> and your turn text goes there — so
+choosing the endpoint is choosing where memory text leaves the machine. Set
+<code>HYATLAS_MODE=lite</code> to opt out entirely regardless of configuration.</p>
+<p>When the Hermes plugin spawns this server it passes an explicitly allowlisted
+environment — OS essentials plus <code>HYATLAS_*</code> only — rather than a copy of the
+agent's environment, so provider API keys the agent holds do not reach the
+server process. The plugin forwards only the non-secret LLM endpoint and model
+settings, and only when you have set them in the plugin config. It forwards no
+LLM key at spawn time. A key reaches the server only if you
+provide it: your own <code>HYATLAS_LLM_KEY</code>, a plain-text <code>HYATLAS_LLM_KEY_FILE</code>, the
+<code>llm_key</code> secret saved by <code>hermes memory setup</code>, or a launcher or tool you run that
+posts it to <code>POST /api/v1/llm/key</code> from the same machine (kept in memory only). A
+Nous Portal API key, or the key of any OpenAI-compatible provider, works. Until a key
+arrives,
+<code>/api/v1/status</code> reports <code>llm: "awaiting_key"</code> and writes are stored without
+extraction; once a key arrives the catch-up loop extracts them (see
+<code>HYATLAS_CATCHUP_EVERY</code>), and <code>/api/v1/status</code> shows how many are still waiting
+as <code>unextracted</code>.</p>
+<p><strong>Neither the server nor its launcher reads another program's credential file.</strong>
+Earlier versions of the sample launcher read Hermes' <code>auth.json</code>; a program that
+opens another application's credentials and then calls the internet is what
+credential stealers do, and behaviour-based antivirus (Bitdefender, for one) can
+quarantine it together with every file it wrote. The extraction key is your own. <code>HYATLAS_LLM_KEY_FILE</code> takes a plain-text token file only, so it cannot be pointed at a JSON credential file.</p>
+<p><strong>Optional: a local memory model (Hy-Memory-30B-A3B).</strong> If you want extraction
+and consolidation to stay on your machine, Tencent's
+<a href="https://huggingface.co/tencent/Hy-Memory-30B-A3B">Hy-Memory-30B-A3B</a> (Apache-2.0)
+is a good fit. It is trained for exactly this job, writing long-term memory:
+deciding what to keep and how new facts update old ones. Tencent's model card
+scores it level with large general models as a memory writer. It is a
+mixture-of-experts model with about 30B parameters in total and about 3B active
+per token, so it runs faster than its size suggests. <strong>It is heavy</strong>, though:</p>
+<table>
+<thead>
+<tr>
+<th>Setup</th>
+<th>Build</th>
+<th>Needs</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Minimum</strong></td>
+<td>Q4_0 / Q4_K_M GGUF (17–18 GB)</td>
+<td>24 GB of RAM and a modern 6-core CPU with AVX2. No GPU needed: with about 3B parameters active per token it runs on the CPU, roughly 8–15 tokens/s on DDR4</td>
+</tr>
+<tr>
+<td>Comfortable</td>
+<td>Q4_K_M GGUF</td>
+<td>32 GB of RAM plus a 6–8 GB GPU, with the experts kept in system RAM (about 1.5–2× faster)</td>
+</tr>
+<tr>
+<td>Full speed</td>
+<td>Q4_K_M GGUF</td>
+<td>24 GB+ of VRAM, with the whole model on the GPU</td>
+</tr>
+<tr>
+<td>Higher precision</td>
+<td>Q8_0 GGUF (about 32 GB)</td>
+<td>48 GB of VRAM, or 64 GB of RAM</td>
+</tr>
+<tr>
+<td>Full weights</td>
+<td>BF16 (vLLM, SGLang), about 60 GB</td>
+<td>Data-centre GPUs</td>
+</tr>
+</tbody></table>
+<p>The model stays loaded the whole time, so on a 24–32 GB machine it takes most of
+the memory. Builds below 4 bits (Q2, Q1, TQ1, 4–9 GB) load on 12–16 GB of RAM, but
+they lose too much accuracy for memory writing: wrong facts and broken JSON.</p>
+<p>Serve it from any OpenAI-compatible server and point HyAtlas at it. For example,
+with llama.cpp and a community GGUF:</p>
+<pre><code class="language-bash">llama-server -m Hy-Memory-30B-A3B-Q4_K_M.gguf --port 8080 -c 32768 --n-cpu-moe 48 --jinja --chat-template-kwargs '{"reasoning_effort":"no_think"}'
+</code></pre>
+<pre><code class="language-bash">export HYATLAS_LLM_BASE="http://127.0.0.1:8080/v1"
+export HYATLAS_LLM_MODEL="hy-memory"
+export HYATLAS_LLM_KEY="local"   # any non-empty value; a local server ignores it
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>--n-cpu-moe</code> keeps that many layers' experts in system RAM. Raise it until
+the model fits your VRAM, and lower it for speed.</li>
+<li>The model card runs it with <code>reasoning_effort: "no_think"</code>. Set that on the
+server as shown, because HyAtlas does not send it per request.</li>
+<li>To try it without giving up a hosted model, set it as the fallback instead
+(<code>HYATLAS_LLM_FALLBACK_BASE</code>, <code>HYATLAS_LLM_FALLBACK_MODEL</code>). It then answers
+only when the primary fails.</li>
+<li>Consolidation prompts are several thousand tokens. On a mid-range desktop
+with the experts in RAM, expect minutes per consolidation call. That is fine
+for a background pass, but slower than a hosted model.</li>
+<li>It was trained on the Mem0, MemOS and Hy-Memory prompt formats. HyAtlas uses
+its own, so check a few consolidation passes before relying on it.</li>
+</ul>
+<p><strong>All configuration is via environment variables</strong> — the binary reads no settings from its command line:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>HYATLAS_GO_PORT</code></td>
+<td><code>19528</code></td>
+<td>HTTP listen port</td>
+</tr>
+<tr>
+<td><code>HYATLAS_GO_HOST</code></td>
+<td><code>127.0.0.1</code></td>
+<td>Bind address (loopback only by default). IPv6 literals work with or without brackets</td>
+</tr>
+<tr>
+<td><code>HYATLAS_ALLOWED_HOSTS</code></td>
+<td><em>(empty)</em></td>
+<td>Comma-separated hostnames the server accepts in <code>Host</code> and <code>Origin</code>, in addition to localhost and IP literals. A DNS name not listed here gets 403 on every route, including <code>/healthz</code>. Entries are hostnames; a port in an entry is ignored. Add a name only if you reach the server through it, such as a reverse proxy or a LAN hostname.</td>
+</tr>
+<tr>
+<td><code>HYATLAS_GO_DATA</code></td>
+<td><code>./data</code></td>
+<td>Data directory (relative paths resolve against the working directory): chromem collections, <code>doc_index.json</code>, <code>consolidate_state.json</code>, and by default <code>graph.json</code></td>
+</tr>
+<tr>
+<td><code>HYATLAS_GRAPH_PATH</code></td>
+<td><code>&lt;data&gt;/graph.json</code></td>
+<td>L5 graph store location</td>
+</tr>
+<tr>
+<td><code>HYATLAS_EMBED_BASE</code></td>
+<td><code>bge</code></td>
+<td><code>bge</code> = local in-process BGE embedder (no network). Set to a URL for an OpenAI-compatible embedder, or <code>local</code> for a deterministic stub that is not semantic.</td>
+</tr>
+<tr>
+<td><code>HYATLAS_EMBED_MODEL</code></td>
+<td><code>text-embedding-3-small</code></td>
+<td>Model name sent to an OpenAI-compatible embedder. Used only when <code>HYATLAS_EMBED_BASE</code> is a URL.</td>
+</tr>
+<tr>
+<td><code>HYATLAS_EMBED_KEY</code></td>
+<td>(empty)</td>
+<td>Bearer token for that embedder. Used only when <code>HYATLAS_EMBED_BASE</code> is a URL.</td>
+</tr>
+<tr>
+<td><code>HYATLAS_MODEL_DIR</code></td>
+<td><em>(unset: search order below)</em></td>
+<td>Where the BGE model lives, for a plain build. When set, it is the only directory searched. When unset, the server looks in <code>&lt;cwd&gt;/models</code>, then <code>&lt;exe dir&gt;/models</code>, then <code>~/.hyatlas/models</code> (Windows <code>%LOCALAPPDATA%\hyatlas\models</code>). An embedded build ignores this variable.</td>
+</tr>
+<tr>
+<td><code>HYATLAS_MODE</code></td>
+<td><code>ultra</code></td>
+<td><code>lite</code> | <code>pro</code> | <code>ultra</code>. An unrecognised value is fatal at startup. See the mode table above.</td>
+</tr>
+<tr>
+<td><code>HYATLAS_SYNC_EXTRACT</code></td>
+<td><em>(follows the mode)</em></td>
+<td><code>on</code> | <code>off</code>. Whether a write waits for extraction. An unrecognised value is fatal at startup.</td>
+</tr>
+<tr>
+<td><code>HYATLAS_CONSOLIDATE_EVERY</code></td>
+<td><code>6h</code></td>
+<td>Ultra only: interval between slow-path passes. Must be positive in ultra: <code>0</code>, <code>off</code>, <code>false</code>, <code>no</code> or a negative value is fatal at startup; use <code>pro</code> to run without the pass.</td>
+</tr>
+<tr>
+<td><code>HYATLAS_CONSOLIDATE_BATCH</code></td>
+<td><code>50</code></td>
+<td>Ultra only: max facts per owner per consolidation call. Larger owners are split into several clusters, one call each.</td>
+</tr>
+<tr>
+<td><code>HYATLAS_CONSOLIDATE_GRAPH</code></td>
+<td>on</td>
+<td>Ultra only: <code>off</code> (also <code>false</code>, <code>0</code>, <code>no</code>) stops consolidation writing L5 knowledge edges and the cross-session arc, and the prompt then does not ask for them. Each edge is stored in the graph (drawn by the dashboard and the Desktop starmap) and as a searchable L5 memory; edges from older versions are indexed for search at startup.</td>
+</tr>
+<tr>
+<td><code>HYATLAS_CONSOLIDATE_PARALLEL</code></td>
+<td><code>2</code></td>
+<td>Ultra only: how many consolidation calls run at once (1 to 4)</td>
+</tr>
+<tr>
+<td><code>HYATLAS_CONSOLIDATE_CATCHUP</code></td>
+<td><code>20m</code></td>
+<td>Ultra only: the interval between passes while clusters are still due</td>
+</tr>
+<tr>
+<td><code>HYATLAS_CONSOLIDATE_RECLUSTER</code></td>
+<td><em>(unset = never)</em></td>
+<td>Ultra only: rebuild an owner's topic clusters after this long; clusters whose members are unchanged keep their progress</td>
+</tr>
+<tr>
+<td><code>HYATLAS_CROSS_SCHEMA_EVERY</code></td>
+<td><code>24h</code></td>
+<td>Ultra only: the least time between two cross-topic schema passes for one owner; <code>0</code> or <code>off</code> disables it. The pass makes one extra LLM call, sending that owner's schema texts, only for an owner with at least 4 schemas from at least 2 topics</td>
+</tr>
+<tr>
+<td><code>HYATLAS_RAW_RETENTION</code></td>
+<td><em>(unset = never delete)</em></td>
+<td>Ultra only: age after which an L2 raw row cited by no live edge or fact is deleted</td>
+</tr>
+<tr>
+<td><code>HYATLAS_USER_ALIASES</code></td>
+<td><em>(unset = no aliases)</em></td>
+<td>Groups of user IDs that are one person, for search: groups separated by <code>;</code>, IDs in a group by <code>,</code>, e.g. <code>"221727702992945152,default,hermes-memory-archive"</code>. A search for any ID in a group covers the whole group, and so do list, write-time de-duplication, the related facts shown to extraction, consolidation, forget, episodes and the Now page. Episodes and Now pages are kept under the first ID of the group</td>
+</tr>
+<tr>
+<td><code>HYATLAS_MIN_SCORE</code></td>
+<td><code>0.60</code></td>
+<td>Search drops vector hits below this cosine similarity. <code>0</code> disables the floor. A request may override it with <code>min_score</code></td>
+</tr>
+<tr>
+<td><code>HYATLAS_DEDUPE_SCORE</code></td>
+<td><code>0.92</code></td>
+<td>Write-time de-duplication: a new L3 fact at or above this similarity to the owner's nearest live fact supersedes it. <code>0</code> disables it</td>
+</tr>
+<tr>
+<td><code>HYATLAS_ADMIN</code></td>
+<td>off</td>
+<td><code>on</code> enables the two <code>/api/v1/admin/*</code> maintenance endpoints (see <em>Maintenance (admin)</em> in the API Reference), and bulk delete (<code>/api/v1/delete_all</code> by layer, user, agent or <code>all</code>). Otherwise they return 403. Deleting one memory by <code>id</code> needs no switch</td>
+</tr>
+<tr>
+<td><code>HYATLAS_CATCHUP_MAX_AGE</code></td>
+<td><code>168h</code> (7 days)</td>
+<td>Pro and ultra: how old a raw memory may be and still be caught up. Older rows, and rows written in lite mode, are never re-extracted automatically (<code>/api/v1/reprocess</code> still can). <code>0</code> or <code>off</code> means no age limit</td>
+</tr>
+<tr>
+<td><code>HYATLAS_CATCHUP_EVERY</code></td>
+<td><code>10m</code></td>
+<td>Pro and ultra: how often the server re-extracts raw memories that extraction never reached (written while no key was set, or whose extraction call failed). Up to 20 per run, oldest first, one at a time; a row under 2 minutes old is left alone, and the run stops at the first model error. A reply that cannot be parsed counts a try on that row and the run goes on; after 3 tries the row is left alone. Only rows written in pro or ultra, and younger than <code>HYATLAS_CATCHUP_MAX_AGE</code>, are taken. A key arriving also triggers a run. <code>0</code>, <code>off</code>, <code>false</code> or <code>no</code> turns it off</td>
+</tr>
+<tr>
+<td><code>HYATLAS_LLM_BASE</code></td>
+<td><em>(unset)</em></td>
+<td>OpenAI-compatible LLM endpoint. <strong>Memory text is sent here once you set it</strong> — see <em>Privacy</em> above. Unset means no LLM call at all.</td>
+</tr>
+<tr>
+<td><code>HYATLAS_LLM_MODEL</code></td>
+<td><em>(unset)</em></td>
+<td>LLM model name. Base, model and key must all be set for extraction to run.</td>
+</tr>
+<tr>
+<td><code>HYATLAS_LLM_KEY</code></td>
+<td>(empty)</td>
+<td>LLM bearer token</td>
+</tr>
+<tr>
+<td><code>HYATLAS_LLM_KEY_FILE</code></td>
+<td>(empty)</td>
+<td>Read the key live from this file on every call, for a rotating key file of your own. The file must hold the token as plain text. A file whose content starts with <code>{</code> (JSON, such as another program's credential file) is refused with one warning in the log, and the key from <code>HYATLAS_LLM_KEY</code> is used instead. Wins over <code>HYATLAS_LLM_KEY</code>, which is the fallback if the file cannot be read or is refused. A key posted to <code>POST /api/v1/llm/key</code> wins over both.</td>
+</tr>
+<tr>
+<td><code>HYATLAS_RECENCY</code></td>
+<td>on</td>
+<td><code>off</code> stops newer memories winning close calls in search (see <em>Search</em>)</td>
+</tr>
+<tr>
+<td><code>HYATLAS_MMR_LAMBDA</code></td>
+<td>0.75</td>
+<td>Relevance weight of the diversity pass in search, in (0, 1]; <code>1</code> turns it off (see <em>Search</em>)</td>
+</tr>
+<tr>
+<td><code>HYATLAS_INTENTION_TTL</code></td>
+<td><code>168h</code> (7 days)</td>
+<td>How long an L7 intention without a due date stays in search results. Older intentions are kept but not returned. <code>0</code>, <code>off</code>, <code>false</code> or <code>no</code> means no limit: they are all returned. An intention with a due date stays until a day after it is due, then drops out</td>
+</tr>
+<tr>
+<td><code>HYATLAS_SNAPSHOT_EVERY</code></td>
+<td><code>24h</code></td>
+<td>How often the server zips its data directory (first one a minute after start). <code>0</code> or <code>off</code> turns snapshots off</td>
+</tr>
+<tr>
+<td><code>HYATLAS_SNAPSHOT_KEEP</code></td>
+<td><code>7</code></td>
+<td>How many snapshots to keep; older ones are deleted</td>
+</tr>
+<tr>
+<td><code>HYATLAS_SNAPSHOT_DIR</code></td>
+<td><code>&lt;data&gt;-snapshots</code></td>
+<td>Where snapshots go: a folder next to the data directory by default; do not point it inside the data directory</td>
+</tr>
+<tr>
+<td><code>HYATLAS_RECONCILE</code></td>
+<td><code>off</code></td>
+<td><code>on</code>: after extraction, one more LLM call compares the new facts with similar stored ones (cosine 0.70 or more) and merges repeats (UPDATE, which keeps a recurring event as a series), retires facts that are no longer true (SUPERSEDE), or links related facts without retiring them (LINK). Doubles the LLM calls per write: meant for a local model, not a hosted free tier</td>
+</tr>
+<tr>
+<td><code>HYATLAS_EPISODE_GAP</code></td>
+<td><code>30m</code></td>
+<td>pro and ultra: a gap between an owner's writes longer than this ends an episode of work, which then gets one L4 summary. <code>0</code> or <code>off</code> writes no episode summaries</td>
+</tr>
+<tr>
+<td><code>HYATLAS_NOW_EVERY</code></td>
+<td><code>15m</code></td>
+<td>How often an owner's Now page may be rebuilt after writes (pro and ultra only). <code>0</code> or <code>off</code> rebuilds after every write</td>
+</tr>
+<tr>
+<td><code>HYATLAS_USAGE_LEARNING</code></td>
+<td>on</td>
+<td><code>off</code> stops search learning from which recalled memories replies actually used</td>
+</tr>
+<tr>
+<td><code>HYATLAS_LLM_FALLBACK_MODEL</code></td>
+<td><em>(unset)</em></td>
+<td>A second model, tried only when a call to the primary fails (error, empty reply or timeout). The primary then gets two thirds of the call's time. Unset means no fallback</td>
+</tr>
+<tr>
+<td><code>HYATLAS_LLM_FALLBACK_BASE</code></td>
+<td><em>(the primary's)</em></td>
+<td>OpenAI-compatible endpoint for the fallback model</td>
+</tr>
+<tr>
+<td><code>HYATLAS_LLM_FALLBACK_KEY</code></td>
+<td><em>(see purpose)</em></td>
+<td>Key for the fallback endpoint. Unset reuses the primary key or key file only when the fallback is on the primary's host; a fallback on another host gets no key rather than the primary's</td>
+</tr>
+<tr>
+<td><code>HYATLAS_EXTRACT_TIMEOUT</code></td>
+<td><code>300s</code></td>
+<td>How long one extraction call may take</td>
+</tr>
+</tbody></table>
+<p>The binary reads no settings from the command line. It answers only <code>--version</code>
+and <code>--help</code>; any other argument is refused instead of starting a second server.</p>
+<p><strong>Durations.</strong> Every duration setting (the <code>HYATLAS_CONSOLIDATE_*</code> intervals, <code>HYATLAS_RAW_RETENTION</code>, <code>HYATLAS_CATCHUP_EVERY</code>, <code>HYATLAS_EPISODE_GAP</code>, <code>HYATLAS_NOW_EVERY</code>, <code>HYATLAS_INTENTION_TTL</code>, <code>HYATLAS_SNAPSHOT_EVERY</code>) reads a value the same way. <code>15m</code> or <code>6h</code> is a Go duration, a bare number is seconds, and <code>0</code>, <code>off</code>, <code>false</code> or <code>no</code> turns the feature off. An empty value uses the default. A value that is none of these logs a line and uses the default, so a typo never changes the schedule silently.</p>
+<p><strong>Snapshots.</strong> The server backs itself up: every <code>HYATLAS_SNAPSHOT_EVERY</code> it writes
+<code>hyatlas-&lt;UTC time&gt;.zip</code> of the whole data directory to <code>HYATLAS_SNAPSHOT_DIR</code>,
+pausing writes while it copies, and keeps the newest <code>HYATLAS_SNAPSHOT_KEEP</code>. To
+restore, stop the server, replace the data directory with a snapshot's contents,
+and start it again.</p>
+<p><strong>Stopping.</strong> Ctrl-C or SIGTERM stops the server cleanly: it finishes the requests in
+progress, waits up to 10 seconds for background extractions that writes just served,
+then writes the doc index and usage counts. Whatever extraction is still left is
+picked up by the catch-up loop on the next start. A hard kill skips all of this, so
+the Windows launcher (<code>hyatlas-go.ps1 stop</code>) and the Hermes plugin's stop on Windows
+call <code>POST /api/v1/flush</code> before they stop the process.</p>
+<hr>
+<h3>Model assets</h3>
+<p>The BGE-small model + the platform-matching onnxruntime shared library live in <code>models/</code> (gitignored). For a plain build, the server reads them at runtime. For an embedded build, <code>go:embed</code> bundles them into the binary at compile time from <code>cmd/hyatlas-go/models/</code> (copy the same files there before building), so the release binary (built with <code>-tags embedded</code>) needs no model folder at all.</p>
+<p><strong>Where a plain build looks</strong> (when <code>HYATLAS_MODEL_DIR</code> is unset), in order:</p>
+<ol>
+<li><code>&lt;cwd&gt;/models</code> (a checkout run from the repo root)</li>
+<li><code>&lt;exe dir&gt;/models</code> (the folder the binary sits in)</li>
+<li>the installer's default: <code>~/.hyatlas/models</code>, or <code>%LOCALAPPDATA%\hyatlas\models</code> on Windows</li>
+</ol>
+<p>If <code>HYATLAS_MODEL_DIR</code> is set, that directory is the only one searched. A plain build without a model in the searched places refuses to start and names every directory it checked. An embedded build never searches these places: it unpacks the bundled model into a temporary directory at startup.</p>
+<p><strong>Directory layout (per platform):</strong></p>
+<table>
+<thead>
+<tr>
+<th>OS</th>
+<th>Models dir contents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Windows</td>
+<td><code>bge-small-en-v1.5.onnx</code> + <code>.onnx.data</code> + <code>vocab.txt</code> + <code>onnxruntime.dll</code></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td><code>bge-small-en-v1.5.onnx</code> + <code>.onnx.data</code> + <code>vocab.txt</code> + <code>libonnxruntime.so</code></td>
+</tr>
+<tr>
+<td>macOS</td>
+<td><code>bge-small-en-v1.5.onnx</code> + <code>.onnx.data</code> + <code>vocab.txt</code> + <code>libonnxruntime.dylib</code></td>
+</tr>
+</tbody></table>
+<p><strong>Where to get them:</strong></p>
+<ul>
+<li>Model: <code>https://huggingface.co/Xenova/bge-small-en-v1.5/resolve/main/onnx/model.onnx</code> (saved as <code>bge-small-en-v1.5.onnx</code>) and <code>.../resolve/main/vocab.txt</code>. The release workflow and the installer use these URLs.</li>
+<li>onnxruntime 1.28.1: the release archives that <code>.github/workflows/release.yml</code> downloads, <code>onnxruntime-&lt;platform&gt;-1.28.1</code> from <a href="https://github.com/microsoft/onnxruntime/releases">microsoft/onnxruntime releases</a>. Take the <code>lib/</code> file for your platform (<code>onnxruntime.dll</code>, <code>libonnxruntime.so</code> or <code>libonnxruntime.dylib</code>).</li>
+</ul>
+<p><strong>To regenerate the ONNX from the HuggingFace model</strong>, see <code>scripts/export_bge_onnx.py</code>.</p>
+<h4>Version pins (critical)</h4>
+<ul>
+<li><code>onnxruntime_go</code> <strong>v1.32.0</strong> — declares ONNX API 28</li>
+<li><code>onnxruntime</code> <strong>1.28.1</strong> shared library — must expose API 28</li>
+<li>The <code>.data</code> external weights resolve relative to the process <strong>CWD</strong>. The embedder <code>chdir</code>s to the model dir while it loads the model, then changes back.</li>
+</ul>
+<hr>
+<h3>What changed since v3.5.0</h3>
+<ul>
+<li><strong>Pure Go rewrite</strong> — single binary (about 160 MB embedded release), no Python venv, no zvec, no Kuzu, no FastAPI</li>
+<li><strong>In-process BGE embeddings</strong> via onnxruntime-go (cgo) — no HTTP embed subprocess</li>
+<li><strong>L4 Summary enabled</strong> — was dormant in v3.5</li>
+<li><strong>L5 bitemporal graph (v4.1.0+)</strong> — every L5 relation carries its source L2 memory IDs plus a bitemporal timestamp; the <code>/api/v1/graph-as-of?ts=&lt;unix&gt;</code> endpoint lets you rewind the graph to any past moment.</li>
+<li><strong>Mind Palace (v4.1.0+)</strong> — a temporal visualization of the L5 knowledge graph in the Hermes Desktop <code>hyatlas</code> pane. Its design is in <a href="https://github.com/tuancookiez-hub/HyAtlas-Memory/blob/main/plugins/hyatlas/desktop/SPEC.md"><code>plugins/hyatlas/desktop/SPEC.md</code></a>. The Desktop app itself is not part of this repository.</li>
+<li><strong>Living memory (v4.6.0–v4.7.x)</strong> — the Now page, L8 entity pages, usage learning, topic-clustered consolidation with drop reasons, guards and restore.</li>
+<li><strong>Precision per fact (v4.8.0)</strong> — event dates and date-aware search, updates with counts, intention due dates, episode summaries, history on read, near-duplicate demotion, idle-time recency, and the localhost key hand-over that replaced reading <code>auth.json</code>.</li>
+<li><strong>A stable floor (v5.0.0)</strong> — turns that were never extracted are caught up, forgetting mirrored from Hermes's memory tool, linked facts and recurring events under <code>HYATLAS_RECONCILE</code>, the current session's intentions first, one alias rule everywhere, a clean shutdown, and a faster, inverted-index search.</li>
+<li><strong>Smarter recall (v4.9.0)</strong> — task experiences, schemas with evidence, long facts found by their sentences, an entity boost and graph-assisted recall, query-kind weighting, and an opt-in second reconcile call for local models.</li>
+</ul>
+<h3>API Reference</h3>
+<p>Base URL: <code>http://127.0.0.1:19528</code></p>
+<p>Method notes: the handlers read their parameters from the query string, the JSON
+body, or both. Where a method is shown, that is the one the Hermes plugin and the
+docs use. Some handlers also accept other methods, so check <code>routes()</code> in <code>cmd/hyatlas-go/server.go</code>
+if you depend on that. Every route is behind the Host/Origin guard described above.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Parameters and response</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GET</code></td>
+<td><code>/healthz</code></td>
+<td>Liveness. Returns <code>{"status":"ok"}</code>.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/status</code></td>
+<td><code>status</code>, <code>version</code>, <code>vdb</code>, <code>embed</code>, <code>llm</code> (<code>ok</code> | <code>unconfigured</code> | <code>unused</code>), <code>llm_model</code>, <code>llm_base</code>, <code>mode</code>, <code>mode_detail</code>, <code>uses_llm</code>, <code>extract_sync</code>, <code>write_pipeline</code> (<code>ok</code> or <code>degraded: …</code>), <code>writes</code>, <code>searches</code>, <code>layers</code> (per layer, live rows; L5 = graph node count), <code>graph_nodes</code>, <code>graph_edges</code>, <code>unextracted</code> (live raw rows that extraction has not reached; the catch-up loop works through them, and lite always reports 0), <code>consolidations</code> (<code>-1</code> without a slow path; resets on restart), <code>last_consolidated</code> (last report; omitted until a pass has run). <code>graph_nodes</code> and <code>graph_edges</code> count all owners.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/metrics</code></td>
+<td><code>layers</code>, <code>total</code>, <code>graph_nodes</code>, <code>graph_edges</code> (all owners).</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/v1/add</code></td>
+<td>Body: <code>text</code> (or <code>data</code>, required), <code>user_id</code>, <code>agent_id</code>, <code>session_id</code>, <code>metadata</code>. Returns <code>success</code>, <code>memory_id</code>, <code>extraction_status</code> (<code>done</code> | <code>failed</code> | <code>pending</code> | <code>unconfigured</code> | <code>skipped</code>). A missing text returns 400.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/v1/search</code></td>
+<td>Body: <code>query</code> (required), <code>limit</code>, <code>layer</code>, <code>user_id</code> and <code>agent_id</code> (strings, as the Hermes plugin sends them), <code>user_ids</code> and <code>agent_ids</code> (arrays; only the first entry of each is used), <code>min_score</code> (float, overrides <code>HYATLAS_MIN_SCORE</code>; <code>0</code> disables the floor), <code>reader</code> (ranking: <code>legacy</code>, <code>hybrid_tag</code> or hybrid by default; see <em>Search</em>), <code>session_id</code> (the caller's session: its own L7 intentions rank above other sessions'). Returns <code>memories</code>: <code>pages</code>, <code>profile</code>, <code>proactive</code>, <code>experiences</code> and <code>normal</code> lists, each item with <code>memory_id</code>, <code>content</code>, <code>score</code>, <code>layer</code>, <code>gmt_created</code>, <code>user_id</code>, <code>agent_id</code>; <code>order</code>, the channel names in the order to show them (<code>now</code> first, then the channels); and <code>now</code> when the owner has a Now page.</td>
+</tr>
+<tr>
+<td><code>GET</code> or <code>POST</code></td>
+<td><code>/api/v1/list</code></td>
+<td>Query or body: <code>layer</code>, <code>user_id</code>, <code>agent_id</code>, <code>limit</code> (default 20), <code>offset</code>, <code>include_raw</code> (default on; <code>false</code> hides L2 rows when no layer is given), <code>include_superseded</code> (<code>true</code> also returns rows the ultra pass merged or dropped, with <code>invalid_at</code>, <code>superseded_by</code> and <code>superseded_how</code>, how the row was retired: <code>replaced</code>, <code>updated</code>, <code>merged</code>, <code>restated</code>, <code>dropped</code>, <code>done</code> or <code>forgotten</code>; <code>drop_reason</code> is added when there is one). A <code>user_id</code> lists the rows of every ID in its alias group. The string <code>all</code> is not special here. Returns <code>total</code>, <code>offset</code>, <code>limit</code>, <code>memories</code>, <code>layers</code>, <code>graph_nodes</code>, <code>graph_edges</code>.</td>
+</tr>
+<tr>
+<td><code>GET</code> or <code>POST</code></td>
+<td><code>/api/v1/graph</code></td>
+<td><code>node</code> (the L5 node ID), <code>user_id</code>, <code>agent_id</code>. Read from the query string or the JSON body; the body wins when both are set. <code>all</code> or empty means no owner filter. Returns <code>node</code>, <code>neighbors</code>, <code>node_count</code>, <code>edge_count</code> (for that owner), <code>extract_err</code>.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/edges</code></td>
+<td>Query: <code>n</code> (default 500), <code>k_semantic</code> (default 3), <code>user_id</code>, <code>agent_id</code> (<code>all</code> = no filter). Returns <code>nodes</code>, <code>knowledge</code> (L5 relations, each with <code>sources</code>), <code>co_session</code>, <code>semantic</code>, <code>total_edges</code>.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/learning/graph</code></td>
+<td>Query: <code>n</code>, <code>k_semantic</code>, <code>user_id</code>, <code>agent_id</code>. Returns the starmap feed: <code>nodes</code>, <code>edges</code>, <code>memory</code>, <code>stats</code>.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/graph-as-of</code></td>
+<td>Query: <code>ts</code> (unix seconds, default now), <code>n</code> (default 500), <code>user_id</code>, <code>agent_id</code>. Returns `no</td>
+</tr>
+</tbody></table>
+<hr>
+<p><em>README truncated. <a href="https://github.com/tuancookiez-hub/HyAtlas-Memory#readme">Continue reading on GitHub</a></em></p>
+</details>
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in memory &amp; context</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/mem0ai/mem0">
+        <div class="stars">★ 68.7K</div>
+        <div class="name"><span class="org">mem0ai /</span> mem0</div>
+      </a>
+      <a class="related-row" href="/projects/vectorize-io/hindsight">
+        <div class="stars">★ 60.0K</div>
+        <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
+      </a>
+      <a class="related-row" href="/projects/greyhaven-ai/autocontext">
+        <div class="stars">★ 1.3K</div>
+        <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
+      </a>
+      <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
+        <div class="stars">★ 385</div>
+        <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
+      </a>
+      <a class="related-row" href="/projects/yoloshii/ClawMem">
+        <div class="stars">★ 212</div>
+        <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
+      </a>
+      <a class="related-row" href="/projects/Signet-AI/signetai">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">Signet-AI /</span> signetai</div>
+      </a>
+      <a class="related-row" href="/projects/plur-ai/plur">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">plur-ai /</span> plur</div>
+      </a>
+      <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
+        <div class="stars">★ 52</div>
+        <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
+      </a>
+    </div>
+    <p class="list-link"><a href="/lists/best-memory-providers">see all memory &amp; context →</a></p>
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="/about">about</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues/new?template=suggest-repo.yml">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

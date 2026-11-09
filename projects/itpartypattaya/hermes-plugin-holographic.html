@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>itpartypattaya/hermes-plugin-holographic — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
+<meta name="description" content="Local Hermes memory provider with SQLite FTS5, trust scoring, entity resolution and holographic retrieval.">
+<link rel="canonical" href="https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic">
+<meta property="og:title" content="itpartypattaya/hermes-plugin-holographic — Hermes Atlas">
+<meta property="og:description" content="Local Hermes memory provider with SQLite FTS5, trust scoring, entity resolution and holographic retrieval.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-plugin-holographic&amp;subtitle=Holographic+memory+provider+for+Hermes+Agent%3A+local+SQLite+fact+store%2C+HRR+retrieval%2C+18+languages.+Maintained+by+itpartypattaya.&amp;kind=project+%C2%B7+memory">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="itpartypattaya/hermes-plugin-holographic — Hermes Atlas">
+<meta name="twitter:description" content="Local Hermes memory provider with SQLite FTS5, trust scoring, entity resolution and holographic retrieval.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-plugin-holographic&amp;subtitle=Holographic+memory+provider+for+Hermes+Agent%3A+local+SQLite+fact+store%2C+HRR+retrieval%2C+18+languages.+Maintained+by+itpartypattaya.&amp;kind=project+%C2%B7+memory">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "memory &amp; context", "item": "https://hermesatlas.com/lists/best-memory-providers" },
+    { "@type": "ListItem", "position": 3, "name": "hermes-plugin-holographic" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic#software",
+  "name": "hermes-plugin-holographic",
+  "description": "Local Hermes memory provider with SQLite FTS5, trust scoring, entity resolution and holographic retrieval.",
+  "url": "https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic",
+  "codeRepository": "https://github.com/itpartypattaya/hermes-plugin-holographic",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
+  "author": {
+    "@type": "Organization",
+    "name": "itpartypattaya",
+    "url": "https://github.com/itpartypattaya"
+  },
+  "dateModified": "2026-11-07T17:21:24.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 35
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">310·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/lists/best-memory-providers">memory &amp; context</a><span class="sep">/</span>hermes-plugin-holographic
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">itpartypattaya</span><span class="slash">/</span>hermes-plugin-holographic
+  </h1>
+  <p class="project-desc">Holographic memory provider for Hermes Agent: local SQLite fact store, HRR retrieval, 18 languages. Maintained by itpartypattaya.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 35</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
+    
+    <span><span class="meta-label">updated</span>2026-11-07</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/itpartypattaya/hermes-plugin-holographic" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">Local Hermes memory provider with SQLite FTS5, trust scoring, entity resolution and holographic retrieval.</p>
+    <ul class="summary-highlights">
+      <li>SQLite fact storage with history and trust scoring</li>
+      <li>Local FTS5 and holographic reduced-representation retrieval</li>
+      <li>Optional embedding and reranking APIs with explicit configuration</li>
+    </ul>
+  </div>
+</section>
+
+<section class="project-summary" aria-label="Security note"><div class="section-label">security note</div><p class="summary-text">Basic static screen: f75c636 (November 9, 2026), not security certification. Local by default. Optional embeddings and reranking send selected memory content to configured endpoints. Secret and injection screens are heuristics, not a security boundary.</p></section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h2>Holographic Memory Provider</h2>
+<p>Local memory provider for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>: a SQLite fact store with
+FTS5 search, trust scoring, entity resolution and HRR (holographic reduced representation) retrieval. By default
+everything stays on your machine: no API key, no network, no model calls. <a href="#search-by-meaning-optional-online">Search by
+meaning</a> is an optional online add-on, off unless you turn it on.</p>
+<p><strong>Maintained by <a href="https://github.com/itpartypattaya">itpartypattaya</a></strong> since October 2026. This is the provider that
+shipped inside Hermes core as <code>plugins/memory/holographic/</code>; Nous Research
+<a href="https://github.com/NousResearch/hermes-plugin-holographic/blob/main/HANDOFF.md">handed it off</a> when the bundled
+copy was scheduled to leave core (announced for October 15, 2026). Same provider name, same config, same database:
+users who have <code>memory.provider: holographic</code> keep their facts. See <a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/CHANGELOG.md">CHANGELOG.md</a> for what changed.</p>
+<h3>Task outcomes and memory explanations (0.20.0)</h3>
+<p>An accurate fact can still be the wrong answer to a task — for example, a fact about another person with the same
+name. The optional local experience journal records the actual fact versions returned, the task outcome and a
+short correction separately from truth/trust. It does not change ranking or automatically correct a fact.</p>
+<p>Add to <code>plugins.hermes-memory-store</code> in <code>config.yaml</code>, then restart the gateway or start a new CLI session:</p>
+<pre><code class="language-yaml">experience: on
+experience_trace: on  # optional: candidate/stage ids as well as the actual emission receipt
+</code></pre>
+<p>Both are off by default. When enabled, <code>fact_experience</code> provides <code>recent</code>, <code>outcome</code> and <code>explain</code>; a search returns
+<code>memory_attempt</code>, and prefetch identifies a nonempty emission; a prefetch that recalls nothing writes nothing.
+With collection on, one line in the system prompt asks the agent to record an outcome when the person corrects or rejects
+an answer that used recalled facts (0.20.3); with it off the prompt is unchanged.
+Explain reads that original snapshot without replaying search or calling a model. Task outcomes are agent reports, never authenticated human confirmations; old
+<code>fact_feedback</code> calls keep their original meaning and are not imported as duplicate evidence.</p>
+<p>Records expire after 30 days, with at most 1000 attempts per scoped database and 10 revisions per attempt; the limits
+also apply when a writer opens the store with collection turned off. Forgetting
+a referenced fact/version also erases the dependent task/correction; merge and end preserve history. Detailed tracing
+costs local storage and synchronous writes; no fixed latency or token-saving percentage is promised.
+If the journal encounters a busy SQLite writer, it retries briefly with limited SQLite busy waits. After repeated
+failure the search still returns, but that attempt has no <code>memory_attempt</code> and cannot
+receive an outcome. Slow-operation warnings contain stage timings only, not fact or query text. This is best-effort
+recording, not a guarantee against long locks, disk failures or process termination. See <a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/experience.md">the full behavior</a>.
+Dreaming 3.6.0 can read live summaries without another correction-text cache. See <a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/experience.md">the full contract and examples</a>.</p>
+<h3>How it works</h3>
+<p><img src="https://raw.githubusercontent.com/itpartypattaya/hermes-plugin-holographic/main/diagram/architecture.svg" alt="Architecture: before each turn Hermes core sends the message through the relevance gate and search; writes pass a
+validator that refuses instructions and credentials and land in one SQLite transaction with the fact's history; recall
+and history tools read the same file; search by meaning is an optional online add-on" loading="lazy" decoding="async"></p>
+<p><img src="https://raw.githubusercontent.com/itpartypattaya/hermes-plugin-holographic/main/diagram/recall.svg" alt="Recall before a turn: greetings recall nothing; the message's words become keys; 15 candidates come from FTS5,
+character n-grams or a word scan, reordered by meaning if that is on; a relevance gate, a repeat window and the screen
+decide; up to five facts by their words, one by meaning alone and two of named entities go into the turn as
+data" loading="lazy" decoding="async"></p>
+<h3>Install</h3>
+<p>While your Hermes still bundles <code>holographic</code>, the bundled copy is used and this plugin stays dormant. After core
+drops it, <code>hermes update</code> installs the catalog plugin named <code>holographic</code> for every profile that has it configured.
+To install by hand:</p>
+<pre><code class="language-bash">hermes plugins install holographic          # from the plugin catalog
+hermes config set memory.provider holographic
+</code></pre>
+<p>or <code>hermes memory setup</code> and pick <code>holographic</code>.</p>
+<p>The catalog entry may still pin an older release while a version bump waits for review; to install a given release
+exactly, pass its commit: <code>hermes plugins install holographic --ref &lt;40-character sha of the tag&gt; --force</code>.</p>
+<h4>Memory went off after <code>hermes update</code></h4>
+<p>Core dropped its bundled copy on 2026-10-11 (Hermes v0.21.7) and installs this plugin in its place. If that
+install fails (a dependency resolution error in the plugin workspace, a network error), Hermes reports "Memory
+provider 'holographic' is not installed, so external memory is off", and a failed install may leave <code>memory.provider</code>
+empty and <code>holographic</code> listed under <code>plugins.disabled</code> in <code>config.yaml</code>. Your facts are not touched:
+<code>memory_store.db</code> stays where it was. To bring memory back:</p>
+<ol>
+<li><code>hermes plugins install holographic</code> (add <code>--force</code> if a copy is already in <code>~/.hermes/plugins/holographic/</code>);
+if it fails on dependencies, update Hermes first — the cause is usually in core's lock, not in this plugin.</li>
+<li>In <code>config.yaml</code>: remove <code>holographic</code> from <code>plugins.disabled</code>, and set <code>memory.provider: holographic</code>.</li>
+<li>Restart the gateway (or start a new CLI session) and check with <code>hermes memory status</code>.</li>
+</ol>
+<h3>Config</h3>
+<p>In <code>config.yaml</code> under <code>plugins.hermes-memory-store</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>db_path</code></td>
+<td><code>$HERMES_HOME/memory_store.db</code></td>
+<td>SQLite database path</td>
+</tr>
+<tr>
+<td><code>auto_extract</code></td>
+<td><code>false</code></td>
+<td>Store user sentences that state a preference or decision (English, Russian, Chinese) after each completed turn, and also before context compression and at session end (not in <code>scope: user</code>, where a whole transcript cannot be attributed), at trust 0.4; questions, replies to the assistant ("I like that, sounds good") and restatements of a stored fact are skipped</td>
+</tr>
+<tr>
+<td><code>mirror_memory_writes</code></td>
+<td><code>false</code></td>
+<td>Also store every built-in memory <code>add</code> (MEMORY.md / USER.md) as a fact</td>
+</tr>
+<tr>
+<td><code>default_trust</code></td>
+<td><code>0.5</code></td>
+<td>Trust score of a new fact</td>
+</tr>
+<tr>
+<td><code>min_trust_threshold</code></td>
+<td><code>0.3</code></td>
+<td>Facts below this trust are not recalled</td>
+</tr>
+<tr>
+<td><code>temporal_decay_half_life</code></td>
+<td><code>0</code></td>
+<td>Days; <code>0</code> turns recency decay off. Age counts from when the fact's current version was recorded: feedback, keywords and tags do not make a fact younger</td>
+</tr>
+<tr>
+<td><code>hrr_dim</code></td>
+<td><code>1024</code></td>
+<td>HRR vector dimensions</td>
+</tr>
+<tr>
+<td><code>hrr_weight</code></td>
+<td><code>0.3</code></td>
+<td>Weight of the HRR term in search ranking</td>
+</tr>
+<tr>
+<td><code>prefetch_min_coverage</code></td>
+<td><code>0.3</code></td>
+<td>Share of a message's informative words (rarer words weigh more) a fact must match to be recalled before the turn; a fact sharing one word of a longer message is recalled only when no other fact holds that word or it may be a name (capitalized inside the sentence, or in a script without capitals)</td>
+</tr>
+<tr>
+<td><code>prefetch_clause_coverage</code></td>
+<td><code>off</code></td>
+<td><strong>Experimental.</strong> <code>on</code>: a message that asks two separate questions (Russian or English) gives each of them a second look at the facts the coverage gate left out, so the answer to the shorter question is not lost. Only for a fact that holds two words of its question and names the person that question is about. Not in the setup wizard; a value it does not recognise reads as off. See <a href="#two-questions-in-one-message-experimental">Two questions in one message</a></td>
+</tr>
+<tr>
+<td><code>prefetch_repeat_turns</code></td>
+<td><code>6</code></td>
+<td>A fact recalled before a turn is not injected again for this many turns of the session</td>
+</tr>
+<tr>
+<td><code>prefetch_max_tokens</code></td>
+<td><code>0</code></td>
+<td>Approximate tokens the block recalled before a turn may take, header and every line included (0.21.0). The budget never shortens a line: a fact whose line does not fit is left out whole; the rest keep their order. The older 300-character cap on each prefetch line still applies with or without a budget, so a longer fact's line ends in "…"; <code>stats</code> counts what was left out. <code>0</code> = off: up to five facts as before. See <a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/context-budget.md">docs/context-budget.md</a></td>
+</tr>
+<tr>
+<td><code>recall_source</code></td>
+<td><code>off</code></td>
+<td><code>short</code>: each fact recalled before a turn also says where it was written (<code>recorded 2026-10-12 · Anton · this chat</code>; no ids). Off by default: it costs tokens and tells the room which chat a fact came from. <code>list</code>, <code>history</code> and <code>export</code> always show the source in full</td>
+</tr>
+<tr>
+<td><code>cron_writes</code></td>
+<td><code>true</code></td>
+<td>A cron job's explicit <code>fact_store</code> / <code>fact_feedback</code> calls may write (nightly memory jobs such as hermes-dreaming's extraction and keywords exist to make them). Automatic writes (auto-extraction, mirroring, recall counts) stay off in cron, subagents and flush contexts; with <code>embeddings</code> on, a cron job that may write also makes missing fact vectors; <code>false</code> makes cron read-only too</td>
+</tr>
+<tr>
+<td><code>recall_indicator</code></td>
+<td><code>true</code></td>
+<td>Report recalled facts to the core's recall indicator ("🧠 Holographic — recalled 2 memories"). On Telegram and other messaging platforms that line arrives as a separate message before the reply; <code>false</code> turns it off, recall itself is unchanged. Like every key here it is read when the gateway starts: a change takes effect after a restart</td>
+</tr>
+<tr>
+<td><code>embeddings</code></td>
+<td><code>off</code></td>
+<td><code>on</code>: search by meaning through an embeddings API you name (<code>embedding_url</code>, <code>embedding_model</code>, <code>embedding_key_env</code>, …) — ONLINE: fact texts and messages are sent there. See <a href="#search-by-meaning-optional-online">Search by meaning</a></td>
+</tr>
+<tr>
+<td><code>rerank</code></td>
+<td><code>off</code></td>
+<td><code>on</code>: rescore the candidate pool before a turn with a cross-encoder (<code>rerank_url</code>, <code>rerank_model</code>, <code>rerank_window</code>, …) — ONLINE: candidate texts and the message are sent there. See <a href="#rescoring-by-a-cross-encoder-optional-online">Rescoring by a cross-encoder</a></td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td><code>profile</code></td>
+<td><code>user</code>: a separate database per user (<code>holographic-users/&lt;platform&gt;-&lt;user id&gt;.db</code> next to <code>db_path</code>); in a shared chat the store follows the author of each turn, and with no user identity nothing is recalled or written. <code>chat</code>: a separate database per chat (<code>holographic-chats/&lt;platform&gt;-&lt;chat id&gt;.db</code>) — for one bot serving many unrelated groups; <code>thread</code>: per forum topic / thread (<code>…-t&lt;thread id&gt;.db</code>), the chat's own database outside threads. Without a chat (CLI, cron, subagents) nothing is recalled or written. File names: an id made only of <code>A-Z a-z 0-9 _ . -</code> is used as is (Telegram's <code>-1001234567890</code>); any other character becomes <code>_</code>, the name is cut to 60 characters, and <code>-&lt;first 10 hex of sha256(the original "platform-id")&gt;</code> is appended, so distinct ids never share a file</td>
+</tr>
+</tbody></table>
+<p>A number that is not one (<code>hrr_dim: abc</code>, <code>min_trust_threshold: high</code>), and a value outside a key's fixed set
+(<code>scope: users</code>, <code>recall_source: full</code>, <code>embeddings: maybe</code>, <code>auto_extract: sure</code>; 0.17.8 — before, it was read as the
+default, and a mistyped <code>scope</code> put everyone in one store) turn memory off for the session: the system prompt and every
+<code>fact_store</code> call name the key and what it must be, never the value, and no database is opened or written until it is
+fixed. The <code>embedding_*</code> numbers are replaced by their default, or brought into their range, with a warning in the
+gateway log that names the key. A <code>config.yaml</code> the core cannot parse: Hermes serves the copy it last read whole, and
+the plugin uses its settings from it with a warning; with no such copy (or a core that raises) nothing tells what
+<code>scope</code> was, so memory is off until the file reads (0.17.8; it used to run on the defaults). Warnings give the error's
+type only: a YAML error quotes the line it stopped at, which may hold a key.</p>
+<p>Optional task outcomes and recorded explanations (separate from trust, off by default):
+<a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/experience.md">docs/experience.md</a>.</p>
+<h4>Two questions in one message (experimental)</h4>
+<p>«что Злате нужно взять с собой на плавание в четверг и какой чай она любит?» asks two things; the fact about tea holds
+every word of its question and still covers too little of the whole message to be recalled. With
+<code>prefetch_clause_coverage: on</code> (off by default) a fact the coverage gate left out gets a second look against each of
+the two questions alone — only when the message clearly splits into two Russian or English questions, the fact holds
+at least two words of its question, and, for a question about a person, that person is one entity the store knows and
+the fact names them. A rescued fact never takes the place of one that would be recalled anyway, with or without the
+reranker. On a synthetic set it brought both answers into the top five in 15 of 16 two-question messages instead of 12, and changed
+no answer on about 620 older test questions; it has not been checked on real conversations. What it misses and every
+risk: <a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/two-topics.md">docs/two-topics.md</a>.</p>
+<h3>Tools</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>fact_store</code></td>
+<td>add, search, probe, related, reason, contradict, change, end, correct, revert, merge, forget, history, update, remove, list, stats, export, review, entities, alias, rename, delete_entity, split, rebuild_entities, enrich</td>
+</tr>
+<tr>
+<td><code>fact_feedback</code></td>
+<td>Rate a fact helpful or unhelpful (moves its trust score), or record that the person confirmed it (0.15.0)</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>search</strong>: keyword candidates in any word form (<code>Маши</code> finds <code>Маша</code>, <code>deploys</code> finds <code>deploy</code>, <code>kucingnya</code> finds
+<code>kucing</code>; see <a href="#languages">Languages</a>), reranked by word overlap and HRR similarity, weighted by trust.</li>
+<li><strong>Before each turn</strong> the provider recalls up to five facts: search candidates that pass a relevance gate (the fact
+must cover enough of the message's informative words; "ok, thanks" recalls nothing) plus the top facts of entities
+the message names. A fact already injected in this session is not repeated for <code>prefetch_repeat_turns</code> turns.
+Facts are framed as data (<code>#id [trust] text</code>), one line each. <code>prefetch_max_tokens</code> caps the block in approximate
+tokens by leaving whole facts out (<a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/context-budget.md">docs/context-budget.md</a>).</li>
+<li><strong>add</strong> takes <code>entities</code> (who the fact is about; needed for one-word names such as a first name, so later facts
+mentioning it in any form link to it), <code>keywords</code> (see <a href="#synonyms-and-other-roots-keywords">Synonyms</a>) and
+<code>valid_from</code> (the date it started to hold, when the message says). A name in <code>entities</code> that cannot be one (a
+path, a URL, <code>key=value</code>, a single letter, not a string) is not linked, and the answer of add, update, change and
+correct lists it under <code>entities_not_linked</code> by its position in the list (<code>index</code>, from 0) with the reason, not
+the name itself (a refused name may be <code>KEY=secret</code>); the fact is stored all the same. <code>entities</code> given with a new
+text (change, correct, update) replace the names declared on the fact before; without them those stay, but for a
+name only the old text gave; revert brings back the names of the version it restores (see
+<a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/history.md#who-a-new-text-is-about-unreleased">Who a new text is about</a>). Its answer lists <code>similar</code> facts,
+<code>possible_conflicts</code> (same subject, a different claim) and <code>past_versions</code>; the agent decides. Text that is not a
+fact (JSON, tool or chat-role markup, instruction-like phrasing, a credential with its value or a token whose shape
+alone says it is one — an API key prefix, a Telegram bot token (also inside a Bot API address), a JWT, a private key
+(0.14.5) —; instructions and credentials in all eighteen languages of <a href="#languages">Languages</a>, also glued
+to Chinese text (0.15.1); an environment variable that holds a key, a token or a password, by its name — any in
+capitals ending like <code>…_KEY</code> or <code>…_TOKEN</code> and 310 popular ones of model and service providers — and an address
+with a password in it (0.15.2) —, an image (markdown or
+HTML), invisible characters, long blobs, &gt;1000 characters) is refused with the reason. A name that begins with a
+credential word joined to the rest by a hyphen is no credential when the whole word names a thing (0.17.2, issue
+#6): a file with a common extension (<code>token-saver-stats.jsonl</code>, <code>plugins/token-saver/filters/web.yaml</code>), a host of
+three labels and more (<code>password-reset.example.com</code>), a package with a version after <code>==</code> or <code>@</code>
+(<code>token-saver==1.2</code>, <code>token-saver@1.2.3</code>); a file name shaped like a password is none (<code>password-Secret2026.conf</code>,
+<code>password-P@ssw0rd.txt</code>: a capital with a digit, or "@"), nor is an e-mail address. A credential word that stands alone is followed by its value,
+whatever it looks like: <code>password Summer2026.txt</code>, <code>password: secret/hunter2.txt</code>, <code>Пароль файла: Лето2026.txt</code>,
+<code>password-wifi: Qwerty123</code>, <code>Password wifi: correct-horse</code>, and <code>the token counter.py module</code> and <code>Token file: tokens.json</code> too; so is a dot that is
+no extension (<code>password-Qwerty.123</code>), a one-letter or a key file's extension (<code>token-Secret.key</code>), a two-label host
+(<code>password-letmein.co</code>), a tag after <code>:</code> (<code>password-wifi:192.168.1.1</code>, and so <code>token-service:1.4</code>). The cost,
+chosen: <code>password-hunter2.txt</code> is not caught. A request to send a credential stays refused whatever follows the word ("send credentials-backup.json",
+and so "share the token-saver report" too); a Russian credential word counts as a word, not as the start of one
+(<code>секретарю</code>, <code>ключевые цифры</code>, <code>учётная политика</code>, <code>токенизатор</code>, "пин на карте" are none; <code>пин-код</code>, "пин от
+карты", <code>секретная фраза</code>, <code>фраза восстановления</code> are). Recall
+checks a stored fact again before it goes into a prompt (0.13.0): one an older release, or another program, wrote
+past today's rules (markup, instructions, credentials, invisible characters, images) is left out of recall
+and logged once; <code>search</code>, <code>list</code> and <code>history</code> still show it, so it can be changed or forgotten. A quoted
+instruction to the assistant (a note quoted as telling it to drop its rules) may be stored as a report of what
+something says, but recall leaves it out too (0.14.3): in the prompt it reads the same as the bare instruction.</li>
+<li><strong>stats</strong> (what is stored and how much of it was ever recalled; <code>recall_error</code> while recall before a turn fails, so a
+broken store does not pass for one with nothing relevant), <strong>export</strong> (Markdown view), <strong>review</strong>
+(clean-up candidates: low trust, never recalled for 60 days, near-duplicates), <strong>enrich</strong> (facts without keywords,
+most recalled first, to give keywords with <code>update</code>).</li>
+<li><strong>entities</strong> lists names with their aliases, fact counts and standing (0.16.0): <code>established</code> when someone named
+it (<code>entities=[...]</code>, <code>alias</code>, <code>rename</code>) or two or more facts name it, <code>provisional</code> when the rules below guessed it
+from one fact and nobody confirmed it; <code>status</code> lists one kind, and the answer says how many provisional names the
+store holds. A name whose letters have no case (Chinese, Japanese, Thai, Arabic...) that the facts only ever put in plain quotes stays
+provisional however many facts quote it (0.16.2): in Chinese a button or a step goes in quotes as readily as a name.
+Then it takes a person naming it, or two facts of which one uses it in title marks 《》, in "X aka Y" or in
+running text where mentions are found (a name of several words, or one a person declared: a one-word Chinese name
+nobody declared is not looked up in running text, where a quoted label is written bare as often). <strong>alias</strong> gives an entity a second name (or merges two entities; <code>entity</code> stays the name).
+<strong>rename</strong> gives it another name (the old one becomes an alias; a name another entity has is refused, so a typo
+never merges two). <strong>delete_entity</strong> removes a name that is not one — a phrase, a command, a label — with its aliases and
+links (<code>entities: [...]</code> for up to 100 in one call, 0.16.2); every fact stays, a tombstone (a keyed hash, not the name) keeps text from creating it again until someone
+names it explicitly, and the file is rewritten as after forget. An alias "X aka Y" in a fact's text gave goes with
+the last fact that says it, and so does X on the facts only that alias linked; an alias written before 0.16.0 is of
+unknown origin, kept like a given one and dropped only when a forgotten fact said it. A name with a comma is no
+name (the legacy aliases column is comma-separated). <strong>review</strong> lists provisional names older than 60 days under
+<code>entity_candidates</code>.
+Spelling variants are one entity (<code>Hermes Agent</code> = <code>hermes-agent</code>), and <code>X aka Y</code> makes <code>Y</code> an alias.</li>
+<li><strong>An alias a fact's text gave is a hint, not a decision</strong> (0.17.0). "X aka Y" lets later texts that say Y link to X,
+and <code>probe Y</code> find X's facts — but no action someone takes with a name is resolved through it: a name declared
+(<code>entities=[...]</code> in add, update, change, correct) that is only such an alias becomes an entity of its own, and the
+answer says so under <code>split</code>, with the <code>alias</code> call that makes them one again; <code>alias</code>, <code>rename</code> and <code>delete_entity</code>
+by it are refused, and so is <code>rename</code> of someone else into it (its hint would have merged the two). Deleting X
+drops such aliases without keeping Y from being found again (<code>text_aliases_dropped</code>). Until 0.16.3, "Alice Smith aka Bob Brown" after facts about Alice made a later
+<code>entities=["Bob Brown"]</code> file the second person's facts under her, and <code>rename</code> or <code>delete_entity</code> by "Bob Brown"
+renamed or deleted her. <code>alias {entity: X, content: Y}</code> confirms such a name; <strong>split</strong> <code>{entity: &lt;an alias&gt;}</code> makes
+any alias an entity of its own. Facts whose text names Y then go to Y; one whose text names neither stays with X if
+someone declared X on it, and the answer lists it under <code>facts_to_check</code> — why a declared link exists the file does
+not record. If someone gave X the alias (<code>alias</code>), X stays an entity after the split even without facts; otherwise
+the answer says <code>from_dropped</code> when X went with its last fact. <code>entities</code> shows such names as <code>text_aliases</code>,
+<code>review</code> lists them under <code>alias_candidates</code> however old (up to its <code>limit</code>), <code>stats</code> gives their number. What this
+does not do: a text that says Y still links to X, so recall can bring X's facts for a message about Y until someone
+splits them; it guards what this version writes — an older version writing the same file still resolves a declared
+name through such an alias; and an alias written before 0.16.0 is of unknown origin even if a text gave it: it is
+shown under <code>aliases</code>, not refused, and <code>split</code> separates it. A name declared with a text already stored (an
+<code>add</code> of the same text, a <code>correct</code> of the date only, a <code>change</code> into another fact's text) now counts too; until
+0.16.3 it was dropped.</li>
+<li><strong>probe</strong>: every fact linked to a named entity, from the entity index (name or alias, any letter case).
+<strong>reason</strong>: facts linked to <em>all</em> of several entities; when a name is not a known entity, keyword search that still
+requires every name. Entities are linked when a fact is stored: capitalized names of two to five words in any cased
+script on one line, ending where the script changes (<code>Alice Smith</code>, <code>Мария Иванова</code>, <code>Jean-Luc Picard</code>; "Docker
+Hub直连可用" gives <code>Docker Hub</code>), short quoted terms (<code>"Phoenix"</code>, <code>«Сбер Бизнес»</code>, <code>“华为”</code>, <code>「华为」</code>, <code>《平凡的世界》</code>,
+straight quotes beside Chinese characters too) and both sides of <code>X aka Y</code> (Y becomes X's alias only while no fact has named Y on its own);
+code spans and blocks give none, and a known name of several words is mentioned only as written together on one
+line (in Chinese, never across a seam between two words); a name begins with a letter or a digit, holds no invisible
+character, passes these checks in its NFKC form too, and flags, <code>key=value</code>, paths, URLs, IPs and commas are not names, and
+neither is a version number with nothing beside it that names a thing ("0.17.0 installed"; "Python 3.12" is one), a
+quoted span whose letters with case are all lower case and that holds no identifier with a letter in it ('count',
+'14 days', «быстро беги»; 'kanban.db' and 'gpt-4o' are), a quoted greeting ("Good morning", «Спасибо большое»,
+“谢谢”), a count ("3个月", "15分钟", "1 小时": an Arabic number and units; 360安全卫士 and 115网盘 are names),
+a quoted Chinese span that reads as something said — ending in a sentence-final particle (“知道了”) or with
+three or more function words besides 的 (“先去搜索再告诉我答案”; titles and brands with one or two, 平凡的世界,
+饿了么, 有赞科技有限公司, are names) — or one of more than 16 Han characters. A name someone gives (<code>entities</code>,
+<code>alias</code>, <code>rename</code>) skips these rules and needs only a letter ("3M", "C++"). A one-word name is not linked; probing it
+falls back to keyword search. When these rules change, a writer rebuilds the index on its first open (up to 2,000
+facts and 500,000 characters; a larger store says so in <code>stats</code> and is rebuilt with <strong>rebuild_entities</strong>), reading
+the facts in the order they were stored as adding them would; declared names, aliases someone gave and their links
+stay as they are.</li>
+<li><strong>related</strong>: facts structurally tied to an entity in their HRR vector, above a noise floor.</li>
+<li>Every recall action honours <code>min_trust</code> (default <code>min_trust_threshold</code>).</li>
+<li><strong>contradict</strong>: candidate conflicts, i.e. pairs about the same subject that make a similar but not identical
+claim ("lives in Paris" / "lives in London"). It suggests; it never edits.</li>
+</ul>
+<h4>History, sources and forgetting (0.8.0)</h4>
+<p>A fact that stops being current is not overwritten. The agent says what happened, and the store keeps the history:</p>
+<table>
+<thead>
+<tr>
+<th>action</th>
+<th>when</th>
+<th>effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>change {fact_id, content, valid_from?, keywords?}</code></td>
+<td>it changed (moved, new job, new price)</td>
+<td>the old text becomes a past version of the <strong>same</strong> fact id; the old text's keywords go unless given again (the result names those dropped)</td>
+</tr>
+<tr>
+<td><code>end {fact_id, valid_to?}</code></td>
+<td>it no longer holds and nothing replaces it</td>
+<td>the fact leaves the current store; its history stays</td>
+</tr>
+<tr>
+<td><code>correct {fact_id, content?, valid_from?, keywords?}</code></td>
+<td>it was wrong</td>
+<td>the wrong version is never shown as the past; keywords given replace the fact's, otherwise they stay</td>
+</tr>
+<tr>
+<td><code>revert {fact_id}</code></td>
+<td>undo the last change, correction or end</td>
+<td>the previous version is current again</td>
+</tr>
+<tr>
+<td><code>merge {fact_id, from, keywords?, expect?}</code></td>
+<td>two or more facts say the same thing (0.19.0)</td>
+<td>the copies leave the present into the keep; each keeps its history under its own id</td>
+</tr>
+<tr>
+<td><code>forget {fact_id}</code></td>
+<td>the user asks to forget it</td>
+<td>deleted for good, every version included; only a tombstone without text stays</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>Ordinary recall sees only the present.</strong> Past versions live in their own table and index; <code>search</code> and <code>list</code>
+read them only with <code>as_of=YYYY-MM-DD</code> ("what held on that date"). The answer separates <code>results</code> (known to hold
+then) from <code>undetermined</code> (may have held: a start or an end that is not known to the day). The store invents no
+dates: a fact without <code>valid_from</code> is known to hold from the day it was recorded, and so is every fact stored
+before 0.8.0.</li>
+<li><strong><code>history {fact_id}</code></strong> lists the versions with their dates, status and source.</li>
+<li><strong>Source.</strong> Each version records where it was written: via (<code>tool</code>, <code>auto_extract</code>, <code>mirror</code>), platform, chat
+type, chat and thread id, session, and the author of the turn. Chat names are not stored.</li>
+<li><strong>Forget means gone.</strong> The fact, its versions, links and orphaned entities are deleted, both search indexes are
+rebuilt, the file is rewritten (<code>VACUUM</code>, with <code>secure_delete</code> on) and the write-ahead log emptied, so no copy of the
+text stays in free pages. A tombstone (the id and keyed hashes, never the text) stops auto-extraction from bringing
+the fact back from old messages and tells other tools which ids to clean from their own copies.</li>
+<li><strong>Merge, not forget, for duplicates (0.19.0).</strong> <code>merge {fact_id: &lt;keep&gt;, from: [ids]}</code> closes each copy's current
+version as <code>merged</code>: the copy leaves search, recall and <code>list</code>; its versions, sources and confirmations stay under
+its own id (<code>history {keep}</code> shows them under <code>merged_from</code>, <code>history {copy}</code> says <code>merged_into</code>), and its last text
+answers <code>exists</code> with the keep when added again, also from auto-extraction — while the keep is still at the
+version it had at the merge (<code>into_version_id</code>); once the keep is changed or ended, the copy's text is its past
+claim (<code>past_version</code>); after a change, end or correction of the keep auto-extraction still skips it. The keep
+keeps its own text, trust and origin; keywords are joined (or given), the counts added once.
+<code>expect: {"&lt;id&gt;": &lt;version_id&gt;}</code> merges only if every named fact is still at that version (<code>version_id</code> is in
+<code>history</code>), otherwise <code>changed_since</code> and nothing is written, so a merge a person approved merges exactly the
+texts they saw. A scheduled job merges only facts it stored in the same session. There is no unmerge; <code>forget</code> of
+the keep forgets its copies too. The first merge raises the history schema (see
+<a href="#database-and-downgrades">Database and downgrades</a>).</li>
+<li>Older prompts keep working: <code>add supersedes=X</code> is <code>change X</code> (the id now stays <code>X</code>), <code>update content=</code> is <code>correct</code>,
+<code>remove</code> is <code>forget</code>.</li>
+</ul>
+<h4>Who stands behind a fact (0.15.0)</h4>
+<p>The source says where a fact was written; it did not say whether the person said it or the agent concluded it. Six
+months on, a rule the user set and a guess the agent made looked the same.</p>
+<ul>
+<li><strong>Origin.</strong> <code>add</code>, <code>change</code> and <code>correct</code> take <code>origin</code>: <code>said</code> (the person said it), <code>confirmed</code> (the agent's
+conclusion, and the person agreed) or <code>inferred</code> (the agent's own conclusion). It is kept with the version, shown
+by <code>history</code>, <code>list</code>, <code>export</code> and <code>search</code>, and counted in <code>stats</code>. Auto-extracted sentences are <code>said</code> (they are
+the user's own words); facts stored before 0.15.0 and mirrored memory entries have no origin. A <code>correct</code> that
+names no origin keeps the version's (fixing a typo does not make a fact nobody's); a <code>change</code> is a new claim and
+takes only the origin it is given. A session opened before an update keeps the tools it was given and offers no
+<code>origin</code> until a new session starts: its facts land without one. A new fact or a changed version stored with no
+origin has none (<code>unknown</code> in <code>stats</code>), and the tool description says so; an <code>add</code> of a text already stored
+keeps that fact's origin and trust. In the database the origin is kept with
+the version, in <code>fact_versions.src_origin</code> of the current row (<code>status = 'current'</code>), not on <code>facts</code>. Stored
+times are UTC (<code>fact_versions.recorded_at</code>, <code>facts.created_at</code> / <code>updated_at</code>); for a window in local days use
+<code>fact_versions.recorded_on</code>, the same moment as a date in Hermes's timezone (UTC when none is set).</li>
+<li><strong>Starting trust.</strong> What the person said or confirmed starts 0.1 above <code>default_trust</code>, the agent's conclusion 0.1
+below it (within 0 and 1), a fact without an origin at <code>default_trust</code> as before; a <code>change</code> starts over at its
+new origin's trust, and so does a new text through <code>correct</code> or <code>update</code> (its origin is the version's unless the
+call names one), without the old text's helpful marks and recall count; a new date alone keeps them. Measured on 40 pairs of conflicting facts about the
+same person (one said, one inferred, stored in alternating order): without origins the one said came first in 17;
+with a step of 0.05, 0.1 or 0.15, in 40 of 40, in <code>search</code> and before a turn alike. An inference with no rival
+was still recalled every time (10 of 10). 0.1 keeps the order after a helpful vote or two on the inference.</li>
+<li><strong>Confirmations.</strong> <code>fact_feedback {action: confirmed, fact_id}</code> records that the person confirmed a fact — said it
+again or agreed when asked — and the same text added again with <code>origin: said</code> in a later session counts too (not
+in the session that stored it: that is the agent repeating itself). At most one confirmation per fact per session,
+or per day where there is no session. Trust rises by 0.05 for each person who confirms a fact the first time:
+one group-chat member saying "yes, true" session after session raises it once (without a known id, once per
+session). An inference that has been confirmed counts as <code>confirmed</code>; a <code>change</code> drops the confirmations, which
+were of the old claim, and so does a new text through <code>correct</code> or <code>update</code>. A nightly job that finds a person's message backing a fact can confirm it the same way.</li>
+<li><strong>Recall says what is a guess.</strong> Before a turn, an inference nobody confirmed ends with <code>(inferred)</code>, so the model
+does not repeat it as something it was told. <code>review</code> lists inferences nobody confirmed in 60 days.</li>
+</ul>
+<p>On a family store the agent stored 22 facts in four months and never the same one twice, so confirmation by
+repetition alone will be rare there: the explicit <code>confirmed</code> and a nightly job are where confirmations come from.</p>
+<p>The full contract, including what the plugin cannot clean (Hermes's own session database, <code>hermes backup</code>
+archives): <a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/history.md">docs/history.md</a>.</p>
+<h4>Nightly dreaming: hermes-dreaming</h4>
+<p>The store keeps what the agent was told; it does not decide what deserves to become a permanent memory.
+<a href="https://github.com/itpartypattaya/hermes-dreaming">hermes-dreaming</a> (in the Hermes plugin catalog as
+<code>hermes-dreaming</code>) does that at night, deterministically and without its own model calls: an optional extraction job
+stores candidate facts here through <code>fact_store</code>, and the nightly pass reads this store read-only, corroborates each
+fact with what people actually said in their chats, proposes the few worth writing to <code>MEMORY.md</code> / <code>USER.md</code>, asks
+whether old entries still hold, and gives facts without keywords their keywords. With 0.8.0 the two work as one: a
+human's "no longer true", "that was wrong" or "forget it" to a dream question becomes <code>end</code>, <code>correct</code> or <code>forget</code>
+here, and after a <code>forget</code> the dream removes its own copies of the fact (cache, diary lines, its cron logs) by the
+tombstone's id. Use hermes-dreaming 2.4.0 or later with this release: cron jobs may write facts only from 0.8.0 on
+(<code>cron_writes</code>).</p>
+<h4>Memory map (experimental)</h4>
+<p><code>memory_map.py</code> exports one store as a read-only JSON snapshot a person can read: the facts with who said them and
+how much they are trusted, people and topics, contradictions and which side search leans on, the week's changes,
+forgotten facts as a number and a date, and what the nightly review asks about this store. The
+<a href="https://github.com/itpartypattaya/hermes-dashboard">hermes-dashboard</a> "Memory map" tab draws it. Nothing calls it
+unless you do (<code>python &lt;plugin dir&gt;/memory_map.py --store PATH --json</code>); the provider is unchanged by it.</p>
+<p><strong>Experimental</strong>: the format and the rules may change. Its output is personal data — keep any page made from it
+behind a password. What it shows and hides, and its limits (a closed word list for "person", "search leans on" only
+for a question that fits both facts equally, the night's files outside the database snapshot, a picture that ages
+until the next rebuild, at most 1000 facts and 300 names by default — <code>--max-facts</code> / <code>--max-entities</code>, <code>0</code> for no
+limit): <a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/memory-map.md">docs/memory-map.md</a>.</p>
+<p>How to see it:</p>
+<ul>
+<li><strong>In hermes-dashboard</strong> (a page behind basic-auth, rebuilt by its cron): turn on its <code>views.memory_map</code> and point
+<code>memory_map.plugin_dir</code> / <code>memory_map.store</code> at this plugin and the store — step by step in the dashboard's README,
+"Memory map (experimental)".</li>
+<li><strong>Your own page or tool</strong>: run the exporter and draw the JSON; every key is described in
+<a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/memory-map.md#the-json-schema_version-1">docs/memory-map.md</a>. Draw only what it gives — the privacy rules are
+applied by the exporter, so a renderer must not open the database itself — and escape every text (they are what
+people told the agent).</li>
+<li>A ready-made standalone HTML file and a <code>fact_store</code> action that builds it are not in this release.</li>
+</ul>
+<h3>Languages</h3>
+<p><img src="https://raw.githubusercontent.com/itpartypattaya/hermes-plugin-holographic/main/diagram/languages.svg" alt="How a word is matched across languages: words, language, function words, keys, match; examples in eighteen languages
+that match (German compounds, Russian and English spellings of one word, Traditional and Simplified Chinese, Japanese
+spelling variants) and examples that do not" loading="lazy" decoding="async"></p>
+<p>A word matches another when they share its plain form or its stem in the language of the text:</p>
+<ul>
+<li><strong>Stems</strong>: Snowball for English, Russian, Spanish, French, Portuguese, Indonesian, German, Hindi, Italian, Turkish,
+Polish and Dutch, with two plural rules it lacks (Portuguese <code>ação</code> / <code>ações</code>, Spanish <code>lápiz</code> / <code>lápices</code>); for
+Arabic, Larkey's light stemmer (the one Lucene ships) next to Snowball's, plus the word without a glued conjunction or
+preposition before an alef (<code>لإيرما</code>, "for Irma"; <code>ولإيرما</code>, "and for Irma"); for Bengali, a light suffix stripper
+(Snowball has none) that leaves at least three letters, so <code>মাটি</code> (soil) is not <code>মা</code> (mother). Italian, Turkish,
+Polish and Dutch words (0.11.0) are stemmed as written and folded: Snowball's Turkish and Polish read the letters
+folding drops (<code>çocuğun</code> is <code>çocuk</code>, <code>domów</code> is <code>dom</code>), and a word typed without its marks still meets one typed with
+them. Turkish also gets the noun without the <code>s</code> of a possessive that Snowball leaves (<code>kedisi</code> → <code>kedi</code>); Dutch keeps
+a <code>ge-</code> that Snowball takes off (<code>gezin</code>, family, is not <code>zin</code>, sense). Polish needs snowballstemmer 3.1 or newer
+(current Hermes installs 3.1.1); with 2.x Polish words compare as written and the rest of Polish (function words,
+greetings) works.</li>
+<li><strong>Which language</strong>: the script decides for Cyrillic, Arabic, Devanagari and Bengali. Latin text is English, Spanish,
+French, Portuguese, Indonesian, German, Italian, Turkish, Polish or Dutch by the function words it uses ("the", "el",
+"le", "o", "yang", "der", "il", "bir", "się", "het"). Text with none of them is stemmed in English, Spanish, French,
+Portuguese, Indonesian and German, and in Turkish, Polish or Dutch only when it has their letters (<code>ı ğ ş</code>; <code>ą ę ł ń ś ź ż ć</code>; <code>ij</code>): Polish stems of English words join unrelated ones (<code>army</code> / <code>arm</code>, <code>apply</code> / <code>apple</code>), so a
+one-word Polish or Italian question gets its stems only with a function word or such a letter. A word is dropped
+as a function word only when the other words show that language, or when it is the only sign of it in a sentence of
+four words or more: "son" alone, or in "where does my son study", is a search word; in "il boit son café" it is
+French "his". With no other evidence the English list applies, as it did to all Latin text before 0.5.0. Function
+words of the four newer languages that are also everyday words, names or abbreviations elsewhere (Italian <code>come</code>,
+<code>dove</code>, <code>per</code>; Turkish <code>kim</code>, <code>ben</code>; Polish <code>bo</code>; Dutch <code>door</code>, <code>met</code>, <code>van</code>, <code>wat</code>) do not tell the language and are
+dropped only where that language alone fits the other words: "Ana come carne" stays Spanish, "Kim Lane lives in Oslo"
+keeps <code>kim</code>. Italian <code>mia</code> (my) is not on the list: it is a common name.</li>
+<li><strong>Folding</strong>: Latin accents and ligatures (<code>esta</code> finds <code>está</code>, <code>coeur</code> finds <code>cœur</code>), Arabic vowel marks and letter
+variants, the Indic nukta, and native digits (<code>2027</code> finds <code>২০২৭</code>, <code>HR24</code> finds <code>HR২৪</code>). Folding also merges what
+only an accent tells apart (Spanish <code>año</code> / <code>ano</code>), as the FTS5 index already did. Turkish <code>ı</code> and Polish <code>ł</code> compare
+as <code>i</code> and <code>l</code> (<code>İstanbul</code>, <code>ISTANBUL</code> and <code>istanbul</code> meet, <code>KIZIM</code> meets <code>kızım</code>, <code>szkola</code> meets <code>szkoła</code>); since the
+FTS5 index keeps those two letters, such a word is also searched as written.</li>
+<li><strong>One word, two scripts</strong> (0.14.5): Russian text writes a borrowed word either way, and <code>бэкап</code> finds <code>backup</code>,
+<code>телеграме</code> finds <code>Telegram</code>, <code>впн</code> finds <code>VPN</code>, <code>визы</code> finds <code>visa</code>, and the other way round — as the same word,
+without search by meaning. 55 such words are listed (apps and services, devices, <code>server</code>, <code>backup</code>, <code>token</code>,
+<code>hotel</code>, <code>visa</code>, <code>chat</code>, <code>site</code>, <code>bot</code>…; <code>_LOANWORDS</code> in <code>text.py</code>). A word belongs to its group by its exact form
+— the spelling, an English plural, a Russian case ending — never by its stem: Snowball cuts <code>токен</code> to <code>ток</code>
+(electric current) and <code>виза</code> to <code>виз</code>, as in <code>визит</code>, and neither meets <code>token</code> or <code>visa</code>. A Latin spelling joins
+its group only in English or in text of no known language (0.14.6): French <code>chat</code> is a cat, German <code>über</code> folds to
+<code>uber</code>, Spanish <code>botes</code> are boats. A spelling whose Russian forms are another word is not listed (<code>убер</code> gives
+<code>уберу</code>, of <code>убрать</code>), and a short one is searched by its forms as whole words, so <code>бот</code> does not bring in
+<code>ботинки</code>. Words two languages share by meaning, not spelling (<code>password</code> / <code>пароль</code>), are not listed: that is what
+keywords are for.</li>
+<li><strong>Hyphens</strong>: French elision and inversion (<code>d'Irma</code>, <code>prend-il</code>, <code>est-ce</code>) and Portuguese enclisis (<code>chama-se</code>) are
+taken apart in text of that language, reduplication (<code>anak-anak</code>) in any; a hyphen between scripts splits
+(<code>hr-vps-এর</code>). A letters-only hyphenated token is an identifier in English text or text of no determined language
+(<code>hr-vps</code>, <code>carry-on</code>): a message naming it is about that one, and a fact about <code>hr-other</code> is not recalled for it.
+In Spanish, French, Portuguese, Indonesian and German text it is a compound word (<code>week-end</code>, <code>sexta-feira</code>,
+<code>IT-Treffen</code>), so a host name in a question in those languages is matched like any word, not enforced.</li>
+<li><strong>Apostrophes</strong>: Italian elision as French (<code>dell'anno</code>, <code>l'ospedale</code>, <code>quest'anno</code>, <code>dov'è</code>, <code>anch'io</code>; not before
+a lone <code>s</code>, so English <code>dev's</code> stays). A Turkish case ending after a name comes off in text that may be Turkish
+(<code>Ankara'da</code>, <code>Ayşe'nin</code>, <code>HR24'ün</code>, <code>hr-vps'de</code> are Ankara, Ayşe, HR24, hr-vps), so the name is mentioned and an
+identifier stays required; only Turkish endings, so <code>Irma's</code>, <code>o'clock</code> and <code>rock'n'roll</code> are left alone. In Dutch
+text the plural and possessive <code>'s</code> comes off (<code>pinda's</code>).</li>
+<li><strong>German compounds</strong> (0.11.0): in text determined as German, a compound is split by a dictionary of German lexemes
+from Wikidata (CC0): parts of three letters or more joined by German linking elements (<code>-s-</code>, <code>-es-</code>, <code>-n-</code>, <code>-en-</code>,
+<code>-er-</code>, <code>-e-</code>, a dropped <code>-e</code>), the analysis with the fewest parts, Wikidata's own analysis where it has one
+(<code>Zahnarzttermin</code> = <code>Zahn</code> + <code>Arzt</code> + <code>Termin</code>, <code>Blumentopferde</code> = <code>Blumen</code> + <code>Topf</code> + <code>Erde</code>); two analyses that cut
+differently leave the word whole unless one is clearly likelier (<code>Staubecken</code>, <code>Wachstube</code> stay whole). Both
+directions: the last part of a compound in a fact matches like the word itself (<code>Katze</code> finds <code>Familienkatze</code>), and
+a compound in a question finds a fact that writes its parts apart (<code>Zahnarzttermin</code> finds <code>Termin beim Zahnarzt</code>).
+The parts before the last count 0.6 and never recall a fact alone, and so does a last part of three letters
+(<code>Tag</code> in <code>Alltag</code>); a question compound whose last part alone is in a fact counts 0.6 too. Words the dictionary knows as one word stay whole (<code>Matrose</code> is no <code>Rose</code>, <code>Mitglied</code> no
+<code>Lied</code>, <code>Ausland</code> no <code>Land</code>); 0.6.0's suffix test stays for words it does not know (<code>Arbeitslaptop</code>). On Wikidata's
+own compounds held out of the build, 94.9 % are split, 99.9 % of the splits as Wikidata cuts them; of 204 simple
+words that look splittable, 4 are still split (<code>Plattform</code>, <code>Tablette</code>, <code>Kommode</code>, <code>Zoophobie</code>). Compounds whose
+meaning is not their parts' are never split (0.12.0: <code>Hochzeit</code> is no <code>Zeit</code>, <code>Frühstück</code> no <code>Stück</code>,
+<code>Weihnachten</code> no <code>Nacht</code>, <code>Augenblick</code>, <code>Verstand</code>, <code>Reisende</code>, <code>Wochenende</code>, <code>Flugzeug</code> …, nor their forms;
+<code>Tablette</code> is in that list too), in the table as well since its rebuild (0.17.0): the build keeps those words
+whole and cuts the other nouns as before, by Wikidata's analysis where it has one and else by the splitter's own
+judgement with stricter limits (0.12.0 had made every noun without an analysis one word; the table it would have
+built no longer split 15 of 33 everyday compounds, and was never shipped). The table of 0.17.0 was built without
+the verb forms and lacked 1,530 verbs that keep their forms whole: it cut 1,515 forms (<code>gehörte</code> as <code>geh|orte</code>,
+<code>stelltest</code> as <code>stell|test</code>); 0.17.1 is built with them, and verbs, adjectives and verb forms are read as in 0.16.3
+again. A real ambiguity
+stays: <code>Kopfschuppen</code> (dandruff) is <code>Kopf</code> + <code>Schuppen</code>, and <code>Schuppen</code> is also a shed. <code>de_compounds.tsv.gz</code>
+(212 KB, rebuilt 2026-10-17), loaded on the first German word (0.15 s, 7 MB); <code>_DE_COMPOUNDS = False</code> turns it off.</li>
+<li><strong>German and Spanish verb forms</strong> (0.11.0): Snowball keeps <code>ging</code> apart from <code>gehen</code>, <code>fue</code> from <code>ir</code> and <code>ser</code>,
+<code>hizo</code> from <code>hacer</code>. A table of such forms from Wikidata's lexemes (the 2,000 German and 4,000 Spanish verbs a
+stand-in for frequency ranks first) gives a form its lemmas' stems, in text of that language only (not in a tie
+with English: "he went"). Such a match counts 0.6, like a root, and never recalls a fact alone: a form can belong to
+two verbs (<code>fue</code> is <code>ir</code> and <code>ser</code>), the source has errors (<code>tuviese</code> under twelve verbs, dropped: a form under
+more than three is left out; <code>gelegt</code> under <code>liegen</code>), and a name can be spelled like a form (<code>Lucía</code> / <code>lucir</code>).
+Forms spelled like another word are left out (<code>Macht</code>, <code>vino</code>, <code>cuenta</code>, <code>hecho</code>), and so are forms spelled like a
+regular form of another verb (<code>fuhren</code> / <code>führen</code>). Separable verbs are not joined (<code>rief … an</code> / <code>anrufen</code>). German
+text is told by its function words, and the list lacks <code>zum</code>, <code>ins</code>, <code>wohin</code>: a short German sentence without others
+stays undetermined and gets neither compounds nor verb forms. <code>de_es_forms.tsv.gz</code> (251 KB): German 0.03 s and 2 MB, Spanish 0.05–0.09 s and
+11 MB on the first word of the language; <code>_LEMMA_FORMS = False</code> turns it off.</li>
+<li>Dutch compounds are not taken apart (<code>_NL_COMPOUNDS</code>, off): on 10 questions that ask by the end of
+a compound and 7 that use that end in its own sense, it found 2 more right facts and recalled 4 more wrong ones
+(<code>huis</code> in <code>ziekenhuis</code>, <code>weer</code> in <code>brandweer</code>, <code>kast</code> in <code>koelkast</code>).</li>
+<li><strong>Words of the same root</strong> (Russian and English): Snowball removes inflection but keeps derivations apart. Russian
+pairs come from a dictionary (0.10.0): DerivBase.Ru, its direct derivation links as stem pairs, kept when the pair
+has the shape of a derivation (<code>ночные</code> / <code>ночь</code>, <code>городской</code> / <code>город</code>, <code>учительница</code> / <code>учитель</code>, <code>дружеский</code> /
+<code>друг</code>; not <code>полный</code> / <code>пол</code> or <code>задача</code> / <code>дача</code>) — 46,756 pairs, Apache-2.0
+(<a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/LICENSES/DerivBase.Ru-Apache-2.0.txt">licence</a>), loaded on the first Russian word (about 0.3 s, 12 MB). English
+pairs come from Open English Wordnet 2025 (0.11.0): its derivation and pertainym links between single words, as stem
+pairs of the same shape (<code>teacher</code> / <code>teaches</code>, <code>pay</code> / <code>payment</code>, <code>deliver</code> / <code>delivery</code>, <code>decide</code> / <code>decision</code>,
+<code>angry</code> / <code>anger</code>, <code>allergic</code> / <code>allergy</code>; not <code>Peter</code> / <code>pet</code>, <code>meters</code> / <code>met</code> or <code>classic</code> / <code>class</code>, which
+0.9.0's suffix rules joined). A link is kept only when it is the derived word's commonest sense (<code>butter</code> is food
+before it is one who butts, <code>tower</code> a building before one who tows, <code>letter</code> writing before one who lets) and no
+stem is another, unrelated word (<code>pearly</code> stems to <code>pear</code>) — 5,428 pairs, CC BY 4.0 on Princeton WordNet 3.1
+(<a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/LICENSES/OEWN-CC-BY-4.0.md">licence</a>, <a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/LICENSES/OEWN-WNDB-License.txt">WordNet notice</a>), 30 KB, loaded on the
+first English word (0.04 s, 2.4 MB). Missing from it: <code>dentist</code> / <code>dental</code>, <code>anxiety</code> / <code>anxious</code>, <code>runner</code> /
+<code>run</code>, <code>rental</code> / <code>rent</code>, <code>medical</code> / <code>medicine</code> (left out by those filters); <code>pronunciation</code> / <code>pronounce</code> is in
+it but its spelling change is too large for the shape filter. <code>_EN_DERIVATION = "rules"</code> (and <code>_RU_DERIVATION</code>) restores 0.9.0's rules. Russian
+stems of six letters also match on their first five (<code>покупа</code> / <code>покупк</code>). Only in text whose language is
+determined (English by its function words; Cyrillic without Ukrainian or Belarusian letters), and only within that
+language. A root counts 0.6 of the word itself and <strong>never recalls a fact on its own</strong>: suffix rules cannot tell a
+derivation from a look-alike (<code>войной</code> / <code>вой</code>, <code>полный</code> / <code>пол</code>), so automatic recall needs a word of the message
+itself, and roots add to it. In <code>search</code> a root brings in facts the word's forms missed and ranks them below facts
+with the word. Not joined: alternating consonants and prefixes (<code>друг</code> / <code>дружба</code>, <code>страховка</code> / <code>застрахован</code>),
+four-letter beginnings (<code>большое</code> is not <code>больница</code>). Duplicate and conflict checks do not use roots.</li>
+<li><strong>Courtesy</strong> (0.9.0): a message whose every clause is greetings, thanks, sign-offs, reactions or "how are you",
+at least one of them more than padding, recalls nothing ("Hi, good morning!", "Thanks, that's all for now",
+"спасибо, на этом всё", "Grazie mille, a domani!", "Wielkie dzięki, do jutra!", "Heel erg bedankt, tot morgen!",
+and any combination of the whole-message greetings of every language). Pieces start and end
+at word boundaries; padding alone ("fine?", "сегодня?") is a question. Russian question words (<code>какой</code>, <code>который</code>,
+<code>сколько</code>, <code>почему</code> …) are left out of a query's terms, like English <code>what</code> / <code>which</code> / <code>how</code>, but kept in facts.</li>
+<li><strong>Names</strong> in Latin script are matched as written (and with an English <code>'s</code>): <code>Jean</code> is not mentioned by <code>jeans</code>.
+Names in other scripts carry their inflections (<code>Маши</code> mentions <code>Маша</code>, <code>لإيرما</code> mentions <code>إيرما</code>).</li>
+<li><strong>Chinese, Japanese, Korean, Thai</strong> (no spaces between words): character n-grams, bigrams for Chinese, Japanese and
+Korean, trigrams for Thai. Grammar weighs less: Chinese function characters (的 是 了), Japanese particles (は が を
+に の), Thai function words (ของ ที่ และ); a message that is only a filler (はい, 네, โอเค) recalls nothing. Chinese
+characters (also in Japanese) count one by one as well; kana, Hangul and Thai letters, which are sounds, do not.
+Traditional characters compare as Simplified ones (0.9.0): <code>學校</code> finds <code>学校</code>, <code>醫院</code> finds <code>医院</code>, so a fact a Taiwan
+or Hong Kong user wrote meets a mainland user's question and t</li>
+</ul>
+<hr>
+<p><em>README truncated. <a href="https://github.com/itpartypattaya/hermes-plugin-holographic#readme">Continue reading on GitHub</a></em></p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in memory &amp; context</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/mem0ai/mem0">
+        <div class="stars">★ 68.7K</div>
+        <div class="name"><span class="org">mem0ai /</span> mem0</div>
+      </a>
+      <a class="related-row" href="/projects/vectorize-io/hindsight">
+        <div class="stars">★ 60.0K</div>
+        <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
+      </a>
+      <a class="related-row" href="/projects/greyhaven-ai/autocontext">
+        <div class="stars">★ 1.3K</div>
+        <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
+      </a>
+      <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
+        <div class="stars">★ 385</div>
+        <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
+      </a>
+      <a class="related-row" href="/projects/yoloshii/ClawMem">
+        <div class="stars">★ 212</div>
+        <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
+      </a>
+      <a class="related-row" href="/projects/Signet-AI/signetai">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">Signet-AI /</span> signetai</div>
+      </a>
+      <a class="related-row" href="/projects/plur-ai/plur">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">plur-ai /</span> plur</div>
+      </a>
+      <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
+        <div class="stars">★ 52</div>
+        <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
+      </a>
+    </div>
+    <p class="list-link"><a href="/lists/best-memory-providers">see all memory &amp; context →</a></p>
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="/about">about</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues/new?template=suggest-repo.yml">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

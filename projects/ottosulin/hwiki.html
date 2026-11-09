@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ottosulin/hwiki — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
+<meta name="description" content="Markdown wiki memory provider for Hermes with local SQLite FTS5 recall and append-only memory notes.">
+<link rel="canonical" href="https://hermesatlas.com/projects/ottosulin/hwiki">
+<meta property="og:title" content="ottosulin/hwiki — Hermes Atlas">
+<meta property="og:description" content="Markdown wiki memory provider for Hermes with local SQLite FTS5 recall and append-only memory notes.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/ottosulin/hwiki">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=hwiki&amp;subtitle=Markdown+wiki+Hermes+memory+provider+inspired+by+Karpathy%27s+LLM+wiki&amp;kind=project+%C2%B7+memory">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ottosulin/hwiki — Hermes Atlas">
+<meta name="twitter:description" content="Markdown wiki memory provider for Hermes with local SQLite FTS5 recall and append-only memory notes.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hwiki&amp;subtitle=Markdown+wiki+Hermes+memory+provider+inspired+by+Karpathy%27s+LLM+wiki&amp;kind=project+%C2%B7+memory">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "memory &amp; context", "item": "https://hermesatlas.com/lists/best-memory-providers" },
+    { "@type": "ListItem", "position": 3, "name": "hwiki" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/ottosulin/hwiki#software",
+  "name": "hwiki",
+  "description": "Markdown wiki memory provider for Hermes with local SQLite FTS5 recall and append-only memory notes.",
+  "url": "https://hermesatlas.com/projects/ottosulin/hwiki",
+  "codeRepository": "https://github.com/ottosulin/hwiki",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
+  "author": {
+    "@type": "Organization",
+    "name": "ottosulin",
+    "url": "https://github.com/ottosulin"
+  },
+  "dateModified": "2026-10-12T12:42:33.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 6
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">310·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/lists/best-memory-providers">memory &amp; context</a><span class="sep">/</span>hwiki
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">ottosulin</span><span class="slash">/</span>hwiki
+  </h1>
+  <p class="project-desc">Markdown wiki Hermes memory provider inspired by Karpathy's LLM wiki</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 6</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
+    
+    <span><span class="meta-label">updated</span>2026-10-12</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/ottosulin/hwiki" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">Markdown wiki memory provider for Hermes with local SQLite FTS5 recall and append-only memory notes.</p>
+    <ul class="summary-highlights">
+      <li>Obsidian-compatible Markdown pages and wikilinks</li>
+      <li>Local heading-level FTS5 retrieval</li>
+      <li>New facts staged in a dedicated memory directory</li>
+    </ul>
+  </div>
+</section>
+
+<section class="project-summary" aria-label="Security note"><div class="section-label">security note</div><p class="summary-text">Basic static screen: 9d53b2f (November 9, 2026), not security certification. Wiki and index are plaintext. Secret/injection guards are heuristics; optional qmd invokes a separate external binary and its model supply chain.</p></section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h2>hwiki: a markdown wiki as Hermes Agent memory</h2>
+<p><strong>Long-term memory you can browse and edit easily.</strong> hwiki turns a folder of markdown
+files into <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> memory.
+The agent recalls from it before every turn and files new facts into it. You read,
+edit and reorganise the same files in editors and tools like Obsidian, and track every
+change in git.</p>
+<p>The idea and structure is based on <a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">Karpathy's LLM wiki</a>.</p>
+<p>No opaque databases you can't easily browse, no cloud service, no extra dependencies: Python's
+standard library and a local SQLite FTS5 index. </p>
+<p>You think querying the markdown memory is slow? The provider answers in milliseconds.</p>
+<h3>Why hwiki</h3>
+<table>
+<thead>
+<tr>
+<th>Typical agent memory</th>
+<th>hwiki</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Opaque rows or vectors</td>
+<td>Plain markdown pages you can read</td>
+</tr>
+<tr>
+<td>Fixing outdated and wrong memories</td>
+<td>Quickly skim over pages and fix with any editor</td>
+</tr>
+<tr>
+<td>No history</td>
+<td><code>git log</code>, <code>git diff</code>, <code>git blame</code></td>
+</tr>
+<tr>
+<td>A pile of facts</td>
+<td>Pages, headings, <code>[[wikilinks]]</code>, frontmatter, backlinks</td>
+</tr>
+<tr>
+<td>Data leaves the machine (hosted options)</td>
+<td>Local files, local index, zero network calls</td>
+</tr>
+<tr>
+<td>Backups and restores</td>
+<td>Simple and flexible; just sync with tools like Obsidian and Nextcloud, git history gives you the ability to revert any changes</td>
+</tr>
+</tbody></table>
+<h4>Work on the same knowledge base as your agent</h4>
+<p>The wiki is a shared artifact, and you and the agent are co-authors:</p>
+<ul>
+<li><strong>You curate in your favourite editor.</strong> Write pages, link them, restructure folders. hwiki
+re-indexes changes automatically, so the agent sees your edits within a minute.</li>
+<li><strong>The agent recalls what you wrote.</strong> Before each turn the most relevant
+heading-sized excerpts are injected, with page and section, so answers are
+grounded in your notes and citable.</li>
+<li><strong>The agent writes to a staging area, never over your pages.</strong> New facts are stored as
+dated bullets in <code>wiki/memory/</code>. You review them in your favourite markdown editor, promote what
+matters into proper pages, and delete the rest. One <code>git diff</code> shows everything
+the agent added.</li>
+<li><strong>The graph works for both of you.</strong> <code>[[wikilinks]]</code> and backlinks render in
+tools like Obsidian's graph view and let the agent follow links instead of re-searching.</li>
+</ul>
+<h3>Install</h3>
+<pre><code class="language-bash">hermes plugins install https://github.com/ottosulin/hwiki
+hermes memory setup            # choose "hwiki", point it at your wiki folder
+hermes gateway restart         # or restart the CLI
+hermes hwiki status            # verify: root, backend, page count
+</code></pre>
+<p>Or configure it non-interactively:</p>
+<pre><code class="language-bash">hermes config set memory.provider hwiki
+cat &gt; ~/.hermes/hwiki.json &lt;&lt;'JSON'
+{ "wiki_path": "~/wiki" }
+JSON
+</code></pre>
+<p>Any folder of markdown works, including for example an existing Obsidian vault.</p>
+<h3>How it works</h3>
+<pre><code>my-wiki/
+├── wiki/              indexed and recalled, human-curated
+│   ├── concepts/ ...
+│   └── memory/        the ONLY place the agent writes (dated bullets)
+└── raw/               never indexed, never recalled, never readable by memory tools
+</code></pre>
+<ul>
+<li><strong>Recall:</strong> heading-scoped chunks from SQLite FTS5 (BM25). Sub-10 ms on a
+2,000-page wiki. Optional <a href="https://github.com/tobi/qmd">qmd</a> hybrid semantic
+search, with automatic fallback to FTS5 if qmd is missing or slow.</li>
+<li><strong>Writes:</strong> append-only to <code>memory_dir</code>, de-duplicated, with a secret guard that
+refuses API keys, tokens and private keys.</li>
+<li><strong>Untrusted sources:</strong> put third-party documents in <code>raw/</code>. They never reach
+auto-injected context, which is where prompt-injection attacks are most
+dangerous. Summarise them into <code>wiki/</code> yourself.</li>
+<li><strong>Background agents are read-only:</strong> in cron, subagent and flush contexts the
+write tool is not offered, so automated runs cannot pollute your wiki.</li>
+</ul>
+<h3>About agent's access to the wiki</h3>
+<p>The write tool is intentionally simple, and currently there is no replace tool. Replace tool
+is something to be considered later. This restricted set of tools now intentional to support 
+cases where you do not want to give the agent unrestricted access to the wiki files.</p>
+<p><strong>In practice in many use cases the agent should have access</strong> (running on same filesystem or wiki
+directory is mounted to the sandbox container) <strong>to the wiki files</strong>. This is the way I use this. 
+By giving the agent <em>also</em> unrestricted access gives it most freedom to keep wiki pages up to date, 
+save multiple documents from research etc. Plugin tool interfaces will always have friction compared
+to agent being able to use grep, sed and other command line tools. However, the search tool will
+outperform grep when amount of pages grows for recall, and also prevents polluting the results with 
+hits from saved raw materials.</p>
+<h3>Agent tools</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>wiki_memory_search</code></td>
+<td>Ranked excerpts across the wiki (optional frontmatter filter)</td>
+</tr>
+<tr>
+<td><code>wiki_memory_read</code></td>
+<td>Full page by path, slug or <code>[[wikilink]]</code>, with links and backlinks</td>
+</tr>
+<tr>
+<td><code>wiki_memory_write</code></td>
+<td>Append a dated fact to a page in the memory zone</td>
+</tr>
+<tr>
+<td><code>wiki_memory_status</code></td>
+<td>Index stats; with <code>lint</code>, dangling links and orphan pages</td>
+</tr>
+</tbody></table>
+<h3>CLI</h3>
+<pre><code class="language-bash">hermes hwiki status              # root, backend, counts
+hermes hwiki search "release process"
+hermes hwiki index               # force a full reindex
+hermes hwiki lint                # dangling wikilinks, orphan pages
+hermes hwiki config              # resolved configuration
+hermes hwiki migrate --dry-run   # import facts from the holographic provider
+</code></pre>
+<h3>Configuration</h3>
+<p><code>$HERMES_HOME/hwiki.json</code>. Only <code>wiki_path</code> is required.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>wiki_path</code></td>
+<td></td>
+<td>Wiki root. <code>~</code> and <code>$HERMES_HOME</code> expand.</td>
+</tr>
+<tr>
+<td><code>backend</code></td>
+<td><code>fts5</code></td>
+<td><code>fts5</code>, or <code>qmd</code> (hybrid with FTS5 fallback)</td>
+</tr>
+<tr>
+<td><code>memory_dir</code></td>
+<td><code>wiki/memory</code></td>
+<td>The only folder the agent may write to</td>
+</tr>
+<tr>
+<td><code>untrusted_dirs</code></td>
+<td><code>["raw"]</code></td>
+<td>Never indexed, recalled or readable</td>
+</tr>
+<tr>
+<td><code>prefetch_limit</code></td>
+<td><code>4</code></td>
+<td>Excerpts injected per turn</td>
+</tr>
+<tr>
+<td><code>prefetch_max_chars</code></td>
+<td><code>1400</code></td>
+<td>Cap on injected characters per turn</td>
+</tr>
+<tr>
+<td><code>auto_recall</code></td>
+<td><code>true</code></td>
+<td><code>false</code> = tools only</td>
+</tr>
+</tbody></table>
+<p>Environment overrides: <code>HWIKI_PATH</code>, <code>HWIKI_BACKEND</code>, <code>HWIKI_MEMORY_DIR</code>,
+<code>HWIKI_QMD_BINARY</code>, <code>HWIKI_QMD_MODE</code>. All options, qmd tuning and Docker setup:
+<a href="https://github.com/ottosulin/hwiki/blob/main/docs/configuration.md">docs/configuration.md</a>.</p>
+<h3>Privacy and security</h3>
+<ul>
+<li><strong>No network access</strong> with the default <code>fts5</code> backend. Your notes never leave
+the machine. The optional qmd backend runs local models.</li>
+<li><strong>Data locations:</strong> your wiki folder (which you choose) plus
+<code>$HERMES_HOME/hwiki.json</code> and <code>$HERMES_HOME/hwiki-index.sqlite</code> (disposable,
+rebuilt on demand).</li>
+<li>Writes are confined to <code>memory_dir</code>, path traversal is rejected, and search
+input is treated as data, never as query syntax.</li>
+</ul>
+<p>Details: <a href="https://github.com/ottosulin/hwiki/blob/main/docs/security.md">docs/security.md</a>. Design rationale and benchmarks:
+<a href="https://github.com/ottosulin/hwiki/blob/main/docs/design.md">docs/design.md</a>.</p>
+<h3>Development</h3>
+<pre><code class="language-bash">python3 tests/test_store_search.py   # store, chunking, search, trust boundary
+python3 tests/test_provider.py       # full MemoryProvider contract
+python3 tests/test_cli_load.py       # CLI loaded exactly as Hermes loads it
+python3 -m pytest tests/             # naming, resolution (needs pytest + PyYAML)
+hermes plugins validate .            # Hermes catalog admission checks
+</code></pre>
+<p>Contributions welcome; see <a href="https://github.com/ottosulin/hwiki/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>.</p>
+<h3>License</h3>
+<p>MIT</p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in memory &amp; context</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/mem0ai/mem0">
+        <div class="stars">★ 68.7K</div>
+        <div class="name"><span class="org">mem0ai /</span> mem0</div>
+      </a>
+      <a class="related-row" href="/projects/vectorize-io/hindsight">
+        <div class="stars">★ 60.0K</div>
+        <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
+      </a>
+      <a class="related-row" href="/projects/greyhaven-ai/autocontext">
+        <div class="stars">★ 1.3K</div>
+        <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
+      </a>
+      <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
+        <div class="stars">★ 385</div>
+        <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
+      </a>
+      <a class="related-row" href="/projects/yoloshii/ClawMem">
+        <div class="stars">★ 212</div>
+        <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
+      </a>
+      <a class="related-row" href="/projects/Signet-AI/signetai">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">Signet-AI /</span> signetai</div>
+      </a>
+      <a class="related-row" href="/projects/plur-ai/plur">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">plur-ai /</span> plur</div>
+      </a>
+      <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
+        <div class="stars">★ 52</div>
+        <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
+      </a>
+    </div>
+    <p class="list-link"><a href="/lists/best-memory-providers">see all memory &amp; context →</a></p>
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="/about">about</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues/new?template=suggest-repo.yml">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BetterDB-inc/monitor — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
+<meta name="description" content="BetterDB monorepo including a native Hermes long-term memory provider using Valkey vectors and configurable embeddings.">
+<link rel="canonical" href="https://hermesatlas.com/projects/BetterDB-inc/monitor">
+<meta property="og:title" content="BetterDB-inc/monitor — Hermes Atlas">
+<meta property="og:description" content="BetterDB monorepo including a native Hermes long-term memory provider using Valkey vectors and configurable embeddings.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/BetterDB-inc/monitor">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=monitor&amp;subtitle=Real-time+monitoring%2C+slowlog+analysis%2C+and+audit+trails+for+Valkey+and+Redis&amp;kind=project+%C2%B7+memory">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="BetterDB-inc/monitor — Hermes Atlas">
+<meta name="twitter:description" content="BetterDB monorepo including a native Hermes long-term memory provider using Valkey vectors and configurable embeddings.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=monitor&amp;subtitle=Real-time+monitoring%2C+slowlog+analysis%2C+and+audit+trails+for+Valkey+and+Redis&amp;kind=project+%C2%B7+memory">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "memory &amp; context", "item": "https://hermesatlas.com/lists/best-memory-providers" },
+    { "@type": "ListItem", "position": 3, "name": "monitor" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/BetterDB-inc/monitor#software",
+  "name": "monitor",
+  "description": "BetterDB monorepo including a native Hermes long-term memory provider using Valkey vectors and configurable embeddings.",
+  "url": "https://hermesatlas.com/projects/BetterDB-inc/monitor",
+  "codeRepository": "https://github.com/BetterDB-inc/monitor",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "TypeScript",
+  "author": {
+    "@type": "Organization",
+    "name": "BetterDB-inc",
+    "url": "https://github.com/BetterDB-inc"
+  },
+  "dateModified": "2026-11-09T07:58:25.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 1313
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">310·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/lists/best-memory-providers">memory &amp; context</a><span class="sep">/</span>monitor
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">BetterDB-inc</span><span class="slash">/</span>monitor
+  </h1>
+  <p class="project-desc">Real-time monitoring, slowlog analysis, and audit trails for Valkey and Redis</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 1.3K</span>
+    <span><span class="meta-label">lang</span>TypeScript</span>
+    
+    
+    <span><span class="meta-label">updated</span>2026-11-09</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/BetterDB-inc/monitor" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    <a href="https://betterdb.com" target="_blank" rel="noopener" class="btn-secondary">homepage</a>
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">BetterDB monorepo including a native Hermes long-term memory provider using Valkey vectors and configurable embeddings.</p>
+    <ul class="summary-highlights">
+      <li>Native Hermes MemoryProvider package with Python entry-point discovery</li>
+      <li>Valkey vector recall ranked by similarity, recency and importance</li>
+      <li>Background turn persistence plus explicit remember/recall/forget tools</li>
+    </ul>
+  </div>
+</section>
+
+<section class="project-summary" aria-label="Security note"><div class="section-label">security note</div><p class="summary-text">Basic static screen: 8699adb (November 9, 2026), not security certification. This listing concerns packages/hermes-memory-py, not just the monitoring product. Completed turns are retained and sent for embedding; default embedding origin is OpenAI and Valkey TLS defaults off. Configure trusted services, scoped credentials and TLS. Repository licensing is mixed.</p></section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h2>BetterDB Monitor</h2>
+<p><a href="https://hub.docker.com/r/betterdb/monitor"><img src="https://img.shields.io/docker/pulls/betterdb/monitor" alt="Docker Pulls" loading="lazy" decoding="async"></a>
+<a href="https://hub.docker.com/r/betterdb/monitor/tags"><img src="https://img.shields.io/docker/v/betterdb/monitor?sort=semver&amp;label=docker" alt="Docker Image Version" loading="lazy" decoding="async"></a>
+<a href="https://artifacthub.io/packages/search?repo=betterdb-monitor"><img src="https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/betterdb-monitor" alt="Artifact Hub" loading="lazy" decoding="async"></a>
+<a href="https://www.npmjs.com/package/@betterdb/monitor"><img src="https://img.shields.io/npm/v/%40betterdb%2Fmonitor?label=npm" alt="npm" loading="lazy" decoding="async"></a>
+<a href="https://www.npmjs.com/package/@betterdb/monitor"><img src="https://img.shields.io/npm/dm/%40betterdb%2Fmonitor" alt="npm downloads" loading="lazy" decoding="async"></a>
+<a href="https://github.com/betterdb-inc/monitor/actions/workflows/api-tests.yml"><img src="https://github.com/betterdb-inc/monitor/actions/workflows/api-tests.yml/badge.svg" alt="API Tests" loading="lazy" decoding="async"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT%20%2B%20Commercial-blue" alt="License" loading="lazy" decoding="async"></a>
+<a href="https://valkey.io"><img src="https://img.shields.io/badge/Valkey-8.x%20native-6a5acd" alt="Valkey" loading="lazy" decoding="async"></a>
+<a href="https://redis.io"><img src="https://img.shields.io/badge/Redis-6%2B%20compatible-d82c20" alt="Redis" loading="lazy" decoding="async"></a></p>
+<p><strong>The monitoring layer that Valkey deserves.</strong></p>
+<p>BetterDB persists what Valkey throws away - slowlogs, command patterns, client activity, anomaly signals - so you can debug what happened at 3am, not just what's happening now. Built for Valkey 8.x with native support for COMMANDLOG, CLUSTER SLOT-STATS, and per-thread I/O metrics. Redis 6+ compatible for everything else.</p>
+<p><a href="https://betterdb.com">Website</a> | <a href="https://hub.docker.com/r/betterdb/monitor">Docker Hub</a> | <a href="https://www.npmjs.com/package/@betterdb/monitor">npm</a> | <a href="https://docs.betterdb.com">Documentation</a> | <a href="https://betterdb.com/blog">Blog</a></p>
+<p>BetterDB is built by <a href="https://betterdb.com">BetterDB Inc.</a>, a public benefit company operating under the <a href="https://github.com/OpenCoreVentures/ocv-public-benefit-company">OCV Open Charter</a>.</p>
+<p><img src="https://raw.githubusercontent.com/BetterDB-inc/monitor/main/docs/assets/readme-hero.png" alt="BetterDB Monitor - Key Analytics with per-type key size distribution histograms" loading="lazy" decoding="async"></p>
+<h3>Quick Start (Docker)</h3>
+<pre><code class="language-bash">docker run -d --name betterdb -p 3001:3001 betterdb/monitor:latest
+</code></pre>
+<p>Point your browser to <code>http://localhost:3001</code>. To monitor a specific instance:</p>
+<pre><code class="language-bash">docker run -d \
+  --name betterdb \
+  -p 3001:3001 \
+  -e DB_HOST=your-valkey-host \
+  -e DB_PORT=6379 \
+  -e DB_PASSWORD=your-password \
+  betterdb/monitor:latest
+</code></pre>
+<blockquote>
+<p><strong>Connecting to a database on your host machine?</strong> Inside the container
+<code>localhost</code> is the container itself, not your host — so use
+<code>host.docker.internal</code> as the database host. On <strong>Docker Desktop
+(macOS/Windows)</strong> it works out of the box; on <strong>Linux</strong> add
+<code>--add-host=host.docker.internal:host-gateway</code> to the <code>docker run</code> command so
+the name resolves. The dashboard's one-click "connect to local instance"
+button auto-detects this and pre-fills the right host for you.</p>
+</blockquote>
+<p>Two image variants are published, both multi-arch (<code>linux/amd64</code>, <code>linux/arm64</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>latest</code>, <code>X.Y.Z-no-ai</code></td>
+<td>Default image - every monitoring feature included, without the dependencies for the experimental local-LLM AI Helper</td>
+</tr>
+<tr>
+<td><code>X.Y.Z</code></td>
+<td>Adds the experimental AI Helper (bring your own Ollama; disabled by default via <code>AI_ENABLED</code>)</td>
+</tr>
+</tbody></table>
+<p>See <a href="#docker-production-deployment">Docker Production Deployment</a> for persistent storage, custom ports, licensing, and air-gapped setups.</p>
+<h3>Quick Start (Kubernetes / Helm)</h3>
+<pre><code class="language-bash">helm repo add betterdb https://docs.betterdb.com/charts
+helm repo update
+helm install betterdb-monitor betterdb/betterdb-monitor \
+  --namespace betterdb --create-namespace \
+  --set db.host=my-valkey.default.svc.cluster.local \
+  --set db.password=yourpassword
+</code></pre>
+<p>Then <code>kubectl port-forward -n betterdb svc/betterdb-monitor 3001:3001</code> and open <code>http://localhost:3001</code>, or enable the chart's ingress. PostgreSQL-backed history, bring-your-own Secrets, and air-gapped licensing are all covered in the <a href="https://docs.betterdb.com/kubernetes">Kubernetes guide</a> and the <a href="https://github.com/BetterDB-inc/monitor/blob/main/charts/betterdb-monitor/README.md">chart README</a>.</p>
+<h3>Quick Start (CLI)</h3>
+<p>Run BetterDB Monitor without Docker:</p>
+<pre><code class="language-bash">npx @betterdb/monitor
+</code></pre>
+<p>On first run, an interactive setup wizard guides you through database connection, storage backend (SQLite, PostgreSQL, or in-memory), and server settings. Configuration is saved to <code>~/.betterdb/config.json</code>.</p>
+<pre><code class="language-bash">npm install -g @betterdb/monitor   # global install
+betterdb --setup                   # re-run setup wizard
+betterdb --port 8080               # override server port
+betterdb --db-host 1.2.3.4         # override database host
+betterdb --help                    # all options
+</code></pre>
+<p>Requires Node.js &gt;= 20.0.0 and a Valkey or Redis instance to monitor. For SQLite storage, also <code>npm install -g better-sqlite3</code>.</p>
+<h3>What You Get</h3>
+<h4>See everything, keep everything</h4>
+<ul>
+<li><strong>Historical analytics</strong> - query slowlogs, command patterns, client activity, and latency across any time range. The data that used to disappear after a log rotation.</li>
+<li><strong>COMMANDLOG support</strong> - Valkey 8.1+ exclusive. Large requests and large replies, not just the slow ones.</li>
+<li><strong>MONITOR capture sessions</strong> - record real traffic on demand: live tail, filter, replay, export to JSON/CSV, and cross-reference against connection history.</li>
+<li><strong>Hot key tracking</strong> - top keys by access frequency with rank movement over time. Key Analytics (Pro, free in early access) adds type, TTL, and size distributions from live sampling.</li>
+<li><strong>Cluster visibility</strong> - topology graphs, SLOT-STATS heatmaps, per-slot CPU and key distribution.</li>
+<li><strong>Cluster auto-registration</strong> - a cluster connection can auto-register every node as its own monitored connection, kept in sync as the cluster scales. See <a href="https://github.com/BetterDB-inc/monitor/blob/main/docs/cluster-auto-registration.md">docs/cluster-auto-registration.md</a>.</li>
+<li><strong>CPU &amp; I/O thread metrics</strong> - per-thread visibility that no Redis tool can provide.</li>
+<li><strong>Client analytics</strong> - see exactly which service is responsible for what, attributed by client name and pattern.</li>
+<li><strong>ACL audit trail</strong> - track who accessed what, persisted for compliance and post-incident debugging.</li>
+</ul>
+<h4>Understand and act</h4>
+<ul>
+<li><strong>Anomaly detection</strong> (Pro, free in early access) - automatic baseline learning with correlated events and plain-English diagnoses. 20+ detectors, no manual thresholds.</li>
+<li><strong>Capacity forecasting</strong> - projected time-to-ceiling for memory, ops/sec, CPU, and fragmentation.</li>
+<li><strong>Webhooks</strong> - HMAC-signed alert deliveries with retries and a full delivery log.</li>
+<li><strong>Live migration</strong> - move between Redis and Valkey, self-hosted or managed (ElastiCache node-based or Serverless, MemoryDB, Redis Cloud, Upstash), standalone or cluster (a cluster source needs a cluster target). Three-phase analysis, execution, and validation workflow, with PSYNC-based continuous replication for near-zero-downtime cutovers when the source permits replication commands. Other RESP-compatible engines such as KeyDB and Dragonfly work in the modes listed in the <a href="https://github.com/BetterDB-inc/monitor/blob/main/docs/migration.md#other-engines">engine table</a>; they are not part of the test suite. See <a href="https://github.com/BetterDB-inc/monitor/blob/main/docs/migration.md">docs/migration.md</a>.</li>
+</ul>
+<h4>Built for the AI era</h4>
+<ul>
+<li><strong>Vector search observability</strong> - FT.SEARCH ops/sec and latency with per-index health for <a href="https://github.com/valkey-io/valkey-search">valkey-search</a> and RediSearch. See <a href="https://github.com/BetterDB-inc/monitor/blob/main/docs/vector-ai/README.md">docs/vector-ai</a>.</li>
+<li><strong>Inference latency</strong> - p50/p95/p99 per index, with SLA breach alerts (Pro, free in early access).</li>
+<li><strong>Semantic cache intelligence</strong> (Pro, free in early access) - hit-rate health, similarity-threshold recommendations, and an approve/reject proposal workflow. Agent memory observability included.</li>
+<li><strong>AI traces</strong> - OTLP span waterfalls from your AI application, correlated with the live Valkey state underneath each request. See <a href="https://github.com/BetterDB-inc/monitor/blob/main/docs/opentelemetry.md">docs/opentelemetry.md</a>.</li>
+</ul>
+<h4>Plugs into everything</h4>
+<ul>
+<li><strong>MCP server</strong> - 60 tools for Claude Code, Cursor, or any MCP client via <a href="packages/mcp"><code>@betterdb/mcp</code></a>.</li>
+<li><strong>Prometheus endpoint</strong> - 100+ <code>betterdb_*</code> metrics. See <a href="https://github.com/BetterDB-inc/monitor/blob/main/docs/prometheus-metrics.md">docs/prometheus-metrics.md</a>.</li>
+<li><strong>OpenTelemetry</strong> - ingest OTLP traces, and mirror metrics and events to any OTLP backend. See <a href="https://github.com/BetterDB-inc/monitor/blob/main/docs/opentelemetry.md">docs/opentelemetry.md</a>.</li>
+<li><strong>REST API</strong> - everything in the UI is an API call, documented via OpenAPI.</li>
+</ul>
+<h3>Access Your Data Your Way</h3>
+<table>
+<thead>
+<tr>
+<th>Interface</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Web UI</td>
+<td><code>http://localhost:3001</code></td>
+</tr>
+<tr>
+<td>MCP server</td>
+<td><code>npx @betterdb/mcp</code> (stdio) - create a token under Settings → MCP Tokens (required on cloud, optional on self-hosted)</td>
+</tr>
+<tr>
+<td>Prometheus</td>
+<td><code>http://localhost:3001/api/prometheus/metrics</code></td>
+</tr>
+<tr>
+<td>REST API (OpenAPI)</td>
+<td><code>http://localhost:3001/docs</code></td>
+</tr>
+<tr>
+<td>Health check</td>
+<td><code>http://localhost:3001/api/health</code></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Note</strong>: In production builds (Docker, CLI) API routes are served under the <code>/api</code> prefix. In local development (<code>pnpm dev</code>) there is no prefix - e.g. <code>http://localhost:3001/health</code>.</p>
+</blockquote>
+<h3>Supported Databases</h3>
+<table>
+<thead>
+<tr>
+<th>Database</th>
+<th>Minimum Version</th>
+<th>Supported Features</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Valkey</strong></td>
+<td>8.0+</td>
+<td>All features including COMMANDLOG (8.1+) and CLUSTER SLOT-STATS</td>
+</tr>
+<tr>
+<td><strong>Redis</strong></td>
+<td>6+</td>
+<td>All features except the Valkey-exclusive COMMANDLOG and CLUSTER SLOT-STATS</td>
+</tr>
+</tbody></table>
+<p>The backend uses a unified adapter over the wire-compatible <code>iovalkey</code> client and auto-detects Valkey vs Redis from the <code>INFO</code> response (<code>DB_TYPE=auto</code>). Capabilities like COMMANDLOG and SLOT-STATS are detected per version, and the UI gracefully degrades when a feature isn't available.</p>
+<p>Managed services are supported too - guides for AWS ElastiCache, MemoryDB, Redis Cloud, and Upstash live in <a href="docs/providers/">docs/providers</a>, and <a href="packages/agent"><code>@betterdb/agent</code></a> reaches VPC-only instances over an outbound WebSocket.</p>
+<h3>Docker Production Deployment</h3>
+<p>The Docker image contains the monitoring application (backend + frontend). It requires:</p>
+<ol>
+<li>A Valkey/Redis instance to monitor</li>
+<li>A PostgreSQL instance for data persistence (or use memory storage)</li>
+</ol>
+<h4>Run with PostgreSQL Storage</h4>
+<pre><code class="language-bash">docker run -d \
+  --name betterdb-monitor \
+  -p 3001:3001 \
+  -e DB_HOST=your-valkey-host \
+  -e DB_PORT=6379 \
+  -e DB_PASSWORD=your-password \
+  -e STORAGE_TYPE=postgres \
+  -e STORAGE_URL=postgresql://user:pass@postgres-host:5432/dbname \
+  betterdb/monitor
+</code></pre>
+<h4>Run on Custom Port</h4>
+<p>Set the <code>PORT</code> environment variable and match the <code>-p</code> mapping:</p>
+<pre><code class="language-bash">docker run -d \
+  --name betterdb-monitor \
+  -p 8080:8080 \
+  -e PORT=8080 \
+  -e DB_HOST=your-valkey-host \
+  betterdb/monitor
+</code></pre>
+<h4>Run with Host Network (Access localhost services)</h4>
+<p>If your Valkey and PostgreSQL are running on the same host:</p>
+<pre><code class="language-bash">docker run -d \
+  --name betterdb-monitor \
+  --network host \
+  -e DB_HOST=localhost \
+  -e DB_PORT=6380 \
+  -e DB_PASSWORD=devpassword \
+  -e STORAGE_TYPE=postgres \
+  -e STORAGE_URL=postgresql://dev:devpass@localhost:5432/postgres \
+  betterdb/monitor
+</code></pre>
+<h4>Environment Variables</h4>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Required</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>DB_HOST</code></td>
+<td>Yes</td>
+<td><code>localhost</code></td>
+<td>Valkey/Redis host to monitor</td>
+</tr>
+<tr>
+<td><code>DB_PORT</code></td>
+<td>No</td>
+<td><code>6379</code></td>
+<td>Valkey/Redis port</td>
+</tr>
+<tr>
+<td><code>DB_PASSWORD</code></td>
+<td>No</td>
+<td>-</td>
+<td>Valkey/Redis password</td>
+</tr>
+<tr>
+<td><code>DB_USERNAME</code></td>
+<td>No</td>
+<td><code>default</code></td>
+<td>Valkey/Redis ACL username</td>
+</tr>
+<tr>
+<td><code>DB_TYPE</code></td>
+<td>No</td>
+<td><code>auto</code></td>
+<td>Database type: <code>auto</code>, <code>valkey</code>, or <code>redis</code></td>
+</tr>
+<tr>
+<td><code>DB_TLS</code></td>
+<td>No</td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to connect to the monitored database over TLS (required by managed providers such as Aiven or ElastiCache Serverless)</td>
+</tr>
+<tr>
+<td><code>DB_TLS_CA_FILE</code></td>
+<td>No</td>
+<td>-</td>
+<td>Path to a PEM CA bundle used to verify the database server certificate. Needed when the server certificate is issued by a private CA (see <a href="#mutual-tls-client-certificates">Mutual TLS</a>)</td>
+</tr>
+<tr>
+<td><code>DB_TLS_CERT_FILE</code></td>
+<td>No</td>
+<td>-</td>
+<td>Path to a PEM client certificate presented to the database (mutual TLS). Use together with <code>DB_TLS_KEY_FILE</code></td>
+</tr>
+<tr>
+<td><code>DB_TLS_KEY_FILE</code></td>
+<td>No</td>
+<td>-</td>
+<td>Path to the PEM private key matching <code>DB_TLS_CERT_FILE</code></td>
+</tr>
+<tr>
+<td><code>DB_TLS_KEY_PASSPHRASE</code></td>
+<td>No</td>
+<td>-</td>
+<td>Passphrase for <code>DB_TLS_KEY_FILE</code>, if the key is encrypted</td>
+</tr>
+<tr>
+<td><code>DB_AUTH_MODE</code></td>
+<td>No</td>
+<td><code>password</code></td>
+<td><code>password</code> sends <code>AUTH</code> with <code>DB_USERNAME</code>/<code>DB_PASSWORD</code>; <code>certificate</code> sends no <code>AUTH</code> so the server maps the client certificate to an ACL user (Valkey <code>tls-auth-clients-user</code>). Requires <code>DB_TLS=true</code> and a client certificate + key</td>
+</tr>
+<tr>
+<td><code>STORAGE_TYPE</code></td>
+<td>No</td>
+<td><code>memory</code></td>
+<td>Storage backend: <code>memory</code> or <code>postgres</code></td>
+</tr>
+<tr>
+<td><code>STORAGE_URL</code></td>
+<td>Conditional</td>
+<td>-</td>
+<td>PostgreSQL connection URL (required if <code>STORAGE_TYPE=postgres</code>)</td>
+</tr>
+<tr>
+<td><code>STORAGE_SSL_CA</code></td>
+<td>No</td>
+<td>-</td>
+<td>Path (or trusted HTTPS URL) to a CA cert used to verify the PostgreSQL server. For managed providers with their own CA (e.g. Aiven), supply the project CA here for full chain + hostname verification. Takes precedence over <code>STORAGE_SSL_NO_VERIFY</code></td>
+</tr>
+<tr>
+<td><code>STORAGE_SSL_NO_VERIFY</code></td>
+<td>No</td>
+<td><code>false</code></td>
+<td>Connect to PostgreSQL over TLS <strong>without</strong> verifying the server certificate (encrypted but not authenticated). Convenience for managed providers that present their own CA and force <code>sslmode=require</code> when you can't supply <code>STORAGE_SSL_CA</code>. Prefer <code>STORAGE_SSL_CA</code> in production</td>
+</tr>
+<tr>
+<td><code>PORT</code></td>
+<td>No</td>
+<td><code>3001</code></td>
+<td>Application HTTP port</td>
+</tr>
+<tr>
+<td><code>NODE_ENV</code></td>
+<td>No</td>
+<td><code>production</code></td>
+<td>Node environment</td>
+</tr>
+<tr>
+<td><code>ANOMALY_DETECTION_ENABLED</code></td>
+<td>No</td>
+<td><code>true</code></td>
+<td>Enable anomaly detection</td>
+</tr>
+<tr>
+<td><code>ANOMALY_PROMETHEUS_INTERVAL_MS</code></td>
+<td>No</td>
+<td><code>30000</code></td>
+<td>Prometheus summary update interval (ms)</td>
+</tr>
+<tr>
+<td><code>BETTERDB_LICENSE_KEY</code></td>
+<td>No</td>
+<td>-</td>
+<td>Online license key (Pro/Enterprise), validated over the network</td>
+</tr>
+<tr>
+<td><code>BETTERDB_OFFLINE_LICENSE_FILE</code></td>
+<td>No</td>
+<td>-</td>
+<td>Path to a signed offline license <code>.jwt</code> for <strong>air-gapped</strong> hosts (see below)</td>
+</tr>
+<tr>
+<td><code>BETTERDB_OFFLINE_LICENSE</code></td>
+<td>No</td>
+<td>-</td>
+<td>Offline license token as an inline JWT string</td>
+</tr>
+<tr>
+<td><code>BETTERDB_DATA_DIR</code></td>
+<td>No</td>
+<td><code>/app/data</code></td>
+<td>Directory for persisted license state (mount a writable volume)</td>
+</tr>
+<tr>
+<td><code>ENCRYPTION_KEY</code></td>
+<td>No</td>
+<td>-</td>
+<td>Key (min 16 chars) used to envelope-encrypt stored connection passwords, TLS private keys and SSH tunnel secrets at rest. Without it, secrets are stored in plaintext; rows found in plaintext are re-encrypted on the next start once the key is set. If the key is missing while encrypted rows exist, env-configured credentials are used in memory only and never written back unencrypted</td>
+</tr>
+<tr>
+<td><code>BETTERDB_SSH_KEY_DIR</code></td>
+<td>No</td>
+<td>-</td>
+<td>Directory that server-side SSH private keys must live in. Enables the "server file path" key source for <a href="#ssh-tunnels">SSH tunnels</a>; a connection's key path must resolve inside it. Unset disables file-based keys (inline pasted keys still work)</td>
+</tr>
+<tr>
+<td><code>BETTERDB_TLS_CERT_DIR</code></td>
+<td>No</td>
+<td>-</td>
+<td>Directory that server-side TLS files (CA bundle, client certificate, key) must live in. Enables the "server file paths" source for <a href="#mutual-tls-client-certificates">mutual TLS</a> on UI-added connections; a connection's paths must resolve inside it. Unset disables file paths (pasted PEM still works)</td>
+</tr>
+<tr>
+<td><code>BETTERDB_TELEMETRY</code></td>
+<td>No</td>
+<td><code>true</code></td>
+<td>Set <code>false</code> to disable anonymous telemetry</td>
+</tr>
+</tbody></table>
+<p>Full reference, including AI, webhook tuning, and health-gate thresholds: <a href="https://github.com/BetterDB-inc/monitor/blob/main/docs/configuration.md">docs/configuration.md</a>. For OTLP trace ingest and metrics/event export, see <a href="https://github.com/BetterDB-inc/monitor/blob/main/docs/opentelemetry.md">docs/opentelemetry.md</a>.</p>
+<h4>Mutual TLS (client certificates)</h4>
+<p>When <strong>Use TLS</strong> is on, a connection can also carry TLS material:</p>
+<ul>
+<li>a <strong>CA bundle</strong> so the server certificate is verified against a private PKI instead of the public CA store, and</li>
+<li>a <strong>client certificate + private key</strong> that BetterDB presents during the handshake (mutual TLS), for servers that run <code>tls-auth-clients yes</code>.</li>
+</ul>
+<p>The certificate is passed to the TLS socket exactly as supplied, so its subject (CN) is whatever your CA issued. Material is either <strong>pasted as PEM</strong> (the private key and passphrase are encrypted at rest when <code>ENCRYPTION_KEY</code> is set) or referenced by <strong>server file paths</strong> inside <code>BETTERDB_TLS_CERT_DIR</code>, the same allowlist model as SSH keys. The env-configured default connection takes the same material from <code>DB_TLS_CA_FILE</code>, <code>DB_TLS_CERT_FILE</code>, <code>DB_TLS_KEY_FILE</code> and <code>DB_TLS_KEY_PASSPHRASE</code>.</p>
+<p><strong>Certificate-only authentication.</strong> Valkey can map a field of the client certificate to an ACL user (<code>tls-auth-clients-user</code>). For that mapping to hold, the client must not send <code>AUTH</code> afterwards, which would re-authenticate the session as a different user or fail outright. Choose <strong>Client certificate (mTLS)</strong> as the authentication method (or <code>DB_AUTH_MODE=certificate</code>) and BetterDB sends no <code>AUTH</code> at all; username and password are ignored. BetterDB then runs <code>ACL WHOAMI</code> after connecting and shows the resolved user in the connection test result and in the connection status (<code>authenticatedUser</code>), so you can confirm the certificate mapped to the intended account rather than falling back to <code>default</code>.</p>
+<p>Cluster and Sentinel nodes discovered from a seed connection reuse the seed's CA, client certificate and authentication mode. Server certificate verification is always on; there is no option to disable it.</p>
+<p><strong>Rotation.</strong> File-sourced material (<code>BETTERDB_TLS_CERT_DIR</code> paths, and the <code>DB_TLS_*_FILE</code> paths of the env-configured connection) is watched for changes: the files are stat-checked at most every few seconds when a socket is opened and re-read when they changed, so a replaced certificate is presented by every new connection (reconnects, key-analytics scans, the CLI, discovered cluster nodes) without a restart. New material is checked to parse as a matching certificate and key before it is adopted, so a rotation caught between writing the two files keeps the previous pair until both are in place. Already-open sockets keep running on the old handshake until they reconnect; use <code>POST /connections/{id}/reconnect</code> to force that. While <code>DB_HOST</code> is set, the env-configured default connection and the nodes auto-registered from it are rebuilt from the current <code>DB_*</code> settings on every start, so a changed username, password, <code>DB_TLS</code>, certificate paths or <code>DB_AUTH_MODE</code> always win over the stored copy (connections you created yourself keep their own settings, even when they were adopted into the default's topology). Pasted PEM is fixed at save time; re-create the connection to rotate it.</p>
+<h4>SSH Tunnels</h4>
+<p>Connections can reach a database through an SSH bastion/jump host instead of connecting directly — useful for Valkey/Redis in a private subnet, ElastiCache, or MemoryDB. Enable <strong>Connect via SSH tunnel</strong> when adding a connection and provide the SSH host, port, and username. A single hop is supported.</p>
+<p>Authentication is either a password or a private key. Private keys come from one of two sources:</p>
+<ul>
+<li><strong>Paste key</strong> (inline): the PEM key content is submitted with the connection. It is stored encrypted at rest <strong>only when <code>ENCRYPTION_KEY</code> is set</strong> (envelope encryption); without that key it is stored in plaintext, like connection passwords. Works everywhere, including managed/cloud deployments.</li>
+<li><strong>Server file path</strong>: the key already lives on the monitor server's filesystem and is referenced by path. This requires setting the <code>BETTERDB_SSH_KEY_DIR</code> environment variable to the directory holding the allowed keys, and the referenced path must resolve inside it, so the API can never be coerced into reading arbitrary files. Leave <code>BETTERDB_SSH_KEY_DIR</code> unset to disable this option.</li>
+</ul>
+<p>Optionally pin the SSH server's <strong>host key fingerprint</strong> (<code>SHA256:...</code>) on the connection; when set, the tunnel is refused unless the server presents a matching key, preventing man-in-the-middle attacks on the bastion path. Left blank, the server identity is not verified (a warning is logged).</p>
+<p>The tunnel forwards to the database over <code>127.0.0.1</code>; when TLS is enabled the certificate is still validated against the real database hostname. Set <code>ENCRYPTION_KEY</code> so SSH passwords, key passphrases, and inline keys are encrypted at rest.</p>
+<p><strong>Known limitation — cluster/Sentinel topologies:</strong> only the connection you configure is tunnelled. Cluster and Sentinel monitoring fan out to the other nodes using the addresses those nodes advertise (<code>CLUSTER NODES</code> / Sentinel), and those per-node connections are made directly, not through the tunnel. If the other nodes are only reachable via the bastion (e.g. ElastiCache/MemoryDB in a private subnet), per-node views will be unavailable. Use SSH tunnels for single-node/primary monitoring, or place the monitor where it can reach the cluster nodes directly.</p>
+<h4>Licensing &amp; Air-Gapped Support</h4>
+<p>BetterDB Monitor unlocks Pro/Enterprise features in one of two ways, depending on
+whether the host has internet access:</p>
+<ul>
+<li><strong>Online license key</strong> - set <code>BETTERDB_LICENSE_KEY</code>. The monitor validates it
+against <code>betterdb.com</code> and caches a locally-verified <strong>signed token</strong>, so your
+tier keeps working through short outages and restarts.</li>
+<li><strong>Offline / air-gapped license token</strong> - for hosts with <strong>no internet access at
+all</strong> (see below).</li>
+</ul>
+<h5>How air-gapped licensing works</h5>
+<p>Every entitlement is a <strong>signed RS256 JWT</strong>. The monitor verifies it <strong>locally</strong>
+against public keys embedded in the image - it never has to reach a license server
+to trust a token. So an air-gapped host can run paid tiers with zero connectivity:</p>
+<ol>
+<li>On an internet-connected machine, sign in at
+<a href="https://www.betterdb.com/account/licenses">betterdb.com/account/licenses</a> and
+<strong>download your offline license token</strong> (<code>.jwt</code>, Pro/Enterprise). It contains no
+secrets and can't be tampered with - any edit breaks the signature.</li>
+<li>Transfer it to the air-gapped host however you like (USB, config management, a
+Docker/Kubernetes secret mount).</li>
+<li>Provide it via <code>BETTERDB_OFFLINE_LICENSE_FILE</code> (path), <code>BETTERDB_OFFLINE_LICENSE</code>
+(inline string), or paste it in the UI under <strong>Settings → License → "Air-gapped
+environment? Activate an offline license."</strong></li>
+</ol>
+<p>When an offline token is configured and <strong>no</strong> <code>BETTERDB_LICENSE_KEY</code> is set, the
+monitor makes <strong>zero outbound requests</strong> - license checks, telemetry, and update
+pings are all disabled. It runs the granted tier until the token expires (perpetual
+licenses re-download yearly), then reverts to Community.</p>
+<pre><code class="language-bash"># fully offline - no network required
+docker volume create betterdb-data
+docker run --rm -v betterdb-data:/d alpine chown 1001:1001 /d   # volume writable by UID 1001 (one-time)
+
+docker run -d --name betterdb-monitor -p 3001:3001 \
+  -e DB_HOST=your-valkey-host -e DB_PORT=6379 -e DB_PASSWORD=your-password \
+  -v /path/to/betterdb-license.jwt:/run/secrets/betterdb-license.jwt:ro \
+  -e BETTERDB_OFFLINE_LICENSE_FILE=/run/secrets/betterdb-license.jwt \
+  -v betterdb-data:/app/data \
+  betterdb/monitor
+</code></pre>
+<p>Verify with <code>GET /api/license/status</code> → <code>source: offline-token</code>, <code>mode: offline</code>,
+<code>airGapped: true</code>.</p>
+<blockquote>
+<p><strong>Persistence:</strong> mount a writable volume at <code>/app/data</code> so the offline license and
+the online outage-grace token survive restarts. The container runs as <strong>UID 1001</strong>,
+so a freshly-created volume must be <code>chown</code>ed to it (shown above) - otherwise
+persistence fails with <code>EACCES … license.jwt</code>.</p>
+</blockquote>
+<p>For the full flow, verification precedence, and key-rotation runbook see
+<strong><a href="https://github.com/BetterDB-inc/monitor/blob/main/docs/offline-licenses.md">Offline &amp; Air-Gapped Licenses</a></strong> and the
+<strong><a href="https://github.com/BetterDB-inc/monitor/blob/main/docs/configuration.md#license-configuration">Configuration reference</a></strong>.</p>
+<h4>Docker Image Details</h4>
+<ul>
+<li><strong>Base Image</strong>: <code>node:20-alpine</code></li>
+<li><strong>Compressed size</strong>: ~360MB (<code>latest</code> / <code>-no-ai</code>) / ~640MB (versioned image with the experimental AI Helper's local-LLM dependencies)</li>
+<li><strong>Platforms</strong>: <code>linux/amd64</code>, <code>linux/arm64</code></li>
+<li><strong>Contains</strong>: Backend API + Frontend static files (served by Fastify)</li>
+<li><strong>Excluded</strong>: SQLite support (use PostgreSQL or Memory storage)</li>
+</ul>
+<h4>Container Operations</h4>
+<pre><code class="language-bash">docker logs -f betterdb-monitor        # follow logs
+docker stop betterdb-monitor           # stop
+docker rm betterdb-monitor             # remove
+</code></pre>
+<h3>Storage Backends</h3>
+<p>BetterDB Monitor persists audit trail, analytics, captures, and anomaly data to one of four backends:</p>
+<table>
+<thead>
+<tr>
+<th>Backend</th>
+<th>Use case</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>memory</code></td>
+<td>Testing, ephemeral environments</td>
+<td>Default in Docker; all data lost on restart</td>
+</tr>
+<tr>
+<td><code>postgres</code></td>
+<td>Production</td>
+<td><code>STORAGE_TYPE=postgres</code> + <code>STORAGE_URL=postgresql://user:pass@host:port/db</code></td>
+</tr>
+<tr>
+<td><code>turso</code></td>
+<td>Production / serverless SQLite</td>
+<td><code>STORAGE_TYPE=turso</code> + <code>STORAGE_URL=libsql://...</code> + <code>STORAGE_AUTH_TOKEN</code>; works in Docker</td>
+</tr>
+<tr>
+<td><code>sqlite</code></td>
+<td>Local development / CLI</td>
+<td>Native module stripped from the <code>latest</code> Docker image; <code>STORAGE_SQLITE_FILEPATH</code> optional</td>
+</tr>
+</tbody></table>
+<h3>Prometheus Metrics</h3>
+<p>Metrics are exposed at <code>GET /api/prometheus/metrics</code> in Prometheus text format: ACL audit, client connections, slowlog/commandlog patterns, memory, throughput, keyspace, replication, cluster slot stats, and Node.js runtime metrics - all prefixed <code>betterdb_</code>.</p>
+<pre><code class="language-yaml">scrape_configs:
+  - job_name: 'betterdb-monitor'
+    metrics_path: '/api/prometheus/metrics'
+    static_configs:
+      - targets: ['your-monitor-host:3001']
+</code></pre>
+<p>Full metric reference: <a href="https://github.com/BetterDB-inc/monitor/blob/main/docs/prometheus-metrics.md">docs/prometheus-metrics.md</a> and <a href="https://github.com/BetterDB-inc/monitor/blob/main/docs/prometheus-integration.md">docs/prometheus-integration.md</a>.</p>
+<h3>Development</h3>
+<h4>Project Structure</h4>
+<pre><code>betterdb-monitor/
+├── apps/
+│   ├── api/                 # NestJS backend (Fastify)
+│   └── web/                 # React frontend (Vite)
+├── packages/                # Published packages (see below)
+├── docs/                    # Documentation site (Jekyll)
+├── docker-compose.yml       # Local Valkey (port 6380) and Redis (port 6382) for testing
+└── package.json             # Workspace root
+</code></pre>
+<h4>Packages</h4>
+<p>This monorepo ships several standalone packages. See <a href="packages/"><code>packages/</code></a> for the full list.</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Language</th>
+<th>Registry</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="packages/cli"><code>@betterdb/monitor</code></a></td>
+<td>TypeScript</td>
+<td><a href="https://www.npmjs.com/package/@betterdb/monitor">npm</a></td>
+</tr>
+<tr>
+<td><a href="packages/mcp"><code>@betterdb/mcp</code></a></td>
+<td>TypeScript</td>
+<td><a href="https://www.npmjs.com/package/@betterdb/mcp">npm</a></td>
+</tr>
+<tr>
+<td><a href="packages/agent"><code>@betterdb/agent</code></a></td>
+<td>TypeScript</td>
+<td><a href="https://www.npmjs.com/package/@betterdb/agent">npm</a></td>
+</tr>
+<tr>
+<td><a href="packages/semantic-cache"><code>@betterdb/semantic-cache</code></a></td>
+<td>TypeScript</td>
+<td><a href="https://www.npmjs.com/package/@betterdb/semantic-cache">npm</a></td>
+</tr>
+<tr>
+<td><a href="packages/semantic-cache-py"><code>betterdb-semantic-cache</code></a></td>
+<td>Python</td>
+<td><a href="https://pypi.org/project/betterdb-semantic-cache/">PyPI</a></td>
+</tr>
+<tr>
+<td><a href="packages/agent-cache"><code>@betterdb/agent-cache</code></a></td>
+<td>TypeScript</td>
+<td><a href="https://www.npmjs.com/package/@betterdb/agent-cache">npm</a></td>
+</tr>
+<tr>
+<td><a href="packages/agent-cache-py"><code>betterdb-agent-cache</code></a></td>
+<td>Python</td>
+<td><a href="https://pypi.org/project/betterdb-agent-cache/">PyPI</a></td>
+</tr>
+<tr>
+<td><a href="packages/cache-benchmark"><code>cache-benchmark</code></a></td>
+<td>Python</td>
+<td>Replay harness for benchmarking semantic caches</td>
+</tr>
+</tbody></table>
+<h4>Tech Stack</h4>
+<ul>
+<li><strong>Backend</strong>: NestJS with Fastify adapter, <code>iovalkey</code> for Valkey/Redis connections, TypeScript strict mode. Port <strong>3001</strong>.</li>
+<li><strong>Frontend</strong>: React + TypeScript, Vite, TailwindCSS, Recharts. Dev server on port <strong>5173</strong>.</li>
+<li><strong>Monorepo</strong>: pnpm workspaces + Turborepo.</li>
+</ul>
+<h4>Local Setup</h4>
+<p>Prerequisites: Node.js &gt;= 20.0.0, pnpm &gt;= 9.0.0, Docker.</p>
+<pre><code class="language-bash">pnpm install
+cp .env.example .env
+pnpm docker:dev        # local Valkey (6380) and Redis (6382)
+pnpm dev               # web on :5173, api on :3001
+</code></pre>
+<p>To connect to Redis instead of Valkey, set <code>DB_PORT=6382</code> in <code>.env</code>.</p>
+<pre><code class="language-bash">pnpm dev:api           # API only
+pnpm dev:web           # frontend only
+pnpm docker:dev:down   # stop local databases
+pnpm build             # production build
+pnpm test              # API tests
+</code></pre>
+<p>Docker image builds:</p>
+<pre><code class="language-bash">pnpm docker:build      # local build
+pnpm docker:publish    # multi-arch build &amp; push (requires buildx)
+</code></pre>
+<h4>Adding New Features</h4>
+<ol>
+<li>Add new endpoints in <code>apps/api/src/</code></li>
+<li>Add corresponding API calls in <code>apps/web/src/api/</code></li>
+<li>Add shared types in <code>packages/shared/src/types/</code></li>
+</ol>
+<h4>Code Style</h4>
+<ul>
+<li>TypeScript strict mode, explicit return types, no <code>any</code></li>
+<li>ESLint + Prettier configured</li>
+</ul>
+<h3>License</h3>
+<ul>
+<li>Content under <code>docs/</code> is licensed under CC BY-SA 4.0.</li>
+<li>Content under <code>proprietary/</code> is covered by a commercial license (see <code>proprietary/LICENSE</code>). These features are free during early access.</li>
+<li>Everything else is <a href="LICENSE">MIT</a>.</li>
+</ul>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in memory &amp; context</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/mem0ai/mem0">
+        <div class="stars">★ 68.7K</div>
+        <div class="name"><span class="org">mem0ai /</span> mem0</div>
+      </a>
+      <a class="related-row" href="/projects/vectorize-io/hindsight">
+        <div class="stars">★ 60.0K</div>
+        <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
+      </a>
+      <a class="related-row" href="/projects/greyhaven-ai/autocontext">
+        <div class="stars">★ 1.3K</div>
+        <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
+      </a>
+      <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
+        <div class="stars">★ 385</div>
+        <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
+      </a>
+      <a class="related-row" href="/projects/yoloshii/ClawMem">
+        <div class="stars">★ 212</div>
+        <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
+      </a>
+      <a class="related-row" href="/projects/Signet-AI/signetai">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">Signet-AI /</span> signetai</div>
+      </a>
+      <a class="related-row" href="/projects/plur-ai/plur">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">plur-ai /</span> plur</div>
+      </a>
+      <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
+        <div class="stars">★ 52</div>
+        <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
+      </a>
+    </div>
+    <p class="list-link"><a href="/lists/best-memory-providers">see all memory &amp; context →</a></p>
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="/about">about</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues/new?template=suggest-repo.yml">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>roboticforce/sugar — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
+<meta name="description" content="Local-first Sugar memory provider for Hermes with project/global SQLite recall, checkpoints and memory mirroring.">
+<link rel="canonical" href="https://hermesatlas.com/projects/roboticforce/sugar">
+<meta property="og:title" content="roboticforce/sugar — Hermes Atlas">
+<meta property="og:description" content="Local-first Sugar memory provider for Hermes with project/global SQLite recall, checkpoints and memory mirroring.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/roboticforce/sugar">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=sugar&amp;subtitle=Persistent+memory+for+AI+coding+agents.+Local-first%2C+cross-session+context%2C+global+knowledge%2C+and+optional+autonomous+task+execution.&amp;kind=project+%C2%B7+memory">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="roboticforce/sugar — Hermes Atlas">
+<meta name="twitter:description" content="Local-first Sugar memory provider for Hermes with project/global SQLite recall, checkpoints and memory mirroring.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=sugar&amp;subtitle=Persistent+memory+for+AI+coding+agents.+Local-first%2C+cross-session+context%2C+global+knowledge%2C+and+optional+autonomous+task+execution.&amp;kind=project+%C2%B7+memory">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "memory &amp; context", "item": "https://hermesatlas.com/lists/best-memory-providers" },
+    { "@type": "ListItem", "position": 3, "name": "sugar" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/roboticforce/sugar#software",
+  "name": "sugar",
+  "description": "Local-first Sugar memory provider for Hermes with project/global SQLite recall, checkpoints and memory mirroring.",
+  "url": "https://hermesatlas.com/projects/roboticforce/sugar",
+  "codeRepository": "https://github.com/roboticforce/sugar",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "author": {
+    "@type": "Organization",
+    "name": "roboticforce",
+    "url": "https://github.com/roboticforce"
+  },
+  "dateModified": "2026-11-08T04:34:12.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 100
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">310·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/lists/best-memory-providers">memory &amp; context</a><span class="sep">/</span>sugar
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">roboticforce</span><span class="slash">/</span>sugar
+  </h1>
+  <p class="project-desc">Persistent memory for AI coding agents. Local-first, cross-session context, global knowledge, and optional autonomous task execution.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 100</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    
+    
+    <span><span class="meta-label">updated</span>2026-11-08</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/roboticforce/sugar" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    <a href="https://roboticforce.io/sugar" target="_blank" rel="noopener" class="btn-secondary">homepage</a>
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">Local-first Sugar memory provider for Hermes with project/global SQLite recall, checkpoints and memory mirroring.</p>
+    <ul class="summary-highlights">
+      <li>Project-first and global-guideline SQLite memory search</li>
+      <li>Hermes store/search/recent tools with automatic recall</li>
+      <li>Durable pre-compress checkpoints and built-in memory-write mirroring</li>
+    </ul>
+  </div>
+</section>
+
+<section class="project-summary" aria-label="Security note"><div class="section-label">security note</div><p class="summary-text">Basic static screen: 02b8add (November 9, 2026), not security certification. Global SQLite memory is shared across profiles unless separately isolated. Checkpoints and append-only mirrors can retain transcript evidence after native forgetting. AGPL/commercial dual licensing and additional terms apply; autonomous execution is a separate optional feature.</p></section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h2>Sugar</h2>
+<p>Persistent memory for AI coding agents.</p>
+
+
+<p>Your AI agent starts every session with amnesia. The architecture decisions, conventions,
+and gotchas you explained last week are gone. Sugar is the local-first memory layer that
+remembers them for you - per project, across projects, on your machine.</p>
+<p>Your memory. Your machine. Your data.</p>
+<h3>What Sugar Does</h3>
+<p>Sugar is a memory layer your AI coding agent can read and write directly:</p>
+<ul>
+<li><strong>Project memory</strong> - Decisions, preferences, error patterns, and research stored per-project</li>
+<li><strong>Global memory</strong> - Standards and guidelines shared across every project you work on</li>
+<li><strong>Semantic search</strong> - Retrieve relevant context by meaning, not just keywords</li>
+<li><strong>MCP integration</strong> - Your AI agent reads and writes memory directly during sessions</li>
+<li><strong>Local-first</strong> - SQLite on your disk, no API keys, fully offline-capable</li>
+<li><strong>Task queue</strong> - Optional autonomous execution, powered by the same memory layer</li>
+</ul>
+<h3>Quick Start</h3>
+<pre><code class="language-bash"># Install once, use in any project
+pipx install sugarai
+
+# Initialize in your project
+cd ~/dev/my-app
+sugar init
+
+# Store what you know
+sugar remember "We use async/await everywhere, never callbacks" --type preference
+sugar remember "JWT tokens use RS256, expire in 15 min - see auth/tokens.py" --type decision
+sugar remember "When tests fail with import errors, check __init__.py exports first" --type error_pattern
+
+# Retrieve it later
+sugar recall "authentication"
+sugar recall "how do we handle async"
+</code></pre>
+<p>Your AI agent can also read and write memory directly - no copy-pasting required.</p>
+<h3>MCP Integration</h3>
+<p>Connect Sugar's memory to your AI agent so it can access project context automatically.</p>
+<p><strong>Claude Code - Memory server (primary):</strong></p>
+<pre><code class="language-bash">claude mcp add sugar -- sugar mcp memory
+</code></pre>
+<p><strong>Claude Code - Task server (optional):</strong></p>
+<pre><code class="language-bash">claude mcp add sugar-tasks -- sugar mcp tasks
+</code></pre>
+<p>Once connected, Claude can call <code>store_learning</code> to save context mid-session and <code>search_memories</code> to pull relevant knowledge before starting work. The memory server works from any directory - global memory is always available even outside a Sugar project.</p>
+<p><strong>Other MCP clients (Goose, Claude Desktop):</strong></p>
+<pre><code class="language-bash"># Goose
+goose configure
+# Select "Add Extension" -&gt; "Command-line Extension"
+# Name: sugar
+# Command: sugar mcp memory
+
+# OpenCode - one command setup
+sugar opencode setup
+</code></pre>
+<h3>Skills</h3>
+<p>Sugar ships Agent Skills - folders of instructions that teach coding agents to apply Sugar's methodology. Skills live under <code>skills/</code> and follow the <a href="https://agentskills.io">Agent Skills</a> specification (a <code>SKILL.md</code> with name/description frontmatter plus instructions).</p>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>sugar-memory</code></td>
+<td>Store and surface project context via Sugar's memory MCP server: recall context at task start, search before deciding, store learnings after completing work</td>
+</tr>
+<tr>
+<td><code>sugar-task-planner</code></td>
+<td>Turn a high-level task into a detailed execution plan: subtasks, dependencies, time estimates, risks, and measurable success criteria</td>
+</tr>
+<tr>
+<td><code>sugar-quality-guardian</code></td>
+<td>Review code across quality, testing, security, and performance, ending with a structured verdict</td>
+</tr>
+<tr>
+<td><code>sugar-orchestrator</code></td>
+<td>Coordinate multi-step workflows: analyze complexity, decompose tasks, assign roles, monitor execution</td>
+</tr>
+</tbody></table>
+<p>Each skill includes an evaluation dataset (<code>evals/evals.json</code>) and is measured with <a href="https://github.com/NVIDIA/SkillEvaluator">NVIDIA SkillEvaluator</a> against the OpenCode harness. See <a href="https://github.com/roboticforce/sugar/blob/main/docs/dev/skill-benchmarks.md">Skill Benchmarks</a> for the Skill Lift results - sugar-memory and sugar-task-planner both show measured positive lift.</p>
+<h3>Global Memory</h3>
+<p>Some knowledge belongs to you, not just one project. Coding standards, preferred patterns, security practices - these should follow you everywhere.</p>
+<pre><code class="language-bash"># Store a guideline that applies to all your projects
+sugar remember "Always validate and sanitize user input before any DB query" \
+  --type guideline --global
+
+sugar remember "Use conventional commits: feat/fix/chore/docs/test" \
+  --type guideline --global
+
+# View your global guidelines
+sugar recall "security" --global
+sugar memories --global
+
+# Search works project-first, but guidelines always surface
+sugar recall "database queries"
+# Returns: project-specific memories + relevant global guidelines
+</code></pre>
+<p>Global memory lives at <code>~/.sugar/memory.db</code>. Project memory lives at <code>.sugar/memory.db</code>. When you search, project context wins - but <code>guideline</code> type memories from global always appear in results so your standards stay visible.</p>
+<p><strong>Via MCP</strong>, pass <code>scope: "global"</code> to <code>store_learning</code> to save cross-project knowledge directly from your AI session.</p>
+<p><strong>Memory types:</strong> <code>decision</code>, <code>preference</code>, <code>file_context</code>, <code>error_pattern</code>, <code>research</code>, <code>outcome</code>, <code>guideline</code></p>
+<p>Full docs: <a href="https://github.com/roboticforce/sugar/blob/main/docs/user/memory.md">Memory System Guide</a></p>
+<h3>How Memory Works</h3>
+<p>Sugar uses two SQLite databases and a tiered search strategy.</p>
+<p><strong>Two stores:</strong></p>
+<ul>
+<li><strong>Project store</strong> (<code>.sugar/memory.db</code>) - context specific to one project</li>
+<li><strong>Global store</strong> (<code>~/.sugar/memory.db</code>) - knowledge that applies everywhere</li>
+</ul>
+<p><strong>Seven memory types</strong>, each with different retrieval behavior:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+<th>TTL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>decision</code></td>
+<td>Architecture and implementation choices</td>
+<td>Never</td>
+</tr>
+<tr>
+<td><code>preference</code></td>
+<td>How you like things done</td>
+<td>Never</td>
+</tr>
+<tr>
+<td><code>file_context</code></td>
+<td>What files and modules do</td>
+<td>Never</td>
+</tr>
+<tr>
+<td><code>error_pattern</code></td>
+<td>Bugs and their fixes</td>
+<td>90 days</td>
+</tr>
+<tr>
+<td><code>research</code></td>
+<td>API docs, library findings</td>
+<td>60 days</td>
+</tr>
+<tr>
+<td><code>outcome</code></td>
+<td>What worked, what didn't</td>
+<td>30 days</td>
+</tr>
+<tr>
+<td><code>guideline</code></td>
+<td>Cross-project standards and best practices</td>
+<td>Never</td>
+</tr>
+</tbody></table>
+<p><strong>Search strategy - project-first with reserved guideline slots:</strong></p>
+<ol>
+<li>Search the project store first (local context always wins)</li>
+<li>Reserve slots for global guidelines (cross-project standards always surface)</li>
+<li>Fill remaining slots with other global results</li>
+<li>Deduplicate across both stores</li>
+</ol>
+<p>This means a mature project's local context dominates results. A new project with no local memory gets global knowledge automatically. And your guidelines are always visible regardless.</p>
+<p><strong>Search engine:</strong> Semantic search via sentence-transformers (all-MiniLM-L6-v2, 384-dim vectors) with sqlite-vec. Falls back to SQLite FTS5 keyword search, then LIKE queries. No external API calls - everything runs locally.</p>
+<pre><code class="language-bash"># Install with semantic search (recommended)
+pipx install 'sugarai[memory]'
+
+# Works without it too - just uses keyword matching
+pipx install sugarai
+</code></pre>
+<p><strong>MCP tools available to your AI agent:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>search_memory</code></td>
+<td>Search both stores, returns results with scope labels</td>
+</tr>
+<tr>
+<td><code>store_learning</code></td>
+<td>Save a memory (pass <code>scope: "global"</code> for cross-project)</td>
+</tr>
+<tr>
+<td><code>recall</code></td>
+<td>Get formatted markdown context for a topic</td>
+</tr>
+<tr>
+<td><code>get_project_context</code></td>
+<td>Full project summary including global guidelines</td>
+</tr>
+<tr>
+<td><code>list_recent_memories</code></td>
+<td>Browse recent memories by type</td>
+</tr>
+</tbody></table>
+<p><strong>MCP resources:</strong></p>
+<ul>
+<li><code>sugar://project/context</code> - project summary</li>
+<li><code>sugar://preferences</code> - coding preferences</li>
+<li><code>sugar://global/guidelines</code> - cross-project standards</li>
+</ul>
+<h3>Task Queue</h3>
+<p>The task queue lets you hand off work and let it run autonomously. It reads from the same memory store, so Sugar already knows your preferences and patterns before it starts.</p>
+<pre><code class="language-bash"># Add tasks
+sugar add "Fix authentication timeout" --type bug_fix --urgent
+sugar add "Add user profile settings" --type feature
+
+# Start the autonomous loop
+sugar run
+</code></pre>
+<p>Sugar picks up tasks, executes them with your configured AI agent, runs tests, commits working code, and moves to the next task. It runs until the queue is empty or you stop it.</p>
+<p><strong>Delegate from Claude Code mid-session:</strong></p>
+<pre><code>/sugar-task "Fix login timeout" --type bug_fix --urgent
+</code></pre>
+<p><strong>Advanced task options:</strong>
+New in 3.10: Task Orchestration decomposes large features into a 4-stage workflow (research, plan, implement, review) with specialist agent routing and dependency-ordered sub-tasks.</p>
+<pre><code class="language-bash"># Orchestrated execution - 4-stage workflow (New in 3.10)
+sugar add "Add OAuth authentication" --type feature --orchestrate
+
+# Iterative mode - loops until tests pass
+sugar add "Implement rate limiting" --ralph --max-iterations 10
+
+# Check queue status
+sugar list
+sugar status
+</code></pre>
+<p>Full docs: <a href="https://github.com/roboticforce/sugar/blob/main/docs/task_orchestration.md">Task Orchestration</a></p>
+<h3>Autonomous Issue Resolution (optional)</h3>
+<p>Because Sugar remembers your codebase and conventions, it can also resolve routine issues
+autonomously. Point it at a GitHub repo, configure which labels to act on
+(<code>security</code>, <code>bug</code>, <code>dependabot</code>), and Sugar will read each issue, implement the fix, run your
+tests, and open a PR.</p>
+<pre><code>Labeled issue appears on GitHub
+  -&gt; Sugar picks it up (label filter: "security", "dependabot", "bug")
+  -&gt; AI agent reads the issue, analyzes the affected code
+  -&gt; Fix implemented, tests run locally
+  -&gt; PR opened - you review and merge
+</code></pre>
+<p>This is one application of the memory layer, not the headline. Use Sugar purely as memory,
+or enable resolution - your choice. See <a href="docs/workflows/">workflow examples</a> for security
+auto-fix, bug triage, test coverage, and more.</p>
+<h3>Supported AI Tools</h3>
+<p>Works with any CLI-based AI coding agent:</p>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Memory MCP</th>
+<th>Task MCP</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a></td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Full support</td>
+</tr>
+<tr>
+<td><a href="https://github.com/opencode-ai/opencode">OpenCode</a></td>
+<td>Yes</td>
+<td>Yes</td>
+<td><code>sugar opencode setup</code></td>
+</tr>
+<tr>
+<td><a href="https://block.github.io/goose">Goose</a></td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Via MCP</td>
+</tr>
+<tr>
+<td><a href="https://aider.chat">Aider</a></td>
+<td>Via CLI</td>
+<td>Via CLI</td>
+<td>Manual recall</td>
+</tr>
+</tbody></table>
+<h3>Installation</h3>
+<p><strong>Recommended: pipx</strong> - installs once, available everywhere, no venv conflicts:</p>
+<pre><code class="language-bash">pipx install sugarai
+</code></pre>
+<p><strong>Upgrade / Uninstall:</strong></p>
+<pre><code class="language-bash">pipx upgrade sugarai
+pipx uninstall sugarai
+</code></pre>
+<details>
+<summary>Other installation methods</summary>
+
+<p><strong>pip</strong> (requires venv activation each session)</p>
+<pre><code class="language-bash">pip install sugarai
+</code></pre>
+<p><strong>uv</strong></p>
+<pre><code class="language-bash">uv pip install sugarai
+</code></pre>
+<p><strong>With semantic search (recommended for memory):</strong></p>
+<pre><code class="language-bash">pipx install 'sugarai[memory]'
+</code></pre>
+<p><strong>With GitHub integration:</strong></p>
+<pre><code class="language-bash">pipx install 'sugarai[github]'
+</code></pre>
+<p><strong>All features:</strong></p>
+<pre><code class="language-bash">pipx install 'sugarai[all]'
+</code></pre>
+</details>
+
+<p>Sugar is <strong>project-local</strong> by default. Each project gets its own <code>.sugar/</code> folder with its own database and config. Global memory lives at <code>~/.sugar/</code>. Like <code>git</code> - one installation, per-project state.</p>
+<h3>Project Structure</h3>
+<pre><code>~/.sugar/
+└── memory.db          # Global memory (guidelines, cross-project knowledge)
+
+~/dev/my-app/
+├── .sugar/
+│   ├── sugar.db       # Project memory + task queue
+│   ├── config.yaml    # Project settings
+│   └── prompts/       # Custom agent prompts
+└── src/
+</code></pre>
+<p><strong>Recommended .gitignore:</strong></p>
+<pre><code class="language-gitignore">.sugar/sugar.db
+.sugar/sugar.log
+.sugar/*.db-*
+</code></pre>
+<p>Commit <code>.sugar/config.yaml</code> and <code>.sugar/prompts/</code> to share settings with your team.</p>
+<h3>Configuration</h3>
+<p><code>.sugar/config.yaml</code> is created on <code>sugar init</code>:</p>
+<pre><code class="language-yaml">sugar:
+  dry_run: false
+  loop_interval: 300
+  max_concurrent_work: 3
+
+claude:
+  enable_agents: true
+
+discovery:
+  github:
+    enabled: true
+    repo: "user/repository"
+</code></pre>
+<h3>Documentation</h3>
+<ul>
+<li><a href="https://github.com/roboticforce/sugar/blob/main/docs/user/quick-start.md">Quick Start</a></li>
+<li><a href="https://github.com/roboticforce/sugar/blob/main/docs/user/memory.md">Memory System</a></li>
+<li><a href="https://github.com/roboticforce/sugar/blob/main/docs/dev/skill-benchmarks.md">Skill Benchmarks</a></li>
+<li><a href="https://github.com/roboticforce/sugar/blob/main/docs/user/cli-reference.md">CLI Reference</a></li>
+<li><a href="https://github.com/roboticforce/sugar/blob/main/docs/task_orchestration.md">Task Orchestration</a></li>
+<li><a href="https://github.com/roboticforce/sugar/blob/main/docs/user/goose.md">Goose Integration</a></li>
+<li><a href="https://github.com/roboticforce/sugar/blob/main/docs/user/opencode.md">OpenCode Integration</a></li>
+<li><a href="https://github.com/roboticforce/sugar/blob/main/docs/user/github-integration.md">GitHub Integration</a></li>
+<li><a href="https://github.com/roboticforce/sugar/blob/main/docs/user/configuration-best-practices.md">Configuration Guide</a></li>
+<li><a href="https://github.com/roboticforce/sugar/blob/main/docs/user/troubleshooting.md">Troubleshooting</a></li>
+</ul>
+<h3>Requirements</h3>
+<ul>
+<li>Python 3.11+</li>
+<li>A CLI-based AI agent: <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a>, <a href="https://github.com/opencode-ai/opencode">OpenCode</a>, <a href="https://aider.chat">Aider</a>, or similar</li>
+</ul>
+<h3>Contributing</h3>
+<p>Contributions welcome. See <a href="https://github.com/roboticforce/sugar/blob/main/docs/dev/contributing.md">CONTRIBUTING.md</a>.</p>
+<pre><code class="language-bash">git clone https://github.com/roboticforce/sugar.git
+cd sugar
+uv pip install -e ".[dev,test,github,mcp]"
+pytest tests/ -v
+</code></pre>
+<h3>License</h3>
+<p><strong>Dual License: AGPL-3.0 + Commercial</strong></p>
+<ul>
+<li><strong>Open Source (AGPL-3.0)</strong>: Free for open source and personal use</li>
+<li><strong>Commercial License</strong>: For proprietary use - <a href="https://sugar.roboticforce.io/licensing">sugar.roboticforce.io/licensing</a></li>
+</ul>
+<hr>
+<blockquote>
+<p>Sugar is provided "AS IS" without warranty. Review all AI-generated code before use.</p>
+</blockquote>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in memory &amp; context</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/mem0ai/mem0">
+        <div class="stars">★ 68.7K</div>
+        <div class="name"><span class="org">mem0ai /</span> mem0</div>
+      </a>
+      <a class="related-row" href="/projects/vectorize-io/hindsight">
+        <div class="stars">★ 60.0K</div>
+        <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
+      </a>
+      <a class="related-row" href="/projects/greyhaven-ai/autocontext">
+        <div class="stars">★ 1.3K</div>
+        <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
+      </a>
+      <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
+        <div class="stars">★ 385</div>
+        <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
+      </a>
+      <a class="related-row" href="/projects/yoloshii/ClawMem">
+        <div class="stars">★ 212</div>
+        <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
+      </a>
+      <a class="related-row" href="/projects/Signet-AI/signetai">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">Signet-AI /</span> signetai</div>
+      </a>
+      <a class="related-row" href="/projects/plur-ai/plur">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">plur-ai /</span> plur</div>
+      </a>
+      <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
+        <div class="stars">★ 52</div>
+        <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
+      </a>
+    </div>
+    <p class="list-link"><a href="/lists/best-memory-providers">see all memory &amp; context →</a></p>
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="/about">about</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues/new?template=suggest-repo.yml">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

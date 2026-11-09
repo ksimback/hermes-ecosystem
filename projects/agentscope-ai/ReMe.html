@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>agentscope-ai/ReMe — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
+<meta name="description" content="File-native agent memory that turns conversations into searchable Markdown and integrates with Hermes over HTTP or an embedded backend.">
+<link rel="canonical" href="https://hermesatlas.com/projects/agentscope-ai/ReMe">
+<meta property="og:title" content="agentscope-ai/ReMe — Hermes Atlas">
+<meta property="og:description" content="File-native agent memory that turns conversations into searchable Markdown and integrates with Hermes over HTTP or an embedded backend.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/agentscope-ai/ReMe">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=ReMe&amp;subtitle=ReMe%3A+Memory+Management+Kit+for+Agents+-+Remember+Me%2C+Refine+Me.&amp;kind=project+%C2%B7+memory">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="agentscope-ai/ReMe — Hermes Atlas">
+<meta name="twitter:description" content="File-native agent memory that turns conversations into searchable Markdown and integrates with Hermes over HTTP or an embedded backend.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=ReMe&amp;subtitle=ReMe%3A+Memory+Management+Kit+for+Agents+-+Remember+Me%2C+Refine+Me.&amp;kind=project+%C2%B7+memory">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "memory &amp; context", "item": "https://hermesatlas.com/lists/best-memory-providers" },
+    { "@type": "ListItem", "position": 3, "name": "reme" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/agentscope-ai/ReMe#software",
+  "name": "ReMe",
+  "description": "File-native agent memory that turns conversations into searchable Markdown and integrates with Hermes over HTTP or an embedded backend.",
+  "url": "https://hermesatlas.com/projects/agentscope-ai/ReMe",
+  "codeRepository": "https://github.com/agentscope-ai/ReMe",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/Apache-2.0.html",
+  "author": {
+    "@type": "Organization",
+    "name": "agentscope-ai",
+    "url": "https://github.com/agentscope-ai"
+  },
+  "dateModified": "2026-11-09T03:56:07.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 3773
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">310·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/lists/best-memory-providers">memory &amp; context</a><span class="sep">/</span>reme
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">agentscope-ai</span><span class="slash">/</span>ReMe
+  </h1>
+  <p class="project-desc">ReMe: Memory Management Kit for Agents - Remember Me, Refine Me.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 3.8K</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>Apache-2.0</span>
+    
+    <span><span class="meta-label">updated</span>2026-11-09</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/agentscope-ai/ReMe" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    <a href="https://reme.agentscope.io/" target="_blank" rel="noopener" class="btn-secondary">homepage</a>
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">File-native agent memory that turns conversations into searchable Markdown and integrates with Hermes over HTTP or an embedded backend.</p>
+    <ul class="summary-highlights">
+      <li>Editable Markdown memory with links and provenance</li>
+      <li>BM25 retrieval with optional vector search</li>
+      <li>Hermes automatic recall and queued turn recording</li>
+    </ul>
+  </div>
+</section>
+
+<section class="project-summary" aria-label="Security note"><div class="section-label">security note</div><p class="summary-text">Basic static screen: 887a406 (November 9, 2026), not security certification. Extraction can send conversation content to the configured model. The HTTP adapter has no integration-specific authentication: keep it on loopback or behind authenticated access.</p></section>
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <p align="center">
+ <img src="https://raw.githubusercontent.com/agentscope-ai/ReMe/main/docs/figure/reme_logo.png" alt="ReMe Logo" width="50%">
+</p>
+
+<p align="center">
+  <a href="https://pypi.org/project/reme-ai/"><img src="https://img.shields.io/badge/python-3.11+-blue" alt="Python Version"></a>
+  <a href="https://pypi.org/project/reme-ai/"><img src="https://img.shields.io/pypi/v/reme-ai.svg?logo=pypi" alt="PyPI Version"></a>
+  <a href="https://pepy.tech/project/reme-ai/"><img src="https://img.shields.io/pypi/dm/reme-ai" alt="PyPI Downloads"></a>
+  <a href="https://github.com/agentscope-ai/ReMe"><img src="https://img.shields.io/github/commit-activity/m/agentscope-ai/ReMe?style=flat-square" alt="GitHub commit activity"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-black" alt="License"></a>
+  <a href="https://reme.agentscope.io"><img src="https://img.shields.io/badge/docs-ReMe-blue" alt="Documentation"></a>
+  <a href="./README.md"><img src="https://img.shields.io/badge/English-Click-yellow" alt="English"></a>
+  <a href="./README_ZH.md"><img src="https://img.shields.io/badge/简体中文-点击查看-orange" alt="简体中文"></a>
+  <a href="https://github.com/agentscope-ai/ReMe"><img src="https://img.shields.io/github/stars/agentscope-ai/ReMe?style=social" alt="GitHub Stars"></a>
+  <a href="https://deepwiki.com/agentscope-ai/ReMe"><img src="https://img.shields.io/badge/DeepWiki-Ask_Devin-navy.svg" alt="DeepWiki"></a>
+</p>
+
+<p align="center">
+<a href="https://trendshift.io/repositories/20528"><img src="https://trendshift.io/api/badge/repositories/20528" alt="agentscope-ai%2FReMe | Trendshift" width="250" height="55"></a>
+</p>
+
+<p align="center">
+  <strong>A local-first, self-evolving personal knowledge base for AI agents.</strong><br>
+</p>
+
+<blockquote>
+<p>Previous versions: <a href="https://github.com/agentscope-ai/ReMe/tree/reme_v3">0.3.x</a> ·
+<a href="https://github.com/agentscope-ai/ReMe/tree/v0.2.0.6">0.2.x</a> ·
+<a href="https://github.com/agentscope-ai/ReMe/tree/memoryscope_branch">MemoryScope</a></p>
+</blockquote>
+<h3>✨ Why ReMe?</h3>
+<p>🧠 ReMe turns conversations and resources into readable, editable, searchable, and interconnected Markdown memory. Agents
+such as QwenPaw and DeepSeek Harness can share the same workspace to retrieve, maintain, and evolve knowledge, while
+users retain control of the durable files.</p>
+<ul>
+<li><strong>Memory as File, File as Memory</strong>: ReMe stores durable memory as ordinary Markdown with frontmatter and wikilinks.
+Users and agents can inspect, edit, move, sync, and back it up with familiar tools, while indexes and generated
+metadata remain rebuildable.</li>
+<li><strong>Self-evolving knowledge base</strong>: ReMe progressively turns conversations and resources into daily notes and long-term
+knowledge, preserving sources while refining facts, preferences, procedures, and relationships over time.</li>
+<li><strong>Recall is precise and context-aware.</strong> BM25, optional embeddings, and wikilink expansion retrieve relevant
+line-level passages and their relationships without loading the entire knowledge base into the agent context.</li>
+<li><strong>One memory workspace works across agents.</strong> Personal assistants, coding agents, and other agent runtimes can share
+the same local workspace through native integrations, SKILL.md, CLI, HTTP, MCP, or Python APIs.</li>
+</ul>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/agentscope-ai/ReMe/main/docs/figure/design-philosophy.svg" alt="ReMe Design Philosophy" width="92%">
+</p>
+
+<h3>📰 Latest Updates</h3>
+
+
+<ul>
+<li><p>[2026.10] - <strong><a href="https://github.com/agentscope-ai/ReMe/blob/main/docs/en/context_compaction.md">Decision-model context compaction</a></strong>: score old tool calls and results
+against the next action, preserve protected history, and return a recoverable compaction proposal. Includes an SVG
+walkthrough, two live-model integration scenarios, and a 14-query fixed-summary Top-N benchmark with a forced Hermes summary baseline.</p>
+</li>
+<li><p>[2026.10] - <strong><a href="https://reme.agentscope.io/en/blog_20261009">ReMe Multimodal Memory</a> update</strong>: Auto Memory reads images
+with their conversation context and preserves image sources; Auto Resource turns image files into searchable daily
+cards linked to the originals.</p>
+</li>
+<li><p>[2026.10] - <strong><a href="https://reme.agentscope.io/studio/?lang=en">ReMe Studio Playground</a> is live</strong>: explore example memory
+files, edit Markdown, and browse linked memory graphs right in your browser—no installation or backend required.
+Everyone is welcome to <a href="https://reme.agentscope.io/studio/?lang=en">try it out</a>!</p>
+<p align="center">
+  <a href="https://reme.agentscope.io/studio/?lang=en">
+    <img src="https://raw.githubusercontent.com/agentscope-ai/ReMe/main/reme_studio/figures/studio-overview.png" alt="ReMe Studio workspace preview — click to try the Playground" width="480">
+  </a>
+</p>
+</li>
+<li><p>[2026.09] - <strong><a href="https://reme.agentscope.io/en/blog_20260920">ReMe Memory Tags</a> published</strong>: an introduction
+to file-native entity tags, rebuildable tag indexes, and tag-filtered memory search.</p>
+</li>
+<li><p>[2026.09] - <strong><a href="https://reme.agentscope.io/en/integrations/hermes">Hermes Agent memory provider</a> available</strong>: choose HTTP or embedded
+mode for automatic recall before model calls and asynchronous <code>auto_memory</code> after completed turns. The integration
+supports Hermes Agent 0.21+ and includes profile-aware background work.</p>
+</li>
+</ul>
+<details>
+<summary>More updates</summary>
+
+<ul>
+<li><p>[2026.09] - <strong><a href="https://reme.agentscope.io/en/integrations/openclaw">OpenClaw plugin</a> released</strong>: install it from
+<a href="https://clawhub.ai/agentscope-ai/plugins/reme-openclaw-plugin">ClawHub</a> or
+<a href="https://www.npmjs.com/package/@agentscope-ai/reme-openclaw-plugin">npm</a> to add native memory recall, automatic
+conversation capture, and scheduled consolidation to OpenClaw.</p>
+</li>
+<li><p>[2026.09] - <strong><a href="https://reme.agentscope.io/en/integrations/dsh">DeepSeek Harness plugin</a> released</strong>: install it from
+<a href="https://awesome-dsh-plugin.com/p/agentscope-ai/ReMe--integrations-dsh/">Awesome DSH Plugin</a> or
+<a href="https://www.npmjs.com/package/@agentscope-ai/reme-dsh-plugin">npm</a> for long-term-memory guidance, <code>reme_search</code>,
+automatic memory, Auto Dream, and ReMe Status.</p>
+</li>
+<li><p>[2026.08] - <strong>ReMe blog published</strong>: the <a href="https://reme.agentscope.io/en/reme-blog">ReMe blog</a> introduces the
+local-first memory architecture, self-evolving workflows, hybrid search, proactive discovery, and benchmark results.</p>
+</li>
+<li><p>[2026.08] - <strong>New ReMe ecosystem plugins</strong>: <a href="https://reme.agentscope.io/en/plugins/daily-paper">Daily Paper</a>
+discovers and analyzes papers and generates file-native briefs, while
+<a href="https://reme.agentscope.io/en/plugins/auto-fin">Auto Fin</a> researches the latest 24 hours of topic-related CLS news
+and builds traceable reports with local memory. Try them out.</p>
+</li>
+<li><p>[2026.08] - <strong>Plugin development support released</strong>: use <a href="https://reme.agentscope.io/en/plugin_development">Plugin Development</a> and
+<a href="https://reme.agentscope.io/en/plugin_management">Plugin Management</a> to extend ReMe with Components, Steps, and Jobs. Contributions and
+new community plugins are welcome.</p>
+</li>
+<li><p>[2026.08] - ReMe's <a href="https://reme.agentscope.io/en/benchmarks/toolmemory">experience-driven enhancement method</a> for
+agent tool use is available on <a href="https://arxiv.org/abs/2608.03403">arXiv:2608.03403</a>.</p>
+</li>
+<li><p>[2026.07] - Our
+paper <a href="https://aclanthology.org/2026.findings-acl.829/">Remember Me, Refine Me: A Dynamic Procedural Memory Framework for Experience-Driven Agent Evolution</a>
+has been accepted to Findings of ACL 2026.</p>
+</li>
+</ul>
+</details>
+
+<h3>🚀 Quick Start</h3>
+<h4>Installation</h4>
+<p>ReMe requires Python 3.11+.</p>
+<p>Install from pip:</p>
+<pre><code class="language-bash">pip install "reme-ai[core]"
+</code></pre>
+<p>Install from source:</p>
+<pre><code class="language-bash">git clone https://github.com/agentscope-ai/ReMe.git
+cd ReMe
+pip install -e reme_studio -e ".[core]"
+cd reme_studio
+npm ci
+npm run build:static
+cd ..
+</code></pre>
+<p>The static build requires Node.js 22.13 or newer and makes Studio available from the source tree.</p>
+<p>Optional decision models use <code>pip install "reme-ai[core,decision]"</code>. Configure a TypeSafe API key and run the
+service demo as described in <a href="https://reme.agentscope.io/en/configuration#decision-model-configuration">Decision model configuration</a>.</p>
+<h4>Docker</h4>
+<p>With Docker and Compose 2.24.0+, build and start ReMe with the bundled Studio:</p>
+<pre><code class="language-bash">mkdir -p .reme
+docker compose up --build -d
+</code></pre>
+<p>Open <a href="http://127.0.0.1:2333">http://127.0.0.1:2333</a>. The complete workspace persists in <code>./.reme</code>. On Linux, set <code>REME_UID</code> and <code>REME_GID</code> to your
+user's IDs when they differ from 1000. See <a href="https://reme.agentscope.io/en/docker">Docker deployment</a> for model credentials,
+custom paths, published images, and upgrades.</p>
+<h4>Environment Variables</h4>
+<p>Configure environment variables when you want LLM-powered memory evolution or embedding retrieval. Embeddings are
+disabled by default, so the default setup does not start an embedding model or require an embedding API key.</p>
+<pre><code class="language-bash">cat &gt; .env &lt;&lt;'EOF'
+# Optional: used only after embedding components are explicitly enabled in the config.
+# EMBEDDING_API_KEY=sk-xxx
+# EMBEDDING_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+
+# Required for auto_memory, auto_resource, auto_dream, and proactive refresh.
+LLM_API_KEY=sk-xxx
+LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+EOF
+</code></pre>
+<p>Basic file operations, BM25 search, wikilink traversal, and reading proactive topics can run without LLM credentials.</p>
+<blockquote>
+<p>[!NOTE]
+To enable embedding-based semantic retrieval, uncomment <code>components.as_embedding</code> and
+<code>components.embedding_store</code> in <a href="https://github.com/agentscope-ai/ReMe/blob/main/reme/config/default.yaml"><code>reme/config/default.yaml</code></a>, then change
+<code>components.file_store.default.embedding_store</code> from <code>""</code> to <code>default</code>. See the
+<a href="https://reme.agentscope.io/en/memory_search">memory search guide</a> for details.</p>
+</blockquote>
+<h4>Start the Service</h4>
+<p>Start ReMe in one terminal and leave it running:</p>
+<pre><code class="language-bash">reme start
+</code></pre>
+<p>The default service address is <code>127.0.0.1:2333</code>. If the port is occupied, specify another port:</p>
+<pre><code class="language-bash">reme start service.port=8181
+# reme start workspace_dir=/tmp/reme-demo service.port=8181
+</code></pre>
+<p>From another terminal, call the running service. The CLI discovers its configuration; the <code>curl</code> example uses the
+default port <code>2333</code>:</p>
+<pre><code class="language-bash">reme version
+reme health_check
+reme help
+curl -s http://127.0.0.1:2333/version -H 'Content-Type: application/json' -d '{}'
+</code></pre>
+<h4>5-Minute Memory Demo</h4>
+<p>With the service running, write a memory node, let ReMe index it, then retrieve it:</p>
+<pre><code class="language-bash">reme write \
+  path=digest/wiki/quick-start-demo \
+  name="Quick Start Demo" \
+  description="A first ReMe memory node" \
+  content="# Quick Start Demo
+
+ReMe stores agent memory as readable Markdown.
+
+Related: [[digest/wiki/memory-as-file.md]]"
+
+reme search query="agent memory markdown" limit=5
+reme read path=digest/wiki/quick-start-demo start_line=1 end_line=20
+</code></pre>
+<p>The generated file is ordinary Markdown with frontmatter:</p>
+<pre><code class="language-markdown">---
+name: Quick Start Demo
+description: A first ReMe memory node
+---
+
+# Quick Start Demo
+
+ReMe stores agent memory as readable Markdown.
+
+Related: [[digest/wiki/memory-as-file.md]]
+</code></pre>
+<h4>ReMe Studio (Optional)</h4>
+<p>The <code>core</code> installation includes Studio. After starting ReMe, open <a href="http://127.0.0.1:2333/">http://127.0.0.1:2333/</a> to browse, edit, and search
+the workspace. To add Studio to a base installation, use <code>pip install "reme-ai[web]"</code>. See the
+<a href="https://reme.agentscope.io/en/workspace/studio">ReMe Studio guide</a> for source builds, configuration, and development.</p>
+<h3>🤝 Use ReMe with Your Agent</h3>
+<p>ReMe can run as a local memory service accessed through the CLI, HTTP API, or MCP server, or it can be embedded in the
+host process through its Python API. Host integrations can add memory guidance, recall, and capture to the agent
+lifecycle according to the capabilities of each runtime.</p>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Recommended path</th>
+<th>Available after integration</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>DeepSeek Harness</strong></td>
+<td>Install <a href="https://reme.agentscope.io/en/integrations/dsh"><code>@agentscope-ai/reme-dsh-plugin</code></a> with <code>dsh plugin --profile web add @agentscope-ai/reme-dsh-plugin</code>.</td>
+<td>Configurable memory guidance, <code>reme_search</code>, automatic turn capture, scheduled Auto Dream, and ReMe Status.</td>
+</tr>
+<tr>
+<td><strong>OpenClaw</strong></td>
+<td>Install <a href="https://reme.agentscope.io/en/integrations/openclaw"><code>@agentscope-ai/reme-openclaw-plugin</code></a> with <code>openclaw plugins install clawhub:@agentscope-ai/reme-openclaw-plugin</code>.</td>
+<td>Native memory tools, recall before user-triggered runs, and automatic turn capture.</td>
+</tr>
+<tr>
+<td><strong>QwenPaw</strong></td>
+<td>Embed ReMe in-process through its Python API.</td>
+<td>Reuse the host lifecycle and model config while keeping memory local and file-based.</td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td>Start ReMe, then install the <a href="https://github.com/agentscope-ai/ReMe/blob/main/integrations/claude_code/README.md">Claude Code plugin</a>.</td>
+<td>Automatic recall, batched completed-turn recording, and MCP tools.</td>
+</tr>
+<tr>
+<td><strong>Qoder</strong></td>
+<td>Start ReMe, then install the <a href="https://github.com/agentscope-ai/ReMe/blob/main/integrations/qoder/README.md">Qoder plugin</a>.</td>
+<td>Automatic recall, retryable completed-turn recording, MCP tools, and the bundled skill.</td>
+</tr>
+<tr>
+<td><strong>Hermes</strong></td>
+<td>Install <a href="https://reme.agentscope.io/en/integrations/hermes">the ReMe provider</a> and choose HTTP or embedded mode.</td>
+<td>Recall before model calls and asynchronous <code>auto_memory</code> after each completed turn.</td>
+</tr>
+<tr>
+<td><strong>Codex</strong></td>
+<td>Start ReMe, then install the <a href="https://github.com/agentscope-ai/ReMe/blob/main/integrations/codex/README.md">Codex plugin</a>.</td>
+<td>Native hooks for automatic recall and batched recording, plus MCP tools.</td>
+</tr>
+<tr>
+<td><strong>Other CLI agents</strong></td>
+<td>Install or copy the <a href="https://github.com/agentscope-ai/ReMe/blob/main/skills/reme_memory/SKILL.md">ReMe Memory skill</a>.</td>
+<td>Search, read, and write memory through the CLI.</td>
+</tr>
+</tbody></table>
+<p align="center"><b>Integration demos</b></p>
+
+<table>
+  <tbody><tr>
+    <td align="center"></td>
+    <td width="45%" align="center"><b>Auto Memory</b></td>
+    <td width="45%" align="center"><b>Auto Dream</b></td>
+  </tr>
+  <tr>
+    <td align="center"><b>QwenPaw</b></td>
+    <td width="45%">
+      <img src="https://raw.githubusercontent.com/agentscope-ai/ReMe/main/docs/figure/qwenpaw-auto-memory.gif" alt="QwenPaw Auto Memory demo" width="100%">
+    </td>
+    <td width="45%">
+      <img src="https://raw.githubusercontent.com/agentscope-ai/ReMe/main/docs/figure/qwenpaw-auto-dream.gif" alt="QwenPaw Auto Dream demo" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><b>Claude Code</b></td>
+    <td width="45%">
+      <img src="https://raw.githubusercontent.com/agentscope-ai/ReMe/main/docs/figure/cc-auto-memory.gif" alt="Claude Code Auto Memory demo" width="100%">
+    </td>
+    <td width="45%">
+      <img src="https://raw.githubusercontent.com/agentscope-ai/ReMe/main/docs/figure/cc-auto-dream.gif" alt="Claude Code Auto Dream demo" width="100%">
+    </td>
+  </tr>
+</tbody></table>
+
+<h3>🧠 How ReMe Works</h3>
+<blockquote>
+<p>Memory as File, File as Memory.</p>
+</blockquote>
+<p>ReMe treats <strong>memory as files</strong>, progressively processing filtered conversation source records and external resources
+from <code>session/</code> and <code>resource/</code> into <code>daily/</code>, then <code>digest/</code>. The default workspace is <code>.reme/</code> under the current
+directory; <code>workspace_dir=...</code> selects a different user-owned location.</p>
+<h4>Workspace Layout</h4>
+<pre><code class="language-text">&lt;workspace_dir&gt;/
+├── metadata/       # Rebuildable indexes, graphs, catalogs, and caches
+├── session/        # Conversation source records and agent sessions
+│   ├── dialog/
+│   │   └── &lt;session_id&gt;.jsonl  # Source messages saved by auto_memory
+│   └── claude_code/
+│       └── &lt;session_id&gt;.jsonl  # ReMe copy used by auto_memory_cc
+├── mem_session/    # Generated agent-wrapper sessions/config, not user memory
+│   ├── agentscope/
+│   ├── claude_config/
+│   └── codex/
+├── resource/            # External raw materials
+│   ├── &lt;resource&gt;.&lt;ext&gt;  # Root-level files enter today's daily layer
+│   └── YYYY-MM-DD/
+│       └── &lt;resource&gt;.&lt;ext&gt;
+├── daily/               # Lightly processed memory: daily facts, conversation summaries, resource readings
+│   ├── YYYY-MM-DD.md
+│   └── YYYY-MM-DD/
+│       ├── &lt;generated_name&gt;.md  # Topic-named conversation or resource card
+│       └── interests.yaml
+└── digest/              # Long-term memory: personal facts, procedural experience, knowledge nodes
+    ├── personal/
+    │   └── {topic/event}.md
+    ├── procedure/
+    │   └── {topic/event}.md
+    └── wiki/
+        └── {topic/event}.md
+</code></pre>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/agentscope-ai/ReMe/main/docs/figure/reme-overview.svg" alt="ReMe file-based memory system overview" width="92%">
+</p>
+
+<h4>Memory Lifecycle</h4>
+<p>ReMe follows a capture → index → consolidate → recall loop. Workspace files remain the durable source of truth;
+everything under <code>metadata/</code> is rebuildable.</p>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Entry point</th>
+<th>What it does</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://reme.agentscope.io/en/auto_memory"><code>auto_memory</code></a></td>
+<td>Agent hook or <code>reme auto_memory</code></td>
+<td>Distills useful conversation facts while preserving a filtered conversation source record.</td>
+<td><code>session/dialog/*.jsonl</code>, <code>daily/&lt;date&gt;/&lt;generated-name&gt;.md</code></td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/auto_resource"><code>auto_resource</code></a></td>
+<td>Resource watcher or <code>reme auto_resource</code></td>
+<td>Turns files under <code>resource/</code> into source-linked, content-named daily cards.</td>
+<td><code>daily/&lt;date&gt;/&lt;resource-card&gt;.md</code></td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/memory_search"><code>auto_index</code></a></td>
+<td>Background watcher or <code>reme reindex</code></td>
+<td>The watcher ingests Markdown from <code>daily/</code> and <code>digest/</code>; <code>reindex</code> only rebuilds BM25 and embeddings from already-ingested chunks.</td>
+<td>Searchable chunks, BM25, wikilink graph, and optional vectors</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/auto_dream"><code>auto_dream</code></a></td>
+<td><code>dream_cron</code> or <code>reme auto_dream</code></td>
+<td>By default, extracts up to five reusable units from changed files in the latest two-day window, then creates, corroborates, refines, or corrects digest nodes.</td>
+<td><code>digest/**</code></td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/proactive"><code>proactive_read</code></a></td>
+<td><code>reme proactive_read</code> before an agent decides to act</td>
+<td>Reads topics generated by the independent proactive refresh flow; the host agent decides whether and how to mention them.</td>
+<td>Structured topics from <code>daily/&lt;date&gt;/interests.yaml</code></td>
+</tr>
+</tbody></table>
+<table>
+  <tbody><tr>
+    <td align="center" width="50%">
+      <img src="https://raw.githubusercontent.com/agentscope-ai/ReMe/main/docs/figure/memory-as-file.svg" alt="Memory as File" width="92%">
+    </td>
+    <td align="center" width="50%">
+      <img src="https://raw.githubusercontent.com/agentscope-ai/ReMe/main/docs/figure/auto-memory-resource.svg" alt="Auto Memory and Resource" width="92%">
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="https://raw.githubusercontent.com/agentscope-ai/ReMe/main/docs/figure/auto-dream-and-proactive.svg" alt="Auto Dream and Proactive" width="92%">
+    </td>
+    <td align="center" width="50%">
+      <img src="https://raw.githubusercontent.com/agentscope-ai/ReMe/main/docs/figure/auto-index-and-memory-search.svg" alt="Auto Index and Memory Search" width="92%">
+    </td>
+  </tr>
+</tbody></table>
+
+<p>Search returns matching chunks with line ranges and bounded wikilink neighbors. Optional vector results are fused with
+BM25 through reciprocal rank fusion (RRF).</p>
+<blockquote>
+<p>[!IMPORTANT]</p>
+<p><code>proactive_read</code> only reads and exposes interest topics produced by proactive refresh. It does not independently browse the web,
+send notifications, or rewrite the knowledge base; the host agent decides whether and how to act on a topic.</p>
+</blockquote>
+<h3>📊 Benchmarks</h3>
+<p>ReMe evaluates multi-session and long-context memory with agentic search-and-read workflows. The figures below are the
+published reference runs in this repository; model, prompt, dataset, and judging details are documented with each
+benchmark.</p>
+<table>
+<thead>
+<tr>
+<th>Benchmark</th>
+<th>Setting</th>
+<th align="right">Sample size</th>
+<th align="right">Agentic score</th>
+<th>Focus</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><a href="https://reme.agentscope.io/en/benchmarks/longmemeval">LongMemEval cleaned-s</a></strong></td>
+<td><strong>Overall</strong></td>
+<td align="right"><strong>500 questions</strong></td>
+<td align="right"><strong>89.4%</strong></td>
+<td>Cross-session retrieval, knowledge updates, and temporal reasoning</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/benchmarks/beam">BEAM</a></td>
+<td>100K context</td>
+<td align="right">20 cases / 400 questions</td>
+<td align="right">66.1%</td>
+<td>Ten types of long-context memory tasks</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/benchmarks/beam">BEAM</a></td>
+<td>1M context</td>
+<td align="right">35 cases / 700 questions</td>
+<td align="right">65.0%</td>
+<td>Ultra-long conversation settings</td>
+</tr>
+</tbody></table>
+<p>ReMe also achieved a <strong>0.580 PROC score across five user personas</strong> in the repository's
+<a href="https://reme.agentscope.io/en/benchmarks/pibench">π-Bench evaluation</a>, 2.4% above NanoBot under the same test-model configuration. PROC
+measures proactive handling of hidden intent, clarification, cross-session preferences and conventions, task
+dependencies, and underspecified requests.</p>
+<h3>🧩 Extensions and Plugins</h3>
+<p>Plugins are optional Python distributions that contribute Component, Step, or Job backends and configuration. They are
+installed separately and enabled explicitly by configuration. Daily Paper and Auto Fin are independently packaged
+plugins; see their documentation for <a href="https://reme.agentscope.io/en/plugins/daily-paper">Daily Paper</a> and
+<a href="https://reme.agentscope.io/en/plugins/auto-fin">Auto Fin</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Plugin</th>
+<th>Capability</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://reme.agentscope.io/en/plugins/daily-paper">Daily Paper</a></td>
+<td>Discover and rank papers, analyze PDFs with an agent, and generate file-native notes and a five-minute brief.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/plugins/auto-fin">Auto Fin</a></td>
+<td>Fetch topic-related CLS news, search ReMe history, and generate wikilink-backed Markdown reports.</td>
+</tr>
+</tbody></table>
+<p>See <a href="https://reme.agentscope.io/en/plugin_management">Plugin Management</a> to install, inspect, validate, enable, and uninstall ReMe plugins.</p>
+<h3>📚 Documentation</h3>
+<p>These guides cover the main user workflows and the runtime contracts implemented by the current code.</p>
+<table>
+<thead>
+<tr>
+<th>Guide</th>
+<th>What you will learn</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://reme.agentscope.io/en/quick_start">Quick Start</a></td>
+<td>Install ReMe, start the service, and run the first file and memory operations.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/configuration">Configuration</a></td>
+<td>Configure the workspace, models, Service, Jobs, Components, plugins, and CLI overrides.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/services">Services and Deployment</a></td>
+<td>Use HTTP, SSE, MCP, and Studio while respecting the default security boundary.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/memory_as_file">Memory as File</a></td>
+<td>Understand workspace layers, frontmatter, wikilinks, chunks, and the file-as-source-of-truth model.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/auto_memory">Auto Memory</a></td>
+<td>Preserve source conversations and distill reusable daily memory cards.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/auto_resource">Auto Resource</a></td>
+<td>Import supported text and image resources as source-linked daily cards.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/auto_dream">Auto Dream</a> and <a href="https://reme.agentscope.io/en/auto_link">Auto Link</a></td>
+<td>Consolidate daily notes into evolving digest nodes and readable wikilink relationships.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/memory_search">Memory Search</a></td>
+<td>Use BM25, optional vectors, RRF fusion, line-range recall, and progressive link expansion.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/proactive">Proactive</a></td>
+<td>Read interest topics safely and integrate them into a host agent's decision flow.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/reme_scene">Application Scenarios</a></td>
+<td>Follow concrete financial research, coding-memory, and personal knowledge-base examples.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/framework">Framework</a></td>
+<td>Understand Application, Job, Step, Component, service, configuration, and lifecycle boundaries.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/integrations">Agent Integrations</a></td>
+<td>Choose an interface and connect DSH, Claude Code, Codex, Qoder, OpenClaw, Hermes, or another agent.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/integrations/dsh">DSH plugin</a>, <a href="https://reme.agentscope.io/en/integrations/claude-code">Claude Code plugin</a>, and <a href="https://reme.agentscope.io/en/integrations/qoder">Qoder plugin</a></td>
+<td>Configure host-native recall, automatic capture, consolidation, and diagnostics.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/reference/cli">CLI and Job API</a></td>
+<td>Learn command syntax and use the generated default Job parameter reference.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/operations">Operations and Recovery</a></td>
+<td>Diagnose services, maintain indexes, and back up, migrate, or recover a workspace.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/reme-blog">ReMe Blog</a></td>
+<td>Read the product story, design rationale, examples, and benchmark summary.</td>
+</tr>
+</tbody></table>
+<h3>🛠️ Common Commands</h3>
+<p>Run <code>reme help</code> for the full job list. Common workspace and maintenance commands are:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>reme status</code></td>
+<td>Show stateful data-component memory estimates and process RSS.</td>
+</tr>
+<tr>
+<td><a href="https://reme.agentscope.io/en/memory_search"><code>reme search</code></a></td>
+<td>Retrieve memory with BM25 and wikilinks by default, plus vectors when enabled.</td>
+</tr>
+<tr>
+<td><code>reme read</code> / <code>reme write</code> / <code>reme edit</code></td>
+<td>Inspect and maintain Markdown memory files.</td>
+</tr>
+<tr>
+<td><code>reme traverse</code> / <code>reme graph_snapshot</code></td>
+<td>Explore wikilink neighborhoods or the category-rooted digest graph.</td>
+</tr>
+<tr>
+<td><code>reme chat</code></td>
+<td>Stream a read-only, workspace-aware agent conversation. Requires LLM credentials.</td>
+</tr>
+<tr>
+<td><code>reme reindex</code></td>
+<td>Rebuild BM25 and embedding indexes from already-ingested chunks.</td>
+</tr>
+</tbody></table>
+<h3>🤝 Community and Contributing</h3>
+<ul>
+<li><strong>Issues, requests, and help</strong>: Check <a href="https://github.com/agentscope-ai/ReMe/issues">Open Issues</a> first. If there is no
+related discussion, open one with the background, expected behavior, and impact scope.</li>
+<li><strong>Code contributions</strong>: Before making changes, read the repository's
+<a href="https://reme.agentscope.io/en/contributing">contribution guide</a>. Source, schemas, and tests are the authoritative architecture and
+extension guide.</li>
+<li><strong>Documentation contributions</strong>: Update the canonical files under <code>docs/en/</code>, <code>docs/zh/</code>, or the relevant package
+directory in this repository. The documentation site is generated from these files.</li>
+<li><strong>Commit convention</strong>: Conventional Commits are recommended, for example <code>feat(search): add link expansion option</code> or
+<code>docs(zh): update quick start</code>.</li>
+<li><strong>Pre-submit checks</strong>: Before submitting a PR, try to run <code>pre-commit run --all-files</code> and <code>pytest</code>. If tests that
+depend on LLMs, embeddings, or external services cannot run, explain that in the PR.</li>
+<li><strong>Documentation</strong>: Visit <a href="https://reme.agentscope.io">reme.agentscope.io</a>.</li>
+</ul>
+<h4>Contributors</h4>
+<p>Thanks to everyone who has contributed to ReMe:</p>
+<a href="https://github.com/agentscope-ai/ReMe/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=agentscope-ai/ReMe" alt="Contributors">
+</a>
+
+<h3>📄 Citation</h3>
+<pre><code class="language-bibtex">@software{ReMe2026,
+  title = {Remember me, Refine me: Memory Management Kit for Agents},
+  author = {ReMe Team},
+  url = {https://reme.agentscope.io},
+  year = {2026}
+}
+</code></pre>
+<h3>⚖️ License</h3>
+<p>This project is open source under the Apache License 2.0. See <a href="./LICENSE">LICENSE</a> for details.</p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in memory &amp; context</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/mem0ai/mem0">
+        <div class="stars">★ 68.7K</div>
+        <div class="name"><span class="org">mem0ai /</span> mem0</div>
+      </a>
+      <a class="related-row" href="/projects/vectorize-io/hindsight">
+        <div class="stars">★ 60.0K</div>
+        <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
+      </a>
+      <a class="related-row" href="/projects/greyhaven-ai/autocontext">
+        <div class="stars">★ 1.3K</div>
+        <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
+      </a>
+      <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
+        <div class="stars">★ 385</div>
+        <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
+      </a>
+      <a class="related-row" href="/projects/yoloshii/ClawMem">
+        <div class="stars">★ 212</div>
+        <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
+      </a>
+      <a class="related-row" href="/projects/Signet-AI/signetai">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">Signet-AI /</span> signetai</div>
+      </a>
+      <a class="related-row" href="/projects/plur-ai/plur">
+        <div class="stars">★ 313</div>
+        <div class="name"><span class="org">plur-ai /</span> plur</div>
+      </a>
+      <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
+        <div class="stars">★ 52</div>
+        <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
+      </a>
+    </div>
+    <p class="list-link"><a href="/lists/best-memory-providers">see all memory &amp; context →</a></p>
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="/about">about</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues/new?template=suggest-repo.yml">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
