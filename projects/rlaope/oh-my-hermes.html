@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>rlaope/oh-my-hermes — Hermes Agent Multi-Agent &amp; Orchestration | Hermes Atlas</title>
-<meta name="description" content="oh-my-hermes is an operating layer for Hermes Agent that routes work to skills and model chains by category and can run task graphs in parallel. It also…">
+<meta name="description" content="oh-my-hermes is an operating layer for Hermes Agent that runs specialist lanes in parallel, choosing model chains and reasoning effort by work category. It…">
 <link rel="canonical" href="https://hermesatlas.com/projects/rlaope/oh-my-hermes">
 <meta property="og:title" content="rlaope/oh-my-hermes — Hermes Atlas">
-<meta property="og:description" content="oh-my-hermes is an operating layer for Hermes Agent that routes work to skills and model chains by category and can run task graphs in parallel. It also…">
+<meta property="og:description" content="oh-my-hermes is an operating layer for Hermes Agent that runs specialist lanes in parallel, choosing model chains and reasoning effort by work category. It…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/rlaope/oh-my-hermes">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="rlaope/oh-my-hermes — Hermes Atlas">
-<meta name="twitter:description" content="oh-my-hermes is an operating layer for Hermes Agent that routes work to skills and model chains by category and can run task graphs in parallel. It also…">
+<meta name="twitter:description" content="oh-my-hermes is an operating layer for Hermes Agent that runs specialist lanes in parallel, choosing model chains and reasoning effort by work category. It…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=oh-my-hermes&amp;subtitle=%E2%9A%9A+The+ultrawork+agent+with+AI+coworkers+wired+into+you&amp;kind=project+%C2%B7+multi-agent">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/rlaope/oh-my-hermes#software",
   "name": "oh-my-hermes",
-  "description": "oh-my-hermes is an operating layer for Hermes Agent that routes work to skills and model chains by category and can run task graphs in parallel. It also provides reviewed long-term memory, optional language-server tools, and status reporting that distinguishes reported completion from verified work.",
+  "description": "oh-my-hermes is an operating layer for Hermes Agent that runs specialist lanes in parallel, choosing model chains and reasoning effort by work category. It provides graph-based `/dag-ulw` runs, long-term memory with explicit review of memory candidates, and an optional native TUI; it does not patch or replace Hermes.",
   "url": "https://hermesatlas.com/projects/rlaope/oh-my-hermes",
   "codeRepository": "https://github.com/rlaope/oh-my-hermes",
   "applicationCategory": "DeveloperApplication",
@@ -47,13 +47,13 @@
     "name": "rlaope",
     "url": "https://github.com/rlaope"
   },
-  "dateModified": "2026-11-09T17:52:45.000Z",
+  "dateModified": "2026-11-09T22:09:25.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 5295
+    "userInteractionCount": 5301
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">oh-my-hermes is an operating layer for Hermes Agent that routes work to skills and model chains by category and can run task graphs in parallel. It also provides reviewed long-term memory, optional language-server tools, and status reporting that distinguishes reported completion from verified work.</p>
+    <p class="summary-text">oh-my-hermes is an operating layer for Hermes Agent that runs specialist lanes in parallel, choosing model chains and reasoning effort by work category. It provides graph-based `/dag-ulw` runs, long-term memory with explicit review of memory candidates, and an optional native TUI; it does not patch or replace Hermes.</p>
     <ul class="summary-highlights">
-      <li>Runs ready task-graph nodes in parallel with separate write scopes.</li>
-      <li>Routes lanes to configurable model chains and reasoning effort.</li>
-      <li>Keeps or defers memory candidates with written reasons.</li>
+      <li>Runs ready graph nodes in parallel with separate write scopes.</li>
+      <li>Routes lanes to configurable model chains by work category.</li>
+      <li>Memory candidates are kept, refused, or deferred with a reason.</li>
     </ul>
   </div>
 </section>
@@ -156,6 +156,19 @@
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
     <div align="center">
+
+<img src="https://raw.githubusercontent.com/rlaope/oh-my-hermes/main/assets/omher-hero.webp" alt="The omher desktop app in dark mode: bots Kami, Friren, Juno and Pip and five SESSIONS on Claude Code, Codex, oh-my-pi, pi and Grok in the sidebar; Kami plans a checkout redesign in 3 layers, 7 parts, shows the new cart step and runs pnpm test while a Slack #design thread answers in the chat; the Runs panel shows the plan card and the live dag-ulw graph with Claude, Codex and Grok marks on its nodes" width="900">
+
+<h4>omher, the desktop app</h4>
+<p>Your Hermes bots, coding sessions and <code>dag-ulw</code> runs, in one window.</p>
+<p><a href="https://github.com/rlaope/oh-my-hermes/releases/download/omher-v0.1.0/omher-0.1.0-macos-arm64.dmg">macOS (Apple silicon)</a> · <a href="https://github.com/rlaope/oh-my-hermes/releases/download/omher-v0.1.0/omher-0.1.0-macos-x64.dmg">macOS (Intel)</a> · <a href="https://github.com/rlaope/oh-my-hermes/releases/download/omher-v0.1.0/omher-0.1.0-windows-x64-setup.exe">Windows</a> · <a href="https://github.com/rlaope/oh-my-hermes/releases?q=omher&amp;expanded=true">All releases →</a></p>
+<pre><code class="language-sh">curl -fsSL https://omher.app/omher | sh
+</code></pre>
+</div>
+
+<br>
+
+<div align="center">
 
 <br>
 
@@ -169,7 +182,7 @@
 <br>
 <br>
 
-<p><strong>All-in-one package for Hermes Agent. Install once, then just type <code>dag-ulw</code>.</strong></p>
+<p><strong>The ultrawork agent with AI coworkers wired into you. Just type <code>dag-ulw</code>.</strong></p>
 <p><a href="https://github.com/rlaope/oh-my-hermes/releases"><img src="https://img.shields.io/github/v/release/rlaope/oh-my-hermes?color=58a6ff&amp;labelColor=black&amp;logo=github&amp;style=flat-square" alt="GitHub Release" loading="lazy" decoding="async"></a>
 <a href="https://www.npmjs.com/package/oh-my-hermes"><img src="https://img.shields.io/npm/dt/oh-my-hermes?color=3fb950&amp;labelColor=black&amp;logo=npm&amp;label=downloads&amp;style=flat-square" alt="npm downloads" loading="lazy" decoding="async"></a>
 <a href="https://github.com/rlaope/oh-my-hermes/graphs/contributors"><img src="https://img.shields.io/github/contributors/rlaope/oh-my-hermes?color=bc8cff&amp;labelColor=black&amp;style=flat-square" alt="GitHub Contributors" loading="lazy" decoding="async"></a>
@@ -178,7 +191,7 @@
 <a href="https://omher.app/"><img src="https://img.shields.io/badge/docs-omher.app-58a6ff?labelColor=black&amp;logo=readthedocs&amp;logoColor=white&amp;style=flat-square" alt="Docs" loading="lazy" decoding="async"></a></p>
 <p><a href="https://github.com/rlaope/oh-my-hermes/blob/main/README.md">English</a> | <a href="https://github.com/rlaope/oh-my-hermes/blob/main/README.zh.md">简体中文</a> | <a href="https://github.com/rlaope/oh-my-hermes/blob/main/README.ja.md">日本語</a> | <a href="https://github.com/rlaope/oh-my-hermes/blob/main/README.ru.md">Русский</a> | <a href="https://github.com/rlaope/oh-my-hermes/blob/main/README.ko.md">한국어</a> | <a href="https://github.com/rlaope/oh-my-hermes/blob/main/README.es.md">Español</a> | <a href="https://github.com/rlaope/oh-my-hermes/blob/main/README.fr.md">Français</a> | <a href="https://github.com/rlaope/oh-my-hermes/blob/main/README.de.md">Deutsch</a> | <a href="https://github.com/rlaope/oh-my-hermes/blob/main/README.pt-BR.md">Português (Brasil)</a> | <a href="https://github.com/rlaope/oh-my-hermes/blob/main/README.it.md">Italiano</a></p>
 <p><strong>oh-my-hermes</strong> is an operating layer for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>.<br>
-You keep talking to Hermes. OMH picks the skill and a model for each lane, and runs the work in parallel.<br>
+You keep talking to Hermes. OMH puts a coworker with its own skill and model on each lane, in parallel.<br>
 It never patches or replaces Hermes, and it never reports planned work as done.</p>
 </div>
 
@@ -610,7 +623,7 @@ Built in the open with <a href="https://github.com/rlaope/oh-my-hermes/graphs/co
         <div class="name"><span class="org">builderz-labs /</span> mission-control</div>
       </a>
       <a class="related-row" href="/projects/swarmclawai/swarmclaw">
-        <div class="stars">★ 705</div>
+        <div class="stars">★ 706</div>
         <div class="name"><span class="org">swarmclawai /</span> swarmclaw</div>
       </a>
       <a class="related-row" href="/projects/howdymary/hermes-agent-metaharness">
