@@ -24,6 +24,12 @@ whole module
 
 developer-guide / plugins docs
 
+`agent.browser_page_backend`
+
+`BrowserPageBackend`
+
+developer-guide / plugins docs
+
 `agent.browser_provider`
 
 whole module
@@ -123,6 +129,18 @@ developer-guide / plugins docs
 `agent.transports.chat_completions`
 
 whole module
+
+developer-guide / plugins docs
+
+`agent.vault_backends.base`
+
+`LoginBackend`
+
+developer-guide / plugins docs
+
+`agent.vault_store`
+
+`VaultItemMeta`
 
 developer-guide / plugins docs
 
@@ -411,6 +429,18 @@ adding-platform-adapters.md § Public helpers for platform plugins
 `gateway.approval_actor`
 
 `refusal_text`
+
+adding-platform-adapters.md § Public helpers for platform plugins
+
+`gateway.approval_actor`
+
+`slash_confirm_refusal`
+
+adding-platform-adapters.md § Public helpers for platform plugins
+
+`gateway.approval_actor`
+
+`clarify_refusal`
 
 adding-platform-adapters.md § Public helpers for platform plugins
 
