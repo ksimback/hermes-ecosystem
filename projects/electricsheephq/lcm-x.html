@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>electricsheephq/lcm-x — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="LCM-X is a context engine for Hermes Agent that stores raw messages in SQLite and compacts older context into a hierarchical summary DAG. It keeps the active…">
+<meta name="description" content="LCM-X is a context engine for Hermes Agent that stores messages in a plugin-local SQLite database and compacts older context into a hierarchical summary DAG.…">
 <link rel="canonical" href="https://hermesatlas.com/projects/electricsheephq/lcm-x">
 <meta property="og:title" content="electricsheephq/lcm-x — Hermes Atlas">
-<meta property="og:description" content="LCM-X is a context engine for Hermes Agent that stores raw messages in SQLite and compacts older context into a hierarchical summary DAG. It keeps the active…">
+<meta property="og:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a plugin-local SQLite database and compacts older context into a hierarchical summary DAG.…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/electricsheephq/lcm-x">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="electricsheephq/lcm-x — Hermes Atlas">
-<meta name="twitter:description" content="LCM-X is a context engine for Hermes Agent that stores raw messages in SQLite and compacts older context into a hierarchical summary DAG. It keeps the active…">
+<meta name="twitter:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a plugin-local SQLite database and compacts older context into a hierarchical summary DAG.…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=lcm-x&amp;subtitle=Lossless+memory+for+Hermes+Agent%3A+every+turn+kept+in+a+local+store%2C+not+compacted+away%2C+and+searchable+by+your+agent.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/electricsheephq/lcm-x#software",
   "name": "lcm-x",
-  "description": "LCM-X is a context engine for Hermes Agent that stores raw messages in SQLite and compacts older context into a hierarchical summary DAG. It keeps the active prompt bounded and provides tools to search, inspect, and recover compacted material in bounded pages.",
+  "description": "LCM-X is a context engine for Hermes Agent that stores messages in a plugin-local SQLite database and compacts older context into a hierarchical summary DAG. It keeps the active prompt bounded and provides tools to search, inspect, and expand compacted material.",
   "url": "https://hermesatlas.com/projects/electricsheephq/lcm-x",
   "codeRepository": "https://github.com/electricsheephq/lcm-x",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "electricsheephq",
     "url": "https://github.com/electricsheephq"
   },
-  "dateModified": "2026-11-09T22:34:58.000Z",
+  "dateModified": "2026-11-10T07:33:21.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-09</span>
+    <span><span class="meta-label">updated</span>2026-11-10</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">LCM-X is a context engine for Hermes Agent that stores raw messages in SQLite and compacts older context into a hierarchical summary DAG. It keeps the active prompt bounded and provides tools to search, inspect, and recover compacted material in bounded pages.</p>
+    <p class="summary-text">LCM-X is a context engine for Hermes Agent that stores messages in a plugin-local SQLite database and compacts older context into a hierarchical summary DAG. It keeps the active prompt bounded and provides tools to search, inspect, and expand compacted material.</p>
     <ul class="summary-highlights">
       <li>Preserves raw messages before compaction.</li>
-      <li>Summaries retain source lineage.</li>
-      <li>Provides tools for bounded recall and recovery.</li>
+      <li>Retains source lineage in summaries.</li>
+      <li>Provides tools for bounded recall.</li>
     </ul>
   </div>
 </section>
@@ -155,17 +155,45 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h1 align="center">LCM-X</h1>
-<p align="center"><strong>Lossless Context Memory eXtension</strong></p>
-
+    <p><img src="https://raw.githubusercontent.com/electricsheephq/lcm-x/main/docs/media/banner.png" alt="LCM-X" loading="lazy" decoding="async"></p>
+<p>Lossless memory for Hermes Agent: every turn kept in a local store, not compacted away, and searchable by your agent.
+<a href="https://x.com/ElectricSheepIO/status/2119777119873925155">Watch the demo</a></p>
 <p><a href="https://github.com/electricsheephq/lcm-x/actions/workflows/ci.yml"><img src="https://github.com/electricsheephq/lcm-x/actions/workflows/ci.yml/badge.svg" alt="CI" loading="lazy" decoding="async"></a>
-<a href="https://github.com/electricsheephq/lcm-x/tags"><img src="https://img.shields.io/github/v/tag/electricsheephq/lcm-x?include_prereleases&amp;sort=semver&amp;label=tag" alt="Latest tag" loading="lazy" decoding="async"></a>
-<a href="https://github.com/electricsheephq/lcm-x/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/Python-3.11--3.14-3776AB?logo=python&amp;logoColor=white" alt="Python 3.11-3.14" loading="lazy" decoding="async"></a>
-<a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" loading="lazy" decoding="async"></a></p>
-<p><strong>Lossless context memory for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>.</strong></p>
+<a href="https://github.com/electricsheephq/lcm-x/releases/latest"><img src="https://img.shields.io/github/v/release/electricsheephq/lcm-x" alt="Latest release" loading="lazy" decoding="async"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" loading="lazy" decoding="async"></a>
+<a href="plugin.yaml"><img src="https://img.shields.io/badge/Hermes-%3E%3D0.21.3-blue" alt="Hermes >= 0.21.3" loading="lazy" decoding="async"></a></p>
+<h3>Install</h3>
+<pre><code class="language-bash">hermes plugins install hermes-lcm-x --enable
+hermes config set context.engine lcm-x
+</code></pre>
+<p>This installs the version the Hermes catalog currently pins, which can trail the <a href="https://github.com/electricsheephq/lcm-x/releases/latest">latest release</a> by a few days (see <a href="https://github.com/electricsheephq/lcm-x/blob/main/docs/operations/catalog-payload.md">catalog payload</a>).
+The default local setup needs no API key; optional cloud embeddings and Voyage reranking use configured provider keys (see <a href="https://github.com/electricsheephq/lcm-x/blob/main/docs/embeddings-setup.md">embeddings setup</a>).
+The first line installs and enables the plugin; the second selects it as the context engine (both checked on a clean Hermes 0.23.0 home). Restart Hermes afterwards.</p>
+<h4>Activate it</h4>
+<p>The plugin has two names:</p>
+<ul>
+<li>plugin manifest name: <code>hermes-lcm-x</code></li>
+<li>runtime context engine name: <code>lcm-x</code></li>
+</ul>
+<p>Both must be configured. The two commands above write this; you can also edit the config by hand:</p>
+<pre><code class="language-yaml">plugins:
+  enabled:
+    - hermes-lcm-x
+
+context:
+  engine: lcm-x
+</code></pre>
+<p>Restart Hermes after changing plugin or context-engine config.</p>
+<h3>Try it</h3>
+<ol>
+<li>Run the two commands above and restart Hermes.</li>
+<li>Send a message, then ask your agent to call <code>lcm_status</code>.</li>
+<li>You will see runtime health, context pressure, configuration, and storage counts for the active session.</li>
+</ol>
 <blockquote>
 <p>Bounded context, unbounded memory. Nothing is ever lost.</p>
 </blockquote>
+<p>Two opt-ins discard content by design: durable sensitive-pattern redaction (<code>LCM_SENSITIVE_PATTERNS_ENABLED</code>) and message ignore patterns (<code>LCM_IGNORE_MESSAGE_PATTERNS</code>); the operator's <code>/lcm doctor clean apply</code> deletes on purpose (off by default, takes a backup first). Sessions matched by <code>LCM_IGNORE_SESSION_PATTERNS</code> or <code>LCM_STATELESS_SESSION_PATTERNS</code> (both empty by default) are not stored at all.</p>
 
 <p><a id="benchmark-highlights"></a>
 <strong>Benchmark highlights</strong> (<a href="https://github.com/MemTensor/OmniMemEval/blob/8d1ff33904abccbcdef9363cf8ae82fc97574b26/docs/user_memory/results.md">OmniMemEval</a>, contributor-run, accepted upstream)</p>
@@ -274,7 +302,8 @@ material without flooding the main prompt.</li>
 </ol>
 <p>Nothing is lost in normal operation. Raw messages stay recoverable in bounded
 pages, summaries retain source lineage, and oversized externalized payloads keep
-stable refs for later expansion.</p>
+stable refs for later expansion.
+Two opt-ins discard content by design: durable sensitive-pattern redaction (<code>LCM_SENSITIVE_PATTERNS_ENABLED</code>) and message ignore patterns (<code>LCM_IGNORE_MESSAGE_PATTERNS</code>); the operator's <code>/lcm doctor clean apply</code> deletes on purpose (off by default, takes a backup first). Sessions matched by <code>LCM_IGNORE_SESSION_PATTERNS</code> or <code>LCM_STATELESS_SESSION_PATTERNS</code> (both empty by default) are not stored at all.</p>
 <p align="center">
   <img src="https://raw.githubusercontent.com/electricsheephq/lcm-x/main/docs/standard_compression.png" alt="Standard compression" width="700">
 </p>
@@ -329,7 +358,7 @@ default (durable sensitive-pattern redaction is opt-in; cloud-embedding privacy
 is an independent flag that transforms only the provider-bound copy — see
 "Sensitive-pattern redaction" below), the PEM private-key redaction hardening,
 loud privacy-policy failures on the recall path, and the rc-first release
-gauntlet, while preserving the 15-tool surface, schema-5 core store, and
+gauntlet, while preserving schema-5 core storage and
 default-off experimental features.</p>
 <p>Stable release identity and the continuing <code>main</code> development line are
 separate proof planes; do not describe an arbitrary <code>main</code> checkout as the
@@ -340,8 +369,10 @@ patch releases are cut from that branch. The <code>main</code> line carries the 
 That tag is cut from <code>main</code>, while <code>v0.29.2</code> comes from <code>release/v0.29.x</code>.
 An identity is never a restamp of any past commit's own recorded identity
 (#385 fixed the earlier drift).
-The manifest declares 16 tools; runtime discovery advertises 13 by default,
-or 16 with assertion, adaptive-retrieval and entity flags on.</p>
+The manifest declares 16 tools; runtime discovery advertises 13 by default.
+<code>LCM_ASSERTIONS_ENABLED</code> adds <code>lcm_query_state</code>, <code>LCM_ADAPTIVE_RETRIEVAL_ENABLED</code>
+adds <code>lcm_retrieve</code>, and <code>LCM_ENTITIES_ENABLED</code> adds <code>lcm_memory</code>: 16 with all three on,
+unless <code>LCM_DISABLED_TOOLS</code> hides tools.</p>
 <p>Every compaction LCM-X starts today runs on the turn thread, so the user waits
 for it. v0.25.0 makes a hidden backlog drain at turn pace (#597); v0.31.0
 removes the wait by preparing summaries in the background and publishing them
@@ -385,7 +416,8 @@ patterns; without it, message-level regex filtering is disabled with a warning
 rather than running unbounded stdlib <code>re</code> matches.</p>
 <h4>Install the plugin</h4>
 <p>Catalog installs use the <a href="https://github.com/electricsheephq/lcm-x/blob/main/docs/operations/catalog-payload.md">generated runtime payload</a> pinned to an immutable dist commit.</p>
-<p>Canonical install path: clone LCM-X as a general user plugin into
+<h5>Developers and profile installs</h5>
+<p>Clone LCM-X as a general user plugin into
 <code>plugins/hermes-lcm-x</code>.</p>
 <pre><code class="language-bash">git clone https://github.com/electricsheephq/lcm-x \
   "${HOME}/.hermes/plugins/hermes-lcm-x"
@@ -448,21 +480,6 @@ export VOYAGE_API_KEY=...
 export LCM_ENABLE_SLASH_COMMAND=1   # registers /lcm for the setup commands
 </code></pre>
 <p>After setting these in Hermes' environment and restarting, run <code>/lcm embed warmup</code>, <code>/lcm embed backfill</code> (dry run), <code>/lcm embed backfill --apply</code>, then <code>/lcm status</code>. See <a href="https://github.com/electricsheephq/lcm-x/blob/main/docs/embeddings-setup.md#option-1--voyage-ai-free-tier">Voyage setup and key creation</a> and <a href="#cloud-embedding-privacy">cloud privacy</a>.</p>
-<h4>Activate it</h4>
-<p>The plugin has two names:</p>
-<ul>
-<li>plugin manifest name: <code>hermes-lcm-x</code></li>
-<li>runtime context engine name: <code>lcm-x</code></li>
-</ul>
-<p>Both must be configured:</p>
-<pre><code class="language-yaml">plugins:
-  enabled:
-    - hermes-lcm-x
-
-context:
-  engine: lcm-x
-</code></pre>
-<p>Restart Hermes after changing plugin or context-engine config.</p>
 <h4>Verify it loaded</h4>
 <p>Run:</p>
 <pre><code class="language-bash">hermes plugins list
@@ -485,8 +502,8 @@ also resolve the explicit plugin-qualified skill <code>hermes-lcm-x:hermes-lcm</
 Provider Plugins:
   Context Engine: lcm-x
 </code></pre>
-<p>Older <code>v0.23.x</code> stable tags instead report <code>hermes-lcm v0.23.x (15 tools)</code>
-and engine <code>lcm</code>; verify the loaded commit before treating either string as
+<p>Older <code>v0.23.x</code> stable tags instead report plugin <code>hermes-lcm</code>
+and engine <code>lcm</code>; verify the loaded commit before treating either name as
 release proof.</p>
 <p>For source checkouts, <code>lcm_status</code>, <code>/lcm status</code>, <code>lcm_inspect</code>,
 <code>lcm_doctor</code>, and <code>/lcm doctor</code> also report the loaded plugin path and
@@ -536,9 +553,9 @@ imports one lazily. See
 restart that runtime so <code>/lcm</code> is registered, then run <code>/lcm backup</code>.
 Otherwise stop every SQLite writer and copy that configured database with its
 WAL/SHM companions as one cold set. Check out the exact stable tag/SHA, restart
-Hermes, and verify the loaded path, version, database path, schema 5, and all 15
-tools. No manual core migration is required for the upgrade itself. Existing
-cloud vectors from a pre-v0.23.1 identity require privacy-policy warmup, an
+Hermes, and verify the loaded path, version, database path, schema 5, and the
+tools advertised by that release and its enabled flags. No manual core migration
+is required for the upgrade itself. Existing cloud vectors from a pre-v0.23.1 identity require privacy-policy warmup, an
 identity check from the warmup/profile output, and the finite monotonic
 dry-run/apply loop in the operator guide before semantic coverage is complete.</p>
 <p><a id="cloud-embedding-privacy"></a>
@@ -643,9 +660,9 @@ registered by <code>register()</code>: LCM-X serves its tools through the contex
 tool schemas (<code>ContextEngine.get_tool_schemas</code>), which is the intended path.</p>
 <h3>Commands and tools</h3>
 <h4>Agent tools</h4>
-<p>Use these tools for current-session recall after compaction. Use Hermes
-<code>session_search</code> for earlier separate sessions or broad cross-session history
-outside the LCM database.</p>
+<p>Use these tools for recall after compaction; their default scopes differ
+(see <a href="#retrieval-contract">Retrieval contract</a>). Use Hermes <code>session_search</code>
+for cross-session history outside the LCM database.</p>
 <p>Both host paths hide <code>lcm_query_state</code> until <code>LCM_ASSERTIONS_ENABLED=true</code>
 and <code>lcm_retrieve</code> until <code>LCM_ADAPTIVE_RETRIEVAL_ENABLED=true</code>, plus
 <code>lcm_memory</code> until <code>LCM_ENTITIES_ENABLED=1</code>. The other 13
@@ -939,6 +956,14 @@ the newest message is never dropped (<code>0</code> keeps no fresh tail), and a 
 that would begin inside an assistant tool-call/result group is moved back to that
 assistant even when doing so exceeds a configured bound.</p>
 <h4>Filtering and storage settings</h4>
+<p><strong>What is stored where</strong></p>
+<ul>
+<li>Raw messages and summaries live in the local SQLite store, <code>lcm.db</code>.</li>
+<li>Large tool outputs move to separate plugin-managed JSON payload files under the Hermes home by default.</li>
+<li>Keep those payload files with the database: they are needed to recover externalized content.</li>
+<li>Local FastEmbed runs in process; non-local embedding providers receive copies only when configured and enabled.</li>
+<li>Optional Voyage reranking sends the query and candidate snippets; cloud-copy privacy is separate from durable redaction.</li>
+</ul>
 <table>
 <thead>
 <tr>
@@ -1080,63 +1105,9 @@ assistant even when doing so exceeds a configured bound.</p>
 <tr>
 <td><code>LCM_EXPANSION_MODEL</code></td>
 <td>summary model / auxiliary</td>
-<td>Override <code>lcm_expand_query</code> synthesis model</td>
-</tr>
-<tr>
-<td><code>LCM_EXPANSION_REASONING_EFFORT</code></td>
-<td>task/provider default</td>
-<td>Expansion synthesis reasoning override with the same supported values and the same ignore-and-report handling; YAML key: <code>lcm.expansion_reasoning_effort</code></td>
-</tr>
-<tr>
-<td><code>LCM_EXPANSION_CONTEXT_TOKENS</code></td>
-<td><code>32000</code></td>
-<td>Context budget used by the auxiliary LLM for <code>lcm_expand_query</code></td>
-</tr>
-<tr>
-<td><code>LCM_SUMMARY_TIMEOUT_MS</code></td>
-<td><code>120000</code></td>
-<td>Timeout for one summarization call (inherits <code>auxiliary.compression.timeout</code> when that is set); the foreground time budget can cut a call shorter</td>
-</tr>
-<tr>
-<td><code>LCM_SHUTDOWN_COMPACTION_WAIT_S</code></td>
-<td><code>10.0</code></td>
-<td>Seconds shutdown waits for active compaction after taking the lifecycle lease; on timeout connections stay open for a later shutdown retry. New compactions return the host messages unchanged once shutdown starts. Finite nonnegative float, capped at <code>86400</code>; invalid values use the default.</td>
-</tr>
-<tr>
-<td><code>LCM_SUMMARY_PROMPT_VERSION</code></td>
-<td><code>1</code></td>
-<td>1 = today's prompts; 2 = the frontier prompt with the focus directives in the policy and a 3× output ceiling</td>
-</tr>
-<tr>
-<td><code>LCM_NATIVE_RECOVERY</code></td>
-<td><code>false</code></td>
-<td>removed in v0.25.0; ignored if set (<code>true</code> logs one WARNING each time the plugin loads)</td>
-</tr>
-<tr>
-<td><code>LCM_SURVIVAL_FIT</code></td>
-<td><code>true</code></td>
-<td>When compaction cannot bring the returned list under the model window (a publication failure, a sweep deadline, a lock), drop the oldest whole user turns from live context until it fits; an oversized newest turn gets a bounded projection. Nothing is deleted: the rows stay stored and reachable with <code>lcm_grep</code> / <code>lcm_load_session</code>. Logs <code>LCM survival fit applied</code>, warns the user once, and <code>/lcm doctor</code> reports <code>survival_fit</code> as history without changing its status. The <code>lcm_doctor</code> tool returns it in the top-level <code>survival_fit</code> field, or null when no fit is recorded</td>
-</tr>
-<tr>
-<td><code>LCM_SURVIVAL_RESERVE</code></td>
-<td><code>0.15</code></td>
-<td>Share of the model window the survival fit keeps free for the response and host overhead (the fit target is window x (1 - reserve), minus the observed host overhead)</td>
-</tr>
-<tr>
-<td><code>LCM_EXPANSION_TIMEOUT_MS</code></td>
-<td><code>120000</code></td>
-<td>Timeout for one <code>lcm_expand_query</code> synthesis call</td>
-</tr>
-<tr>
-<td><code>LCM_CRITICAL_BUDGET_PRESSURE_RATIO</code></td>
-<td><code>0.0</code></td>
-<td>Disabled at <code>0.0</code>; when set, permits critical-pressure bypasses for bounded deferred catch-up only</td>
+<td>Override `lcm_expand_</td>
 </tr>
 </tbody></table>
-<p>Advanced compaction, assembly, and extraction knobs are defined in <code>config.py</code>.</p>
-<h4>Sensitive-pattern redaction</h4>
-<p>LCM is lossless by default: durable messages, FTS rows, summaries, and payloads
-remain untouched unless `LCM_SENSITIVE_PATTERNS</p>
 <hr>
 <p><em>README truncated. <a href="https://github.com/electricsheephq/lcm-x#readme">Continue reading on GitHub</a></em></p>
 
@@ -1155,7 +1126,7 @@ remain untouched unless `LCM_SENSITIVE_PATTERNS</p>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 60.1K</div>
+        <div class="stars">★ 60.2K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -1163,7 +1134,7 @@ remain untouched unless `LCM_SENSITIVE_PATTERNS</p>
         <div class="name"><span class="org">greyhaven-ai /</span> autocontext</div>
       </a>
       <a class="related-row" href="/projects/elkimek/honcho-self-hosted">
-        <div class="stars">★ 385</div>
+        <div class="stars">★ 386</div>
         <div class="name"><span class="org">elkimek /</span> honcho-self-hosted</div>
       </a>
       <a class="related-row" href="/projects/yoloshii/ClawMem">
