@@ -154,6 +154,19 @@ hermes config set terminal.backend acmebox
 
 Subclassing `BaseEnvironment` is recommended (you inherit the shared file-sync and background-process plumbing) but not required.
 
+## Background processes and `cleanup()`
+
+A background command (`terminal(background=true)`) on a non-local backend is polled through the environment object that spawned it. When Hermes tears that environment down (`cleanup()` on session close, idle reaping, or eviction after a connection failure), it marks those processes `lost` so their pollers stop. It does that only after `cleanup()` returned without raising (or reported the sandbox already gone, a 404 / "not found"), because a failed cleanup may leave the sandbox running.
+
+If your `cleanup()` only drops a connection and the jobs keep running where the same environment object can still reach them (the built-in SSH backend reconnects on the next `execute()`), declare it so the poller keeps collecting the real exit code:
+
+```
+class AcmeEnvironment(BaseEnvironment):
+    cleanup_stops_processes = False  # cleanup() disconnects; jobs survive and stay reachable
+```
+
+The default is `True`: once `cleanup()` returns, the processes are gone for that environment object (ended with the sandbox, or no longer reachable through it). It also applies to duck-typed environments that don't declare the attribute. So raise from `cleanup()` only while the sandbox may still be live; once it is destroyed, log any later failure (snapshot bookkeeping, client shutdown) instead.
+
 ## File tools and the host filesystem
 
 `read_file`, `write_file`, `patch` and `search_files` go through your environment's `execute()`, so they see exactly the files your commands see. The one exception is an environment that declares `uses_host_filesystem = True` (only the built-in `LocalEnvironment` does): there the file tools read, write and search the host directly, run the bundled ripgrep, stat paths on the host, write oversized tool output straight to `~/.hermes/cache/spillover` and enable LSP diagnostics.

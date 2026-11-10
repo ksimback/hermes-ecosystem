@@ -540,6 +540,18 @@ whole module
 
 adding-platform-adapters.md § Public helpers for platform plugins
 
+`gateway.platforms.session_model`
+
+`SessionModelPickerProvider`
+
+adding-platform-adapters.md § Conversation model settings and picker providers (BasePlatformAdapter)
+
+`gateway.platforms.session_model`
+
+`SessionModelSettings`
+
+adding-platform-adapters.md § Conversation model settings and picker providers (BasePlatformAdapter)
+
 `tools.skills_tool`
 
 `find_all_skills`

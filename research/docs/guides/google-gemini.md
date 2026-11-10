@@ -2,7 +2,7 @@
 
 **Source:** https://hermes-agent.nousresearch.com/docs/guides/google-gemini
 
-Hermes Agent supports Google Gemini as a native provider using the **Google AI Studio / Gemini API** — not the OpenAI-compatible endpoint. This lets Hermes translate its internal OpenAI-shaped message and tool loop into Gemini's native `generateContent` API while preserving tool calling, streaming, multimodal inputs, and Gemini-specific response metadata.
+Hermes Agent supports Google Gemini as a native provider using the **Google AI Studio / Gemini API** — not the OpenAI-compatible endpoint. This lets Hermes translate its internal OpenAI-shaped message and tool loop into Gemini's native APIs (the [Interactions API](#interactions-api) for Gemini 3 and later, `generateContent` for older models) while preserving tool calling, streaming, multimodal inputs, and Gemini-specific response metadata.
 
 ## Prerequisites
 
@@ -88,7 +88,7 @@ Google also exposes an OpenAI-compatible endpoint:
 https://generativelanguage.googleapis.com/v1beta/openai/
 ```
 
-For Hermes agent sessions, prefer the native Gemini endpoint above. Hermes includes a native Gemini adapter so it can map multi-turn tool use, tool-call results, streaming, multimodal inputs, and Gemini response metadata directly onto Gemini's `generateContent` API. The OpenAI-compatible endpoint is still useful when you specifically need OpenAI API compatibility.
+For Hermes agent sessions, prefer the native Gemini endpoint above. Hermes includes a native Gemini adapter so it can map multi-turn tool use, tool-call results, streaming, multimodal inputs, and Gemini response metadata directly onto Gemini's native APIs. The OpenAI-compatible endpoint is still useful when you specifically need OpenAI API compatibility.
 
 If you previously set `GEMINI_BASE_URL` to the `/openai` URL, remove it or change it:
 
@@ -97,6 +97,25 @@ GEMINI_BASE_URL=https://generativelanguage.googleapis.com/v1beta
 ```
 
 Host-root base URLs on the Google host are normalized automatically: if the URL doesn't end with an API version segment (`v1beta`, `v1alpha`, `v1`, ...), Hermes appends `/v1beta` for you, so `GEMINI_BASE_URL=https://generativelanguage.googleapis.com` works the same as spelling out the `/v1beta` suffix. The same normalization applies to the Gemini TTS base URL (`tts.gemini.base_url`). Chat requests only take the native Gemini path when the base URL points at `generativelanguage.googleapis.com` or the Vertex AI express host below; a proxy on another host is treated as an OpenAI-compatible endpoint, so configure it with its `/openai`\-style URL.
+
+### Interactions API
+
+On Google AI Studio, Hermes sends Gemini 3 and later models (and the `gemini-*-latest` aliases) through Google's [Interactions API](https://aistudio.google.com/docs/interactions-overview), the API Google recommends for them. Gemini 2.x and Gemma models use `generateContent`.
+
+You can choose the API yourself, for every model or per model:
+
+```
+providers:
+  gemini:
+    gemini_api: generate_content    # every Gemini model
+    models:
+      gemini-3.8-flash:
+        gemini_api: interactions    # except this one
+```
+
+Each setting takes `interactions`, `generate_content` or `auto` (the default, described above). A per-model setting wins over the provider-wide one. A change applies to the next request; no restart is needed. Gemini 2.x steers thinking with a token budget, which the Interactions API has no setting for, so forcing a 2.x model onto `interactions` drops that budget.
+
+Hermes calls Interactions statelessly (`store: false`): it sends the whole conversation on every request, the same as `generateContent`, so Google keeps no copy of the conversation and prompt caching works the same way. The exception is long decode (Gemini 4 at `xhigh` effort and above): Google continues those multi-request answers only from a stored interaction, so those requests set `store: true`, and Google retains them for its standard period (55 days on the paid tier, 1 day on the free tier). Interactions is only available on the AI Studio host (`generativelanguage.googleapis.com`). A Vertex AI express or proxy base URL always uses `generateContent`.
 
 ### Vertex AI Express Mode Keys
 
@@ -117,6 +136,12 @@ Model
 ID
 
 Notes
+
+Gemini 4 Carbon
+
+`gemini-4-carbon`
+
+Strongest reasoning model; spends more thinking per turn than Argon, with the same window, long decode and price. Paid tier only
 
 Gemini 4 Argon
 
@@ -168,7 +193,7 @@ Use Gemini's native model IDs such as `gemini-3.7-flash`, not OpenRouter-style I
 
 ### Gemini 4 Argon: Reasoning Effort and Long Decode
 
-Gemini 4 Argon always thinks; Hermes maps the reasoning effort (`/reasoning`, `agent.reasoning_effort`) onto its `thinkingLevel`:
+Gemini 4 Carbon works the same way as Argon in everything below. Gemini 4 Argon always thinks; Hermes maps the reasoning effort (`/reasoning`, `agent.reasoning_effort`) onto its `thinkingLevel`:
 
 Hermes effort
 
