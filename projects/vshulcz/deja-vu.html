@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>vshulcz/deja-vu — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="deja indexes coding-agent session histories stored on disk for local search across supported agents. It also supports cross-agent session handoff, code…">
+<meta name="description" content="deja-vu indexes local session histories from 43 coding agents so users can search past work, resume sessions, and hand off work between agents. It also…">
 <link rel="canonical" href="https://hermesatlas.com/projects/vshulcz/deja-vu">
 <meta property="og:title" content="vshulcz/deja-vu — Hermes Atlas">
-<meta property="og:description" content="deja indexes coding-agent session histories stored on disk for local search across supported agents. It also supports cross-agent session handoff, code…">
+<meta property="og:description" content="deja-vu indexes local session histories from 43 coding agents so users can search past work, resume sessions, and hand off work between agents. It also…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/vshulcz/deja-vu">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="vshulcz/deja-vu — Hermes Atlas">
-<meta name="twitter:description" content="deja indexes coding-agent session histories stored on disk for local search across supported agents. It also supports cross-agent session handoff, code…">
+<meta name="twitter:description" content="deja-vu indexes local session histories from 43 coding agents so users can search past work, resume sessions, and hand off work between agents. It also…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=deja-vu&amp;subtitle=Shared+local+memory%2C+cross-agent+handoff%2C+and+code+recovery+across+43+coding+agents.+One+Go+binary%3B+every+session+stays+on+disk.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/vshulcz/deja-vu#software",
   "name": "deja-vu",
-  "description": "deja indexes coding-agent session histories stored on disk for local search across supported agents. It also supports cross-agent session handoff, code recovery, and automatic recall through hooks and MCP, without LLM calls.",
+  "description": "deja-vu indexes local session histories from 43 coding agents so users can search past work, resume sessions, and hand off work between agents. It also supports recovering overwritten code, automatic recall through hooks and MCP, and sharing selected decisions through repository memory.",
   "url": "https://hermesatlas.com/projects/vshulcz/deja-vu",
   "codeRepository": "https://github.com/vshulcz/deja-vu",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "vshulcz",
     "url": "https://github.com/vshulcz"
   },
-  "dateModified": "2026-11-11T06:24:32.000Z",
+  "dateModified": "2026-11-11T12:27:04.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 1500
+    "userInteractionCount": 1511
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">deja indexes coding-agent session histories stored on disk for local search across supported agents. It also supports cross-agent session handoff, code recovery, and automatic recall through hooks and MCP, without LLM calls.</p>
+    <p class="summary-text">deja-vu indexes local session histories from 43 coding agents so users can search past work, resume sessions, and hand off work between agents. It also supports recovering overwritten code, automatic recall through hooks and MCP, and sharing selected decisions through repository memory.</p>
     <ul class="summary-highlights">
-      <li>Searches session histories across 43 coding agents.</li>
-      <li>Hands off session goals and state to another agent.</li>
-      <li>Recovers overwritten code and traces edits to sessions.</li>
+      <li>Search and filter session histories across supported agents.</li>
+      <li>Hand off session goals and open work to another agent.</li>
+      <li>Restore overwritten code and trace file lines to sessions.</li>
     </ul>
   </div>
 </section>
@@ -1085,9 +1085,19 @@ for people who install extensions there rather than from a CLI:</p>
 <td><code>code --install-extension vshulcz.deja-status</code></td>
 </tr>
 <tr>
+<td>JetBrains IDEs</td>
+<td>IntelliJ, GoLand, PyCharm, WebStorm &amp; RustRover plugin (<a href="extensions/jetbrains/"><code>extensions/jetbrains/</code></a>)</td>
+<td><code>idea installPlugins com.github.vshulcz.deja-vu</code></td>
+</tr>
+<tr>
 <td>Neovim</td>
-<td><code>lazy.nvim</code> plugin (<a href="extensions/nvim/"><code>extensions/nvim/</code></a>)</td>
+<td><code>lazy.nvim</code> &amp; CodeCompanion plugin (<a href="extensions/nvim/"><code>extensions/nvim/</code></a>)</td>
 <td><code>{ "vshulcz/deja-vu", opts = {} }</code></td>
+</tr>
+<tr>
+<td>tmux</td>
+<td><a href="https://github.com/tmux-plugins/tpm">TPM</a> popup (<code>prefix + D</code>) &amp; <code>#{deja_status}</code> (<code>deja.tmux</code>)</td>
+<td><code>set -g @plugin 'vshulcz/deja-vu'</code></td>
 </tr>
 <tr>
 <td>Raycast</td>
@@ -1444,7 +1454,7 @@ anywhere, and how to exclude a project or forget a session is under
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 60.4K</div>
+        <div class="stars">★ 60.5K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
