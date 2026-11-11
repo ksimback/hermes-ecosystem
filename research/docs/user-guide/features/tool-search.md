@@ -43,7 +43,7 @@ Model: tool_call({ calls: [{ name: "mcp_github_create_issue",
 
 Each query in a `tool_search` call is searched independently against the same catalog (`limit` applies per query); the per-query groups carry tool names only, while the shared `tools` map holds each matched tool's description and required parameter names once. Queries are stemmed, so "issues" finds `create_issue`. Each query group that returns no matches includes an `available_sources` summary of the connected servers so a lexical miss is not mistaken for a missing capability. `tool_describe` resolves every requested name in one call; unknown names are reported in `not_found` without failing the rest of the batch.
 
-When the model invokes `tool_call`, Hermes **unwraps the bridge** and dispatches the underlying tool exactly as if the model had called it directly. Pre-tool-call hooks, guardrails, approval prompts, and post-tool-call hooks all run against the real tool name — not against `tool_call`. The activity feed in the CLI and gateway also unwraps so you see the underlying tool, not the bridge.
+When the model invokes `tool_call`, Hermes **unwraps the bridge** and dispatches the underlying tool exactly as if the model had called it directly. Pre-tool-call hooks, guardrails, approval prompts, and post-tool-call hooks all run against the real tool name — not against `tool_call`. The activity feed in the CLI and gateway also unwraps so you see the underlying tool, not the bridge. A deferred tool the model calls by its real name is rewritten into a `tool_call` first, so it runs through the same checks instead of failing as an unknown tool.
 
 ## When does it activate?
 
@@ -93,6 +93,7 @@ tools:
       - todo_list
       - process_manage
       - cronjob_manage
+      - text_to_speech
       - manage_catalog
 ```
 
