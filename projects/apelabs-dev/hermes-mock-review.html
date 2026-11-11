@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>apelabs-dev/hermes-mock-review — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="mock-review is a Hermes plugin for reviewing UI and design options through shareable review boards. Reviewers can approve, request changes, or skip decisions,…">
+<meta name="description" content="mock-review is a Hermes plugin for reviewing UI and design options through linked review boards. Reviewers can approve, change, or skip decisions, add notes…">
 <link rel="canonical" href="https://hermesatlas.com/projects/apelabs-dev/hermes-mock-review">
 <meta property="og:title" content="apelabs-dev/hermes-mock-review — Hermes Atlas">
-<meta property="og:description" content="mock-review is a Hermes plugin for reviewing UI and design options through shareable review boards. Reviewers can approve, request changes, or skip decisions,…">
+<meta property="og:description" content="mock-review is a Hermes plugin for reviewing UI and design options through linked review boards. Reviewers can approve, change, or skip decisions, add notes…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/apelabs-dev/hermes-mock-review">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="apelabs-dev/hermes-mock-review — Hermes Atlas">
-<meta name="twitter:description" content="mock-review is a Hermes plugin for reviewing UI and design options through shareable review boards. Reviewers can approve, request changes, or skip decisions,…">
+<meta name="twitter:description" content="mock-review is a Hermes plugin for reviewing UI and design options through linked review boards. Reviewers can approve, change, or skip decisions, add notes…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-mock-review&amp;subtitle=Review+boards+for+UI+mockups%2C+as+a+Hermes+plugin%3A+mark+decisions%2C+pin+comments%2C+press+Send%2C+and+your+agent+wakes+up+with+the+feedback.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/apelabs-dev/hermes-mock-review#software",
   "name": "hermes-mock-review",
-  "description": "mock-review is a Hermes plugin for reviewing UI and design options through shareable review boards. Reviewers can approve, request changes, or skip decisions, add notes and pins, then send feedback that wakes the agent in the originating chat. Boards display mocks at desktop, tablet, and phone widths in light and dark modes.",
+  "description": "mock-review is a Hermes plugin for reviewing UI and design options through linked review boards. Reviewers can approve, change, or skip decisions, add notes and pins, and send feedback to the chat the review came from; plan boards can also send an approved plan to Hermes to build.",
   "url": "https://hermesatlas.com/projects/apelabs-dev/hermes-mock-review",
   "codeRepository": "https://github.com/apelabs-dev/hermes-mock-review",
   "applicationCategory": "BrowserApplication",
@@ -47,13 +47,13 @@
     "name": "apelabs-dev",
     "url": "https://github.com/apelabs-dev"
   },
-  "dateModified": "2026-11-10T12:08:42.000Z",
+  "dateModified": "2026-11-11T00:13:44.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 27
+    "userInteractionCount": 28
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -120,11 +120,11 @@
   <p class="project-desc">Review boards for UI mockups, as a Hermes plugin: mark decisions, pin comments, press Send, and your agent wakes up with the feedback.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 27</span>
+    <span class="stars">★ 28</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-10</span>
+    <span><span class="meta-label">updated</span>2026-11-11</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">mock-review is a Hermes plugin for reviewing UI and design options through shareable review boards. Reviewers can approve, request changes, or skip decisions, add notes and pins, then send feedback that wakes the agent in the originating chat. Boards display mocks at desktop, tablet, and phone widths in light and dark modes.</p>
+    <p class="summary-text">mock-review is a Hermes plugin for reviewing UI and design options through linked review boards. Reviewers can approve, change, or skip decisions, add notes and pins, and send feedback to the chat the review came from; plan boards can also send an approved plan to Hermes to build.</p>
     <ul class="summary-highlights">
-      <li>Review boards support decision marks, notes, and pinned comments.</li>
-      <li>Sending feedback wakes the agent in the originating chat.</li>
-      <li>Boards render mocks at three widths and in light and dark modes.</li>
+      <li>Boards show mocks at desktop, tablet, and phone widths.</li>
+      <li>Reviewers can add notes and pin comments on mocks.</li>
+      <li>Supports local, tailnet, and here.now hosting.</li>
     </ul>
   </div>
 </section>
@@ -162,6 +162,26 @@ the mocks and press Send. Send wakes the agent in the chat the review came from,
 inline mocks at desktop, tablet and phone widths, in light and dark, and wear a per-project design profile.</p>
 <img src="https://raw.githubusercontent.com/apelabs-dev/hermes-mock-review/main/docs/img/showcase.jpg" alt="mock-review: a Discord thread next to a review board showing a Cash Flow decision" width="100%">
 
+<h3>Plan boards and Build</h3>
+<p>A <code>plan</code> preset round uses the same fixed skeleton as a design board: a status line, "Already decided", a defaults card,
+the plan grouped by section, then a final approval. Questions carry a recommendation (go with it, or type a different
+answer); pieces, defaults and decisions are approved, changed or skipped, and "Approve the rest" fills a section in one
+press. The footer has one button. By default it is "Build": locked, with what is still open in its
+tooltip, until every question is answered, everything else is approved or skipped and nothing is on Change; a block on
+Change turns it into "Send" for those notes. Set <code>footer_button</code> to <code>send</code> for a board that only ever sends notes.
+Mocks carry working controls by default (<code>interactive_elements</code>): the board opens on Tap so dropdowns and switches
+respond, and Pin in the header switches to commenting. The section bar stays pinned under the header, so a long plan is
+one tap from any section.</p>
+<p>Build wakes Hermes on the chat the board came from, with the approved plan. The agent builds, and the result arrives as
+the next round on the same link, with "Your notes, answered" and Revised badges on the blocks that changed.</p>
+<p>A design profile is bound to a project once, with <code>hermes mockreview design bind &lt;name&gt; &lt;abs project path&gt;</code>. It then
+auto-applies to every create and add-round in that project (or its git repository and worktrees). A round whose mocks use
+off-profile colours or fonts is refused before anything is written, and the message names the exact location and value.
+<code>--off-brand "&lt;reason&gt;"</code> is the only bypass; the reason is recorded on the round and the review.</p>
+<p>To see a plan board without an agent, create the demo from a checkout with a board running (see Quickstart):</p>
+<pre><code>hermes mockreview create --title "Offline sync plan" --platform local --chat-id demo --project "$PWD" --decisions "$PWD/examples/plan-demo/decisions.json" --no-design --no-wake
+</code></pre>
+<p><code>examples/plan-demo/decisions.json</code> uses every 1.2 block; the printed link opens round 1.</p>
 <h3>Install</h3>
 <p>Requires Hermes 0.22.0 or newer and Python 3.9 or newer. The plugin has no Python dependencies.</p>
 <p>Once the plugin is in the Hermes catalog:</p>
@@ -304,7 +324,8 @@ agent. It stays on your computer.</li>
 <li>The same local webhook again, on a second route (<code>&lt;webhook_route&gt;-&lt;platform&gt;-notice</code>): up to two more signed POSTs,
 still loopback only. One right after the wake-up is accepted (an instant "got it, working on round N" in the origin
 chat, also mirrored into that chat's session), and one later, only when a sent round gets no new round within
-<code>stale_after_minutes</code> (or <code>stale_after_read_minutes</code> after the agent read it), to say the agent may have stalled. No
+<code>stale_after_minutes</code> (or <code>stale_after_read_minutes</code> after the agent read it; both times <code>build_stale_factor</code> after
+Build), to say the agent may have stalled. No
 ping for a round with nothing left to build, one the agent acknowledged, or a closed review. Both carry the review title and counts, never your notes, and
 use the same signing secret as the wake-up.</li>
 <li>here.now (<code>https://here.now/api/v1</code>), only for reviews you host with <code>herenow</code>: the plugin publishes the board and
@@ -390,7 +411,7 @@ See <a href="https://github.com/apelabs-dev/hermes-mock-review/blob/main/docs/ho
         <div class="name"><span class="org">stainlu /</span> hermes-labyrinth</div>
       </a>
       <a class="related-row" href="/projects/runta-dev/clawshell">
-        <div class="stars">★ 352</div>
+        <div class="stars">★ 351</div>
         <div class="name"><span class="org">runta-dev /</span> clawshell</div>
       </a>
     </div>

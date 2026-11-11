@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>vshulcz/deja-vu — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="deja-vu indexes coding-agent session histories locally so they can be searched and shared across agents. It can surface earlier context, hand off active work,…">
+<meta name="description" content="deja indexes coding-agent session histories stored on disk for local search across supported agents. It also supports cross-agent session handoff, code…">
 <link rel="canonical" href="https://hermesatlas.com/projects/vshulcz/deja-vu">
 <meta property="og:title" content="vshulcz/deja-vu — Hermes Atlas">
-<meta property="og:description" content="deja-vu indexes coding-agent session histories locally so they can be searched and shared across agents. It can surface earlier context, hand off active work,…">
+<meta property="og:description" content="deja indexes coding-agent session histories stored on disk for local search across supported agents. It also supports cross-agent session handoff, code…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/vshulcz/deja-vu">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="vshulcz/deja-vu — Hermes Atlas">
-<meta name="twitter:description" content="deja-vu indexes coding-agent session histories locally so they can be searched and shared across agents. It can surface earlier context, hand off active work,…">
+<meta name="twitter:description" content="deja indexes coding-agent session histories stored on disk for local search across supported agents. It also supports cross-agent session handoff, code…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=deja-vu&amp;subtitle=Shared+local+memory%2C+cross-agent+handoff%2C+and+code+recovery+across+43+coding+agents.+One+Go+binary%3B+every+session+stays+on+disk.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/vshulcz/deja-vu#software",
   "name": "deja-vu",
-  "description": "deja-vu indexes coding-agent session histories locally so they can be searched and shared across agents. It can surface earlier context, hand off active work, and recover overwritten code, without LLM calls or a cloud account.",
+  "description": "deja indexes coding-agent session histories stored on disk for local search across supported agents. It also supports cross-agent session handoff, code recovery, and automatic recall through hooks and MCP, without LLM calls.",
   "url": "https://hermesatlas.com/projects/vshulcz/deja-vu",
   "codeRepository": "https://github.com/vshulcz/deja-vu",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "vshulcz",
     "url": "https://github.com/vshulcz"
   },
-  "dateModified": "2026-11-10T18:39:57.000Z",
+  "dateModified": "2026-11-11T06:24:32.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 1493
+    "userInteractionCount": 1500
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Go</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-10</span>
+    <span><span class="meta-label">updated</span>2026-11-11</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">deja-vu indexes coding-agent session histories locally so they can be searched and shared across agents. It can surface earlier context, hand off active work, and recover overwritten code, without LLM calls or a cloud account.</p>
+    <p class="summary-text">deja indexes coding-agent session histories stored on disk for local search across supported agents. It also supports cross-agent session handoff, code recovery, and automatic recall through hooks and MCP, without LLM calls.</p>
     <ul class="summary-highlights">
-      <li>Searches session histories from 43 coding agents.</li>
-      <li>Supports cross-agent handoff and recovery of overwritten code.</li>
-      <li>Redacts credentials during indexing.</li>
+      <li>Searches session histories across 43 coding agents.</li>
+      <li>Hands off session goals and state to another agent.</li>
+      <li>Recovers overwritten code and traces edits to sessions.</li>
     </ul>
   </div>
 </section>
@@ -162,40 +162,39 @@
   </picture>
 </p>
 
-<p align="center"><b>Shared local memory, cross-agent handoff, and code recovery across 43 coding agents.</b></p>
-
-<p align="center">Claude Code, Codex, Cursor, OpenClaw, Gemini CLI, OpenCode, Hermes and 36 more agents already save every session to disk.<br>
-deja indexes all of it locally so your agents keep context across <code>/compact</code>, hand off mid-task via <code>deja handoff</code>, and recover overwritten code via <code>deja restore</code> — no LLM, one Go binary.</p>
+<p align="center"><b>Shared local memory, cross-agent handoff, and code recovery across 43 coding agents.</b><br>
+Claude Code, Codex, Cursor, OpenClaw, Gemini CLI, OpenCode, Hermes and 36 more agents already save every session to disk.<br>
+<code>deja</code> indexes all of it locally in one Go binary — zero LLM calls, 0.7 ms in-process lookup, ~4% index footprint.</p>
 
 <p align="center">English | <a href="docs/readme/README.zh.md">简体中文</a> | <a href="docs/readme/README.zh-TW.md">繁體中文</a> | <a href="docs/readme/README.ja.md">日本語</a> | <a href="docs/readme/README.ko.md">한국어</a> | <a href="docs/readme/README.es.md">Español</a> | <a href="docs/readme/README.pt.md">Português</a> | <a href="docs/readme/README.fr.md">Français</a> | <a href="docs/readme/README.de.md">Deutsch</a> | <a href="docs/readme/README.ru.md">Русский</a> | <a href="docs/readme/README.tr.md">Türkçe</a> | <a href="docs/readme/README.hi.md">हिन्दी</a></p>
-
-<p align="center">
-  <a href="https://trendshift.io/repositories/83640"><img src="https://trendshift.io/api/badge/trendshift/repositories/83640/daily?language=Go" alt="#1 Go Repository Of The Day" width="250" height="55"></a>
-</p>
 
 <p align="center">
   <a href="https://github.com/vshulcz/deja-vu/stargazers"><img src="https://img.shields.io/github/stars/vshulcz/deja-vu?style=flat&amp;color=f59e0b" alt="GitHub Stars"></a>
   <a href="https://github.com/vshulcz/deja-vu/actions/workflows/ci.yml"><img src="https://github.com/vshulcz/deja-vu/actions/workflows/ci.yml/badge.svg?branch=main&amp;event=push" alt="CI"></a>
   <a href="https://github.com/vshulcz/deja-vu/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/coverage-88%25-brightgreen" alt="Coverage"></a>
   <a href="https://github.com/vshulcz/deja-vu/releases"><img src="https://img.shields.io/github/v/release/vshulcz/deja-vu" alt="Release"></a>
-  <a href="https://mcptoplist.com/server/io.github.vshulcz%2Fdeja-vu"><img src="https://mcptoplist.com/badge/io.github.vshulcz%2Fdeja-vu.svg" alt="MCP Toplist"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
+  ·
+  <a href="https://vshulcz.github.io/deja-vu/"><b>Website</b></a> · <a href="https://vshulcz.github.io/deja-vu/view/"><b>Live demo</b></a> · <a href="https://vshulcz.github.io/deja-vu/guide/getting-started.html">Docs</a> · <a href="https://vshulcz.github.io/deja-vu/guide/benchmarks.html">Benchmarks</a> · <a href="https://vshulcz.github.io/deja-vu/guide/compare.html">Compare</a> · <a href="docs/ARCHITECTURE.md">Architecture</a>
 </p>
-
-<p align="center"><a href="https://vshulcz.github.io/deja-vu/"><b>Website &amp; interactive search</b></a> · <a href="https://vshulcz.github.io/deja-vu/view/"><b>Live browser demo</b></a> · <a href="https://vshulcz.github.io/deja-vu/guide/getting-started.html">Docs</a> · <a href="https://vshulcz.github.io/deja-vu/guide/benchmarks.html">Benchmarks</a> · <a href="https://vshulcz.github.io/deja-vu/guide/compare.html">How it compares</a> · <a href="docs/INTEGRATING.md">Building it into your tool</a></p>
 
 <p align="center"><img src="https://raw.githubusercontent.com/vshulcz/deja-vu/main/assets/demo.gif" width="720" alt="The same question put to the same agent twice: without memory it has no record of it, with deja it answers with the decision from eight months earlier"></p>
 
 <pre><code class="language-sh">curl -fsSL https://raw.githubusercontent.com/vshulcz/deja-vu/main/install.sh | sh
 deja install --auto
 </code></pre>
-<p align="center"><sub>Or with Homebrew: <code>brew install deja-vu &amp;&amp; deja install --auto</code> · Claude Code plugin: <code>claude plugin marketplace add vshulcz/deja-vu &amp;&amp; claude plugin install deja-vu@deja-vu</code> · Agent Skills: <code>npx skills add vshulcz/deja-vu</code><br><a href="#install">Windows (Scoop / winget), Codex, OpenCode, OpenClaw and more</a> · Try without installing: <code>npx @vshulcz/deja-vu sources</code> · <a href="https://vshulcz.github.io/deja-vu/view/">Live demo →</a></sub></p>
+<p align="center"><sub>Homebrew: <code>brew install deja-vu &amp;&amp; deja install --auto</code> · Claude Code: <code>claude plugin marketplace add vshulcz/deja-vu &amp;&amp; claude plugin install deja-vu@deja-vu</code> · Skills: <code>npx skills add vshulcz/deja-vu</code><br><a href="#install">Windows (Scoop / winget), Codex, OpenCode, OpenClaw and more</a> · Inspect existing stores without installing: <code>npx @vshulcz/deja-vu sources</code></sub></p>
 
+<pre><code class="language-sh">$ deja "jwt refresh token"             # lexical + structural search across all 43 agent stores
+$ deja handoff --to codex              # continue the active session's goal &amp; state in another agent
+$ deja restore internal/auth/jwt.go    # recover code an agent overwrote before git commit
+$ deja blame internal/auth/jwt.go:42   # trace which agent session wrote or replaced a line
+</code></pre>
 <table align="center">
 <tbody><tr>
 <td align="center" width="33%">Recall<br><b>97.2% R@5</b> on LongMemEval-S<br><sub>MemPalace publishes 96.6%, agentmemory 95.2%</sub></td>
 <td align="center" width="33%">Tokens<br><b>half the tokens</b> of agentmemory<br><sub>on a task this machine had already solved</sub></td>
-<td align="center" width="33%">Index time<br><b>13.6 s</b> to index 19,195 sessions<br><sub>the next of seven tools takes 72 s</sub></td>
+<td align="center" width="33%">Index &amp; lookup<br><b>13.6 s</b> / <b>0.7 ms</b> lookup<br><sub>19,195 sessions (next of 7 tools: 72 s)</sub></td>
 </tr>
 </tbody></table>
 
@@ -222,7 +221,7 @@ the sessions behind your uncommitted changes, then recent work in the current pr
 <li><strong>Automatic recall via hooks &amp; MCP.</strong> Surfaces prior sessions at session start, before a file edit or command runs, and when a command fails.</li>
 <li><strong>Tracks decision lifecycle &amp; staleness.</strong> <code>deja promote &lt;id&gt; --state rejected</code> marks a reverted approach so later hits warn why it was dropped (<code>--state accepted</code> takes the mark back), and hits report when files touched by a session have changed since.</li>
 <li><strong>Travels with the repository.</strong> <code>deja repo add</code> commits the decisions and dead ends you pick into <code>.deja/memory.jsonl</code>; a teammate's agent recalls them after a clone (<a href="#memory-in-the-repository">repo memory</a>).</li>
-<li><strong>Local and private by default.</strong> Zero LLM calls, no cloud account, and automatic credential redaction at index time (<a href="#privacy">privacy</a>).</li>
+<li><strong>Incremental local index.</strong> Append-only <code>records.bin</code> plus token buckets in <code>~/.cache/deja</code>, with per-file watermarks in <code>manifest.gob</code> so repeat passes only read changed files (~50 ms freshness check; 4% index footprint on a 5.7 GB / 358k-message corpus). Zero LLM calls, no cloud account, and automatic credential redaction at index time (<a href="https://github.com/vshulcz/deja-vu/blob/main/docs/ARCHITECTURE.md">architecture</a>, <a href="#privacy">privacy</a>).</li>
 </ul>
 <h4>Your own work, wrapped</h4>
 <p><code>deja stats --card</code> draws your yearly agent activity in the terminal or writes an SVG for your GitHub profile (<a href="https://vshulcz.github.io/deja-vu/card/">convert to PNG in browser</a>).</p>
@@ -1086,6 +1085,11 @@ for people who install extensions there rather than from a CLI:</p>
 <td><code>code --install-extension vshulcz.deja-status</code></td>
 </tr>
 <tr>
+<td>Neovim</td>
+<td><code>lazy.nvim</code> plugin (<a href="extensions/nvim/"><code>extensions/nvim/</code></a>)</td>
+<td><code>{ "vshulcz/deja-vu", opts = {} }</code></td>
+</tr>
+<tr>
 <td>Raycast</td>
 <td>Raycast extension <code>deja-vu</code></td>
 <td><code>cd extensions/raycast &amp;&amp; npm install &amp;&amp; npx ray develop</code></td>
@@ -1440,7 +1444,7 @@ anywhere, and how to exclude a project or forget a session is under
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 60.3K</div>
+        <div class="stars">★ 60.4K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
