@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>briancaffey/hermes-otel — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="hermes-otel is an OpenTelemetry plugin for Hermes Agent that turns agent activity—including model calls, tool calls, approvals, and delegated sub-agents—into…">
+<meta name="description" content="hermes-otel is an OpenTelemetry plugin for Hermes Agent that records agent turns as traces, including model and API calls, tool use, skill loads, approvals,…">
 <link rel="canonical" href="https://hermesatlas.com/projects/briancaffey/hermes-otel">
 <meta property="og:title" content="briancaffey/hermes-otel — Hermes Atlas">
-<meta property="og:description" content="hermes-otel is an OpenTelemetry plugin for Hermes Agent that turns agent activity—including model calls, tool calls, approvals, and delegated sub-agents—into…">
+<meta property="og:description" content="hermes-otel is an OpenTelemetry plugin for Hermes Agent that records agent turns as traces, including model and API calls, tool use, skill loads, approvals,…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/briancaffey/hermes-otel">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="briancaffey/hermes-otel — Hermes Atlas">
-<meta name="twitter:description" content="hermes-otel is an OpenTelemetry plugin for Hermes Agent that turns agent activity—including model calls, tool calls, approvals, and delegated sub-agents—into…">
+<meta name="twitter:description" content="hermes-otel is an OpenTelemetry plugin for Hermes Agent that records agent turns as traces, including model and API calls, tool use, skill loads, approvals,…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-otel&amp;subtitle=OTel+Plugin+for+Hermes+Agent&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/briancaffey/hermes-otel#software",
   "name": "hermes-otel",
-  "description": "hermes-otel is an OpenTelemetry plugin for Hermes Agent that turns agent activity—including model calls, tool calls, approvals, and delegated sub-agents—into traces. It records token, cost, and latency metrics, with optional logs and structured events, and exports over OTLP HTTP or gRPC.",
+  "description": "hermes-otel is an OpenTelemetry plugin for Hermes Agent that records agent turns as traces, including model and API calls, tool use, skill loads, approvals, and delegated sub-agents. It collects token, cost, and latency metrics, can also export logs and structured events, and sends telemetry to OTLP backends over HTTP or gRPC.",
   "url": "https://hermesatlas.com/projects/briancaffey/hermes-otel",
   "codeRepository": "https://github.com/briancaffey/hermes-otel",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "briancaffey",
     "url": "https://github.com/briancaffey"
   },
-  "dateModified": "2026-11-10T02:33:59.000Z",
+  "dateModified": "2026-11-11T19:39:15.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-11-10</span>
+    <span><span class="meta-label">updated</span>2026-11-11</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">hermes-otel is an OpenTelemetry plugin for Hermes Agent that turns agent activity—including model calls, tool calls, approvals, and delegated sub-agents—into traces. It records token, cost, and latency metrics, with optional logs and structured events, and exports over OTLP HTTP or gRPC.</p>
+    <p class="summary-text">hermes-otel is an OpenTelemetry plugin for Hermes Agent that records agent turns as traces, including model and API calls, tool use, skill loads, approvals, and delegated sub-agents. It collects token, cost, and latency metrics, can also export logs and structured events, and sends telemetry to OTLP backends over HTTP or gRPC.</p>
     <ul class="summary-highlights">
-      <li>Traces agent turns, tool calls, approvals, and sub-agents</li>
-      <li>Exports over OTLP HTTP or gRPC</li>
-      <li>Emits OpenInference and OTel GenAI attributes</li>
+      <li>Records turns as traces with nested spans.</li>
+      <li>Supports HTTP and gRPC OTLP export.</li>
+      <li>Can export to multiple backends at once.</li>
     </ul>
   </div>
 </section>
@@ -258,7 +258,7 @@
 hermes plugins enable hermes_otel         # the manifest name; installing does not enable
 </code></pre>
 <p>Hermes 0.21+ installs the plugin's Python dependencies (the OTel API, SDK, and HTTP/gRPC exporters) into its own virtualenv automatically and re-applies them after every <code>hermes update</code>. Restart the gateway afterwards if one is running. <code>hermes plugins update hermes_otel</code> moves a catalog install to the newest reviewed commit.</p>
-<p><strong>What leaves your machine.</strong> Span data goes only to the OTLP backends you configure. By default (<code>content_capture: full</code>) that includes the complete prompt and response of every model call, unclipped, plus previews of tool arguments and output clipped to 1200 characters. With none configured the plugin keeps a local SQLite store under <code>$HERMES_HOME</code> for the dashboard and sends nothing. <code>content_capture: preview</code> keeps only the clipped previews and <code>content_capture: off</code> drops content entirely while keeping the structure; see <a href="https://briancaffey.github.io/hermes-otel/configuration/conversation-capture">Conversation capture</a> and <a href="https://briancaffey.github.io/hermes-otel/configuration/privacy">Privacy mode</a>. The dashboard's <strong>Settings</strong> tab shows every setting in force, where each came from (file, environment variable or default) and the config file itself.</p>
+<p><strong>What leaves your machine.</strong> Span data goes only to the OTLP backends you configure. By default (<code>content_capture: full</code>) that includes the complete prompt and response of every model call, unclipped, plus previews of tool arguments and output clipped to 1200 characters. With none configured the plugin keeps a local SQLite store under <code>$HERMES_HOME</code> for the dashboard and sends nothing. <code>content_capture: preview</code> keeps only the clipped previews and <code>content_capture: off</code> drops content entirely while keeping the structure, and <code>capture_tool_command</code> / <code>capture_tool_target</code> / <code>capture_error_message: false</code> also leave out command lines, paths, URLs and error text; see <a href="https://briancaffey.github.io/hermes-otel/configuration/conversation-capture">Conversation capture</a> and <a href="https://briancaffey.github.io/hermes-otel/configuration/privacy">Privacy mode</a>. The dashboard's <strong>Settings</strong> tab shows every setting in force, where each came from (file, environment variable or default) and the config file itself.</p>
 <p>To run the newest code before it reaches the catalog pin, install from this repository instead (same plugin, newest <code>main</code>, not catalog-reviewed):</p>
 <pre><code class="language-bash">hermes plugins install briancaffey/hermes-otel/hermes_otel --enable
 </code></pre>
