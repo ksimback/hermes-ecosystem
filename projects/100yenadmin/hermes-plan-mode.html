@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>100yenadmin/hermes-plan-mode — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
+<meta name="description" content="Hermes Plan Mode is a plugin for Hermes Agent that lets the agent explore with read-only tools, write a Markdown plan, and request approval before…">
+<link rel="canonical" href="https://hermesatlas.com/projects/100yenadmin/hermes-plan-mode">
+<meta property="og:title" content="100yenadmin/hermes-plan-mode — Hermes Atlas">
+<meta property="og:description" content="Hermes Plan Mode is a plugin for Hermes Agent that lets the agent explore with read-only tools, write a Markdown plan, and request approval before…">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/100yenadmin/hermes-plan-mode">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-plan-mode&amp;subtitle=Plan+mode+for+Hermes+Agent%3A+it+explores+read-only+and+writes+a+plan%2C+and+its+edit+tools+stay+blocked+until+you+approve.&amp;kind=project+%C2%B7+plugins">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="100yenadmin/hermes-plan-mode — Hermes Atlas">
+<meta name="twitter:description" content="Hermes Plan Mode is a plugin for Hermes Agent that lets the agent explore with read-only tools, write a Markdown plan, and request approval before…">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-plan-mode&amp;subtitle=Plan+mode+for+Hermes+Agent%3A+it+explores+read-only+and+writes+a+plan%2C+and+its+edit+tools+stay+blocked+until+you+approve.&amp;kind=project+%C2%B7+plugins">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "plugins &amp; extensions", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 3, "name": "hermes-plan-mode" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/100yenadmin/hermes-plan-mode#software",
+  "name": "hermes-plan-mode",
+  "description": "Hermes Plan Mode is a plugin for Hermes Agent that lets the agent explore with read-only tools, write a Markdown plan, and request approval before implementation. After approval, it can implement the plan in the same turn and track progress in a todo list.",
+  "url": "https://hermesatlas.com/projects/100yenadmin/hermes-plan-mode",
+  "codeRepository": "https://github.com/100yenadmin/hermes-plan-mode",
+  "applicationCategory": "BrowserApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
+  "author": {
+    "@type": "Organization",
+    "name": "100yenadmin",
+    "url": "https://github.com/100yenadmin"
+  },
+  "dateModified": "2026-11-11T06:15:00.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 48
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">318·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/">plugins &amp; extensions</a><span class="sep">/</span>hermes-plan-mode
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">100yenadmin</span><span class="slash">/</span>hermes-plan-mode
+  </h1>
+  <p class="project-desc">Plan mode for Hermes Agent: it explores read-only and writes a plan, and its edit tools stay blocked until you approve.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 48</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
+    
+    <span><span class="meta-label">updated</span>2026-11-11</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/100yenadmin/hermes-plan-mode" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">Hermes Plan Mode is a plugin for Hermes Agent that lets the agent explore with read-only tools, write a Markdown plan, and request approval before implementation. After approval, it can implement the plan in the same turn and track progress in a todo list.</p>
+    <ul class="summary-highlights">
+      <li>Blocks write and other tools while planning.</li>
+      <li>Supports plan commands across Hermes interactive surfaces.</li>
+      <li>Offers approval and plan-revision options.</li>
+    </ul>
+  </div>
+</section>
+
+
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h2>Hermes Plan Mode</h2>
+<p><img src="https://raw.githubusercontent.com/100yenadmin/hermes-plan-mode/main/docs/media/banner.jpg" alt="Hermes Plan Mode" loading="lazy" decoding="async"></p>
+<p>Plan mode for Hermes Agent: it explores read-only and writes a plan, and its edit tools stay blocked until you approve. Hermes'
+Codex app-server runtime and TUI <code>/background</code> and <code>btw</code> side agents are outside the block (<a href="#why-it-exists">why</a>).</p>
+<p>▶ <a href="https://x.com/ElectricSheepIO/status/2119788419924570130">Watch the 85-second demo</a></p>
+<p><a href="https://github.com/user-attachments/assets/a900f39d-417c-4517-be9e-58bad3cf3538">https://github.com/user-attachments/assets/a900f39d-417c-4517-be9e-58bad3cf3538</a></p>
+<p><a href="https://github.com/100yenadmin/hermes-plan-mode/releases/latest"><img src="https://img.shields.io/github/v/release/100yenadmin/hermes-plan-mode" alt="Latest release" loading="lazy" decoding="async"></a>
+<a href="LICENSE"><img src="https://img.shields.io/github/license/100yenadmin/hermes-plan-mode" alt="License: MIT" loading="lazy" decoding="async"></a>
+<a href="#compatibility"><img src="https://img.shields.io/badge/Hermes-%E2%89%A5%200.21.3-blue" alt="Hermes >= 0.21.3" loading="lazy" decoding="async"></a>
+<a href="https://github.com/100yenadmin/hermes-plan-mode/actions/workflows/ci.yml"><img src="https://github.com/100yenadmin/hermes-plan-mode/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI" loading="lazy" decoding="async"></a></p>
+<pre><code class="language-bash">hermes plugins install 100yenadmin/hermes-plan-mode --enable
+</code></pre>
+<p>No API keys and no extra dependencies. It needs Hermes 0.21.3 or newer on the classic CLI, and 0.21.5 (v2026.9.24) or
+newer on the gateway, TUI and Desktop; 0.21.6 or newer is recommended (<a href="#compatibility">Compatibility</a>). Restart any
+running Hermes session (and <code>hermes gateway restart</code> if you use the messaging gateway), then try it.
+<a href="#install">Install</a> covers pinning a release.</p>
+<h3>Try it</h3>
+<ol>
+<li>In a project, start a Hermes session and type <code>/plan add a --dry-run flag to the import command</code>.</li>
+<li>The agent reads the code, may ask you one question with its recommended answer first, writes a plan and shows it
+with an approval card: "Approve, auto-accept edits", "Approve, review each file edit" (when Hermes approvals are on)
+or keep planning, where Other sends feedback.</li>
+<li>Approve it. The agent builds the plan in the same turn, tracks the steps in a todo list and ends with a line such as
+<code>✅ Plan rev 1 done: 4 of 4 steps, 2 files changed (importer.py, test_importer.py)</code>.</li>
+</ol>
+<p><code>/planmode status</code> shows where you are, <code>/planmode list</code> shows your plans, and <code>/planmode off</code> leaves plan mode without
+approving anything.</p>
+<h3>Why it exists</h3>
+<p><code>/plan</code> in core Hermes is a prompt, which the model can ignore. Plan Mode turns it into a lock. The lock covers the
+tools Hermes dispatches through its <code>pre_tool_call</code> hook; Hermes' Codex app-server runtime and TUI <code>/background</code> and
+<code>btw</code> side agents run outside that hook, so plan mode does not block them (<a href="#known-limitations">Known limitations</a>).
+It works on every interactive Hermes surface (CLI, TUI, Desktop and the messaging platforms) with no core changes.</p>
+<ul>
+<li><strong>A real lock.</strong> While it plans, Plan Mode lets through only a short read-only list of tools and blocks the rest
+at Hermes' <code>pre_tool_call</code> hook, including file writes and patches, the terminal, code execution, sub-agents and
+MCP tools. The only file it can write is its own plan, and the reply ends with a line naming any call it blocked.</li>
+<li><strong>Questions before guesses.</strong> It asks about choices only you can make, usually one question with its recommended
+choice first. Say "grill me", or set Questions to <code>thorough</code>, and it interviews you, one decision at a time,
+before every plan.</li>
+<li><strong>One approval for the whole plan.</strong> A card offers: approve and auto-accept edits, approve and review each file
+edit (each <code>write_file</code> and <code>patch</code>; shell commands keep Hermes' own approvals), or keep planning (Other sends feedback). Approval belongs to the exact plan you saw: if the plan changes, it
+asks again. The classic profile and surfaces without a card use Hermes' own approval prompt.</li>
+<li><strong>It builds in the same turn</strong> and tracks progress in a todo list. With Allow commits off (the default), terminal
+<code>git commit</code> and <code>git push</code> stay blocked while the plan runs, unless you ask for a commit. When the plan is done,
+the reply says so in one line.</li>
+<li><strong>A live progress card</strong> on Telegram, Discord, Slack, Desktop and the TUI: one message lists the plan's steps and
+updates as each one finishes (✓ done, ▶ now, ○ next), ending with "✅ Plan rev N done". The classic CLI keeps Hermes'
+own todo list.</li>
+<li><strong>Wherever you use Hermes:</strong> the same card on the CLI, TUI and Desktop, and as buttons on Telegram, Slack and
+Discord.</li>
+</ul>
+<p><strong>Contents:</strong> <a href="#how-it-works">How it works</a> · <a href="#what-you-see-on-each-channel">What you see on each channel</a> ·
+<a href="#install">Install</a> · <a href="#commands">Commands</a> · <a href="#the-agent-tool">The agent tool</a> ·
+<a href="#what-is-allowed-in-plan-mode">What is allowed in plan mode</a> · <a href="#configuration">Configuration</a> ·
+<a href="#compared-with-other-plan-modes">Compared with other plan modes</a> · <a href="#security-model">Security model</a> ·
+<a href="#known-limitations">Known limitations</a> · <a href="#compatibility">Compatibility</a> · <a href="#how-to-test">How to test</a> ·
+<a href="#disclosure">Disclosure</a> · <a href="#troubleshooting-and-reporting-a-bug">Troubleshooting and reporting a bug</a></p>
+<h3>How it works</h3>
+<ol>
+<li>Start planning with <code>/plan &lt;task&gt;</code> or <code>/planmode on [task]</code>. The agent can also enter on its own with the
+<code>plan_mode</code> tool.</li>
+<li>The agent explores with read-only tools. For a choice only you can make, it asks with <code>clarify</code> before it writes
+the plan. With the default <code>lean</code> profile it prefers one question and asks at most three, each with 2–3 choices,
+recommended first. Say "grill me" in your request for more, or set Questions to <code>thorough</code> for an interview before
+every plan: one decision per question, until no open choice is left.</li>
+<li>It writes the plan as Markdown under <code>&lt;cwd&gt;/.hermes/plans</code>.</li>
+<li>It shows the complete plan in its reply, then calls <code>plan_mode(action="submit")</code>.</li>
+<li>With the default <code>lean</code> profile, plan mode asks one <code>clarify</code> card for plan revision N: "Approve, auto-accept
+edits" (recommended), "Approve, review each file edit" (only when Hermes approvals are on) or "Keep planning".
+<code>/planmode show</code> prints the plan (up to 64 KB, then a truncation notice). The classic profile, a custom <code>levers</code> list without <code>approval_card</code>, and
+ACP, API server, cron and webhooks keep Hermes' own approval prompt: buttons, a card, the CLI panel or <code>/approve</code>.
+If a turn ends while the plan still awaits approval and no card was answered, the reply ends with a line saying how to approve
+(unless <code>footer</code> is off).</li>
+<li>Approve: plan mode turns off and the agent implements the plan in the same turn. It mirrors the steps into
+<code>todo_list</code> (with the default <code>lean</code> profile, for plans of 4 or more steps). With "review each file edit", every
+<code>write_file</code> / <code>patch</code> gets Hermes' approval prompt first. When the last todo is marked done, the plan ends at the
+end of that turn, so fixes made in that turn after a failed final test still get the review and the no-commit block.
+That reply ends with one line, for example <code>✅ Plan rev 2 done: 5 of 5 steps, 3 files changed (cli.py, test_cli.py, README.md)</code> (chat platforms give counts only; API server, webhook and cron replies stay unchanged; <code>footer: off</code>
+turns it off). With the default lean profile, a short plan without todos gets the line when it changed files. Typed <code>/planmode approve</code> also works while the card is
+open and selects auto-accept edits.</li>
+<li>Keep planning, or Other with feedback: plan mode stays on. The agent asks what to change (when no feedback came
+with it), revises the plan and submits a complete new revision. Its card says what changed since the last one
+("Changed since rev 1: +6/−5 lines in Summary, Key changes, Test plan").</li>
+</ol>
+<pre><code class="language-text">  /plan &lt;task&gt;  ─┐
+  /planmode on  ─┼─► PLANNING ── read-only tools, clarify, write the plan file
+  agent: on     ─┘        │
+                          │  agent shows the plan, calls plan_mode(submit)
+                          ▼
+   approval card (rev N): approve / review each edit / keep planning
+                   │                       │
+           approve │                       │ keep planning, Other ─► revise ─► submit rev N+1
+                   ▼                       │ timeout ─► /planmode approve (typed)
+        EXECUTING in the same turn         ▼
+        todo_list progress            still PLANNING
+                   │
+   all todos done, /planmode done or off ─► OFF
+</code></pre>
+<p>A real run on the Hermes CLI with the default lean profile (<code>/planmode on Add a subtract(a, b) function to calc.py with a test, and make divide raise ValueError on zero.</code>), after one clarifying question:</p>
+<p><img src="https://raw.githubusercontent.com/100yenadmin/hermes-plan-mode/main/docs/media/cli-card.png" alt="The approval card for plan rev 1 under the end of the plan: approve and auto-accept edits, approve and review each file edit, keep planning, or Other" loading="lazy" decoding="async"></p>
+<p>With <strong>Approve, review each file edit</strong>, each file write shows its path and a preview before it applies:</p>
+<p><img src="https://raw.githubusercontent.com/100yenadmin/hermes-plan-mode/main/docs/media/cli-edit-review.png" alt="A plan-mode edit review prompt for a patch to calc.py with Allow once, Allow for this session, Add to permanent allowlist and Deny" loading="lazy" decoding="async"></p>
+<p>The implementation then runs in the same turn (excerpt):</p>
+<p><img src="https://raw.githubusercontent.com/100yenadmin/hermes-plan-mode/main/docs/media/cli-card-implement.png" alt="The two approved patches applied and the final summary with both test commands passing" loading="lazy" decoding="async"></p>
+<p>To change the plan yourself, choose <strong>Keep planning</strong>, run <code>/planmode edit</code>, save your change, then <code>/planmode show</code>
+and <code>/planmode approve</code>. Approving a changed file before showing it is refused:</p>
+<p><img src="https://raw.githubusercontent.com/100yenadmin/hermes-plan-mode/main/docs/media/cli-edit-approve.png" alt="/planmode edit prints the plan path; approve before show is refused with a summary of the changed lines; show prints the full plan with the added section; approve then starts implementation" loading="lazy" decoding="async"></p>
+<p>The classic profile (<code>plan_profile: classic</code>) approves through Hermes' own approval panel instead:</p>
+<p><img src="https://raw.githubusercontent.com/100yenadmin/hermes-plan-mode/main/docs/media/cli-approval.png" alt="The classic CLI approval panel for plan rev 1, under the end of the plan the agent just showed" loading="lazy" decoding="async"></p>
+<h3>What you see on each channel</h3>
+<p>The plugin uses the approval and <code>clarify</code> UIs each Hermes surface already has; it only sizes the approval text per
+platform.</p>
+<p>Since 0.6.0 the lean default asks for plan approval with a <code>clarify</code> card, so the "Clarifying questions" column shows
+how it renders. The "Approval prompt" column applies to the per-edit review prompts, the classic profile, and
+surfaces without a card.</p>
+<table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>Approval prompt</th>
+<th>Clarifying questions</th>
+<th>Mode footer</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CLI</td>
+<td>approval panel with a one-line summary; the full plan is printed just above it</td>
+<td>interactive picker</td>
+<td>no</td>
+</tr>
+<tr>
+<td>TUI / Desktop</td>
+<td>approval card with a one-line summary; the full plan is the reply just above it</td>
+<td>the app's question prompt</td>
+<td>no</td>
+</tr>
+<tr>
+<td>Telegram, Slack, Discord</td>
+<td>native buttons, short summary (title + up to 6 step titles)</td>
+<td>native buttons</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Feishu, Teams</td>
+<td>native buttons, full plan text</td>
+<td>numbered list</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Matrix</td>
+<td>reactions to approve or deny, full plan text</td>
+<td>numbered list</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>WhatsApp Cloud</td>
+<td>native buttons, plan text up to about 1000 chars (the card's limit)</td>
+<td>native buttons</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Mattermost, Google Chat, Signal and other platforms</td>
+<td><code>/approve</code> or <code>/deny &lt;reason&gt;</code> text, full plan text</td>
+<td>buttons where the platform has them, else a numbered list</td>
+<td>yes</td>
+</tr>
+</tbody></table>
+<ul>
+<li>On Telegram, Slack and Discord the approval card has a small text budget (Discord 300 chars, Telegram and Slack
+500), so the prompt carries a ≤250-char summary. The full plan is the agent's reply sent just before it.</li>
+<li>Mattermost and several other platforms (for example Signal, WhatsApp Cloud and SMS) do not send the agent's in-progress text
+before the approval prompt by default. On those, and everywhere without a budget, the approval text carries the
+full plan, capped at about 3500 chars (about 1000 on WhatsApp Cloud) with a pointer to the file.</li>
+<li><code>/planmode show</code> prints one complete plan up to 64 KiB; larger files show a prefix and do not arm edited-plan approval.</li>
+<li><strong>Exercised vs supported.</strong> We have run plan mode end to end on the CLI, TUI, Desktop, <code>hermes serve</code> and Telegram.
+On Telegram the approval card's buttons were clicked (0.6.7, two runs): Hermes shows each option's text in the
+message and the buttons as <code>1</code>, <code>2</code>, <code>3</code> and <code>✏️ Other</code>. The other platforms in the table are supported through
+Hermes' own approval and question UIs, but we have not exercised them.</li>
+</ul>
+<h3>Install</h3>
+<pre><code class="language-bash">hermes plugins install 100yenadmin/hermes-plan-mode --enable
+hermes gateway restart        # only if you run the messaging gateway
+</code></pre>
+<p>This installs the repository's main branch. To pin a release, add <code>--ref</code> with that release's exact 40-character
+commit SHA (see its release notes); <code>--ref</code> does not take a tag. Use the <code>100yenadmin/hermes-plan-mode</code> form: on a
+fresh Hermes 0.23.0, installing by catalog name (<code>plan-mode</code>) gives version 1.0.0 until
+<a href="https://github.com/NousResearch/hermes-agent/issues/151856">NousResearch/hermes-agent#151856</a> is fixed. Without
+<code>--enable</code>, run <code>hermes plugins enable plan-mode</code>. Restart running CLI, TUI and Desktop sessions so they load the
+plugin.</p>
+<h3>Commands</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/plan &lt;task&gt;</code></td>
+<td>Core Hermes plan prompt. With this plugin it also turns on enforced plan mode for the session (CLI, gateway, TUI and Desktop all send core's prompt).</td>
+</tr>
+<tr>
+<td><code>/planmode on [task]</code></td>
+<td>Fixes an absolute plans directory for this session and turns enforcement on.</td>
+</tr>
+<tr>
+<td><code>/planmode status</code></td>
+<td>Mode, phase (<code>planning</code>, <code>awaiting approval (rev N)</code>, <code>executing (rev N: &lt;path&gt;)</code>, <code>off</code>), the plans directory, plan files and the last submission.</td>
+</tr>
+<tr>
+<td><code>/planmode list</code></td>
+<td>The newest 20 plans in the plans directory, each with its status: being planned, waiting for approval, building (with steps done), approved, done, or draft. Does not create the directory.</td>
+</tr>
+<tr>
+<td><code>/planmode show [file]</code></td>
+<td>Displays the submitted plan (else the newest), or a named tracked file, up to 64 KiB. Complete local display records the exact reviewed text for edited-plan approval.</td>
+</tr>
+<tr>
+<td><code>/planmode edit [file]</code></td>
+<td>Gives the absolute tracked plan path and instructions to edit, save, show and approve it. Does not launch an editor.</td>
+</tr>
+<tr>
+<td><code>/planmode approve [file]</code></td>
+<td>Approves an unchanged submitted revision, or a changed/named new file after a matching complete local <code>show</code>. A reviewed replacement becomes rev N+1 once.</td>
+</tr>
+<tr>
+<td><code>/planmode reject [feedback]</code></td>
+<td>Keeps plan mode on and gives the feedback to the agent on its next turn.</td>
+</tr>
+<tr>
+<td><code>/planmode done</code></td>
+<td>Ends the executing phase (stops the progress pointer and footer). No approval effect.</td>
+</tr>
+<tr>
+<td><code>/planmode off</code></td>
+<td>Turns plan mode off without approving anything.</td>
+</tr>
+</tbody></table>
+<p>Plan files use <code>&lt;cwd&gt;/.hermes/plans/YYYY-MM-DD_HHMMSS-&lt;slug&gt;.md</code>; the planning note hands the model the current
+timestamp. Writes must use absolute paths under that directory; relative paths are rejected.</p>
+<p>Typed <code>/planmode approve</code> keeps the submitted target; if a newer tracked file was never submitted, name it explicitly
+after reviewing it. Explicit approval of an unsubmitted file also needs its own <code>show</code>. On the messaging gateway,
+plugin commands run only between turns. After a
+typed approval the plugin asks Hermes to start the work at once:</p>
+<ul>
+<li>CLI: works.</li>
+<li>Gateway and TUI/Desktop on Hermes 0.21.6 or newer: only with <code>allow_gateway_injection: true</code> (see Configuration).</li>
+<li>TUI/Desktop on 0.21.5 (<code>v2026.9.24</code>): not available.</li>
+</ul>
+<p>When you type it while the approval prompt is still open, approving that prompt continues the waiting turn with the implementation. Denying the prompt or letting it time out does not cancel your typed approval: the work then starts in the next turn (queued where injection is available, otherwise with your next message). <code>/planmode done</code> before then cancels it.</p>
+<p>Otherwise the reply says "Send any message to start", and your next message starts implementation.</p>
+<h4>Editing a plan before approving</h4>
+<p>On classic CLI, TUI and Desktop, finish or dismiss any open approval first, then run <code>/planmode edit [file]</code>. Edit the
+host file in your editor and wait for the save. On Desktop, open the plan file from the project tree (<code>.hermes/plans/</code>), or from
+the markdown link in the agent's reply when it wrote the file itself, and use the preview's Edit and Save controls. Run <code>/planmode show [file]</code>, read the complete text, then
+<code>/planmode approve [file]</code>. A file changed since submission becomes the approved rev N+1; another save between show
+and approve requires showing it again. Implementation receives the captured text and a saved snapshot under
+<code>&lt;plans_dir&gt;/approved/&lt;stem&gt;-rev&lt;N&gt;-&lt;digest&gt;.md</code> (a newly created file; a taken name gets a short random tag), so
+later edits to the working file do not gain approval.</p>
+<p>Files above 64 KiB do not arm approval. Chat platforms also do not arm edited-file approval because complete delivery
+is unverified: use <strong>Keep planning</strong>, <strong>Other</strong>, or <code>/planmode reject &lt;feedback&gt;</code> for the agent to submit a new revision.
+Those revision notes ask the agent to read and preserve any changes already saved to the file. This is external-file
+editing with exact approval on local surfaces; it does not provide an editor inside the approval dialog.</p>
+<p><strong>Telegram command menu.</strong> Telegram's bot menu holds 60 entries by default (core commands first, then plugin
+commands, then skills), so <code>/planmode</code> may be hidden on busy profiles. Typing it still works and <code>/commands</code> lists
+everything. To pin it:</p>
+<pre><code class="language-yaml">platforms:
+  telegram:
+    extra:
+      command_menu:
+        priority: [planmode]
+</code></pre>
+<h3>The agent tool</h3>
+<p>The plugin registers one tool, <code>plan_mode</code> (toolset <code>plan-mode</code>). The profile must grant that toolset. It is on by default.
+It is off on a platform when that platform's <code>known_plugin_toolsets</code> lists <code>plan-mode</code> but <code>platform_toolsets.&lt;platform&gt;</code>
+does not, which happens when a tool selection was saved there without it. Add <code>plan-mode</code> to that list to turn it back on:</p>
+<ul>
+<li><code>on</code>: enters plan mode for the current session, with the same checks as <code>/planmode on</code>.</li>
+<li><code>status</code>: the same text as <code>/planmode status</code>.</li>
+<li><code>off</code>: ends plan mode only when the agent entered it itself and has not submitted a plan yet. Once a plan is
+submitted, or when you entered plan mode, only <code>/planmode approve</code>, <code>reject</code> or <code>off</code> ends it.</li>
+<li><code>submit</code> (optional <code>path</code>, <code>summary</code>): asks you to approve the plan, on the approval card or through Hermes'
+approval prompt (see How it works). The agent
+should call it on its own, not batched with other tool calls.</li>
+<li><code>inspect</code>: the current state as fields, so the agent can check where it stands (for example after a compaction)
+without parsing text: phase, plan and revision, approval status, edit policy (<code>auto_accept</code> or <code>review_each_edit</code>),
+todo progress, files changed by the approved plan, whether the plan finishes this turn, and the next steps allowed.
+Read-only.</li>
+<li><code>list</code>: the plans in the plans directory with their status, as <code>/planmode list</code> shows them. Read-only.</li>
+</ul>
+<p>The tool cannot approve or reject a plan. Approval is your act, recorded by Hermes' approval hooks or the
+plugin-issued <code>clarify</code> question's answer when Hermes approves automatically.</p>
+<p>On hosts with Tool Search on (the default from v2026.9.24), plugin tools sit behind <code>tool_search</code>, which plan mode
+allows. The plugin adds a short system-prompt hint (≤200 chars) naming <code>plan_mode</code> for multi-step or risky changes,
+and the planning turn note tells the model to search for <code>plan_mode</code> if it is not loaded. <code>/plan</code> and
+<code>/planmode on</code> stay the reliable way in.</p>
+<h3>What is allowed in plan mode</h3>
+<ul>
+<li>file exploration: <code>read_file</code>, <code>search_files</code>;</li>
+<li>web research: <code>web_search</code>, <code>web_extract</code>;</li>
+<li>skills and history: <code>skills_list</code>, <code>session_search</code>, and <code>skill_view</code> while Hermes reports <code>skills.inline_shell</code>
+off (the default);</li>
+<li>planning and user input: <code>todo_list</code>, <code>clarify</code>, <code>plan_mode</code>;</li>
+<li>Tool Search: <code>tool_search</code> and <code>tool_describe</code> (calls made through <code>tool_call</code> are checked as the inner tool);</li>
+<li>media and browser reads: <code>vision_analyze</code>, <code>video_analyze</code>, <code>browser_snapshot</code>, <code>browser_get_images</code>,
+<code>browser_vision</code>;</li>
+<li>local UI reads: <code>read_terminal</code>, <code>read_window_below</code>;</li>
+<li><code>write_file</code> and <code>patch</code> only when every target is an absolute path whose real path stays inside the plans
+directory.</li>
+</ul>
+<p>Everything else is blocked: terminal, code kernels, delegation, messaging, MCP and connector tools, browser
+mutations, cron and kanban mutations, <code>memory</code> (it has no read-only operation), and every unknown tool.</p>
+<h3>Configuration</h3>
+<p>In Hermes Desktop, open <strong>Settings ▸ Plugins ▸ Plan mode</strong>. On Hermes v2026.9.24 the same form sits inline on the
+plan-mode row under <strong>Capabilities ▸ Plugins</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Enforce core /plan (<code>enforce_builtin_plan</code>)</td>
+<td>on</td>
+<td>Core <code>/plan</code> turns on enforced plan mode for the session</td>
+</tr>
+<tr>
+<td>Agent hint (<code>agent_hint</code>)</td>
+<td>on</td>
+<td>The ≤200-char system-prompt hint naming <code>plan_mode</code>. It applies when Hermes next loads plugins: a new CLI process, or a restart of the gateway or app</td>
+</tr>
+<tr>
+<td>Progress card (<code>progress_card</code>)</td>
+<td>on</td>
+<td>While an approved plan is being built, one message lists its steps and updates as they finish. Shown on Desktop, the TUI and chat platforms that edit messages in place (Telegram, Discord, Slack, Matrix, Mattermost, WhatsApp, Feishu, DingTalk, Google Chat); needs Hermes 0.22.7 or newer. The classic CLI shows Hermes' own todo list instead</td>
+</tr>
+<tr>
+<td>Chat footer (<code>footer</code>)</td>
+<td><code>auto</code></td>
+<td><code>auto</code> or <code>off</code>: the one-line plan/progress footer on chat platforms. Off also turns off the approval pointer and the blocked-calls line on every surface</td>
+</tr>
+<tr>
+<td>Extra read-only tools (<code>extra_allowed_tools</code>)</td>
+<td>none</td>
+<td>Exact tool names you vouch for as read-only; plan mode lets them run</td>
+</tr>
+<tr>
+<td>Plan profile (<code>plan_profile</code>)</td>
+<td><code>lean</code></td>
+<td><code>lean</code>: faster, leaner compact plans (see below). <code>classic</code>: the 0.3.5 behaviour. Lean applies with Plan style <code>compact</code> and no Plan skill</td>
+</tr>
+<tr>
+<td>Approval card (<code>approval_card</code>)</td>
+<td>on</td>
+<td>Ask for plan approval with one card in the lean profile. Off uses Hermes' approval prompt and wins over <code>levers</code> and <code>PLAN_MODE_LEVERS</code>. Change it between plans: it takes effect at once, and turning it off stops per-edit review of a running plan</td>
+</tr>
+<tr>
+<td>Questions (<code>questions</code>)</td>
+<td><code>normal</code></td>
+<td><code>normal</code>: the agent asks only what reading the code cannot settle (in the lean profile it prefers one question; say "grill me" for more). <code>thorough</code>: it interviews you before every plan, one decision per question with a recommended choice, until no open choice is left, and the plan is asked to record each answer as your decision. Applies to every profile</td>
+</tr>
+<tr>
+<td>Plan style (<code>plan_style</code>)</td>
+<td><code>compact</code></td>
+<td><code>compact</code>: a short, decision-complete plan (Goal, Decisions, Changes, Steps, Validation), as in Claude Code and Codex. <code>core</code>: Hermes' own <code>/plan</code> craft (zero-context tasks, full code, a commit per step)</td>
+</tr>
+<tr>
+<td>Allow commits (<code>allow_commits</code>)</td>
+<td>off</td>
+<td>Off: the agent is told not to plan or make git commits unless you ask; terminal-tool <code>git commit</code> and <code>git push</code> are blocked while an approved plan executes unless you ask. Aliases, scripts, <code>execute_code</code>, MCP git tools and other commit-creating git commands (merge, revert, cherry-pick, am) are not caught (see Known limitations). On: it may commit as the plan style suggests</td>
+</tr>
+<tr>
+<td>Plan skill (<code>plan_skill</code>)</td>
+<td>none</td>
+<td>The name of a skill whose plan format to use instead, such as your own planning contract; it wins over Plan style. When plan mode has to block <code>skill_view</code> (<code>skills.inline_shell</code> is on), Plan style is used</td>
+</tr>
+</tbody></table>
+<h4>The lean profile (default since 0.4.0)</h4>
+<p>Lean keeps everything that makes plan mode safe: the approval gate, the plan file, and asking before guessing. It cuts
+the rest.</p>
+<ul>
+<li><strong>Planning note.</strong> It replaces core <code>/plan</code>'s ceremony with a short note: no 2–5-minute task slicing, no copy-paste
+code, and no red/green TDD steps unless you ask for TDD.</li>
+<li><strong>Plan format.</strong> It is Codex-style: Summary; Key changes, grouped by behaviour and naming every touched file and
+every consumer of a changed interface; Test plan with exact commands; Assumptions.</li>
+<li><strong>Questions.</strong> The agent asks only about choices that reading the repo cannot settle. It prefers one question, asks
+at most three, and gives each 2–3 choices written as label — consequence, recommended first. If you ask to be
+questioned more ("grill me"), it asks one decision per question until none is left. The Questions setting
+(<code>thorough</code>) makes that the default.</li>
+<li><strong>Fewer bookkeeping calls.</strong><ul>
+<li><code>todo_list</code> is used only for plans with 4 or more steps, and status updates ride along with real work.</li>
+<li>Later planning turns get a short reminder instead of the full note.</li>
+</ul>
+</li>
+<li><strong>Plan once (TUI, Desktop and <code>hermes serve</code>, since 0.4.1).</strong> The agent writes the plan once, in its reply between a
+<code>&lt;proposed_plan&gt;</code> line and a <code>&lt;/proposed_plan&gt;</code> line, and the plugin saves that text as the plan file. This needs
+Hermes 0.21.5 (v2026.9.24) or later with interim messages shown (and, for Codex models, commentary shown). When those
+conditions are not met, and always on the CLI and chat platforms, the agent writes the plan file as before. Plan once
+saves the reply text Hermes hands plugins after each model call. If another plugin holds the stream to withhold
+commentary (<code>transform_llm_output</code> with <code>hold_stream</code>), that text can include commentary it kept off screen; use
+<code>plan_profile: classic</code> alongside such a plugin, and leave <code>plan_once</code> (and <code>all</code>) out of any custom <code>levers</code> or
+<code>PLAN_MODE_LEVERS</code> list. In round 8 (2026-10-11, plugin 0.4.1,
+gpt-6.1-sol medium, eight tasks with three runs each per arm, <code>plan_once</code> vs the 0.4.0 default)
+it was 22% faster (wall time 0.78×, 95% CI 0.73–0.85) with the same test results and judge scores.</li>
+<li><strong>Approval card (since 0.6.0).</strong> After showing the complete plan, the agent submits and plan mode asks one
+<code>clarify</code> card: "Approve, auto-accept edits", "Approve, review each file edit" (when Hermes approvals are on) or
+"Keep planning"; Other sends feedback and starts a revision. Review covers <code>write_file</code> and <code>patch</code>, including
+file-tool calls inside <code>execute_code</code>, but not shell commands, subagents or MCP writers: once approves that edit,
+session / always the rest of this plan. Each approval gets a fresh key, so always leaves one inert config entry that
+cannot approve another plan. If approvals turn off, review pauses and edits apply without a prompt. WhatsApp Cloud
+has no Other with 3 choices. To opt out, turn <strong>Approval card</strong> off (<code>approval_card: false</code>); the other lean settings
+stay on. It wins over <code>levers</code> and <code>PLAN_MODE_LEVERS</code>; change it between plans, because it takes effect at once
+(turning it off stops per-edit review of a running plan, like turning Hermes approvals off). <code>plan_profile: classic</code>
+still works.<ul>
+<li><strong>PROOF-060</strong> (2026-10-14, Hermes v0.21.6, gpt-6.1-sol medium; card vs the approval directive on two small tasks,
+4 runs each per arm):<ul>
+<li>Approval correctness held in both arms: one approval per scripted approve, never before it, and no writes
+outside the plans directory before approval.</li>
+<li>8 of 8 verified in both arms. The approved revision addressed the feedback 4/4 with the card vs 3/4 without.</li>
+<li>Reported, not gated (medians): wall time 122 s vs 112 s (+9%), planning 89.7 s vs 82.7 s, request to approval
+25.0 s vs 22.4 s.</li>
+<li>Not shown: other models, larger tasks, the TUI, chat-surface buttons, and "review each file edit" (the bench
+approves with auto-accept).</li>
+</ul>
+</li>
+<li><strong>What the prompts look like.</strong> The per-edit prompt is Hermes' own approval prompt, so the host chooses its frame:
+the classic CLI shows it in the panel titled "⚠️ Dangerous Command" (once / session / always / deny), and
+Desktop shows "Approval needed" with Reject, Always allow… (Allow this session) and Run. The text inside is
+plan-mode's: the plan revision, the file and the changed lines.</li>
+<li><strong>Cancelling the card.</strong> On the classic CLI, Ctrl+C cancels the card (Esc does nothing there); on Desktop, Skip.
+Either way the plan stays unapproved and non-plan writes through the covered <code>pre_tool_call</code> hook stay blocked;
+ask the agent to show the card again when you are ready.</li>
+<li><strong>Exercised by real clicks (2026-10-14, gpt-6.1-sol, Hermes v0.21.6):</strong> classic CLI and Desktop, every choice
+(auto-accept, review each edit with once / deny / session, keep planning, Other feedback with the revision diff,
+cancel and re-ask, <code>/planmode show</code>, and the review choice hidden under <code>/yolo</code>). Not yet exercised: the TUI and
+chat platforms.</li>
+</ul>
+</li>
+<li><strong>Other changes.</strong><ul>
+<li>The approval result includes the approved plan text.</li>
+<li>Re-entering plan mode points at your previous plan.</li>
+<li>"Just do it" while planning means: plan it and submit.</li>
+</ul>
+</li>
+</ul>
+<p>How 0.4.0 lean was measured against 0.3.5 classic: pre-registered lean-profile rounds with bars written before the runs
+and a blind adjudicator, on eight coding tasks with the same model (gpt-6.1-sol, medium effort) and Hermes v0.21.6.
+Ratios below use 0.3.5 as the denominator; these historical results do not measure current defaults.
+Throughout this README, <strong>cost-weighted tokens</strong> means <code>2 × uncached input + 0.1 × cached input + 10 × output</code>,
+with token counts in MTok (the campaign's $/MTok weights). This differs from unweighted token counts and wall time.</p>
+<ul>
+<li>Lean finished 42% faster than 0.3.5 (wall time 0.58×, 95% CI 0.55–0.62, faster on all 8 tasks).</li>
+<li>It used 28% fewer cost-weighted tokens (0.72×, CI 0.63–0.80).</li>
+<li>It had equal observed test pass counts on these tasks and no approval leaks.</li>
+<li>On two tasks where the user had an unstated preference, it asked and matched it in 10 of 10 runs, as 0.3.5 did. On
+the eight tasks without one it asked 15 questions against 0.3.5's 22.</li>
+<li>Two blind judges from different model families scored plan and code quality the same as or better than 0.3.5
+(round 3, three runs per task); the question counts above come from round 5, two runs per task.</li>
+</ul>
+<p>Set <code>plan_profile: classic</code> to get the 0.3.5 behaviour back.</p>
+<p>For a plan without a todo list, the executing reminder ends with the turn that implements it. If that turn stops
+early, for example on the iteration limit, say "continue": the plan is still in the conversation and on disk.</p>
+<h5>Experimental levers</h5>
+<p>Lean is a fixed set of levers: <code>lean_craft</code>, <code>todo_batch</code>, <code>codex_compact</code>, <code>sticky</code>, <code>reentry</code>, <code>approved_text</code>,
+<code>light_notes</code>, <code>question_shape</code>, <code>bridge_calls</code>, <code>blocked_tools</code>, <code>skill_policy</code>, <code>test_commands</code>, <code>choice_fidelity</code>,
+<code>todo_inline</code>, <code>rename_scope</code>, <code>test_plan_only</code>, <code>approval_card</code> and <code>edit_batch</code> (18 levers), plus <code>plan_once</code> on TUI, Desktop and
+<code>hermes serve</code> sessions, and <code>write_once</code> on the classic interactive CLI. <code>plan_skill</code> still opts into a skill's plan format. Seven more are measured but in no
+profile. To try one, or to turn <code>plan_once</code> off, set <code>levers</code> to the full list you want. It replaces the profile's
+set, including the automatic <code>plan_once</code> and <code>write_once</code>, so include the lean levers you want to keep:</p>
+<pre><code class="language-yaml">plugins:
+  entries:
+    plan-mode:
+      settings:
+        levers: "lean_craft,todo_batch,codex_compact,sticky,reentry,approved_text,light_notes,question_shape,bridge_calls,blocked_tools,skill_policy,test_commands,choice_fidelity,todo_inline,rename_scope,test_plan_only,approval_card,edit_batch,brief_final"
+</code></pre>
+<p><code>levers</code> is not in the Settings form. The <code>PLAN_MODE_LEVERS</code> environment variable sets it when the key is unset.</p>
+<ul>
+<li><p><strong><code>exec_skill_guard</code> (opt-in).</strong> While an approved plan is executing, it blocks <code>skill_view</code> of the planning, TDD
+and code-review process skills, so the agent follows the approved plan instead of a per-edit test loop. A user
+message that mentions TDD, test-first, red-green or code review while plan mode is on or the plan is executing
+lifts the block for TDD and code-review skills; planning, brainstorming and executing-plans skills stay blocked.
+A configured <code>plan_skill</code> turns the guard off.
+PROOF-050 (2026-10-13, HP with vs without the guard, two PARITY-4 tasks, 4 runs each per arm) is why it stays
+opt-in:</p>
+<ul>
+<li>The guard blocked the skill in the one lever run that asked for it, and no lever run loaded a process skill.</li>
+<li>Results were unchanged: 8 of 8 verified in both arms.</li>
+<li>The speed effect was not shown, because the control loaded the TDD skill in only 2 of 8 runs.</li>
+</ul>
+</li>
+<li><p><strong>How the 0.4.4 levers were decided.</strong> With all five on (S44), the set cut passing tests on the refactor task (T8)
+below the pre-declared guard, 33.5 → 26.25 per run, and a fresh replication confirmed it (29.1 → 22.3), so 0.4.4
+kept them all opt-in. The 0.4.5 stress (S45, gpt-6.1-sol, 26 runs per arm) then tested the three planning levers
+without the two execution levers. Every guard held, including T8 tests (24.9 vs 28.4 per run, above the 85% bar),
+and two levers joined lean. A labelled third arm ran the two execution levers alone: in that arm, mean passing tests
+per run rose on T7 (14.3 → 18.3) and T8 (28.4 → 32.3). The earlier drop was observed with all five enabled (#26).</p>
+</li>
+<li><p><code>rename_scope</code> (lean since 0.4.5) tells the model to keep a rename's behaviour and assertions and to search the whole
+repo, naming plan files as expected matches. Rename plans that narrowed the leftover search fell from 4 of 4 to 0 in
+both S44 and S45, and plans adding an unrequested assertion from 3 to 0 in S45.</p>
+</li>
+<li><p><code>test_plan_only</code> (lean since 0.4.5) tells the model to leave git status, git diff and other repo-hygiene checks out of
+the test plan unless asked. Plans with them fell from 10 of 26 to 0 in S45 (7 of 22 to 0 in S44).</p>
+</li>
+<li><p><code>choice_record</code> (opt-in) tells the model to record answered clarify choices in Assumptions as the user's decision.
+With it, 6 of 6 plans did so in S45. Without it, the probe counted 2 of 6, but read directly 4 of 6 already
+attributed the choice to the user, so the deficit the lever targets was not shown and it stays opt-in.</p>
+</li>
+<li><p><code>thorough_questions</code> is what Questions <code>thorough</code> turns on; it is added to any lever set, custom or not, and <code>all</code>
+does not include it. The interview instruction replaces <code>question_shape</code>'s bound and includes <code>choice_record</code>, and
+later planning turns get a one-line reminder. It has not been benchmarked.</p>
+</li>
+<li><p><code>edit_batch</code> (lean since 0.6.7) tells the model to edit each file in one call where the tool allows, and to send
+edits to different files, including tests, in the same response. Execution rounds with edits fell from 49 to 27 on
+the two edit-heavy tasks in S45 (48 to 20 in S44). It joined lean after EB-2 (2026-10-14, pre-registered, decided by
+a blind adjudicator): 0.6.6 lean with vs without it, on T8 × 8 and on PARITY-4's N1 and L2 × 4 each per arm, same day,
+same harness, HP only, three tasks, gpt-6.1-sol. Results:</p>
+<ul>
+<li>16 of 16 runs verified in both arms;</li>
+<li>T8 passing tests per run 27.5 vs 26.375 (1.04×, guard ≥ 0.85×);</li>
+<li>execution model calls per run 7.9 vs 11.8 (0.67×, 95% CI 0.56–0.81);</li>
+<li>execution cost-weighted tokens 0.94× (95% CI 0.75–1.18).</li>
+</ul>
+<p>EB-2 used medium effort; its ratios use the 0.6.6 lean arm without <code>edit_batch</code> as the denominator and the
+cost-weighted definition above.</p>
+<p>The first run of the same test, EB-1, was not counted for the decision. One run's call count included a Hermes
+background-review call, which made the call and cost bars undecided; its results and T8 bars held. #26 has both.</p>
+</li>
+<li><p><code>brief_final</code> (opt-in) tells the model to finish in 2–4 lines with what changed and the test result. The median final
+reply fell from 128.5 to 64 output tokens in S45 (117.5 to 62.5 in S44).</p>
+</li>
+<li><p>Speed is labelled, not gated: S45's arm with the three planning levers (<code>rename_scope</code>, <code>test_plan_only</code>,
+<code>choice_record</code>) took 1.11× the baseline's wall time (95% CI 0.97–1.25).</p>
+</li>
+<li><p><code>test_commands</code> (lean) tells the model to write test commands the way the repo runs them, falling back to
+<code>python3 -m pytest</code> for an undocumented Python repo. In the 0.4.3 stress, plans naming a bare <code>python</code> fell from 18
+of 18 to 0, and so did runs that spent a round retrying the command (17 of 18 to 0).</p>
+</li>
+<li><p><code>todo_inline</code> (lean) tells the model never to call <code>todo_list</code> in a response by itself: create the list with the
+first edit, update it alongside the next edit or test, and close it with the final test run. Rounds spent only on
+the todo list fell from 27 to 7.</p>
+</li>
+<li><p><code>choice_fidelity</code> (lean) tells the model that a recommended clarify choice must keep every stated requirement. On
+the CSV task, plans that exempted NaN and Infinity from the required round trip fell from 2 of 6 to 0.</p>
+</li>
+<li><p><code>refactor_scope</code> (opt-in) tells the model to keep a rename's behaviour and assertions, and to search the whole repo
+for leftovers. S43 first scored it as missing its bar; that was a probe error (the probe matched the plan naming its own file).
+Re-scored, narrowing went 4→0 of 4 and unrequested asserts 3→0 (#24). It stays opt-in because its "add no new test cases"
+clause may cut tests on refactors that ask for them; <code>rename_scope</code> is the rename-only form.</p>
+</li>
+<li><p><code>bridge_calls</code> now also gives the agent hint and the agent-entered result the <code>tool_call</code> form, so the agent can
+enter and leave plan mode without a tool search (#22).</p>
+</li>
+<li><p><code>plan_budget</code> asks for compact plans of under about 1,200 characters for small changes. In its pre-registered round
+it halved plan length and finished 24% faster, but one judge scored plan clarity lower.</p>
+</li>
+<li><p><code>commit_override</code> adds "This overrides any commit step in a loaded skill" to the no-commit rule
+(<a href="https://github.com/100yenadmin/hermes-plan-mode/issues/18">#18</a>). In round 8 neither the default nor the lever
+committed when the task asked for TDD (0 of 12 each), so its effect is unmeasured.</p>
+</li>
+<li><p><code>approval_ask</code> tells the agent to ask the approval question even when you said not to ask questions, where Hermes
+approves plugin calls automatically (<a href="https://github.com/100yenadmin/hermes-plan-mode/issues/19">#19</a>). In round 8
+the question came unprompted in the first turn in 6 of 8 runs with it and 7 of 8 without; in the other runs it
+came after one nudge.</p>
+</li>
+<li><p><code>plan_once</code> (in lean on TUI, Desktop and <code>hermes serve</code>): Hermes reads <code>display.show_commentary</code> when it builds the
+agent, so after changing that setting start a new session before relying on <code>plan_once</code>. The approval card shows
+the saved plan up to 3,500 characters.</p>
+</li>
+<li><p><code>write_once</code> (in lean on the interactive classic CLI): the agent writes each plan revision to a new file, Hermes
+prints it in full as an inline diff, and the agent skips retyping it when the plugin can confirm the diff showed the
+whole file (see Compatibility). In SPEED-2 (pre-registered, 12 runs on two PARITY-4 tasks, #30) it cut planning output
+tokens to 0.65× with the same number of model calls and the same plan length, and two blind judges found no worse
+plans. Planning was not faster: the pre-registered planning-time gate failed (0.94×, bar 0.90×). It joins lean on the
+owner's metric, plan quality and tokens; wall time is reported, not gated.</p>
+</li>
+</ul>
+<h4>Compact plans</h4>
+<p>Compact plans without commits are the default since 0.3.5. In an end-to-end comparison on eight coding tasks (same
+model, blind judge, one run per task), compact plans were about half as long as core's and every task still passed its
+checks. The judge scored plan fit plus clarity 10.0 of 10, against 8.9 for core. Median time per task fell from 194 s to
+151 s, and token use was about the same. Set <code>plan_style: core</code> and <code>allow_commits: true</code> to get the 0.3.4 behaviour back.</p>
+<p>Or set them in the profile's <code>config.yaml</code> (flat keys under <code>settings</code>):</p>
+<pre><code class="language-yaml">plugins:
+  entries:
+    plan-mode:
+      allow_gateway_injection: false    # true: typed /planmode approve starts work at once on gateway/TUI
+      settings:
+        enforce_builtin_plan: true
+        agent_hint: true
+        footer: "off"                   # quote it: a bare off is read as false (also honored)
+        extra_allowed_tools: []
+        plan_profile: lean              # or classic (0.3.5 behaviour)
+        plan_style: compact             # or core
+        allow_commits: false
+        plan_skill: ""                  # e.g. durable-plan-contract
+</code></pre>
+<ul>
+<li><code>extra_allowed_tools</code> is an explicit policy override: the operator vouches that those tools are read-only.</li>
+<li><code>allow_gateway_injection</code> is a core Hermes setting, outside <code>settings</code>, so it is not in the form. It lets this
+plugin queue a message into a gateway or TUI/Desktop session; the plugin uses it only to start implementation
+after a typed <code>/planmode approve</code>.</li>
+<li>The nested <code>settings.plan_mode.&lt;key&gt;</code> layout from earlier versions is still read when the flat key is unset, but
+the form shows only flat keys: move old values up one level so the form and the plugin agree.</li>
+</ul>
+<h3>Compared with other plan modes</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Claude Code</th>
+<th>Codex</th>
+<th>Hermes <code>/plan</code></th>
+<th>plan-mode 1.5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Writes blocked except the plan</td>
+<td>yes</td>
+<td>prompt only</td>
+<td>no</td>
+<td>yes, for tools that pass <code>pre_tool_call</code></td>
+</tr>
+<tr>
+<td>Approval prompt after the plan</td>
+<td>dialog</td>
+<td>"Implement this plan?"</td>
+<td>no</td>
+<td>a <code>clarify</code> card (lean default) or Hermes' approval prompt, every interactive surface</td>
+</tr>
+<tr>
+<td>Clarifying questions</td>
+<td>AskUserQuestion</td>
+<td>request_user_input</td>
+<td>not prompted</td>
+<td><code>clarify</code>, prompted; an opt-in interview (Questions: <code>thorough</code>)</td>
+</tr>
+<tr>
+<td>Deny with feedback, revise</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>yes; Other on the card, gateway <code>/deny &lt;reason&gt;</code>, otherwise the agent asks</td>
+</tr>
+<tr>
+<td>Implement after approval</td>
+<td>same turn</td>
+<td>one click, as a new turn</td>
+<td>no</td>
+<td>same turn via the prompt; typed approve may need a message</td>
+</tr>
+<tr>
+<td>Progress</td>
+<td>Tasks / TodoWrite</td>
+<td>update_plan</td>
+<td><code>todo_list</code></td>
+<td><code>todo_list</code>, a live progress card (chat, Desktop, TUI), a footer on chat platforms and a finish line</td>
+</tr>
+<tr>
+<td>Agent may enter</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Autonomy choice / clear context at approval</td>
+<td>yes</td>
+<td>partial</td>
+<td>no</td>
+<td>auto-accept or review each edit; no clear context</td>
+</tr>
+</tbody></table>
+<p>The plan-mode column is version 1.5 (November 2026). The Claude Code and Codex columns describe those products as
+documented and as run in our October 2026 benchmarks (below); either may have changed since.</p>
+<h4>Measured against Codex plan mode</h4>
+<p>Four pre-registered benchmarks, PARITY-1 to PARITY-4, compared plan-mode with Codex's own plan mode.</p>
+<ul>
+<li><strong>Freezing and judging:</strong> the bars were written and hashed before any run, and a blind adjudicator applied them,
+seeing only the bars and the measurements.</li>
+<li><strong>Setup:</strong> both products ran the same model (gpt-6.1-sol, medium) with the same scripted user. PARITY-1 to PARITY-3
+used a suite of Python coding tasks, two of which hide a preference that only the user knows. PARITY-4 used four
+larger tasks.</li>
+<li><strong>Reading the metrics:</strong> each campaign below names its historical plugin version, not the current release. PARITY
+ran the lean defaults for that version. Ratios in this section use Codex plan mode as the denominator: wall time
+is elapsed time for the named phase; raw token use counts input and output without price weights; cost-weighted
+tokens use <code>2 × uncached input + 0.1 × cached input + 10 × output</code>, per MTok. PARITY-1 to PARITY-3 had 38 runs per
+product, with test checks on 35 and hidden-preference checks on 10. Judge percentages use blind plan pairs as the
+denominator, not finished-code correctness; pair counts not stated below are not given in this summary.</li>
+</ul>
+<p><strong>plan-mode 0.4.5 (PARITY-3, 2026-10-13).</strong> Against Codex plan mode on the same model, suite and test environment,
+plan-mode 0.4.5 met every threshold (0 non-plan repository changes before approval in 38 runs; tests passed in 35 of 35
+runs for each product; hidden preferences found in 9 of 10 runs, against 10 of 10 for Codex; judge preference 82%
+Claude, 82% Codex) and took 1.61× as long end to end on the core tasks of this Python suite (95% CI 1.33–1.79): 1.40×
+in planning and 1.65× in execution.</p>
+<ul>
+<li>0 commits before approval, and every approval went through the gate.</li>
+<li>One of plan-mode's 9 hidden-preference hits came from a question that named no options. The scripted user's
+default answer happened to match, so asking quality on that task is unproven.</li>
+<li>The judges compared plans blind, plan text only: 95% CI 71–91% for the Claude judge and 76–86% for the Codex judge.</li>
+<li>Both products ran the same <code>python3</code> (3.9.6) and pytest (8.4.2), checked for both before and after the campaign.
+During the runs only Codex's command output was recorded, so for plan-mode the in-run check was not observed.</li>
+<li>0.4.5's two new lean levers held: 0 of 3 rename plans narrowed the leftover check or added an unrequested assertion,
+and 0 of 38 plans had git status or diff checks (the S44 probes).</li>
+<li>On the rename task, the Codex judge preferred Codex's plan in 3 of 3 pairs: plan-mode's plan names plan files as
+expected matches of the leftover search, which that judge read as permitting old names (#28). The Claude judge
+preferred plan-mode's plan in 2 of 3.</li>
+</ul>
+<p><strong>Larger tasks (PARITY-4, 2026-10-13).</strong> On four larger tasks (a static site generator, a JSON API, a Node.js CLI and a
+refactor across a ~200-file repo), plan-mode 0.4.5 met every threshold against Codex plan mode on the same model
+(plan-mode verified 12 of 12 runs, Codex plan mode 12 of 12) and took 1.82× as long end to end (95% CI 1.52–2.18×),
+1.73× in planning and 1.96× in execution.</p>
+<ul>
+<li><strong>Before approval:</strong> 0 non-plan repository changes and 0 commits in 12 runs, and every approval went through the gate.</li>
+<li><strong>Correctness:</strong> both products finished every run, so these tasks do not separate them on correctness.</li>
+<li><strong>Plan quality:</strong> in blind plan-only comparisons, the Claude judge preferred plan-mode's plan in 92% of pairs (95% CI
+75–100%) and the Codex judge in 83% (67–100%).</li>
+<li><strong>The refactor</strong> hides four code paths that use the changed events.<ul>
+<li>plan-mode's plans named all four in 3 of 3 runs.</li>
+<li>Codex plan mode's plans named one in one run and none in the other two.</li>
+<li>Both products' finished code handled all four.</li>
+</ul>
+</li>
+<li><strong>Raw token use:</strong> plan-mode made more model calls (a median of 14–34 per run, against 10–13) and used 1.2–5.3×
+the unweighted tokens across the four tasks (12 runs per product).
+Its calls were not slower: the median was 7.4 s per call (297 calls), against 12.3 s per Codex request (87 requests;
+49 requests with no recorded end were left out).</li>
+<li><strong>Test environment:</strong> both products ran the same <code>node</code> (v26.7.0), <code>python3</code> and pytest, and command output was
+recorded for both. No run showed a missing node or pytest.</li>
+<li><strong>One rule changed after the smoke run and before the counted runs:</strong><ul>
+<li>The original node check accepted only a literal <code>node --test</code> command with its own exit status, but both products
+ran node through <code>npm test</code>.</li>
+<li>The amended rule also accepts <code>npm test</code> and a passing node:test summary. It was frozen and re-checked blind before
+any counted run.</li>
+<li>Under the original rule, the campaign would have stopped before it started.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Revisions (REV-1, 2026-10-15).</strong> When the user sent the first plan back with a change, plan-mode 0.6.8 and Codex plan
+mode had equal observed pass counts on these tasks. Both ran on the same model (gpt-6.1-sol, medium), on the same day, with 6 runs per task and
+product on two tasks. Plan-mode used its lean defaults. The bars were pre-registered and applied by a blind adjudicator.</p>
+<ul>
+<li><strong>Setup:</strong> the scripted user denied the first plan with one change request, then approved the revision.<ul>
+<li>T6: give <code>slugify</code> a docstring with two examples and return <code>""</code> for <code>None</code>.</li>
+<li>T7R: add <code>import --dry-run</code>, which prints <code>would import N rows</code> and writes nothing.</li>
+</ul>
+</li>
+<li><strong>Change applied in the finished code:</strong> 12 of 12 for plan-mode, 12 of 12 for Codex plan mode. A column-blind
+reviewer judged the T6 docstrings.</li>
+<li><strong>Original task still correct:</strong> 12 of 12 for each.</li>
+<li><strong>Cost of the revision round</strong> (from the feedback to the next plan decision): plan-mode used 1.75× Codex's
+cost-weighted tokens (95% CI 1.52–2.02).<ul>
+<li>Most of the difference is output. plan-mode writes the complete revised plan and submits it in a second call: a
+median of 2 calls and about 1,350 output tokens per round, against 1–2 calls and about 460 tokens for Codex.</li>
+<li>Whole runs cost 1.46–1.57× Codex's cost-weighted tokens.</li>
+<li>Median wall time was 94 s against 51 s (T6) and 207 s against 110 s (T7R). Wall time is reported only.</li>
+</ul>
+</li>
+<li><strong>A first run of the Codex column was not a fair comparison and is not used.</strong> It ran without the shared Python user
+site that PARITY-3 and PARITY-4 used, so Codex's <code>python3</code> had no pytest.<ul>
+<li>Codex then lost 4 of 6 T6 runs to a type annotation that fails on the repository's Python 3.9. It had checked
+that code only under Python 3.12.</li>
+<li>That run is kept in the evidence (Codex 8 of 12).</li>
+<li>The Codex column was then re-run with the user site, under a declaration written before the re-run. That re-run
+gives the numbers above.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Following the plan (EXEC-1, 2026-10-17, exploratory).</strong> Two blind graders checked whether each finished diff did
+what its approved plan said, on runs already reported above: PARITY-4 (plan-mode 0.4.5) and REV-1 (plan-mode 0.6.8),
+12 runs per product in each. The graders (gpt-6.1-sol and gpt-6-astra, high effort) saw only a rubric, the approved
+plan and the final diff, without the product's name. No pass bar was set.</p>
+<ul>
+<li><strong>Plan steps found in the diff:</strong> a mean of 98–100% for both products, from both graders.</li>
+<li><strong>Unplanned new behaviour:</strong> none found in either product's runs.</li>
+<li><strong>Labels out of 24 runs per product, Sol grader / Astra grader:</strong><ul>
+<li>plan-mode: followed the plan 18 / 16, minor deviation 3 / 3, major deviation 0 / 2;</li>
+<li>Codex plan mode: followed the plan 20 / 16, minor deviation 0 / 0, major deviation 1 / 5;</li>
+<li>not assessable 3 / 3 for each product: one PARITY-4 task's diffs were longer than the 60 KB the graders saw.</li>
+</ul>
+</li>
+<li><strong>The graders agreed on 41 of 48 labels</strong> (Cohen's κ 0.68). All 7 disagreements were PARITY-4 runs.</li>
+<li>Most major deviations were one explicit plan rule handled only in part, for example a malformed-id route answering
+405 where the plan said 404.</li>
+<li>This is diff-level evidence on two task sets. It does not show runtime behaviour or the order of the work.</li>
+</ul>
+<p><strong>Asking (ASK-1, 2026-10-17).</strong> Pre-registered against Codex plan mode on three tasks where the user holds a
+preference the task does not state: T5H (a cache), T9H (retries) and T9HO (re</p>
+<hr>
+<p><em>README truncated. <a href="https://github.com/100yenadmin/hermes-plan-mode#readme">Continue reading on GitHub</a></em></p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in plugins &amp; extensions</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
+        <div class="stars">★ 443</div>
+        <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
+      </a>
+      <a class="related-row" href="/projects/42-evey/hermes-plugins">
+        <div class="stars">★ 546</div>
+        <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
+      </a>
+      <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
+        <div class="stars">★ 49</div>
+        <div class="name"><span class="org">FahrenheitResearch /</span> hermes-weather-plugin</div>
+      </a>
+      <a class="related-row" href="/projects/42-evey/evey-bridge-plugin">
+        <div class="stars">★ 18</div>
+        <div class="name"><span class="org">42-evey /</span> evey-bridge-plugin</div>
+      </a>
+      <a class="related-row" href="/projects/nativ3ai/hermes-payguard">
+        <div class="stars">★ 14</div>
+        <div class="name"><span class="org">nativ3ai /</span> hermes-payguard</div>
+      </a>
+      <a class="related-row" href="/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server">
+        <div class="stars">★ 404</div>
+        <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
+      </a>
+      <a class="related-row" href="/projects/stainlu/hermes-labyrinth">
+        <div class="stars">★ 311</div>
+        <div class="name"><span class="org">stainlu /</span> hermes-labyrinth</div>
+      </a>
+      <a class="related-row" href="/projects/runta-dev/clawshell">
+        <div class="stars">★ 351</div>
+        <div class="name"><span class="org">runta-dev /</span> clawshell</div>
+      </a>
+    </div>
+    
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="/about">about</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues/new?template=suggest-repo.yml">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

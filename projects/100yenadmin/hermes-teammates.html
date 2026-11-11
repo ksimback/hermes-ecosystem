@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>100yenadmin/hermes-teammates — Hermes Agent Multi-Agent &amp; Orchestration | Hermes Atlas</title>
+<meta name="description" content="Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, tools, and optionally a model. The agent can start and follow…">
+<link rel="canonical" href="https://hermesatlas.com/projects/100yenadmin/hermes-teammates">
+<meta property="og:title" content="100yenadmin/hermes-teammates — Hermes Atlas">
+<meta property="og:description" content="Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, tools, and optionally a model. The agent can start and follow…">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/100yenadmin/hermes-teammates">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-teammates&amp;subtitle=Give+your+Hermes+agent+a+fixed+team%3A+named+teammates+with+roles%2C+follow-ups+that+keep+context%2C+and+a+Kanban+review+lane.&amp;kind=project+%C2%B7+multi-agent">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="100yenadmin/hermes-teammates — Hermes Atlas">
+<meta name="twitter:description" content="Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, tools, and optionally a model. The agent can start and follow…">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-teammates&amp;subtitle=Give+your+Hermes+agent+a+fixed+team%3A+named+teammates+with+roles%2C+follow-ups+that+keep+context%2C+and+a+Kanban+review+lane.&amp;kind=project+%C2%B7+multi-agent">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "multi-agent &amp; orchestration", "item": "https://hermesatlas.com/lists/multi-agent-frameworks" },
+    { "@type": "ListItem", "position": 3, "name": "hermes-teammates" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/100yenadmin/hermes-teammates#software",
+  "name": "hermes-teammates",
+  "description": "Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, tools, and optionally a model. The agent can start and follow up with teammates, carry earlier results into later tasks, and coordinate linked Kanban cards that wait for approval in Review.",
+  "url": "https://hermesatlas.com/projects/100yenadmin/hermes-teammates",
+  "codeRepository": "https://github.com/100yenadmin/hermes-teammates",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/MIT.html",
+  "author": {
+    "@type": "Organization",
+    "name": "100yenadmin",
+    "url": "https://github.com/100yenadmin"
+  },
+  "dateModified": "2026-11-11T06:22:47.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 63
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">318·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/lists/multi-agent-frameworks">multi-agent &amp; orchestration</a><span class="sep">/</span>hermes-teammates
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">100yenadmin</span><span class="slash">/</span>hermes-teammates
+  </h1>
+  <p class="project-desc">Give your Hermes agent a fixed team: named teammates with roles, follow-ups that keep context, and a Kanban review lane.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 63</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>MIT</span>
+    
+    <span><span class="meta-label">updated</span>2026-11-11</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/100yenadmin/hermes-teammates" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, tools, and optionally a model. The agent can start and follow up with teammates, carry earlier results into later tasks, and coordinate linked Kanban cards that wait for approval in Review.</p>
+    <ul class="summary-highlights">
+      <li>Configure teammate roles and toolsets in settings.</li>
+      <li>Follow-ups can include summaries of earlier results.</li>
+      <li>Kanban cards move to Review before approval.</li>
+    </ul>
+  </div>
+</section>
+
+
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <h2>Hermes Teammates</h2>
+<p><img src="https://raw.githubusercontent.com/100yenadmin/hermes-teammates/main/docs/media/banner.png" alt="Hermes Teammates" loading="lazy" decoding="async"></p>
+<p><strong>Give your Hermes agent a fixed team: named teammates with roles, follow-ups that keep context, and a Kanban review lane.</strong></p>
+<p>▶ <strong><a href="https://x.com/ElectricSheepIO/status/2119799763600306451">Watch the 86-second demo</a></strong></p>
+<p><a href="https://github.com/user-attachments/assets/ee5f610f-32f7-47ab-aa53-31094c485cb1">https://github.com/user-attachments/assets/ee5f610f-32f7-47ab-aa53-31094c485cb1</a></p>
+<p><a href="https://github.com/100yenadmin/hermes-teammates/releases/latest"><img src="https://img.shields.io/github/v/release/100yenadmin/hermes-teammates?label=release" alt="Latest release" loading="lazy" decoding="async"></a>
+<a href="LICENSE"><img src="https://img.shields.io/github/license/100yenadmin/hermes-teammates" alt="License: MIT" loading="lazy" decoding="async"></a>
+<a href="#compatibility"><img src="https://img.shields.io/badge/Hermes-%E2%89%A5%200.21.4-blue" alt="Hermes 0.21.4 or newer" loading="lazy" decoding="async"></a>
+<a href="https://github.com/100yenadmin/hermes-teammates/actions/workflows/ci.yml"><img src="https://github.com/100yenadmin/hermes-teammates/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI" loading="lazy" decoding="async"></a></p>
+<h3>Install</h3>
+<pre><code class="language-bash">hermes plugins install 100yenadmin/hermes-teammates --enable
+</code></pre>
+<p>It needs <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> 0.21.4 or newer (tested on 0.23.0), with
+plugins running in process, which is the default. There are no extra packages and no API keys to add: teammates use
+your agent's own provider and credentials. Add a roster, then restart the gateway (or the CLI session) so the tools
+register, and start a new chat.</p>
+<h3>Try it</h3>
+<ol>
+<li>Add the three-teammate roster from the <a href="#quick-start-the-team-from-the-screenshots">Quick start</a> (a scout, a
+writer and a reviewer) to your profile's <code>config.yaml</code>, under the <code>plugins:</code> key the install created (keep its
+<code>enabled</code> list). Turn on Hermes' <code>kanban</code> toolset, which is off on a fresh install, with
+<code>hermes tools enable kanban</code>. <code>web</code>, for the scout's research, is on by default and works without a key. Restart,
+then start a new chat.</li>
+<li>Send one message: <em>"We're launching a weekend coffee pop-up. Put three linked cards on the Kanban board for the
+team…"</em> (the full message is in the <a href="#quick-start-the-team-from-the-screenshots">Quick start</a>).</li>
+<li>Watch the <code>teammates</code> lane on Hermes Desktop's Kanban page, or with <code>hermes kanban watch</code>. Three linked cards
+appear. Each one lands in <strong>Review</strong>, and the agent approves it and hands its result to the next teammate. The
+agent's last reply says what each teammate did. On a fast model this takes about two minutes.</li>
+</ol>
+<p><strong>Contents:</strong> <a href="#what-it-does">What it does</a> · <a href="#teammates-and-hermes-built-in-delegate_task">Compared with <code>delegate_task</code></a> ·
+<a href="#screenshots">Screenshots</a> · <a href="#how-it-works">How it works</a> · <a href="#quick-start-the-team-from-the-screenshots">Quick start</a> ·
+<a href="#configure">Configure</a> · <a href="#use">Use</a> · <a href="#compatibility">Compatibility</a> · <a href="#benchmarks">Benchmarks</a> ·
+<a href="#limits-honest-list">Limits</a> · <a href="#how-to-test">How to test</a> · <a href="#security">Security</a> ·
+<a href="#troubleshooting-and-reporting-a-bug">Troubleshooting and bugs</a> · <a href="#releases-and-license">Releases and license</a></p>
+<h3>What it does</h3>
+<p>You define a small roster of named teammates, such as a scout, a writer and a reviewer. Each has its own
+instructions, tools and, optionally, its own model. Your agent hands them work, checks on them, steers them mid-task
+and follows up with what they did before. On Hermes' own Kanban board, they work linked cards one after another, and
+each card a teammate finishes waits in Review for approval before the next one starts.</p>
+<p><img src="https://raw.githubusercontent.com/100yenadmin/hermes-teammates/main/docs/media/screenshot-chain.png" alt="One message, three linked cards: the scout's research is approved and the writer's card is running" loading="lazy" decoding="async"></p>
+<p>One message ran the chain above: research, a one-page plan from the research, then a review of the plan against the
+brief. The agent gave each card to a teammate and waited for it. When the card landed in <strong>Review</strong>, the agent
+approved it and handed the result to the next teammate. The reviewer, with its own brief and no web or file tools,
+marked the plan "Revise" for a pricing claim the research didn't support. It took about 90 seconds, with no further
+input.</p>
+<p><img src="https://raw.githubusercontent.com/100yenadmin/hermes-teammates/main/docs/media/screenshot-chain-done.png" alt="All three cards done; the agent's summary credits each teammate" loading="lazy" decoding="async"></p>
+<h4>What it adds to Hermes</h4>
+<ul>
+<li><strong>A roster the model can't change.</strong> The model picks only a teammate's <strong>name</strong>; your settings decide what that
+name can do. A teammate's toolsets can only narrow the parent's tools, toolset by toolset, so a reviewer given
+only <code>todo</code> gets no web, file or terminal tools, whatever the prompt says. (Hermes can add inherited MCP toolsets
+back unless <code>delegation.inherit_mcp_toolsets</code> is false.)</li>
+<li><strong>A teammates lane on Hermes' Kanban board.</strong> Hermes hands board cards to whole Hermes profiles. This lane is
+worked by your roster, inside one conversation. The plugin claims the card and keeps the claim alive while the
+teammate works. It writes the result onto the card and moves the card to <strong>review</strong>; the plugin never completes
+a card. An approval (<code>kanban_complete</code>) finishes it and unlocks the cards that depend on it;
+<code>teammate_chain</code> creates a sequence in one call, and parent cards' results travel automatically.</li>
+<li><strong>Background runs with a memory.</strong> Teammates are real Hermes subagents started through the public plugin
+subagent lifecycle API (<code>ctx.subagent_lifecycle</code>). The agent can wait for them, steer them or stop them. A
+per-profile ledger records every run's goal, status and result across turns. A follow-up in the same conversation
+carries a digest of that teammate's earlier results, so you don't paste them back in.</li>
+<li><strong>A review loop the agent drives.</strong> When a card in Review needs changes, <code>teammate_request_changes</code> reopens it and
+starts the teammate again with the feedback and its previous result. It also adds the feedback as a card comment
+on a best-effort basis: if the comment can't be saved, the run still starts with the feedback and the reply says
+<code>comment_saved: false</code>. It works from any chat, and it never completes a card.
+<code>teammate_assign(source_run_ids=[…])</code> hands chosen earlier results to the next teammate: each run's stored summary
+(up to 8,000 characters), quoted as is and marked if it had to be clipped to fit. The writer gets the scout's
+research without the agent retyping it.</li>
+<li><strong>History the agent can search.</strong> <code>teammates_roster</code> filters this conversation's runs by status, text or date,
+pages through them, and shows each teammate's record: runs, failures and median time. The ledger keeps each
+run's complete result, up to 256 KB of text, and <code>teammate_check</code> reads it 8,000 characters at a time.</li>
+</ul>
+<p>Stock Hermes; no patched core.</p>
+<h4>Teammates and Hermes' built-in <code>delegate_task</code></h4>
+<p>Hermes already runs subagents in the background and lets the agent list, steer and stop them. Teammates keeps
+that and changes who decides what a subagent is.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>delegate_task</code> (built in)</th>
+<th>Teammates</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>The brief</td>
+<td>The model writes the whole brief, goal and context, on every call</td>
+<td>Each teammate's standing instructions live in settings; the model picks a name and gives the task's goal</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>Every child inherits the parent's toolsets, minus a block list</td>
+<td>Each teammate has its own toolsets, narrowed from the parent's: a reviewer on <code>todo</code> gets no web, file or terminal tools (Hermes adds inherited MCP toolsets back unless <code>delegation.inherit_mcp_toolsets</code> is false)</td>
+</tr>
+<tr>
+<td>Model</td>
+<td>The same delegation model for every child</td>
+<td>Optionally one per teammate</td>
+</tr>
+<tr>
+<td>Record</td>
+<td><code>action='list'</code> shows live children; a result arrives once</td>
+<td>A SQLite ledger per profile keeps every run's goal, status and complete result (up to 262,144 characters, a 256 KB text cap) across turns and restarts; follow-ups carry a digest</td>
+</tr>
+<tr>
+<td>Kanban</td>
+<td>Board cards go to whole Hermes profiles</td>
+<td>A <code>teammates</code> lane worked by your roster inside the chat; a finished card goes to review and a failed run blocks its card; the plugin never marks a card done</td>
+</tr>
+</tbody></table>
+<p>Checked against Hermes 0.23.0 and main (<code>tools/delegate_tool.py</code>: children are spawned with <code>toolsets=None</code>,
+"always inherit the parent's toolsets").</p>
+<ul>
+<li><strong>For:</strong> people who want the same specialists every time, without rewriting the brief, with each teammate's work
+handed to review and a durable record of what each teammate did.</li>
+<li><strong>Not for:</strong> DAG workflows with gates and fan-out. Use
+<a href="https://github.com/jacobhausler/hermes-workflows">hermes-workflows</a> for those. Teammates is about who does the
+work; workflows is about the shape of a long job.</li>
+</ul>
+<h3>Screenshots</h3>
+<table>
+<thead>
+<tr>
+<th><code>/teammates</code>: the roster and the lane</th>
+<th>Two teammates in parallel, one working a Kanban card</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><img src="https://raw.githubusercontent.com/100yenadmin/hermes-teammates/main/docs/media/screenshot-roster.png" alt="Roster" loading="lazy" decoding="async"></td>
+<td><img src="https://raw.githubusercontent.com/100yenadmin/hermes-teammates/main/docs/media/screenshot-assign.png" alt="Assign" loading="lazy" decoding="async"></td>
+</tr>
+<tr>
+<td><strong>Results; the card moved to review</strong></td>
+<td><strong><code>/teammates</code> in Hermes' dashboard</strong></td>
+</tr>
+<tr>
+<td><img src="https://raw.githubusercontent.com/100yenadmin/hermes-teammates/main/docs/media/screenshot-results.png" alt="Results" loading="lazy" decoding="async"></td>
+<td><img src="https://raw.githubusercontent.com/100yenadmin/hermes-teammates/main/docs/media/screenshot-slash-command.png" alt="Slash command" loading="lazy" decoding="async"></td>
+</tr>
+</tbody></table>
+<h3>How it works</h3>
+<pre><code> you ──► parent agent ──teammate_assign──► teammate (Hermes subagent, your toolsets/model)
+              ▲                                  │
+              └──────────teammate_check◄─────────┘  result, provider/model, duration
+              │
+              └─teammate_assign(kanban_task)──► claim lane task ─► run ─► task moves to REVIEW
+</code></pre>
+<ol>
+<li><p>You define teammates in config. The model only ever picks a teammate <strong>name</strong>; you decide what that name
+means.</p>
+</li>
+<li><p><code>teammate_assign</code> launches a subagent through <code>ctx.subagent_lifecycle</code> and returns a <code>run_id</code> at once. The
+teammate's instructions travel in its context. Its toolsets can only narrow the parent's, never widen them.</p>
+</li>
+<li><p><code>teammate_check</code> reports status, or waits up to 60 s and returns the result. Every run is recorded in a
+per-profile SQLite ledger (<code>&lt;HERMES_HOME&gt;/plugin-data/hermes-teammates/data.db</code>). Results of plain runs are
+saved when the child finishes, even if you never call <code>teammate_check</code>. A result longer than 8,000 characters is
+kept in full (up to 256 KB of text); <code>teammate_check(run_id, offset=N)</code> pages through it.</p>
+</li>
+<li><p><code>follow_up: true</code> gives the teammate a bounded digest of its earlier assignments in this conversation, so it
+picks up where it left off. <code>source_run_ids</code> hands over the stored summaries of finished runs from any teammate in this conversation, quoted as is and marked when clipped to fit the launch budget.
+With <code>follow_up=True</code>, a source that is the same teammate's own earlier run also appears in the follow-up digest and uses budget twice; leave it out of <code>source_run_ids</code> in that case.</p>
+</li>
+<li><p><code>teammate_message</code> steers a running teammate. The text lands at its next step, without stopping it.
+<code>teammate_stop</code> records accepted stops; completions after the stop stay cancelled and block their Kanban card.
+Refused cancellations leave completed work intact.</p>
+</li>
+<li><p><strong>Kanban teammates lane.</strong> Create 1–8 linked cards with <code>teammate_chain</code>, or assign cards to the <code>teammates</code> lane, which is not a Hermes profile, so the
+dispatcher leaves them alone. Optional <code>board</code> on <code>teammate_assign</code> (with <code>kanban_task</code>), <code>teammate_chain</code>,
+<code>teammate_request_changes</code> and <code>teammates_roster</code> selects an existing board. Names are validated and normalized;
+unknown boards are refused. The selected board stays with the run through heartbeats, Review, failure and rework,
+even if the current board changes. Omit it to keep using the current board; for chain retries, naming the current
+board and leaving <code>board</code> out identify separate chains. The plugin never creates boards.</p>
+<p><code>teammate_assign(kanban_task=…)</code> claims the card and keeps the claim alive while
+the teammate works. Each finished parent card's result (what its teammate handed to Review, not the approval note) travels automatically with the card's title and body;
+the agent no longer needs to pass those results as context. On success the card moves to <strong>review</strong> with the teammate's summary; on failure it is
+<strong>blocked</strong> with the reason. To accept a card, approve it (<code>kanban_complete</code>). To ask for changes, the agent uses
+<code>teammate_request_changes(kanban_task=…, feedback=…)</code>: it reopens the card, records the feedback as a comment and
+starts a teammate again with the feedback and previous result as context; it never completes a card. It works from any chat: for a card another conversation worked, it takes the teammate and the last result from the card itself. The manual route remains
+<code>hermes kanban reopen-review &lt;card&gt; --reason "what to change"</code>, followed by <code>teammate_assign</code> with that context.
+(Hermes' <code>kanban_request_changes</code> tool only returns an active review run to its implementer, and a lane card in
+review has none.)
+Lane cards keep the lane as their assignee; the <code>teammate</code> argument picks who works each one. So that agents
+set cards up this way from the start, each new session's prompt carries one short paragraph saying so (on
+Hermes builds with plugin prompt sections; it is left out while the roster has no usable teammate). One request
+can run a chain of linked cards hands-off, in any chat: the agent gives a card to a teammate, waits for it with
+<code>teammate_wait</code>, approves the card, and gives the next card to the next teammate, all in one turn. Hermes can
+also wake the chat that created a card when that card reaches review. Messaging chats get this from Hermes
+0.21.6, and Hermes Desktop and CLI chats from 0.22.6. TUI chats don't get it. Cards made with <code>hermes kanban create</code>, or while <code>kanban.auto_subscribe_on_create</code> is <code>false</code>, get no automatic subscription, so they wake a
+chat only if you subscribe it yourself (see <code>hermes kanban notify-subscribe --help</code>). A wake for a card the agent
+already approved is only a late notice. Setting <code>kanban.auto_subscribe_on_create: false</code> stops these notices for new cards,
+and also their automatic completion and block notices; subscribe explicitly if you still want those. It only
+stops new automatic subscriptions: cards made from a subscribed card still inherit its subscription, and existing
+ones stay until <code>hermes kanban notify-unsubscribe</code> removes them.</p>
+</li>
+</ol>
+<h3>Quick start: the team from the screenshots</h3>
+<p>This is the roster behind the screenshots above. Merge it into the profile's <code>config.yaml</code>: the install already
+added a <code>plugins:</code> key with an <code>enabled</code> list, so put <code>entries:</code> under that key rather than adding a second
+<code>plugins:</code>. In Hermes Desktop, the same three entries go in the <strong>Teammates</strong> setting as JSON (see
+<a href="#configure">Configure</a>).</p>
+<pre><code class="language-yaml">plugins:
+  entries:
+    hermes-teammates:
+      settings:
+        teammates:
+          scout:
+            description: "Researcher: finds the facts a task needs and quotes sources."
+            instructions: "Find the facts asked for with at most three web searches, then stop searching and answer from what you found. Quote your sources. Keep it under 150 words."
+            toolsets: [web]
+          writer:
+            description: "Writer: turns research into a clear, short draft."
+            instructions: "Write the requested piece from the material you are given. Plain words, short sections, under 200 words. Reply with the piece itself; don't create files."
+            toolsets: [todo]
+          reviewer:
+            description: "Editor: checks a draft against its brief and returns the corrected version."
+            instructions: "Check the draft you are given against its brief and research. Answer in one final reply, text only. Line 1: a one-line verdict that names the problems you found. Then those problems (at most 3, one line each), then the corrected version in under 200 words. Don't call tools or create files."
+            toolsets: [todo]
+</code></pre>
+<p>The writer and the reviewer get only <code>todo</code>, so they have no web, file or terminal tools. If the profile has MCP
+servers, also set <code>delegation.inherit_mcp_toolsets: false</code>, or Hermes adds their tools back. The chat needs
+Hermes' <code>kanban</code> toolset so the agent can create and approve cards (<code>hermes tools enable kanban</code>; it is off on a fresh
+install), and <code>web</code> so the scout can search (on by default). Restart and
+start a new chat after adding the roster: the lane paragraph goes into new session prompts only while the roster has
+a usable teammate.</p>
+<p>Then send one message:</p>
+<blockquote>
+<p>We're launching a weekend coffee pop-up. Put three linked cards on the Kanban board for the team: research what
+makes pop-ups succeed, write a one-page launch plan from the research, and review the plan against the brief.
+Give the research card to the scout. Each time a card lands in Review, approve it and give the next card to the
+right teammate, with the previous card's result as context.</p>
+</blockquote>
+<p>The agent may now use <code>teammate_chain</code> to create those linked cards in one call; parent results travel automatically.</p>
+<p>You should see three linked cards in the <code>teammates</code> lane. Each lands in <strong>Review</strong>; the agent approves it and gives
+the next card to the next teammate. The agent's last reply sums up what each teammate did. On a fast model the
+chain takes about two minutes: our daily check finished all three cards in 131 seconds with no errors. Watch it on
+Hermes Desktop's Kanban page or with <code>hermes kanban watch</code>. The approvals come from your message: without "approve
+it", each finished card waits in Review for you.</p>
+<h3>Configure</h3>
+<p><strong>In Hermes Desktop</strong> (0.21.5 or newer), open the plugin's settings. On current builds they are under
+<strong>Settings ▸ Plugins</strong>; on 0.21.5 they open inline from the plugin's row under <strong>Capabilities ▸ Plugins</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Valid values (invalid teammates are refused; other settings fall back to defaults)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Teammates</strong></td>
+<td>Your roster, as a JSON object (example below)</td>
+<td>Names: up to 32 characters, starting with a lowercase letter, then lowercase letters, digits, <code>-</code> or <code>_</code></td>
+</tr>
+<tr>
+<td><strong>Kanban lane</strong></td>
+<td>Kanban assignee for teammate cards</td>
+<td>Any name that is not a Hermes profile, <code>none</code>, <code>null</code> or <code>-</code>; case and surrounding spaces are ignored; default <code>teammates</code></td>
+</tr>
+<tr>
+<td><strong>Kanban claim TTL (seconds)</strong></td>
+<td>How long a claim on a lane card lasts between heartbeats</td>
+<td>60–86400; default 900</td>
+</tr>
+<tr>
+<td><strong>Max live runs per conversation</strong></td>
+<td>Teammate runs one conversation may have in flight</td>
+<td>1–16; default 4</td>
+</tr>
+<tr>
+<td><strong>Follow-up context budget (characters)</strong></td>
+<td>How much of earlier results a follow-up carries</td>
+<td>0–24000; default 8000</td>
+</tr>
+</tbody></table>
+<p>The <strong>Teammates</strong> field takes JSON like this:</p>
+<pre><code class="language-json">{
+  "reviewer": {
+    "description": "Careful code reviewer; finds regressions and cites file:line.",
+    "instructions": "Review the change you are given. Report findings with file:line and a fix.",
+    "toolsets": ["file", "terminal"]
+  },
+  "scout": {
+    "description": "Fast web researcher.",
+    "instructions": "Find the facts asked for. Quote sources.",
+    "toolsets": ["web"]
+  }
+}
+</code></pre>
+<p>Each teammate takes <code>description</code>, <code>instructions</code> and <code>toolsets</code>, plus optional <code>model</code>, <code>route</code> and
+<code>reasoning_effort</code> (see <a href="#compatibility">Compatibility</a>). The form checks types, not ranges. A value it accepts but
+the plugin can't use is listed under <strong>Config problems</strong> in <code>/teammates</code>. Invalid teammates refuse launch:
+unknown keys, wrong field types, and empty or invalid <code>toolsets</code> fail closed. Absent or null <code>toolsets</code> inherit.
+Long descriptions (over 300 characters) and instructions (over 4,000) are clipped with warnings and remain launchable;
+toolset names are trimmed. <code>model</code>, <code>route</code> and <code>reasoning_effort</code> over 100 characters, more than 24 toolsets, or a
+toolset name that is not 1–48 printable ASCII characters without spaces make the teammate invalid.</p>
+<p>Launch context reserves operator instructions, then card text (up to 6,000 characters), the follow-up digest,
+handed-over results, and caller context, within 30,000 characters. Clipped parts show <code>[… N characters omitted]</code>; instructions stay intact.</p>
+<p><strong>With the CLI, headless, or on Hermes 0.21.4,</strong> put the same settings in <code>config.yaml</code>:</p>
+<pre><code class="language-yaml">plugins:
+  entries:
+    hermes-teammates:
+      settings:
+        teammates:
+          reviewer:
+            description: "Careful code reviewer; finds regressions and cites file:line."
+            instructions: "Review the change you are given. Report findings with file:line and a fix."
+            toolsets: [file, terminal]
+          scout:
+            description: "Fast web researcher."
+            instructions: "Find the facts asked for. Quote sources."
+            toolsets: [web]
+            model: null            # same provider as the parent; see Compatibility
+        lane: teammates            # Kanban assignee for the teammates lane (must not be a profile name)
+        max_live_runs: 4           # per conversation
+        followup_context_chars: 8000
+        claim_ttl_seconds: 900
+</code></pre>
+<p>Settings are read on every call, so edits apply without a restart. The one exception is the list of teammate
+names in the <code>teammate_assign</code> tool description, which is fixed at startup. A teammate you add later works by
+name right away, and <code>teammates_roster</code> always shows the current list; restart to refresh the description.</p>
+<h4>Roster file</h4>
+<p>To keep the roster out of <code>config.yaml</code>, put it in its own YAML file and point <code>roster_file</code> at it:</p>
+<pre><code class="language-yaml">plugins:
+  entries:
+    hermes-teammates:
+      settings:
+        roster_file: teammates.yaml   # relative to this profile's Hermes home, or an absolute path
+</code></pre>
+<p>The file holds one top-level <code>teammates</code> mapping, written exactly like the setting (see <code>teammates.example.yaml</code>),
+and replaces the <code>teammates</code> setting while <code>roster_file</code> is set. Every other setting stays in <code>config.yaml</code>. Each
+teammate is validated as usual. A missing, unreadable or invalid file gives an empty roster and a config problem,
+never a failed call. <code>/teammates</code> and <code>teammates_roster</code> show which file the roster came from. The file is read on
+every call, like the other settings. Several profiles can share one roster by pointing at the same absolute path.
+<code>roster_file</code> is an operator setting: no tool argument can change it. Leave it unset to keep the roster in
+<code>config.yaml</code>.</p>
+<h3>Use</h3>
+<p>Ask in plain language:</p>
+<blockquote>
+<p>Have the reviewer check the diff in <code>src/parser.py</code>, and the scout find how other projects handle BOM-prefixed
+CSV. Report back when both are done.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>teammates_roster</code></td>
+<td>Optional <code>board</code> selects an existing Kanban board. Lists teammates and their current <code>role_hash</code>, recent runs, open lane cards and host features; optional <code>teammate</code> explains one definition</td>
+</tr>
+<tr>
+<td><code>teammate_assign</code></td>
+<td>Optional <code>board</code> selects an existing Kanban board. Starts a run: <code>teammate</code>, <code>goal</code>, optional <code>context</code>, <code>follow_up</code>, <code>source_run_ids</code> (1–8 finished runs in this conversation), <code>kanban_task</code>, <code>wait_seconds</code> (0–300, default 0). With <code>kanban_task</code>, <code>goal</code> may be left out: the card's title is used</td>
+</tr>
+<tr>
+<td><code>teammate_request_changes</code></td>
+<td>Optional <code>board</code> selects an existing Kanban board. Sends a lane card in Review back for changes: <code>kanban_task</code>, <code>feedback</code> (up to 4,000 characters), optional <code>teammate</code> (default: whoever worked it last) and <code>wait_seconds</code> (0–300, default 0). Reopens the card, adds the feedback as a comment and starts a new run on it. It never completes a card</td>
+</tr>
+<tr>
+<td><code>teammate_chain</code></td>
+<td>Optional <code>board</code> selects an existing Kanban board. Creates 1–8 linked lane cards from <code>steps</code> (<code>title</code>, <code>teammate</code>, optional <code>body</code>); optional <code>start</code> (default false) starts the first, with <code>wait_seconds</code> (integer 0–300, default 0). Each teammate receives its parent cards' results. Approve each card with <code>kanban_complete</code></td>
+</tr>
+<tr>
+<td><code>teammate_check</code></td>
+<td>Shows status (including <code>queued</code>), result, <code>api_calls</code> and <code>duration_seconds</code>, or waits (<code>wait_seconds</code> ≤ 60); optional <code>offset</code> (integer ≥ 0) pages the result in 8,000-character chunks</td>
+</tr>
+<tr>
+<td><code>teammate_wait</code></td>
+<td>Waits for any or all of 1–16 unique run IDs in this conversation; returns <code>done</code>, <code>pending</code>, and <code>timed_out</code></td>
+</tr>
+<tr>
+<td><code>teammate_message</code></td>
+<td>Steers a running teammate</td>
+</tr>
+<tr>
+<td><code>teammate_stop</code></td>
+<td>Cancels a run</td>
+</tr>
+</tbody></table>
+<p>Use <code>teammate_assign(wait_seconds=...)</code> when you need one result now; use <code>teammate_wait</code> for several runs or when you have work to do meanwhile.
+These tools include relay guidance with finished summaries: preserve specialist findings, citations and verdict
+verbatim when reporting them, and keep the parent's commentary separate.</p>
+<p><code>/teammates</code> prints the roster in any chat surface.</p>
+<p><code>queued</code> means Hermes has accepted the child and is waiting to start it. Queued runs still count toward the
+live-run cap.</p>
+<h4>Hermes tool search</h4>
+<p>On the inspected Hermes <a href="https://github.com/NousResearch/hermes-agent/blob/1078a4e5f363472c43a50c6738e47e54eab2940c/tools/tool_search.py#L150-L214">compatibility pin</a>
+and <a href="https://github.com/NousResearch/hermes-agent/blob/3b63f7b0a4c7beb9eadbce2f15b9da75d01f5065/tools/tool_search.py#L149-L213">main revision</a>,
+<code>tools.tool_search.enabled: auto</code> defers plugin tools whenever any are available. The default 5% <code>threshold_pct</code>
+limits the catalog listing, not activation. Neither <code>defer: []</code> nor a smaller schema keeps teammate tools direct.
+There is no supported selective opt-out at these revisions; <a href="https://github.com/NousResearch/hermes-agent/issues/135762">upstream request</a>.</p>
+<p><code>teammate_assign</code>, <code>teammate_request_changes</code>, <code>teammate_chain</code>, <code>teammate_wait</code>, <code>teammate_check</code> and <code>teammates_roster</code> include short catalog hints and
+schema examples for the bridge. If the tool is deferred, use <code>tool_search</code> to find its name, then
+<code>tool_describe</code> for its parameters, then <code>tool_call</code> to invoke it. Skip search when the catalog already shows
+the exact name. Describing a tool does not make it directly callable. For example, after describing the roster:</p>
+<pre><code class="language-json">{"calls":[{"name":"teammates_roster","arguments":{}}]}
+</code></pre>
+<p>Send that object to <code>tool_call</code>. Use one entry per teammate invocation, with an <code>arguments</code> object and the
+actual tool name (never <code>tool_call</code> itself). When the tool is directly listed, invoke it normally.</p>
+<p>If your model struggles with the bridge, merge this into the active profile's <code>config.yaml</code> at the <strong>top level</strong>,
+alongside <code>plugins</code>, preserving other <code>tools</code> settings, then start a new CLI session or restart the gateway:</p>
+<pre><code class="language-yaml">tools:
+  tool_search:
+    enabled: "off"
+</code></pre>
+<p>This makes all enabled local plugin/MCP and otherwise-deferred core tools direct, including <code>process_manage</code>;
+it cannot select only teammates. More full schemas occupy the parent's context on every request, especially
+with many MCP tools. Restore <code>enabled: auto</code> and restart to return to deferred discovery.
+Setting <code>tools.tool_search.enabled: "off"</code> also removes discovery of hosted connector tools (<code>connectors__*</code>, such as Gmail, Calendar or Linear) on both inspected Hermes revisions, so keep <code>auto</code> if you use Hermes connectors.</p>
+<p>In the exploratory Slice 3 comparison, C-eager (global deferral off) used <strong>0.70× parent tokens</strong> and <strong>1.30 fewer
+parent calls per request</strong> than C (deferral on), across 60 requests per arm. This compared configuration packages,
+including <code>process_manage</code> visibility; it did not isolate teammate deferral or these new hints.
+Quality/success non-inferiority remains <strong>UNRESOLVED</strong>. See <a href="https://github.com/100yenadmin/hermes-teammates/issues/56">#56</a>
+and the <a href="https://github.com/100yenadmin/hermes-teammates/blob/main/bench/results/slice3/REPORT.md">slice 3 report</a> (the C-eager vs C contrast in its notes).
+No new model run or cost claim is made by this change.</p>
+<h4>Results and receipts</h4>
+<p>Finished runs report these fields through <code>teammate_assign(wait_seconds=...)</code>, <code>teammate_check</code>, <code>teammate_wait</code> and the roster's recent runs:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>summary</code></td>
+<td>Teammate result text within the existing budget; JSON decoding preserves newlines, quotes and non-ASCII text</td>
+</tr>
+<tr>
+<td><code>relay_instruction</code></td>
+<td>Guidance to relay findings, citations and verdict verbatim; present on finished assign/wait/check rows with nonempty summaries, with an explicit warning when clipped; the roster includes it once at the top level</td>
+</tr>
+<tr>
+<td><code>summary_clipped</code></td>
+<td>True when original summary content was cut, even if a stop note adds text afterward</td>
+</tr>
+<tr>
+<td><code>summary_chars</code></td>
+<td>Original summary length before ledger/public clipping; <code>null</code> for old rows or no summary</td>
+</tr>
+<tr>
+<td><code>role_hash</code></td>
+<td>First 12 SHA-256 hex characters of the canonical JSON of the parsed teammate definition used at launch; <code>null</code> for old rows</td>
+</tr>
+<tr>
+<td><code>api_calls</code>, <code>duration_seconds</code></td>
+<td>Lifecycle request count and duration in seconds; <code>null</code> when unavailable</td>
+</tr>
+<tr>
+<td><code>tokens_input</code>, <code>tokens_output</code></td>
+<td>Accumulated input and output token buckets from the child's API hooks</td>
+</tr>
+<tr>
+<td><code>tokens_cache_read</code>, <code>tokens_cache_write</code>, <code>tokens_reasoning</code></td>
+<td>Accumulated cache and reasoning token buckets, when supplied</td>
+</tr>
+</tbody></table>
+<p>Summaries retain at most 8,000 characters in the ledger; the roster returns at most 300 per run.
+When a summary is clipped, the ledger also keeps the complete original result up to 262,144 characters
+(256 KB of text; Unicode can take more bytes). <code>teammate_check</code> adds <code>full_result_chars</code> when this text exists.
+Pass <code>offset=0</code>, then each returned <code>next_offset</code>, to read <code>result_page</code> in 8,000-character chunks.
+Pages include <code>result_offset</code>, <code>full_result_chars</code> (retained length), and <code>full_result_truncated</code> (true if the cap cut text);
+<code>next_offset</code> is <code>null</code> at the end, including offsets past the end. Without a full result, paging reads the stored summary.
+For old rows,
+<code>summary_clipped</code> only detects clipping of the stored text because the original length is unknown.
+The roster's current <code>role_hash</code> can differ from a run's hash after you edit the definition.
+Run rows omit <code>error</code> when it is null; actual tool errors retain <code>error</code> and <code>ok: false</code>.
+Replies remain valid JSON with additive guidance; they do not append a second, unescaped copy of the summary.
+If <code>summary_clipped</code> is true, describe the summary as incomplete and page the rest with <code>teammate_check offset</code>;
+do not infer missing findings or a verdict. Results beyond the cap and text clipped before this upgrade cannot be recovered.
+The roster's short previews follow the same rule; one top-level instruction points to <code>teammate_check</code> for the full retained text.
+Follow-up digests preserve result text within their configured budget, tell the teammate to continue from prior results and label results
+already clipped in the ledger as incomplete. Further digest clipping keeps its characters-omitted marker.
+Kanban review handoffs retain their 4,000-character summary budget and add <code>summary_chars</code>, <code>summary_clipped</code>
+and <code>relay_instruction</code> to the existing <code>hermes_teammates</code> metadata. These instructions guide the parent;
+they do not guarantee that a model relays a result faithfully.</p>
+<p>Token receipts require both <code>subagent_start</code> and <code>post_api_request</code> hooks and in-process plugins; the roster
+reports <code>token_receipts</code> support. Only mapped child sessions contribute, never the parent's own requests or
+unmapped children. Counts are in-process only: unfinished accumulators do not survive reloads or restarts.
+Missing, invalid or overflowing buckets are <code>null</code>; completed receipts stay in the ledger. The map holds at
+most 1,024 sessions, so evicted sessions cannot supply complete receipts. Hermes does not expose cost to plugins.</p>
+<p><code>teammates_roster(teammate="reviewer")</code> returns only that teammate and its parsed <code>definition</code>, current
+<code>role_hash</code>, <code>launch_toolsets</code> (or <code>inherits parent</code>), route support in <code>features</code>, ignored fields in
+<code>unsupported</code>, and read-only global <code>delegation</code> values: <code>inherit_mcp_toolsets</code>, <code>worktree_isolation</code> and
+<code>child_timeout_seconds</code>. Unset values use Hermes's defaults; <code>delegation_sources</code> marks each value as
+<code>config</code>, <code>managed</code>, <code>default</code> or <code>unknown</code>. Unavailable values are <code>unknown</code>; an unknown name returns <code>unknown_teammate</code>.
+The reply stays within 16,000 characters, measured as JSON with non-ASCII text left unescaped. If an explained
+definition would not fit, its instructions are shortened and <code>instructions_clipped</code> is true.
+When a list is cut short, the reply says how many entries it left out: <code>runs_omitted</code> for recent runs and
+<code>lane.cards_omitted</code> for open lane cards. <code>lane.cards_waiting</code> counts every lane card in <code>todo</code>, whether it waits on
+parent cards or was set to <code>todo</code> another way; the rendered roster calls these cards "not ready yet".</p>
+<p>Filter or page this conversation's runs with <code>status</code>, <code>search</code>, <code>since</code>, <code>limit</code> and <code>offset</code>.
+<code>status</code> accepts <code>running</code>, <code>succeeded</code>, <code>failed</code>, <code>interrupted</code>, <code>cancelled</code> or <code>unknown</code>; <code>search</code> is a
+case-insensitive literal substring (1–200 characters) in goal, summary or error, including literal <code>%</code> and <code>_</code>.
+<code>since</code> is inclusive unix seconds. <code>limit</code> is 1–50 (default 20), and <code>offset</code> is 0–10000 (default 0).
+Combine them with <code>teammate</code>, for example <code>teammates_roster(teammate="reviewer", status="failed", limit=5, offset=5)</code>.
+<code>runs_total</code> counts matching rows when status, search, since or offset is given, or runs are omitted;
+<code>runs_omitted</code> counts matches remaining after the offset and returned page. Invalid values return <code>invalid_roster</code>.
+Run previews stay at 300 characters; use <code>teammate_check</code> for full retained text.</p>
+<p>Teammates with runs in this conversation also have <code>stats</code>: <code>runs</code>, <code>succeeded</code>, <code>failed</code> (including interrupted
+and unknown), <code>cancelled</code>, <code>median_duration_seconds</code> (ignoring missing durations, or <code>null</code> if none), and
+<code>last_run_at</code> (unix seconds). Stats cover this conversation's history regardless of run filters or paging.
+<code>/teammates</code> shows a compact stats suffix. Teammates without runs have no <code>stats</code> key; stats are dropped before
+teammate entries if needed to keep the reply within 16,000 characters, and <code>stats_omitted</code> then counts the
+teammates whose stats were dropped. Explicit <code>null</code> for a filter argument means "not given".</p>
+<p><code>teammate_wait(run_ids, mode="any", wait_seconds=30)</code> returns as soon as any requested run ends;
+use <code>mode="all"</code> for fan-in. The wait is bounded to 0–300 seconds (default 30). Unknown or cross-conversation IDs
+return <code>unknown_run</code> before waiting. Finished rows omit <code>goal</code> and share a summary budget: per-run budget is
+<code>max(1000, 24000 // number_of_done_runs)</code>. <code>summary_clipped</code> reports any cut; <code>teammate_check</code> keeps its full
+goal and 8,000-character summary budget. Before it replies, wait makes one attempt to hand each finished Kanban
+lane card to review, so its reply usually already shows <code>kanban_outcome</code>. It waits for that only until its own
+deadline (at most 5 s) or a Hermes interrupt, and a slow board finishes it in the background. A <code>null</code> outcome means
+the handoff hasn't landed yet: check the run before approving its card. Retries stay with the monitor and
+<code>teammate_check</code>.
+Hermes interrupts (<code>/stop</code> or a new user message) end a wait promptly, returning <code>interrupted: true</code> and
+<code>timed_out: false</code> with the current finished and pending runs; the teammates keep running. Replies omit
+<code>interrupted</code> otherwise. Hermes's default tool-call timeout (<code>tools.sequential_call</code>) is 420 seconds;
+if you lowered it, keep <code>wait_seconds</code> below your timeout. <code>teammate_check</code> remains bounded to 0–60 seconds.</p>
+<h4>Completion notices (not available yet)</h4>
+<p>Notices that tell the parent when a run ends are built, but no current Hermes build can deliver them safely. Hermes can't
+yet confirm which conversation would receive an injected message. In the CLI it goes to whatever session is open, and in the
+gateway a chat keeps the same routing key after <code>/new</code>. A notice could land in the wrong conversation, so the plugin never
+injects one; the roster reports <code>push_completion</code> as <code>unsupported</code> with the reason. Use <code>teammate_wait</code> instead.</p>
+<p>Session-bound injection is requested upstream in
+<a href="https://github.com/NousResearch/hermes-agent/issues/133212#issuecomment-6152052854">NousResearch/hermes-agent#133212</a>.
+Once Hermes has it, a plugin update can enable notices behind <code>notify_on_completion</code> (off by default; outside the CLI
+also the operator's <code>allow_gateway_injection</code>). A notice contains only the teammate name, run ID and status, never child
+output, goals or child error text. Runs already read with check/wait or stopped by the parent get no notice.</p>
+<h3>Compatibility</h3>
+<ul>
+<li>Requires Hermes <strong>0.21.4 or newer</strong>. CI runs against a pinned upstream commit and against <code>main</code>.</li>
+<li>Runs with <code>plugins.isolation: in_process</code> (the default). Under <code>plugins.isolation: host</code>, every tool except the
+roster answers <code>unsupported_isolation</code>. Hermes builds with NousResearch/hermes-agent#137167 can carry launches across
+the plugin-host boundary. But calls made after a tool returns (run monitors) cannot yet resolve their parent
+session, and the plugin cannot see the delegation depth or spawn pause from the host process.</li>
+<li>Some features depend on the Hermes build. The plugin detects each one at call time and never quietly
+substitutes something else:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Teammate setting / feature</th>
+<th>Needs in Hermes</th>
+<th>When missing</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>model</code></td>
+<td>any supported version</td>
+<td>Must be served by the child's selected provider (normally inherited from the parent)</td>
+</tr>
+<tr>
+<td><code>delegation:</code> config (provider, model, reasoning effort)</td>
+<td>provider and model: builds with #137167; reasoning effort: any supported version</td>
+<td>Teammates use the parent's provider and model; <code>delegation.reasoning_effort</code> still applies to every teammate</td>
+</tr>
+<tr>
+<td><code>route</code> (a configured Hermes provider name, such as <code>openrouter</code>)</td>
+<td><code>SubagentLaunchRequest.provider</code>, in Hermes builds with NousResearch/hermes-agent#137167 (on Hermes main since 2026-10-12, first in the v0.21.7 canary of 2026-10-13, and in the 0.23.0 release)</td>
+<td>Listed in the run's <code>unsupported</code> field; the run uses the parent's provider. With support, a routed teammate does not use the <code>delegation:</code> provider settings (provider, model, base URL, API mode, request overrides); the global <code>delegation.reasoning_effort</code> still applies on any build (a per-teammate <code>reasoning_effort</code> is the separate row below). Always set <code>model</code> together with <code>route</code>.</td>
+</tr>
+<tr>
+<td><code>reasoning_effort</code></td>
+<td><code>SubagentLaunchRequest.reasoning_effort</code> (upstream PR #89936)</td>
+<td>Listed in the run's <code>unsupported</code> field</td>
+</tr>
+<tr>
+<td>steering</td>
+<td>a lifecycle <code>steer</code> (Hermes builds with #137167); older builds fall back to <code>delegate_task</code> steer with the live parent</td>
+<td><code>teammate_message</code> returns <code>unsupported</code></td>
+</tr>
+<tr>
+<td><code>teammate_wait</code></td>
+<td>supported lifecycle and in-process plugin</td>
+<td>Same isolation restrictions as check</td>
+</tr>
+<tr>
+<td><code>teammate_request_changes</code></td>
+<td>Kanban <code>reopen_review_task</code></td>
+<td>Returns <code>unsupported</code></td>
+</tr>
+<tr>
+<td><code>teammate_chain</code></td>
+<td>Hermes <code>kanban_create</code> through <code>ctx.dispatch_tool</code></td>
+<td>Returns <code>unsupported</code> when dispatch is unavailable</td>
+</tr>
+<tr>
+<td>Explicit <code>board</code></td>
+<td>Hermes <code>connect(board=)</code> and <code>board_exists</code></td>
+<td>Returns unsupported when missing</td>
+</tr>
+<tr>
+<td>push completion</td>
+<td>public session-bound injection (unavailable on tested pinned/main); gateway also needs operator consent</td>
+<td>Roster reports unsupported; results remain available via check/wait</td>
+</tr>
+<tr>
+<td>follow-up on the same child</td>
+<td>a lifecycle <code>follow_up</code> (proposed upstream)</td>
+<td>Follow-ups carry earlier results as context</td>
+</tr>
+</tbody></table>
+<p>The upstream proposal is tracked in <a href="https://github.com/NousResearch/hermes-agent/issues/133212">NousResearch/hermes-agent#133212</a>.</p>
+<h3>Benchmarks</h3>
+<p>The first live slice ran one code-review task three ways on the same model (GLM <code>glm-5.3</code>, one Hermes build, 3 runs each):
+<strong>A</strong> one agent alone, <strong>B</strong> core <code>delegate_task</code> fan-out to 4 helpers, <strong>C</strong> 4 teammates.</p>
+<table>
+<thead>
+<tr>
+<th>Setup</th>
+<th align="right">Bugs found (of 8)</th>
+<th align="right">Parent tokens</th>
+<th align="right">Total tokens</th>
+<th align="right">Parent API calls</th>
+<th align="right">Wall time</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A, one agent</td>
+<td align="right">8</td>
+<td align="right">135k</td>
+<td align="right">135k</td>
+<td align="right">9</td>
+<td align="right">87 s</td>
+</tr>
+<tr>
+<td>B, <code>delegate_task</code></td>
+<td align="right">8</td>
+<td align="right">32k</td>
+<td align="right">171k</td>
+<td align="right">3.3</td>
+<td align="right">81 s</td>
+</tr>
+<tr>
+<td>C, teammates (0.1.3)</td>
+<td align="right">8</td>
+<td align="right">52k</td>
+<td align="right">195k</td>
+<td align="right">6.3</td>
+<td align="right">86 s</td>
+</tr>
+</tbody></table>
+<p>All three setups found every planted bug, so this task cannot rank them on quality. It does show the cost shape: delegating cut the parent's cumulative token use 2.6–4.2× (its peak prompt about 1.6×), cost 26–44% more tokens in total, and was not faster here. Teammates made about twice
+as many parent calls as <code>delegate_task</code>.
+An audit of every recorded tool call found no run read the answer key. These are means of 3 runs, without significance tests.</p>
+<p><strong>Slice 2</strong> re-measured this on 10 harder review cases × 2 runs, with teammates 0.2.2 and <code>teammate_wait</code>, against the
+same <code>delegate_task</code> fan-out. Its declared verdict is INCONCLUSIVE: 4 of 40 runs broke the frozen recipe (3 <code>delegate_task</code>,
+1 teammates). On the 36 valid runs both found 98% of the planted bugs. The teammates parent still used <strong>1.76× the tokens</strong>
+of the <code>delegate_task</code> parent (95% bounds 1.48–2.07) and made <strong>3.2 more API calls per run</strong>: about 1.7 calls finding the
+plugin's tools behind Hermes's tool search, and 2.3 waits, since a wait is capped at 60 s while helpers ran 150–200 s.
+Fixes: a longer wait (#40) and directly listed plugin tools upstream (NousResearch/hermes-agent#135762). For a one-shot
+fan-out, <code>delegate_task</code> is the cheaper choice today.</p>
+<p><strong>Slice 3</strong> tested what teammates are for: one six-request session that needs three named specialists, a scout, a
+reviewer and a tester. It ran on 10 cases, with teammates 0.2.5 against <code>delegate_task</code> with the same role rules in
+AGENTS.md. The declared verdict is INCONCLUSIVE (quality unresolved):</p>
+<ul>
+<li><strong>Rule-following:</strong> teammates were at least as good (+0.117; the lower bound sat exactly on the bar).</li>
+<li><strong>Success:</strong> too close to call (−0.017, with bounds −0.083 to +0.050).</li>
+<li><strong>Cost:</strong> unresolved: 1.04× the parent tokens (bounds 0.79–1.41) and 0.75 more calls per request (bounds −0.23 to +1.95).</li>
+</ul>
+<p>Every reviewer specialist given a planted bug found it (teammates 9 of 9, <code>delegate_task</code> 10 of 10; one teammates review was never delegated). Teammates lost points in two places:</p>
+<ul>
+<li><strong>Passing the answer on:</strong> the parent paraphrased the reviewer's finding instead of copying its finding line, in 20 of 20 reviews (<code>delegate_task</code>: 19 of 20 copied). Twice that lost the <code>file:line</code>.</li>
+<li><strong>Tool search:</strong> discovering the plugin's tools behind Hermes's tool search cost extra calls.</li>
+</ul>
+<p>0.2.7 addresses both: results now carry a verbatim relay instruction, and the tools carry tool-search bridge hints.</p>
+<p><strong>Slice 3b</strong> was the planned re-measure of 0.2.7. It stopped before the scored run, at its calibration gate, because
+each setup scored 12 of 12 on the two calibration cases (24 of 24 pooled), above the gate's 0.95 ceiling. By its pre-declared rule,
+that makes it INCONCLUSIVE (design), with no tuning and no rerun. On those 24 calibration turns, both setups' parents kept the reviewer's <code>file:line</code>
+in all 4 reviews. Only teammates' parents also kept the reviewer's exact finding line, 4 of 4 against 0 of 4; in slice 3 it was the other way round. That is
+exploratory, two cases only, and not a measured claim.</p>
+<p><strong>What this means in practice:</strong></p>
+<ul>
+<li><p><strong>Choose <code>delegate_task</code></strong> for a one-shot fan-out. It is built in, never sits behind tool search, and was cheaper
+in slices 1 and 2. Since Hermes 0.22 it also runs in the background in chat sessions, brings results back
+between turns, and can list, steer or stop running children.</p>
+</li>
+<li><p><strong>Add <a href="https://github.com/NousResearch/hermes-official-plugins/tree/main/advanced-delegation">advanced-delegation</a></strong>
+when all you need is for <code>delegate_task</code> to pick a named model, or to run a task as one of your Hermes profiles. That
+official plugin adds model routes and profile routes to <code>delegate_task</code>; Hermes core still runs the subagent. It
+needs Hermes 0.22.5 or newer.</p>
+</li>
+<li><p><strong>Choose teammates</strong> when the same specialists come back across a session or a project:</p>
+<ul>
+<li>you write each role's rules, toolsets and model once, in config, instead of in every brief;</li>
+<li>results are kept per run, with token receipts and a clipped flag;</li>
+<li>you can check or wait on a run by its id within a turn, send a follow-up that carries the earlier result, and
+hand finished work to a Kanban review lane.</li>
+</ul>
+<p>On that workload, slice 3 found teammates following the role rules at least as well as <code>delegate_task</code>; success
+and cost were unresolved. A quality or cost advantage is not established.</p>
+</li>
+</ul>
+<p>Full reports, method and per-run data: <a href="https://github.com/100yenadmin/hermes-teammates/blob/main/bench/results/slice1/REPORT.md"><code>bench/results/slice1/REPORT.md</code></a>,
+<a href="https://github.com/100yenadmin/hermes-teammates/blob/main/bench/results/slice2/REPORT.md"><code>bench/results/slice2/REPORT.md</code></a>,
+<a href="https://github.com/100yenadmin/hermes-teammates/blob/main/bench/results/slice3/REPORT.md"><code>bench/results/slice3/REPORT.md</code></a> and
+<a href="https://github.com/100yenadmin/hermes-teammates/blob/main/bench/results/slice3b/REPORT.md"><code>bench/results/slice3b/REPORT.md</code></a>. The <code>$0</code> mechanics benchmarks
+(<code>tests/bench_mechanics</code>) run in CI on every change.</p>
+<h3>Limits (honest list)</h3>
+<ul>
+<li><strong>Follow-ups carry context, not the transcript.</strong> A follow-up starts a fresh subagent with a digest of earlier
+results until Hermes exposes transcript-level follow-up to plugins.</li>
+<li><strong>Runs do not survive a restart.</strong> Hermes keeps subagents in-process. After a restart the ledger marks
+unfinished runs from dead processes <code>interrupted</code> on first plugin use across conversations; results are not
+recovered or re-run. Plugin reloads within the same process preserve live runs. A lane card's claim expires through Kanban's normal TTL.</li>
+<li><strong>Runs belong to the conversation that started them.</strong> Another chat on the same profile cannot see, steer or
+stop them.</li>
+<li><strong>Compression keeps runs; <code>/new</code> and rotation do not.</strong> Hermes' default in-place compression (<code>compression.in_place: true</code>)
+keeps the session id, so runs survive it. In rotation mode (<code>in_place: false</code>) and after <code>/new</code>, the conversation gets a new
+session id and earlier runs answer <code>unknown_run</code>. A lane card is blocked when its monitor detects the lost handle; the child
+may continue without a recoverable result.</li>
+<li><strong>Toolsets narrow, but they are Hermes toolsets.</strong> <code>file</code> includes write tools, so a teammate with <code>file</code> can
+edit files even if its instructions say not to. Pick toolsets for what the teammate may do, not what it should
+do. By default Hermes adds the parent's MCP toolsets back to a teammate with narrowed <code>toolsets</code> (<code>delegation.inherit_mcp_toolsets: true</code>); set it to <code>false</code> for a strict intersection.</li>
+<li>The plugin refuses nested teammates, checks Hermes's spawn-pause flag, and caps live runs per conversation.</li>
+<li>Hermes builds before #137167 cannot grant plugin toolsets (for example Spotify) to teammates; launch returns
+<code>launch_failed</code>. Newer builds accept them.</li>
+</ul>
+<h3>How to test</h3>
+<pre><code class="language-bash">hermes plugins validate --install-deps ./hermes-teammates
+cd hermes-teammates &amp;&amp; python -m pytest -q   # inside a Hermes venv
+</code></pre>
+<p>Manual walkthrough (5 minutes):</p>
+<ol>
+<li>Add the <code>reviewer</code> teammate above, in the plugin settings or <code>config.yaml</code>.</li>
+<li>Ask: "Show me my teammates." You should see the roster with <code>reviewer</code> and a features table.</li>
+<li>Ask: "Have the reviewer summarize README.md in three bullets." You get a <code>run_id</code>, then the result via
+<code>teammate_check</code>.</li>
+<li>Ask: "Follow up with the reviewer: which bullet is weakest?" The run starts with <code>follow_up: true</code>.</li>
+<li>Create a Kanban card assigned to <code>teammates</code>, then ask: "Have the reviewer work Kanban task ." The card
+goes running → review with the summary.</li>
+<li>Hands-off chain, in any chat, with the <code>scout</code> from <code>teammates.example.yaml</code> added too and the
+<code>kanban</code> toolset enabled for that platform (next to <code>teammates</code>): ask
+"Put three linked cards on the Kanban board, each assigned to the teammates lane: research X, write Y from the
+research, review Y. Give the first card to the scout. Each time a card lands in review, approve it and give
+the next card to the right teammate with the previous result as context." Each card goes
+ready → running → review → done in turn, with no further prompts. On builds that wake the chat at review, late
+notices for cards the agent already approved may follow; they need no action.</li>
+</ol>
+<h3>Security</h3>
+<p>See <a href="https://github.com/100yenadmin/hermes-teammates/blob/main/SECURITY.md">SECURITY.md</a>. In short:</p>
+<ul>
+<li>Credentials come from Hermes: the parent's, or the operator-configured provider's when route is supported.
+The model cannot choose credentials; teammates can only narrow toolsets.</li>
+<li>The model picks names, never providers or models.</li>
+<li>The ledger stays local and per profile, retaining complete results up to 262,144 characters (256 KB of text) per run.</li>
+<li>The plugin makes no network calls of its own.</li>
+<li>It only claims Kanban cards assigned to its lane.</li>
+<li>It adds one short paragraph about the Kanban lane to new session prompts, rendered from its settings; no
+conversation content goes into it.</li>
+</ul>
+<h3>Troubleshooting and reporting a bug</h3>
+<p>Use <code>/teammates</code> for the roster, or <code>teammates_roster</code> for config problems, host features and recent runs.
+If the tools are missing on one platform (for example Telegram) while <code>hermes plugins</code> shows the plugin enabled, check that profile's <code>platform_toolsets</code>: when it holds an explicit list for that platform, <code>teammates</code> must be in it. Run <code>hermes tools</code> to add it.
+Inspect an existing run with <code>teammate_check</code> (<code>wait_seconds: 0</code>) for status, <code>summary</code>, <code>api_calls</code> and <code>duration_seconds</code>.
+For recent agent-log excerpts, use <code>hermes logs -n 300 | grep -i teammate</code>; remove secrets and private text before sharing.
+Inspect existing runs first; ask before starting a new run or follow-up, because model calls cost money.
+Or ask your Hermes agent to report a problem with Hermes Teammates (the bundled <code>teammates-report-problem</code> skill); it drafts the report and files nothing until you approve the draft. On Hermes versions that do not list plugin skills in the system prompt, name it: "load the skill <code>hermes-teammates:teammates-report-problem</code>".
+Use the <a href="https://github.com/100yenadmin/hermes-teammates/issues/new?template=bug_report.yml">bug report form</a> for reproducible problems.
+Report toolset escapes, cross-profile access or leaked credentials through a <a href="https://github.com/100yenadmin/hermes-teammates/security/advisories/new">private advisory</a>.</p>
+<h3>Releases and license</h3>
+<ul>
+<li><a href="https://github.com/100yenadmin/hermes-teammates/releases">Releases</a> and the <a href="https://github.com/100yenadmin/hermes-teammates/blob/main/CHANGELOG.md">CHANGELOG</a></li>
+<li><a href="https://github.com/100yenadmin/hermes-teammates/blob/main/CONTRIBUTING.md">Contributing</a> and the <a href="https://github.com/100yenadmin/hermes-teammates/blob/main/SECURITY.md">security policy</a></li>
+<li><a href="LICENSE">MIT license</a>. Maintained by <a href="https://github.com/100yenadmin">@100yenadmin</a> (Electric Sheep).</li>
+</ul>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in multi-agent &amp; orchestration</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/builderz-labs/mission-control">
+        <div class="stars">★ 6.5K</div>
+        <div class="name"><span class="org">builderz-labs /</span> mission-control</div>
+      </a>
+      <a class="related-row" href="/projects/swarmclawai/swarmclaw">
+        <div class="stars">★ 709</div>
+        <div class="name"><span class="org">swarmclawai /</span> swarmclaw</div>
+      </a>
+      <a class="related-row" href="/projects/howdymary/hermes-agent-metaharness">
+        <div class="stars">★ 119</div>
+        <div class="name"><span class="org">howdymary /</span> hermes-agent-metaharness</div>
+      </a>
+      <a class="related-row" href="/projects/runtimenoteslabs/gladiator">
+        <div class="stars">★ 78</div>
+        <div class="name"><span class="org">runtimenoteslabs /</span> gladiator</div>
+      </a>
+      <a class="related-row" href="/projects/1ilkhamov/opencode-hermes-multiagent">
+        <div class="stars">★ 198</div>
+        <div class="name"><span class="org">1ilkhamov /</span> opencode-hermes-multiagent</div>
+      </a>
+      <a class="related-row" href="/projects/linke-ai/hermes-agent-team">
+        <div class="stars">★ 187</div>
+        <div class="name"><span class="org">linke-ai /</span> hermes-agent-team</div>
+      </a>
+      <a class="related-row" href="/projects/agent37-platform/minions">
+        <div class="stars">★ 644</div>
+        <div class="name"><span class="org">agent37-platform /</span> minions</div>
+      </a>
+      <a class="related-row" href="/projects/shannhk/hermes-agent-control-room">
+        <div class="stars">★ 738</div>
+        <div class="name"><span class="org">shannhk /</span> hermes-agent-control-room</div>
+      </a>
+    </div>
+    <p class="list-link"><a href="/lists/multi-agent-frameworks">see all multi-agent &amp; orchestration →</a></p>
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="/about">about</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues/new?template=suggest-repo.yml">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
