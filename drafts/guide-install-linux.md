@@ -20,7 +20,7 @@ This guide covers Hermes Agent **v0.21.5**.
 
 - **Git**, plus **curl** and **xz-utils** (the installer downloads Node.js as a `.tar.xz`): `sudo apt install git curl xz-utils` on Debian/Ubuntu.
 - For the desktop app only: `build-essential` (g++) to compile native modules.
-- The installer handles the rest with no sudo: `uv`, Python 3.11, Node.js 26, ripgrep, ffmpeg.
+- The installer handles the rest with no sudo: `uv`, Python 3.14, Node.js 26, ripgrep, ffmpeg.
 
 ## Install layout: per-user vs system-wide
 
@@ -48,7 +48,7 @@ The same pattern works on Arch, Fedora/RHEL, and openSUSE — those distros don'
 
 ## Updating
 
-`hermes update` auto-detects the git-installer layout and updates in place. (Docker installs update by pulling a new image instead.)
+`hermes update` auto-detects the git-installer layout and updates in place. (Docker installs update by pulling a new image instead.) Source installs now follow tagged releases by default; `hermes update --set-channel main` opts back into tracking main.
 
 ## FAQ
 
@@ -56,7 +56,7 @@ The same pattern works on Arch, Fedora/RHEL, and openSUSE — those distros don'
 
 **Does the installer need sudo?** No for the core install — it's per-user under `~/.hermes/`. Root is only needed once for Playwright's Chromium system libraries (or skip browser tools with `--skip-browser`).
 
-**Which distros are supported?** Latest Ubuntu and WSL2 are tested; anything with glibc, systemd, and FHS is expected to work. Alpine (musl) doesn't fit that description.
+**Which distros are supported?** Latest Ubuntu and WSL2 are tested; anything with glibc, systemd, and FHS is expected to work. Alpine (musl) falls outside that description, but the installers now work on musl Linux (Alpine, Void).
 
 **Can I install from the AUR on Arch?** No — AUR installs are explicitly unsupported. Run the official installer on Arch instead.
 

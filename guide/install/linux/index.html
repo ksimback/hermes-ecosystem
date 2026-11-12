@@ -71,7 +71,7 @@
     {
       "@type": "Question",
       "name": "Which Linux distros does Hermes Agent support?",
-      "acceptedAnswer": {"@type": "Answer", "text": "Latest Ubuntu and WSL2 are what Nous tests. The official matrix says any distro with glibc, systemd, and the Filesystem Hierarchy Standard is likely to work well — that covers Debian, Fedora, Arch, and openSUSE, but not musl-based Alpine."}
+      "acceptedAnswer": {"@type": "Answer", "text": "Latest Ubuntu and WSL2 are what Nous tests. The official matrix says any distro with glibc, systemd, and the Filesystem Hierarchy Standard is likely to work well — that covers Debian, Fedora, Arch, and openSUSE. Alpine (musl) falls outside that description, but the installers now work on musl Linux (Alpine, Void)."}
     },
     {
       "@type": "Question",
@@ -158,7 +158,7 @@ hermes              # start chatting</code></pre>
 
 <h2 id="prerequisites">Prerequisites</h2>
 
-<p>Per the <a href="https://hermes-agent.nousresearch.com/docs/getting-started/installation">official install docs</a>: <strong>Git</strong>, plus <code>curl</code> and <code>xz-utils</code> (the installer downloads Node.js as a <code>.tar.xz</code>) — on Debian/Ubuntu that's <code>sudo apt install git curl xz-utils</code>. The desktop app additionally needs <code>build-essential</code> to compile native modules. Everything else the installer handles itself, with no sudo: <code>uv</code>, Python 3.11, Node.js 26 (existing Node 22.22+/24.11+/26+ is used as-is), ripgrep, and ffmpeg.</p>
+<p>Per the <a href="https://hermes-agent.nousresearch.com/docs/getting-started/installation">official install docs</a>: <strong>Git</strong>, plus <code>curl</code> and <code>xz-utils</code> (the installer downloads Node.js as a <code>.tar.xz</code>) — on Debian/Ubuntu that's <code>sudo apt install git curl xz-utils</code>. The desktop app additionally needs <code>build-essential</code> to compile native modules. Everything else the installer handles itself, with no sudo: <code>uv</code>, Python 3.14, Node.js 26 (existing Node 22.22+/24.11+/26+ is used as-is), ripgrep, and ffmpeg.</p>
 
 <h2 id="layout">Install layout: per-user vs system-wide</h2>
 
@@ -196,12 +196,12 @@ hermes              # start chatting</code></pre>
   <li><strong>Fedora / RHEL / openSUSE</strong> — same installer; these distros don't support Playwright's <code>--with-deps</code>, so an admin installs the Chromium system libraries separately — the installer prints the exact <code>dnf</code>/<code>zypper</code> commands.</li>
   <li><strong>Arch / Manjaro</strong> — the installer works (pacman, same sudo-detection). <strong>The AUR package is explicitly <a href="https://hermes-agent.nousresearch.com/docs/getting-started/platform-support">unsupported</a></strong> — use the official installer.</li>
   <li><strong>Nix / NixOS</strong> — no longer an explicitly supported path (Tier 2, best-effort; "breaks often due to node.js packaging woes" per the official matrix). The <a href="https://hermes-agent.nousresearch.com/docs/getting-started/nix-setup">Nix setup guide</a> has a flake and NixOS module if you accept the tradeoff.</li>
-  <li><strong>Alpine</strong> — musl, not glibc: outside the "likely to work" description. A Debian container or VPS is the path of least resistance.</li>
+  <li><strong>Alpine</strong> — musl, not glibc: outside the "likely to work" description, though the installers now work on musl Linux (Alpine, Void). A Debian container or VPS is the path of least resistance.</li>
 </ul>
 
 <h2 id="updating">Updating</h2>
 
-<p>Hermes auto-detects how it was installed, and <code>hermes update</code> updates a git-installer layout in place (Docker installs update by pulling a new image instead — <code>hermes update</code> is intentionally unsupported there). <code>hermes doctor</code> shows the detected install method.</p>
+<p>Hermes auto-detects how it was installed, and <code>hermes update</code> updates a git-installer layout in place (Docker installs update by pulling a new image instead — <code>hermes update</code> is intentionally unsupported there). <code>hermes doctor</code> shows the detected install method. Source installs now follow tagged releases by default; <code>hermes update --set-channel main</code> opts back into tracking main.</p>
 
 <h2 id="frequently-asked-questions">FAQ</h2>
 
@@ -212,7 +212,7 @@ hermes              # start chatting</code></pre>
 <p>No for the core install — it's per-user under <code>~/.hermes/</code>. Root is only needed once for Playwright's Chromium system libraries, and <code>--skip-browser</code> avoids even that.</p>
 
 <h3>Which distros are supported?</h3>
-<p>Latest Ubuntu and WSL2 are tested; anything with glibc, systemd, and FHS is expected to work — Debian, Fedora, Arch, openSUSE. Alpine (musl) doesn't fit that description.</p>
+<p>Latest Ubuntu and WSL2 are tested; anything with glibc, systemd, and FHS is expected to work — Debian, Fedora, Arch, openSUSE. Alpine (musl) falls outside that description, but the installers now work on musl Linux (Alpine, Void).</p>
 
 <h3>Can I install from the AUR on Arch?</h3>
 <p>No — AUR installs are explicitly unsupported. Run the official installer on Arch instead.</p>

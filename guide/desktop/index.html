@@ -147,8 +147,9 @@
 
 <p>Two paths, per the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/desktop">docs</a>:</p>
 <ul>
-  <li><strong>Fresh install:</strong> download the app for your OS from the <a href="https://hermes-agent.nousresearch.com/desktop">official Hermes Desktop page</a>. macOS is Apple Silicon only (Intel Macs are officially unsupported); Windows 10/11 x86_64 and aarch64; Linux builds cover mainstream glibc distros — the team tests on the latest Ubuntu.</li>
+  <li><strong>Fresh install:</strong> download the app for your OS from the <a href="https://hermes-agent.nousresearch.com/desktop">official Hermes Desktop page</a>. macOS 13+ is Apple Silicon only (Intel Macs are officially unsupported); Windows needs Windows 11 22H2 or newer (x64 and ARM64, as a signed MSIX package); Linux builds cover mainstream glibc distros — the team tests on the latest Ubuntu.</li>
   <li><strong>Already run the CLI?</strong> Just type <code>hermes desktop</code>. The app picks up your existing config, keys, sessions, and skills — nothing to migrate, because there's nothing separate to migrate to.</li>
+  <li><strong>Prefer a browser tab?</strong> The Webapp serves the same Desktop workspace from your own gateway. It is off by default; turn it on with <code>webapp.enabled</code> or Settings → Web Access.</li>
 </ul>
 <p>The app is self-contained: it starts and manages its own local backend and never requires you to run the web dashboard. On Ubuntu and other distros, if you installed the CLI via <code>install.sh</code>, the <code>hermes desktop</code> route is usually smoother than hunting a package for your distro.</p>
 
@@ -183,7 +184,7 @@
 <h2 id="rough-edges">Known rough edges (honest section)</h2>
 
 <ul>
-  <li><strong>Electron download on install/build</strong> — roughly a 114MB fetch that some networks throttle or block; recent versions self-heal via a mirror fallback, but a hanging first launch is usually this.</li>
+  <li><strong>Electron download when building from source</strong> — running <code>hermes desktop</code> from a CLI/source install fetches roughly 114MB that some networks throttle or block; recent versions self-heal via a mirror fallback, but a hanging first launch there is usually this. The signed Windows and macOS packages carry their own Python and Node, so first launch builds nothing.</li>
   <li><strong>macOS permission friction</strong> — TCC prompts (files, automation) and Gatekeeper on first run are expected: the backend runs real agent commands. The docs cover the prompts and the signing-identity setup that tames them.</li>
   <li><strong>Remote hosts that change SSH keys</strong> — Desktop hard-fails ("latches") rather than silently retrying; you clear the host-key change and reconnect.</li>
   <li><strong>It's the heaviest way to run Hermes</strong> — if you want the lightest possible install on a server, that's <a href="/guide/modes/#docker-vps">Docker</a>, not Desktop.</li>

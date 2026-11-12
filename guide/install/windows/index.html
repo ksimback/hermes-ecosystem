@@ -161,7 +161,7 @@
 <thead><tr><th>Path</th><th>Best for</th><th>How</th></tr></thead>
 <tbody>
 <tr><td><strong>PowerShell one-liner</strong></td><td>Anyone already in a terminal</td><td><code>iex (irm https://hermes-agent.nousresearch.com/install.ps1)</code> — no admin, installs to <code>%LOCALAPPDATA%\hermes</code></td></tr>
-<tr><td><strong>Hermes Desktop installer</strong></td><td>A familiar Windows install experience; handing Hermes to a non-developer</td><td><a href="https://hermes-agent.nousresearch.com/">Download the installer</a> and run it — on first launch it runs <code>install.ps1</code> under the hood; the app and the CLI share one install</td></tr>
+<tr><td><strong>Hermes Desktop installer</strong></td><td>A familiar Windows install experience; handing Hermes to a non-developer</td><td><a href="https://hermes-agent.nousresearch.com/">Install the signed MSIX package</a> (x64 or ARM64) through App Installer or the Microsoft Store. It needs Windows 11 22H2 or newer and carries its own Python and Node, so first launch builds nothing. The PowerShell one-liner still works on Windows 10</td></tr>
 <tr><td><strong>WSL2</strong></td><td>POSIX-heavy development; the dashboard's embedded terminal</td><td><code>wsl --install</code>, reboot, then the Linux installer inside Ubuntu</td></tr>
 </tbody>
 </table>
@@ -171,7 +171,7 @@
 
 <h2 id="what-it-does">What the PowerShell installer does</h2>
 
-<p>Everything lands under <code>%LOCALAPPDATA%\hermes\</code> and <code>hermes</code> is added to your <strong>User PATH</strong> — no UAC prompt at any point. Per the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/windows-native">official docs</a>, the installer bootstraps <code>uv</code>, Python 3.11, Node.js 26 (winget if available, else a portable tarball), and — only if <code>git</code> isn't already on PATH — a self-contained <strong>PortableGit</strong> (~45 MB, official git-for-windows build) under <code>%LOCALAPPDATA%\hermes\git</code>. It sets <code>HERMES_GIT_BASH_PATH</code> so Hermes runs shell commands through Git Bash — "same strategy Claude Code uses" — and finishes with the <code>hermes setup</code> wizard.</p>
+<p>Everything lands under <code>%LOCALAPPDATA%\hermes\</code> and <code>hermes</code> is added to your <strong>User PATH</strong> — no UAC prompt at any point. Per the <a href="https://hermes-agent.nousresearch.com/docs/user-guide/windows-native">official docs</a>, the installer bootstraps <code>uv</code>, Python 3.14, Node.js 26 (winget if available, else a portable tarball), and — only if <code>git</code> isn't already on PATH — a self-contained <strong>PortableGit</strong> (~45 MB, official git-for-windows build) under <code>%LOCALAPPDATA%\hermes\git</code>. It sets <code>HERMES_GIT_BASH_PATH</code> so Hermes runs shell commands through Git Bash — "same strategy Claude Code uses" — and finishes with the <code>hermes setup</code> wizard.</p>
 
 <p>Need installer options? The scriptblock form passes parameters — <code>-Branch</code> / <code>-Commit</code> / <code>-Tag</code> to pin a version, <code>-NoVenv</code>, <code>-SkipSetup</code>, <code>-HermesHome</code>, <code>-InstallDir</code>:</p>
 

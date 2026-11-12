@@ -19,7 +19,7 @@ The official support matrix lists **macOS on Intel (x86) processors as unsupport
 
 ## Prerequisites
 
-Just **Git** (`git --version`). The installer handles the rest: `uv`, Python 3.11 (no sudo), Node.js 26 (existing Node 22.22+/24.11+/26+ is used as-is), ripgrep, and ffmpeg. For the desktop app it also needs a working compiler toolchain to build native modules.
+Just **Git** (`git --version`). The installer handles the rest: `uv`, Python 3.14 (no sudo), Node.js 26 (existing Node 22.22+/24.11+/26+ is used as-is), ripgrep, and ffmpeg. If you build the desktop app from source with `hermes desktop`, it also needs a working compiler toolchain to build native modules; the signed desktop package builds nothing on first launch.
 
 ## Install and verify
 

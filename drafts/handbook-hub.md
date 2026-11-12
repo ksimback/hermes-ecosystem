@@ -127,9 +127,9 @@ Installing Hermes is one curl command followed by two small config steps. If eve
 
 ### Prerequisites
 
-- **macOS, Linux, Windows, Android (Termux).** Linux, macOS, and WSL2 are first-class. Native Windows works via an early-beta PowerShell installer. Termux on Android works via a curated install path.
+- **macOS, Linux, Windows, Android (Termux).** Linux, macOS (Apple Silicon), WSL2, and native Windows are all Tier 1. Termux on Android works via a curated install path.
 - **A terminal.** Any shell works — bash, zsh, fish, PowerShell.
-- **An API key or a local model.** If you don't have a model provider or want to set up a new one for your agent, a great place to start is the [Nous Portal](https://portal.nousresearch.com) — otherwise just grab an API key from your model provider, or a local Ollama/LM Studio install. You can always swap model providers later.
+- **An API key or a local model.** If you don't have a model provider or want to set up a new one for your agent, a great place to start is the [Nous Portal](https://portal.nousresearch.com) — otherwise just grab an API key from your model provider, or a local Ollama/LM Studio install. You can always swap model providers later. The Desktop app can start on a free trial model with no key, but the CLI still asks for a provider or key.
 - **~200 MB of disk** for the install plus whatever you use for memory and skills.
 
 ### Install
@@ -140,13 +140,13 @@ Installing Hermes is one curl command followed by two small config steps. If eve
 curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
 ```
 
-**Native Windows (PowerShell, early beta):**
+**Native Windows (PowerShell, Tier 1):**
 
 ```powershell
-irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1 | iex
+iex (irm https://hermes-agent.nousresearch.com/install.ps1)
 ```
 
-The installer sets up `uv`, Python 3.11, Node.js, `ripgrep`, `ffmpeg`, the venv, and the `hermes` command. On Linux/macOS it drops the binary under `~/.hermes/` and symlinks `~/.local/bin/hermes`. On Windows it installs to `%LOCALAPPDATA%\hermes` with a bundled portable Git Bash. The installer prints everything it does — no hidden steps.
+The installer sets up `uv`, Python 3.14, Node.js, `ripgrep`, `ffmpeg`, the venv, and the `hermes` command. On Linux/macOS it drops the binary under `~/.hermes/` and symlinks `~/.local/bin/hermes`. On Windows it installs to `%LOCALAPPDATA%\hermes` with a bundled portable Git Bash. The installer prints everything it does — no hidden steps.
 
 ### First run
 
@@ -154,7 +154,7 @@ The installer sets up `uv`, Python 3.11, Node.js, `ripgrep`, `ffmpeg`, the venv,
 hermes
 ```
 
-Hermes walks you through provider setup interactively on the first run. Paste an API key when prompted, or point it at a local model. Confirm with `hermes model` to see what's configured.
+Hermes walks you through provider setup interactively on the first run. Paste an API key when prompted, or point it at a local model. (The Desktop app's first launch can run on a free trial model with no key; the CLI, TUI and gateway get no free model.) Confirm with `hermes model` to see what's configured.
 
 ### Verify
 
@@ -289,7 +289,7 @@ Memory is stored in three places:
 
 The small caps are deliberate. Unlimited memory sounds attractive until you realize that's how agents turn into junk drawers of stale context. Hermes forces consolidation: when `MEMORY.md` fills up, the agent has to decide what's worth keeping. That discipline keeps the working context tight and the model focused.
 
-If you want unlimited semantic memory, there are eight community memory providers (Honcho, Mem0, Hindsight, Supermemory, and others) that plug in on top. See [best memory providers →](/lists/best-memory-providers).
+If you want unlimited semantic memory, there are external memory providers (Honcho, Mem0, Hindsight, Supermemory, and others) that plug in on top. Most are now catalog plugins; ByteRover and RetainDB remain bundled. See [best memory providers →](/lists/best-memory-providers).
 
 ### Skills: executable procedures, not notes
 
@@ -380,7 +380,7 @@ Hermes itself is free and open-source (MIT licensed). You pay only for the model
 
 ### Does it work on Windows?
 
-Yes — two paths. **WSL2** is the road-tested option: run `wsl --install` in PowerShell, install Ubuntu, then run the standard Linux curl installer from inside WSL. **Native Windows** works via an early-beta PowerShell installer (`irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1 | iex`) — Nous's own framing is "not road-tested as broadly," so prefer WSL2 if you're using Hermes for real work.
+Yes — **native Windows 10/11 is Tier 1**: run `iex (irm https://hermes-agent.nousresearch.com/install.ps1)` in PowerShell (no admin rights) or use the Desktop installer. **WSL2** is equally supported and the right pick for POSIX-heavy workflows. The official native-vs-WSL2 guidance, feature matrix, and pitfalls are in the [Windows install guide](/guide/install/windows/).
 
 ### Can I run it fully offline?
 
