@@ -22,8 +22,9 @@
 import fs from "node:fs/promises";
 import { githubHeaders } from "../lib/github.js";
 import {
-  buildRepoQuery,
+  buildRepoQueryBatches,
   findDeadRepos,
+  findUnresolvedRepos,
   findRenamedRepos,
   findEcosystemDrift,
   classifyDrift,
@@ -64,23 +65,41 @@ async function graphql(query) {
 
 const repos = JSON.parse(await fs.readFile("data/repos.json", "utf8"));
 
-const { query: repoQuery, skipped } = buildRepoQuery(repos, "repo");
+// One query per batch, merged. Aliases carry the original catalog index, so
+// the merged result reads exactly like a single response.
+async function graphqlBatches(queries) {
+  const merged = { data: {}, errors: [] };
+  for (const query of queries) {
+    const result = await graphql(query);
+    Object.assign(merged.data, result.data);
+    merged.errors.push(...result.errors);
+  }
+  return merged;
+}
+
+const { queries: repoQueries, skipped } = buildRepoQueryBatches(repos, "repo");
 for (const s of skipped) {
   console.warn(
     `Skipping entry ${s.index} with unsafe owner/repo: ` +
     `${JSON.stringify(s.entry.owner)}/${JSON.stringify(s.entry.repo)}`
   );
 }
-if (!repoQuery) {
+if (repoQueries.length === 0) {
   console.error("No valid repo entries to check; aborting.");
   process.exit(1);
 }
 
-const catalogResult = await graphql(repoQuery);
+const catalogResult = await graphqlBatches(repoQueries);
 const dead = findDeadRepos(repos, catalogResult.errors, "repo");
 const renamed = findRenamedRepos(repos, catalogResult.data, "repo");
+// Anything that came back as neither a repository nor NOT_FOUND was not
+// checked. Until 2026-11 these were logged and then counted as healthy.
+const unresolved = findUnresolvedRepos(repos, catalogResult.data, catalogResult.errors, "repo");
 
-console.log(`Checked ${repos.length} repos: ${dead.length} dead, ${renamed.length} renamed`);
+console.log(
+  `Checked ${repos.length - unresolved.length} of ${repos.length} repos: ` +
+  `${dead.length} dead, ${renamed.length} renamed, ${unresolved.length} unresolved`
+);
 for (const r of renamed) console.log(`  renamed: ${r.from} -> ${r.to}`);
 
 // ECOSYSTEM.md drift, resolved rather than assumed. Advising a blanket delete
@@ -97,8 +116,8 @@ try {
       const [owner, repo] = name.split("/");
       return { owner, repo };
     });
-    const { query: ecoQuery } = buildRepoQuery(entries, "eco");
-    const ecoResult = ecoQuery ? await graphql(ecoQuery) : { data: {}, errors: [] };
+    const { queries: ecoQueries } = buildRepoQueryBatches(entries, "eco");
+    const ecoResult = await graphqlBatches(ecoQueries);
     drift = classifyDrift(driftNames, ecoResult, repos);
     console.log(
       `  drift breakdown: ${drift.renamed.length} renamed, ` +
@@ -111,4 +130,14 @@ try {
   console.warn(`Could not read ECOSYSTEM.md for drift check: ${e.message}`);
 }
 
-await fs.writeFile("dead-repos.md", renderIssueBody({ dead, renamed, drift }));
+// Write the body before failing: the workflow's issue step runs with
+// `if: always()` and treats a missing/empty file as "catalog healthy".
+await fs.writeFile("dead-repos.md", renderIssueBody({ dead, renamed, drift, unresolved }));
+
+if (unresolved.length > 0) {
+  console.error(
+    `Catalog health sweep incomplete: ${unresolved.length} entries could not be checked ` +
+    `(first: ${unresolved.slice(0, 5).join(", ")}). Failing so this is not read as healthy.`
+  );
+  process.exit(1);
+}
