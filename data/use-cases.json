@@ -117,7 +117,8 @@
     "rationale": "There are two genuinely different answers here and people conflate them. Either the agent runs on a server and your phone is a client, or the agent runs on the phone. The server-plus-client path is what almost everyone ends up on, so start with hermes-webui and only reach for a native client if the web view specifically annoys you. Pick the messaging bridge based on where you already live — Telegram dominates the corpus, but the same shape works elsewhere. The on-device install is a real option, not a toy, but it is a different set of tradeoffs around battery, background execution and model cost.",
     "caveats": [
       "Exposing a self-hosted agent to the internet for phone access is the most common way people accidentally publish a shell. Tunnel it (Tailscale or equivalent) rather than opening a port.",
-      "Native mobile clients pair with a specific backend — check the pairing requirement before assuming any client works with your setup."
+      "Native mobile clients pair with a specific backend — check the pairing requirement before assuming any client works with your setup.",
+      "Since v0.23.0 Hermes ships its own Webapp: the Desktop workspace in a browser tab, served by your gateway. It is off by default (turn on webapp.enabled or Settings → Web Access), so check whether it covers you before adding a third-party web UI."
     ],
     "gaps": [],
     "evidence": [
@@ -374,7 +375,8 @@
     "rationale": "\"Self-hosted\" quietly breaks at whichever layer you forget. People containerize the agent, run a local model, and then wire in a cloud memory provider — and the private stack has a cloud dependency in the one place that sees everything. So this bundle is deliberately ordered by where the leaks actually happen: runtime, then inference, then memory. The safety layer is not optional just because the network is yours; the credential and PII exposure is from the agent to itself. Everything here has a heavier local-hardware cost than the cloud equivalent, and that tradeoff is the whole point.",
     "caveats": [
       "Local models are meaningfully weaker at long tool-use chains. Expect to simplify workflows that worked on a frontier model.",
-      "Sandboxing and remote access pull in opposite directions — decide your access story (tunnel, not open port) before you harden the runtime."
+      "Sandboxing and remote access pull in opposite directions — decide your access story (tunnel, not open port) before you harden the runtime.",
+      "Since v0.22.0 Hermes can install and run llama.cpp itself (Settings → Providers → Local Models, or hermes model → Local models), with no account or API key. Try that before assembling a separate local-model stack."
     ],
     "gaps": [
       "The catalog has no strong self-hosted, local-first web-search option yet — community stories reach for a self-run SearXNG container, which isn't in Atlas as a Hermes-specific project."
@@ -712,7 +714,7 @@
       "Scraping at volume runs into bot detection and terms of service well before it runs into technical limits."
     ],
     "gaps": [
-      "Atlas has no dedicated credential or session manager for agent browsing yet — today that risk is managed by choosing which browser context you lend, not by a tool."
+      "Atlas lists no dedicated credential manager for agent browsing, but Hermes now covers the core case itself: since v0.22.0 the browser agent can sign in with logins from 1Password, Bitwarden or its own encrypted vault without the model seeing the password. Session scope is still managed by choosing which browser context you lend."
     ],
     "evidence": [
       "davidondrej-browser-harness",
