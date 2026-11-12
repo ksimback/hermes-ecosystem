@@ -37,6 +37,8 @@ if (!API_KEY) {
   process.exit(1);
 }
 
+const ARCHIVED_RESEARCH_PREFIX = "research/archive/";
+
 async function main() {
   console.log("Building chunks from research files...\n");
 
@@ -45,9 +47,15 @@ async function main() {
 
   // research/ folder — recursive so research/docs/<...>.md (the auto-scraped
   // mirror of hermes-agent.nousresearch.com/docs) is ingested too.
+  //
+  // research/archive/ is kept for provenance but never chunked: April-2026
+  // hand scrapes of official pages that research/docs now mirrors daily, and
+  // dated community compilations whose star counts and version claims the
+  // chat kept quoting as current (15K stars, "v0.7.0 is the latest").
   const researchDir = path.join(ROOT, "research");
   for (const abs of walkMarkdown(researchDir)) {
     const rel = path.relative(ROOT, abs).split(path.sep).join("/");
+    if (rel.startsWith(ARCHIVED_RESEARCH_PREFIX)) continue;
     files.push({ path: abs, source: rel });
   }
 
