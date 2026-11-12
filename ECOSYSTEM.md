@@ -208,7 +208,6 @@ Community-created documentation, tutorials, and setup guides.
 | [OnlyTerp/hermes-optimization-guide](https://github.com/OnlyTerp/hermes-optimization-guide) | Performance optimization guide for Hermes deployments | 51 | Beta |
 | [metantonio/hermes-wsl-ubuntu](https://github.com/metantonio/hermes-wsl-ubuntu) | Step-by-step WSL2 Ubuntu setup guide for Windows users | — | Production |
 | [mudrii/hermes-agent-docs](https://github.com/mudrii/hermes-agent-docs) | Community documentation covering deployment patterns and v0.2.0+ workflows | — | Beta |
-| [martymcenroe/HermesWiki](https://github.com/martymcenroe/HermesWiki) | Community wiki with deployment patterns and recipes | — | Beta |
 
 ---
 
