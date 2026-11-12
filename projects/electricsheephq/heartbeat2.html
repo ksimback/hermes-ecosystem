@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>electricsheephq/heartbeat2 — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
+<meta name="description" content="HeartBeat 2.0 adds scheduled turns, follow-ups, roles, and watchers to Hermes agents. Watchers check conditions without model calls until triggered, and turns…">
+<link rel="canonical" href="https://hermesatlas.com/projects/electricsheephq/heartbeat2">
+<meta property="og:title" content="electricsheephq/heartbeat2 — Hermes Atlas">
+<meta property="og:description" content="HeartBeat 2.0 adds scheduled turns, follow-ups, roles, and watchers to Hermes agents. Watchers check conditions without model calls until triggered, and turns…">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/electricsheephq/heartbeat2">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=heartbeat2&amp;subtitle=Give+your+Hermes+agent+a+working+life+between+messages%3A+wakes%2C+watchers+and+roles%2C+within+daily+turn+and+message+caps.&amp;kind=project+%C2%B7+plugins">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="electricsheephq/heartbeat2 — Hermes Atlas">
+<meta name="twitter:description" content="HeartBeat 2.0 adds scheduled turns, follow-ups, roles, and watchers to Hermes agents. Watchers check conditions without model calls until triggered, and turns…">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=heartbeat2&amp;subtitle=Give+your+Hermes+agent+a+working+life+between+messages%3A+wakes%2C+watchers+and+roles%2C+within+daily+turn+and+message+caps.&amp;kind=project+%C2%B7+plugins">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "plugins &amp; extensions", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 3, "name": "heartbeat2" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/electricsheephq/heartbeat2#software",
+  "name": "heartbeat2",
+  "description": "HeartBeat 2.0 adds scheduled turns, follow-ups, roles, and watchers to Hermes agents. Watchers check conditions without model calls until triggered, and turns run in their chat on its model; settings can limit turns, spending, and messages.",
+  "url": "https://hermesatlas.com/projects/electricsheephq/heartbeat2",
+  "codeRepository": "https://github.com/electricsheephq/heartbeat2",
+  "applicationCategory": "BrowserApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "license": "https://spdx.org/licenses/Apache-2.0.html",
+  "author": {
+    "@type": "Organization",
+    "name": "electricsheephq",
+    "url": "https://github.com/electricsheephq"
+  },
+  "dateModified": "2026-11-11T22:02:22.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 14
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">321·repos</span>
+    <span id="meta-version">hermes·v0.21.5</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/">plugins &amp; extensions</a><span class="sep">/</span>heartbeat2
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">electricsheephq</span><span class="slash">/</span>heartbeat2
+  </h1>
+  <p class="project-desc">Give your Hermes agent a working life between messages: wakes, watchers and roles, within daily turn and message caps.</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 14</span>
+    <span><span class="meta-label">lang</span>Python</span>
+    <span><span class="meta-label">license</span>Apache-2.0</span>
+    
+    <span><span class="meta-label">updated</span>2026-11-11</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/electricsheephq/heartbeat2" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">HeartBeat 2.0 adds scheduled turns, follow-ups, roles, and watchers to Hermes agents. Watchers check conditions without model calls until triggered, and turns run in their chat on its model; settings can limit turns, spending, and messages.</p>
+    <ul class="summary-highlights">
+      <li>Watch files, processes, URLs, read-only commands, and Hermes events.</li>
+      <li>Roles have a charter, notebook, and agent-set rhythm.</li>
+      <li>Use `/pulse` commands to inspect schedules and recent triggers.</li>
+    </ul>
+  </div>
+</section>
+
+
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <p align="center"><img src="https://raw.githubusercontent.com/electricsheephq/heartbeat2/main/docs/media/banner.png" alt="HeartBeat 2.0: wakes and watchers for Hermes agents" width="100%"></p>
+
+<h2>HeartBeat 2.0</h2>
+<p><strong>Give your Hermes agent a working life between messages: wakes, watchers and roles, within daily turn and message caps.</strong></p>
+<p>No model runs until there's work: plain code checks every wake and watcher, and the agent gets a turn only when something is due or a watcher's condition is met. <code>/pulse</code> shows what's next; <code>/pulse why &lt;id&gt;</code> lists an item's recent triggers with their states and reasons.</p>
+<p>▶ <strong><a href="https://x.com/ElectricSheepIO/status/2119811070089138455">Watch the demo</a></strong></p>
+<p><a href="https://github.com/user-attachments/assets/135d08af-36e8-46d5-bc7f-7ac5e5326c03">https://github.com/user-attachments/assets/135d08af-36e8-46d5-bc7f-7ac5e5326c03</a></p>
+<p><a href="https://github.com/electricsheephq/heartbeat2/releases/latest"><img src="https://img.shields.io/github/v/release/electricsheephq/heartbeat2" alt="Latest release" loading="lazy" decoding="async"></a> <a href="https://github.com/electricsheephq/heartbeat2/blob/main/LICENSE"><img src="https://img.shields.io/github/license/electricsheephq/heartbeat2" alt="License: Apache-2.0" loading="lazy" decoding="async"></a> <a href="https://github.com/NousResearch/hermes-agent"><img src="https://img.shields.io/badge/Hermes-%E2%89%A5%200.21.6-blue" alt="Hermes ≥ 0.21.6" loading="lazy" decoding="async"></a> <a href="https://github.com/electricsheephq/heartbeat2/actions/workflows/ci.yml"><img src="https://github.com/electricsheephq/heartbeat2/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI" loading="lazy" decoding="async"></a></p>
+<pre><code class="language-bash">hermes plugins install electricsheephq/heartbeat2 --enable
+</code></pre>
+<p>It needs Hermes ≥ 0.21.6 with a messaging gateway (Telegram, Discord, Slack, WhatsApp and the other gateway platforms) on macOS or Linux, with Python ≥ 3.11. No API keys, and nothing to install beyond what Hermes already ships. Next, allow it to start turns and try it:</p>
+<h3>Try it</h3>
+<ol>
+<li><strong>Allow it to start turns.</strong> Add this Hermes core key to your profile's <code>config.yaml</code> (it is kept outside the plugin's own settings on purpose), restart the messaging gateway, and send <code>/pulse</code> in your DM. It should say injection is allowed; if not, it shows the exact YAML to add.<pre><code class="language-yaml">plugins:
+  entries:
+    heartbeat2:
+      allow_gateway_injection: true
+</code></pre>
+</li>
+<li><strong>Ask for something soon.</strong> In the same DM, write: "Remind me in 5 minutes to stretch." The agent arms a one-time reminder and replies with a one-line receipt saying when it will really fire.</li>
+<li><strong>It writes first.</strong> Five minutes later the reminder arrives in that chat, from the agent, with no message from you in between. <code>/pulse list</code> and <code>/pulse why &lt;id&gt;</code> show what happened. During quiet hours (22:00–08:00 by default) a reminder waits until they end.</li>
+</ol>
+<p>Next, hand it a role and watch its desk (<a href="#your-first-role">Your first role</a>), or have it watch something without a timer (<a href="#what-it-feels-like">What it feels like</a>).</p>
+<p><strong>Contents:</strong> <a href="#what-it-does">What it does</a> · <a href="#see-it-work">See it work</a> · <a href="#what-it-feels-like">What it feels like</a> · <a href="#why-20">Why "2.0"</a> · <a href="#how-it-works">How it works</a> · <a href="#setup">Setup</a> · <a href="#using-it">Using it</a> · <a href="#settings">Settings</a> · <a href="#guardrails-briefly">Guardrails</a> · <a href="#cost">Cost</a> · <a href="#security-and-privacy">Security and privacy</a> · <a href="#roadmap">Roadmap</a> · <a href="#compatibility-and-known-issues">Known issues</a> · <a href="#troubleshooting">Troubleshooting</a> · <a href="#how-it-compares">How it compares</a> · <a href="#development">Development</a> · <a href="#links">Links</a></p>
+<h3>What it does</h3>
+<p>Put your agent in charge of something and it keeps working on it on its own time: in the same chat, on the same model, with everything it already knows, inside the budgets you set. It can watch a build, a log, a process or a URL and speak up only when something changed. When there's nothing worth saying, it keeps working quietly or rests.</p>
+<ul>
+<li><strong>Roles it owns.</strong> "You're in charge of the release notes." A role is a standing responsibility with a charter, a notebook the agent keeps between turns, and a rhythm the agent sets itself. It doesn't expire on a timer. You can hand one over, or the agent can take one on and tell you.</li>
+<li><strong>Its own time.</strong> Turn on own time and the agent gets regular turns with no assigned task. It looks at its desk (its roles, what's due, what it noticed, what budget is left) and decides: work on a role, follow something up, set up a watcher, tidy its notes or memory, or rest.</li>
+<li><strong>Follow-ups and watchers.</strong> A follow-up at a set time, a recurring check, a check-in after a long silence, or a deterministic watcher on a file, process, URL, read-only command or Hermes event. A watcher costs no model call until its condition is met.</li>
+<li><strong>Same conversation, same model.</strong> Every wake is a turn in the chat it belongs to, on that chat's own model. There is no side model, separate cron session or subagent.</li>
+<li><strong>Quiet work counts.</strong> A turn that researches, writes or prepares something without messaging you is real progress. Only wakes that keep finding nothing to do slow down, then pause and ask you once.</li>
+<li><strong>You set the budgets.</strong> Turns per day, an optional daily priced-spend limit, turns per role, messages per day, the unanswered mute and quiet hours are your settings. They hold back messages and spending, not initiative: while you're away or asleep the agent can keep working, and it tells you what matters when you're back. That work still uses turns: the agent's recurring work, roles and own time keep running (and billing) under the mute and quiet hours. Turn limits and the priced-spend check apply before each turn; the spend limit cannot stop a turn already running, and unpriced calls are not counted. Roles and own time don't expire on a timer. The agent can tighten its own limits but never widen yours.</li>
+</ul>
+<h3>See it work</h3>
+<p>One real run in a Telegram DM, captured as it happened (only reply-quote headers and two internal tool names are painted out). The owner switches a rounding function, starts the tests in a terminal, and asks the agent to speak up only if something fails.</p>
+<p><strong>1. Ask once.</strong> The agent arms a file watcher on the test log and says what it will do. Mid-run, <code>/pulse status</code> shows the watcher checking and no new messages.</p>
+<p><img src="https://raw.githubusercontent.com/electricsheephq/heartbeat2/main/docs/media/see-it-work-1-armed.png" alt="The agent's receipt for a failure-only watcher on build.log, and /pulse status showing the watcher active while the tests run" loading="lazy" decoding="async"></p>
+<p><strong>2. It writes first.</strong> Two tests fail. About a minute later the agent posts the failures and the wrong values, with no message from the owner in between.</p>
+<p><img src="https://raw.githubusercontent.com/electricsheephq/heartbeat2/main/docs/media/see-it-work-2-followup.png" alt="The agent's unprompted follow-up listing two failed tests next to the terminal's pytest failures" loading="lazy" decoding="async"></p>
+<p><strong>3. Same conversation.</strong> Asked "Is that my round() change?", it answers from the chat it already has, restores the Decimal version and reruns the suite: all 10 tests pass.</p>
+<p><img src="https://raw.githubusercontent.com/electricsheephq/heartbeat2/main/docs/media/see-it-work-3-fix.png" alt="The agent confirms the round() change caused both failures and reports all 10 tests passing after restoring the Decimal version" loading="lazy" decoding="async"></p>
+<p>A second real run on the same profile shows roles and the desk (the reply-quote header is painted out).</p>
+<p><strong>4. Hand it a role.</strong> Asked to own the shop's release notes, a weekly batch of social drafts and a pop-up poster brief, the agent sets up three roles and sends a receipt. For each one it gives the rhythm, what it will and won't do without an OK, and a budget of one work turn a day. It also lists the facts it still needs, and anything missing stays TBC instead of being invented. (The release-notes row is above this crop.)</p>
+<p><img src="https://raw.githubusercontent.com/electricsheephq/heartbeat2/main/docs/media/see-it-work-4-roles.png" alt="The agent's receipt for two of its three new roles, with rhythms, limits, a one-turn-a-day budget and the facts it still needs" loading="lazy" decoding="async"></p>
+<p><strong>5. Its desk.</strong> <code>/pulse desk</code> shows the view the agent gets at the start of every role turn: each role's rhythm, last result and next turn, the day's messages and turns against your limits, and why messages are held right now. (A long desk lists the most recently updated roles and counts the rest.) Here it is quiet hours: the roles' turns still run, but their replies aren't sent. When you're back, the agent gets a short list of what it wanted to tell you and passes on what still matters.</p>
+<p><img src="https://raw.githubusercontent.com/electricsheephq/heartbeat2/main/docs/media/see-it-work-5-desk.png" alt="The desk listing three roles with their cron or interval rhythms and next turns, today's message and turn counts, and messages held for quiet hours" loading="lazy" decoding="async"></p>
+<h3>What it feels like</h3>
+<p><strong>A follow-up that reads the room.</strong></p>
+<blockquote>
+<p><strong>You:</strong> Remind me at 4 to send the Acme invoice.
+<strong>Agent:</strong> Will do. I'll check in at 16:00.</p>
+<p><em>16:00.</em> <strong>Agent:</strong> It's 4. Did the Acme invoice go out? I can draft the email if that helps.</p>
+</blockquote>
+<p>The wake runs inside your conversation. If you had written "sent it" at 15:10, the 16:00 turn would see that and stay silent. If the agent armed it with "cancel when I reply", any message from you cancels it outright.</p>
+<p><strong>A watcher that speaks only when something changed.</strong></p>
+<blockquote>
+<p><strong>You:</strong> Keep an eye on the nightly build and tell me if it breaks.
+<strong>Agent:</strong> Watching the latest nightly run with a read-only <code>gh run list</code> check every 10 minutes. I'll only look when the result changes, and only message you if it failed.</p>
+<p><em>02:10, after 14 unchanged checks that cost no model turns:</em> <strong>Agent:</strong> The nightly build failed in <code>tests/test_api.py</code> (3 failures, all timeouts). Want me to dig in this morning?</p>
+</blockquote>
+<p>During quiet hours that message waits until they end, unless you marked the watcher urgent and allowed urgent wakes through.</p>
+<p><strong>A pointless wake that catches itself.</strong> Say the agent set up an hourly "check the inbox" wake. After three empty checks it starts stretching the interval, and after six it pauses itself. The next time you talk:</p>
+<blockquote>
+<p><strong>Agent:</strong> I paused "check the inbox": six checks in a row found nothing. Keep, slow, stop, or turn it into a watcher? (<code>/pulse keep|slow|stop|watch w_3f2a</code>)</p>
+</blockquote>
+<p><strong>A check-in after a long silence</strong> (off by default). When it is on, the agent checks in once after a silence (24 h by default) and says how to turn check-ins off. It doesn't check in again until you've talked.</p>
+<h3>Why "2.0"</h3>
+<p>Heartbeats, as OpenClaw popularised them, made agents feel alive. They also produced a well-documented list of failures. We turned each one into a deterministic scenario in the benchmark suite:</p>
+<table>
+<thead>
+<tr>
+<th>Heartbeat-1.0 failure</th>
+<th>HeartBeat 2.0</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Stops silently after compaction, sleep or restart</td>
+<td>The schedule and claims live in SQLite on wall-clock time. After a restart or sleep, missed fires collapse into one.</td>
+</tr>
+<tr>
+<td>Duplicate or replayed deliveries</td>
+<td>Each fire is a durable compare-and-set claim. Only one wake can be in flight per chat, and a wake is never injected into a busy chat.</td>
+</tr>
+<tr>
+<td>Message floods (one loop resent 189×)</td>
+<td>Daily caps on model turns and messages, spacing between wakes, a mute after unanswered messages, and an error ladder that ends in a pause.</td>
+</tr>
+<tr>
+<td>"HEARTBEAT_OK" leaking into the chat</td>
+<td>The model never types a sentinel. It calls <code>pulse respond notify=false</code>, and the plugin makes the turn silent.</td>
+</tr>
+<tr>
+<td>Messages to the wrong chat or person</td>
+<td>There is no destination parameter at all. A wake can only return to the chat that armed it, and only in DMs by default.</td>
+</tr>
+<tr>
+<td>Most spend going to no-op ticks</td>
+<td>Watchers decide without a model call. The no-op governor backs off, then pauses.</td>
+</tr>
+</tbody></table>
+<p>Totals over 34 deterministic scenarios (B1 simulation driving the real engine; <code>python -m bench.run --baseline --gate</code>, source <code>ca12767</code>, v0.1.14 engine; the gate report records content digests). The comparison arm is a naive heartbeat-1.0 emulator built from documented failure reports. It is <strong>not</strong> a measurement of OpenClaw itself.</p>
+<table>
+<thead>
+<tr>
+<th>Across the suite</th>
+<th align="right">HeartBeat 2.0</th>
+<th align="right">Naive heartbeat</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Duplicate deliveries</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td>Required fires missed</td>
+<td align="right">0</td>
+<td align="right">27</td>
+</tr>
+<tr>
+<td>Sentinel text leaked into chat</td>
+<td align="right">0</td>
+<td align="right">2</td>
+</tr>
+<tr>
+<td>Messages to the wrong chat</td>
+<td align="right">0</td>
+<td align="right">6</td>
+</tr>
+<tr>
+<td>Most messages in one minute</td>
+<td align="right">1</td>
+<td align="right">100</td>
+</tr>
+<tr>
+<td>Model turns</td>
+<td align="right">110</td>
+<td align="right">588</td>
+</tr>
+<tr>
+<td>Model turns that found nothing</td>
+<td align="right">15</td>
+<td align="right">82</td>
+</tr>
+<tr>
+<td>Estimated input tokens (total; calls × context)</td>
+<td align="right">33,000,000</td>
+<td align="right">176,400,000</td>
+</tr>
+<tr>
+<td>Estimated cache read tokens</td>
+<td align="right">25,950,000</td>
+<td align="right">116,550,000</td>
+</tr>
+<tr>
+<td>Estimated cache write tokens</td>
+<td align="right">7,050,000</td>
+<td align="right">59,850,000</td>
+</tr>
+<tr>
+<td>Estimated output tokens</td>
+<td align="right">33,000</td>
+<td align="right">176,400</td>
+</tr>
+</tbody></table>
+<p>Every scenario and its hard bars are in <a href="https://github.com/electricsheephq/heartbeat2/blob/main/bench/README.md">bench/README.md</a>; the full per-scenario table is regenerated per commit.</p>
+<h3>How it works</h3>
+<pre><code class="language-text">  you (/pulse) or the agent (pulse tool): what, when or what to watch, bounds
+                                   │
+                    durable schedule (SQLite in the profile)
+                                   │
+        time · silence · file · process · URL · command · Hermes event
+                                   │
+              nothing changed? ──► no model call, nothing sent
+                                   │ due / changed / deadline
+     gates: enabled · estop · paused · provider health · quiet hours ·
+            unanswered mute · daily caps · busy · spacing · one in flight
+                                   │
+           one turn in the same chat, on the chat's own model
+                                   │
+                 pulse respond {outcome, notify, summary}
+           notify=false ──► silent          notify=true ──► one short message
+                                   │
+          ledger + no-op governor (slow down → suggest a watcher → pause → ask once)
+</code></pre>
+<p>One poller per profile runs inside the messaging gateway that serves that profile and ticks every 5 seconds. Hermes loads every profile's plugins when a gateway starts; a gateway that does not serve a profile leaves that profile's schedule alone and delivers nothing for it. A file lock guarantees only one poller even when several Hermes processes share the profile. Every fire is a durable claim with an attempt marker. An accepted turn that never starts is tried three times, and a refused injection backs off and is tried five times, before it is marked dead. A turn that started but never finished (a crash or restart) is recorded as interrupted. Hermes may auto-resume that wake turn, sometimes before heartbeat2's restart recovery has run; heartbeat2 keeps the replay silent either way, never counts it as a fire or delivery, and counts it as a model turn toward the daily cap.</p>
+<h3>Setup</h3>
+<p>Requires <strong>Hermes ≥ 0.21.6</strong> and Python ≥ 3.11 on macOS or Linux. HeartBeat 2.0 delivers into <strong>messaging-gateway DMs</strong> (and group or topic chats when <code>dm_only</code> is off): Telegram, Discord, Slack, WhatsApp and the other gateway platforms.</p>
+<p>Install with the command at the top, add the <code>allow_gateway_injection</code> key shown in <a href="#try-it">Try it</a>, and restart the messaging gateway. Then send <code>/pulse</code> in your DM. It shows:</p>
+<ul>
+<li>whether the scheduler is running;</li>
+<li>whether injection is allowed, with the exact YAML if it isn't;</li>
+<li>your local time and quiet hours;</li>
+<li>today's wakes, messages, cache counts and estimated cost (or token splits).</li>
+</ul>
+<h4>Your first role</h4>
+<p>A role shows its first results over a few hours, because it spreads its turns across the day. Start one once <a href="#try-it">Try it</a> works:</p>
+<ol>
+<li><strong>Hand it a role.</strong> In your DM, for example: "You're in charge of my reading list. Summarise anything new between my messages, a few turns a day." The agent sets up the role and sends a receipt with its rhythm, what it will and won't do, and its daily budget. You can also set one up yourself with <code>/pulse role self &lt;charter&gt;</code> or <code>/pulse role every 1d at 09:00 &lt;charter&gt;</code>.</li>
+<li><strong>Let it work.</strong> A role without a fixed time starts with its turns spread across the day by its budget: at the default 6 turns, about one every four hours. Quiet hours and the message limits hold its messages, not its work.</li>
+<li><strong>Look at its desk.</strong> <code>/pulse desk</code> shows each role's last result and next turn, and today's messages, turns and cost against your limits. The agent sees the same desk.</li>
+<li><strong>Adjust or stop it.</strong> <code>/pulse budget &lt;id&gt; 2/day</code> sets a role's daily turns; the agent can go under your number but never over it, and only this command raises it. A new budget changes how many turns the role takes a day, not how often they come: to spread them out, ask the agent to change its rhythm. <code>/pulse pause &lt;id&gt;</code> or <code>/pulse cancel &lt;id&gt;</code> stops one role, and <code>/pulse off</code> stops everything in the chat.</li>
+</ol>
+<p>Optional: set <strong>Own time</strong> (<code>own_time_hours</code>, for example 6) to give the agent regular turns with no assigned task. On Discord, WhatsApp or Matrix, set <code>display.platforms.&lt;platform&gt;.tool_progress: off</code> so silent turns don't post progress bubbles.</p>
+<p>All other settings are in <strong>Settings ▸ Plugins</strong> in Hermes Desktop or in <code>config.yaml</code>.
+At start a rejected setting falls back to its default; on a live change it keeps
+its last good value, and your other changes still apply. <code>/pulse status</code> and
+pulse tool results name the ignored setting.</p>
+<h3>Using it</h3>
+<p><strong>You</strong>, in the chat:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/pulse</code></td>
+<td>Status: scheduler, consent, local time, quiet hours, today's counts, next due</td>
+</tr>
+<tr>
+<td><code>/pulse add in 2h check the deploy</code></td>
+<td>A one-off wake</td>
+</tr>
+<tr>
+<td><code>/pulse add every 1d at 09:00 plan my day</code></td>
+<td>A recurring wake at a fixed time</td>
+</tr>
+<tr>
+<td><code>/pulse add when silent 24h ask how the trip went</code></td>
+<td>Once per silence of that length</td>
+</tr>
+<tr>
+<td><code>/pulse role self &lt;charter&gt;</code> · <code>/pulse role every 1d at 09:00 &lt;charter&gt;</code></td>
+<td>Hand the agent a role: a standing responsibility with a notebook and a daily turn budget. <code>self</code> lets the agent pace it.</td>
+</tr>
+<tr>
+<td><code>/pulse desk</code></td>
+<td>The agent's desk: each role's rhythm, last result and next turn; today's messages, turns and cost against your limits; and why messages are held, if they are. Finished roles stay on it until you've written in the chat (for up to 24 hours), and it counts results held for you.</td>
+</tr>
+<tr>
+<td><code>/pulse budget &lt;id&gt; 3/day</code></td>
+<td>Set a role's daily turns. The agent can go under your number but never over it; only this command raises it.</td>
+</tr>
+<tr>
+<td><code>/pulse list</code> · <code>/pulse why &lt;id&gt;</code></td>
+<td>Active, proposed and paused items plus the 10 most recently created finished ones; <code>/pulse list all</code> shows everything. Why lists the last 10 trigger keys, states, reasons, matched/created and held-since times, and delivered yes/no</td>
+</tr>
+<tr>
+<td><code>/pulse run &lt;id&gt;</code></td>
+<td>Queue one turn of a recurring wake or role now; keeps every usual check, including busy chat, quiet hours and daily caps, and counts as one of its fires. Watchers, one-time reminders, the quiet check-in and own time fire on their own: preview those with <code>/pulse test</code></td>
+</tr>
+<tr>
+<td><code>/pulse test &lt;id&gt;</code></td>
+<td>Preview the checks, next fire, cache and wake text; sends nothing, calls no model and changes nothing</td>
+</tr>
+<tr>
+<td><code>/pulse ledger [7d]</code></td>
+<td>Totals over the range: fires, checks, model turns, messages, replies, cache/cost and token splits</td>
+</tr>
+<tr>
+<td><code>/pulse pause &lt;id|all&gt; [for 3d]</code> · <code>resume</code> · <code>cancel</code></td>
+<td>Control one item or all of them</td>
+</tr>
+<tr>
+<td><code>/pulse quiet 22:00-07:30</code> · <code>quiet for 3h</code> · <code>quiet off</code> · <code>quiet default</code></td>
+<td>Quiet hours for this chat; <code>default</code> goes back to your settings</td>
+</tr>
+<tr>
+<td><code>/pulse ok &lt;id&gt;</code></td>
+<td>Approve a wake the agent proposed (when <em>Agent can arm wakes</em> is <code>ask_first</code>)</td>
+</tr>
+<tr>
+<td><code>/pulse keep|slow|stop|watch &lt;id&gt;</code></td>
+<td>Answer the governor's card for a paused wake (<code>watch</code> pauses it and asks your agent to turn it into a watcher; the next watcher-only trigger or schedule conversion keeps it yours). Any other agent edit of the trigger, timing or note makes it the agent's: it gets the agent's interval floor and cache snap, and the unanswered mute applies.</td>
+</tr>
+<tr>
+<td><code>/pulse off</code> · <code>/pulse on</code></td>
+<td>Turn wakes off or back on for this chat. Only you can turn them back on.</td>
+</tr>
+</tbody></table>
+<p><code>/pulse</code> is a control panel, not conversation. Using it never counts as replying to the agent. Anything else you send counts as a reply, including a reaction or an edit on platforms that report them: it resets the unanswered mute and cancels wakes armed to stop when you reply. A reaction or edit counts only when its chat maps to one HeartBeat session; in a chat shared by several sessions (for example DM threads or topics) it is ignored. The other exceptions are listed under known issues: a message queued while the agent is busy on Signal or SimpleX, and a Codex app-server steer.</p>
+<p><strong>Your agent</strong> gets one tool, <code>pulse</code> (<code>create · list · desk · update · pause · resume · cancel · respond · off</code>), and the bundled <code>heartbeat2-usage</code> skill. <code>desk</code> lets it read its desk at any point in a turn, the same view as <code>/pulse desk</code>. The skill teaches it to:</p>
+<ul>
+<li>rest one wake with <code>action: pause</code>, its <code>id</code> and <code>pause_for: "12h"</code> when it knows when to return; its timer never resumes a wake you paused or a chat you turned off, and it can resume a wake you paused with <code>/pulse pause</code> only during your own turn, never from its wake turns;</li>
+<li>take on roles and keep working on them, follow up on what it started, and use its own time well;</li>
+<li>treat your budgets as the rules it works inside, and message you only when it's worth your attention;</li>
+<li>prefer a watcher to a timer whenever a deterministic check can tell "changed";</li>
+<li>answer every wake with <code>respond</code>: <code>outcome</code> (no_change · progress · done · blocked · needs_attention), <code>notify</code>, a one-line <code>summary</code>, and optionally <code>next_check</code> and <code>scratch</code> notes for its next wake. <code>done</code> ends the wake. A silent turn (<code>notify=false</code>) that ends <code>progress</code> counts as real work; only <code>no_change</code> and <code>blocked</code> count toward slowing a wake down.</li>
+</ul>
+<p>A wake turn is a normal turn in your chat: the agent has the same tools as in any other turn there. HeartBeat 2.0 does not restrict them, so arm wakes in conversations whose tools you are happy to have run while you are away.</p>
+<p>Every arm returns a receipt with timing, any quiet-hour hold or unanswered mute, and expiry. A granted owner-requested agent reminder adds: "Counts as your own reminder: not muted or capped." The agent relays that receipt instead of promising exact timing; a proposed wake is awaiting your OK.</p>
+<p>Watchers available to the agent:</p>
+<table>
+<thead>
+<tr>
+<th>Watcher</th>
+<th>Fires when</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>file</code></td>
+<td>The file changes, or an appended line matches a pattern</td>
+</tr>
+<tr>
+<td><code>process</code></td>
+<td>A process exits (PID reuse is detected)</td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td>A GET response changes, or a pattern appears (10 s hard deadline, 256 KB cap)</td>
+</tr>
+<tr>
+<td><code>command</code></td>
+<td>A read-only allowlisted command's output changes, it succeeds or fails, or it prints <code>{"fire": true, …}</code></td>
+</tr>
+<tr>
+<td>Hermes events</td>
+<td>A kanban task completes or blocks, a worker exits, a subagent finishes, the API errors, or someone reacts to or edits a message</td>
+</tr>
+</tbody></table>
+<p>Hermes events are selected by <code>trigger.kind</code>: <code>kanban_completed</code>, <code>kanban_blocked</code>, <code>kanban_worker_exited</code>, <code>subagent_done</code>, <code>api_error</code>, <code>reaction</code> (with an optional <code>emojis</code> filter) and <code>message_edited</code>.
+Kanban watchers can target one task with <code>trigger.task_id</code>, one board with <code>trigger.board</code>, or both. Reaction watchers can target one message with <code>trigger.message_id</code>.</p>
+<p>Only probe and event watchers can carry a <code>deadline</code>: it is a one-time "nothing happened" fallback, and the watcher keeps going until it expires. Quiet hours can hold that fallback wake.</p>
+<h3>Settings</h3>
+<p>These live under <code>plugins.entries.heartbeat2.settings</code> and appear in <strong>Settings ▸ Plugins</strong>. The agent's tool can't change them. When a request goes past a bound, the tool tells the agent exactly what it clamped.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Key</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Enabled</td>
+<td><code>enabled</code></td>
+<td>on</td>
+<td>Master switch for wakes and watchers in this profile.</td>
+</tr>
+<tr>
+<td>Agent can arm wakes</td>
+<td><code>agent_can_create</code></td>
+<td><code>yes</code></td>
+<td>yes · ask_first (the agent's wakes wait for <code>/pulse ok &lt;id&gt;</code>) · no</td>
+</tr>
+<tr>
+<td>Direct messages only</td>
+<td><code>dm_only</code></td>
+<td>on</td>
+<td>Refuse group chats. Unknown chat types are refused too. When off, group and topic wakes are recognised behind the gateway's sender prefix.</td>
+</tr>
+<tr>
+<td>Time zone</td>
+<td><code>timezone</code></td>
+<td>(blank)</td>
+<td>IANA name such as Europe/Paris. Blank uses the profile's time zone.</td>
+</tr>
+<tr>
+<td>Quiet hours</td>
+<td><code>quiet_hours</code></td>
+<td><code>22:00-08:00</code></td>
+<td>HH:MM-HH:MM, may cross midnight; blank for none. Due one-shots wait until the end. Your agent's own recurring work and roles keep running inside them, silently: their messages are held.</td>
+</tr>
+<tr>
+<td>Urgent wakes ignore quiet hours</td>
+<td><code>quiet_hours_urgent</code></td>
+<td>off</td>
+<td>Let wakes marked urgent through quiet hours.</td>
+</tr>
+<tr>
+<td>Wake turns per day</td>
+<td><code>max_model_wakes_per_day</code></td>
+<td>24</td>
+<td>Per chat, local day. Each wake turn is a full model turn.</td>
+</tr>
+<tr>
+<td>Wake messages per day</td>
+<td><code>max_messages_per_day</code></td>
+<td>6</td>
+<td>Per chat, local day.</td>
+</tr>
+<tr>
+<td>Own time (hours between turns)</td>
+<td><code>own_time_hours</code></td>
+<td>0</td>
+<td>0 = off. The agent gets a turn of its own this often to work on its roles, follow things up, reflect or rest. Each is a full model turn; quiet hours hold its messages, not its work.</td>
+</tr>
+<tr>
+<td>Daily priced-spend limit for the agent's own turns (USD)</td>
+<td><code>daily_cost_limit_usd</code></td>
+<td>0</td>
+<td>0 = none. Checked before each of the agent's own turns: once today's priced spend on turns it started reaches this, they stop until tomorrow. It is not a hard ceiling on a turn already running. Your own reminders still fire. Unpriced routes are not counted; /pulse status shows how many calls were unpriced.</td>
+</tr>
+<tr>
+<td>Turns per role per day (default)</td>
+<td><code>role_turns_per_day_default</code></td>
+<td>6</td>
+<td>A role's budget when none is set for it. Each turn is a full model turn.</td>
+</tr>
+<tr>
+<td>Most turns a role may take per day</td>
+<td><code>role_turns_per_day_max</code></td>
+<td>12</td>
+<td>Caps every role budget. A budget you set with <code>/pulse budget</code>, or a lowering you ask the agent for, is a ceiling the agent can go under but never raise. The chat's wake-turn limit still applies.</td>
+</tr>
+<tr>
+<td>Follow-ups a role may arm per turn</td>
+<td><code>max_children_per_wake_turn</code></td>
+<td>3</td>
+<td>How many wakes or watchers one role turn may create. Other wake turns may create one.</td>
+</tr>
+<tr>
+<td>Unanswered messages before mute</td>
+<td><code>max_unanswered</code></td>
+<td>2</td>
+<td>Wakes you armed, and one-time reminders you ask for in chat, always fire; agent watchers wait for your reply; other one-time agent reminders are dropped. The agent's recurring work and roles keep running silently, with their messages held until you reply. An agent edit revokes the exemption (for a chat reminder, so does an agent resume), except a watcher-only conversion you requested with <code>/pulse watch</code>.</td>
+</tr>
+<tr>
+<td>Shortest repeat (minutes)</td>
+<td><code>min_interval_minutes</code></td>
+<td>15</td>
+<td>Floor for every recurring time wake.</td>
+</tr>
+<tr>
+<td>Shortest agent timer without a watcher (minutes)</td>
+<td><code>agent_ungated_floor_minutes</code></td>
+<td>55</td>
+<td>Floor for recurring timers the agent arms without a watcher.</td>
+</tr>
+<tr>
+<td>Minutes between wake turns</td>
+<td><code>wake_spacing_minutes</code></td>
+<td>10</td>
+<td>Per chat.</td>
+</tr>
+<tr>
+<td>Fastest watcher check (seconds)</td>
+<td><code>probe_floor_seconds</code></td>
+<td>60</td>
+<td>Watchers never check more often than this.</td>
+</tr>
+<tr>
+<td>Active wakes per chat</td>
+<td><code>max_active</code></td>
+<td>10</td>
+<td>Also capped at 50 across the profile.</td>
+</tr>
+<tr>
+<td>Longest lifetime (days)</td>
+<td><code>max_lifetime_days</code></td>
+<td>14</td>
+<td>Recurring wakes, watchers and agent follow-ups expire by then; agent recurring wakes default to 7 days. Roles and own time have no lifetime limit.</td>
+</tr>
+<tr>
+<td>Longest owner one-time reminder (days)</td>
+<td><code>max_reminder_days</code></td>
+<td>365</td>
+<td>Owner-requested one-time reminders, including <code>/pulse add</code>, can be due up to this many days out, with <code>max_lifetime_days</code> of grace after a long reminder's due time. The hard end is the sum of both settings. If <code>max_lifetime_days</code> is larger, its existing bound applies instead; maximum 3650 days.</td>
+</tr>
+<tr>
+<td>Check in after a long silence</td>
+<td><code>owner_silent_checkin</code></td>
+<td>off</td>
+<td>Off by default. One check-in per silence, with how to turn it off.</td>
+</tr>
+<tr>
+<td>Silence before a check-in (hours)</td>
+<td><code>checkin_after_hours</code></td>
+<td>24</td>
+<td>Doubles for the next silence if a check-in is ignored.</td>
+</tr>
+<tr>
+<td>Wake-from-wake depth</td>
+<td><code>max_rearm_chain</code></td>
+<td>2</td>
+<td>How many wakes deep a chain armed inside wake turns may go; a message from you resets it.</td>
+</tr>
+<tr>
+<td>Empty fires before slowing down</td>
+<td><code>noop_slowdown_after</code></td>
+<td>3</td>
+<td>A recurring wake that keeps finding nothing doubles its interval after this many.</td>
+</tr>
+<tr>
+<td>Slow-down multiplier</td>
+<td><code>noop_backoff_factor</code></td>
+<td>2</td>
+<td>How much each slow-down stretches the interval.</td>
+</tr>
+<tr>
+<td>Longest slowed interval (hours)</td>
+<td><code>noop_max_backoff_hours</code></td>
+<td>24</td>
+<td>Slowing down stops at this interval.</td>
+</tr>
+<tr>
+<td>Empty fires before suggesting a watcher</td>
+<td><code>suggest_gate_after</code></td>
+<td>4</td>
+<td>The wake text suggests turning the timer into a watcher.</td>
+</tr>
+<tr>
+<td>Empty fires before pausing</td>
+<td><code>noop_pause_after</code></td>
+<td>6</td>
+<td>Pauses the wake and asks you once: keep, slow, stop or watch.</td>
+</tr>
+<tr>
+<td>Ignored messages before pausing</td>
+<td><code>ignored_pause_after</code></td>
+<td>3</td>
+<td>Delivered messages with no reply in the engagement window.</td>
+</tr>
+<tr>
+<td>Errors in a row before pausing</td>
+<td><code>error_pause_after</code></td>
+<td>5</td>
+<td>Errors in a row before pausing.</td>
+</tr>
+<tr>
+<td>Reply window (hours)</td>
+<td><code>engagement_window_hours</code></td>
+<td>6</td>
+<td>A reply within this window counts a delivered message as useful.</td>
+</tr>
+<tr>
+<td>Catch-up window (hours)</td>
+<td><code>catch_up_hours</code></td>
+<td>6</td>
+<td>A one-shot more than this late after downtime is reported as missed instead of firing.</td>
+</tr>
+<tr>
+<td>Allowed watcher commands</td>
+<td><code>probe_commands</code></td>
+<td><code>gh pr view, gh pr checks, gh run view, gh run list, git ls-remote, git status, git log</code></td>
+<td>Comma-separated argv prefixes for command watchers. Blank disables command watchers.</td>
+</tr>
+<tr>
+<td>Silence check-ins</td>
+<td><code>source_silence</code></td>
+<td>on</td>
+<td>Silence check-ins.</td>
+</tr>
+<tr>
+<td>Process watchers</td>
+<td><code>source_process</code></td>
+<td>on</td>
+<td>Process watchers.</td>
+</tr>
+<tr>
+<td>File watchers</td>
+<td><code>source_file</code></td>
+<td>on</td>
+<td>File watchers.</td>
+</tr>
+<tr>
+<td>URL watchers</td>
+<td><code>source_url</code></td>
+<td>on</td>
+<td>URL watchers.</td>
+</tr>
+<tr>
+<td>Let URL watchers reach private and local addresses</td>
+<td><code>url_allow_private</code></td>
+<td>off</td>
+<td>Allow private and local URL targets (loopback, private ranges). Cloud metadata and the whole IPv4 link-local range 169.254.0.0/16 stay blocked, as Hermes treats that range as metadata.</td>
+</tr>
+<tr>
+<td>Command watchers</td>
+<td><code>source_command</code></td>
+<td>on</td>
+<td>Command watchers.</td>
+</tr>
+<tr>
+<td>Hermes event watchers</td>
+<td><code>source_events</code></td>
+<td>on</td>
+<td>Kanban, subagent, API error and reaction events.</td>
+</tr>
+<tr>
+<td>Tell the agent what's armed</td>
+<td><code>presence_line</code></td>
+<td>on</td>
+<td>One short context line on your turns while something is armed.</td>
+</tr>
+<tr>
+<td>Ledger history (days)</td>
+<td><code>ledger_days</code></td>
+<td>30</td>
+<td>Ledger history (days).</td>
+</tr>
+</tbody></table>
+<h3>Guardrails, briefly</h3>
+<p>Every guardrail is configurable:</p>
+<ul>
+<li>Recurring timers repeat at most every 15 minutes, or every 55 minutes when the agent arms one without a watcher. Watchers check at most once a minute.</li>
+<li>Roles and own time don't expire on a timer; a role's explicit expiry can be up to 365 days out (<code>max_reminder_days</code>). Every other wake expires after 14 days at most, except a one-time reminder you ask for, which can be due up to 365 days out (<code>max_reminder_days</code>, never below <code>max_lifetime_days</code>). A reminder due later than 14 days stays deliverable for 14 days after its due time, so downtime at the due time follows the catch-up rule instead of expiring silently.</li>
+<li>A wake that could not fire before it expires is refused, including an owner-silence wait or a probe's next check without a deadline. On create, an implicit lifetime stretches to fit, up to the maximum. Existing wakes keep their expiry; an edit past it is refused with a hint to set <code>until.expires</code> when extending can help, otherwise it names the maximum lifetime. Quiet hours count at the real dispatch time for one-shot times and watcher deadlines. A timed quiet override chains into the default quiet hours if they still apply when it ends. A one-shot outside the catch-up window is refused; one due now fires on the next check. A timed resume that cannot fit ends the wake with a notice. Receipts name the silence duration and are at most 240 characters; long ones end with an ellipsis.</li>
+<li>Daily caps hold watchers until capacity frees, including on a new local day; your unedited one-shot reminders, including one-time reminders you ask for in chat, bypass both caps.</li>
+<li>After 2 unanswered messages, agent watchers hold until you write, and agent one-time follow-ups and built-in check-ins drop their occurrence. The agent's recurring work, roles and own time keep running with their messages held; quiet hours and the daily message cap hold their messages the same way. Wakes you armed, and one-time reminders you ask for in chat (the agent marks them <code>owner_asked</code>), still fire unless the agent edited their trigger, timing or note; a watcher-only conversion you requested with <code>/pulse watch</code> keeps owner status. Held matches merge, keeping the latest payload; pauses preserve them and expiry is visible in <code>/pulse why</code>.</li>
+<li>A wake turn that carries untrusted data, such as a log line or a web page, cannot arm new recurring work.</li>
+<li>Hermes' emergency stop halts every wake.</li>
+<li><code>/pulse off</code> stops everything in that chat, and only you can turn it back on.</li>
+</ul>
+<h3>Cost</h3>
+<p>A wake turn is an ordinary model turn in that conversation. It is billed like a message, and its size is your conversation's context size: on a long-running agent that can be 100–200k input tokens per wake. Watchers, gates and skipped wakes cost nothing. <code>/pulse status</code> and <code>/pulse ledger</code> show warm/cold wake counts and estimated cost when priced, otherwise the in/cached/written/out split. The ledger also counts <code>no_verdict</code> turns. Start with watchers and long intervals.</p>
+<h3>Prompt cache</h3>
+<p>Claude marker routes use Hermes' 5m/1h/auto setting; GPT-5.6+ and GPT-6.x on OpenAI API routes use 30m.
+The Codex OAuth route is reported as unknown until learned.
+Other routes learn a conservative TTL only after both warm and cold gaps are observed.
+Agent recurring intervals near the TTL snap below it with downward jitter, respecting floors.
+Owner wakes, cron and anchored repeats retain their timing. Cache lines show the effect and warm interval.</p>
+<h3>Security and privacy</h3>
+<p>Disclosure — wakes and watchers run full turns on the conversation's own model, billed like any message; command watchers run allowlisted read-only commands without an approval prompt; URL watchers make the GET requests you configured; state stays in the profile's plugin-data; no telemetry. Command environments use Hermes' sanitizer on an allowlisted base and carry no provider, bot or GitHub tokens; gh uses its own hosts.yml or keyring. URL watchers always block cloud metadata, and block private/local addresses unless <code>url_allow_private</code> is enabled, checking every hop at connect time. File watchers honor Hermes read blocks at arm/update and every check, including rotation. Helpers run in the watcher's profile scope.</p>
+<p>Command watchers:</p>
+<ul>
+<li>use an allowlisted environment that does not pass proxy or custom-CA variables yet;</li>
+<li>run only argv prefixes from your allowlist. The default is <code>gh pr view/checks</code>, <code>gh run view/list</code>, <code>git ls-remote/status/log</code>;</li>
+<li>run with no shell and no terminal;</li>
+<li>refuse output, config, editor, browser and mutating flags and verbs, including gh <code>--jq</code>/<code>-q</code> and <code>--template</code>/<code>-t</code>;</li>
+<li>have the whole process group killed after 30 seconds.</li>
+</ul>
+<p>The argv guard is not a sandbox: only allow programs you trust to be read-only. URL watchers refuse credentials in the URL and send no cookies, auth headers or proxy settings. Wake turns keep the conversation's normal tools and permissions. Full threat model and limits: <a href="https://github.com/electricsheephq/heartbeat2/blob/main/SECURITY.md">SECURITY.md</a>.</p>
+<p>The default command allowlist still permits <code>gh -R HOST/...</code> and <code>git ls-remote &lt;url&gt;</code> to reach any host the machine can reach; the current release keeps this exception.</p>
+<h3>Roadmap</h3>
+<p>The <a href="https://github.com/electricsheephq/heartbeat2/issues/139">roadmap tracker</a> lists each milestone and what it covers.</p>
+<ul>
+<li><a href="https://github.com/electricsheephq/heartbeat2/milestone/12">v0.4: work continues while you're away</a></li>
+<li><a href="https://github.com/electricsheephq/heartbeat2/milestone/13">v0.5: beyond developer tools</a></li>
+<li><a href="https://github.com/electricsheephq/heartbeat2/milestone/8">Backlog: maintenance intake</a></li>
+<li><a href="https://github.com/electricsheephq/heartbeat2/milestone/6">Research / blocked</a></li>
+</ul>
+<h3>Compatibility and known issues</h3>
+<ul>
+<li><strong>Delivery is to messaging-gateway chats:</strong> DMs by default, plus group and topic chats when <code>dm_only</code> is off. Group and topic delivery has passed one live test, in a Telegram forum topic (<a href="https://github.com/electricsheephq/heartbeat2/issues/98">#98</a>). It refuses to arm wakes from the CLI, TUI, Desktop, the API server or cron: a CLI wake would interrupt your turn, and TUI/Desktop have no silence filter for injected turns yet. Desktop and TUI wakes are not scheduled yet: they wait on Hermes core support for silent injected turns there (<a href="https://github.com/electricsheephq/heartbeat2/issues/8">#8</a>, in Research / blocked).</li>
+<li><strong>A wake turn that fails at the provider</strong> (quota, auth, outage) shows Hermes's own failure notice in the chat. The plugin cannot suppress it (<a href="https://github.com/NousResearch/hermes-agent/issues/136749">NousResearch/hermes-agent#136749</a>). HeartBeat 2.0 settles that wake once Hermes ends the turn (some provider errors leave it open until the agent timeout, <a href="https://github.com/electricsheephq/heartbeat2/issues/27">#27</a>, blocked upstream by <a href="https://github.com/NousResearch/hermes-agent/issues/137357">NousResearch/hermes-agent#137357</a>), then holds every pending wake back (5 min → 15 min → 1 h → 4 h) until a model call on the profile succeeds again. A wake already in flight when the error hits can still show one more notice. A long outage therefore costs about one notice per backoff step, not one per wake.</li>
+<li><strong>Silence covers the final reply.</strong> <code>notify=false</code> keeps the agent's reply out of the chat. Hermes still posts two kinds of text on its own: interim messages (text the model writes alongside a tool call; Hermes's <code>display.interim_assistant_messages</code> is on by default) and tool-progress bubbles (on by default on Discord; WhatsApp and Matrix show new tools; Telegram and Slack hide them). The wake text tells the model to write nothing alongside tool calls, but a model can still do it. To keep wakes fully silent, set <code>display.interim_assistant_messages: false</code> and, where tool progress is on, <code>display.platforms.&lt;platform&gt;.tool_progress: off</code>. A quiet-injection option is requested upstream (<a href="https://github.com/NousResearch/hermes-agent/issues/136825">NousResearch/hermes-agent#136825</a>).</li>
+<li><strong>Model-fallback notice.</strong> When Hermes falls back to another model during a wake turn, its fallback notice is posted to the chat, even for a wake that stays silent (<a href="https://github.com/NousResearch/hermes-agent/issues/137738">NousResearch/hermes-agent#137738</a>). The plugin cannot suppress it.</li>
+<li><strong>Messages sent while the agent is busy.</strong> On Signal/SimpleX, a message that waits in Hermes' queue while a turn is running (a photo, or any message when <code>busy_input_mode</code> is <code>queue</code>) reaches the agent without a message id, so HeartBeat 2.0 does not count it as your reply. The unanswered mute and the silence check-in treat you as silent until your next message. Text you send mid-turn in the default mode is counted. With the Codex app-server runtime, its native steer (text you send into a running wake turn) is not detected, so a wake that decides to stay silent can leave that steer unanswered.</li>
+<li><strong><code>/pulse</code> while the agent is mid-turn.</strong> Hermes currently drops a plugin's slash command sent while the agent is running a turn: no reply, and it is not retried (<a href="https://github.com/NousResearch/hermes-agent/issues/131051">NousResearch/hermes-agent#131051</a>). A <code>/pulse</code> command normally answers within seconds. If it doesn't, the agent was mid-turn (possibly a silent wake turn that posts nothing). Wait a minute and send the same command again, with its arguments (for example <code>/pulse off</code>, not bare <code>/pulse</code>). Then check its reply or <code>/pulse status</code>.</li>
+<li><strong>Memory providers see wake text as a user turn</strong> (<a href="https://github.com/NousResearch/hermes-agent/issues/130622">NousResearch/hermes-agent#130622</a>). An external memory provider may store a wake's instructions as if you had written them.</li>
+<li><strong>Kanban watchers only see tasks whose worker runs in this profile.</strong> A task assigned to another profile completes in that profile's worker, out of sight.</li>
+<li><strong><code>codex_app_server</code> turns drop per-turn context</strong>, so the presence line and governor card don't reach the model on that provider path. Wakes still fire, and silence still works.</li>
+<li><strong>File watchers poll.</strong> A truncate-and-regrow or a replacement that happens entirely between two checks can be missed. Reading catches up within 4 MB per check, and lines over 256 KB are skipped.</li>
+<li><strong>Proposals (<code>agent_can_create: ask_first</code>).</strong> A reminder the agent arms stays a proposal until you send <code>/pulse ok &lt;id&gt;</code>, and its receipt says "Not set yet". The reminder keeps the time you asked for: confirming late does not restart the delay. In the live benchmark, the model sometimes describes the delay as starting at confirmation (1 of 6 replies on GLM 5.3). The receipt is the source of truth.</li>
+<li><strong>Notes, scratch, summaries and event payloads are stored in plaintext</strong> in <code>&lt;profile&gt;/plugin-data/heartbeat2/pulse.db</code>. Don't watch credential files.</li>
+<li><strong>Live proof so far:</strong> one profile (Telegram DM, GLM model) covered a delivered follow-up, a silent verdict and survival across a gateway restart. A live-model journey smoke in an isolated rig (<a href="https://github.com/electricsheephq/heartbeat2/issues/11#issuecomment-6241146575">round 6</a>: GLM 5.3, pinned Hermes, loopback Bot API, 3 tries per journey) armed reminders from the owner's own words and delivered them on time in 3 of 3 tries for relative and clock-time reminders. In that run, no wake was armed on a reply or stop turn, and nothing was delivered after a stop. It measures one model on a stand-in Bot API, not a reliability rate. The deterministic benchmark suite simulates the engine; it does not measure live delivery.</li>
+</ul>
+<h3>Troubleshooting</h3>
+<ul>
+<li><strong><code>/pulse</code> shows a YAML snippet.</strong> The consent key isn't set yet: add it (see <a href="#try-it">Try it</a>) and restart the messaging gateway.</li>
+<li><strong><code>/pulse</code> doesn't answer.</strong> The agent was probably mid-turn: Hermes drops a plugin command sent during a turn. Wait a minute and send the same command again.</li>
+<li><strong>A wake didn't fire.</strong> <code>/pulse why &lt;id&gt;</code> lists its recent triggers, states and reasons, such as quiet hours, the unanswered mute, a daily cap or a busy chat. <code>/pulse test &lt;id&gt;</code> previews the checks without sending anything or calling a model.</li>
+<li><strong>Arming is refused in the CLI, TUI or Desktop.</strong> Wakes run in messaging-gateway chats only for now (see <a href="#compatibility-and-known-issues">known issues</a>).</li>
+<li><strong>A group chat is refused.</strong> <code>dm_only</code> is on by default; turn it off in <strong>Settings ▸ Plugins</strong> to allow group and topic chats.</li>
+<li><strong>The agent's messages stopped.</strong> <code>/pulse desk</code> says why messages are held: quiet hours, the unanswered mute (after 2 unanswered messages by default) or the daily message cap. Those messages aren't sent later on their own: on your next message, or on the agent's next turn that can send, it gets a short list of the held results and tells you what still matters.</li>
+</ul>
+<h4>Reporting a bug</h4>
+<p>In the affected messaging-gateway chat, run <code>/pulse status</code> (or <code>/pulse</code>) for scheduler state, consent, counts and next due.
+Read recent logs with <code>hermes logs -n 300 | grep -i heartbeat</code>; share only short excerpts with secrets, identifiers and private text removed.
+Do not fire a wake, send a DM or change consent just to reproduce a problem.
+Ask your Hermes agent to report a problem with HeartBeat 2.0; review its draft before approving publication.
+Use the <a href="https://github.com/electricsheephq/heartbeat2/issues/new?template=bug_report.yml">bug report form</a> for plugin bugs.
+For unauthorized delivery, cross-profile data exposure or exposed credentials, use a <a href="https://github.com/electricsheephq/heartbeat2/security/advisories/new">private security advisory</a>.</p>
+<h3>How it compares</h3>
+<p>A workflow comparison, not a measured parity claim.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>What it is</th>
+<th>When to pick it instead</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>HeartBeat 2.0</strong></td>
+<td>Wakes and watchers that you or the agent create. They run in the live DM on its own model, with deterministic watchers, owner-set bounds, structured silence and a no-op governor.</td>
+<td></td>
+</tr>
+<tr>
+<td>Hermes <code>/heartbeat</code> (core)</td>
+<td>One recurring instruction for the current session, with core persistence and idle admission. Silence is a bare marker.</td>
+<td>You want one periodic nudge and nothing else.</td>
+</tr>
+<tr>
+<td>Hermes <code>/loop</code></td>
+<td>Repeats an instruction in the active interactive session.</td>
+<td>You are working at the keyboard, not waiting on something.</td>
+</tr>
+<tr>
+<td>Hermes cron</td>
+<td>Scheduled jobs, each in a fresh session with no conversation history, delivering a report. A <code>no_agent</code> job's script can print <code>{"wakeAgent": false}</code> to stay silent. HeartBeat 2.0 borrows that idea for command watchers but fires inside the live conversation.</td>
+<td>Independent scheduled tasks that don't need the conversation.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/itpartypattaya/hermes-cron">hermes-cron</a></td>
+<td>An operating skill and doctor for core cron.</td>
+<td>Complementary: it makes cron easier, it isn't a scheduler.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/superlowburn/hermes-jev-cron-gate">jev-cron-gate</a></td>
+<td>A pre-run gate for core cron: a side model answers yes or no on whether a run is pointless, then the run happens in a fresh cron session. HeartBeat 2.0's gates are deterministic, with no side model.</td>
+<td>You already run cron jobs and want to skip pointless ones.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/capthvnsen/alans-way-agents">Alan's Way</a></td>
+<td>An idle check-in for one bound Telegram DM after 2 h of quiet (08:00–22:00), which may take one safe step, bundled with a desktop workspace app and services. It uses the same injection seam.</td>
+<td>You want that whole workspace and a single fixed check-in rhythm.</td>
+</tr>
+<tr>
+<td>OpenClaw heartbeat</td>
+<td>A periodic heartbeat inside the main conversation. HeartBeat 2.0 was designed against its documented failure reports; it is not a port, and it makes no claim about OpenClaw's current behaviour.</td>
+<td>You run OpenClaw.</td>
+</tr>
+</tbody></table>
+<h3>Development</h3>
+<pre><code class="language-bash">python -m pytest -q                                   # unit tests (network denied)
+HERMES_HOME=$(mktemp -d) HERMES_DISABLE_LAZY_INSTALLS=1 HEARTBEAT2_REQUIRE_HERMES=1 \
+  PYTHONPATH=/path/to/hermes-agent python -m pytest tests/integration -q   # real Hermes loader
+python -m bench.run --baseline --gate --out bench-out  # simulation benchmark + gate
+</code></pre>
+<p>CI runs the unit tests on Ubuntu and macOS with Python 3.11, 3.13 and 3.14. It also runs the real-loader integration test against Hermes v0.21.6 and a pinned main commit. A mutant test applies known-bad changes to a temporary copy of the engine (replayed slots, claim CAS off, flock off, estop off, raw transform, cancel-on-reply off and more), and checks that the benchmark gate fails for each one. That keeps the gate from becoming a tautology.</p>
+<h3>Links</h3>
+<p><a href="https://github.com/electricsheephq/heartbeat2/releases">Releases</a> · <a href="https://github.com/electricsheephq/heartbeat2/blob/main/CHANGELOG.md">Changelog</a> · <a href="https://github.com/electricsheephq/heartbeat2/blob/main/CONTRIBUTING.md">Contributing</a> · <a href="https://github.com/electricsheephq/heartbeat2/blob/main/SECURITY.md">Security policy</a> · <a href="https://github.com/electricsheephq/heartbeat2/blob/main/LICENSE">License (Apache-2.0)</a> · <a href="https://github.com/electricsheephq/heartbeat2/issues/new?template=bug_report.yml">Report a bug</a></p>
+<p>Credits: claim, refund and coalescing semantics follow Hermes core <code>/heartbeat</code>. Fingerprinting follows Hermes' cron monitor, and estop and busy ordering follow the gateway. OpenClaw's public issue reports shaped the benchmark scenarios.</p>
+<p>Built for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Electric Sheep. Apache-2.0.</p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in plugins &amp; extensions</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
+        <div class="stars">★ 443</div>
+        <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
+      </a>
+      <a class="related-row" href="/projects/42-evey/hermes-plugins">
+        <div class="stars">★ 546</div>
+        <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
+      </a>
+      <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
+        <div class="stars">★ 49</div>
+        <div class="name"><span class="org">FahrenheitResearch /</span> hermes-weather-plugin</div>
+      </a>
+      <a class="related-row" href="/projects/42-evey/evey-bridge-plugin">
+        <div class="stars">★ 18</div>
+        <div class="name"><span class="org">42-evey /</span> evey-bridge-plugin</div>
+      </a>
+      <a class="related-row" href="/projects/nativ3ai/hermes-payguard">
+        <div class="stars">★ 14</div>
+        <div class="name"><span class="org">nativ3ai /</span> hermes-payguard</div>
+      </a>
+      <a class="related-row" href="/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server">
+        <div class="stars">★ 404</div>
+        <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
+      </a>
+      <a class="related-row" href="/projects/stainlu/hermes-labyrinth">
+        <div class="stars">★ 311</div>
+        <div class="name"><span class="org">stainlu /</span> hermes-labyrinth</div>
+      </a>
+      <a class="related-row" href="/projects/runta-dev/clawshell">
+        <div class="stars">★ 351</div>
+        <div class="name"><span class="org">runta-dev /</span> clawshell</div>
+      </a>
+    </div>
+    
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="/about">about</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues/new?template=suggest-repo.yml">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

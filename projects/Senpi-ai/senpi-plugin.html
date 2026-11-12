@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Senpi-ai/senpi-plugin — Hermes Agent Domain Applications | Hermes Atlas</title>
-<meta name="description" content="Senpi — AI Quant connects AI assistants to Senpi’s read-only research tools for Hyperliquid, including market signals, trader research, strategy catalogs, and…">
+<meta name="description" content="Senpi — AI Quant connects supported AI assistants to Senpi research tools for Hyperliquid, including market signals, trader research, strategy catalog entries,…">
 <link rel="canonical" href="https://hermesatlas.com/projects/Senpi-ai/senpi-plugin">
 <meta property="og:title" content="Senpi-ai/senpi-plugin — Hermes Atlas">
-<meta property="og:description" content="Senpi — AI Quant connects AI assistants to Senpi’s read-only research tools for Hyperliquid, including market signals, trader research, strategy catalogs, and…">
+<meta property="og:description" content="Senpi — AI Quant connects supported AI assistants to Senpi research tools for Hyperliquid, including market signals, trader research, strategy catalog entries,…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/Senpi-ai/senpi-plugin">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Senpi-ai/senpi-plugin — Hermes Atlas">
-<meta name="twitter:description" content="Senpi — AI Quant connects AI assistants to Senpi’s read-only research tools for Hyperliquid, including market signals, trader research, strategy catalogs, and…">
+<meta name="twitter:description" content="Senpi — AI Quant connects supported AI assistants to Senpi research tools for Hyperliquid, including market signals, trader research, strategy catalog entries,…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=senpi-plugin&amp;subtitle=Senpi+%E2%80%94+AI+Quant.+One+plugin+for+Claude+Code%2C+Claude%2C+ChatGPT%2C+Codex%2C+Cursor%2C+Grok+Bot+and+Grok+Build%3A+connect+your+AI+assistant+to+your+own+Senpi+agent+for+Hyperliquid.&amp;kind=project+%C2%B7+domain+applications">
 <script type="application/ld+json">
 {
@@ -35,19 +35,19 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/Senpi-ai/senpi-plugin#software",
   "name": "senpi-plugin",
-  "description": "Senpi — AI Quant connects AI assistants to Senpi’s read-only research tools for Hyperliquid, including market signals, trader research, strategy catalogs, and portfolio and trade history. The plugin uses OAuth sign-in and does not place trades, deploy strategies, or move funds.",
+  "description": "Senpi — AI Quant connects supported AI assistants to Senpi research tools for Hyperliquid, including market signals, trader research, strategy catalog entries, and portfolio and trade history. All tools are read-only; trading, funding, and strategy deployment take place in a Senpi account, not through the plugin.",
   "url": "https://hermesatlas.com/projects/Senpi-ai/senpi-plugin",
   "codeRepository": "https://github.com/Senpi-ai/senpi-plugin",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Cross-platform",
-  "programmingLanguage": "Shell",
+  "programmingLanguage": "Python",
   "license": "https://spdx.org/licenses/Apache-2.0.html",
   "author": {
     "@type": "Organization",
     "name": "Senpi-ai",
     "url": "https://github.com/Senpi-ai"
   },
-  "dateModified": "2026-11-11T11:24:46.000Z",
+  "dateModified": "2026-11-11T23:45:32.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -81,7 +81,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">318·repos</span>
+    <span id="meta-count">321·repos</span>
     <span id="meta-version">hermes·v0.21.5</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -121,7 +121,7 @@
 
   <div class="meta-row">
     <span class="stars">★ 7</span>
-    <span><span class="meta-label">lang</span>Shell</span>
+    <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
     <span><span class="meta-label">updated</span>2026-11-11</span>
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Senpi — AI Quant connects AI assistants to Senpi’s read-only research tools for Hyperliquid, including market signals, trader research, strategy catalogs, and portfolio and trade history. The plugin uses OAuth sign-in and does not place trades, deploy strategies, or move funds.</p>
+    <p class="summary-text">Senpi — AI Quant connects supported AI assistants to Senpi research tools for Hyperliquid, including market signals, trader research, strategy catalog entries, and portfolio and trade history. All tools are read-only; trading, funding, and strategy deployment take place in a Senpi account, not through the plugin.</p>
     <ul class="summary-highlights">
-      <li>Read-only tools for market and trader research</li>
-      <li>Portfolio tools access only the signed-in account</li>
-      <li>Supports multiple assistants through an MCP server</li>
+      <li>Provides market, trader, strategy, and portfolio research tools.</li>
+      <li>Uses OAuth sign-in with a Senpi account.</li>
+      <li>Sends tool calls to Senpi over HTTPS.</li>
     </ul>
   </div>
 </section>
@@ -205,10 +205,6 @@
 <tr>
 <td><strong>Strategy Discovery</strong> — browse Senpi's strategy template catalog by goal and risk</td>
 <td><code>browse_strategy_catalog</code>, <code>get_catalog_strategy</code></td>
-</tr>
-<tr>
-<td><strong>Plans &amp; Pricing</strong> — Senpi's live plan catalog: prices, credits, points multipliers</td>
-<td><code>get_subscription_plan_catalog</code></td>
 </tr>
 <tr>
 <td><strong>Portfolio &amp; Trade Review</strong> — your own book, your closed trades reviewed whole with your equity path and your stop events; the wallet-history tools read your own wallets when given no address</td>
