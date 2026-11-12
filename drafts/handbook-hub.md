@@ -313,9 +313,9 @@ Nous uses the phrase *Harness Engineering* a lot. It's the framing behind the wh
 
 ## 8. Essential skills to install first
 
-There are 643 community-contributed skills in the Hub (as of 2026-04-19). Don't try to install them all. Here are five that every Hermes user should have on day one.
+The Skills Hub aggregates community-contributed skills from many sources. Don't try to install them all. Here are five that every Hermes user should have on day one.
 
-### The 643-skill Hub
+### The Skills Hub
 
 Run `hermes skills browse` to see the catalog. Skills come from four trust tiers:
 
@@ -439,6 +439,5 @@ If something is wrong, unclear, or out of date, open an issue on [the Atlas repo
 **Cited stats:**
 - 262,900 GitHub stars (as of 2026-11-12) — source: `api.github.com/repos/NousResearch/hermes-agent`
 - 321+ projects in the Hermes Atlas (as of 2026-11-12)
-- 643 skills in the community Hub (as of 2026-04-19)
 
 **Corrections and feedback:** [open an issue](https://github.com/ksimback/hermes-ecosystem/issues/new) or message on X.
