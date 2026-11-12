@@ -137,6 +137,12 @@ ID
 
 Notes
 
+Gemini 4 Hydrogen
+
+`gemini-4-hydrogen`
+
+Fast Gemini 4 model for everyday coding and agentic work; same window and long decode as Argon, plus an `xhigh` thinking level. Free and paid tiers
+
 Gemini 4 Carbon
 
 `gemini-4-carbon`
@@ -230,6 +236,8 @@ Per-request cap
 `high`
 
 1,048,576 tokens minus the input (long decode)
+
+Gemini 4 Hydrogen has a fourth level, `xhigh`: on Hydrogen, Hermes sends `xhigh` for the `xhigh`, `max` and `ultra` efforts, with the same output budgets as above. Google's own default level for Hydrogen is `high`.
 
 Without long decode a single request stops at 65,536 output tokens when streaming (32,768 non-streaming), thinking included. With `xhigh` or `max`, Hermes raises `maxOutputTokens` and, when a request reaches the per-request cap with budget left (`finishReason: CONTINUATION`), resends the same request with Google's `continuationToken` until the model finishes. The hops are joined into one reply.
 

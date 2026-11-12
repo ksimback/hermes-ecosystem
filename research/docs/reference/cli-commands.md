@@ -452,7 +452,7 @@ Session source tag for filtering (default: `cli`; one-shot runs default to `ones
 
 `--max-turns <N>`
 
-Maximum tool-calling iterations per conversation turn (default: 500, or `agent.max_turns` in config).
+Maximum tool-calling iterations per conversation turn (default: unlimited, or `agent.max_turns` in config).
 
 Examples:
 
