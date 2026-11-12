@@ -115,11 +115,15 @@ test("extractTrackedReleaseTags reads exact release metadata and source URLs", (
     },
     {
       path: "research/unrelated.md",
-      content: "# Hermes Agent v0.18.0\n**Version:** v0.18.0",
+      content: "# Hermes Agent v0.18.0\n**Version:** v260408, based on Hermes Agent v0.7.0",
+    },
+    {
+      path: "research/67-release-0-21-6.md",
+      content: "**Version:** v0.21.6\n**Source:** https://github.com/NousResearch/hermes-agent/releases/tag/v0.21.6",
     },
   ]);
 
-  assert.deepEqual([...tags], ["v2026.7.1"]);
+  assert.deepEqual([...tags], ["v2026.7.1", "v0.21.6"]);
 });
 
 test("planReleaseBatch ingests every missing release oldest to newest", () => {
@@ -307,4 +311,77 @@ test("syncReleases reuses a stuck PR, merges the full batch, and dispatches the 
   assert.ok(calls.some((call) => call.method === "PUT" && call.apiPath.endsWith("/pulls/494/merge")));
   assert.ok(calls.some((call) => call.apiPath.endsWith("/actions/workflows/rebuild-chunks.yml/dispatches")));
   assert.equal(calls.some((call) => call.method === "POST" && call.apiPath.endsWith("/pulls")), false);
+});
+
+// Regression: upstream dropped calendar tags (v2026.9.24) for plain versions
+// (v0.21.6) on 2026-10-08. A calendar-only filter skipped 12 releases while
+// the monitor reported "No missing releases" and stayed green.
+const plainRelease = (tag, publishedAt) => ({
+  tag_name: tag,
+  name: `Hermes Agent ${tag}`,
+  published_at: publishedAt,
+  body: `# Hermes Agent ${tag}\n\n> Patch release.\n\n${"Authoritative release notes. ".repeat(5)}`,
+  draft: false,
+  prerelease: false,
+});
+const lastCalendarFile = {
+  path: "research/65-release-2026-9-24.md",
+  content: renderReleaseMarkdown(release("v2026.9.24", "2026-09-24T10:09:38Z", "v0.21.5")),
+};
+
+test("planReleaseBatch ingests plain-version tags published after the last calendar tag", () => {
+  const plan = planReleaseBatch({
+    upstreamReleases: [
+      plainRelease("v0.23.1", "2026-11-10T01:42:15Z"),
+      plainRelease("v0.21.6", "2026-10-08T11:51:57Z"),
+      release("v2026.9.24", "2026-09-24T10:09:38Z", "v0.21.5"),
+    ],
+    researchFiles: [lastCalendarFile, { path: "research/66-parallel-search-mcp.md", content: "# Unrelated" }],
+  });
+
+  assert.deepEqual(plan.missing.map((item) => item.tag_name), ["v0.21.6", "v0.23.1"]);
+  assert.deepEqual(plan.documents.map((item) => item.path), [
+    "research/67-release-0-21-6.md",
+    "research/68-release-0-23-1.md",
+  ]);
+  assert.deepEqual(plan.unrecognized, []);
+
+  const again = planReleaseBatch({
+    upstreamReleases: [plainRelease("v0.23.1", "2026-11-10T01:42:15Z"), plainRelease("v0.21.6", "2026-10-08T11:51:57Z")],
+    researchFiles: [lastCalendarFile, ...plan.documents.map((doc) => ({ path: doc.path, content: doc.content }))],
+  });
+  assert.equal(again.documents.length, 0);
+});
+
+test("latestStableRelease and PR-title parsing understand plain-version tags", () => {
+  const newest = plainRelease("v0.23.1", "2026-11-10T01:42:15Z");
+  assert.equal(latestStableRelease([release("v2026.9.24", "2026-09-24T10:09:38Z", "v0.21.5"), newest]), newest);
+  assert.equal(releaseTagFromPrTitle("New release: Hermes Agent v0.23.1"), "v0.23.1");
+  assert.equal(releaseTagFromPrTitle("New release: Hermes Agent v2026.7.7.2"), "v2026.7.7.2");
+  assert.equal(releaseBranchName("v0.23.1"), "release-notes-batch-0-23-1");
+});
+
+test("syncReleases fails loudly when upstream publishes a tag format it cannot ingest", async () => {
+  const client = {
+    async request(method, apiPath) {
+      if (apiPath.includes("/releases?")) {
+        return [
+          plainRelease("hermes-1.0", "2026-12-01T00:00:00Z"),
+          release("v2026.9.24", "2026-09-24T10:09:38Z", "v0.21.5"),
+        ];
+      }
+      if (apiPath.endsWith("/pulls?state=open&per_page=100")) return [];
+      throw new Error(`Unexpected request: ${method} ${apiPath}`);
+    },
+  };
+
+  await assert.rejects(
+    syncReleases({
+      client,
+      repository: "ksimback/hermes-ecosystem",
+      researchFiles: [lastCalendarFile],
+      latestReleaseData: { tag: "v2026.9.24" },
+    }),
+    /unrecognized tag format: hermes-1\.0/,
+  );
 });

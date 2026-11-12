@@ -2543,10 +2543,15 @@ function bakeHomepageStats(repos) {
       html = html
         .replace(/(<span id="meta-version">)hermes·[^<]*(<\/span>)/, `$1hermes·${lr.version}$2`)
         .replace(/(<span[^>]*id="hero-version">)[^<]*(<\/span>)/, `$1${lr.version}$2`);
-      if (lr.tag) {
+      // Since v0.21.6 the tag IS the version; show the release date beside it
+      // rather than repeating the same string twice.
+      const versionSub = lr.tag && lr.tag !== lr.version
+        ? lr.tag
+        : String(lr.publishedAt || "").slice(0, 10);
+      if (versionSub) {
         html = html.replace(
           /(<span[^>]*id="hero-version-tag">)[^<]*(<\/span>)/,
-          `$1${lr.tag}$2`
+          `$1${versionSub}$2`
         );
       }
     }

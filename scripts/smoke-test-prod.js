@@ -69,6 +69,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse as parseHtml } from "node-html-parser";
+import { latestStableRelease } from "../lib/release-sync.js";
 import { expectedCatalogCounts, findPendingRemovals } from "../lib/smoke-catalog.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -443,14 +444,13 @@ await section("2. Public API contracts are semantically healthy", async () => {
           fail("latest release freshness", `upstream HTTP ${upstreamResponse.status}`, HERMES_RELEASES_URL);
         } else {
           const upstreamReleases = await readJson(upstreamResponse, "latest release freshness");
+          // Same tag recognition as the ingester (lib/release-sync.js), so the
+          // two cannot drift apart and agree on a stale "latest".
           const upstreamLatest = Array.isArray(upstreamReleases)
-            ? upstreamReleases
-              .filter((release) => !release.draft && !release.prerelease)
-              .filter((release) => /^v20\d{2}(?:\.\d+){2,}$/i.test(String(release.tag_name || "")))
-              .sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at))[0]
+            ? latestStableRelease(upstreamReleases)
             : null;
           if (!upstreamLatest) {
-            fail("latest release freshness", "upstream returned no stable calendar-tagged release", HERMES_RELEASES_URL);
+            fail("latest release freshness", "upstream returned no stable release with a recognized tag", HERMES_RELEASES_URL);
           } else if (releaseArtifact.tag === upstreamLatest.tag_name) {
             pass("latest release freshness", `${releaseArtifact.version} (${releaseArtifact.tag})`);
           } else {
