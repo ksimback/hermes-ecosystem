@@ -70,6 +70,8 @@ Your plugin's page at `/docs/plugins/<name>` is built from the same file. The RE
      
 18.  **Password managers come from their vendor.** A plugin that registers a `browser_vault` login backend (`ctx.register_login_backend`) is listed only at `tier: verified`, submitted from the password-manager vendor's own repository by that vendor, or at `tier: official` when Nous maintains it. Community-tier, fork and third-party listings of a login backend are declined. Hermes enforces the same rule when the plugin loads: a login backend is accepted only from a plugin bundled with Hermes or installed from this catalog at `verified` or `official` tier and at the reviewed pin, as recorded in Hermes's own install record (never a file inside the plugin). Local-directory, Git URL, `--ref`, `--allow-removed`, project and pip installs are refused, and no setting relaxes it.
      
+19.  **No plugins built to reach infringing content.** A plugin whose main purpose is to find, stream or download copyrighted films, shows, music, books, games or software from sources that are not licensed to distribute them (piracy aggregators, unofficial mirrors, cracked-release indexes) is declined, however clean its code. A general-purpose tool such as a browser, downloader or media player is fine; one that ships with those sources built in, or whose description points users at them, is not.
+     
 
 ## Updating your entry
 

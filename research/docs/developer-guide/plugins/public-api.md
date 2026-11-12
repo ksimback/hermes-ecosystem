@@ -623,3 +623,39 @@ plugin-llm-access.md § From the plugin's frontend: a plugin RPC method (`force=
 `session_client`
 
 user-guide/features/plugins.md § Plugin code inside the gateway: which client created the session
+
+`agent.file_safety`
+
+`get_read_block_error`
+
+plugins/index.md § Check file paths and read YAML with Hermes's own helpers
+
+`agent.file_safety`
+
+`raise_if_read_blocked`
+
+plugins/index.md § Check file paths and read YAML with Hermes's own helpers
+
+`agent.file_safety`
+
+`is_write_denied`
+
+plugins/index.md § Check file paths and read YAML with Hermes's own helpers
+
+`agent.file_safety`
+
+`get_write_denied_error`
+
+plugins/index.md § Check file paths and read YAML with Hermes's own helpers
+
+`hermes_yaml`
+
+`safe_load`
+
+plugins/index.md § Check file paths and read YAML with Hermes's own helpers
+
+`hermes_yaml`
+
+`safe_dump`
+
+plugins/index.md § Check file paths and read YAML with Hermes's own helpers
