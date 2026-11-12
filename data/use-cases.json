@@ -19,10 +19,10 @@
     ],
     "stack": [
       {
-        "owner": "JackTheGit",
-        "repo": "hermes-autonomous-server",
+        "owner": "praveen-ks-2001",
+        "repo": "hermes-agent-template",
         "role": "Always-on host",
-        "why": "Headless systemd deployment, which is what an agent that has to survive reboots and run overnight crons actually needs."
+        "why": "A one-click Railway deployment with a persistent volume and a gateway that restarts automatically if it crashes, which is what an agent that has to run overnight crons actually needs."
       },
       {
         "owner": "mem0ai",
@@ -118,7 +118,8 @@
     "caveats": [
       "Exposing a self-hosted agent to the internet for phone access is the most common way people accidentally publish a shell. Tunnel it (Tailscale or equivalent) rather than opening a port.",
       "Native mobile clients pair with a specific backend — check the pairing requirement before assuming any client works with your setup.",
-      "Since v0.23.0 Hermes ships its own Webapp: the Desktop workspace in a browser tab, served by your gateway. It is off by default (turn on webapp.enabled or Settings → Web Access), so check whether it covers you before adding a third-party web UI."
+      "Since v0.23.0 Hermes ships its own Webapp: the Desktop workspace in a browser tab, served by your gateway. It is off by default (turn on webapp.enabled or Settings → Web Access), so check whether it covers you before adding a third-party web UI.",
+      "hermes-telegram-miniapp has had no commits since April 2026. Hermes's own Telegram bridge is maintained upstream, so treat the Mini App dashboard as optional."
     ],
     "gaps": [],
     "evidence": [
@@ -309,7 +310,8 @@
     "rationale": "Fleets fail on coordination, not capability. The stories that work all have the same two things: a single screen where you can see what every agent is doing, and a gate the work has to pass before it lands. So the orchestrator and the review surface come first, together — an orchestrator without review just produces bad work faster. Checkpointing matters more than it sounds like it should, because long parallel runs fail partway and restarting from zero is what kills the economics. Plan enforcement is the last piece and the one people add after their first agent confidently does the wrong task well.",
     "caveats": [
       "Parallel agents multiply spend linearly and mistakes faster than that. Pair this stack with the cost-visibility one before scaling past a handful of lanes.",
-      "Several of these tools assume they own the session lifecycle. Running two orchestrators at once is a common and confusing failure."
+      "Several of these tools assume they own the session lifecycle. Running two orchestrators at once is a common and confusing failure.",
+      "execplan-skill has had no commits since December 2025. A skill file ages slowly, but test it against your Hermes version before a long run depends on it."
     ],
     "gaps": [],
     "evidence": [
@@ -711,7 +713,8 @@
     "caveats": [
       "Driving a real browser is far more fragile and expensive than fetching a page. Reach for it when extraction has actually failed, not by default.",
       "Handing an agent your logged-in browser session is the most consequential permission in this stack — it inherits everything you are authenticated to.",
-      "Scraping at volume runs into bot detection and terms of service well before it runs into technical limits."
+      "Scraping at volume runs into bot detection and terms of service well before it runs into technical limits.",
+      "agent-browser-mcp has had no commits since April 2026. Confirm it still starts against your Chrome and Hermes versions before building on it."
     ],
     "gaps": [
       "Atlas lists no dedicated credential manager for agent browsing, but Hermes now covers the core case itself: since v0.22.0 the browser agent can sign in with logins from 1Password, Bitwarden or its own encrypted vault without the model seeing the password. Session scope is still managed by choosing which browser context you lend."
@@ -751,10 +754,10 @@
         "why": "A template for going from one VPS agent to specialist teams and orchestrated workflows — the shape this use case converges on."
       },
       {
-        "owner": "ultraworkers",
-        "repo": "hermes-agent-helm-chart",
+        "owner": "jyje",
+        "repo": "hermes-agent-helm",
         "role": "Cluster deployment",
-        "why": "A community Helm chart with state-safety guardrails, for when 'one VPS' stops being the answer."
+        "why": "An actively maintained Helm chart that installs Hermes on Kubernetes and scales instances into a team, for when 'one VPS' stops being the answer."
       },
       {
         "owner": "sharbelxyz",
@@ -851,7 +854,8 @@
     "rationale": "Almost every guardrail story starts the same way — the agent did something confidently wrong, fast, and the person went looking for a brake. Layer these from outside in: a sandbox that limits the blast radius regardless of what the agent believes, a runtime harness for the credentials it can see, then policy that decides which actions require a human. The trust-boundary fork is the alternative to bolting the middle layers on, and it is a real fork, so treat it as an either/or rather than an addition. Adversarial review is narrower — it protects the code you ship, not the system the agent runs on.",
     "caveats": [
       "A fork with built-in trust boundaries and a bolted-on harness solve overlapping problems. Pick one architecture rather than stacking both.",
-      "Guardrails only bind the paths they know about. An agent with shell access routes around policy that lives above the shell."
+      "Guardrails only bind the paths they know about. An agent with shell access routes around policy that lives above the shell.",
+      "hermesclaw has had no commits since April 2026. Verify the sandbox still wraps the Hermes version you run before relying on it as your outer boundary."
     ],
     "gaps": [],
     "evidence": [
@@ -917,7 +921,8 @@
     "rationale": "There are three distinct questions here and picking the wrong tool for yours wastes a weekend: what is it doing right now, what did it do last week, and why did this specific call go wrong. The trace viewer answers the third and is the one people reach for during an incident. Read-only journeys and session history answer the first two, and the read-only property matters more than it sounds — observability that mutates the agent's context is a debugging trap. OTel export is the escape hatch if you already have infrastructure; auto-recovery is only worth it once you have enough agents that watching them manually stopped working.",
     "caveats": [
       "Full tool-call logging captures whatever the agent saw, secrets included. Treat the trace store as sensitive.",
-      "Several of these overlap heavily. Start with the one matching your actual question rather than installing the set."
+      "Several of these overlap heavily. Start with the one matching your actual question rather than installing the set.",
+      "hermes-labyrinth has had no commits since May 2026. It only reads session data, so breakage is low-risk, but check its reports against a current session first."
     ],
     "gaps": [],
     "evidence": [
