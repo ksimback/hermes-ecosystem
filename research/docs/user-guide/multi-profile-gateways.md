@@ -544,6 +544,12 @@ The owning profile's `state.db` / `config.yaml` / `processes.json`
 
 —
 
+Reply streaming (`streaming:` block: `enabled`, `transport`, edit pacing, cursor; also the `gateway.streaming` spelling)
+
+The served profile's own `config.yaml`, loaded once at gateway start
+
+The streaming default (off) — a profile with no `streaming:` block does not stream because the default profile does; enable it with `hermes -p <name> config set streaming.enabled true`
+
 What is **shared** by design: the process, its PID/lock and `gateway_state.json` (default home), the one HTTP listener, and the `profile_routes` table (declared on the default profile).
 
 ### Which profiles are served

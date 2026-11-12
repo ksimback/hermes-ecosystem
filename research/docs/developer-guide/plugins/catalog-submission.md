@@ -84,6 +84,7 @@ If a maintainer swept your plugin into the catalog and you want the entry change
 ## Delisting and removal
 
 -   **Delisting** deletes an entry's file: for plugins that are unmaintained, superseded, squatting a name, or no longer meet a rule. Users who already installed the plugin keep it, and it is welcome back once the problem is fixed. When a new rule affects plugins that are already listed, their authors get an issue on their repository explaining the change and time to update before anything is removed.
+-   **Dead entries are delisted automatically.** If your repository is deleted, or the commit your entry pins disappears (a force-push that drops it), a weekly check opens a PR deleting the entry, since it can no longer be installed. Keep the pinned commit reachable; to come back, resubmit with a live repository and pin.
 -   **Removal** adds the plugin to [`removed.yaml`](https://github.com/NousResearch/hermes-agent/blob/main/plugin-catalog/README.md#removedyaml--the-blocklist), which is reserved for security and policy incidents. Installers refuse anything on that list, and installed copies stop updating and cannot be enabled.
 
 ## Asking for a hook

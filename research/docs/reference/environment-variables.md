@@ -2582,7 +2582,7 @@ Grace window before flushing queued Telegram media (default: `0.6`).
 
 `HERMES_TELEGRAM_FOLLOWUP_GRACE_SECONDS`
 
-Delay before sending a follow-up after the agent finishes, to avoid racing the last stream chunk.
+Seconds after a turn starts during which a plain Telegram text follow-up joins the queue instead of interrupting or redirecting that turn (default `3`; `0` disables the grace). Commands and media are not held.
 
 `HERMES_TELEGRAM_HTTP_CONNECT_TIMEOUT` / `_READ_TIMEOUT` / `_WRITE_TIMEOUT` / `_POOL_TIMEOUT`
 

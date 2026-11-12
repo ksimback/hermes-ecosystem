@@ -1714,6 +1714,10 @@ Target chat/channel ID for cross-platform delivery.
 
 Custom HMAC secret. Auto-generated if omitted.
 
+`--signature`
+
+Signature scheme the route accepts: `generic` (default for new routes; `X-Webhook-Signature-V2` + `X-Webhook-Timestamp` or Standard Webhooks), `github`, `gitlab` or `linear`. Every other header family is rejected. Kept on update when omitted. See [Pin the signature scheme](/docs/user-guide/messaging/webhooks#pin-the-signature-scheme).
+
 `--deliver-only`
 
 Skip the agent — deliver the rendered `--prompt` as the literal message. Zero LLM cost, sub-second delivery. Requires `--deliver` to be a real target (not `log`).
@@ -1730,7 +1734,7 @@ Filter/transform script under `~/.hermes/scripts/`. The webhook payload is passe
 
 Bind the route to a multiplexed profile: it is then reachable only at `/p/<profile>/webhooks/<name>` and the agent runs as that profile. Validated against existing profiles; kept on update when omitted. Not the same as the global `-p/--profile`, which selects the gateway whose subscriptions file is written. See [Multi-profile gateways](/docs/user-guide/multi-profile-gateways).
 
-Subscriptions persist to `~/.hermes/webhook_subscriptions.json` and are hot-reloaded by the webhook adapter without a gateway restart. Re-running `subscribe` for an existing name keeps its secret and profile binding unless you pass `--secret` / `--route-profile`.
+Subscriptions persist to `~/.hermes/webhook_subscriptions.json` and are hot-reloaded by the webhook adapter without a gateway restart. Re-running `subscribe` for an existing name keeps its secret, signature pin and profile binding unless you pass `--secret` / `--signature` / `--route-profile`. `hermes webhook test` signs the way the route's pin expects (V2 for `generic` and unpinned routes).
 
 ## `hermes doctor`
 

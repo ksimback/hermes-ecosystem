@@ -67,7 +67,7 @@ What it does
 
 `/goal <text>`
 
-Set (or replace) the standing goal. Kicks off the first turn immediately so you don't need to send a separate message.
+Set (or replace) the standing goal. Kicks off the first turn immediately so you don't need to send a separate message. On a messaging platform, a `/goal` sent as the caption of a photo or file keeps that attachment on the kickoff turn.
 
 `/goal -- <text>`
 
