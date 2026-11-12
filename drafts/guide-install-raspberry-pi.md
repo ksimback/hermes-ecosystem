@@ -1,6 +1,6 @@
 # How to Install Hermes Agent on a Raspberry Pi (4 & 5)
 
-The Raspberry Pi install guide. Live version: https://hermesatlas.com/guide/install/raspberry-pi/ — facts sourced from the official docs. Current release is v0.21.5 (as of 2026-09-24).
+The Raspberry Pi install guide. Live version: https://hermesatlas.com/guide/install/raspberry-pi/ — facts sourced from the official docs. Current release is v0.23.1 (as of 2026-11-10).
 
 ## TL;DR
 
@@ -11,7 +11,7 @@ Yes, Hermes Agent runs on a Raspberry Pi — there's no Pi-specific build becaus
 
 The practical constraint isn't Hermes — it's the model. Pair the Pi with a hosted API (Nous Portal, Anthropic, OpenAI) and the agent host stays lightweight; don't plan on running local LLM inference on the Pi itself.
 
-This guide covers Hermes Agent **v0.21.5**.
+This guide covers Hermes Agent **v0.23.1**.
 
 ## Hardware requirements
 
@@ -28,7 +28,7 @@ Raspberry Pi OS 64-bit is Debian-based, so the Pi is just a Tier-1 Linux aarch64
 sudo apt install -y git curl xz-utils
 curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
 source ~/.bashrc
-hermes version   # prints v0.21.5 (or newer)
+hermes version   # prints v0.23.1 (or newer)
 ```
 
 For an always-on Telegram/Discord bot: `hermes gateway setup` (offers a systemd user unit) and `sudo loginctl enable-linger <user>` so the gateway survives logout and starts at boot. Headless Pi? Add `--skip-browser` to the installer to skip Chromium entirely.

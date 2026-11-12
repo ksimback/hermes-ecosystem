@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>electricsheephq/lcm-x — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into a hierarchical DAG of summaries. It…">
+<meta name="description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into summaries arranged as a DAG. It…">
 <link rel="canonical" href="https://hermesatlas.com/projects/electricsheephq/lcm-x">
 <meta property="og:title" content="electricsheephq/lcm-x — Hermes Atlas">
-<meta property="og:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into a hierarchical DAG of summaries. It…">
+<meta property="og:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into summaries arranged as a DAG. It…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/electricsheephq/lcm-x">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="electricsheephq/lcm-x — Hermes Atlas">
-<meta name="twitter:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into a hierarchical DAG of summaries. It…">
+<meta name="twitter:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into summaries arranged as a DAG. It…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=lcm-x&amp;subtitle=Lossless+memory+for+Hermes+Agent%3A+every+turn+kept+in+a+local+store%2C+not+compacted+away%2C+and+searchable+by+your+agent.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/electricsheephq/lcm-x#software",
   "name": "lcm-x",
-  "description": "LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into a hierarchical DAG of summaries. It keeps the active prompt bounded and provides tools to search and recover details from compacted messages.",
+  "description": "LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into summaries arranged as a DAG. It keeps active context bounded and provides tools for agents to search and recover details from compacted messages.",
   "url": "https://hermesatlas.com/projects/electricsheephq/lcm-x",
   "codeRepository": "https://github.com/electricsheephq/lcm-x",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "electricsheephq",
     "url": "https://github.com/electricsheephq"
   },
-  "dateModified": "2026-11-12T00:50:45.000Z",
+  "dateModified": "2026-11-12T14:10:11.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 127
+    "userInteractionCount": 128
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -82,7 +82,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span id="meta-count">321·repos</span>
-    <span id="meta-version">hermes·v0.21.5</span>
+    <span id="meta-version">hermes·v0.23.1</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -120,7 +120,7 @@
   <p class="project-desc">Lossless memory for Hermes Agent: every turn kept in a local store, not compacted away, and searchable by your agent.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 127</span>
+    <span class="stars">★ 128</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into a hierarchical DAG of summaries. It keeps the active prompt bounded and provides tools to search and recover details from compacted messages.</p>
+    <p class="summary-text">LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into summaries arranged as a DAG. It keeps active context bounded and provides tools for agents to search and recover details from compacted messages.</p>
     <ul class="summary-highlights">
       <li>Preserves raw messages in a plugin-local SQLite store.</li>
       <li>Builds depth-aware summaries and a hierarchical DAG.</li>
-      <li>Provides agent tools for searching and expanding compacted material.</li>
+      <li>Provides tools to search, inspect, and expand compacted material.</li>
     </ul>
   </div>
 </section>
@@ -1017,6 +1017,11 @@ assistant even when doing so exceeds a configured bound.</p>
 <td>Comma-separated named sensitive pattern catalog entries to apply when redaction is enabled</td>
 </tr>
 <tr>
+<td><code>LCM_HOST_ROW_RECOVERY_ENABLED</code></td>
+<td><code>true</code></td>
+<td>At a foreground session start, recover the rows of an interrupted turn that the host kept in an abandoned compression child, on a background worker, only under a strict durable proof (#2624). <code>false</code> disables recovery and its host reads.</td>
+</tr>
+<tr>
 <td><code>LCM_LARGE_OUTPUT_EXTERNALIZATION_ENABLED</code></td>
 <td><code>true</code></td>
 <td>Store oversized ingest payloads, including tool results, media blocks, and generic raw content, in plugin-managed JSON files</td>
@@ -1067,14 +1072,9 @@ assistant even when doing so exceeds a configured bound.</p>
 <td>Number of lifecycle rows at which the GC pass fires</td>
 </tr>
 <tr>
-<td><code>LCM_EMPTY_LIFECYCLE_GC_MAX_AGE_HOURS</code></td>
-<td><code>24</code></td>
-<td>Automatic GC only deletes empty lifecycle rows at least this old; set <code>0</code> only in trusted/test environments that intentionally want immediate empty-row pruning</td>
-</tr>
-<tr>
-<td><code>LCM_DISABLED_TOOLS</code></td>
-<td>empty</td>
-<td>Comma-separated <code>lcm_*</code> tool names exclud</td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 </tbody></table>
 <hr>
@@ -1091,7 +1091,7 @@ assistant even when doing so exceeds a configured bound.</p>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 68.8K</div>
+        <div class="stars">★ 68.9K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">

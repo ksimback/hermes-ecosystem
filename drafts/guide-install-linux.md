@@ -1,6 +1,6 @@
 # How to Install Hermes Agent on Linux (Ubuntu, Debian, Fedora, Arch)
 
-The Linux install guide. Live version: https://hermesatlas.com/guide/install/linux/ — facts sourced from the official docs. Current release is v0.21.5 (as of 2026-09-24).
+The Linux install guide. Live version: https://hermesatlas.com/guide/install/linux/ — facts sourced from the official docs. Current release is v0.23.1 (as of 2026-11-10).
 
 ## TL;DR
 
@@ -14,7 +14,7 @@ hermes
 
 Linux (x86_64 and aarch64) is **Tier 1**. Nous tests on the latest Ubuntu and WSL2; per the official matrix, "if your distro has glibc, systemd, and follows the Filesystem Hierarchy Standard, it's likely to work pretty well."
 
-This guide covers Hermes Agent **v0.21.5**.
+This guide covers Hermes Agent **v0.23.1**.
 
 ## Prerequisites
 

@@ -13,7 +13,7 @@
 <meta property="og:url" content="https://hermesatlas.com/guide/install/vps/">
 <meta property="og:site_name" content="Hermes Atlas">
 <meta property="article:published_time" content="2026-08-31T00:00:00Z">
-<meta property="article:modified_time" content="2026-10-12T00:00:00Z">
+<meta property="article:modified_time" content="2026-11-12T00:00:00Z">
 <meta property="article:author" content="https://x.com/ksimback">
 <meta property="og:image" content="https://hermesatlas.com/api/og?title=Hermes+Agent+on+a+VPS&amp;subtitle=The+always-on+server+setup+-+Docker+or+direct%2C+secured+properly&amp;kind=handbook+%C2%B7+install">
 <meta property="og:image:width" content="1200">
@@ -46,7 +46,7 @@
   "image": "https://hermesatlas.com/api/og?title=Hermes+Agent+on+a+VPS&subtitle=The+always-on+server+setup+-+Docker+or+direct%2C+secured+properly&kind=handbook+%C2%B7+install",
   "keywords": ["hermes agent vps", "install hermes on vps", "hermes agent server", "hermes docker vps"],
   "datePublished": "2026-08-31T00:00:00Z",
-  "dateModified": "2026-10-12T00:00:00Z",
+  "dateModified": "2026-11-12T00:00:00Z",
   "author": {"@type": "Person", "name": "Kevin Simback", "url": "https://x.com/ksimback"},
   "publisher": {"@type": "Organization", "name": "Hermes Atlas", "url": "https://hermesatlas.com"},
   "mainEntityOfPage": {"@type": "WebPage", "@id": "https://hermesatlas.com/guide/install/vps/"},
@@ -110,7 +110,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span id="meta-count">321·repos</span>
-    <span id="meta-version">hermes·v0.21.5</span>
+    <span id="meta-version">hermes·v0.23.1</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -143,12 +143,12 @@
   <div class="article-badge">handbook · install · vps</div>
   <h1>How to Install Hermes Agent on a VPS</h1>
   <p class="subtitle">The always-on server setup — Docker or direct install, sized from the official docs, secured properly. A platform page of <a href="/guide/install/">the install guide</a>.</p>
-  <p class="meta">By <a href="https://x.com/ksimback">Kevin Simback</a> · Hermes Atlas maintainer · Updated 2026-10-12 · ~7 min read</p>
+  <p class="meta">By <a href="https://x.com/ksimback">Kevin Simback</a> · Hermes Atlas maintainer · Updated 2026-11-12 · ~7 min read</p>
 </header>
 
 <h2 id="tldr">TL;DR</h2>
 
-<p><strong>A $5 VPS (1 CPU, 1 GB RAM) is enough</strong> to run Hermes as an always-on agent — a Telegram/Discord bot that answers at 3am, cron automations, a remote backend for Hermes Desktop — as long as the model is a hosted API (Nous Portal, Anthropic, OpenAI) rather than local inference. Recommended path: <strong>Docker</strong> (<code>nousresearch/hermes-agent</code>, Tier 1 on x86_64 and aarch64) with <code>--restart unless-stopped</code>; the image's s6 supervisor restarts a crashed gateway within seconds. This guide covers Hermes Agent <strong>v0.21.5</strong>.</p>
+<p><strong>A $5 VPS (1 CPU, 1 GB RAM) is enough</strong> to run Hermes as an always-on agent — a Telegram/Discord bot that answers at 3am, cron automations, a remote backend for Hermes Desktop — as long as the model is a hosted API (Nous Portal, Anthropic, OpenAI) rather than local inference. Recommended path: <strong>Docker</strong> (<code>nousresearch/hermes-agent</code>, Tier 1 on x86_64 and aarch64) with <code>--restart unless-stopped</code>; the image's s6 supervisor restarts a crashed gateway within seconds. This guide covers Hermes Agent <strong>v0.23.1</strong>.</p>
 
 <p><strong>One rule before anything else: connect over SSH, not your provider's browser console.</strong> The <a href="https://hermes-agent.nousresearch.com/docs/user-guide/docker">official Docker docs</a> warn that browser-based VPS consoles (Hetzner Cloud and others) mis-transmit special characters — <code>:</code> may arrive as <code>;</code>, <code>@</code> gets mangled — silently corrupting <code>docker run -v/-e</code> arguments and pasted API keys.</p>
 

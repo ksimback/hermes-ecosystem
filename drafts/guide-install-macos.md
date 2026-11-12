@@ -1,6 +1,6 @@
 # How to Install Hermes Agent on macOS (Apple Silicon)
 
-The macOS install guide. Live version: https://hermesatlas.com/guide/install/macos/ — facts sourced from the official docs. Current release is v0.21.5 (as of 2026-09-24).
+The macOS install guide. Live version: https://hermesatlas.com/guide/install/macos/ — facts sourced from the official docs. Current release is v0.23.1 (as of 2026-11-10).
 
 ## TL;DR
 
@@ -11,7 +11,7 @@ Two supported paths on a Mac, both Tier 1 on **Apple Silicon** (M1–M4):
 
 Two paths that are explicitly **unsupported**: `brew install hermes-agent` and `pip`/`uv tool install` — the official platform-support page says they may be broken now, may break more, and compat code can be removed at any point.
 
-This guide covers Hermes Agent **v0.21.5**.
+This guide covers Hermes Agent **v0.23.1**.
 
 ## Intel Macs are unsupported
 
@@ -26,7 +26,7 @@ Just **Git** (`git --version`). The installer handles the rest: `uv`, Python 3.1
 ```
 curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
 source ~/.zshrc     # macOS default shell since Catalina
-hermes version      # prints v0.21.5 (or newer)
+hermes version      # prints v0.23.1 (or newer)
 hermes doctor       # health check — every line should be green
 ```
 

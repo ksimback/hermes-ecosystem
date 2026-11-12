@@ -1,6 +1,6 @@
 # How to Install Hermes Agent on Windows 10/11: PowerShell, Desktop Installer, or WSL2
 
-The Windows install guide. Live version: https://hermesatlas.com/guide/install/windows/ — facts sourced from the official docs. Current release is v0.21.5 (as of 2026-09-24).
+The Windows install guide. Live version: https://hermesatlas.com/guide/install/windows/ — facts sourced from the official docs. Current release is v0.23.1 (as of 2026-11-10).
 
 ## TL;DR
 
@@ -10,7 +10,7 @@ Native Windows is **Tier 1** — Hermes runs on Windows 10 and 11 (x86_64 and aa
 2. **Hermes Desktop** (recommended by Nous for most people): a signed MSIX package (x64 and ARM64), installed through App Installer or the Microsoft Store. It needs Windows 11 22H2 or newer and carries its own Python and Node, so first launch builds nothing. The PowerShell one-liner above still works on Windows 10.
 3. **WSL2** — only if you specifically want a POSIX environment (see below for the official when-to-pick guidance).
 
-This guide covers Hermes Agent **v0.21.5**.
+This guide covers Hermes Agent **v0.23.1**.
 
 ## What the PowerShell installer does
 
