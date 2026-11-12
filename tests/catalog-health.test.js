@@ -2,7 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   buildRepoQuery,
+  buildRepoQueryBatches,
   findDeadRepos,
+  findUnresolvedRepos,
   findRenamedRepos,
   findEcosystemDrift,
   classifyDrift,
@@ -161,6 +163,37 @@ test("renderIssueBody lists renamed catalog entries with the full rename checkli
   assert.match(body, /summaries\.json/);
   assert.match(body, /vercel\.json/);
   assert.match(body, /ECOSYSTEM\.md/);
+});
+
+// Regression (2026-11): one query for all 321 entries hit GitHub's resource
+// limit. Entries past ~230 came back as RESOURCE_LIMITS_EXCEEDED, were logged,
+// and the sweep reported "0 dead, 0 renamed" while two renames sat undetected.
+test("buildRepoQueryBatches splits the catalog but keeps original-index aliases", () => {
+  const entries = Array.from({ length: 5 }, (_, i) => ({ owner: "o", repo: `r${i}` }));
+  entries[1] = { owner: 'bad"owner', repo: "x" };
+  const { queries, skipped } = buildRepoQueryBatches(entries, "repo", 2);
+  assert.equal(queries.length, 2);
+  assert.match(queries[0], /^repo0: .*\nrepo2: /);
+  assert.match(queries[1], /^repo3: .*\nrepo4: /);
+  assert.deepEqual(skipped.map((s) => s.index), [1]);
+  assert.equal(buildRepoQuery(entries, "repo").query, queries.join("\n"));
+});
+
+test("findUnresolvedRepos reports entries with neither a node nor NOT_FOUND", () => {
+  const data = { repo0: { nameWithOwner: "alive/one" } };
+  const errors = [
+    { type: "RESOURCE_LIMITS_EXCEEDED", path: ["repo1", "nameWithOwner"] },
+    { type: "NOT_FOUND", path: ["repo2"] },
+  ];
+  assert.deepEqual(findUnresolvedRepos(REPOS, data, errors, "repo"), ["oldowner/two"]);
+  assert.deepEqual(findUnresolvedRepos(REPOS, { ...data, repo1: { nameWithOwner: "new/two" } }, errors, "repo"), []);
+});
+
+test("renderIssueBody is never empty when the sweep was incomplete", () => {
+  const body = renderIssueBody({ unresolved: ["oldowner/two"] });
+  assert.match(body, /Sweep incomplete: 1 entry could not be checked/);
+  assert.match(body, /unverified, not healthy/);
+  assert.match(body, /`oldowner\/two`/);
 });
 
 test("renderIssueBody always closes with the auto-close footer when non-empty", () => {
