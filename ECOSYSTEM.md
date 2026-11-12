@@ -230,18 +230,20 @@ Meta-resources for navigating the Hermes ecosystem.
 
 ## Ecosystem Statistics
 
+As of 2026-11-12. Live counts are on [hermesatlas.com/ecosystem](https://hermesatlas.com/ecosystem/).
+
 | Metric | Count |
 |:-------|------:|
-| Core repos (Nous Research) | 6 |
-| Community repos (quality-filtered) | 75+ |
-| Total ecosystem stars | 60,000+ |
-| Skill libraries | 15+ |
-| Plugins | 7+ |
-| Deployment templates | 7 |
-| Messaging platforms supported | 14 |
+| Core repos (Nous Research) | 5 |
+| Community repos (quality-filtered) | 310+ |
+| Total ecosystem stars | 1.6M+ |
+| Skills and skill registries | 50+ |
+| Plugins and extensions | 60+ |
+| Deployment and infra projects | 15 |
+| Messaging platforms supported | 25+ |
 | LLM providers supported | 18+ |
 | Terminal backends | 6 |
-| Built-in tools | 47 |
+| Built-in tools | 70+ |
 
 ---
 
