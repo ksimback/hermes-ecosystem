@@ -158,7 +158,7 @@ registry.register(
 
 <h2>check_fn: the availability gate</h2>
 <p>That <code>check_fn</code> argument is quietly one of the most important ideas in the whole tool system. It's an <strong>optional function that returns <code>True</code> or <code>False</code></strong>, and it decides whether a tool is even <em>offered</em> to the model right now.</p>
-<p>Examples from the real codebase: the terminal tool's check probes whether Docker is installed; browser tools check for a Playwright binary; the smart-home tools only appear if a <code>HASS_TOKEN</code> is set. If the check returns <code>False</code>, the tool simply isn't in the schema the model receives — so the model can't try (and fail) to use something that isn't configured.</p>
+<p>Examples from the real codebase: the terminal tool's check probes whether Docker is installed; the <code>browser_exec</code> tool is only offered to sessions that also have <code>terminal</code>; the smart-home tools only appear if a <code>HASS_TOKEN</code> is set. If the check returns <code>False</code>, the tool simply isn't in the schema the model receives — so the model can't try (and fail) to use something that isn't configured.</p>
 <p>For performance, <code>registry.py</code> caches each <code>check_fn</code> result for about <strong>30 seconds</strong> (probing Docker or a binary on every single turn would be wasteful). The upshot for you: when you flip something on with <code>hermes tools</code> or drop in an API key, your toolbox updates within a turn or two — no restart needed.</p>
 
 <blockquote><strong>Foreshadow</strong> — This "the toolbox changes based on what's configured" behavior is rung 3 of the <strong>Footprint Ladder</strong> we'll climb in <a href="/dev/building-on-hermes">Module 7</a>. For now, just know: a tool can be present in the code but absent from the model's view, and <code>check_fn</code> is the switch.</blockquote>
@@ -173,7 +173,7 @@ registry.register(
     <tr><td><code>web</code></td><td>Web search + content extraction (<code>web_search</code>, <code>web_extract</code>).</td></tr>
     <tr><td><code>file</code></td><td>Read, write, patch, and search files.</td></tr>
     <tr><td><code>terminal</code></td><td>Run shell commands and manage processes.</td></tr>
-    <tr><td><code>browser</code></td><td>Headless-browser automation (navigate, click, type, snapshot).</td></tr>
+    <tr><td><code>browser</code></td><td>Browser automation: <code>browser_exec</code> runs Python helpers against the browser; <code>browser_cdp</code>, <code>browser_dialog</code> and <code>browser_vault</code> work on the same session.</td></tr>
     <tr><td><code>coding</code></td><td>The composite a coding assistant wants — files + terminal + search, bundled.</td></tr>
     <tr><td><code>safe</code></td><td>A constrained bundle that deliberately leaves out the terminal.</td></tr>
     <tr><td><code>debugging</code></td><td>Tools geared toward inspecting and diagnosing.</td></tr>

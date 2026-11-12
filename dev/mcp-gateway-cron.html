@@ -100,7 +100,7 @@
 <p>Here's the frame to carry through this whole module. The loop from <a href="/dev/agent-loop">Module 2</a> doesn't change — it's still <em>think → call a tool → see the result → repeat</em>. What changes is the <em>blast radius</em>:</p>
 <ul>
   <li><strong>MCP</strong> bolts on whole batches of new tools without you writing any Python.</li>
-  <li><strong>The gateway</strong> lets that same brain answer people on Telegram, Discord, Slack, and ~20 more channels.</li>
+  <li><strong>The gateway</strong> lets that same brain answer people on Telegram, Discord, Slack, and 20+ more channels.</li>
   <li><strong>Cron</strong> lets it run on a schedule — doing useful work while you're asleep.</li>
 </ul>
 
@@ -130,7 +130,7 @@ mcp_servers:
     env:
       GITHUB_PERSONAL_ACCESS_TOKEN: "${GITHUB_TOKEN}"   # pulled from ~/.hermes/.env</code></pre>
 
-<p>That's the whole integration. Two servers, a dozen lines, and the agent now has GitHub and filesystem tools it never had before — with zero Python written by you.</p>
+<p>That's the whole integration. Two servers, a dozen lines, and the agent now has GitHub and filesystem tools it never had before — with zero Python written by you. You can also skip hand-editing: <code>hermes mcp catalog</code> lists the Nous-approved MCP servers and <code>hermes mcp install &lt;name&gt;</code> installs one. Separately, <code>hermes connectors</code> manages hosted connector accounts (apps such as Gmail reached through the Nous tool gateway) and needs a Nous Portal sign-in.</p>
 
 <h3>What happens under the hood</h3>
 <p>The mechanics live in <code>tools/mcp_tool.py</code>. On startup it opens a <strong>background connection</strong> to each configured server, asks the server for its tool list (the protocol has a standard "list tools" handshake), and <strong>registers</strong> those tools into the same toolbox the model already sees. From the loop's perspective, an MCP tool is just another callable — name, description, schema, go.</p>
@@ -141,7 +141,7 @@ mcp_servers:
 <p>The arrow points both ways. Hermes can <em>expose itself</em> as an MCP server with <code>hermes mcp serve</code> (see <code>mcp_serve.py</code>), so <em>other</em> AI hosts — a desktop chat app, another agent — can reach into Hermes' conversations and messaging as tools. You become the appliance someone else plugs in.</p>
 
 <h2>The messaging gateway — more places to live</h2>
-<p>An agent trapped in your terminal can only help <em>you</em>, and only when you're at the keyboard. The <strong>gateway</strong> fixes that. One Hermes process can serve Telegram, Discord, Slack, WhatsApp, Signal, Email, and roughly twenty more channels at once — same brain, many faces.</p>
+<p>An agent trapped in your terminal can only help <em>you</em>, and only when you're at the keyboard. The <strong>gateway</strong> fixes that. One Hermes process can serve Telegram, Discord, Slack, WhatsApp, Signal, Email, and many more channels (25+ platform adapters in all) at once — same brain, many faces.</p>
 
 <blockquote><strong>Glossary: adapter</strong> — an <strong>adapter</strong> is a thin translator for one platform. It knows how to <em>receive</em> that platform's messages and how to <em>format and send</em> replies back in that platform's shape (Slack blocks vs. Telegram markdown vs. a plain email body). The gateway keeps one adapter per platform in a registry — the <code>gateway/</code> directory uses a registry pattern (see <code>gateway/platform_registry.py</code> and the per-platform code under <code>gateway/platforms/</code>).</blockquote>
 
@@ -210,7 +210,7 @@ hermes gateway start     # one process now serves all of them</code></pre>
 <blockquote><strong>Key takeaways</strong>
 <ul>
   <li><strong>MCP = more tools.</strong> Hermes is an MCP client; declare servers in <code>mcp_servers</code> in <code>config.yaml</code> and get whole tool batches with zero Python. <code>tools/mcp_tool.py</code> registers them; <code>hermes mcp serve</code> makes Hermes a server too.</li>
-  <li><strong>The gateway = more places.</strong> One process, ~20+ platforms, one <strong>adapter</strong> each (<code>gateway/</code>, registry pattern). Every channel runs the <em>same</em> loop (<code>run_conversation</code>). <code>hermes gateway setup</code> &amp; <code>start</code>.</li>
+  <li><strong>The gateway = more places.</strong> One process, 25+ platforms, one <strong>adapter</strong> each (<code>gateway/</code>, registry pattern). Every channel runs the <em>same</em> loop (<code>run_conversation</code>). <code>hermes gateway setup</code> &amp; <code>start</code>.</li>
   <li><strong>Cron = more time.</strong> Natural-language jobs in <code>~/.hermes/cron/jobs.json</code> with a schedule, prompt, skills, toolset, and delivery target. A fresh agent runs each tick.</li>
   <li>Scheduled prompts run unattended, so they're scanned for <strong>prompt injection</strong> — restrict toolsets and treat external content as untrusted.</li>
   <li>The three compose: a cron job can deliver to a gateway platform using MCP tools and skills. That's the full toolbox for shipping in <a href="/dev/building-on-hermes">Module 7</a>.</li>

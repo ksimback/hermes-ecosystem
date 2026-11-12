@@ -174,7 +174,7 @@
       "name": "What if the curl install fails mid-way?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Re-running the same curl command is safe — the installer is idempotent. If it fails again, fall back to the manual install steps further down this page, which give you step-by-step control over uv, Python 3.11, Node.js 22, and the venv setup."
+        "text": "Re-running the same curl command is safe — the installer is idempotent. If it fails again, fall back to the manual install steps further down this page, which give you step-by-step control over the source checkout and its activation."
       }
     }
   ]
@@ -276,7 +276,7 @@ hermes             # start chatting</code></pre>
 <li><strong>Model access</strong> (optional on first install, required before useful work) — an API key from Anthropic / OpenAI / z.AI / MiniMax / DeepSeek, or a <a href="https://portal.nousresearch.com" target="_blank" rel="noopener">Nous Portal</a> subscription, or a local model via Ollama / LM Studio.</li>
 </ul>
 
-<p>The installer handles the rest automatically: <code>uv</code>, Python 3.11, Node.js, <code>ripgrep</code>, <code>ffmpeg</code>, the venv, the global <code>hermes</code> command, and the <code>~/.hermes/</code> directory tree. On native Windows it additionally bundles a portable Git Bash (~45 MB MinGit) inside <code>%LOCALAPPDATA%\hermes\git</code>.</p>
+<p>The installer handles the rest automatically: <code>uv</code>, Python 3.14, Node.js, <code>ripgrep</code>, <code>ffmpeg</code>, the venv, the global <code>hermes</code> command, and the <code>~/.hermes/</code> directory tree. On native Windows it additionally bundles a portable Git Bash (~45 MB MinGit) inside <code>%LOCALAPPDATA%\hermes\git</code>.</p>
 
 <hr>
 
@@ -399,7 +399,7 @@ hermes status       # current config + running daemons</code></pre>
 
 <h3>6. Python version mismatch</h3>
 
-<p>You have Python 3.9 or older in PATH and something is resolving to that first. The installer pins Python 3.11 in its own venv, but if you see a version error, drop to the <a href="#manual-install">manual install</a> below, which gives you explicit control.</p>
+<p>You have Python 3.9 or older in PATH and something is resolving to that first. The installer supplies its own pinned Python (3.14) through <code>hermes pm</code>, but if you see a version error, drop to the <a href="#manual-install">manual install</a> below, which gives you explicit control.</p>
 
 <h3>7. npm errors ("ENOENT", "EACCES")</h3>
 
@@ -419,29 +419,17 @@ hermes status       # current config + running daemons</code></pre>
 
 <p>When the curl installer fails and you want step-by-step control:</p>
 
-<pre><code>git clone --recurse-submodules https://github.com/NousResearch/hermes-agent.git
+<pre><code>git clone https://github.com/NousResearch/hermes-agent.git
 cd hermes-agent
 
-# install uv (Python package manager)
-curl -LsSf https://astral.sh/uv/install.sh | sh
+# optional: keep dev data separate from your real install
+export HERMES_HOME="$HOME/hermes-dev-data"
+export HERMES_RUNTIME_DIR="$HERMES_HOME/tools"
 
-# create venv + install Python deps
-uv venv venv --python 3.11
-export VIRTUAL_ENV="$(pwd)/venv"
-uv pip install -e ".[all]"
+# prepare the pinned toolchain and enter the checkout
+source ./activate</code></pre>
 
-# install Node dependencies
-npm install
-
-# create the hermes directory tree
-mkdir -p ~/.hermes/{cron,sessions,logs,memories,skills,pairing,hooks,image_cache,audio_cache,whatsapp/session}
-cp cli-config.yaml.example ~/.hermes/config.yaml
-touch ~/.hermes/.env
-
-# symlink hermes to ~/.local/bin for PATH convenience
-ln -s "$(pwd)/bin/hermes" ~/.local/bin/hermes</code></pre>
-
-<p>Add <code>~/.local/bin</code> to your PATH if it isn't already. Verify with <code>hermes version</code>.</p>
+<p>Activation asks PM to provision the pinned tools and sync the <code>all</code> Python extra, so you do not run <code>uv</code> or <code>pip</code> by hand. In PowerShell use <code>. .\activate.ps1</code> (the leading dot and space matter), and <code>source ./activate.fish</code> in fish. Run <code>deactivate</code> to leave.</p>
 
 <hr>
 

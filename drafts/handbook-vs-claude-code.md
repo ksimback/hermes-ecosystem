@@ -32,7 +32,7 @@ The frame people reach for is: **Claude Code is a specialist; Hermes is a genera
 | **Model support** | Claude only (Anthropic models) | 18+ providers — Claude, GPT, MiniMax, GLM, DeepSeek, Ollama, custom endpoints |
 | **Persistent memory** | `CLAUDE.md` files (static, user-maintained) | `MEMORY.md` + `USER.md` + session FTS5 index (active, agent-updated) |
 | **Learning over time** | None — you edit `CLAUDE.md` manually | Auto-generates skills from repeated patterns (the learning loop) |
-| **Skills ecosystem** | Slash commands, hooks, MCP servers (rich) | 643-skill Hub + MCP (as of 2026-04-19, from the research bank) |
+| **Skills ecosystem** | Slash commands, hooks, MCP servers (rich) | Skills hub, plugin catalog, and MCP servers |
 | **Scheduled jobs** | No native cron (wrap externally) | Built-in cron, first-class citizen |
 | **Messaging channels** | Terminal only | Terminal, Telegram, Discord, email, webhooks |
 | **Multi-agent / delegation** | Subagents via the Task tool | Native delegation, multi-agent teams, profiles |
@@ -131,6 +131,5 @@ As of 2026-11-12, yes, with caveats. 262,900 GitHub stars, an active Nous team s
 
 **Cited stats:**
 - 262,900 GitHub stars (as of 2026-11-12) — source: `api.github.com/repos/NousResearch/hermes-agent`
-- 643 skills in the community Hub (research bank snapshot, as of 2026-04-19)
 
 **Corrections and feedback:** [open an issue](https://github.com/ksimback/hermes-ecosystem/issues/new) or message on X.

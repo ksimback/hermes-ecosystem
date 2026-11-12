@@ -166,10 +166,10 @@ Search and retrieve academic papers from arXiv via their free REST API…</code>
 
 <p>Now the part that makes Hermes genuinely unusual. The agent can <strong>create and edit its own skills.</strong> There's a skill-management tool — <code>tools/skill_manager_tool.py</code> — that exposes actions like <code>create</code>, <code>edit</code>, and <code>patch</code>. So after the agent grinds through a hard, multi-step task, it can capture the procedure it just figured out as a brand-new skill. Next time, it doesn't re-derive — it reads its own notes.</p>
 
-<p>Left alone, self-written skills would pile up and rot. So a background <strong>curator</strong> (<code>agent/curator.py</code>) periodically tends the garden. Crucially, it tracks <em>provenance</em> — it knows which skills the agent made versus which you hand-wrote — so by default it only touches the agent's own. It:</p>
+<p>Left alone, self-written skills would pile up and rot. So a background <strong>curator</strong> (<code>agent/curator.py</code>) periodically tends the garden. Crucially, it tracks <em>provenance</em> — it knows which skills the agent made versus which you hand-wrote — so by default it only touches the agent's own (archiving unused built-in skills is opt-in via <code>curator.prune_builtins</code>). It:</p>
 <ul>
-  <li>marks unused skills <strong>stale</strong> after ~30 days (<code>DEFAULT_STALE_AFTER_DAYS = 30</code>),</li>
-  <li><strong>archives</strong> very stale ones after ~90 days (<code>DEFAULT_ARCHIVE_AFTER_DAYS = 90</code>) — <strong>reversibly</strong>; it <em>never deletes</em>, and the archive is recoverable,</li>
+  <li>marks unused skills <strong>stale</strong> after 14 days by default (<code>curator.stale_after_days</code>),</li>
+  <li><strong>archives</strong> long-unused ones after 30 days by default (<code>curator.archive_after_days</code>; never-used skills are not archived until they are at least <code>stale_after_days</code> old) — <strong>reversibly</strong>; it <em>never deletes</em>, and the archive is recoverable,</li>
   <li>and can <strong>patch or merge</strong> overlapping skills so the library stays tidy.</li>
 </ul>
 
