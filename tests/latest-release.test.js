@@ -68,3 +68,36 @@ test("buildLatestReleaseBlock tells the model to use v0.15.1 as latest", () => {
   assert.match(block, /latest known Hermes Agent release/i);
   assert.doesNotMatch(block, /v0\.11\.0/);
 });
+
+test("parseReleaseMarkdown handles plain-version tags (v0.21.6+) without a calendar tag", () => {
+  const parsed = parseReleaseMarkdown({
+    source: "research/78-release-0-23-1.md",
+    content: [
+      "# Hermes Agent v0.23.1 Release Notes",
+      "",
+      "**Version:** v0.23.1",
+      "**Published:** 2026-11-10T01:42:15Z",
+      "**Source:** https://github.com/NousResearch/hermes-agent/releases/tag/v0.23.1",
+      "",
+      "# Hermes Agent v0.23.1",
+      "",
+      "> Patch release. Rolls up the PRs merged since v0.23.0.",
+    ].join("\n"),
+  });
+
+  assert.equal(parsed.version, "v0.23.1");
+  assert.equal(parsed.tag, "v0.23.1");
+  assert.equal(parsed.name, "Hermes Agent v0.23.1");
+  assert.match(parsed.summary, /Patch release/);
+
+  const block = buildLatestReleaseBlock(parsed);
+  assert.match(block, /Hermes Agent v0\.23\.1 is the latest known Hermes Agent release\./);
+});
+
+test("parseReleaseMarkdown drops the wrapper suffix when upstream supplies no heading", () => {
+  const parsed = parseReleaseMarkdown({
+    source: "research/67-release-0-21-6.md",
+    content: "# Hermes Agent v0.21.6 Release Notes\n\n**Version:** v0.21.6\n**Published:** 2026-10-08T11:51:57Z\n\n> Patch release.",
+  });
+  assert.equal(parsed.name, "Hermes Agent v0.21.6");
+});

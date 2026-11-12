@@ -231,7 +231,21 @@ export async function syncReleases({
   const upstreamReleases = await listAllReleases(client);
   const plan = planReleaseBatch({ upstreamReleases, researchFiles });
   const upstreamLatest = latestStableRelease(upstreamReleases);
+  const result = await ingestPlannedReleases({ client, repository, plan, upstreamLatest, latestReleaseData });
 
+  // Ingest what is recognizable first, then fail the run so the workflow
+  // escalates instead of reporting a healthy "no missing releases".
+  if (plan.unrecognized.length > 0) {
+    throw new Error(
+      `Upstream published ${plan.unrecognized.length} stable release(s) with an unrecognized tag format: ` +
+      `${plan.unrecognized.map((release) => release.tag_name || "(no tag)").join(", ")}. ` +
+      "They were NOT ingested — update the release tag pattern in lib/release-sync.js.",
+    );
+  }
+  return result;
+}
+
+async function ingestPlannedReleases({ client, repository, plan, upstreamLatest, latestReleaseData }) {
   if (plan.documents.length === 0) {
     try {
       await closeTrackedReleasePrs(client, repository, plan.trackedTags);

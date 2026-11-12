@@ -132,7 +132,9 @@
       const hv = document.getElementById('hero-version');
       if (hv) hv.textContent = r.version;
       const ht = document.getElementById('hero-version-tag');
-      if (ht && r.tag) ht.textContent = r.tag;
+      // Since v0.21.6 the tag is the version itself; show the date instead.
+      const sub = r.tag && r.tag !== r.version ? r.tag : String(r.publishedAt || '').slice(0, 10);
+      if (ht && sub) ht.textContent = sub;
     } catch (e) {
       console.log('Version unavailable', e);
     }
