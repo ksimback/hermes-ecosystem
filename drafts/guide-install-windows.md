@@ -7,7 +7,7 @@ The Windows install guide. Live version: https://hermesatlas.com/guide/install/w
 Native Windows is **Tier 1** — Hermes runs on Windows 10 and 11 (x86_64 and aarch64) with no WSL, no Cygwin, no Docker. Three install paths:
 
 1. **PowerShell one-liner** (fastest if you're in a terminal): `iex (irm https://hermes-agent.nousresearch.com/install.ps1)` — no admin rights required.
-2. **Hermes Desktop installer** (recommended by Nous for most people): download the `.exe` from the official site; on first launch it runs `install.ps1` under the hood, and the GUI and CLI share the same install.
+2. **Hermes Desktop** (recommended by Nous for most people): a signed MSIX package (x64 and ARM64), installed through App Installer or the Microsoft Store. It needs Windows 11 22H2 or newer and carries its own Python and Node, so first launch builds nothing. The PowerShell one-liner above still works on Windows 10.
 3. **WSL2** — only if you specifically want a POSIX environment (see below for the official when-to-pick guidance).
 
 This guide covers Hermes Agent **v0.21.5**.
@@ -15,7 +15,7 @@ This guide covers Hermes Agent **v0.21.5**.
 ## What the PowerShell installer does
 
 - Installs everything to `%LOCALAPPDATA%\hermes\` and adds `hermes` to your **User PATH** — open a new terminal after it finishes. No admin rights, no UAC.
-- Bootstraps `uv`, Python 3.11, Node.js 26 (winget or a portable tarball), and — if `git` isn't already on PATH — a self-contained PortableGit (~45 MB) under `%LOCALAPPDATA%\hermes\git`.
+- Bootstraps `uv`, Python 3.14, Node.js 26 (winget or a portable tarball), and — if `git` isn't already on PATH — a self-contained PortableGit (~45 MB) under `%LOCALAPPDATA%\hermes\git`.
 - Sets `HERMES_GIT_BASH_PATH` so Hermes can run shell commands through Git Bash (the same strategy Claude Code uses on Windows).
 - Runs the `hermes setup` wizard at the end (skip with `-SkipSetup`).
 

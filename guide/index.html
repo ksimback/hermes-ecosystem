@@ -82,13 +82,13 @@
     {
       "@type": "HowToStep",
       "name": "Run the installer",
-      "text": "In your terminal, run: curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash. The installer sets up uv, Python 3.11, Node.js, ripgrep, ffmpeg, the venv, and the hermes command. On native Windows, use PowerShell: irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1 | iex.",
+      "text": "In your terminal, run: curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash. The installer sets up uv, Python 3.14, Node.js, ripgrep, ffmpeg, the venv, and the hermes command. On native Windows, use PowerShell: iex (irm https://hermes-agent.nousresearch.com/install.ps1).",
       "url": "https://hermesatlas.com/guide/#4-install-in-2-minutes"
     },
     {
       "@type": "HowToStep",
       "name": "First run and provider setup",
-      "text": "Run: hermes. Paste an API key when prompted or point it at a local model. Confirm with hermes model.",
+      "text": "Run: hermes. Paste an API key when prompted or point it at a local model (the Desktop app's first launch can run on a free trial model with no key; the CLI, TUI and gateway get no free model). Confirm with hermes model.",
       "url": "https://hermesatlas.com/guide/#4-install-in-2-minutes"
     },
     {
@@ -382,7 +382,7 @@
 <ul>
 <li><strong>macOS, Linux, Windows, Android (Termux).</strong> Linux, macOS (Apple Silicon), WSL2, and native Windows are all Tier 1. Termux on Android works via a curated install path (Tier 2).</li>
 <li><strong>A terminal.</strong> Any shell works — bash, zsh, fish.</li>
-<li><strong>An API key or a local model.</strong> If you don't have a model provider or want to set up a new one for your agent, a great place to start is the <a href="https://portal.nousresearch.com" target="_blank" rel="noopener">Nous Portal</a> — otherwise just grab an API key from your model provider, or a local Ollama/LM Studio install. You can always swap model providers later.</li>
+<li><strong>An API key or a local model.</strong> If you don't have a model provider or want to set up a new one for your agent, a great place to start is the <a href="https://portal.nousresearch.com" target="_blank" rel="noopener">Nous Portal</a> — otherwise just grab an API key from your model provider, or a local Ollama/LM Studio install. You can always swap model providers later. The Desktop app can start on a free trial model with no key, but the CLI still asks for a provider or key.</li>
 <li><strong>~200 MB of disk</strong> for the install plus whatever you use for memory and skills.</li>
 </ul>
 
@@ -394,15 +394,15 @@
 
 <p><strong>Native Windows (PowerShell, Tier 1):</strong></p>
 
-<pre><code>irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1 | iex</code></pre>
+<pre><code>iex (irm https://hermes-agent.nousresearch.com/install.ps1)</code></pre>
 
-<p>The installer sets up <code>uv</code>, Python 3.11, Node.js, <code>ripgrep</code>, <code>ffmpeg</code>, the venv, and the <code>hermes</code> command. On Linux/macOS it drops the binary under <code>~/.hermes/</code> and symlinks <code>~/.local/bin/hermes</code>. On Windows it installs to <code>%LOCALAPPDATA%\hermes</code> with a bundled portable Git Bash. The installer prints everything it does — no hidden steps.</p>
+<p>The installer sets up <code>uv</code>, Python 3.14, Node.js, <code>ripgrep</code>, <code>ffmpeg</code>, the venv, and the <code>hermes</code> command. On Linux/macOS it drops the binary under <code>~/.hermes/</code> and symlinks <code>~/.local/bin/hermes</code>. On Windows it installs to <code>%LOCALAPPDATA%\hermes</code> with a bundled portable Git Bash. The installer prints everything it does — no hidden steps.</p>
 
 <h3>First run</h3>
 
 <pre><code>hermes</code></pre>
 
-<p>Hermes walks you through provider setup interactively on the first run. Paste an API key when prompted, or point it at a local model. Confirm with <code>hermes model</code> to see what's configured.</p>
+<p>Hermes walks you through provider setup interactively on the first run. Paste an API key when prompted, or point it at a local model. (The Desktop app's first launch can run on a free trial model with no key; the CLI, TUI and gateway get no free model.) Confirm with <code>hermes model</code> to see what's configured.</p>
 
 <h3>Verify</h3>
 
@@ -535,7 +535,7 @@ hermes daemon start</code></pre>
 
 <p>The small caps are deliberate. Unlimited memory sounds attractive until you realize that's how agents turn into junk drawers of stale context. Hermes forces consolidation: when <code>MEMORY.md</code> fills up, the agent has to decide what's worth keeping. That discipline keeps the working context tight and the model focused.</p>
 
-<p>If you want unlimited semantic memory, there are eight community memory providers (Honcho, Mem0, Hindsight, Supermemory, and others) that plug in on top. See <a href="/lists/best-memory-providers">best memory providers →</a>.</p>
+<p>If you want unlimited semantic memory, there are external memory providers (Honcho, Mem0, Hindsight, Supermemory, and others) that plug in on top. Most are now catalog plugins; ByteRover and RetainDB remain bundled. See <a href="/lists/best-memory-providers">best memory providers →</a>.</p>
 
 <h3>Skills: executable procedures, not notes</h3>
 

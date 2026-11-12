@@ -8,7 +8,7 @@ You don't choose a front-end — you choose where the agent lives. Hermes Deskto
 
 ## The front-ends
 
-- **Hermes Desktop** — native app for macOS, Windows, Linux; same agent core as the CLI ("not a separate product or a lightweight clone"). Best default for most people: multi-session chat windows, Bot Mode roster, Memory Graph, Quick Entry global hotkey, and multi-connection to several remote gateways/VPS/Cloud instances at once. If you run the CLI, `hermes desktop` launches the app against your existing config.
+- **Hermes Desktop** — native app for macOS, Windows, Linux; same agent core as the CLI ("not a separate product or a lightweight clone"). Best default for most people: multi-session chat windows, Bot Mode roster, Memory Graph, Quick Entry global hotkey, and multi-connection to several remote gateways/VPS/Cloud instances at once. If you run the CLI, `hermes desktop` launches the app against your existing config. The Webapp serves the same Desktop workspace in a browser tab from your own gateway; it is off by default, enabled with `webapp.enabled` or Settings → Web Access.
 - **CLI / TUI** — two terminal front-ends over one SQLite session store. The TUI (`hermes --tui`, Node.js ≥ 20) is officially "the recommended way to run Hermes interactively." Power features: worktree-isolated parallel agents (`hermes -w`), background sessions (`/bg`), shell passthrough (`!cmd`), skill slash-commands.
 - **Web dashboard** — `hermes dashboard`, a machine-level browser admin panel at 127.0.0.1:9119 managing every profile; for local use no data leaves localhost. Its optional Chat tab embeds the TUI via pseudo-terminal (POSIX PTY — WSL2 rather than native Windows).
 

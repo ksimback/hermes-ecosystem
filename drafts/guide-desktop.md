@@ -8,8 +8,9 @@ Hermes Desktop is not a separate product — it is the same agent as the CLI wit
 
 ## Install (macOS · Windows · Ubuntu/Linux)
 
-- Fresh install: download from the official Hermes Desktop page. macOS is Apple Silicon only (Intel Macs are officially unsupported); Windows 10/11 x86_64 and aarch64; Linux builds target mainstream glibc distros (the team tests latest Ubuntu).
+- Fresh install: download from the official Hermes Desktop page. macOS 13+ is Apple Silicon only (Intel Macs are officially unsupported); Windows needs Windows 11 22H2 or newer (x64 and ARM64, as a signed MSIX package); Linux builds target mainstream glibc distros (the team tests latest Ubuntu).
 - Already run the CLI? Type `hermes desktop` — the app picks up your existing config, keys, sessions, and skills. Nothing to migrate. On Ubuntu, this route is usually smoother than hunting a distro package.
+- Prefer a browser tab? The Webapp serves the same Desktop workspace from your own gateway. It is off by default; turn it on with `webapp.enabled` or Settings → Web Access.
 
 ## Desktop-only capabilities
 
@@ -29,7 +30,7 @@ Desktop uses the same skills, plugins, and MCP servers as every other Hermes sur
 
 ## Known rough edges
 
-- Electron download (~114MB) on install/build can hang on throttling networks; recent versions self-heal via a mirror fallback.
+- Electron download (~114MB) when building from source (`hermes desktop` from a CLI/source install) can hang on throttling networks; recent versions self-heal via a mirror fallback. The signed Windows and macOS packages carry their own Python and Node, so first launch builds nothing.
 - macOS TCC permission prompts and Gatekeeper on first run are expected — the backend runs real agent commands; a signing-identity setup reduces the friction.
 - If a remote host's SSH key changes, Desktop hard-fails ("latches") rather than silently retrying.
 - It is the heaviest way to run Hermes; the lightest server install is Docker, not Desktop.
