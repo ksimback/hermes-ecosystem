@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>conorbronsdon/avoid-ai-writing — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
-<meta name="description" content="avoid-ai-writing is a portable writing skill for compatible AI agents that audits and rewrites English prose to address AI-writing patterns. It offers rewrite,…">
+<meta name="description" content="avoid-ai-writing is a portable writing skill for compatible AI agents that audits and rewrites English content for AI-writing patterns. It offers rewrite,…">
 <link rel="canonical" href="https://hermesatlas.com/projects/conorbronsdon/avoid-ai-writing">
 <meta property="og:title" content="conorbronsdon/avoid-ai-writing — Hermes Atlas">
-<meta property="og:description" content="avoid-ai-writing is a portable writing skill for compatible AI agents that audits and rewrites English prose to address AI-writing patterns. It offers rewrite,…">
+<meta property="og:description" content="avoid-ai-writing is a portable writing skill for compatible AI agents that audits and rewrites English content for AI-writing patterns. It offers rewrite,…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/conorbronsdon/avoid-ai-writing">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="conorbronsdon/avoid-ai-writing — Hermes Atlas">
-<meta name="twitter:description" content="avoid-ai-writing is a portable writing skill for compatible AI agents that audits and rewrites English prose to address AI-writing patterns. It offers rewrite,…">
+<meta name="twitter:description" content="avoid-ai-writing is a portable writing skill for compatible AI agents that audits and rewrites English content for AI-writing patterns. It offers rewrite,…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=avoid-ai-writing&amp;subtitle=Skill+that+audits+and+rewrites+content+to+remove+AI+writing+patterns.+Use+it+with+your+favorite+agents+including+Claude+Code%2C+OpenClaw%2C+Codex%2C+and+Hermes.&amp;kind=project+%C2%B7+skills">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/conorbronsdon/avoid-ai-writing#software",
   "name": "avoid-ai-writing",
-  "description": "avoid-ai-writing is a portable writing skill for compatible AI agents that audits and rewrites English prose to address AI-writing patterns. It offers rewrite, detect-only, and in-place editing modes, with optional voice profiles and configurable editing-pass limits.",
+  "description": "avoid-ai-writing is a portable writing skill for compatible AI agents that audits and rewrites English content for AI-writing patterns. It offers rewrite, detect-only, and in-place editing modes, with optional voice profiles and a bundled detector.",
   "url": "https://hermesatlas.com/projects/conorbronsdon/avoid-ai-writing",
   "codeRepository": "https://github.com/conorbronsdon/avoid-ai-writing",
   "applicationCategory": "DeveloperApplication",
@@ -47,13 +47,13 @@
     "name": "conorbronsdon",
     "url": "https://github.com/conorbronsdon"
   },
-  "dateModified": "2026-11-12T15:59:38.000Z",
+  "dateModified": "2026-11-12T18:30:15.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 5608
+    "userInteractionCount": 5609
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -148,11 +148,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">avoid-ai-writing is a portable writing skill for compatible AI agents that audits and rewrites English prose to address AI-writing patterns. It offers rewrite, detect-only, and in-place editing modes, with optional voice profiles and configurable editing-pass limits.</p>
+    <p class="summary-text">avoid-ai-writing is a portable writing skill for compatible AI agents that audits and rewrites English content for AI-writing patterns. It offers rewrite, detect-only, and in-place editing modes, with optional voice profiles and a bundled detector.</p>
     <ul class="summary-highlights">
-      <li>Detects patterns without rewriting content.</li>
-      <li>Can make targeted edits to prose files in place.</li>
-      <li>Includes optional casual, professional, technical, warm, and blunt voice profiles.</li>
+      <li>Rewrite mode applies up to two editing passes.</li>
+      <li>Detect mode flags patterns without rewriting.</li>
+      <li>In-place editing refuses source code, configuration, and generated data.</li>
     </ul>
   </div>
 </section>
@@ -195,6 +195,7 @@
 <li><a href="#install-the-complete-skill-directory">Install the complete skill directory</a></li>
 <li><a href="#claude-code">Claude Code</a></li>
 <li><a href="#claude-cowork--install-as-a-plugin">Claude Cowork — install as a plugin</a></li>
+<li><a href="#google-antigravity">Google Antigravity</a></li>
 <li><a href="#openclaw">OpenClaw</a></li>
 <li><a href="#cursor">Cursor</a></li>
 <li><a href="#hermes">Hermes</a></li>
@@ -253,7 +254,7 @@
 <li><strong>112-entry word replacement table across 3 tiers + 10 Tier 3 phrases</strong> — not vibes-based. Every flagged word has a specific, plainer alternative. "Leverage" → "use." "Commence" → "start." Tier 1 matches flag unless a listed exception applies, Tier 2 words flag when they cluster, Tier 3 words flag only at high density. Tier 1 itself splits into <strong>1A frequency markers</strong> (<code>delve</code>, <code>tapestry</code>) and <strong>1B clarity edits</strong> (<code>in order to</code>, <code>utilize</code>) — same fix, but only 1A is evidence about how a passage was produced, and 1B is weighted lower so a wordiness fix cannot push a document toward an AI classification. Tier 3 <em>phrases</em> (multi-word boilerplate like "the integration of," "decentralized compute") flag on per-phrase repetition or when 3+ distinct phrases stack in one piece — the LLM-self-varies-boilerplate shape.</li>
 <li><strong>74 pattern categories</strong> — representative examples below, each with before/after. Includes structural detection (hashtag stuffing, bare-NP bullet lists, hedge-stacked predictions), AI-tool fingerprints (placeholders, citation markup, UTM params), rhythm/uniformity checks, conversational-register tells, and writer-side tests. The full catalog lives in <a href="https://github.com/conorbronsdon/avoid-ai-writing/blob/main/references/patterns.md"><code>references/patterns.md</code></a>; this count is enforced against it in CI.</li>
 <li><strong>Detect mode</strong> — flag patterns without rewriting. See which flags are real problems vs. judgment calls. Useful when patterns might be intentional or you're auditing content you don't want altered.</li>
-<li><strong>Works across platforms</strong> — a directory-based skill runs in Claude Code, Cowork (as a plugin), OpenClaw, Cursor (as a ported rule), and other directory-aware agents. See the install paths below.</li>
+<li><strong>Works across platforms</strong> — a directory-based skill runs in Claude Code, Cowork (as a plugin), Google Antigravity (as a plugin), OpenClaw, Cursor (as a ported rule), and other directory-aware agents. See the install paths below.</li>
 </ul>
 <h3>Installation &amp; Usage</h3>
 <h4>Install the complete skill directory</h4>
@@ -290,6 +291,28 @@ Read and follow the instructions in ~/.claude/skills/avoid-ai-writing/SKILL.md
 <blockquote>
 <p>Prefer not to install a plugin? Copy <code>dist/avoid-ai-writing.md</code> into a folder connected to your Cowork session and tell the agent to follow <code>./avoid-ai-writing.md</code> — works as a one-off, no auto-trigger.</p>
 </blockquote>
+<h4>Google Antigravity</h4>
+<p>With the <a href="https://antigravity.google/docs/plugins?tab=cli">Antigravity CLI</a>
+installed, clone this repository and install its bundled plugin directory:</p>
+<pre><code class="language-bash">git clone https://github.com/conorbronsdon/avoid-ai-writing
+cd avoid-ai-writing
+agy plugin validate plugins/avoid-ai-writing
+agy plugin install ./plugins/avoid-ai-writing
+agy plugin list
+</code></pre>
+<p>The Antigravity manifest lives in
+<code>plugins/avoid-ai-writing/.antigravity-plugin/plugin.json</code>; install
+<code>plugins/avoid-ai-writing</code> rather than the repository root. Check that
+<code>avoid-ai-writing</code> is enabled in <code>agy plugin list</code>; if disabled, run
+<code>agy plugin enable avoid-ai-writing</code>. Then ask the agent to audit or rewrite
+a draft using the avoid-ai-writing skill.</p>
+<p><strong>Without the CLI (Antigravity app or IDE):</strong> copy the
+<code>plugins/avoid-ai-writing</code> folder from a clone into <code>.agents/plugins/</code> at
+the root of a workspace (that project only) or into
+<code>~/.gemini/config/plugins/</code> (every workspace). See
+<a href="https://antigravity.google/docs/plugins">manual plugin installation</a>. In
+the IDE, the Customizations dropdown in the agent side panel shows whether
+the plugin's skill loaded.</p>
 <h4>OpenClaw</h4>
 <p><strong>Option 1: <a href="https://clawhub.ai/conorbronsdon/avoid-ai-writing">Install from ClawHub</a></strong></p>
 <pre><code class="language-bash">clawhub install avoid-ai-writing
@@ -1104,12 +1127,9 @@ guardrails first.</p>
 </ul>
 <p>Skill directories and catalogs that copy <code>SKILL.md</code> from this repository are run by other people. They can fall behind the latest release, so compare the <code>version</code> in their copy's frontmatter with the <a href="https://github.com/conorbronsdon/avoid-ai-writing/releases/latest">latest release</a>. I don't control those pages and can't sell space on them.</p>
 <p><strong>No paid placements.</strong> The skill, pattern catalog, detector, and docs contain no paid mentions, links, or product recommendations, and I decline requests to add them.</p>
-<p><strong>Sponsorship.</strong> If this project saves you or your team time, you can support it through <a href="https://github.com/sponsors/conorbronsdon">GitHub Sponsors</a>. Company sponsors get a disclosed acknowledgment in this README. Sponsorship buys no say over rules, categories, detector output, or recommendations. Products whose main purpose is AI-text detection or getting past detectors aren't a fit, because the skill's flags are signals, not proof of authorship.</p>
+<p><strong>Sponsorship.</strong> If this project saves you or your team time, you can s</p>
 <hr>
-<h3>Disclaimer</h3>
-<p><em>This is an independent personal project, not affiliated with, sponsored by, or endorsed by any company. All views expressed are my own.</em></p>
-<h3>License</h3>
-<p>MIT</p>
+<p><em>README truncated. <a href="https://github.com/conorbronsdon/avoid-ai-writing#readme">Continue reading on GitHub</a></em></p>
 
   </section>
 </details>
