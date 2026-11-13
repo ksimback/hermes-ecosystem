@@ -2,7 +2,7 @@
 
 **Source:** https://hermes-agent.nousresearch.com/docs/guides/migrate-from-openclaw
 
-`hermes import-agent openclaw` imports your OpenClaw (or legacy Clawdbot/Moldbot) setup into Hermes. This guide covers exactly what gets migrated, the config key mappings, and what to verify after migration.
+`hermes import-agent openclaw` imports your OpenClaw (or legacy Clawdbot/Moldbot) setup into Hermes. This guide covers exactly what gets migrated, the config key mappings, and what to verify after migration. Deciding between the two first? [Hermes Agent vs OpenClaw](https://hermes-agent.nousresearch.com/compare/openclaw) compares licensing, models and hosting with sources.
 
 The command comes from the official **`agent-importers` plugin** in the [plugin catalog](/docs/user-guide/features/plugins), which also imports Claude Code, Codex CLI and Cursor setups ([Import from Other Agents](/docs/user-guide/import-from-other-agents)). The older spelling `hermes claw migrate` still works once the plugin is installed and runs the same import.
 

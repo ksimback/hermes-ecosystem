@@ -851,8 +851,7 @@ This file is the companion to ${SITE_URL}/llms.txt (the concise index).`);
       }
     }
 
-    const securitySection = repo.securityNote ? `\n\nSecurity note: ${repo.securityNote}` : "";
-    sections.push(`## ${key}\n\n${body}${summarySection}${securitySection}`);
+    sections.push(`## ${key}\n\n${body}${summarySection}`);
   }
 
   const llmsFull = sections.join("\n\n---\n\n") + "\n";
@@ -995,7 +994,7 @@ ${summary ? `
   </div>
 </section>` : ""}
 
-${repo.securityNote ? `<section class="project-summary" aria-label="Security note"><div class="section-label">security note</div><p class="summary-text">${escapeHtml(repo.securityNote)}</p></section>` : ""}
+
 
 <details class="readme-details"${summary ? "" : " open"}>
   <summary class="readme-toggle">${summary ? "full readme from github" : "readme"}</summary>

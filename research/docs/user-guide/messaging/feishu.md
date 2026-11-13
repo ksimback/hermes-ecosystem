@@ -593,6 +593,8 @@ In webhook mode, the adapter enforces per-IP rate limiting to protect against ab
 
 Requests that exceed the limit receive HTTP 429 (Too Many Requests).
 
+Only requests that pass the verification-token and signature checks count toward the limit, so forged traffic can't use up the window for real Feishu callbacks. An unsigned `url_verification` challenge counts only when a verification token authenticated it.
+
 ### Webhook Anomaly Tracking
 
 The adapter tracks consecutive error responses per IP address. After 25 consecutive errors from the same IP within a 6-hour window, a warning is logged. This helps detect misconfigured clients or probing attempts.
@@ -967,7 +969,7 @@ Webhook mode: Feishu cannot connect to / resolve the callback request URL. Fix t
 
 `Webhook rate limit exceeded`
 
-More than 120 requests/minute from the same IP. This is usually a misconfiguration or loop.
+More than 120 authenticated requests/minute from the same IP. This is usually a misconfiguration or loop.
 
 ## Toolset
 

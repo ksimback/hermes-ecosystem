@@ -29,6 +29,8 @@ That's it. Our automation fetches the repo metadata, runs a basic security check
 - Abandoned projects (no commits in 3+ months, broken README)
 - Repos that fail security review
 
+Security review is an admission gate, not public profile copy. Keep curator review notes and reproduction details in private review records, never in `data/repos.json`, project pages, featured blurbs, or generated public context. Publish a project only when its risk is acceptable; withhold or remove it when concerns are serious enough to block inclusion. Do not use a public warning as a substitute for that decision.
+
 ## Submit Documentation
 
 Help keep the knowledge base current so the chatbot gives better answers.

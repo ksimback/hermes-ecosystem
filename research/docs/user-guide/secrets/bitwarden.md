@@ -43,7 +43,7 @@ It will:
 
 1.  If `bws` is absent, request its pinned package from PM.
 2.  Prompt you for the access token (input is hidden). Stored in `~/.hermes/.env` as `BWS_ACCESS_TOKEN`.
-3.  Ask which Bitwarden region your machine account belongs to — **US Cloud**, **EU Cloud**, or **self-hosted / custom URL**. Stored in `config.yaml` as `secrets.bitwarden.server_url` and passed to `bws` as `BWS_SERVER_URL`.
+3.  Ask which Bitwarden region your machine account belongs to — **US Cloud**, **EU Cloud**, or **self-hosted / custom URL** (`https://`, or `http://` for localhost only). Stored in `config.yaml` as `secrets.bitwarden.server_url` and passed to `bws` as `BWS_SERVER_URL`.
 4.  List the projects the machine account can see; pick one. Stored in `config.yaml` as `secrets.bitwarden.project_id`.
 5.  Test-fetch the project's secrets and show you which env vars will resolve.
 6.  Flip `secrets.bitwarden.enabled: true`.
@@ -162,13 +162,13 @@ Env var name that holds the bootstrap token. Change this if you already use `BWS
 
 `""`
 
-UUID of the project to sync from.
+UUID of the project to sync from. Rejected if it isn't UUID-shaped.
 
 `server_url`
 
 `""`
 
-Bitwarden region or self-hosted endpoint. Empty = `bws` default (US Cloud, `https://vault.bitwarden.com`). Set to `https://vault.bitwarden.eu` for EU Cloud, or your own URL for self-hosted. Plumbed into the `bws` subprocess as `BWS_SERVER_URL`.
+Bitwarden region or self-hosted endpoint. Empty = `bws` default (US Cloud, `https://vault.bitwarden.com`). Set to `https://vault.bitwarden.eu` for EU Cloud, or your own URL for self-hosted. Plumbed into the `bws` subprocess as `BWS_SERVER_URL`. Must be `https://` — the access token is sent to this endpoint, so plaintext `http://` is refused except for `localhost`. A `BWS_SERVER_URL` inherited from your shell is held to the same rule and dropped (with a warning) if it fails.
 
 `cache_ttl_seconds`
 

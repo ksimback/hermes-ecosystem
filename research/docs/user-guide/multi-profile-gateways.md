@@ -408,7 +408,7 @@ A turn can never attach another profile's `.env`, `auth.json`, `state.db`, sessi
 
 stdio MCP child environment
 
-Safe baseline + the profile's scoped values for secret-source names + the server's own `env:`
+Safe baseline + the profile's scoped values for secret-source names (Hermes-managed credentials excluded) + the server's own `env:`
 
 A name the profile lacks is absent from the child — no default-profile fallthrough
 
