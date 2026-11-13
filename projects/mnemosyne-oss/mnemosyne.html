@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>mnemosyne-oss/mnemosyne — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Mnemosyne is a Python memory layer for AI agents that stores data in SQLite and requires no external services. It can be used through a Python API, a…">
+<meta name="description" content="Mnemosyne is a Python memory layer for AI agents, using a SQLite database with no external services required. It can be used through a Python SDK, CLI, or MCP,…">
 <link rel="canonical" href="https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne">
 <meta property="og:title" content="mnemosyne-oss/mnemosyne — Hermes Atlas">
-<meta property="og:description" content="Mnemosyne is a Python memory layer for AI agents that stores data in SQLite and requires no external services. It can be used through a Python API, a…">
+<meta property="og:description" content="Mnemosyne is a Python memory layer for AI agents, using a SQLite database with no external services required. It can be used through a Python SDK, CLI, or MCP,…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="mnemosyne-oss/mnemosyne — Hermes Atlas">
-<meta name="twitter:description" content="Mnemosyne is a Python memory layer for AI agents that stores data in SQLite and requires no external services. It can be used through a Python API, a…">
+<meta name="twitter:description" content="Mnemosyne is a Python memory layer for AI agents, using a SQLite database with no external services required. It can be used through a Python SDK, CLI, or MCP,…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=mnemosyne&amp;subtitle=Zero-cloud+AI+memory+that+works+everywhere.+SQLite-backed.+One+pure-Python+dependency.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne#software",
   "name": "mnemosyne",
-  "description": "Mnemosyne is a Python memory layer for AI agents that stores data in SQLite and requires no external services. It can be used through a Python API, a command-line interface, or integrations including MCP, Claude Code, Cursor, and Hermes Agent.",
+  "description": "Mnemosyne is a Python memory layer for AI agents, using a SQLite database with no external services required. It can be used through a Python SDK, CLI, or MCP, and the README lists integrations for several agent platforms.",
   "url": "https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne",
   "codeRepository": "https://github.com/mnemosyne-oss/mnemosyne",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "mnemosyne-oss",
     "url": "https://github.com/mnemosyne-oss"
   },
-  "dateModified": "2026-11-12T18:41:26.000Z",
+  "dateModified": "2026-11-13T10:54:18.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 3635
+    "userInteractionCount": 3636
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-12</span>
+    <span><span class="meta-label">updated</span>2026-11-13</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Mnemosyne is a Python memory layer for AI agents that stores data in SQLite and requires no external services. It can be used through a Python API, a command-line interface, or integrations including MCP, Claude Code, Cursor, and Hermes Agent.</p>
+    <p class="summary-text">Mnemosyne is a Python memory layer for AI agents, using a SQLite database with no external services required. It can be used through a Python SDK, CLI, or MCP, and the README lists integrations for several agent platforms.</p>
     <ul class="summary-highlights">
-      <li>Stores and recalls memories through a Python API and CLI</li>
-      <li>Supports MCP clients and several agent integrations</li>
-      <li>Includes memory export, import, and synchronization commands</li>
+      <li>Stores and recalls memories using a SQLite database</li>
+      <li>Offers a Python SDK, CLI, and MCP server</li>
+      <li>Documents integrations for multiple agent platforms</li>
     </ul>
   </div>
 </section>
@@ -381,6 +381,7 @@ mnemosyne mcp --transport streamable-http --port 8080  # Streamable HTTP (native
 # Direct memory ops
 mnemosyne store "User likes dark mode"
 mnemosyne recall "preferences"
+mnemosyne recall "preferences" --preview  # Explicit 150-character display preview
 mnemosyne stats
 mnemosyne sleep                         # Run consolidation
 
@@ -391,6 +392,13 @@ mnemosyne import backup.json
 # Sync (bidirectional memory sync between instances)
 mnemosyne sync --db-path /path/to/mnemosyne.db --remote https://my-vps:8765
 </code></pre>
+<p>Human-readable <code>recall</code> output reads the current full content of selected
+working-memory, episodic-memory and MEMORIA hits. Ranking and scores stay the
+same; public <code>recall()</code> results, JSON output and cached payloads retain their
+configured content cap. <code>--preview</code> displays 150 characters and the full length
+when available. If a source is unavailable, its prefix has changed, or its hit
+type cannot be expanded, the CLI labels the remaining recall preview and reports
+the full length as unknown. These are current reads, not historical snapshots.</p>
 <hr>
 <h3>Python API</h3>
 <pre><code class="language-python">from mnemosyne import remember, recall

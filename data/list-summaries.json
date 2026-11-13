@@ -17,7 +17,6 @@
       "aliasocracy/hermes-tool-slimmer": "Hermes Tool Slimmer reduces tool-schema token use through local keyword-based ranking and Tool Search support. It integrates through middleware without patching Hermes core on version 0.19 or later, and includes a dashboard for tracking savings and managing tool configurations.",
       "conorbronsdon/agent-context-os": "Agent Context OS is a Git-backed context and workflow layer for Claude Code, Codex, and other listed compatible coding agents. It includes workflows for migrations, handoffs, and memory proposals; integrations are opt-in rather than enabled automatically.",
       "Ladybug-Memory/hermes-memory-plugin": "This local-only Hermes memory plugin stores data in a single .lbdb embedded graph database file and uses importance-weighted recall to surface high-priority memories during context prefetch. Retrieval supports BM25 keyword search and named graph relationships between entries.",
-      "stepanov1975/hermes-local-knowledge": "Hermes Local Knowledge indexes configured local sources and selected Hermes runtime sources, then registers five tools for search, retrieval, traversal, feedback, and usage reports. It also registers pre_llm_call, on_session_end, and on_session_finalize hooks.",
       "MukundaKatta/hermes-agentmemory": "Hermes AgentMemory is a pull-model episodic memory plugin with an on-demand summarizer and a trace.jsonl audit log of prefetch operations. It supports immediate event deletion, so deleted events are not retained as persistent summaries.",
       "hermes-labs-ai/hermes-blind": "Hermes Blind recovers the original goal of a long Claude Code or Codex session from its first user turn, with goals, first-sentence, and full extraction modes. It skips tool output and other non-user-turn records, and does not use a summarizing model or external service.",
       "piprail/piprail": "Piprail provides a TypeScript SDK for x402 payments and an MCP server for budget-bound agent wallets. It operates without a backend, database, or API keys.",
@@ -45,7 +44,6 @@
       "tuancookiez-hub/HyAtlas-Memory": "HyAtlas-Memory is a Go-based layered memory server distributed as a single binary, with no Python runtime required. Its search supports date-aware queries and entity-based recall, and it includes an embedded web dashboard.",
       "itpartypattaya/hermes-dreaming": "Hermes Dreaming is a Hermes skill/plugin for scheduled memory consolidation, corroboration, and human-guided fact cleanup. It checks whether facts are mentioned on distinct days, reports memory pressure and possible entry loss, and records candidate provenance in memories/DREAMS.md.",
       "vectorize-io/hindsight": "Hindsight structures agent memory around three operations: retain, recall, and reflect. It offers Python, JavaScript/TypeScript, and Go clients, and can be self-hosted or used through Hindsight Cloud.",
-      "mnemosyne-oss/mnemosyne": "Mnemosyne provides memory storage and recall through a Python API and CLI, with support for MCP clients and several agent integrations. Its export, import, and synchronization commands also support moving and coordinating memory.",
       "BetterDB-inc/monitor": "BetterDB is a monorepo that includes a native Hermes long-term memory provider using Valkey vectors and configurable embeddings. The project also provides historical analytics for commands, clients, and latency, plus cluster and per-thread CPU and I/O metrics.",
       "roboticforce/sugar": "Sugar is a local-first memory provider for Hermes that stores project and global memory in SQLite and supports checkpoints and memory mirroring. Its memory search uses local embeddings or an FTS5 fallback, while CLI, MCP, REST, and dashboard access provide multiple ways to work with tasks.",
       "plastic-labs/honcho": "Honcho is a memory library for building stateful agents, tracking peers, sessions, and messages over time. It supports managed, local, and self-hosted deployments, with Python and TypeScript SDKs and a CLI.",
@@ -53,13 +51,15 @@
       "agentscope-ai/ReMe": "ReMe turns conversations into durable Markdown memory with frontmatter and wikilinks, then retrieves relevant passages without loading the full knowledge base. It belongs in this list as a file-native option that can connect to Hermes over HTTP or an embedded backend, alongside CLI, MCP, and Python interfaces.",
       "MaxFreedomPollard/Compartment": "Compartment is an offline memory vault for Hermes and MCP agents, keeping vault data—including embedding vectors—encrypted. It combines local semantic and keyword retrieval with persistent memory shared among agents on the same machine.",
       "vshulcz/deja-vu": "Deja-vu searches and filters session histories from Claude Code, Codex, Cursor, Copilot CLI, OpenClaw, and other supported agents. It builds an incremental local index, making it useful for finding details in past sessions, including older history already on disk.",
-      "electricsheephq/lcm-x": "LCM-X preserves raw messages in a plugin-local SQLite store and organizes depth-aware summaries in a hierarchical DAG. Its tools let agents search, inspect, and expand compacted material, providing bounded recall that retains links to source messages.",
       "181079342/hermes-memoss": "This Hermes memory plugin supports semantic search and multidimensional memory storage, with tools to search, add, and delete memories. It also includes a circuit breaker for MemOS API outages.",
       "topoteretes/cognee-integrations": "Cognee integrations connect chat and editor tools to Cognee through its HTTP API, with integrations for frameworks including Strands, CrewAI, and LangGraph. A Claude Code plugin also captures and recalls memory automatically, making this a memory-focused option for developers using those tools.",
       "moorcheh-ai/memanto": "Memanto extracts decisions, preferences, facts, and failures from agent interactions for use as memory. It offers local Docker and Ollama, cloud, and self-hosted options, with installation choices for Python, npm, and Go.",
-      "itpartypattaya/hermes-plugin-holographic": "This local Hermes memory provider stores facts in SQLite and supports trust scoring and entity resolution. Optional online search by meaning adds a retrieval option alongside its local database."
+      "itpartypattaya/hermes-plugin-holographic": "This local Hermes memory provider stores facts in SQLite and supports trust scoring and entity resolution. Optional online search by meaning adds a retrieval option alongside its local database.",
+      "mnemosyne-oss/mnemosyne": "Mnemosyne stores and recalls memories in a SQLite database, with a Python SDK, CLI, and MCP server for working with it. Its documented integrations for multiple agent platforms make it a flexible option for Hermes memory.",
+      "electricsheephq/lcm-x": "LCM-X preserves raw messages in a plugin-local store and builds depth-aware summaries in a hierarchical DAG. Search and inspection tools support bounded, source-aware recall of compacted material.",
+      "stepanov1975/hermes-local-knowledge": "Hermes Local Knowledge indexes local resources including skills, documents, scripts, runbooks, cron jobs, and MCP servers. Its five tools cover search, retrieval, traversal, feedback, and usage reports, making it suited to finding and routing to existing capabilities."
     },
-    "generatedAt": "2026-11-12T20:11:25.888Z",
+    "generatedAt": "2026-11-13T14:48:35.848Z",
     "version": 1
   },
   "top-skills": {
@@ -184,9 +184,9 @@
       "Sahil-SS9/hermes-project-stewardship": "Hermes Project Stewardship helps agent fleets manage project ownership by checking project evidence before making changes and turning backlog gaps into initiatives. It uses Hermes Projects and Kanban as the project record, with workflow templates and an approval inbox for stewardship tasks.",
       "Javis603/token-monitor": "Token Monitor is a real-time widget for tracking token usage, costs, and rate limits across 54+ AI coding tools, including Hermes Agent. It also shows historical usage trends and breakdowns, with real-time sync across devices.",
       "junhoyeo/tokscale": "Tokscale tracks token consumption and costs across coding agents including Claude Code, OpenClaw, Hermes, Codex, and Gemini. It combines a CLI with a visualization dashboard, giving developers a way to review usage across multiple agents.",
-      "hashgraph-online/hol-guard": "HOL Guard is an open-source antivirus for AI agents that detects secret exposure, destructive operations, prompt injection, and supply-chain risks at runtime. It protects agents and related components—including plugins, skills, MCP servers, and package installs—with optional Guard Cloud features for shared history, team policy, and fleet management."
+      "hashgraph-online/hol-guard": "HOL Guard is an open-source runtime security tool for AI agents that screens for exposed secrets, destructive operations, prompt injection, and supply-chain risks. It supports integrations with multiple agents, while optional Guard Cloud adds shared history, team policies, and fleet management."
     },
-    "generatedAt": "2026-11-13T06:42:49.954Z",
+    "generatedAt": "2026-11-13T14:48:38.879Z",
     "version": 1
   },
   "workspaces-and-guis": {

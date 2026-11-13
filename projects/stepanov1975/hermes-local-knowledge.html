@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>stepanov1975/hermes-local-knowledge — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Hermes Local Knowledge is a reusable Hermes Agent plugin that routes local questions to likely artifacts, such as skills, documents, scripts, runbooks, cron…">
+<meta name="description" content="Hermes Local Knowledge is a reusable Hermes Agent plugin that indexes local artifacts and routes questions to likely sources for inspection. It provides tools…">
 <link rel="canonical" href="https://hermesatlas.com/projects/stepanov1975/hermes-local-knowledge">
 <meta property="og:title" content="stepanov1975/hermes-local-knowledge — Hermes Atlas">
-<meta property="og:description" content="Hermes Local Knowledge is a reusable Hermes Agent plugin that routes local questions to likely artifacts, such as skills, documents, scripts, runbooks, cron…">
+<meta property="og:description" content="Hermes Local Knowledge is a reusable Hermes Agent plugin that indexes local artifacts and routes questions to likely sources for inspection. It provides tools…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/stepanov1975/hermes-local-knowledge">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="stepanov1975/hermes-local-knowledge — Hermes Atlas">
-<meta name="twitter:description" content="Hermes Local Knowledge is a reusable Hermes Agent plugin that routes local questions to likely artifacts, such as skills, documents, scripts, runbooks, cron…">
+<meta name="twitter:description" content="Hermes Local Knowledge is a reusable Hermes Agent plugin that indexes local artifacts and routes questions to likely sources for inspection. It provides tools…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-local-knowledge&amp;subtitle=Hermes+Agent+plugin+for+local+knowledge+search+and+artifact+routing%E2%80%94find+the+right+skill%2C+script%2C+runbook%2C+cron+job%2C+MCP+server%2C+or+document.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/stepanov1975/hermes-local-knowledge#software",
   "name": "hermes-local-knowledge",
-  "description": "Hermes Local Knowledge is a reusable Hermes Agent plugin that routes local questions to likely artifacts, such as skills, documents, scripts, runbooks, cron jobs, MCP servers, and generated tool-routing notes. It provides tools to search, fetch, and traverse artifacts, and its search results are routing hints; the agent should read the selected source before acting.",
+  "description": "Hermes Local Knowledge is a reusable Hermes Agent plugin that indexes local artifacts and routes questions to likely sources for inspection. It provides tools to search, retrieve, and traverse artifacts, record lookup feedback, and report local usage; search results are routing hints, not answers, so the selected source should still be read before acting.",
   "url": "https://hermesatlas.com/projects/stepanov1975/hermes-local-knowledge",
   "codeRepository": "https://github.com/stepanov1975/hermes-local-knowledge",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "stepanov1975",
     "url": "https://github.com/stepanov1975"
   },
-  "dateModified": "2026-11-02T04:41:48.000Z",
+  "dateModified": "2026-11-13T12:56:42.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-02</span>
+    <span><span class="meta-label">updated</span>2026-11-13</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Local Knowledge is a reusable Hermes Agent plugin that routes local questions to likely artifacts, such as skills, documents, scripts, runbooks, cron jobs, MCP servers, and generated tool-routing notes. It provides tools to search, fetch, and traverse artifacts, and its search results are routing hints; the agent should read the selected source before acting.</p>
+    <p class="summary-text">Hermes Local Knowledge is a reusable Hermes Agent plugin that indexes local artifacts and routes questions to likely sources for inspection. It provides tools to search, retrieve, and traverse artifacts, record lookup feedback, and report local usage; search results are routing hints, not answers, so the selected source should still be read before acting.</p>
     <ul class="summary-highlights">
+      <li>Indexes skills, documents, scripts, runbooks, cron jobs, and MCP servers.</li>
       <li>Registers five tools for search, retrieval, traversal, feedback, and usage reports.</li>
-      <li>Indexes configured local sources and selected Hermes runtime sources.</li>
-      <li>Registers pre_llm_call, on_session_end, and on_session_finalize hooks.</li>
+      <li>Supports local routing feedback and usage summaries.</li>
     </ul>
   </div>
 </section>
@@ -243,6 +243,9 @@
 </code></pre>
 <p>Only a recent search from the same Hermes session, task, and turn is eligible. <code>skill_view</code> and <code>read_file</code> must run in a later model request, after the search result is available, and count only when their successful result resolves by canonical source path to exactly one baseline artifact in the same current index snapshot. Repeated consumption from one search is deduplicated, and overly generic artifacts stop receiving implicit promotion. Explicit feedback remains authoritative, and implicit evidence is not used as evaluation ground truth.</p>
 <h3>Install and model-token notice</h3>
+<h4>Hermes compatibility</h4>
+<p>Version 0.5.4 supports Hermes v0.23.0's managed runtime: detached OKF and routing workers resolve the bootstrap-aware command from the launcher belonging to the loaded host, rather than relying on raw Python or a different <code>hermes</code> on <code>PATH</code>. The release was checked against unmodified official v0.23.0 source for native search/get registration and empty-queue startup of all three worker roles, alongside the legacy PyPI Hermes 0.19.0 test suite. The official-host check verifies loader/worker compatibility, not a fresh full host dependency installation or model-backed generation.</p>
+<p>Legacy Python/venv hosts retain their module-based worker command. A missing or broken managed launcher is reported without silently falling back to a command that cannot load that host. No Hermes core patch is required.</p>
 <p>Install and enable the directory plugin:</p>
 <pre><code class="language-bash">hermes plugins install https://github.com/stepanov1975/hermes-local-knowledge.git --enable
 </code></pre>

@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>electricsheephq/lcm-x — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into summaries arranged as a DAG. It…">
+<meta name="description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into hierarchical summary nodes. It keeps…">
 <link rel="canonical" href="https://hermesatlas.com/projects/electricsheephq/lcm-x">
 <meta property="og:title" content="electricsheephq/lcm-x — Hermes Atlas">
-<meta property="og:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into summaries arranged as a DAG. It…">
+<meta property="og:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into hierarchical summary nodes. It keeps…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/electricsheephq/lcm-x">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="electricsheephq/lcm-x — Hermes Atlas">
-<meta name="twitter:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into summaries arranged as a DAG. It…">
+<meta name="twitter:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into hierarchical summary nodes. It keeps…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=lcm-x&amp;subtitle=Lossless+memory+for+Hermes+Agent%3A+every+turn+kept+in+a+local+store%2C+not+compacted+away%2C+and+searchable+by+your+agent.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/electricsheephq/lcm-x#software",
   "name": "lcm-x",
-  "description": "LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into summaries arranged as a DAG. It keeps active context bounded and provides tools for agents to search and recover details from compacted messages.",
+  "description": "LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into hierarchical summary nodes. It keeps the active prompt bounded and provides tools to search and recover details from compacted messages.",
   "url": "https://hermesatlas.com/projects/electricsheephq/lcm-x",
   "codeRepository": "https://github.com/electricsheephq/lcm-x",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "electricsheephq",
     "url": "https://github.com/electricsheephq"
   },
-  "dateModified": "2026-11-13T06:37:51.000Z",
+  "dateModified": "2026-11-13T14:47:18.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into summaries arranged as a DAG. It keeps active context bounded and provides tools for agents to search and recover details from compacted messages.</p>
+    <p class="summary-text">LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into hierarchical summary nodes. It keeps the active prompt bounded and provides tools to search and recover details from compacted messages.</p>
     <ul class="summary-highlights">
-      <li>Preserves raw messages in a plugin-local SQLite store.</li>
-      <li>Builds depth-aware summaries and a hierarchical DAG.</li>
-      <li>Provides tools to search, inspect, and expand compacted material.</li>
+      <li>Preserves raw messages in a plugin-local store.</li>
+      <li>Builds depth-aware summaries in a hierarchical DAG.</li>
+      <li>Includes tools to search and inspect compacted material.</li>
     </ul>
   </div>
 </section>
@@ -1019,7 +1019,7 @@ assistant even when doing so exceeds a configured bound.</p>
 <tr>
 <td><code>LCM_HOST_ROW_RECOVERY_ENABLED</code></td>
 <td><code>true</code></td>
-<td>At a foreground session start, recover the rows of an interrupted turn that the host kept in an abandoned compression child, on a background worker, only under a strict durable proof (#2624). <code>false</code> disables recovery and its host reads.</td>
+<td>At a foreground session start, recover the rows of an interrupted turn that the host kept in an abandoned compression child, on a background worker, only under a strict durable proof (#2624), and stores recent unended sessions whose turn failed (#2042). <code>false</code> disables both and their host reads.</td>
 </tr>
 <tr>
 <td><code>LCM_LARGE_OUTPUT_EXTERNALIZATION_ENABLED</code></td>
@@ -1068,12 +1068,7 @@ assistant even when doing so exceeds a configured bound.</p>
 </tr>
 <tr>
 <td><code>LCM_EMPTY_LIFECYCLE_GC_THRESHOLD</code></td>
-<td><code>200</code></td>
-<td>Number of lifecycle rows at which the GC pass fires</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
+<td>`20</td>
 <td></td>
 </tr>
 </tbody></table>

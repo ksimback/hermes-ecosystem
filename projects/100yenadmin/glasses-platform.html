@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>100yenadmin/glasses-platform — Hermes Agent Integrations &amp; Bridges | Hermes Atlas</title>
-<meta name="description" content="Hermes Glasses is a Hermes Agent gateway plugin that connects smart glasses and other devices to an agent through a companion app or supported device…">
+<meta name="description" content="Hermes Glasses is a Hermes Agent gateway plugin that connects smart glasses and other voice devices to an agent. Devices can send photos or voice recordings,…">
 <link rel="canonical" href="https://hermesatlas.com/projects/100yenadmin/glasses-platform">
 <meta property="og:title" content="100yenadmin/glasses-platform — Hermes Atlas">
-<meta property="og:description" content="Hermes Glasses is a Hermes Agent gateway plugin that connects smart glasses and other devices to an agent through a companion app or supported device…">
+<meta property="og:description" content="Hermes Glasses is a Hermes Agent gateway plugin that connects smart glasses and other voice devices to an agent. Devices can send photos or voice recordings,…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/100yenadmin/glasses-platform">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="100yenadmin/glasses-platform — Hermes Atlas">
-<meta name="twitter:description" content="Hermes Glasses is a Hermes Agent gateway plugin that connects smart glasses and other devices to an agent through a companion app or supported device…">
+<meta name="twitter:description" content="Hermes Glasses is a Hermes Agent gateway plugin that connects smart glasses and other voice devices to an agent. Devices can send photos or voice recordings,…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=glasses-platform&amp;subtitle=Your+own+Hermes+agent+on+smart+glasses+and+voice+devices%3A+it+sees+what+you+see%2C+answers+by+voice%2C+and+reminds+you.&amp;kind=project+%C2%B7+integrations">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/100yenadmin/glasses-platform#software",
   "name": "glasses-platform",
-  "description": "Hermes Glasses is a Hermes Agent gateway plugin that connects smart glasses and other devices to an agent through a companion app or supported device interfaces. Users can ask about photos, receive spoken answers and reminders, and respond to approval prompts; the README notes that it has not yet been tested on real glasses.",
+  "description": "Hermes Glasses is a Hermes Agent gateway plugin that connects smart glasses and other voice devices to an agent. Devices can send photos or voice recordings, receive spoken or text responses and reminders, and approve requests by voice or button; a terminal simulator lets users try the interaction without glasses.",
   "url": "https://hermesatlas.com/projects/100yenadmin/glasses-platform",
   "codeRepository": "https://github.com/100yenadmin/glasses-platform",
   "applicationCategory": "CommunicationApplication",
@@ -47,7 +47,7 @@
     "name": "100yenadmin",
     "url": "https://github.com/100yenadmin"
   },
-  "dateModified": "2026-11-11T05:21:49.000Z",
+  "dateModified": "2026-11-13T11:46:36.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-11</span>
+    <span><span class="meta-label">updated</span>2026-11-13</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Glasses is a Hermes Agent gateway plugin that connects smart glasses and other devices to an agent through a companion app or supported device interfaces. Users can ask about photos, receive spoken answers and reminders, and respond to approval prompts; the README notes that it has not yet been tested on real glasses.</p>
+    <p class="summary-text">Hermes Glasses is a Hermes Agent gateway plugin that connects smart glasses and other voice devices to an agent. Devices can send photos or voice recordings, receive spoken or text responses and reminders, and approve requests by voice or button; a terminal simulator lets users try the interaction without glasses.</p>
     <ul class="summary-highlights">
-      <li>Pairs devices with a token and connect URL or QR code.</li>
-      <li>Supports photo questions, reminders, and voice approvals.</li>
-      <li>Includes a terminal simulator for trying the glasses interaction.</li>
+      <li>Shares one Hermes conversation across paired devices.</li>
+      <li>Supports WebSocket and HTTP device connections.</li>
+      <li>Preview release; not tested on real glasses.</li>
     </ul>
   </div>
 </section>
@@ -165,7 +165,7 @@
 <a href="https://hermes-agent.nousresearch.com"><img src="https://img.shields.io/badge/Hermes-%3E%3D%200.22.2-6f42c1" alt="Hermes >= 0.22.2" loading="lazy" decoding="async"></a>
 <a href="https://github.com/100yenadmin/glasses-platform/actions/workflows/ci.yml"><img src="https://github.com/100yenadmin/glasses-platform/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI" loading="lazy" decoding="async"></a></p>
 <blockquote>
-<p><strong>Status: v0.6.6 preview. Not yet tested on real glasses.</strong> The Hermes side is proven against the bundled
+<p><strong>Status: v0.6.8 preview. Not yet tested on real glasses.</strong> The Hermes side is proven against the bundled
 simulators and a real Hermes gateway with real models (<a href="https://github.com/100yenadmin/glasses-platform/blob/main/docs/evidence/M0-live-proof.md">evidence</a>); CI tests it on
 Hermes v0.22.2, v0.23.0 and <code>main</code>. Each device path below was run against a real Hermes gateway with a simulated
 device; no real glasses, watch, voice box or pendant has been tested yet.</p>
@@ -328,8 +328,8 @@ answers display. Within 1000 characters, items appear oldest first; an item that
 keeps its head and ends in <code>…</code>, counting as shown. Items with no room stay queued for the next call.
 When a call has no <code>is_user: true</code> segment, every speaker counts for questions, but only speech marked
 <code>is_user: true</code> (your own voice) can answer an approval.
-Overlapping webhook calls can show the same push twice. Session buffers expire after ten minutes idle and
-retain at most 256 segment keys and 32 sessions per device identity. This path is tested with fakes;
+Overlapping webhook calls can show the same push twice. Session buffers (in memory only) are dropped by a timer once
+idle for ten minutes, and retain at most 256 segment keys and 32 sessions per device identity. This path is tested with fakes;
 no Omi account has been tested.</p>
 <h3>Pebble (Bobby)</h3>
 <p>Build the open-source <a href="https://github.com/pebble-dev/bobby-assistant">Bobby assistant</a> (Apache-2.0) with the Pebble
@@ -470,9 +470,9 @@ devices already set there or in <code>config.yaml</code>), and prints the connec
 program it runs is a local <code>ffmpeg</code> (no shell), and only to convert audio for devices that ask for Ogg or WAV or
 when a spoken answer comes in several parts.</li>
 <li><strong>Device credentials</strong> are read through Hermes's per-profile settings reader (the profile's environment file or <code>config.yaml</code>).</li>
-<li><strong>Offline queue.</strong> Pushes for a disconnected device wait (50 items, 24 hours) in memory and in
-<code>~/.hermes/glasses/outbox.json</code> (readable only by you), so they survive a gateway restart, even a crash. A message leaves
-the file once it has been sent to a device. <code>GLASSES_OUTBOX_PERSIST=off</code> keeps the queue in memory only.</li>
+<li><strong>Offline queue.</strong> Pushes for a disconnected device wait (the newest 50 per user, delivered only within 24 hours) in
+memory and in <code>~/.hermes/glasses/outbox.json</code> (readable only by you), so they survive a gateway restart, even a crash.
+A message leaves the file once it has been sent to a device; an expired one leaves it at the next change to the queue. <code>GLASSES_OUTBOX_PERSIST=off</code> keeps the queue in memory only.</li>
 </ul>
 <h3>Why a plugin rather than a bridge script</h3>
 <ul>
