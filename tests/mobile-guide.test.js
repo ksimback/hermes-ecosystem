@@ -8,6 +8,16 @@ test('Mobile guide is publishable and discoverable',()=>{
  const doc=new JSDOM(html).window.document;
  assert.equal(doc.querySelector('link[rel="canonical"]').href,'https://hermesatlas.com/guide/mobile/');
  assert.equal(doc.querySelectorAll('h1').length,1);
+ // Production CSP rejects inline CSS: use the maintained handbook shell.
+ assert.equal(doc.querySelectorAll('style, [style]').length,0);
+ for(const href of ['/assets/css/tokens.css','/assets/css/base.css','/assets/css/page.css']){
+  assert.ok(doc.querySelector(`link[rel="stylesheet"][href="${href}"]`));
+  assert.ok(fs.existsSync(new URL('../'+href.slice(1),import.meta.url)));
+ }
+ assert.ok(doc.querySelector('.masthead .mast-nav'));
+ assert.ok(doc.querySelector('main.article .article-header'));
+ assert.ok(doc.querySelector('.toc li a'));
+ assert.ok(doc.querySelector('script[src="/assets/js/theme-toggle.js"]'));
  assert.ok(!html.includes('review draft')&&!html.includes('not published'));
  assert.ok(doc.querySelector('a[href="https://hermes-agent.nousresearch.com/mobile"]'));
  for(const a of doc.querySelectorAll('a[href^="#"]'))assert.ok(doc.getElementById(a.hash.slice(1)));
