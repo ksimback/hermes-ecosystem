@@ -1,0 +1,23 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import { JSDOM } from 'jsdom';
+const read=p=>fs.readFileSync(new URL('../'+p,import.meta.url),'utf8');
+test('Mobile guide is publishable and discoverable',()=>{
+ const html=read('guide/mobile/index.html');
+ const doc=new JSDOM(html).window.document;
+ assert.equal(doc.querySelector('link[rel="canonical"]').href,'https://hermesatlas.com/guide/mobile/');
+ assert.equal(doc.querySelectorAll('h1').length,1);
+ assert.ok(!html.includes('review draft')&&!html.includes('not published'));
+ assert.ok(doc.querySelector('a[href="https://hermes-agent.nousresearch.com/mobile"]'));
+ for(const a of doc.querySelectorAll('a[href^="#"]'))assert.ok(doc.getElementById(a.hash.slice(1)));
+ JSON.parse(doc.querySelector('script[type="application/ld+json"]').textContent);
+ assert.ok(read('guide/index.html').includes('href="/guide/mobile/"'));
+ const home=new JSDOM(read('index.html')).window.document;
+ assert.equal(home.querySelector('#report-banner a').getAttribute('href'),'/guide/mobile/');
+ assert.equal(home.querySelector('.report-banner-badge').textContent,'new guide');
+ assert.ok(read('sitemap.xml').includes('https://hermesatlas.com/guide/mobile/'));
+ assert.ok(read('llms.txt').includes('/guide/mobile/'));
+ assert.ok(read('llms-full.txt').includes('Canonical URL: https://hermesatlas.com/guide/mobile/'));
+ assert.ok(read('scripts/build-chunks.js').includes('guide-mobile.md'));
+});
