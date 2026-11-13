@@ -82,6 +82,7 @@ async function main() {
     { file: "guide-memory.md", source: "guide/memory/" },
     { file: "guide-modes.md", source: "guide/modes/" },
     { file: "guide-desktop.md", source: "guide/desktop/" },
+    { file: "guide-mobile.md", source: "guide/mobile/" },
     { file: "guide-install-windows.md", source: "guide/install/windows/" },
     { file: "guide-install-macos.md", source: "guide/install/macos/" },
     { file: "guide-install-linux.md", source: "guide/install/linux/" },
