@@ -4,6 +4,8 @@
 
 Delegate coding to OpenCode CLI (features, PR review).
 
+Want the full side-by-side? Read [Hermes Agent vs OpenCode](https://hermes-agent.nousresearch.com/compare/opencode).
+
 ## Skill metadata
 
 Source

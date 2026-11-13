@@ -112,7 +112,7 @@ Stage a native agent with both frontend products, without Electron packaging:
 python -m scripts.bundles.stage --out /work/agent-payload --ref HEAD
 ```
 
-This command prepares and builds TUI/web products if none are supplied. It also accepts `--tui` and `--web` together as prepared product roots. It rejects a selection with only one of those arguments. The standalone products have explicit input/output contracts in the builder README.
+This command prepares and builds the TUI, dashboard and Webapp products if none are supplied; `pnpm run dist:bundled` stages its payload this way. It also accepts `--tui` and `--web` together as prepared product roots, which leaves the payload without a Webapp. It rejects a selection with only one of those arguments. The standalone products have explicit input/output contracts in the builder README.
 
 `--ref` selects the agent source snapshot. Automatic frontend compilation uses a temporary snapshot of that same revision. Explicit frontend products must come from the selected revision.
 
@@ -181,7 +181,7 @@ Current output layout
 
 Desktop bundled/Store
 
-Icons, TUI, web, agent, desktop UI
+Icons, TUI, web, Webapp, agent, desktop UI
 
 Products: `apps/desktop/build/products/`. Agent: `apps/desktop/build/agent-payload/`. UI: `apps/desktop/dist/`. Packages: `apps/desktop/release/`
 
@@ -227,7 +227,7 @@ TUI and agent
 
 `OUT/hermes-agent_<version>_aarch64.deb`, installed at `$PREFIX/lib/hermes-agent/`
 
-Native payloads contain `hermes-agent`, `tools`, `venv`, `pm-runtime`, `bin`, `uv-cache`, and their manifests/facts. Copied frontend assets live at `hermes-agent/hermes_cli/tui_dist/` and `hermes-agent/hermes_cli/web_dist/`. The TUI asset directory contains `entry.js` and module-mode package metadata.
+Native payloads contain `hermes-agent`, `tools`, `venv`, `pm-runtime`, `bin`, `uv-cache`, and their manifests/facts. Copied frontend assets live at `hermes-agent/hermes_cli/tui_dist/` and `hermes-agent/hermes_cli/web_dist/`; desktop bundles also carry the Webapp at `hermes-agent/apps/desktop/dist-webapp/`, which `hermes webapp` serves as shipped and never rebuilds. The TUI asset directory contains `entry.js` and module-mode package metadata.
 
 Docker keeps its existing TUI product at `/opt/hermes/ui-tui` and web output at `/opt/hermes/hermes_cli/web_dist`. The assembler also plants its shared TUI asset layout beneath `hermes_cli/tui_dist`. Venv command symlinks preserve the paths used by s6 and the privilege-drop shim.
 

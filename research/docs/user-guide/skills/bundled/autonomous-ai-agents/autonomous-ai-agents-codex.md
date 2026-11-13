@@ -4,6 +4,8 @@
 
 Delegate coding to OpenAI Codex CLI (features, PRs).
 
+Want the full side-by-side? Read [Hermes Agent vs Codex](https://hermes-agent.nousresearch.com/compare/codex).
+
 ## Skill metadata
 
 Source

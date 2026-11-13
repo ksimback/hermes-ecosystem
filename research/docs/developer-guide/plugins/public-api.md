@@ -659,3 +659,9 @@ plugins/index.md § Check file paths and read YAML with Hermes's own helpers
 `safe_dump`
 
 plugins/index.md § Check file paths and read YAML with Hermes's own helpers
+
+`hermes_cli.urllib_security`
+
+`open_credentialed_url`
+
+plugins/index.md § Send a credentialed HTTP request without leaking it on redirect
