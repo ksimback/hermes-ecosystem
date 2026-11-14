@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>electricsheephq/caduceus — Hermes Agent Domain Applications | Hermes Atlas</title>
-<meta name="description" content="Caduceus is a Hermes plugin that imports DNA data, Apple Health exports and health records into a SQLite vault on the user's machine. It provides cited answers…">
+<meta name="description" content="Caduceus is a Hermes plugin that combines DNA data, health information and research in a SQLite vault on the user's machine. It provides cited health answers,…">
 <link rel="canonical" href="https://hermesatlas.com/projects/electricsheephq/caduceus">
 <meta property="og:title" content="electricsheephq/caduceus — Hermes Atlas">
-<meta property="og:description" content="Caduceus is a Hermes plugin that imports DNA data, Apple Health exports and health records into a SQLite vault on the user's machine. It provides cited answers…">
+<meta property="og:description" content="Caduceus is a Hermes plugin that combines DNA data, health information and research in a SQLite vault on the user's machine. It provides cited health answers,…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/electricsheephq/caduceus">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="electricsheephq/caduceus — Hermes Atlas">
-<meta name="twitter:description" content="Caduceus is a Hermes plugin that imports DNA data, Apple Health exports and health records into a SQLite vault on the user's machine. It provides cited answers…">
+<meta name="twitter:description" content="Caduceus is a Hermes plugin that combines DNA data, health information and research in a SQLite vault on the user's machine. It provides cited health answers,…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=caduceus&amp;subtitle=Health+answers+that+cite+your+own+DNA%2C+Apple+Health+and+records%2C+plus+new+research%2C+from+a+vault+on+your+machine.&amp;kind=project+%C2%B7+domain+applications">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/electricsheephq/caduceus#software",
   "name": "caduceus",
-  "description": "Caduceus is a Hermes plugin that imports DNA data, Apple Health exports and health records into a SQLite vault on the user's machine. It provides cited answers drawing on those sources and research, can generate reports, and can watch for new research about the user's gene–drug pairs.",
+  "description": "Caduceus is a Hermes plugin that combines DNA data, health information and research in a SQLite vault on the user's machine. It provides cited health answers, rebuilds Promethease reports, creates a brief for a clinician and can watch for new research on the user's gene–drug pairs.",
   "url": "https://hermesatlas.com/projects/electricsheephq/caduceus",
   "codeRepository": "https://github.com/electricsheephq/caduceus",
   "applicationCategory": "BusinessApplication",
@@ -47,7 +47,7 @@
     "name": "electricsheephq",
     "url": "https://github.com/electricsheephq"
   },
-  "dateModified": "2026-11-14T12:35:44.000Z",
+  "dateModified": "2026-11-14T15:38:16.000Z",
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
   }
@@ -134,11 +134,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Caduceus is a Hermes plugin that imports DNA data, Apple Health exports and health records into a SQLite vault on the user's machine. It provides cited answers drawing on those sources and research, can generate reports, and can watch for new research about the user's gene–drug pairs.</p>
+    <p class="summary-text">Caduceus is a Hermes plugin that combines DNA data, health information and research in a SQLite vault on the user's machine. It provides cited health answers, rebuilds Promethease reports, creates a brief for a clinician and can watch for new research on the user's gene–drug pairs.</p>
     <ul class="summary-highlights">
-      <li>Imports DNA, Apple Health data and health records into a local vault</li>
-      <li>Answers cite sources and evidence levels</li>
-      <li>Generates reports and watches for relevant new research</li>
+      <li>Imports DNA, Apple Health and health-record files.</li>
+      <li>Keeps the vault and imports on the user's machine.</li>
+      <li>Includes research-watch and clinician-brief features.</li>
     </ul>
   </div>
 </section>
@@ -171,6 +171,8 @@ demo below. To use your own files, tell your agent <strong>"set up Caduceus"</st
 <li>choosing a privacy level;</li>
 <li>turning on the research watch.</li>
 </ol>
+<p>Once your files are in, ask <strong>"walk me through my results"</strong>. The session skill goes one area at a time, asks
+before it shows any sensitive result, and ends with a brief for your clinician.</p>
 <p>Caduceus is also in the Hermes plugin catalog. Installing it by name (<code>hermes plugins install caduceus --enable</code>) needs a
 Hermes that can read the current catalog (<a href="https://github.com/NousResearch/hermes-agent/issues/151856">hermes-agent#151856</a>);
 the line above always works. Without <code>--enable</code>, Hermes installs the plugin switched off; <code>hermes plugins enable caduceus</code>
@@ -341,6 +343,8 @@ turns it on.</p>
 <li>The agent is told never to open these files itself.</li>
 <li>Big imports keep running in the background, and re-importing a file does nothing.</li>
 <li>An interrupted import resumes where it stopped.</li>
+<li>A FHIR condition that gives only the date it was recorded is kept, with its onset unknown. Results without a code
+are told apart by name.</li>
 <li>A vault holds one person. A second DNA file is compared with the first on shared markers, and if it looks like a
 different person, you are told, and answers carry a warning. Keep each person in their own Hermes profile.</li>
 </ul>
@@ -362,7 +366,11 @@ defaults to <code>health-auto-export</code>. If your server has another name, pu
 defaults to 90 for the first sync, and a first sync that fails or is interrupted keeps that start for the next try.
 Later syncs start two days before the last day read in full. A day whose reply was too large is read again by the
 next sync. A sync in which no reply could be read fails and says so, and the next one reads those days again. When
-the server answers with an error, Caduceus reports a fixed message and never passes on the server's own text.</p>
+the server answers with an error, Caduceus reports a fixed message and never passes on the server's own text.
+The sync asks for whole days in the phone's own time zone. If no entry of one kind (health metrics, sleep or
+workouts) can be read, the sync fails, says which kind, and the next one reads those days again.
+If a file holds a night's sleep summary and that night's stages from the same source, the summary is used, so the
+night counts once.</p>
 <h3>Tools</h3>
 <table>
 <thead>
@@ -377,7 +385,7 @@ the server answers with an error, Caduceus reports a fixed message and never pas
 </tr>
 <tr>
 <td><code>caduceus_genome</code></td>
-<td>Your genotype at any marker, gene views, gene–drug checks (CPIC guidance plus GLP-1 research), derived calls (APOE, CYP2C19, CYP2C9 and others), a gene–drug profile, top findings, and the rebuilt variant report</td>
+<td>Your genotype at any marker, gene views (every marker Caduceus knows for the gene, its derived call first), gene–drug checks (CPIC guidance plus GLP-1 research), derived calls (APOE, CYP2C19, CYP2C9 and others), a gene–drug profile, top findings, and the rebuilt variant report</td>
 </tr>
 <tr>
 <td><code>caduceus_trend</code></td>
@@ -414,17 +422,21 @@ the server answers with an error, Caduceus reports a fixed message and never pas
 </tbody></table>
 <p>You change these yourself, with <code>/caduceus privacy standard</code>, <code>/caduceus hide &lt;category&gt;</code>, <code>/caduceus unlock &lt;category&gt;</code>
 and so on (<code>/caduceus help</code> lists them), or in the plugin settings. Your agent can read the settings but cannot change
-them. Hidden results are counted, never described.</p>
+them. Hidden results are counted, never described. A marker follows its gene's category: hiding <code>pgx</code> hides the
+drug-response genes' markers in gene views, lookups, gene–drug checks and the summary's gene–drug profile, and a
+derived call shows only when every marker behind it can. Variant-report listings (filters, top findings, the rebuilt
+report) follow each annotation's own category.</p>
 <p>Disclosure — imports, search and reports run locally, and the vault is never uploaded as a
 whole; tool results (slices of your data) enter the conversation, so the model provider you
 chose sees them; a hook adds one fixed note, holding none of your data, to the first health, medication or DNA question of each chat when the vault has data (off with the <code>vault_hint</code> setting); the research watch (on by default, runs when you or the agent ask for it or on a schedule you
 create, off with the <code>research_watch</code> setting) sends gene and topic terms, the names of medications you recorded,
-and public marker and article IDs, never genotypes, to Europe PMC and NCBI; the Health Auto Export sync (off until you allow that app's MCP server for Caduceus in Hermes config, and run only when you or the agent ask for it or on a schedule you create) reads Apple Health data from that server through Hermes's own MCP client and sends nothing out; scheduled checks run model turns billed
+and public marker and article IDs, never genotypes, to Europe PMC and NCBI; the Health Auto Export sync (off until you allow that app's MCP server for Caduceus in Hermes config, and run only when you or the agent ask for it or on a schedule you create) reads Apple Health data from that server through Hermes's own MCP client and sends none of your data out; scheduled checks run model turns billed
 like any message;
 no telemetry. Includes a report-a-problem skill: the agent drafts a bug report, asks you to
 check it holds no health data, and files it to this repository with <code>gh</code> only after you
 approve the draft.</p>
-<p>To delete everything Caduceus stored, run <code>/caduceus erase</code>: it shows what would go, and <code>/caduceus erase confirm</code> deletes it. Your settings stay.</p>
+<p>To delete everything Caduceus stored, run <code>/caduceus erase</code>: it shows what would go, and <code>/caduceus erase confirm</code> deletes it. Your settings stay, and so do schedules you created with <code>/blueprint</code>: the
+preview names each one and what its next run will do.</p>
 <p>Your data lives in your Hermes profile's <code>plugin-data/caduceus/</code>. In v0.1 it is not encrypted at rest; encrypted and local-model levels are planned for v0.4. See <a href="https://github.com/electricsheephq/caduceus/blob/main/SECURITY.md">SECURITY.md</a> for the boundaries.</p>
 <h3>Settings</h3>
 <table>
