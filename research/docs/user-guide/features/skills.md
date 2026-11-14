@@ -632,7 +632,7 @@ skills:
   write_approval: false     # false = write freely (default) | true = require approval
 ```
 
-When `write_approval: true`, every `skill_manage` write (create / edit / patch / delete / write\_file / remove\_file) is **staged** instead of committed — a SKILL.md is too large to review inline, so staging applies regardless of whether the write came from a foreground turn or the background review. Staged writes survive restarts under `~/.hermes/pending/skills/` and are reviewed with the same familiar approve/deny flow as dangerous commands:
+When `write_approval: true`, every `skill_manage` write (create / edit / patch / delete / write\_file / remove\_file) is **staged** instead of committed — a SKILL.md is too large to review inline, so staging applies regardless of whether the write came from a foreground turn or the background review. It doesn't cover direct edits of skill files by the generic file tools or the terminal. Staged writes survive restarts under `~/.hermes/pending/skills/` and are reviewed with the same familiar approve/deny flow as dangerous commands:
 
 ```
 /skills pending             # list staged skill writes + a one-line gist each

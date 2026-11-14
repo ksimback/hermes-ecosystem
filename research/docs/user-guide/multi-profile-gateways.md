@@ -230,7 +230,7 @@ POST http://host:8644/webhooks/<route>
 POST http://host:8644/p/coder/webhooks/<route>
 ```
 
-An unknown or unconfigured profile in the prefix returns `404`. The shared listener is the default profile's `api_server` port (or its `webhook` port when no API server is enabled); it serves three kinds of profile-prefixed paths:
+An unknown or unconfigured profile in the prefix returns `404`. On the `api_server` listener the body is `{"error": "Unknown or unconfigured profile", "code": "profile_unknown"}`; clients should key on `code` (gateways before it send the `error` sentence alone). The shared listener is the default profile's `api_server` port (or its `webhook` port when no API server is enabled); it serves three kinds of profile-prefixed paths:
 
 -   **`api_server` and `webhook` are mirrored**, never duplicated. `/p/coder/v1/...` and `/p/coder/webhooks/<route>` are answered by the default profile's own adapter under coder's scope. A secondary must therefore **not** enable `api_server` or `webhook` itself (the dashboard refuses with `409`; an `API_SERVER_KEY` or `WEBHOOK_ENABLED` in the secondary's `.env` wires the credential without starting a listener).
 -   **Every other inbound-port platform runs in shared-listener mode.** A secondary that configures Twilio SMS, LINE, Teams, BlueBubbles, Microsoft Graph, WhatsApp Cloud, WeCom callback or Feishu webhook mode gets its **own** adapter instance built without a port; the default listener forwards `/p/<profile>/<the adapter's usual path>` to it. See [Inbound-port platforms under the multiplexer](#inbound-port-platforms-under-the-multiplexer).

@@ -183,7 +183,7 @@ default `none`
 
 str
 
-required when `server_json`
+required when `server_json`; same rule as `location` (rooted or `~` / `%VAR%` / `$VAR` prefix; no `..` segment or URL scheme)
 
 `.liveness_path`
 
@@ -191,7 +191,7 @@ required when `server_json`
 
 str
 
-defaults `pid` / `http` / `token`
+defaults `pid` / `http` / `token`; simple key names only (`[A-Za-z0-9_.-]+`)
 
 `.liveness_*_key`
 
@@ -199,7 +199,7 @@ defaults `pid` / `http` / `token`
 
 str
 
-default `/mcp`; the path used for `initialize`, never the one in the file
+default `/mcp`; a plain path starting with `/`, charset `[A-Za-z0-9._~/-]`; no `@`, `?`, `#`, whitespace, or scheme. It is appended to the loopback URL from the runtime file, never the one in the file
 
 `.endpoint_path`
 

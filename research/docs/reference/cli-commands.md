@@ -647,6 +647,10 @@ Discover or request a local session runtime without installing a service or repl
 
 Give a local client the gateway's WebSocket URL and one single-use session ticket for this profile. Emits JSON; see below.
 
+`tickets`
+
+Mint single-use HTTP and WebSocket tickets for a client that reaches the gateway over SSH. Emits JSON; see below.
+
 `start`
 
 Start the installed systemd/launchd background service.
@@ -730,6 +734,8 @@ Use `hermes gateway run` instead of `hermes gateway start` — WSL's systemd sup
 `hermes gateway ensure [--json] [--timeout 60]` discovers or starts the active profile's session runtime and prints one JSON object (`state`, `reason_code`, and an `endpoint` only once authenticated discovery reports compatible readiness; never tickets or credentials). It waits for an existing or starting owner instead of replacing it and never installs a service. Exit `0` means ready; any other code is a refusal or a deadline, never permission to start a replacement. Service identity checks, the home-permission policy behind `unsafe_control_permissions`, and every exit code: [Gateway internals: `hermes gateway ensure`](/docs/developer-guide/gateway-internals#hermes-gateway-ensure).
 
 `hermes gateway attach [--json] [--start] [--recover] [--timeout 60]` is the attach step for a local client that dials the gateway itself (a third-party chat UI, for example). It prints `ensure`'s JSON plus, once the gateway is attachable, `url` (`ws://127.0.0.1:<port>/api/ws`), `protocol` (`hermes-gateway-v1`), `protocols` (the WebSocket subprotocols to dial with) and `ticket`. The ticket is single-use, bound to the active profile, and expires 30 seconds after it is minted; it goes to stdout for the calling process only and is never logged. A plain call only discovers the gateway; `--start` starts it when none serves the profile; `--recover` discovers first and starts (or replaces an older Hermes's gateway) only when it is not ready. An unmanaged gateway that `attach` starts (no service installed) stops itself once it has been idle for a while. With no gateway to attach, the JSON carries `message` (the `gateway <state>: <reason>` lines, with the remedy when there is one), the same text goes to stderr, and the exit code is `ensure`'s for that verdict. The Ink TUI attaches through the same code. Details and the dial rules: [Gateway internals: `hermes gateway attach`](/docs/developer-guide/gateway-internals#hermes-gateway-attach).
+
+`hermes gateway tickets (--probe | --serve) [--json]` is for a client that reaches the gateway over SSH and calls its HTTP API through a forwarded port. `--probe` prints one JSON line (`protocol`, the ticket `purposes` it mints, `windows_service_session`) and touches no gateway. `--serve` prints a hello line with the running gateway's endpoint, then answers each stdin line `{"id": ..., "purpose": "native-http"}` with one stdout line holding a single-use ticket, until stdin closes. A line may add `"profile": "<name>"` for another profile the same gateway serves. `{"id": ..., "purpose": "interactive"}` gets the WebSocket's ticket for a socket that reaches every profile the gateway serves. It never starts a gateway, and tickets go to stdout only, never to a log. The line protocol and the client rules: [Gateway over SSH: client contract](/docs/developer-guide/gateway-ssh-clients).
 
 ## `hermes lsp`
 
@@ -3574,6 +3580,10 @@ Force a **full** pre-update backup for this run: the quick state snapshot plus a
 `--yes`, `-y`
 
 Assume yes for interactive prompts such as config migration and stash restore. API-key entry is skipped; run `hermes config migrate` separately for those.
+
+`--force`
+
+Linux/macOS: stop every gateway this update owns at once instead of waiting for in-flight work to drain (choose it when starting the update; it cannot interrupt an update already waiting): running turns, background subagents and tool/background processes are interrupted, a gateway still alive after ~12 s is killed, then the update runs and the gateways restart on the new code. On Windows it only lets the update proceed when another `hermes.exe` is detected; the Windows pause still drains (it does not bypass the venv-holder guard; see `--force-venv`).
 
 Additional behavior:
 
