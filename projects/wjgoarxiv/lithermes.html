@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>wjgoarxiv/lithermes — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="LitHermes is a plugin for Hermes Agent that structures work around goals, plans, tests, reviews, and handoff notes. It can track whether checks are complete,…">
+<meta name="description" content="LitHermes is a plugin for Hermes Agent that adds a workflow for planning work, checking results, and recording progress for the next session. It tracks goals…">
 <link rel="canonical" href="https://hermesatlas.com/projects/wjgoarxiv/lithermes">
 <meta property="og:title" content="wjgoarxiv/lithermes — Hermes Atlas">
-<meta property="og:description" content="LitHermes is a plugin for Hermes Agent that structures work around goals, plans, tests, reviews, and handoff notes. It can track whether checks are complete,…">
+<meta property="og:description" content="LitHermes is a plugin for Hermes Agent that adds a workflow for planning work, checking results, and recording progress for the next session. It tracks goals…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/wjgoarxiv/lithermes">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="wjgoarxiv/lithermes — Hermes Atlas">
-<meta name="twitter:description" content="LitHermes is a plugin for Hermes Agent that structures work around goals, plans, tests, reviews, and handoff notes. It can track whether checks are complete,…">
+<meta name="twitter:description" content="LitHermes is a plugin for Hermes Agent that adds a workflow for planning work, checking results, and recording progress for the next session. It tracks goals…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=lithermes&amp;subtitle=Add+one+word%2C+%60lit%60%2C+to+a+Hermes+Agent+request+and+get+a+planned%2C+tested%2C+reviewed+workflow%2C+plus+a+handoff+note+so+the+next+session+knows+where+you+left+off.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/wjgoarxiv/lithermes#software",
   "name": "lithermes",
-  "description": "LitHermes is a plugin for Hermes Agent that structures work around goals, plans, tests, reviews, and handoff notes. It can track whether checks are complete, flag stale test evidence, and offer unfinished goals to a later session; it works with Hermes CLI and Telegram or Discord gateways.",
+  "description": "LitHermes is a plugin for Hermes Agent that adds a workflow for planning work, checking results, and recording progress for the next session. It tracks goals and test evidence, and writes a handoff card when a session with a goal closes.",
   "url": "https://hermesatlas.com/projects/wjgoarxiv/lithermes",
   "codeRepository": "https://github.com/wjgoarxiv/lithermes",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "wjgoarxiv",
     "url": "https://github.com/wjgoarxiv"
   },
-  "dateModified": "2026-11-12T07:27:41.000Z",
+  "dateModified": "2026-11-13T23:10:26.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-12</span>
+    <span><span class="meta-label">updated</span>2026-11-13</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">LitHermes is a plugin for Hermes Agent that structures work around goals, plans, tests, reviews, and handoff notes. It can track whether checks are complete, flag stale test evidence, and offer unfinished goals to a later session; it works with Hermes CLI and Telegram or Discord gateways.</p>
+    <p class="summary-text">LitHermes is a plugin for Hermes Agent that adds a workflow for planning work, checking results, and recording progress for the next session. It tracks goals and test evidence, and writes a handoff card when a session with a goal closes.</p>
     <ul class="summary-highlights">
-      <li>Adds goal criteria, test evidence, and review checks to sessions.</li>
-      <li>Writes handoff cards under `.hermes/lithermes/handoff/`.</li>
-      <li>Hermes Desktop pane is available in version 0.23 or later.</li>
+      <li>Use `lit` to start a request or resume an unfinished goal.</li>
+      <li>Tracks whether checks pass and test evidence remains current.</li>
+      <li>Shows a goal and workflow timeline in Hermes Desktop.</li>
     </ul>
   </div>
 </section>
@@ -174,17 +174,16 @@
 <li><strong>A note for tomorrow.</strong> When a session that held a goal closes, a handoff card is written under <code>.hermes/lithermes/handoff/</code>. The next session in that project offers the unfinished goal, and a bare <code>lit</code> picks it up.</li>
 <li><strong>A pane in Hermes Desktop.</strong> The goal, whether its gate is open and a six-step timeline sit in a right-hand pane. It is Off by default: in Hermes Desktop 0.23 or later, switch LitHermes on under Capabilities &gt; Plugins.<br><br><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/desktop-pane.webp" width="360" alt="The LitHermes pane in Hermes Desktop for the goal Month-end export CI green. Timeline: Plan, 3 criteria; Runs, R003, R004 and R005 each marked stale; Review, no blockers; Gate, CLOSED with 9 reasons; Handoff, not written yet; Resume, fresh session. Three criteria are pending, the three evidence rows citing run R005 read stale, and the first reason says C001 evidence R005 is stale because tally/export.py changed after the run."></li>
 </ul>
-<p>It works the same in the Hermes CLI and through a Telegram or Discord gateway. To try it, install once, restart Hermes and give it a task:</p>
-<pre><code class="language-sh">npx --yes --package @litfamily/lithermes@latest -- lithermes install --yes --no-style
-</code></pre>
-<pre><code class="language-text">lit fix the failing login test
-</code></pre>
+<blockquote>
+<p>[!TIP]
+Run the one line under <a href="#install">Install</a>, restart Hermes, then give it a task with <code>lit</code> in front as in <a href="#quick-start">Quick start</a>. It works the same in the Hermes CLI and through a Telegram or Discord gateway.</p>
+</blockquote>
 <p align="center"><a href="#install">Install</a> &nbsp; <a href="#quick-start">Quick start</a> &nbsp; <a href="#what-you-can-make">Showcase</a> &nbsp; <a href="./docs/guide.md"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/readme/lucide-book-open.svg" width="16" alt=""> Guide</a> &nbsp; <a href="./docs/skills.md">Skills</a> &nbsp; <a href="./docs/assets/readme/ignition-film.mp4"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/readme/lucide-play.svg" width="16" alt=""> Film</a> &nbsp; <a href="./docs/guide.md#safety">Safety</a> &nbsp; <a href="./README_Ko-KR.md">한국어</a> &nbsp; <a href="https://www.npmjs.com/package/@litfamily/lithermes">npm</a></p>
 
 <p align="center"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/demo.webp" width="960" alt="A short silent film of a real Hermes session with LitHermes, in seven numbered steps. It opens on the LitHermes mark and &quot;The lit workflow for Hermes Agent&quot;. 1, start with &quot;lit plan&quot;: the request &quot;lit plan add a --shout flag that prints the greeting in capitals, with a test&quot; is typed in. 2, the workflow map at PLAN: the reply ends with the LIT mark, &quot;🔥 LIT IGNITED · lit-plan 🔥&quot;, and under it the map row &quot;🔥 LIT · lit-plan — 📝 PLAN › 🔨 · › 🔍 · › 🏁 ·&quot;. 3, /start-work runs the plan: the test-first and verification skills, test-driven-development and verification-before-completion, load before any code. 4, a failing test first: it runs npm run test on the new tests and checks that the run fails before greet.js changes. 5, then the fix and real tests: greet.js gains the toUpperCase line and npm run test runs again. 6, done, with a review: the lit answer box says the tests and the final review pass, and node greet.js --shout Ada prints HELLO, ADA!. 7, the map, all done: after &quot;lit recap&quot;, the LIT mark &quot;🔥 LIT IGNITED · lit-recap 🔥&quot; and the row &quot;🔥 LIT · lit-recap — 📝 plan ✓ › 🔨 work ✓ › 🔍 review ✓ › 🏁 done ✓&quot;. It closes on the LitHermes mark and the install command."></p> 
 
 <h3>What you can make</h3>
-<p>The picture below is a real run of LitHermes. The skills that make things aim for a full, dense result by default. Say calm or minimal and they hold back.</p>
+<p>The picture below is a real run of LitHermes. The skills that make things aim for a full, dense result by default; say calm or minimal and they hold back.</p>
 <h4>Keep track of it</h4>
 <p><code>lit adhd</code> reads your recent Hermes sessions, plans and git history and gives you one KPI board: the one thing to do now and exactly what to type, what is done, what is left, and what you must not forget.</p>
 <table>
@@ -192,10 +191,11 @@
 </tbody></table>
 
 <h4>Drawings, decks, documents, interfaces and films</h4>
-<p>Nine skills that make those things are LitFamily extensions now, kept on the <code>wjgoarxiv-skills</code> shelf, so you add the ones you use beside LitHermes (see <a href="#extensions">Extensions</a>): <code>lit-schematic</code>, <code>lit-diagram-drawer</code>, <code>lit-scientific-visualization</code>, <code>lit-pptx</code>, <code>lit-docx</code>, <code>frontend-ui-ux</code>, <code>visual-qa</code>, <code>lit-typographic-motion</code> and <code>readme-studio</code>. Their names still answer in Hermes. Ask for one, or for a deck with <code>lit</code>, and LitHermes says it is an extension and gives you the line that copies that one skill into your Hermes profile. <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/skills.md#moved-to-wjgoarxiv-skills">Skills and commands</a> has the list.</p>
+<p>The nine skills that make those things are LitFamily extensions on the <code>wjgoarxiv-skills</code> shelf, so you add the ones you use beside LitHermes; <a href="#extensions">Extensions</a> names them and shows how. <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/skills.md#moved-to-wjgoarxiv-skills">Skills and commands</a> has the list.</p>
 <h3>Why LitHermes</h3>
 <p>Hermes Agent is good at the task in front of it. Work that outlasts one sitting is harder: the conversation gets compacted, the terminal closes or the gateway restarts, and next time you first have to work out what was decided, what was really tested and what was left half done. And "done" often means only that the model said so.</p>
-<p>LitHermes gives each session a routine and keeps a record of it. With <code>lit</code> in front, a request gets criteria you can check, a test that fails before the change and passes after it, a look at the running result, and a handoff note in your project. For a bigger change, <code>lit plan</code> writes a plan you approve before anything is edited. Goals, plans and evidence stay on disk, so a fresh session reads them and carries on. Hermes still runs the model, the tools and your sign-in; LitHermes adds the way of working on top. LitHermes suits people who already use Hermes on work that has to hold up: code that must keep passing its tests, reports and decks that go to other people, research you want sources for. It helps most when the work outlasts one sitting, or when you start it at your desk and check on it later from a phone through a gateway.</p>
+<p>LitHermes gives each session a routine and keeps a record of it; for a bigger change, <code>lit plan</code> writes a plan you approve before anything is edited. Goals, plans and evidence stay on disk, so a fresh session reads them and carries on. Hermes still runs the model, the tools and your sign-in; LitHermes adds the way of working on top.</p>
+<p>It suits people who already use Hermes on work that has to hold up: code that must keep passing its tests, reports and decks that go to other people, research you want sources for. It helps most when the work outlasts one sitting, or when you start it at your desk and check on it later from a phone through a gateway.</p>
 <h4>What a session looks like</h4>
 <p>This is the film above, cut to its key lines. You type the first line, the reply opens with the second, and the map row moves along as the work happens:</p>
 <pre><code class="language-text">lit plan add a --shout flag that prints the greeting in capitals, with a test
@@ -205,67 +205,169 @@
 🔥 LIT · lit-recap — 📝 plan ✓ › 🔨 work ✓ › 🔍 review ✓ › 🏁 done ✓
 </code></pre>
 <h3>Install</h3>
-<p>You need Hermes Agent, Node.js 18 or later, and write access to your Hermes home (normally <code>~/.hermes</code>). This page describes <code>@litfamily/lithermes@1.0.40</code>. Run this in any terminal:</p>
+<p>You need Hermes Agent, Node.js 18 or later, and write access to your Hermes home (normally <code>~/.hermes</code>). This page describes <code>@litfamily/lithermes@1.0.41</code>. Run this in any terminal:</p>
 <pre><code class="language-sh">npx --yes --package @litfamily/lithermes@latest -- lithermes install --yes --no-style
 </code></pre>
-<p>The installer copies the Python plugin into your Hermes home and switches it on in <code>config.yaml</code>, after saving a backup of that file. On a fresh home it also writes the model routes LitHermes is tuned for, one for planning and review and one for helpers; a model you already chose is kept. It adds the Ignition skin and twelve more LIT skins. <code>--yes</code> runs it without stopping to ask, and <code>--no-style</code> skips the question about reply wording. Then restart the Hermes CLI and any running gateway: Hermes loads a new plugin only when it starts.</p>
+<table>
+<thead>
+<tr>
+<th>Part</th>
+<th>What the installer does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Plugin</td>
+<td>Copies the Python plugin into your Hermes home and switches it on in <code>config.yaml</code>, after saving a backup of that file</td>
+</tr>
+<tr>
+<td>Model routes</td>
+<td>On a fresh home, writes one route for planning and review and one for helpers; a model you already chose is kept</td>
+</tr>
+<tr>
+<td>Skins</td>
+<td>Adds the Ignition skin and twelve more LIT skins</td>
+</tr>
+<tr>
+<td><code>--yes</code>, <code>--no-style</code></td>
+<td>Run it without stopping to ask, and skip the question about reply wording</td>
+</tr>
+</tbody></table>
+<p>Then restart the Hermes CLI and any running gateway, because Hermes loads a new plugin only when it starts.</p>
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="./docs/assets/screens/install-dark.webp"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/screens/install-light.webp" width="960" alt="Terminal card titled demo — lithermes install. After ~/demo $ lithermes install --yes --no-style --offline --no-patch-installed-hermes, the INSTALL RECEIPT: &quot;Status Ready for Hermes&quot;, &quot;Package Installed LitHermes&quot; with the version number, &quot;Plugin ~/.hermes/plugins/lithermes&quot;, &quot;Model config updated&quot;, &quot;Auto-compaction unavailable (Hermes 0.21.3 exposes ratio-only compression; no exact 650K trigger schema)&quot;, &quot;Concurrency hard (per batch 20; async batches 3; potential children 60)&quot;, &quot;Recursion hard (depth 1, flat)&quot;. A dimmed “…” marks the cut route lines, then &quot;Next Restart any running Hermes gateway to load new plugins.&quot; and &quot;LitHermes is installed; restart Hermes to load the new plugin&quot;."></picture></p>
 
 <p><em>Captured from the real installer in a scratch Hermes home, run offline so nothing left the machine; some lines are cut. More screens are in the <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/tour.md">tour</a>.</em></p>
-<p>If you would like to look first, <code>install --dry-run</code> prints every change and writes nothing. To keep your everyday setup untouched, point <code>HERMES_HOME</code> at a new, empty directory before you install and start Hermes with the same value; model routes may then show as unavailable, and <code>lithermes doctor --offline</code> is the check that tells you the plugin is in place. <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/install.md">Every flag, the trial profile and installing from a reviewed <code>.tgz</code></a>.</p>
-<p>You can also hand the install to a coding agent. With this prompt it checks your setup, waits for your yes, installs the official package, runs the offline check and leaves the restart to you:</p>
-<pre><code class="language-text">Install LitHermes, the lit workflow plugin for Hermes Agent, on this machine.
-
-1. Check first: Hermes Agent is installed (hermes --version), Node.js is 18 or later
-   (node --version), and I can write to my Hermes home (~/.hermes, or $HERMES_HOME if set).
-2. Show me your plan and the exact commands, and wait for my yes before you change
-   anything. You may preview the install first; it changes nothing:
-   npx --yes --package @litfamily/lithermes@latest -- lithermes install --dry-run
-3. Use only the official npm package @litfamily/lithermes. Do not clone a repository,
-   copy plugin files by hand or install any other package. Install with:
-   npx --yes --package @litfamily/lithermes@latest -- lithermes install --yes --no-style
-4. Verify with:
-   npx --package @litfamily/lithermes -- lithermes doctor --offline
-   Report the result to me, including every line that is not PASS. "loaded plugin:
-   PARTIAL" is expected offline, and model routes may show as unavailable.
-5. Do not restart Hermes or its gateway yourself. Remind me to restart the Hermes CLI
-   and any running Hermes gateway (Telegram, Discord and so on) so the plugin loads,
-   and then to start a task with lit in front.
-</code></pre>
+<p><strong>Look before you install.</strong> <code>install --dry-run</code> prints every change and writes nothing. To keep your everyday setup untouched, point <code>HERMES_HOME</code> at a new, empty directory before you install and start Hermes with the same value; model routes may then show as unavailable, and <code>lithermes doctor --offline</code> is the check that tells you the plugin is in place. <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/install.md">Every flag, the trial profile and installing from a reviewed <code>.tgz</code></a>.</p>
+<p><strong>Hand it to a coding agent.</strong> With <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/install.md#hand-the-install-to-a-coding-agent">this prompt</a>, the agent checks your setup, waits for your yes, installs the official package, runs the offline check and leaves the restart to you.</p>
 <h3>Extensions</h3>
-<p>LitHermes's core is complete and works on its own: planning, loops, goals, reviews, research, handoffs and prose cleanup all ship in this package. Nine skills that make files are LitFamily extensions, kept on the extension shelf <a href="https://github.com/wjgoarxiv/wjgoarxiv-skills"><code>wjgoarxiv-skills</code></a>. Install the ones you use alongside LitHermes to get the full LitFamily experience: <code>lit-pptx</code> for decks, <code>lit-docx</code> for documents, <code>lit-diagram-drawer</code>, <code>lit-schematic</code> and <code>lit-scientific-visualization</code> for figures, <code>frontend-ui-ux</code> and <code>visual-qa</code> for design, and <code>lit-typographic-motion</code> and <code>readme-studio</code> for video covers.</p>
-<p>Inside the package are 31 core skills, from <code>litwork</code> and <code>lit-plan</code> to <code>review-work</code>, <code>lit-handoff</code> and <code>lit-humanizer</code>, and every <code>lit</code> route runs on them. Each of the nine extensions left only a stub with its name in the package. The picture shows both parts, the five families on the shelf, and the four steps that bring one extension into your profile.</p>
-<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="./docs/assets/readme/diagrams/core-extensions.en.dark.png"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/readme/diagrams/core-extensions.en.light.png" width="960" alt="The LitHermes package holds 31 core skills in five groups (run the work, check it, think and research, carry it on, prose and code tools) and nine extension stubs. The stubs point to variants/lithermes/<id> on the wjgoarxiv-skills shelf, where the nine skills sit in five families: decks, documents, figures, design and video-covers. Installing one takes four steps: clone the shelf, make skills/ in the Hermes profile, copy one folder, start a new Hermes session."></picture></p>
+<p>LitHermes's core is complete and works on its own: planning, loops, goals, reviews, research, handoffs and prose cleanup all ship in this package. Nine skills that make files are LitFamily extensions, kept on the extension shelf <a href="https://github.com/wjgoarxiv/wjgoarxiv-skills"><code>wjgoarxiv-skills</code></a>. Install the ones you use alongside LitHermes to get the full LitFamily experience:</p>
+<table>
+<thead>
+<tr>
+<th>For</th>
+<th>Extensions</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Decks and documents</td>
+<td><code>lit-pptx</code>, <code>lit-docx</code></td>
+</tr>
+<tr>
+<td>Figures</td>
+<td><code>lit-diagram-drawer</code>, <code>lit-schematic</code>, <code>lit-scientific-visualization</code></td>
+</tr>
+<tr>
+<td>Design</td>
+<td><code>frontend-ui-ux</code>, <code>visual-qa</code></td>
+</tr>
+<tr>
+<td>Video covers</td>
+<td><code>lit-typographic-motion</code>, <code>readme-studio</code></td>
+</tr>
+</tbody></table>
+<p>Inside the package are 31 core skills, from <code>litwork</code> and <code>lit-plan</code> to <code>review-work</code>, <code>lit-handoff</code> and <code>lit-humanizer</code>, and every <code>lit</code> route runs on them; each of the nine extensions left only a stub with its name. The picture shows both parts, the five families on the shelf, and the four steps <code>lithermes extensions install</code> takes to bring one extension into your profile: check, move aside, copy, receipt.</p>
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="./docs/assets/readme/diagrams/core-extensions.en.dark.png"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/readme/diagrams/core-extensions.en.light.png" width="960" alt="The LitHermes package holds 31 core skills in five groups (run the work, check it, think and research, carry it on, prose and code tools) and nine extension stubs. The stubs point to variants/lithermes/<id> on the wjgoarxiv-skills shelf, where the nine skills sit in five families: decks, documents, figures, design and video-covers. lithermes extensions install <id> --yes brings one in with four steps: check for a same-name skill in the folders Hermes reads (and stop if one competes), move an old skills/<id> whole into extension-backups/, copy the Hermes edition into the empty folder, write the receipt .litfamily-extension.json. The other verbs are list, check, update, remove and prune-backups."></picture></p>
 
-<p>Each extension has a Hermes edition, one self-contained folder under <code>variants/lithermes/</code>. Clone the shelf once, copy the folder of the skill you want into your Hermes profile, then start a new Hermes session:</p>
-<pre><code class="language-sh">git clone https://github.com/wjgoarxiv/wjgoarxiv-skills.git
-mkdir -p "${HERMES_HOME:-$HOME/.hermes}/skills"
-cp -R wjgoarxiv-skills/variants/lithermes/&lt;id&gt; "${HERMES_HOME:-$HOME/.hermes}/skills/"
+<p><strong>Install one with the command.</strong> Each extension has a Hermes edition, one self-contained folder under <code>variants/lithermes/</code>. This line brings it into your profile, and a new Hermes session picks it up; without <code>--yes</code> it only prints the plan:</p>
+<pre><code class="language-sh">npx --package @litfamily/lithermes@latest -- lithermes extensions install lit-pptx --yes
 </code></pre>
-<p>The copy sits beside LitHermes in the profile's <code>skills/</code> folder, so upgrades and uninstalls leave it alone. Until you add one, its name still answers: <code>/lit-pptx</code>, or <code>lit</code> with a request for a deck, tells you it is an extension and gives you the lines above. The installer prints this note after an install or an upgrade, and the first Hermes reply after that shows it once more. After an upgrade from an older release, the note also names the tool caches the old film, deck and Word skills left behind (<code>lithermes/motion/</code> and <code>lithermes/office/</code> in your cache folder) and the update backups that still hold those skills; you can delete them if you do not install those extensions.</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Check</td>
+<td>Looks through every folder Hermes reads skills from; stops and names the path if another <code>lit-pptx</code> sits there</td>
+</tr>
+<tr>
+<td>Move aside</td>
+<td>Moves an old <code>skills/lit-pptx/</code> whole into <code>extension-backups/</code> of the profile, outside every folder Hermes reads skills from</td>
+</tr>
+<tr>
+<td>Copy and receipt</td>
+<td>Copies the skill into the emptied folder and writes a small receipt, <code>.litfamily-extension.json</code></td>
+</tr>
+</tbody></table>
+<p>The command keeps a shallow copy of the shelf in its own cache folder, or uses your clone, given with <code>--from &lt;path&gt;</code>. <code>extensions list</code>, <code>check</code>, <code>update --yes</code>, <code>remove &lt;id&gt; --yes</code> and <code>prune-backups --yes</code> keep your copies in order, <code>lithermes doctor</code> prints the check's summary, and <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/skills.md#moved-to-wjgoarxiv-skills">Skills and commands</a> says what each verb does.</p>
+<p><strong>Or copy it by hand.</strong> The same steps work without the command: clone the shelf once (<code>git clone https://github.com/wjgoarxiv/wjgoarxiv-skills.git</code>), set <code>ID</code> to the skill you want and paste the other lines in bash or zsh:</p>
+<pre><code class="language-sh">H="${HERMES_HOME:-$HOME/.hermes}"; ID=lit-pptx; SRC="$PWD/wjgoarxiv-skills/variants/lithermes/$ID"
+[ -e "$H/skills/${ID:?}" ] &amp;&amp; echo "taken: $H/skills/$ID" || echo "free: $H/skills/$ID"; grep -rlE --include=SKILL.md "^name: *[\"']?${ID}[\"']? *\$" "$H/skills" .hermes/skills .agents/skills 2&gt;/dev/null; grep -A3 -E '^ *(external_dirs|create_dir):' "$H/config.yaml" 2&gt;/dev/null
+if [ -e "$H/skills/${ID:?}" ]; then mkdir -p "$H/extension-backups" &amp;&amp; B=$(mktemp -d "$H/extension-backups/$(date +%Y%m%d-%H%M%S)-XXXX") &amp;&amp; mv "$H/skills/$ID" "$B/" &amp;&amp; echo "moved aside: $B/$ID"; fi
+if [ -e "$H/skills/${ID:?}" ]; then echo "stopped: $H/skills/$ID is still there"; else mkdir -p "$H/skills" &amp;&amp; cp -R "$SRC" "$H/skills/$ID" &amp;&amp; echo "copied: $H/skills/$ID"; fi
+printf '{"id":"%s","source":"%s","variant":"lithermes","installed_at":"%s"}\n' "${ID:?}" "$(printf %s "$SRC" | sed 's/[\\"]/\\&amp;/g')" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" &gt; "$H/skills/$ID/.litfamily-extension.json"
+</code></pre>
+<p>The copy sits beside LitHermes in the profile's <code>skills/</code> folder, so upgrades and uninstalls leave it and its receipt alone. To update by hand, pull the clone and paste the last five lines again; either way, each run keeps the copy it replaces in its own dated backup.</p>
+<p><strong>Until you add one, its name still answers.</strong> <code>/lit-pptx</code>, or <code>lit</code> with a request for a deck, tells you it is an extension and gives you the command above. The installer prints this note after an install or an upgrade, and the first Hermes reply after that shows it once more; when <code>extensions check</code> finds a second copy or a folder without a receipt in your profile, the note adds the line that runs it. After an upgrade from an older release, the note also names the tool caches the old film, deck and Word skills left behind (<code>lithermes/motion/</code> and <code>lithermes/office/</code> in your cache folder) and the update backups that still hold those skills, which you can delete if you do not install those extensions.</p>
 <h3>Quick start</h3>
 <p>Restart the Hermes CLI or gateway so it loads the plugin, then hand it one small task with <code>lit</code> in front:</p>
 <pre><code class="language-text">lit Build a to-do list in one HTML file without external dependencies. Implement add, complete, and delete; record what you checked and what remains.
 </code></pre>
+<ol>
+<li>The reply opens with a line of its own, <code>🔥 **LIT IGNITED · &lt;discipline&gt;** 🔥</code>, naming the route that took the request: <code>litwork</code> for a plain <code>lit</code>, <code>lit-plan</code> for a plan. It means the workflow has started; judge how it went from the result.</li>
+<li>When the task is done, open the HTML file, try each action yourself, and ask Hermes to separate the checks it ran from anything still unverified.</li>
+<li>Type <code>/lit-handoff</code>. The result and the next step go into <code>HANDOFF.md</code> in the project.</li>
+<li>Closing the session stops the work, and that file is how it continues: next time, open a new session in the same project and ask Hermes to read the handoff before it carries on.</li>
+</ol>
 <p>If you prefer commands, <code>/lit &lt;request&gt;</code> does the same. Telegram does not allow a hyphen in a command name, so on a Telegram gateway the plan and loop commands are <code>/lit_plan</code> and <code>/lit_loop</code>.</p>
-<p>The reply opens with a line of its own, <code>🔥 **LIT IGNITED · &lt;discipline&gt;** 🔥</code>, naming the route that took the request: <code>litwork</code> for a plain <code>lit</code>, <code>lit-plan</code> for a plan. It means the workflow has started; judge how it went from the result. When the task is done, open the HTML file, try each action yourself, and ask Hermes to separate the checks it ran from anything still unverified.</p>
-<p>Then type <code>/lit-handoff</code>. The result and the next step go into <code>HANDOFF.md</code> in the project. Closing the session stops the work, and that file is how it continues: next time, open a new session in the same project and ask Hermes to read the handoff before it carries on.</p>
 <h3>The workflow map</h3>
 <p>In the terminal a Hermes plugin cannot add a panel or a status bar segment of its own (the Desktop pane above is the exception), so LitHermes shows where the work stands inside the reply itself. While a plan is being worked through, each reply ends with one map row:</p>
 <pre><code class="language-text">🔥 LIT · lit-loop — 📝 plan ✓ › 🔨 WORK ▰▰▰▱▱▱▱ 3/7 › 🔍 · › 🏁 ·
 </code></pre>
-<p>Read it from left to right. After <code>LIT ·</code> comes the workflow, then its four stages: a stage behind you carries a tick, the one you are in is in capitals with a gauge and a count of finished rows, and a dot marks a stage not reached yet. LitHermes builds the row from the plan, the run and the litgoal criteria saved in your project, so it keeps up without the model reporting each step. A stage with nothing saved is left out, and file names and commands never appear.</p>
-<p>The Hermes CLI gets a look of its own as well. The Ignition skin greets you with the small LIT mark and <code>LIT ready</code>, says <code>stay lit</code> when you leave, and draws the banner in orange, lime, ivory and navy:</p>
+<table>
+<thead>
+<tr>
+<th>Part of the row</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>LIT · lit-loop</code></td>
+<td>The workflow</td>
+</tr>
+<tr>
+<td><code>plan ✓</code> · <code>WORK ▰▰▰▱▱▱▱ 3/7</code> · <code>🔍 ·</code></td>
+<td>A stage behind you carries a tick; the one you are in is in capitals with a gauge and a count of finished rows; a dot marks a stage not reached yet</td>
+</tr>
+</tbody></table>
+<p>LitHermes builds the row from the plan, the run and the litgoal criteria saved in your project, so it keeps up without the model reporting each step. A stage with nothing saved is left out, and file names and commands never appear.</p>
+<p><strong>The Ignition skin.</strong> The Hermes CLI gets a look of its own: the skin greets you with the small LIT mark and <code>LIT ready</code>, says <code>stay lit</code> when you leave, and draws the banner in orange, lime, ivory and navy.</p>
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="./docs/assets/screens/welcome-dark.webp"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/screens/welcome-light.webp" width="960" alt="Terminal card titled demo — hermes. After ~/demo $ hermes and a line of dots for the cut Hermes banner, the small LIT mark in orange, ivory and lime, then the lines &quot;LitHermes&quot; and &quot;LIT ready&quot;, and another line of dots. Below, the typed &quot;/exit&quot; is followed by &quot;Shutting down… (finalizing session)&quot; and then &quot;stay lit&quot;."></picture></p>
 
 <p><em>Captured from a real Hermes session with the Ignition skin selected. The Hermes banner, tip and warnings between the pictured lines are cut.</em></p>
-<p>While Hermes works, the spinner turns in flame faces such as <code>(🔥 lit)</code> with short verbs like <code>lit-looping</code> and <code>verifying</code>, and <code>/agents</code> shows the helpers Hermes sent out with <code>delegate_task</code>. A fresh interactive install picks Ignition only when you have no skin set; <code>lithermes hud</code> lists the others, and <code>/skin lithermes-tokyonight-day</code> reads well on a light terminal. If you step away during long work, add <code>--bell</code> to the install and Hermes rings the terminal bell when a turn ends; it stays off otherwise, and a <code>display.bell_on_complete</code> value you chose is kept. Gateway messages never show the CLI skin. <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/tour.md">The skin, the marks and the film</a>.</p>
+<ul>
+<li><strong>Spinner and helpers.</strong> While Hermes works, the spinner turns in flame faces such as <code>(🔥 lit)</code> with short verbs like <code>lit-looping</code> and <code>verifying</code>, and <code>/agents</code> shows the helpers Hermes sent out with <code>delegate_task</code>.</li>
+<li><strong>Other skins.</strong> A fresh interactive install picks Ignition only when you have no skin set; <code>lithermes hud</code> lists the others, and <code>/skin lithermes-tokyonight-day</code> reads well on a light terminal.</li>
+<li><strong>Bell.</strong> If you step away during long work, add <code>--bell</code> to the install and Hermes rings the terminal bell when a turn ends; it stays off otherwise, and a <code>display.bell_on_complete</code> value you chose is kept.</li>
+<li><strong>Gateways.</strong> Gateway messages never show the CLI skin. <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/tour.md">The skin, the marks and the film</a>.</li>
+</ul>
 <h3>Automatic handoff</h3>
-<p>A long session fills the model's context window, and when Hermes compacts it, older detail is lost. Automatic handoff has the model write the handoff before that point; you then run <code>/compact</code>, and the rest of the session starts from a written record. It is off by default, and you pick the percent yourself, since LitHermes has no built-in value. The choice is saved in your Hermes home at <code>~/.hermes/lithermes/auto-handoff.json</code>, so it follows you from project to project.</p>
-<p>To switch it on, type <code>/lit-handoff auto on 60</code> inside a Hermes session, with any whole number from 1 to 99 in place of 60. The reply says what will happen and compares your percent with the point where Hermes would compact on its own. Later, <code>/lit-handoff auto status</code> shows the latest reading for the session, and <code>/lit-handoff auto off</code> switches it off and remembers your percent for next time.</p>
+<p>A long session fills the model's context window, and when Hermes compacts it, older detail is lost. Automatic handoff has the model write the handoff before that point; you then run <code>/compact</code>, and the rest of the session starts from a written record. It is off by default, and you pick the percent yourself, since LitHermes has no built-in value.</p>
+<table>
+<thead>
+<tr>
+<th>Type in a Hermes session</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/lit-handoff auto on 60</code></td>
+<td>Switches it on, with any whole number from 1 to 99 in place of 60; the reply says what will happen and compares your percent with the point where Hermes would compact on its own</td>
+</tr>
+<tr>
+<td><code>/lit-handoff auto status</code></td>
+<td>Shows the latest reading for the session</td>
+</tr>
+<tr>
+<td><code>/lit-handoff auto off</code></td>
+<td>Switches it off and remembers your percent for next time</td>
+</tr>
+</tbody></table>
+<p>The choice is saved in your Hermes home at <code>~/.hermes/lithermes/auto-handoff.json</code>, so it follows you from project to project.</p>
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="./docs/assets/handoff/auto-handoff-switch-dark.webp"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/handoff/auto-handoff-switch-light.webp" width="960" alt="Terminal card titled demo — hermes. &quot;/lit-handoff auto on 60&quot; answers &quot;Automatic handoff is ON at 60%. Once a model call passes 60% of the context window, your next message carries a request to write a handoff, and you then run /compact. It starts with your next message.&quot; and &quot;Hermes' own compaction point is about 64% of the window, above yours.&quot;. &quot;/lit-handoff auto status&quot; answers &quot;Automatic handoff: ON at 60% (percent from your saved setting)&quot;, &quot;Last reading in this session: 41% (164,000 of 400,000 tokens)&quot; and &quot;Hermes' own compaction point is about 64% of the window, above yours.&quot;. Then &quot;/lit-handoff auto off&quot; answers &quot;Automatic handoff is off. Your last percent, 60%, is remembered for the next time you turn it on.&quot;."></picture></p>
 
-<p>Once a model call passes your percent, your next message carries a short request to write a handoff. The model saves <code>HANDOFF.md</code>, tells you <code>Handoff saved. Run /compact now.</code> and carries on. A Hermes plugin cannot start a compaction, so <code>/compact</code> stays with you. Afterwards, your next message brings a short digest of that handoff back to the model, and the work picks up where it stopped.</p>
+<p>Once a model call passes your percent, your next message carries a short request to write a handoff; the model saves <code>HANDOFF.md</code>, tells you <code>Handoff saved. Run /compact now.</code> and carries on. A Hermes plugin cannot start a compaction, so <code>/compact</code> stays with you. Afterwards, your next message brings a short digest of that handoff back to the model, and the work picks up where it stopped.</p>
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="./docs/assets/handoff/auto-handoff-turn-dark.webp"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/handoff/auto-handoff-turn-light.webp" width="960" alt="A terminal with a Hermes session, after the last model call used 61% of the window, past the chosen 60%. The message &quot;add the CSV export to the reports page&quot; gets the reply &quot;Handoff saved. Run /compact now.&quot;, and the work goes on. Then the user types &quot;/compact&quot;, and after the compaction the next message, &quot;carry on with the CSV export&quot;, brings the handoff back."></picture></p>
 
 <p>To have it on in every session, set <code>LITHERMES_AUTO_HANDOFF=1</code> and <code>LITHERMES_AUTO_HANDOFF_PERCENT=60</code> where Hermes runs, for example in your shell profile; they win over the slash command. Keep the percent below Hermes' own compaction point, and doctor warns you when it is not:</p>
@@ -273,57 +375,96 @@ cp -R wjgoarxiv-skills/variants/lithermes/&lt;id&gt; "${HERMES_HOME:-$HOME/.herm
 
 <p><a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/automatic-handoff.md">Automatic handoff</a> goes through each step and says who does it.</p>
 <h3>What you get</h3>
-<p>LitHermes installs 40 skills, their slash commands and the <code>goal_*</code> work tools. Most days you will use a handful, each started with a word or two.</p>
-<h4>A task that ends checked</h4>
-<p>A plain <code>lit</code> keeps a notepad and takes each criterion through the same loop: a failing test, a passing one, a check against the running result, then cleanup. You get the change and a list of what was verified. Typing <code>lit</code> again in the same session carries on in the mode you are in, and <code>lit new …</code> starts fresh.</p>
-<pre><code class="language-text">lit fix the failing login test
-</code></pre>
-<h4>Plan first, then build</h4>
-<p><code>lit plan</code> writes a plan file with numbered task rows and leaves your code alone. Read it, and when it looks right, run <code>/start-work</code> with the plan file; it runs the plan row by row and ticks a box only after all five gates pass. Right after a plan is saved, a bare <code>go</code> in the same session shows you that exact command to run.</p>
-<pre><code class="language-text">lit plan add CSV export to the reports page
-/start-work &lt;the plan file it wrote&gt;
-</code></pre>
-<h4>A second look before you merge</h4>
-<p><code>lit review</code> has two modes. A plan review checks a plan after <code>lit plan</code> and before <code>start-work</code>. A work review hands the finished change to five reviewers who read it separately, and each one leads with what it found; fixing comes after. It picks the mode from what exists in your project, says which one on its first line, and <code>lit review plan</code> or <code>lit review work</code> forces one.</p>
-<pre><code class="language-text">lit review the changes on this branch
-</code></pre>
-<h4>Research with sources</h4>
-<p><code>lit research</code> splits a question, sends searchers out in parallel and follows every lead before it answers. Each claim comes back with its source, anything it fetches is read as plain data, and it stops at logins and paywalls.</p>
-<pre><code class="language-text">lit research how do popular CLIs migrate old config files?
-</code></pre>
-<h4>Korean and English prose</h4>
-<p><code>humanizer</code> rewrites stiff Korean or English prose, keeps the facts, hedges and register, and leaves your files alone until you decide.</p>
-<pre><code class="language-text">humanizer 이 문단을 자연스러운 한국어로 다듬어줘: …
-</code></pre>
-<h4>Ideas before a plan</h4>
-<p>For an open question such as a name or a direction, <code>lit brainstorm</code> lays out many different options first, then a short list with the trade-offs. You pick, and it hands the pick to an interview or to <code>lit plan</code>. It never builds anything itself.</p>
-<h4>Bring in a technique you read about</h4>
-<p>You read an article or a repository that does something your own skill does not. <code>lit hijack</code> records where each source came from, checks its licence, writes a spec in its own words, builds it through Hermes helpers, and proves the change by running the old and the new skill on the same prompt.</p>
-<pre><code class="language-text">lit hijack https://example.com/post into my lit-humanizer skill
-</code></pre>
-<h4>Where was I?</h4>
-<p>After a day of several windows, <code>lit adhd</code> (or <code>lit rewind</code>) reads the recent Hermes sessions of this repository with their plans, handoffs and git history, and gives you a board: 🎯 the one thing to do now with the exact text to type, 📊 done / in progress / waiting on you / left counts with an overall bar, 🏁 each plan's progress, ✅ what finished lately, ⬜ what is still to do, and 🔔 reminders such as a session waiting on your answer, uncommitted changes, or a plan nobody touched for a week. It changes nothing. If its next step is what you want, answer <code>go</code> within half an hour; while other sessions are still at work, it tells you to wait for them. Add <code>detail</code> (<code>lit adhd detail</code>) for the per-session brief pictured above, under the board.</p>
-<h4>From a phone, through a gateway</h4>
-<p>Every route above also works through a Hermes gateway such as Telegram or Discord, so you can start a plan at your desk and check on it from a phone. A gateway loads a new or updated plugin only when it restarts, and <code>lithermes doctor</code> tells you when the running one is older than your last install.</p>
+<p>LitHermes installs 40 skills, their slash commands and the <code>goal_*</code> work tools. Most days you will use a handful, each started with a word or two; <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/skills.md#everyday-routes">Everyday routes</a> walks through each one.</p>
+<table>
+<thead>
+<tr>
+<th>Start with</th>
+<th>What you get</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>lit fix the failing login test</code></td>
+<td>Each criterion taken from a failing test to a passing one and a check of the running result, then a list of what was verified</td>
+</tr>
+<tr>
+<td><code>lit plan add CSV export to the reports page</code></td>
+<td>A plan file and no code change; <code>/start-work &lt;the plan file it wrote&gt;</code> then runs it row by row</td>
+</tr>
+<tr>
+<td><code>lit review the changes on this branch</code></td>
+<td>A plan review, or five reviewers who read the finished change separately and lead with what they found</td>
+</tr>
+<tr>
+<td><code>lit research how do popular CLIs migrate old config files?</code></td>
+<td>An answer whose every claim carries its source; it stops at logins and paywalls</td>
+</tr>
+<tr>
+<td><code>humanizer 이 문단을 자연스러운 한국어로 다듬어줘: …</code></td>
+<td>Stiff Korean or English prose rewritten with facts, hedges and register kept, and your files left alone</td>
+</tr>
+<tr>
+<td><code>lit brainstorm &lt;ask&gt;</code></td>
+<td>Many options, then a short list with trade-offs; your pick goes to an interview or to <code>lit plan</code></td>
+</tr>
+<tr>
+<td><code>lit hijack https://example.com/post into my lit-humanizer skill</code></td>
+<td>A technique you read about, licence-checked, rebuilt in your skill and proven on the same prompt</td>
+</tr>
+<tr>
+<td><code>lit adhd</code></td>
+<td>A read-only board of recent sessions: the one thing to do now, progress and reminders</td>
+</tr>
+</tbody></table>
+<p>Every route also works through a Hermes gateway such as Telegram or Discord, so you can start a plan at your desk and check on it from a phone. A gateway loads a new or updated plugin only when it restarts, and <code>lithermes doctor</code> tells you when the running one is older than your last install.</p>
 <p><a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/guide.md#core-commands">All routes</a> and <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/skills.md">all 40 skills, with a picture of each</a>.</p>
 <h3>How it works</h3>
-<p>LitHermes is a Python plugin. When Hermes loads it, <code>register(ctx)</code> adds hooks, commands, skills and work tools. The hooks step in just before and after each model or tool call. The <code>goal_*</code> tools write your goals, and the evidence gathered for them, to local records in your project.</p>
-<p>The picture follows one request from the moment you type it. A prompt that starts with <code>lit</code> and a slash command such as <code>/lit-plan</code> both arrive at the same place, where the <code>pre_llm_call</code> hook or the registered command picks a discipline: <code>litwork</code> for a plain <code>lit</code>, <code>lit-plan</code> for a plan, and so on. From there the skill works the goal through the <code>goal_*</code> tools, and every terminal command it runs is noted and signed by the <code>post_tool_call</code> hook. A work review sends five <code>delegate_task</code> reviewers that read the change on their own. Before the reply goes out, <code>pre_verify</code> and <code>transform_llm_output</code> check the gate. With the gate open, "done" stands. With the gate closed, the reply ends with <code>⛔ LIT: not done</code> and the reason. Everything on the right side of the picture is a file in your project, and the dashed line is why a fresh turn knows where the work stands: the goal record is read back before every model call.</p>
+<p>LitHermes is a Python plugin. When Hermes loads it, <code>register(ctx)</code> adds hooks, commands, skills and work tools; the hooks step in just before and after each model or tool call. The <code>goal_*</code> tools write your goals, and the evidence gathered for them, to local records in your project.</p>
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="./docs/assets/readme/diagrams/lit-route.en.dark.png"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/readme/diagrams/lit-route.en.light.png" width="960" alt="A lit prompt or a /lit command reaches the route step (pre_llm_call and the registered commands), which picks litwork, lit-plan, lit-loop, start-work, review-work or litresearch. The skill writes the goal record through goal_set, goal_add_criterion and goal_evidence; post_tool_call signs a run note in runs.jsonl for every terminal command; review-work sends five delegate_task reviewers. pre_verify and transform_llm_output check the gate and save gate.json: open, and done stands; closed, and the reply ends with LIT: not done and the reason. When Hermes closes the session, on_session_finalize writes the handoff card. The goal record is read back before every model call."></picture></p>
 
+<p>The picture follows one request from the moment you type it, through the route step, the <code>goal_*</code> tools and the gate, to the records in your project. <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/how-it-works.md">How it works, step by step</a> walks through each box and hook.</p>
 <h4>The same route, drawn as a plant</h4>
-<p>The same route works as a small process plant, and the plant shows something the boxes above hide: work goes round. The request comes in on the left. A plain <code>lit</code> runs straight into the work unit, while <code>lit plan</code> stops at the plan unit first. Finished work passes the review column, whose five trays are the five reviewers, and then the gate, which acts as an analyser on a three-way valve. A passing reply leaves as done. A failing one goes back to the work unit as <code>LIT: not done</code>, and it keeps going round until the gate opens. Run notes and review receipts drain into the records tank, <code>.hermes/lithermes/</code> in your project. The tank sends the goal snapshot back to the router on every turn and the handoff card on to the next session. The stream table says what each numbered line carries and which hook or tool carries it.</p>
+<p>The same route works as a small process plant, and the plant shows something the boxes above hide: work goes round. A failing reply goes back to the work unit as <code>LIT: not done</code> until the gate opens, and the stream table in the drawing says what each numbered line carries.</p>
 <p align="center"><picture><source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="./docs/assets/readme/schematic/lit-plant.en.dark.png"><source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/readme/schematic/lit-plant.en.light.png"><source media="(prefers-color-scheme: dark)" srcset="./docs/assets/readme/schematic/lit-plant-loop.en.dark.webp"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/readme/schematic/lit-plant-loop.en.light.webp" width="960" alt="Process flow diagram of the lit workflow in Hermes Agent, with flow moving along each line. A lit request enters on the left; the pre_llm_call router sends a plain lit to the work unit and lit plan to the plan unit first. Work passes the review column with five trays and the gate analyser (pre_verify) on a three-way valve: a passing reply leaves as done, a failing one returns to work as LIT: not done. Run notes from post_tool_call and lane receipts drain into the records tank .hermes/lithermes/, which feeds the goal snapshot back to the router and sends the handoff card to the next session. A stream table lists what each of the seven streams carries."></picture></p>
 
-<p>Before the next model call, the context hook reads those records and hands the model the current goal and how far it has got. A plain prompt that starts with <code>lit</code> is routed by the plugin; a slash command goes straight to its skill. Text you paste in, from code to copied commands, is read as data and never followed as an instruction. The plugin decides where a request goes, and Hermes Agent still runs the model. Permissions, sign-in, model access and anything that needs a real screen stay with Hermes.</p>
+<p>The plugin decides where a request goes while Hermes Agent still runs the model. Text you paste in, from code to copied commands, is read as data and never followed as an instruction; <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/how-it-works.md#the-plant">the walkthrough</a> follows each stream.</p>
 <h3>Requirements, updates and removal</h3>
-<p>LitHermes needs Hermes Agent 0.21.3 or later, Node.js 18 or later, and write access to your Hermes home. The skills that make films, decks and Word files moved to <code>wjgoarxiv-skills</code> with the tools they need, so LitHermes itself needs nothing more.</p>
-<p>Two places on your machine hold LitHermes, and they fill up at different times. The installer writes only into your Hermes home: the plugin folder, the switch in <code>config.yaml</code> (after it saves a backup), the skins and its own install record. Your project stays untouched until you work in it; then the plugin keeps its goals, run notes and handoff cards under <code>.hermes/lithermes/</code>. Extensions you copied into <code>skills/</code> sit beside the plugin, and an upgrade or an uninstall leaves them alone. An automatic update follows the bottom row of the picture. It always takes a backup before it installs anything, and if the new version fails its offline check, the backup goes back.</p>
+<p>LitHermes needs Hermes Agent 0.21.3 or later, Node.js 18 or later, and write access to your Hermes home. The skills that make films, decks and Word files moved to <code>wjgoarxiv-skills</code> with the tools they need, so LitHermes itself needs nothing more. Three places on your machine hold LitHermes, and they fill up at different times:</p>
+<table>
+<thead>
+<tr>
+<th>Place</th>
+<th>What it holds</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hermes home</td>
+<td>The plugin folder, the switch in <code>config.yaml</code> (after a backup), the skins, the install record, update cache and backups</td>
+<td>The installer writes only here</td>
+</tr>
+<tr>
+<td>Project <code>.hermes/lithermes/</code></td>
+<td>Goals, plans, evidence, signed run notes and handoff cards</td>
+<td>Once you work in the project</td>
+</tr>
+<tr>
+<td>Profile <code>skills/</code></td>
+<td>Extensions you copied, beside the plugin</td>
+<td>Upgrades and uninstalls leave them alone</td>
+</tr>
+</tbody></table>
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="./docs/assets/readme/diagrams/install-map.en.dark.png"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/readme/diagrams/install-map.en.light.png" width="960" alt="lithermes install --yes --no-style copies plugins/lithermes/ into the Hermes home (~/.hermes or $HERMES_HOME), switches the plugin on in config.yaml, adds skins/lithermes-*.yaml and records itself under lithermes/. Extensions copied into skills/<id> are left alone. At work the plugin writes .hermes/lithermes/ in the project; lit-plan writes plans/ and /lit-handoff writes HANDOFF.md. The automatic update asks npm, backs up into auto-update/<id>/backup/, runs install --yes --no-hud, then doctor --offline: on a pass you restart Hermes, on a failure the backup goes back."></picture></p>
 
-<p>It keeps itself up to date. When you run <code>install</code>, <code>check</code> or <code>doctor</code> in a terminal, or send the first message of an interactive Hermes CLI session, it looks for a newer stable release, backs up your plugin and settings, installs it and runs <code>doctor --offline</code>; if anything fails, the backup goes back. Gateways and the full-screen TUI never update this way. To install updates yourself, set <code>LITHERMES_NO_AUTO_UPDATE=1</code>. <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/install.md#updates">Updates</a> lists every step and switch.</p>
-<p>Its records stay on your machine. Goals, plans, evidence, signed run notes and handoff cards live under <code>.hermes/lithermes/</code> in your project; the install record, update cache and backups live in your Hermes home. Four details are worth knowing. A run note shows that the plugin saw a command finish with that exit code, and it does not show that the command tested anything useful. The test watch behind <code>/lit-accept-tests</code> keeps its counts in a project file that a model with a raw shell could empty. A new session reads other sessions' goal files in the same project to offer a resume, but only goals this install sealed with its own key (kept in your Hermes home), and <code>LITHERMES_GOAL_RESUME=0</code> turns that off. A handoff card is written when Hermes closes the session, which can be well after your last message. LitHermes goes online for one thing of its own: it asks npm whether a newer version exists, which you can switch off with <code>LITHERMES_NO_UPDATE_CHECK=1</code> or skip for one run with <code>--offline</code>. Your prompts go to whichever model provider Hermes is set up with, as before. <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/privacy.md">Privacy and local records</a> lists every file it writes, and <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/privacy.md#what-the-plugin-checks-reads-and-starts">what the plugin checks, reads and starts</a> covers the rest: the run signature, the Desktop pane's read-only route, the processes it launches, the Hermes internals it reads and the one install-scan caution.</p>
-<p>To check an install without going online, or to remove it:</p>
+<p>It keeps itself up to date, following the bottom row of the picture. When you run <code>install</code>, <code>check</code> or <code>doctor</code> in a terminal, or send the first message of an interactive Hermes CLI session, it looks for a newer stable release, backs up your plugin and settings, installs it and runs <code>doctor --offline</code>; if anything fails, the backup goes back. Gateways and the full-screen TUI never update this way, and <code>LITHERMES_NO_AUTO_UPDATE=1</code> lets you install updates yourself; <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/install.md#updates">Updates</a> lists every step and switch.</p>
+<p><strong>Its records stay on your machine.</strong> LitHermes goes online for one thing of its own: it asks npm whether a newer version exists, which you can switch off with <code>LITHERMES_NO_UPDATE_CHECK=1</code> or skip for one run with <code>--offline</code>. Your prompts go to whichever model provider Hermes is set up with, as before. Four details are worth knowing:</p>
+<ul>
+<li><strong>Run notes</strong> show that the plugin saw a command finish with that exit code; they do not show that the command tested anything useful.</li>
+<li><strong>The test watch</strong> behind <code>/lit-accept-tests</code> keeps its counts in a project file that a model with a raw shell could empty.</li>
+<li><strong>Resume offers</strong> read other sessions' goal files in the same project, but only goals this install sealed with its own key (kept in your Hermes home). <code>LITHERMES_GOAL_RESUME=0</code> turns that off.</li>
+<li><strong>Handoff cards</strong> are written when Hermes closes the session, which can be well after your last message.</li>
+</ul>
+<p><a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/privacy.md">Privacy and local records</a> lists every file it writes, and <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/privacy.md#what-the-plugin-checks-reads-and-starts">what the plugin checks, reads and starts</a> covers the rest: the run signature, the Desktop pane's read-only route, the processes it launches, the Hermes internals it reads and the one install-scan caution. To check an install without going online, or to remove it:</p>
 <pre><code class="language-sh">npx --package @litfamily/lithermes -- lithermes doctor --offline
 npx --package @litfamily/lithermes -- lithermes uninstall --yes
 </code></pre>
@@ -338,7 +479,7 @@ npx --package @litfamily/lithermes -- lithermes uninstall --yes
 <li><a href="https://github.com/wjgoarxiv/lithermes/blob/main/packages/lithermes-installer/assets/lithermes-plugin/README.md">Python plugin contract</a> · <a href="https://github.com/wjgoarxiv/lithermes/blob/main/packages/lithermes-installer/README.md">npm package page</a> · <a href="https://github.com/wjgoarxiv/lithermes/blob/main/CHANGELOG.md">Changelog</a> · <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/privacy.md">Privacy</a> · <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/migration.md">Migration</a></li>
 </ul>
 <h3>LitFamily</h3>
-<p>LitHermes belongs to <a href="https://github.com/wjgoarxiv/litfamily">LitFamily</a>, the same <code>lit</code> way of working ported to seven coding agents. The seven armored robots on the cover stand for those seven products; each runs on its own in its own host, so install only the one you use. The cover is brand motion, and the <a href="./docs/assets/readme/ignition-film.mp4"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/readme/lucide-play.svg" width="16" alt=""> Ignition film</a> is a short brand film in the same spirit. The demo near the top of this page is the one that shows a real Hermes session.</p>
+<p>LitHermes belongs to <a href="https://github.com/wjgoarxiv/litfamily">LitFamily</a>, the same <code>lit</code> way of working ported to seven coding agents. The seven armored robots on the cover stand for those seven products; each runs on its own in its own host, so install only the one you use. The cover is brand motion and the <a href="./docs/assets/readme/ignition-film.mp4"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/readme/lucide-play.svg" width="16" alt=""> Ignition film</a> a short brand film in the same spirit, while the demo near the top of this page shows a real Hermes session.</p>
 <p>If LitHermes has saved you from explaining a project all over again to a fresh session, a star helps other Hermes users find it.</p>
 <p>Bug reports and pull requests are welcome. Start with <a href="https://github.com/wjgoarxiv/lithermes/blob/main/CONTRIBUTING.md">Contributing</a>, and see <a href="https://github.com/wjgoarxiv/lithermes/blob/main/SECURITY.md">Security</a>, <a href="https://github.com/wjgoarxiv/lithermes/blob/main/CODE_OF_CONDUCT.md">Conduct</a> and <a href="https://github.com/wjgoarxiv/lithermes/blob/main/SUPPORT.md">Support</a>. The LitHermes and LitFamily names and logos fall under the <a href="https://github.com/wjgoarxiv/lithermes/blob/main/TRADEMARK.md">trademark policy</a> and sit outside the MIT License; a fork is welcome under a name of its own.</p>
 <p><a href="./LICENSE"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/readme/lucide-shield-check.svg" width="16" alt=""> MIT License</a></p>

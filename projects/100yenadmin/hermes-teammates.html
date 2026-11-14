@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>100yenadmin/hermes-teammates — Hermes Agent Multi-Agent &amp; Orchestration | Hermes Atlas</title>
-<meta name="description" content="Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, tools, and optionally a model. The agent can start and follow…">
+<meta name="description" content="Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, toolsets, and optional model. The agent can run and follow up…">
 <link rel="canonical" href="https://hermesatlas.com/projects/100yenadmin/hermes-teammates">
 <meta property="og:title" content="100yenadmin/hermes-teammates — Hermes Atlas">
-<meta property="og:description" content="Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, tools, and optionally a model. The agent can start and follow…">
+<meta property="og:description" content="Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, toolsets, and optional model. The agent can run and follow up…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/100yenadmin/hermes-teammates">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="100yenadmin/hermes-teammates — Hermes Atlas">
-<meta name="twitter:description" content="Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, tools, and optionally a model. The agent can start and follow…">
+<meta name="twitter:description" content="Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, toolsets, and optional model. The agent can run and follow up…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-teammates&amp;subtitle=Give+your+Hermes+agent+a+fixed+team%3A+named+teammates+with+roles%2C+follow-ups+that+keep+context%2C+and+a+Kanban+review+lane.&amp;kind=project+%C2%B7+multi-agent">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/100yenadmin/hermes-teammates#software",
   "name": "hermes-teammates",
-  "description": "Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, tools, and optionally a model. The agent can start and follow up with teammates, carry earlier results into later tasks, and coordinate linked Kanban cards that wait for approval in Review.",
+  "description": "Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, toolsets, and optional model. The agent can run and follow up with teammates, retain results across turns, and coordinate linked Kanban cards that wait in Review for approval.",
   "url": "https://hermesatlas.com/projects/100yenadmin/hermes-teammates",
   "codeRepository": "https://github.com/100yenadmin/hermes-teammates",
   "applicationCategory": "DeveloperApplication",
@@ -47,7 +47,7 @@
     "name": "100yenadmin",
     "url": "https://github.com/100yenadmin"
   },
-  "dateModified": "2026-11-11T06:22:47.000Z",
+  "dateModified": "2026-11-14T01:09:46.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-11</span>
+    <span><span class="meta-label">updated</span>2026-11-14</span>
   </div>
 
   <div class="actions">
@@ -141,10 +141,10 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, tools, and optionally a model. The agent can start and follow up with teammates, carry earlier results into later tasks, and coordinate linked Kanban cards that wait for approval in Review.</p>
+    <p class="summary-text">Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, toolsets, and optional model. The agent can run and follow up with teammates, retain results across turns, and coordinate linked Kanban cards that wait in Review for approval.</p>
     <ul class="summary-highlights">
-      <li>Configure teammate roles and toolsets in settings.</li>
-      <li>Follow-ups can include summaries of earlier results.</li>
+      <li>Roster settings define each teammate’s instructions and tools.</li>
+      <li>Follow-ups can include summaries of earlier runs.</li>
       <li>Kanban cards move to Review before approval.</li>
     </ul>
   </div>
@@ -676,16 +676,40 @@ Hermes interrupts (<code>/stop</code> or a new user message) end a wait promptly
 <code>timed_out: false</code> with the current finished and pending runs; the teammates keep running. Replies omit
 <code>interrupted</code> otherwise. Hermes's default tool-call timeout (<code>tools.sequential_call</code>) is 420 seconds;
 if you lowered it, keep <code>wait_seconds</code> below your timeout. <code>teammate_check</code> remains bounded to 0–60 seconds.</p>
-<h4>Completion notices (not available yet)</h4>
-<p>Notices that tell the parent when a run ends are built, but no current Hermes build can deliver them safely. Hermes can't
+<h4>Completion notices (opt-in)</h4>
+<p>Notices that tell the parent when a run ends are built, but by default no current Hermes build can deliver them safely. Hermes can't
 yet confirm which conversation would receive an injected message. In the CLI it goes to whatever session is open, and in the
-gateway a chat keeps the same routing key after <code>/new</code>. A notice could land in the wrong conversation, so the plugin never
-injects one; the roster reports <code>push_completion</code> as <code>unsupported</code> with the reason. Use <code>teammate_wait</code> instead.</p>
+gateway a chat keeps the same routing key after <code>/new</code>. A notice could land in the wrong conversation, so by default the plugin never
+injects one; the roster reports <code>push_completion</code> as <code>unsupported</code> with the reason. Use <code>teammate_wait</code>, or the opt-in below.</p>
 <p>Session-bound injection is requested upstream in
 <a href="https://github.com/NousResearch/hermes-agent/issues/133212#issuecomment-6152052854">NousResearch/hermes-agent#133212</a>.
 Once Hermes has it, a plugin update can enable notices behind <code>notify_on_completion</code> (off by default; outside the CLI
 also the operator's <code>allow_gateway_injection</code>). A notice contains only the teammate name, run ID and status, never child
 output, goals or child error text. Runs already read with check/wait or stopped by the parent get no notice.</p>
+<h5>Opt-in: notices without a session check</h5>
+<p>If you don't change sessions while teammates are running, you can turn notices on anyway. With both settings,
+each notice goes to the chat the run was assigned from (its durable session key, recorded at assignment), and
+your agent gets a new turn to read the result:</p>
+<pre><code class="language-yaml">plugins:
+  entries:
+    hermes-teammates:
+      allow_gateway_injection: true      # Hermes' own consent switch; on 0.23.1 the classic CLI needs it too
+      settings:
+        notify_on_completion: true
+        trust_notice_routing: true
+</code></pre>
+<p>Without <code>allow_gateway_injection</code>, Hermes drops every notice while the roster still says <code>on</code>. The one exception
+is an older Hermes whose classic CLI still runs plugins in its own process: there a notice queues into that CLI
+without the switch.</p>
+<p>The notice still holds only the teammate name, run ID and status. The one risk is a session change while a run
+is pending (<code>/new</code>, <code>/reset</code>, <code>/resume</code>, an automatic reset, or compression with <code>in_place: false</code>): the chat
+keeps its session key, so the notice lands in the chat's current conversation. If that is a different session,
+it can't read the run (<code>teammate_check</code> answers <code>unknown_run</code>); the result stays with the conversation that
+assigned it, and a <code>/resume</code> back to that session can read it. Moving a session between chats (<code>/resume</code> from
+another chat, <code>/resume --all</code>, Matrix <code>--cross-room</code>, Desktop <code>/handoff</code>) can misroute a notice the same way.
+Each notice goes only to the chat its runs were assigned from. A run assigned from a turn with no session key,
+such as a cron turn, gets no notice, except in a classic-CLI process that queues it into its own REPL.
+Runs already read with check/wait get no notice. The roster shows <code>push completion=on (trusted routing ...)</code>.</p>
 <h3>Compatibility</h3>
 <ul>
 <li>Requires Hermes <strong>0.21.4 or newer</strong>. CI runs against a pinned upstream commit and against <code>main</code>.</li>
@@ -911,19 +935,9 @@ conversation content goes into it.</li>
 </ul>
 <h3>Troubleshooting and reporting a bug</h3>
 <p>Use <code>/teammates</code> for the roster, or <code>teammates_roster</code> for config problems, host features and recent runs.
-If the tools are missing on one platform (for example Telegram) while <code>hermes plugins</code> shows the plugin enabled, check that profile's <code>platform_toolsets</code>: when it holds an explicit list for that platform, <code>teammates</code> must be in it. Run <code>hermes tools</code> to add it.
-Inspect an existing run with <code>teammate_check</code> (<code>wait_seconds: 0</code>) for status, <code>summary</code>, <code>api_calls</code> and <code>duration_seconds</code>.
-For recent agent-log excerpts, use <code>hermes logs -n 300 | grep -i teammate</code>; remove secrets and private text before sharing.
-Inspect existing runs first; ask before starting a new run or follow-up, because model calls cost money.
-Or ask your Hermes agent to report a problem with Hermes Teammates (the bundled <code>teammates-report-problem</code> skill); it drafts the report and files nothing until you approve the draft. On Hermes versions that do not list plugin skills in the system prompt, name it: "load the skill <code>hermes-teammates:teammates-report-problem</code>".
-Use the <a href="https://github.com/100yenadmin/hermes-teammates/issues/new?template=bug_report.yml">bug report form</a> for reproducible problems.
-Report toolset escapes, cross-profile access or leaked credentials through a <a href="https://github.com/100yenadmin/hermes-teammates/security/advisories/new">private advisory</a>.</p>
-<h3>Releases and license</h3>
-<ul>
-<li><a href="https://github.com/100yenadmin/hermes-teammates/releases">Releases</a> and the <a href="https://github.com/100yenadmin/hermes-teammates/blob/main/CHANGELOG.md">CHANGELOG</a></li>
-<li><a href="https://github.com/100yenadmin/hermes-teammates/blob/main/CONTRIBUTING.md">Contributing</a> and the <a href="https://github.com/100yenadmin/hermes-teammates/blob/main/SECURITY.md">security policy</a></li>
-<li><a href="LICENSE">MIT license</a>. Maintained by <a href="https://github.com/100yenadmin">@100yenadmin</a> (Electric Sheep).</li>
-</ul>
+If the tools a</p>
+<hr>
+<p><em>README truncated. <a href="https://github.com/100yenadmin/hermes-teammates#readme">Continue reading on GitHub</a></em></p>
 
   </section>
 </details>

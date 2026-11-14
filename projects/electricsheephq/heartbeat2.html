@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>electricsheephq/heartbeat2 — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="HeartBeat 2.0 adds scheduled turns, follow-ups, roles, and watchers to Hermes agents. Watchers check conditions without model calls until triggered, and turns…">
+<meta name="description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watcher-triggered events. Its code checks wakes and…">
 <link rel="canonical" href="https://hermesatlas.com/projects/electricsheephq/heartbeat2">
 <meta property="og:title" content="electricsheephq/heartbeat2 — Hermes Atlas">
-<meta property="og:description" content="HeartBeat 2.0 adds scheduled turns, follow-ups, roles, and watchers to Hermes agents. Watchers check conditions without model calls until triggered, and turns…">
+<meta property="og:description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watcher-triggered events. Its code checks wakes and…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/electricsheephq/heartbeat2">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="electricsheephq/heartbeat2 — Hermes Atlas">
-<meta name="twitter:description" content="HeartBeat 2.0 adds scheduled turns, follow-ups, roles, and watchers to Hermes agents. Watchers check conditions without model calls until triggered, and turns…">
+<meta name="twitter:description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watcher-triggered events. Its code checks wakes and…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=heartbeat2&amp;subtitle=Give+your+Hermes+agent+a+working+life+between+messages%3A+wakes%2C+watchers+and+roles%2C+within+daily+turn+and+message+caps.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/electricsheephq/heartbeat2#software",
   "name": "heartbeat2",
-  "description": "HeartBeat 2.0 adds scheduled turns, follow-ups, roles, and watchers to Hermes agents. Watchers check conditions without model calls until triggered, and turns run in their chat on its model; settings can limit turns, spending, and messages.",
+  "description": "HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watcher-triggered events. Its code checks wakes and watchers without running a model, and starts a turn when work is due or a watcher condition is met; settings can limit turns, spending, and messages.",
   "url": "https://hermesatlas.com/projects/electricsheephq/heartbeat2",
   "codeRepository": "https://github.com/electricsheephq/heartbeat2",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "electricsheephq",
     "url": "https://github.com/electricsheephq"
   },
-  "dateModified": "2026-11-11T22:02:22.000Z",
+  "dateModified": "2026-11-14T05:30:21.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-11-11</span>
+    <span><span class="meta-label">updated</span>2026-11-14</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">HeartBeat 2.0 adds scheduled turns, follow-ups, roles, and watchers to Hermes agents. Watchers check conditions without model calls until triggered, and turns run in their chat on its model; settings can limit turns, spending, and messages.</p>
+    <p class="summary-text">HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watcher-triggered events. Its code checks wakes and watchers without running a model, and starts a turn when work is due or a watcher condition is met; settings can limit turns, spending, and messages.</p>
     <ul class="summary-highlights">
-      <li>Watch files, processes, URLs, read-only commands, and Hermes events.</li>
-      <li>Roles have a charter, notebook, and agent-set rhythm.</li>
-      <li>Use `/pulse` commands to inspect schedules and recent triggers.</li>
+      <li>Supports roles with a charter, notebook, and agent-set rhythm.</li>
+      <li>Watchers can monitor files, processes, URLs, commands, or Hermes events.</li>
+      <li>Provides `/pulse` commands to inspect schedules and recent triggers.</li>
     </ul>
   </div>
 </section>
@@ -437,6 +437,10 @@ pulse tool results name the ignored setting.</p>
 <td><code>/pulse off</code> · <code>/pulse on</code></td>
 <td>Turn wakes off or back on for this chat. Only you can turn them back on.</td>
 </tr>
+<tr>
+<td><code>/pulse warm on</code> · <code>warm off</code> · <code>warm</code></td>
+<td>Keep this chat's prompt cache warm while you're using it (see <a href="#prompt-cache">Prompt cache</a>); bare <code>warm</code> shows its state</td>
+</tr>
 </tbody></table>
 <p><code>/pulse</code> is a control panel, not conversation. Using it never counts as replying to the agent. Anything else you send counts as a reply, including a reaction or an edit on platforms that report them: it resets the unanswered mute and cancels wakes armed to stop when you reply. A reaction or edit counts only when its chat maps to one HeartBeat session; in a chat shared by several sessions (for example DM threads or topics) it is ignored. The other exceptions are listed under known issues: a message queued while the agent is busy on Signal or SimpleX, and a Codex app-server steer.</p>
 <p><strong>Your agent</strong> gets one tool, <code>pulse</code> (<code>create · list · desk · update · pause · resume · cancel · respond · off</code>), and the bundled <code>heartbeat2-usage</code> skill. <code>desk</code> lets it read its desk at any point in a turn, the same view as <code>/pulse desk</code>. The skill teaches it to:</p>
@@ -544,7 +548,7 @@ Kanban watchers can target one task with <code>trigger.task_id</code>, one board
 <td>Own time (hours between turns)</td>
 <td><code>own_time_hours</code></td>
 <td>0</td>
-<td>0 = off. The agent gets a turn of its own this often to work on its roles, follow things up, reflect or rest. Each is a full model turn; quiet hours hold its messages, not its work.</td>
+<td>0 = off. The agent gets a turn of its own this often to work on its roles, follow things up, reflect or rest. It runs in your direct chats only, never in a group, even with <code>dm_only</code> off. Each is a full model turn; quiet hours hold its messages, not its work.</td>
 </tr>
 <tr>
 <td>Daily priced-spend limit for the agent's own turns (USD)</td>
@@ -603,8 +607,14 @@ Kanban watchers can target one task with <code>trigger.task_id</code>, one board
 <tr>
 <td>Active wakes per chat</td>
 <td><code>max_active</code></td>
-<td>10</td>
-<td>Also capped at 50 across the profile.</td>
+<td>50</td>
+<td>Active or proposed wakes and watchers in one chat. Check-ins, own time and keep-warm don't count. Turns and messages have their own daily limits.</td>
+</tr>
+<tr>
+<td>Active wakes across the profile</td>
+<td><code>max_active_profile</code></td>
+<td>200</td>
+<td>The same count across all of this profile's chats.</td>
 </tr>
 <tr>
 <td>Longest lifetime (days)</td>
@@ -623,6 +633,18 @@ Kanban watchers can target one task with <code>trigger.task_id</code>, one board
 <td><code>owner_silent_checkin</code></td>
 <td>off</td>
 <td>Off by default. One check-in per silence, with how to turn it off.</td>
+</tr>
+<tr>
+<td>Keep-warm pauses after (hours without your messages)</td>
+<td><code>keep_warm_idle_hours</code></td>
+<td>12</td>
+<td>For chats where you turned on <code>/pulse warm</code>: pings stop once you haven't written for this long, and start again when you do.</td>
+</tr>
+<tr>
+<td>Keep-warm smallest context (tokens)</td>
+<td><code>keep_warm_min_tokens</code></td>
+<td>20000</td>
+<td>No ping while the chat's prompt is smaller than this: a cold start is cheap then.</td>
 </tr>
 <tr>
 <td>Silence before a check-in (hours)</td>
@@ -682,7 +704,7 @@ Kanban watchers can target one task with <code>trigger.task_id</code>, one board
 <td>Reply window (hours)</td>
 <td><code>engagement_window_hours</code></td>
 <td>6</td>
-<td>A reply within this window counts a delivered message as useful.</td>
+<td>A reply within this window counts a delivered message as useful. It undoes a slow-down back to the next check the agent asked for, and lifts a no-op or ignored pause you haven't been shown yet.</td>
 </tr>
 <tr>
 <td>Catch-up window (hours)</td>
@@ -771,6 +793,21 @@ The Codex OAuth route is reported as unknown until learned.
 Other routes learn a conservative TTL only after both warm and cold gaps are observed.
 Agent recurring intervals near the TTL snap below it with downward jitter, respecting floors.
 Owner wakes, cron and anchored repeats retain their timing. Cache lines show the effect and warm interval.</p>
+<p><strong>Keep a long chat warm: <code>/pulse warm on</code>.</strong> On a long conversation, the first message after the cache expires rewrites the
+whole prompt at the cache-write price (about 2x input on a 1h Claude cache), where a warm message pays the read price (about
+0.1x). <code>/pulse warm on</code> turns on keep-warm for that one chat: just before the cache would expire, HeartBeat sends a tiny silent
+turn ("reply [SILENT]", no tools) that reads the cache and keeps it alive, so the next real message stays warm. If you don't come back before it pauses, those pings were spent for nothing, so the pause is set with that in mind.</p>
+<ul>
+<li>It pings only where a ping can pay off: on routes whose cache lasts 30 minutes or more, while the chat's prompt is at least
+<code>keep_warm_min_tokens</code>, and while you've written in the last <code>keep_warm_idle_hours</code>. When you come back, it starts again.</li>
+<li>Any real turn in the chat (yours or a wake's) moves the next ping out, so an active chat gets no pings. It never pings a cache
+that has already gone cold.</li>
+<li>Pings are silent, aren't wake turns, and don't count toward wake turns, messages, active items or the daily priced-spend limit
+for the agent's own turns. <code>/pulse status</code> and <code>/pulse ledger</code> show them on their own row with their cost.</li>
+<li>Only you turn it on or off (<code>/pulse warm off</code>); the agent can't. When the route doesn't report the cache lifetime,
+HeartBeat uses the longest gap it has seen stay warm on that route.</li>
+<li>Hermes has no per-turn output cap for plugins, so the ping asks for a one-word reply rather than enforcing it.</li>
+</ul>
 <h3>Security and privacy</h3>
 <p>Disclosure — wakes and watchers run full turns on the conversation's own model, billed like any message; command watchers run allowlisted read-only commands without an approval prompt; URL watchers make the GET requests you configured; state stays in the profile's plugin-data; no telemetry. Command environments use Hermes' sanitizer on an allowlisted base and carry no provider, bot or GitHub tokens; gh uses its own hosts.yml or keyring. URL watchers always block cloud metadata, and block private/local addresses unless <code>url_allow_private</code> is enabled, checking every hop at connect time. File watchers honor Hermes read blocks at arm/update and every check, including rotation. Helpers run in the watcher's profile scope.</p>
 <p>Command watchers:</p>

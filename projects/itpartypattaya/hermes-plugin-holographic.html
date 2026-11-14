@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic#software",
   "name": "hermes-plugin-holographic",
-  "description": "Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it requires no API key, network access, or model calls; search by meaning is an optional online add-on.",
+  "description": "Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it runs without an API key, network access, or model calls; searching by meaning is an optional online add-on.",
   "url": "https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic",
   "codeRepository": "https://github.com/itpartypattaya/hermes-plugin-holographic",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "itpartypattaya",
     "url": "https://github.com/itpartypattaya"
   },
-  "dateModified": "2026-11-12T19:43:31.000Z",
+  "dateModified": "2026-11-13T18:19:52.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-12</span>
+    <span><span class="meta-label">updated</span>2026-11-13</span>
   </div>
 
   <div class="actions">
@@ -141,10 +141,10 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it requires no API key, network access, or model calls; search by meaning is an optional online add-on.</p>
+    <p class="summary-text">Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it runs without an API key, network access, or model calls; searching by meaning is an optional online add-on.</p>
     <ul class="summary-highlights">
       <li>Stores facts in a local SQLite database</li>
-      <li>Supports trust scoring and entity resolution</li>
+      <li>Supports FTS5 search and trust scoring</li>
       <li>Optional online search by meaning</li>
     </ul>
   </div>
@@ -196,6 +196,11 @@ and history tools read the same file; search by meaning is an optional online ad
 character n-grams or a word scan, reordered by meaning if that is on; a relevance gate, a repeat window and the screen
 decide; up to five facts by their words, one by meaning alone and two of named entities go into the turn as
 data" loading="lazy" decoding="async"></p>
+<p>The graph (<code>graph_expansion</code>, off by default) is one bounded hop: a fact that names two entities makes those entities
+neighbours, and a search walks a single hop out of the entities its words resolve to, so a fact about a neighbouring
+entity is reachable without sharing a word with the query. Hub entities — a namespace, a project every fact mentions —
+are never traversed, and inside <code>search()</code> a discovery only fills the tail of the result list, never displacing a text
+hit (a reranker run afterwards may reorder the pool). Bounds, measurements and repair: <a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/memory-graph.md">docs/memory-graph.md</a>.</p>
 <h3>Install</h3>
 <p>While your Hermes still bundles <code>holographic</code>, the bundled copy is used and this plugin stays dormant. After core
 drops it, <code>hermes update</code> installs the catalog plugin named <code>holographic</code> for every profile that has it configured.
@@ -277,6 +282,11 @@ if it fails on dependencies, update Hermes first — the cause is usually in cor
 <td><code>prefetch_clause_coverage</code></td>
 <td><code>off</code></td>
 <td><strong>Experimental.</strong> <code>on</code>: a message that asks two separate questions (Russian or English) gives each of them a second look at the facts the coverage gate left out, so the answer to the shorter question is not lost. Only for a fact that holds two words of its question and names the person that question is about. Not in the setup wizard; a value it does not recognise reads as off. See <a href="#two-questions-in-one-message-experimental">Two questions in one message</a></td>
+</tr>
+<tr>
+<td><code>graph_expansion</code></td>
+<td><code>off</code></td>
+<td><code>on</code>: search adds facts one co-occurrence edge out of the entities the message names, as discoveries in the tail of the result list. Off by default until it is measured on a real store; not in the setup wizard, and a value it does not recognise reads as off. See <a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/memory-graph.md">docs/memory-graph.md</a></td>
 </tr>
 <tr>
 <td><code>prefetch_repeat_turns</code></td>
@@ -725,15 +735,7 @@ at least one of them more than padding, recalls nothing ("Hi, good morning!", "T
 "спасибо, на этом всё", "Grazie mille, a domani!", "Wielkie dzięki, do jutra!", "Heel erg bedankt, tot morgen!",
 and any combination of the whole-message greetings of every language). Pieces start and end
 at word boundaries; padding alone ("fine?", "сегодня?") is a question. Russian question words (<code>какой</code>, <code>который</code>,
-<code>сколько</code>, <code>почему</code> …) are left out of a query's terms, like English <code>what</code> / <code>which</code> / <code>how</code>, but kept in facts.</li>
-<li><strong>Names</strong> in Latin script are matched as written (and with an English <code>'s</code>): <code>Jean</code> is not mentioned by <code>jeans</code>.
-Names in other scripts carry their inflections (<code>Маши</code> mentions <code>Маша</code>, <code>لإيرما</code> mentions <code>إيرما</code>).</li>
-<li><strong>Chinese, Japanese, Korean, Thai</strong> (no spaces between words): character n-grams, bigrams for Chinese, Japanese and
-Korean, trigrams for Thai. Grammar weighs less: Chinese function characters (的 是 了), Japanese particles (は が を
-に の), Thai function words (ของ ที่ และ); a message that is only a filler (はい, 네, โอเค) recalls nothing. Chinese
-characters (also in Japanese) count one by one as well; kana, Hangul and Thai letters, which are sounds, do not.
-Traditional characters compare as Simplified ones (0.9.0): <code>學校</code> finds <code>学校</code>, <code>醫院</code> finds <code>医院</code>, so a fact a Taiwan
-or Hong Kong user wrote meets a mainland user's questi</li>
+<code>сколько</code>, `по</li>
 </ul>
 <hr>
 <p><em>README truncated. <a href="https://github.com/itpartypattaya/hermes-plugin-holographic#readme">Continue reading on GitHub</a></em></p>
@@ -753,7 +755,7 @@ or Hong Kong user wrote meets a mainland user's questi</li>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 60.8K</div>
+        <div class="stars">★ 60.9K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">

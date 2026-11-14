@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Senpi-ai/senpi-plugin — Hermes Agent Domain Applications | Hermes Atlas</title>
-<meta name="description" content="Senpi — AI Quant connects supported AI assistants to Senpi research tools for Hyperliquid market data, signals, trader research, strategy discovery, and…">
+<meta name="description" content="Senpi — AI Quant connects supported AI assistants to Senpi research tools for Hyperliquid markets, trader activity, strategy templates, and portfolio data. All…">
 <link rel="canonical" href="https://hermesatlas.com/projects/Senpi-ai/senpi-plugin">
 <meta property="og:title" content="Senpi-ai/senpi-plugin — Hermes Atlas">
-<meta property="og:description" content="Senpi — AI Quant connects supported AI assistants to Senpi research tools for Hyperliquid market data, signals, trader research, strategy discovery, and…">
+<meta property="og:description" content="Senpi — AI Quant connects supported AI assistants to Senpi research tools for Hyperliquid markets, trader activity, strategy templates, and portfolio data. All…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/Senpi-ai/senpi-plugin">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Senpi-ai/senpi-plugin — Hermes Atlas">
-<meta name="twitter:description" content="Senpi — AI Quant connects supported AI assistants to Senpi research tools for Hyperliquid market data, signals, trader research, strategy discovery, and…">
+<meta name="twitter:description" content="Senpi — AI Quant connects supported AI assistants to Senpi research tools for Hyperliquid markets, trader activity, strategy templates, and portfolio data. All…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=senpi-plugin&amp;subtitle=Senpi+%E2%80%94+AI+Quant.+One+plugin+for+Claude+Code%2C+Claude%2C+ChatGPT%2C+Codex%2C+Cursor%2C+Grok+Bot+and+Grok+Build%3A+connect+your+AI+assistant+to+your+own+Senpi+agent+for+Hyperliquid.&amp;kind=project+%C2%B7+domain+applications">
 <script type="application/ld+json">
 {
@@ -35,19 +35,18 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/Senpi-ai/senpi-plugin#software",
   "name": "senpi-plugin",
-  "description": "Senpi — AI Quant connects supported AI assistants to Senpi research tools for Hyperliquid market data, signals, trader research, strategy discovery, and portfolio review. All tools are read-only; trading, funding, and strategy deployment take place in a Senpi account, not through the plugin.",
+  "description": "Senpi — AI Quant connects supported AI assistants to Senpi research tools for Hyperliquid markets, trader activity, strategy templates, and portfolio data. All tools are read-only; trading, funding, and strategy deployment take place in the Senpi account, not through the plugin.",
   "url": "https://hermesatlas.com/projects/Senpi-ai/senpi-plugin",
   "codeRepository": "https://github.com/Senpi-ai/senpi-plugin",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Cross-platform",
-  "programmingLanguage": "Python",
   "license": "https://spdx.org/licenses/Apache-2.0.html",
   "author": {
     "@type": "Organization",
     "name": "Senpi-ai",
     "url": "https://github.com/Senpi-ai"
   },
-  "dateModified": "2026-11-13T13:25:16.000Z",
+  "dateModified": "2026-11-13T18:44:36.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -121,7 +120,7 @@
 
   <div class="meta-row">
     <span class="stars">★ 7</span>
-    <span><span class="meta-label">lang</span>Python</span>
+    
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
     <span><span class="meta-label">updated</span>2026-11-13</span>
@@ -141,11 +140,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Senpi — AI Quant connects supported AI assistants to Senpi research tools for Hyperliquid market data, signals, trader research, strategy discovery, and portfolio review. All tools are read-only; trading, funding, and strategy deployment take place in a Senpi account, not through the plugin.</p>
+    <p class="summary-text">Senpi — AI Quant connects supported AI assistants to Senpi research tools for Hyperliquid markets, trader activity, strategy templates, and portfolio data. All tools are read-only; trading, funding, and strategy deployment take place in the Senpi account, not through the plugin.</p>
     <ul class="summary-highlights">
-      <li>Provides market, trader, strategy, and portfolio research tools.</li>
-      <li>Uses OAuth sign-in with a connected Senpi account.</li>
-      <li>Does not place trades or move funds.</li>
+      <li>Provides market signals, smart-money data, and trader research.</li>
+      <li>Portfolio tools read data only from the signed-in account.</li>
+      <li>Connects through OAuth 2.0 over HTTPS.</li>
     </ul>
   </div>
 </section>
@@ -234,7 +233,7 @@
 </ul>
 <h3>What this plugin runs, sends, and fetches</h3>
 <ul>
-<li><strong>Runs:</strong> nothing on your machine. The plugin has no hooks and no local server, and no skill runs a script. The two files in <code>scripts/</code> are maintainer tools that regenerate the manifests and build the release archive; nothing runs them when you install or use the plugin.</li>
+<li><strong>Runs:</strong> nothing on your machine. The plugin has no hooks and no local server, and no skill runs a script.</li>
 <li><strong>Sends:</strong> tool calls to <code>https://mcp.senpi.ai/mcp</code> over HTTPS. Sign-in is OAuth 2.0 with your Senpi login and happens once, when you add the connector; every tool runs through it, and the account tools read only that account. Nothing else leaves your assistant.</li>
 <li><strong>Fetches:</strong> market data, trader statistics, strategy catalog entries, and — when you are signed in — your own portfolio and trade history.</li>
 </ul>
@@ -320,12 +319,8 @@ hermes plugins enable senpi-agent
 <td><code>assets/</code></td>
 <td>Logo for directory listings</td>
 </tr>
-<tr>
-<td><code>scripts/build-manifests.py</code>, <code>scripts/package.py</code></td>
-<td>Maintainer tools: regenerate the generated manifests, and build the archive for Claude and ChatGPT. The plugin never runs them.</td>
-</tr>
 </tbody></table>
-<p>Edit <code>plugin.json</code> or <code>mcp.json</code>, then run <code>python3 scripts/build-manifests.py</code>; CI fails if the generated copies are stale. <code>python3 scripts/package.py</code> builds the archive to upload to Claude and ChatGPT. The A/B test harness that compares these skills with the originals lives on the <code>ab-harness</code> branch.</p>
+<p><code>main</code> holds only the plugin and is what the Claude plugin directory reads. The <code>release</code> branch is <code>main</code> plus the maintainer scripts (regenerate the generated manifests from <code>plugin.json</code> and <code>mcp.json</code>, build the archive) and the <code>package</code> workflow, which builds the prod and dev archives for OpenAI and ChatGPT on every push to <code>release</code>. To ship: merge <code>main</code> into <code>release</code> and take the archive from that run. The A/B test harness lives on the <code>ab-harness</code> branch.</p>
 <h3>License</h3>
 <p>Apache-2.0. See <a href="LICENSE">LICENSE</a>.</p>
 

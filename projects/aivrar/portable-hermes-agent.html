@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>aivrar/portable-hermes-agent — Hermes Agent Workspaces &amp; GUIs | Hermes Atlas</title>
-<meta name="description" content="Portable Hermes Agent is a Windows desktop interface for Hermes Agent, with chat, session management, and guided setup. It includes tools for local models…">
+<meta name="description" content="Portable Hermes Agent is a Windows desktop interface and CLI bundle built on NousResearch’s hermes-agent. It includes a Tkinter GUI, built-in and extension…">
 <link rel="canonical" href="https://hermesatlas.com/projects/aivrar/portable-hermes-agent">
 <meta property="og:title" content="aivrar/portable-hermes-agent — Hermes Atlas">
-<meta property="og:description" content="Portable Hermes Agent is a Windows desktop interface for Hermes Agent, with chat, session management, and guided setup. It includes tools for local models…">
+<meta property="og:description" content="Portable Hermes Agent is a Windows desktop interface and CLI bundle built on NousResearch’s hermes-agent. It includes a Tkinter GUI, built-in and extension…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/aivrar/portable-hermes-agent">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="aivrar/portable-hermes-agent — Hermes Atlas">
-<meta name="twitter:description" content="Portable Hermes Agent is a Windows desktop interface for Hermes Agent, with chat, session management, and guided setup. It includes tools for local models…">
+<meta name="twitter:description" content="Portable Hermes Agent is a Windows desktop interface and CLI bundle built on NousResearch’s hermes-agent. It includes a Tkinter GUI, built-in and extension…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=portable-hermes-agent&amp;subtitle=Hermes+Agent+made+portable+desktop+for+Windows+%E2%80%94+100+tools%2C+GUI%2C+local+models+via+LM+Studio%2C+TTS%2C+Music%2C+ComfyUI%2C+workflows%2C+tool+maker.+No+install.+No+Docker.+No+admin+rights.&amp;kind=project+%C2%B7+workspaces">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/aivrar/portable-hermes-agent#software",
   "name": "portable-hermes-agent",
-  "description": "Portable Hermes Agent is a Windows desktop interface for Hermes Agent, with chat, session management, and guided setup. It includes tools for local models through LM Studio, music and speech generation, ComfyUI, workflows, and creating custom tools; setup runs from a folder without administrator rights or Docker.",
+  "description": "Portable Hermes Agent is a Windows desktop interface and CLI bundle built on NousResearch’s hermes-agent. It includes a Tkinter GUI, built-in and extension tools for tasks such as local model management, text-to-speech, music generation, ComfyUI, and workflows, plus a guided mode that can work without an AI model connected.",
   "url": "https://hermesatlas.com/projects/aivrar/portable-hermes-agent",
   "codeRepository": "https://github.com/aivrar/portable-hermes-agent",
   "applicationCategory": "DesktopEnhancementApplication",
@@ -47,7 +47,7 @@
     "name": "aivrar",
     "url": "https://github.com/aivrar"
   },
-  "dateModified": "2026-11-09T01:09:33.000Z",
+  "dateModified": "2026-11-14T06:43:38.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-09</span>
+    <span><span class="meta-label">updated</span>2026-11-14</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Portable Hermes Agent is a Windows desktop interface for Hermes Agent, with chat, session management, and guided setup. It includes tools for local models through LM Studio, music and speech generation, ComfyUI, workflows, and creating custom tools; setup runs from a folder without administrator rights or Docker.</p>
+    <p class="summary-text">Portable Hermes Agent is a Windows desktop interface and CLI bundle built on NousResearch’s hermes-agent. It includes a Tkinter GUI, built-in and extension tools for tasks such as local model management, text-to-speech, music generation, ComfyUI, and workflows, plus a guided mode that can work without an AI model connected.</p>
     <ul class="summary-highlights">
-      <li>Dark-themed GUI with multilingual support and session management</li>
-      <li>Includes workflow automation and runtime tool creation</li>
-      <li>Supports local models through LM Studio</li>
+      <li>Includes a GUI with chat, sessions, and multiple languages</li>
+      <li>Supports workflow automation and runtime tool creation</li>
+      <li>Setup downloads Python and dependencies into the portable folder</li>
     </ul>
   </div>
 </section>
@@ -239,7 +239,7 @@
 <tr>
 <td><strong>Hermes Update</strong></td>
 <td>2</td>
-<td>Update upstream Hermes while preserving portable tools, extensions, and runtime data</td>
+<td>Check for and install the latest upstream Hermes core; portable tools, extensions, and your data are left alone</td>
 </tr>
 </tbody></table>
 <p>Plus all built-in hermes-agent tools: web search, file operations, browser automation, code execution, delegation, memory, skills, messaging, Home Assistant, and more.</p>
@@ -294,18 +294,21 @@ chat remain available when the optional SDK cannot connect.</p>
 <p>Recommended:</p>
 <pre><code class="language-text">C:\Users\YourName\Portable-Hermes-Agent
 </code></pre>
-<p>Avoid protected folders such as <code>C:\Program Files</code>.</p>
+<p>Avoid protected folders such as <code>C:\Program Files</code>. Spaces and characters such as <code>&amp;</code>, <code>(</code>, <code>)</code> and <code>'</code> in the folder path are fine, but the launchers refuse to start from a folder whose path contains <code>!</code>, <code>%</code> or <code>^</code> (and from a <code>HERMES_HOME</code> containing <code>!</code>), because Windows batch files cannot handle those characters safely.</p>
 <h4>2. Start</h4>
 <p>Double-click:</p>
 <pre><code class="language-batch">START.bat
 </code></pre>
-<p>On first launch, <code>START.bat</code> runs the portable setup automatically. It downloads embedded Python, dependencies, LM Studio SDK, and Node.js tools into this folder only. No admin rights are needed.</p>
+<p>From PowerShell, run <code>.\START.bat</code> (or <code>.\install.bat</code> for setup only). Upstream's <code>scripts\install.ps1</code> installs a regular, non-portable Hermes with its own uv-managed Python; the portable bundle does not use it.</p>
+<p>On first launch, <code>START.bat</code> runs the portable setup automatically. It downloads embedded Python 3.14, the <strong>latest Hermes Agent core from <a href="https://github.com/NousResearch/hermes-agent">NousResearch/hermes-agent</a></strong>, its exact pinned dependencies, and the LM Studio SDK into this folder only. No admin rights are needed. The new core is checked in a separate process (portable tools, CLI and GUI tool selection, GUI modules) before setup reports success.</p>
 <p>Manual setup:</p>
 <pre><code class="language-batch">install.bat
 </code></pre>
-<p>PowerShell users can run:</p>
-<pre><code class="language-powershell">.\scripts\install.ps1
+<p>Unattended setup (no key presses, for scripts and testing):</p>
+<pre><code class="language-batch">install.bat --yes
 </code></pre>
+<p>A first-time setup installs only exact, hash-checked dependency versions from the core's <code>uv.lock</code>. If the newest upstream core has no usable lock or cannot run in the portable runtime, setup falls back to the last upstream version this release has verified. To pin a specific upstream version, set <code>HERMES_PORTABLE_CORE_REF</code> (a branch, tag, or commit) or <code>HERMES_PORTABLE_CORE_ZIP</code> (a downloaded upstream source ZIP) before running <code>install.bat</code>.</p>
+<p>If setup is interrupted (window closed, network lost), the next <code>START.bat</code>, <code>hermes.bat</code> or <code>hermes_gui.bat</code> runs setup again before starting Hermes.</p>
 <h4>3. Launch Again</h4>
 <pre><code class="language-batch">START.bat           :: easiest GUI launch
 UPDATE.bat          :: safest one-click update
@@ -313,44 +316,65 @@ hermes_gui.bat      :: GUI mode
 hermes.bat          :: CLI mode
 </code></pre>
 <h4>Updating</h4>
-<p>Portable Hermes has <strong>two independent update channels</strong>. Updating one does not automatically update the other.</p>
+<p>Portable Hermes is made of <strong>two parts that update separately</strong>:</p>
 <table>
 <thead>
 <tr>
-<th>Update channel</th>
-<th>What it updates</th>
-<th>How to run it</th>
+<th>Part</th>
+<th>What it is</th>
+<th>Comes from</th>
+<th>How to update</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>Portable Hermes distribution</strong></td>
-<td>The Windows launchers, integrations, portable tools, and the Hermes version tested with this repository</td>
+<td><strong>Portable wrapper</strong></td>
+<td>Launchers, desktop GUI, portable tools and skills, installer and updater</td>
+<td><a href="https://github.com/aivrar/portable-hermes-agent/releases/latest">aivrar/portable-hermes-agent releases</a></td>
 <td>Close Hermes, then double-click <code>UPDATE.bat</code></td>
 </tr>
 <tr>
-<td><strong>Upstream Hermes Agent</strong></td>
-<td>Newer core agent code from <code>NousResearch/hermes-agent</code></td>
-<td>Start Hermes and ask it to check or run its upstream updater</td>
+<td><strong>Hermes core</strong></td>
+<td>The agent itself</td>
+<td><a href="https://github.com/NousResearch/hermes-agent">NousResearch/hermes-agent</a> (latest <code>main</code>)</td>
+<td><code>UPDATE.bat</code> offers it after the wrapper step; or <code>UPDATE.bat --core</code>; or ask Hermes to update itself</td>
 </tr>
 </tbody></table>
-<p>For the normal, safest maintenance path, close other Hermes windows and gateways, then double-click:</p>
+<p>Close other Hermes windows and gateways, then double-click:</p>
 <pre><code class="language-batch">UPDATE.bat
 </code></pre>
-<p>Or run:</p>
-<pre><code class="language-batch">hermes.bat update --backup --yes
-</code></pre>
-<p>This updates from <code>aivrar/portable-hermes-agent</code>, makes a backup when requested, and preserves runtime folders such as <code>.hermes/</code>, <code>.hermes/custom_tools/</code>, <code>.hermes/extensions/</code>, <code>extensions/</code>, and <code>python_embedded/</code>. The portable Node.js runtime is stored under <code>HERMES_HOME/node/</code>, so it also survives both update types without modifying a system Node installation.</p>
-<p>If you also want newer upstream Hermes code, start Hermes after the Portable update and ask:</p>
+<ol>
+<li><strong>Wrapper:</strong> downloads the latest Portable Hermes release, checks the hash of every file, replaces only wrapper files, checks that the result starts, and rolls back if anything fails.</li>
+<li><strong>Core:</strong> shows how many upstream commits behind your core is and asks <code>Update the Hermes core now? [y/N]</code>.</li>
+</ol>
+<p>Unattended: <code>UPDATE.bat --yes</code> updates the wrapper only; <code>UPDATE.bat --yes --core</code> updates both; <code>UPDATE.bat --yes --no-core</code> never touches the core. <code>hermes.bat update ...</code> accepts the same options.</p>
+<p><strong>When the newest core needs a newer Python.</strong> Installs made before the evergreen wrapper (v1.4.18 and earlier) have embedded Python 3.13, and the current upstream core needs 3.14. The core step then explains what will happen and asks <code>Upgrade the portable Python to 3.14.9 now? [y/N]</code>:</p>
+<ul>
+<li>It renames <code>python_embedded</code> to <code>python_embedded.old-&lt;version&gt;</code> (kept, not deleted), downloads the new Python and Tcl/Tk (about 18 MB) and the packages Hermes needs (typically 150-300 MB), then installs and tests the newest core. This usually takes 5 to 15 minutes. Close Hermes first.</li>
+<li>If the new core cannot be installed, the upgrade is undone: the old Python folder is renamed back and your core stays as it was.</li>
+<li>If the window is closed or the PC loses power during the upgrade, the next start of Hermes (or <code>install.bat</code>) finishes it, or undoes it, before anything else runs. It does not ask again. A half-built new Python is moved to <code>python_embedded.failed-&lt;version&gt;</code>, never deleted.</li>
+<li>The list of packages the old Python had is saved in <code>.portable\</code>. Delete <code>python_embedded.old-&lt;version&gt;</code> yourself once Hermes works for you.</li>
+<li>Answering <code>N</code> changes nothing; run <code>UPDATE.bat --core</code> when you are ready. <code>UPDATE.bat --yes --core</code> upgrades without asking.</li>
+</ul>
+<p>If you are coming from v1.4.18 or older, the first <code>UPDATE.bat</code> installs the new launchers and asks you to run <code>UPDATE.bat</code> once more; that second run finishes the update.</p>
+<p>You can also ask Hermes in the chat:</p>
 <blockquote>
 <p>Check whether upstream Hermes Agent has updates. Do not install anything yet.</p>
 </blockquote>
-<p>Then, if you want the available update, ask:</p>
 <blockquote>
-<p>Update upstream Hermes Agent while preserving Portable Hermes. When finished, tell me whether I should restart.</p>
+<p>Update upstream Hermes Agent. When finished, tell me whether I should restart.</p>
 </blockquote>
-<p>Restart Hermes after a successful upstream update so the running process loads the new Python modules. A Git checkout can report an exact ahead/behind count; a release ZIP has no Git history, so it reports ZIP-overlay mode instead and can still install the latest upstream code.</p>
-<p>Most users do not need daily updates. Run the Portable updater when a release, fix, or security notice is published (or every week or two), and check upstream weekly if you want newer Hermes features. Checking daily is optional.</p>
-<p>See <strong><a href="https://github.com/aivrar/portable-hermes-agent/wiki/Keeping-Portable-Hermes-Updated">Keeping Portable Hermes Updated</a></strong> for the complete workflow, backups, release-ZIP behavior, and troubleshooting.</p>
+<p>How a core update protects your install:</p>
+<ul>
+<li>The new core is downloaded and unpacked in a staging folder (<code>.portable\</code>), its dependencies are installed, and it is tested in a separate process before any file is replaced. Dependencies come from the core's <code>uv.lock</code> with hashes; if an updated core has no usable lock, the update installs from the version ranges in <code>pyproject.toml</code> without hashes and says so.</li>
+<li>Files are swapped with a journal; if the swap or the second test fails, every file goes back to how it was. If the update is interrupted (power loss, window closed), the next launch settles it before any Hermes code runs: it is rolled back, or finished if it had already been committed.</li>
+<li>Changed Python packages are put back to their previous versions and the result is checked. If that cannot be completed (for example because a package file is in use, or the update was interrupted while it was changing packages), the update says so, a note appears whenever Hermes starts in a console window, and running <code>UPDATE.bat</code> again finishes it. When a running Hermes has a package loaded, pip can leave folders whose names start with <code>~</code> in <code>python_embedded\Lib\site-packages</code>; they are harmless and can be deleted once Hermes is closed.</li>
+<li>Only files the previous core installed, and that you have not edited, are ever removed. A file you edited that an update (or launch-time repair) would replace is first copied to a dated folder under <code>.portable\kept\</code>. Files nobody recorded are never deleted. The first core update of an install made with v1.4.18 or older has no record of the previous core's files, so it keeps a copy of every one it replaces or removes, and says how many, where and how large that folder is; delete it once Hermes works.</li>
+<li>Never touched by either update: <code>.env</code>, <code>cli-config.yaml</code>, <code>HERMES_HOME</code> (default <code>%USERPROFILE%\.hermes</code>, including custom tools, the LM Studio settings, language and other GUI preferences), <code>extensions\</code>, <code>node_modules\</code>, <code>workflows\</code>, <code>workspace\</code>, and built desktop apps in <code>apps\desktop\release\</code>. <code>python_embedded\</code> changes only when a core update installs the packages that core needs, and in the Python upgrade above, which keeps the old folder.</li>
+</ul>
+<p>Restart Hermes after a core update so the running process loads the new code. Every launch also restores any portable file that something else (for example upstream's own <code>hermes update</code>) replaced or removed, so the portable tools never silently disappear.</p>
+<p>The four launchers in the folder (<code>START.bat</code>, <code>UPDATE.bat</code>, <code>hermes.bat</code>, <code>hermes_gui.bat</code>) are one-line files that start the real scripts in <code>portable_hermes\launch\</code>. Windows reads a running batch file from disk line by line, so keeping the root files to one line is what lets an update replace the launch scripts safely while a launcher is running. Your arguments reach Hermes exactly as typed, including <code>%</code>, <code>^</code>, <code>!</code>, <code>&amp;</code> in quotes, and parentheses.</p>
+<p>Most users do not need daily updates. Run <code>UPDATE.bat</code> when a release, fix, or security notice is published (or every week or two). Checking daily is optional.</p>
+<p><strong>Git checkouts</strong> (developers): both updaters refuse to rewrite a git clone. Update it with <code>git pull</code>.</p>
 <h4>4. Connect an AI Model</h4>
 <p><strong>Cloud (2 minutes, free):</strong></p>
 <ol>
@@ -370,16 +394,27 @@ hermes.bat          :: CLI mode
 <h3>Requirements</h3>
 <ul>
 <li>Windows 10/11</li>
-<li>Internet connection (for cloud AI) or NVIDIA GPU 8GB+ (for local AI)</li>
+<li>Internet connection for setup and updates; for chatting, either a cloud AI account or an NVIDIA GPU with 8GB+ (for local AI)</li>
 <li>No admin rights, no system Python, no Docker</li>
+<li>A short folder path such as <code>C:\PortableHermes</code> if Windows long paths are turned off (upstream ships deeply nested files; setup and updates explain the limit if your path is too long)</li>
 </ul>
 <hr>
 <h3>Documentation</h3>
-<p>A searchable user guide is built into the agent — ask it anything or use the <code>search_guide</code> tool. The <a href="https://github.com/aivrar/portable-hermes-agent/releases/latest">PDF manual</a> is included in every release.</p>
+<p>A searchable user guide is built into the agent — ask it anything or use the <code>search_guide</code> tool. The <a href="https://github.com/aivrar/portable-hermes-agent/releases/latest">PDF manual</a> is included in every release; its setup and update chapters describe older releases (see <code>START_HERE.txt</code> and this README for the current flow).</p>
 <p>Key topics: getting started, API setup, the interface, permissions, LM Studio local models, extensions (TTS/Music/ComfyUI), all 100 tools, custom tool creation, workflows, and a glossary of AI terms.</p>
 <hr>
 <h3>Architecture</h3>
-<pre><code>User
+<pre><code>Portable wrapper (this repository's release)      Hermes core (NousResearch/hermes-agent)
+  START.bat / UPDATE.bat / hermes*.bat              installed by portable_hermes at setup,
+  gui/            desktop GUI                       updated by UPDATE.bat --core,
+  tools/*         portable tools (self-register)    recorded in .portable/core-state.json
+  skills/*        portable skills
+  portable_hermes ownership model, core and wrapper updaters,
+                  launch-time repair, and the toolsets bridge that offers
+                  the portable tools in upstream's default tool selection
+                  (in memory; no upstream file is edited)
+
+User
  |
  v
 GUI (Tkinter) / CLI
@@ -388,7 +423,7 @@ GUI (Tkinter) / CLI
 Agent Bridge (threading, sessions)
  |
  v
-AIAgent (run_agent.py)
+AIAgent (run_agent.py, upstream)
  |
  +-- Tool Registry (100 tools)
  |    +-- LM Studio tools (SDK + HTTP)

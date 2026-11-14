@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>supermemoryai/hermes-supermemory — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Supermemory memory provider for Hermes with semantic recall, profile facts and automatic conversation capture.">
+<meta name="description" content="Hermes Supermemory is a memory provider for Hermes Agent, offering semantic search, profile recall, explicit memory tools, and conversation capture. It can…">
 <link rel="canonical" href="https://hermesatlas.com/projects/supermemoryai/hermes-supermemory">
 <meta property="og:title" content="supermemoryai/hermes-supermemory — Hermes Atlas">
-<meta property="og:description" content="Supermemory memory provider for Hermes with semantic recall, profile facts and automatic conversation capture.">
+<meta property="og:description" content="Hermes Supermemory is a memory provider for Hermes Agent, offering semantic search, profile recall, explicit memory tools, and conversation capture. It can…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/supermemoryai/hermes-supermemory">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="supermemoryai/hermes-supermemory — Hermes Atlas">
-<meta name="twitter:description" content="Supermemory memory provider for Hermes with semantic recall, profile facts and automatic conversation capture.">
+<meta name="twitter:description" content="Hermes Supermemory is a memory provider for Hermes Agent, offering semantic search, profile recall, explicit memory tools, and conversation capture. It can…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-supermemory&amp;subtitle=Supermemory+memory+provider+plugin+for+Hermes&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/supermemoryai/hermes-supermemory#software",
   "name": "hermes-supermemory",
-  "description": "Supermemory memory provider for Hermes with semantic recall, profile facts and automatic conversation capture.",
+  "description": "Hermes Supermemory is a memory provider for Hermes Agent, offering semantic search, profile recall, explicit memory tools, and conversation capture. It can recall relevant memories before turns and save conversations as one document per conversation; hosted and self-hosted endpoints are supported.",
   "url": "https://hermesatlas.com/projects/supermemoryai/hermes-supermemory",
   "codeRepository": "https://github.com/supermemoryai/hermes-supermemory",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "supermemoryai",
     "url": "https://github.com/supermemoryai"
   },
-  "dateModified": "2026-11-13T00:52:48.000Z",
+  "dateModified": "2026-11-13T15:06:28.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Supermemory memory provider for Hermes with semantic recall, profile facts and automatic conversation capture.</p>
+    <p class="summary-text">Hermes Supermemory is a memory provider for Hermes Agent, offering semantic search, profile recall, explicit memory tools, and conversation capture. It can recall relevant memories before turns and save conversations as one document per conversation; hosted and self-hosted endpoints are supported.</p>
     <ul class="summary-highlights">
-      <li>Semantic recall and explicit save, search, forget and document tools</li>
-      <li>One updated document per conversation</li>
-      <li>Configurable hosted or self-hosted Supermemory endpoint</li>
+      <li>Provides tools to save, search, forget, and read memories.</li>
+      <li>Can include profile facts during memory recall.</li>
+      <li>Supports OAuth sign-in or API-key authentication.</li>
     </ul>
   </div>
 </section>
@@ -163,17 +163,33 @@
 <h3>Requirements</h3>
 <ul>
 <li>The official SDK, <code>supermemory&gt;=5.0.0,&lt;6</code> (declared in <code>pyproject.toml</code>; Hermes installs it with the plugin)</li>
-<li>Hosted: API key from <a href="https://console.supermemory.ai/keys?create=true">console.supermemory.ai/keys</a></li>
+<li>Hosted: a Supermemory account (sign in with your browser), or an API key from <a href="https://console.supermemory.ai/keys?create=true">console.supermemory.ai/keys</a></li>
 <li>Self-hosted: a running <a href="https://supermemory.ai/docs/self-hosting/overview">Supermemory local</a> server and the API key it prints on first boot</li>
 </ul>
 <h3>Setup</h3>
 <pre><code class="language-bash">hermes plugins install supermemoryai/hermes-supermemory
 hermes plugins enable supermemory
-hermes memory setup    # select "supermemory"
+hermes memory setup    # select "supermemory", then press Enter to sign in with your browser
 </code></pre>
 <p>Or manually:</p>
 <pre><code class="language-bash">hermes config set memory.provider supermemory
-echo 'SUPERMEMORY_API_KEY=***' &gt;&gt; ~/.hermes/.env
+python3 ~/.hermes/plugins/supermemory/auth.py login
+</code></pre>
+<h4>Sign in</h4>
+<p>The plugin signs in with your Supermemory account over OAuth. <code>login</code> opens your browser; on a
+machine without one, add <code>--print-url</code> and open the printed link anywhere (the callback listens on
+<code>127.0.0.1:19884</code>, so a remote box needs that port forwarded). Credentials are saved to
+<code>~/.supermemory-hermes/credentials.json</code> (mode 0600) and refreshed automatically. If the sign-in is
+revoked or expires, run <code>login</code> again.</p>
+<pre><code class="language-bash">python3 ~/.hermes/plugins/supermemory/auth.py login     # sign in (opens a browser)
+python3 ~/.hermes/plugins/supermemory/auth.py status    # OAuth or API key, and the account
+python3 ~/.hermes/plugins/supermemory/auth.py logout    # revoke the refresh token and delete the file
+</code></pre>
+<p>Use <code>$HERMES_HOME/plugins/supermemory/auth.py</code> if <code>HERMES_HOME</code> is not <code>~/.hermes</code>.</p>
+<h4>API key (fallback)</h4>
+<p>An API key still works exactly as before and takes priority over the OAuth sign-in. Paste it during
+<code>hermes memory setup</code>, or:</p>
+<pre><code class="language-bash">echo 'SUPERMEMORY_API_KEY=***' &gt;&gt; ~/.hermes/.env
 </code></pre>
 <p>For a fully self-hosted setup, start Supermemory local and note the API key it
 prints on first boot:</p>
@@ -186,7 +202,8 @@ prints on first boot:</p>
 }
 </code></pre>
 <p>Then run <code>hermes memory setup</code> and enter the local server's API key. Configuring
-the endpoint first ensures the setup connection probe also stays local.</p>
+the endpoint first ensures the setup connection probe also stays local. OAuth sign-in is only
+available for Supermemory cloud, so self-hosted and custom endpoints always use an API key.</p>
 <h3>Config</h3>
 <p>Config file: <code>$HERMES_HOME/supermemory.json</code></p>
 <table>
@@ -266,7 +283,7 @@ the endpoint first ensures the setup connection probe also stays local.</p>
 </thead>
 <tbody><tr>
 <td><code>SUPERMEMORY_API_KEY</code></td>
-<td>API key (required)</td>
+<td>API key. Optional when signed in with OAuth; takes priority over the sign-in when set</td>
 </tr>
 <tr>
 <td><code>SUPERMEMORY_BASE_URL</code></td>
@@ -384,7 +401,7 @@ Supermemory app, so you can filter, browse, and bulk-manage them per source agen
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 60.8K</div>
+        <div class="stars">★ 60.9K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">

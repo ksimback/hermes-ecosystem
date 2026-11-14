@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>100yenadmin/hermes-plan-mode — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="Hermes Plan Mode is a plugin for Hermes Agent that lets the agent explore with read-only tools, write a Markdown plan, and request approval before…">
+<meta name="description" content="Hermes Plan Mode is a plugin that lets Hermes Agent explore with read-only tools, write a plan, and require approval before implementation. After approval, it…">
 <link rel="canonical" href="https://hermesatlas.com/projects/100yenadmin/hermes-plan-mode">
 <meta property="og:title" content="100yenadmin/hermes-plan-mode — Hermes Atlas">
-<meta property="og:description" content="Hermes Plan Mode is a plugin for Hermes Agent that lets the agent explore with read-only tools, write a Markdown plan, and request approval before…">
+<meta property="og:description" content="Hermes Plan Mode is a plugin that lets Hermes Agent explore with read-only tools, write a plan, and require approval before implementation. After approval, it…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/100yenadmin/hermes-plan-mode">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="100yenadmin/hermes-plan-mode — Hermes Atlas">
-<meta name="twitter:description" content="Hermes Plan Mode is a plugin for Hermes Agent that lets the agent explore with read-only tools, write a Markdown plan, and request approval before…">
+<meta name="twitter:description" content="Hermes Plan Mode is a plugin that lets Hermes Agent explore with read-only tools, write a plan, and require approval before implementation. After approval, it…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-plan-mode&amp;subtitle=Plan+mode+for+Hermes+Agent%3A+it+explores+read-only+and+writes+a+plan%2C+and+its+edit+tools+stay+blocked+until+you+approve.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/100yenadmin/hermes-plan-mode#software",
   "name": "hermes-plan-mode",
-  "description": "Hermes Plan Mode is a plugin for Hermes Agent that lets the agent explore with read-only tools, write a Markdown plan, and request approval before implementation. After approval, it can implement the plan in the same turn and track progress in a todo list.",
+  "description": "Hermes Plan Mode is a plugin that lets Hermes Agent explore with read-only tools, write a plan, and require approval before implementation. After approval, it can carry out the plan in the same turn and track progress in a todo list.",
   "url": "https://hermesatlas.com/projects/100yenadmin/hermes-plan-mode",
   "codeRepository": "https://github.com/100yenadmin/hermes-plan-mode",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "100yenadmin",
     "url": "https://github.com/100yenadmin"
   },
-  "dateModified": "2026-11-11T06:15:00.000Z",
+  "dateModified": "2026-11-13T19:27:08.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-11</span>
+    <span><span class="meta-label">updated</span>2026-11-13</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Plan Mode is a plugin for Hermes Agent that lets the agent explore with read-only tools, write a Markdown plan, and request approval before implementation. After approval, it can implement the plan in the same turn and track progress in a todo list.</p>
+    <p class="summary-text">Hermes Plan Mode is a plugin that lets Hermes Agent explore with read-only tools, write a plan, and require approval before implementation. After approval, it can carry out the plan in the same turn and track progress in a todo list.</p>
     <ul class="summary-highlights">
-      <li>Blocks write and other tools while planning.</li>
-      <li>Supports plan commands across Hermes interactive surfaces.</li>
+      <li>Blocks most write and execution tools while planning.</li>
       <li>Offers approval and plan-revision options.</li>
+      <li>Supports CLI, TUI, Desktop, and messaging platforms.</li>
     </ul>
   </div>
 </section>
@@ -447,9 +447,13 @@ Read-only.</li>
 </ul>
 <p>The tool cannot approve or reject a plan. Approval is your act, recorded by Hermes' approval hooks or the
 plugin-issued <code>clarify</code> question's answer when Hermes approves automatically.</p>
+<p>A helper started with <code>delegate_task</code> shares its parent's session, so in a helper <code>on</code>, <code>off</code> and <code>submit</code> are
+refused and change nothing: plan mode stays with your session, and a helper cannot lock you or other helpers out of
+tools. <code>status</code>, <code>inspect</code> and <code>list</code> still answer. While your session is in plan mode, its helpers are held to the
+same lock.</p>
 <p>On hosts with Tool Search on (the default from v2026.9.24), plugin tools sit behind <code>tool_search</code>, which plan mode
-allows. The plugin adds a short system-prompt hint (≤200 chars) naming <code>plan_mode</code> for multi-step or risky changes,
-and the planning turn note tells the model to search for <code>plan_mode</code> if it is not loaded. <code>/plan</code> and
+allows. The plugin adds a short system-prompt hint (≤200 chars) naming <code>plan_mode</code> for multi-step or risky changes
+(not to <code>delegate_task</code> helpers or the curator), and the planning turn note tells the model to search for <code>plan_mode</code> if it is not loaded. <code>/plan</code> and
 <code>/planmode on</code> stay the reliable way in.</p>
 <h3>What is allowed in plan mode</h3>
 <ul>
@@ -939,12 +943,8 @@ plan and the final diff, without the product's name. No pass bar was set.</p>
 </ul>
 </li>
 <li><strong>The graders agreed on 41 of 48 labels</strong> (Cohen's κ 0.68). All 7 disagreements were PARITY-4 runs.</li>
-<li>Most major deviations were one explicit plan rule handled only in part, for example a malformed-id route answering
-405 where the plan said 404.</li>
-<li>This is diff-level evidence on two task sets. It does not show runtime behaviour or the order of the work.</li>
+<li>Most major deviations were one explicit</li>
 </ul>
-<p><strong>Asking (ASK-1, 2026-10-17).</strong> Pre-registered against Codex plan mode on three tasks where the user holds a
-preference the task does not state: T5H (a cache), T9H (retries) and T9HO (re</p>
 <hr>
 <p><em>README truncated. <a href="https://github.com/100yenadmin/hermes-plan-mode#readme">Continue reading on GitHub</a></em></p>
 

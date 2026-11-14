@@ -23,7 +23,7 @@ By [Kevin Simback](https://x.com/ksimback) · Hermes Atlas maintainer · Updated
 
 ## 1. What Hermes Agent actually is
 
-**Hermes Agent is an open-source AI agent by [Nous Research](https://nousresearch.com) that runs on your own machine or a cheap VPS, remembers what it learns across sessions, and writes its own reusable skills as it works. It talks to you through a CLI, Telegram, Discord, email, and many other messaging providers. It hit 263,128 GitHub stars (as of 2026-11-13), and it's the fastest-growing open-source agent of 2026.**
+**Hermes Agent is an open-source AI agent by [Nous Research](https://nousresearch.com) that runs on your own machine or a cheap VPS, remembers what it learns across sessions, and writes its own reusable skills as it works. It talks to you through a CLI, Telegram, Discord, email, and many other messaging providers. It hit 263,266 GitHub stars (as of 2026-11-14), and it's the fastest-growing open-source agent of 2026.**
 
 ### The 30-second version
 
@@ -434,10 +434,10 @@ If something is wrong, unclear, or out of date, open an issue on [the Atlas repo
 
 **Written by [Kevin Simback](https://x.com/ksimback)** · maintainer, Hermes Atlas
 
-**Last updated:** 2026-11-13 · Version and star figures re-stamp automatically with every site build.
+**Last updated:** 2026-11-14 · Version and star figures re-stamp automatically with every site build.
 
 **Cited stats:**
-- 263,128 GitHub stars (as of 2026-11-13) — source: `api.github.com/repos/NousResearch/hermes-agent`
-- 318+ projects in the Hermes Atlas (as of 2026-11-13)
+- 263,266 GitHub stars (as of 2026-11-14) — source: `api.github.com/repos/NousResearch/hermes-agent`
+- 318+ projects in the Hermes Atlas (as of 2026-11-14)
 
 **Corrections and feedback:** [open an issue](https://github.com/ksimback/hermes-ecosystem/issues/new) or message on X.
