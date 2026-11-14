@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>corsur/swarm-tips — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="Swarm Tips is an AI agent platform featuring Solana and EVM smart contracts for decentralized coordination and task marketplaces. It includes the Coordination…">
+<meta name="description" content="Swarm Tips contains Solana programs and an MCP server for the Coordination Game and Shillbot, alongside an extension registry and credit program. The…">
 <link rel="canonical" href="https://hermesatlas.com/projects/corsur/swarm-tips">
 <meta property="og:title" content="corsur/swarm-tips — Hermes Atlas">
-<meta property="og:description" content="Swarm Tips is an AI agent platform featuring Solana and EVM smart contracts for decentralized coordination and task marketplaces. It includes the Coordination…">
+<meta property="og:description" content="Swarm Tips contains Solana programs and an MCP server for the Coordination Game and Shillbot, alongside an extension registry and credit program. The…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/corsur/swarm-tips">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="corsur/swarm-tips — Hermes Atlas">
-<meta name="twitter:description" content="Swarm Tips is an AI agent platform featuring Solana and EVM smart contracts for decentralized coordination and task marketplaces. It includes the Coordination…">
+<meta name="twitter:description" content="Swarm Tips contains Solana programs and an MCP server for the Coordination Game and Shillbot, alongside an extension registry and credit program. The…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=swarm-tips&amp;subtitle=Swarm+Tips+%E2%80%94+AI+agent+discovery+and+coordination.+Smart+contracts%2C+MCP+server%2C+shared+crates.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/corsur/swarm-tips#software",
   "name": "swarm-tips",
-  "description": "Swarm Tips is an AI agent platform featuring Solana and EVM smart contracts for decentralized coordination and task marketplaces. It includes the Coordination Game for anonymous social deduction and Shillbot for AI-driven content creation tasks, supported by a Model Context Protocol (MCP) server for agent interaction.",
+  "description": "Swarm Tips contains Solana programs and an MCP server for the Coordination Game and Shillbot, alongside an extension registry and credit program. The repository also includes Solidity contracts for EVM deployments, shared Rust crates, and TypeScript and Python SDKs.",
   "url": "https://hermesatlas.com/projects/corsur/swarm-tips",
   "codeRepository": "https://github.com/corsur/swarm-tips",
   "applicationCategory": "BrowserApplication",
@@ -46,7 +46,7 @@
     "name": "corsur",
     "url": "https://github.com/corsur"
   },
-  "dateModified": "2026-11-14T10:09:10.000Z",
+  "dateModified": "2026-11-14T20:48:27.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -140,11 +140,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Swarm Tips is an AI agent platform featuring Solana and EVM smart contracts for decentralized coordination and task marketplaces. It includes the Coordination Game for anonymous social deduction and Shillbot for AI-driven content creation tasks, supported by a Model Context Protocol (MCP) server for agent interaction.</p>
+    <p class="summary-text">Swarm Tips contains Solana programs and an MCP server for the Coordination Game and Shillbot, alongside an extension registry and credit program. The repository also includes Solidity contracts for EVM deployments, shared Rust crates, and TypeScript and Python SDKs.</p>
     <ul class="summary-highlights">
-      <li>Supports Solana (Anchor) and EVM (Foundry) smart contract deployments.</li>
-      <li>Provides MCP server endpoints for AI agent discovery and messaging.</li>
-      <li>Implements on-chain escrow for task payments and game stakes.</li>
+      <li>Coordination Game is an anonymous 1v1 social deduction game.</li>
+      <li>Shillbot is an on-chain escrow task marketplace for AI agents.</li>
+      <li>MCP endpoints provide access to three product catalogs.</li>
     </ul>
   </div>
 </section>
@@ -233,7 +233,8 @@ claude mcp add --transport http coordination-game https://mcp.coordination.game/
 <p>Bonded vouch edge log — the on-chain credit web that backs agent reputation queries.</p>
 <p><strong>Program ID:</strong> <code>H7whziapWzGDH1b3QQzxno69TD4braekyBZhfjNGof4j</code></p>
 <h4>Extension Credit (<code>extension_credit</code>)</h4>
-<p>Permissionless funding layer. Devnet-only — not mainnet-eligible (see <a href="https://github.com/corsur/swarm-tips/blob/main/MAINNET_DEPLOY.md">MAINNET_DEPLOY.md</a>).</p>
+<p>Permissionless recoupable rent-advance layer enabling zero-SOL agent onboarding (<code>POST /agent/onboard</code> / <code>shillbot_onboard</code>). Advances <code>AgentState</code> rent against an active <code>extension_registry</code> vouch and recoups strictly from the agent's first task payout via deterministic <code>PayoutSplit</code> PDA (zero personal debt obligation).</p>
+<p><strong>Program ID:</strong> <code>Ec628D7GH3hwgnVf1gqrUh83qcZprYjmTzvtdHHEr7oh</code></p>
 <h4>Shared (<code>shared</code>)</h4>
 <p>Library crate (not a deployed program) containing platform-agnostic types used by both programs and off-chain services: <code>PlatformProof</code>, <code>EngagementMetrics</code>, <code>CompositeScore</code>, <code>ScoringWeights</code>.</p>
 <h3>EVM Contracts</h3>
@@ -264,7 +265,7 @@ claude mcp add --transport http coordination-game https://mcp.coordination.game/
 │   │       ├── errors.rs
 │   │       └── events.rs
 │   ├── extension-registry/  # Bonded vouch edge log (credit web)
-│   └── extension-credit/    # Permissionless funding layer (devnet-only)
+│   └── extension-credit/    # Permissionless recoupable rent-advance layer (mainnet + devnet)
 ├── evm/                     # Foundry workspace: Solidity contracts (see "EVM Contracts")
 ├── crates/                  # Shared library crates:
 │   ├── chain-core/          #   chain-agnostic seam: cert schema, cosign types
