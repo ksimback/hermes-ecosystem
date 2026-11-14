@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>100yenadmin/hermes-teammates — Hermes Agent Multi-Agent &amp; Orchestration | Hermes Atlas</title>
-<meta name="description" content="Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, toolsets, and optional model. The agent can run and follow up…">
+<meta name="description" content="Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, tools, and optional model. It supports background runs,…">
 <link rel="canonical" href="https://hermesatlas.com/projects/100yenadmin/hermes-teammates">
 <meta property="og:title" content="100yenadmin/hermes-teammates — Hermes Atlas">
-<meta property="og:description" content="Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, toolsets, and optional model. The agent can run and follow up…">
+<meta property="og:description" content="Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, tools, and optional model. It supports background runs,…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/100yenadmin/hermes-teammates">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="100yenadmin/hermes-teammates — Hermes Atlas">
-<meta name="twitter:description" content="Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, toolsets, and optional model. The agent can run and follow up…">
+<meta name="twitter:description" content="Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, tools, and optional model. It supports background runs,…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-teammates&amp;subtitle=Give+your+Hermes+agent+a+fixed+team%3A+named+teammates+with+roles%2C+follow-ups+that+keep+context%2C+and+a+Kanban+review+lane.&amp;kind=project+%C2%B7+multi-agent">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/100yenadmin/hermes-teammates#software",
   "name": "hermes-teammates",
-  "description": "Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, toolsets, and optional model. The agent can run and follow up with teammates, retain results across turns, and coordinate linked Kanban cards that wait in Review for approval.",
+  "description": "Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, tools, and optional model. It supports background runs, follow-ups that include earlier results, and a Kanban lane where completed cards wait for approval before dependent cards proceed.",
   "url": "https://hermesatlas.com/projects/100yenadmin/hermes-teammates",
   "codeRepository": "https://github.com/100yenadmin/hermes-teammates",
   "applicationCategory": "DeveloperApplication",
@@ -47,7 +47,7 @@
     "name": "100yenadmin",
     "url": "https://github.com/100yenadmin"
   },
-  "dateModified": "2026-11-14T01:09:46.000Z",
+  "dateModified": "2026-11-14T08:17:34.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, toolsets, and optional model. The agent can run and follow up with teammates, retain results across turns, and coordinate linked Kanban cards that wait in Review for approval.</p>
+    <p class="summary-text">Hermes Teammates adds a configurable roster of named subagents, each with its own instructions, tools, and optional model. It supports background runs, follow-ups that include earlier results, and a Kanban lane where completed cards wait for approval before dependent cards proceed.</p>
     <ul class="summary-highlights">
-      <li>Roster settings define each teammate’s instructions and tools.</li>
-      <li>Follow-ups can include summaries of earlier runs.</li>
-      <li>Kanban cards move to Review before approval.</li>
+      <li>Configure teammates with distinct instructions and toolsets.</li>
+      <li>Track runs and follow up across turns.</li>
+      <li>Completed Kanban cards wait in Review for approval.</li>
     </ul>
   </div>
 </section>
@@ -541,6 +541,11 @@ CSV. Report back when both are done.</p>
 These tools include relay guidance with finished summaries: preserve specialist findings, citations and verdict
 verbatim when reporting them, and keep the parent's commentary separate.</p>
 <p><code>/teammates</code> prints the roster in any chat surface.</p>
+<p>The bundled <code>teammates-workflow</code> skill gives the agent this working playbook in one place: when to use a teammate
+rather than <code>delegate_task</code>, the chain → Review → <code>kanban_complete</code> loop (Review is not done, and dependent cards
+stay not ready until their parent is approved), request-changes and stop paths, and how routes, models and
+reasoning effort are inherited, including what an <code>unsupported</code> entry means. On Hermes versions that do not list
+plugin skills in the system prompt, name it: "load the skill <code>hermes-teammates:teammates-workflow</code>".</p>
 <p><code>queued</code> means Hermes has accepted the child and is waiting to start it. Queued runs still count toward the
 live-run cap.</p>
 <h4>Hermes tool search</h4>
@@ -775,8 +780,8 @@ substitutes something else:</li>
 </tr>
 <tr>
 <td>push completion</td>
-<td>public session-bound injection (unavailable on tested pinned/main); gateway also needs operator consent</td>
-<td>Roster reports unsupported; results remain available via check/wait</td>
+<td>public session-bound injection (unavailable on tested pinned/main), or the operator opt-in <code>trust_notice_routing</code> (see <a href="#completion-notices-opt-in">Completion notices</a>); Hermes' <code>allow_gateway_injection</code> consent for gateway, TUI and Desktop sessions and the 0.23.1 classic CLI</td>
+<td>Roster reports unsupported or off; without <code>allow_gateway_injection</code> it still says on but Hermes drops the notices; results remain available via check/wait</td>
 </tr>
 <tr>
 <td>follow-up on the same child</td>
@@ -921,21 +926,7 @@ the next card to the right teammate with the previous result as context." Each c
 ready → running → review → done in turn, with no further prompts. On builds that wake the chat at review, late
 notices for cards the agent already approved may follow; they need no action.</li>
 </ol>
-<h3>Security</h3>
-<p>See <a href="https://github.com/100yenadmin/hermes-teammates/blob/main/SECURITY.md">SECURITY.md</a>. In short:</p>
-<ul>
-<li>Credentials come from Hermes: the parent's, or the operator-configured provider's when route is supported.
-The model cannot choose credentials; teammates can only narrow toolsets.</li>
-<li>The model picks names, never providers or models.</li>
-<li>The ledger stays local and per profile, retaining complete results up to 262,144 characters (256 KB of text) per run.</li>
-<li>The plugin makes no network calls of its own.</li>
-<li>It only claims Kanban cards assigned to its lane.</li>
-<li>It adds one short paragraph about the Kanban lane to new session prompts, rendered from its settings; no
-conversation content goes into it.</li>
-</ul>
-<h3>Troubleshooting and reporting a bug</h3>
-<p>Use <code>/teammates</code> for the roster, or <code>teammates_roster</code> for config problems, host features and recent runs.
-If the tools a</p>
+<h3>Secu</h3>
 <hr>
 <p><em>README truncated. <a href="https://github.com/100yenadmin/hermes-teammates#readme">Continue reading on GitHub</a></em></p>
 
@@ -954,7 +945,7 @@ If the tools a</p>
         <div class="name"><span class="org">builderz-labs /</span> mission-control</div>
       </a>
       <a class="related-row" href="/projects/swarmclawai/swarmclaw">
-        <div class="stars">★ 711</div>
+        <div class="stars">★ 712</div>
         <div class="name"><span class="org">swarmclawai /</span> swarmclaw</div>
       </a>
       <a class="related-row" href="/projects/howdymary/hermes-agent-metaharness">
@@ -978,7 +969,7 @@ If the tools a</p>
         <div class="name"><span class="org">agent37-platform /</span> minions</div>
       </a>
       <a class="related-row" href="/projects/shannhk/hermes-agent-control-room">
-        <div class="stars">★ 740</div>
+        <div class="stars">★ 739</div>
         <div class="name"><span class="org">shannhk /</span> hermes-agent-control-room</div>
       </a>
     </div>

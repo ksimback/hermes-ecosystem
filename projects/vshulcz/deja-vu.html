@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>vshulcz/deja-vu — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="deja-vu indexes local session histories from 43 coding agents so they can be searched across agents. It supports session handoff, code recovery, and automatic…">
+<meta name="description" content="deja-vu indexes coding-agent session histories stored on disk so they can be searched locally across supported agents. It also supports cross-agent session…">
 <link rel="canonical" href="https://hermesatlas.com/projects/vshulcz/deja-vu">
 <meta property="og:title" content="vshulcz/deja-vu — Hermes Atlas">
-<meta property="og:description" content="deja-vu indexes local session histories from 43 coding agents so they can be searched across agents. It supports session handoff, code recovery, and automatic…">
+<meta property="og:description" content="deja-vu indexes coding-agent session histories stored on disk so they can be searched locally across supported agents. It also supports cross-agent session…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/vshulcz/deja-vu">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="vshulcz/deja-vu — Hermes Atlas">
-<meta name="twitter:description" content="deja-vu indexes local session histories from 43 coding agents so they can be searched across agents. It supports session handoff, code recovery, and automatic…">
+<meta name="twitter:description" content="deja-vu indexes coding-agent session histories stored on disk so they can be searched locally across supported agents. It also supports cross-agent session…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=deja-vu&amp;subtitle=Shared+local+memory%2C+session+history+search%2C+cross-agent+handoff%2C+and+uncommitted+code+recovery+across+43+coding+agents+%E2%80%94+Claude+Code%2C+Codex%2C+Cursor%2C+OpenCode%2C+Gemini+CLI%2C+OpenClaw&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/vshulcz/deja-vu#software",
   "name": "deja-vu",
-  "description": "deja-vu indexes local session histories from 43 coding agents so they can be searched across agents. It supports session handoff, code recovery, and automatic recall through hooks and MCP, without LLM calls.",
+  "description": "deja-vu indexes coding-agent session histories stored on disk so they can be searched locally across supported agents. It also supports cross-agent session handoff, automatic recall through hooks and MCP, and recovery or tracing of code changes made during sessions.",
   "url": "https://hermesatlas.com/projects/vshulcz/deja-vu",
   "codeRepository": "https://github.com/vshulcz/deja-vu",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "vshulcz",
     "url": "https://github.com/vshulcz"
   },
-  "dateModified": "2026-11-13T16:07:58.000Z",
+  "dateModified": "2026-11-14T11:06:43.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 1544
+    "userInteractionCount": 1548
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Go</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-13</span>
+    <span><span class="meta-label">updated</span>2026-11-14</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">deja-vu indexes local session histories from 43 coding agents so they can be searched across agents. It supports session handoff, code recovery, and automatic recall through hooks and MCP, without LLM calls.</p>
+    <p class="summary-text">deja-vu indexes coding-agent session histories stored on disk so they can be searched locally across supported agents. It also supports cross-agent session handoff, automatic recall through hooks and MCP, and recovery or tracing of code changes made during sessions.</p>
     <ul class="summary-highlights">
-      <li>Search and filter histories across supported agents.</li>
-      <li>Hand off sessions between agents and restore overwritten code.</li>
-      <li>Builds an incremental local index.</li>
+      <li>Search session histories across 46 coding agents.</li>
+      <li>Hand off an active session to another agent.</li>
+      <li>Recover overwritten code and trace line changes to sessions.</li>
     </ul>
   </div>
 </section>
@@ -162,7 +162,7 @@
   </picture>
 </p>
 
-<p align="center"><b>Shared local memory, session history search, cross-agent handoff, and code recovery across 43 coding agents.</b><br>
+<p align="center"><b>Shared local memory, session history search, cross-agent handoff, and code recovery across 46 coding agents.</b><br>
 Claude Code, Codex, Cursor, OpenClaw, Gemini CLI, OpenCode, Hermes and 36 more agents already save every session to disk.<br>
 <b>deja-vu</b> (<code>deja</code>) indexes all of it locally in one Go binary — zero LLM calls, 0.7 ms in-process lookup, ~4% index footprint.</p>
 
@@ -184,13 +184,13 @@ Claude Code, Codex, Cursor, OpenClaw, Gemini CLI, OpenCode, Hermes and 36 more a
 # or via shell / Homebrew:
 curl -fsSL https://raw.githubusercontent.com/vshulcz/deja-vu/main/install.sh | sh &amp;&amp; deja install --auto
 </code></pre>
-<p align="center"><sub>Homebrew: <code>brew install deja-vu &amp;&amp; deja install --auto</code> · Claude Code: <code>claude plugin marketplace add vshulcz/deja-vu &amp;&amp; claude plugin install deja-vu@deja-vu</code> · Skills: <code>npx skills add vshulcz/deja-vu</code><br><a href="#install">Windows (Scoop / winget), Codex, OpenCode, OpenClaw and more</a> · Audit local stores &amp; retention risk without installing: <code>npx @vshulcz/deja-vu audit</code></sub></p>
+<p align="center"><sub>Homebrew: <code>brew install deja-vu &amp;&amp; deja install --auto</code> · Claude Code: <code>claude plugin marketplace add vshulcz/deja-vu &amp;&amp; claude plugin install deja-vu@deja-vu</code> · Skills: <code>npx skills add vshulcz/deja-vu</code><br><a href="#install">Windows (Scoop / winget), Codex, OpenCode, OpenClaw and more</a> · Try without installing: <code>npx @vshulcz/deja-vu stats --no-index --card</code> or <code>npx @vshulcz/deja-vu audit</code></sub></p>
 
-<pre><code class="language-sh">$ deja "jwt refresh token"             # lexical + structural search across all 43 agent stores
+<pre><code class="language-sh">$ deja "jwt refresh token"             # lexical + structural search across all 46 agent stores
 $ deja handoff --to codex              # continue the active session's goal &amp; state in another agent
 $ deja restore internal/auth/jwt.go    # recover code an agent overwrote before git commit
 $ deja blame internal/auth/jwt.go:42   # trace which agent session wrote or replaced a line
-$ deja audit                           # check retention risk, purged chats &amp; index health across all 43 stores
+$ deja audit                           # check retention risk, purged chats &amp; index health across all 46 stores
 </code></pre>
 <table align="center">
 <tbody><tr>
@@ -216,7 +216,7 @@ the sessions behind your uncommitted changes, then recent work in the current pr
 <p>Prefer a browser? <code>deja view</code> exports the store — sessions, the recall audit trail, and promoted notes — into one local HTML file (<a href="https://vshulcz.github.io/deja-vu/view/">try the live demo</a>). With <code>DEJA_TUI=0</code> (or <code>deja brief</code>), <code>deja</code> prints a plain-text summary.</p>
 <h3>Highlights</h3>
 <ul>
-<li><strong>Starts full on day one.</strong> Months of existing transcripts across all <a href="#supported-harnesses">forty-three agents</a> are searchable immediately — fix a bug in Codex and Claude Code, Cursor or OpenCode recalls it.</li>
+<li><strong>Starts full on day one.</strong> Months of existing transcripts across all <a href="#supported-harnesses">forty-six agents</a> are searchable immediately — fix a bug in Codex and Claude Code, Cursor or OpenCode recalls it.</li>
 <li><strong>Survives <code>/compact</code> and context resets.</strong> Over 43 measured compactions, summaries kept 77% of decisions and 0.2% of commands; deja hands back the exact commands, errors, and decisions (<a href="https://github.com/vshulcz/deja-vu/blob/main/docs/compaction.md">how</a>).</li>
 <li><strong>Cross-agent handoff (<code>deja handoff</code>).</strong> Hit a rate limit or get stuck in Claude Code? Hand the active session's goal, decisions, touched files, and open work straight into Codex, Cursor, or OpenCode.</li>
 <li><strong>Undo overwritten code (<code>deja restore</code> &amp; <code>deja blame</code>).</strong> Indexes opened files, commands with exit codes, and exact <code>Edit</code> spans so <code>deja restore &lt;path&gt;</code> recovers code an agent clobbered even before <code>git commit</code> (<code>deja blame &lt;file&gt;:&lt;line&gt;</code>).</li>
@@ -226,7 +226,7 @@ the sessions behind your uncommitted changes, then recent work in the current pr
 <li><strong>Incremental local index.</strong> Append-only <code>records.bin</code> plus token buckets in <code>~/.cache/deja</code>, with per-file watermarks in <code>manifest.gob</code> so repeat passes only read changed files (~50 ms freshness check; 4% index footprint on a 5.7 GB / 358k-message corpus). Zero LLM calls, no cloud account, and automatic credential redaction at index time (<a href="https://github.com/vshulcz/deja-vu/blob/main/docs/ARCHITECTURE.md">architecture</a>, <a href="#privacy">privacy</a>).</li>
 </ul>
 <h4>Your own work, wrapped</h4>
-<p><code>deja stats --card</code> draws your yearly agent activity in the terminal or writes an SVG for your GitHub profile (<a href="https://vshulcz.github.io/deja-vu/card/">convert to PNG in browser</a>).</p>
+<p><code>deja stats --card</code> draws your yearly agent activity in the terminal or writes an SVG for your GitHub profile (<a href="https://vshulcz.github.io/deja-vu/card/">convert to PNG in browser</a>). Before installing, run <code>npx @vshulcz/deja-vu stats --no-index --card</code> to scan local stores without writing an index.</p>
 <p align="center"><img src="https://raw.githubusercontent.com/vshulcz/deja-vu/main/docs/assets/stats-card-demo.svg" width="600" alt="deja stats card: a year of agent sessions as a heatmap, the agents they came from, and the longest one"></p>
 
 <h3>Install</h3>
@@ -433,7 +433,7 @@ as usual. <code>deja search &lt;query&gt;</code> skips the suggestion.</p>
 </tr>
 <tr>
 <td><code>deja stats</code></td>
-<td>Your agent work, wrapped. <code>--card</code> draws it in the terminal, <code>--card &lt;file&gt;.svg</code> writes one for a profile, <code>--html</code> a browsable timeline.</td>
+<td>Your agent work, wrapped. <code>--no-index</code> scans local stores before installing, <code>--card</code> draws it in the terminal or SVG, <code>--html</code> writes a browsable timeline.</td>
 </tr>
 <tr>
 <td><code>deja secrets [--scrub]</code></td>
@@ -553,7 +553,7 @@ whether or not the tool is called.</p>
 
 <h3>Supported harnesses</h3>
 
-<p>aider · Amp · Antigravity · Claude Code · Cline · Codex CLI · Copilot CLI · VS Code Copilot Chat · Cursor · DeepSeek Harness · Gemini CLI · Goose · Grok Build · Hermes · Kimi Code · omp (Oh My Pi) · OpenClaw · opencode · Continue · Crush · pi · prime-agent (PrimeIntellect) · Qwen Code · Cherry Studio · Senpi · gajae-code · Kimchi Coding · Command Code · ZCode · Kiro · Kilo Code · Roo Code · Zed · Devin CLI · CodeWhale · Junie · JetBrains AI Assistant · Windsurf / Devin Desktop · CodeBuddy Code · Reasonix · TRAE CLI · Muse Code · MiniMax Code.</p>
+<p>aider · Amp · Antigravity · Claude Code · Cline · Codex CLI · Copilot CLI · VS Code Copilot Chat · Cursor · DeepSeek Harness · Gemini CLI · Goose · Grok Build · Hermes · Kimi Code · omp (Oh My Pi) · OpenClaw · opencode · Continue · Crush · pi · prime-agent (PrimeIntellect) · Qwen Code · Cherry Studio · Senpi · gajae-code · Kimchi Coding · Command Code · ZCode · Kiro · Kilo Code · Roo Code · Zed · Devin CLI · CodeWhale · Junie · JetBrains AI Assistant · Windsurf / Devin Desktop · CodeBuddy Code · Reasonix · TRAE CLI · Muse Code · MiniMax Code · MiMo-Code · Omnigent · Orca.</p>
 <details>
 <summary>What each one supports</summary>
 
@@ -1000,6 +1000,36 @@ whether or not the tool is called.</p>
 <td align="center">✅</td>
 <td>the MiniMax Code CLI (<code>mcode</code>) for <code>deja resume</code> and <code>deja handoff --to mcode --exec</code>; <code>sqlite3</code> for the session's workspace</td>
 </tr>
+<tr>
+<td>MiMo-Code</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>sqlite3</td>
+</tr>
+<tr>
+<td>Omnigent</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>sqlite3</td>
+</tr>
+<tr>
+<td>Orca</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>sqlite3</td>
+</tr>
 </tbody></table>
 <p>✅ works · — possible, not built yet · ✕ the harness has no such mechanism · ⚠ waiting on the harness itself · ? not investigated</p>
 </details>
@@ -1317,7 +1347,7 @@ and a search for a word most sessions hold takes about a second.</p>
 </tr>
 <tr>
 <td>Agents shared</td>
-<td>43 harnesses</td>
+<td>46 harnesses</td>
 <td>9 (hooks)</td>
 <td>3 (CLI)</td>
 </tr>
@@ -1483,7 +1513,7 @@ Windows the notes are in <code>%AppData%\deja</code>).</p>
 <details>
 <summary><b>Per-harness setup guides (Claude Code, Codex, Cursor, OpenClaw, Hermes…)</b></summary>
 
-<p><a href="https://vshulcz.github.io/deja-vu/guide/memory-for-claude-code.html">Claude Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-codex.html">Codex</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-cursor.html">Cursor</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-windsurf.html">Windsurf</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-opencode.html">opencode</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-dsh.html">DeepSeek Harness</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kimi.html">Kimi Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-zed.html">Zed</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-grok.html">Grok Build</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-gemini.html">Gemini CLI</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-qwen.html">Qwen Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-openclaw.html">OpenClaw</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-goose.html">Goose</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-cline.html">Cline</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-pi.html">pi</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-hermes.html">Hermes</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-copilot.html">Copilot CLI</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-copilot-chat.html">Copilot Chat</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-aider.html">aider</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-amp.html">Amp</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-antigravity.html">Antigravity</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-continue.html">Continue</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-crush.html">Crush</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-roo.html">Roo Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kilocode.html">Kilo Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kiro.html">Kiro</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-cherrystudio.html">Cherry Studio</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-omp.html">Oh My Pi</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-prime.html">prime-agent</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-senpi.html">Senpi</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kimchi.html">Kimchi</a> · [Command Code](<a href="https://vsh">https://vsh</a></p>
+<p><a href="https://vshulcz.github.io/deja-vu/guide/memory-for-claude-code.html">Claude Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-codex.html">Codex</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-cursor.html">Cursor</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-windsurf.html">Windsurf</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-opencode.html">opencode</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-dsh.html">DeepSeek Harness</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kimi.html">Kimi Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-zed.html">Zed</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-grok.html">Grok Build</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-gemini.html">Gemini CLI</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-qwen.html">Qwen Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-openclaw.html">OpenClaw</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-goose.html">Goose</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-cline.html">Cline</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-pi.html">pi</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-hermes.html">Hermes</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-copilot.html">Copilot CLI</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-copilot-chat.html">Copilot Chat</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-aider.html">aider</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-amp.html">Amp</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-antigravity.html">Antigravity</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-continue.html">Continue</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-crush.html">Crush</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-roo.html">Roo Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kilocode.html">Kilo Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kiro.html">Kiro</a> · [Cherry Studio](<a href="https://vshulcz.github.io/deja-vu/guide/memory-for-">https://vshulcz.github.io/deja-vu/guide/memory-for-</a></p>
 <hr>
 <p><em>README truncated. <a href="https://github.com/vshulcz/deja-vu#readme">Continue reading on GitHub</a></em></p>
 </details>
@@ -1498,11 +1528,11 @@ Windows the notes are in <code>%AppData%\deja</code>).</p>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 68.9K</div>
+        <div class="stars">★ 69.0K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 60.9K</div>
+        <div class="stars">★ 61.0K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">

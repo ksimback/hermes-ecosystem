@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>electricsheephq/heartbeat2 — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watcher-triggered events. Its code checks wakes and…">
+<meta name="description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watchers. Plain-code checks run at wakes and watcher…">
 <link rel="canonical" href="https://hermesatlas.com/projects/electricsheephq/heartbeat2">
 <meta property="og:title" content="electricsheephq/heartbeat2 — Hermes Atlas">
-<meta property="og:description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watcher-triggered events. Its code checks wakes and…">
+<meta property="og:description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watchers. Plain-code checks run at wakes and watcher…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/electricsheephq/heartbeat2">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="electricsheephq/heartbeat2 — Hermes Atlas">
-<meta name="twitter:description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watcher-triggered events. Its code checks wakes and…">
+<meta name="twitter:description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watchers. Plain-code checks run at wakes and watcher…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=heartbeat2&amp;subtitle=Give+your+Hermes+agent+a+working+life+between+messages%3A+wakes%2C+watchers+and+roles%2C+within+daily+turn+and+message+caps.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/electricsheephq/heartbeat2#software",
   "name": "heartbeat2",
-  "description": "HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watcher-triggered events. Its code checks wakes and watchers without running a model, and starts a turn when work is due or a watcher condition is met; settings can limit turns, spending, and messages.",
+  "description": "HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watchers. Plain-code checks run at wakes and watcher intervals; the agent gets a turn when something is due or a watcher’s condition is met, in the same chat and on that chat’s model.",
   "url": "https://hermesatlas.com/projects/electricsheephq/heartbeat2",
   "codeRepository": "https://github.com/electricsheephq/heartbeat2",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "electricsheephq",
     "url": "https://github.com/electricsheephq"
   },
-  "dateModified": "2026-11-14T05:30:21.000Z",
+  "dateModified": "2026-11-14T12:03:43.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watcher-triggered events. Its code checks wakes and watchers without running a model, and starts a turn when work is due or a watcher condition is met; settings can limit turns, spending, and messages.</p>
+    <p class="summary-text">HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watchers. Plain-code checks run at wakes and watcher intervals; the agent gets a turn when something is due or a watcher’s condition is met, in the same chat and on that chat’s model.</p>
     <ul class="summary-highlights">
-      <li>Supports roles with a charter, notebook, and agent-set rhythm.</li>
+      <li>Supports roles with a charter and persistent notebook.</li>
       <li>Watchers can monitor files, processes, URLs, commands, or Hermes events.</li>
-      <li>Provides `/pulse` commands to inspect schedules and recent triggers.</li>
+      <li>Settings include daily turn and message caps, quiet hours, and mute rules.</li>
     </ul>
   </div>
 </section>
@@ -406,6 +406,10 @@ pulse tool results name the ignored setting.</p>
 <td>Active, proposed and paused items plus the 10 most recently created finished ones; <code>/pulse list all</code> shows everything. Why lists the last 10 trigger keys, states, reasons, matched/created and held-since times, and delivered yes/no</td>
 </tr>
 <tr>
+<td><code>/pulse owntime on|off</code></td>
+<td>Own time in this chat or topic, while <code>own_time_hours</code> is set. Direct chats have it until you turn it off; a group or topic only once you turn it on there</td>
+</tr>
+<tr>
 <td><code>/pulse run &lt;id&gt;</code></td>
 <td>Queue one turn of a recurring wake or role now; keeps every usual check, including busy chat, quiet hours and daily caps, and counts as one of its fires. Watchers, one-time reminders, the quiet check-in and own time fire on their own: preview those with <code>/pulse test</code></td>
 </tr>
@@ -518,13 +522,13 @@ Kanban watchers can target one task with <code>trigger.task_id</code>, one board
 <td>Time zone</td>
 <td><code>timezone</code></td>
 <td>(blank)</td>
-<td>IANA name such as Europe/Paris. Blank uses the profile's time zone.</td>
+<td>IANA name such as Europe/Paris. Blank uses the profile's time zone. <code>/pulse status</code> shows the zone in use and where it comes from, and says when this setting pins a different zone from Hermes'. When the zone changes, cron and <code>every … at</code> wakes move to their local time in the new zone.</td>
 </tr>
 <tr>
 <td>Quiet hours</td>
 <td><code>quiet_hours</code></td>
 <td><code>22:00-08:00</code></td>
-<td>HH:MM-HH:MM, may cross midnight; blank for none. Due one-shots wait until the end. Your agent's own recurring work and roles keep running inside them, silently: their messages are held.</td>
+<td>HH:MM-HH:MM, may cross midnight; blank for none. Due one-shots wait until the end. Your agent's own recurring work and roles keep running inside them, silently: their messages are held. <code>/pulse status</code> and the agent's desk show the range and whether it is the default.</td>
 </tr>
 <tr>
 <td>Urgent wakes ignore quiet hours</td>
@@ -548,7 +552,7 @@ Kanban watchers can target one task with <code>trigger.task_id</code>, one board
 <td>Own time (hours between turns)</td>
 <td><code>own_time_hours</code></td>
 <td>0</td>
-<td>0 = off. The agent gets a turn of its own this often to work on its roles, follow things up, reflect or rest. It runs in your direct chats only, never in a group, even with <code>dm_only</code> off. Each is a full model turn; quiet hours hold its messages, not its work.</td>
+<td>0 = off. The agent gets a turn of its own this often to work on its roles, follow things up, reflect or rest. It runs in your direct chats, and, when <code>dm_only</code> is off, in each group or topic where you send <code>/pulse owntime on</code>. Each topic counts as its own chat with its own context, so it's off in groups and topics until you turn it on (also in a Matrix direct room, where Hermes can't tell one person from a few); <code>/pulse owntime off</code> turns it off anywhere. Each is a full model turn; quiet hours hold its messages, not its work.</td>
 </tr>
 <tr>
 <td>Daily priced-spend limit for the agent's own turns (USD)</td>
@@ -608,7 +612,7 @@ Kanban watchers can target one task with <code>trigger.task_id</code>, one board
 <td>Active wakes per chat</td>
 <td><code>max_active</code></td>
 <td>50</td>
-<td>Active or proposed wakes and watchers in one chat. Check-ins, own time and keep-warm don't count. Turns and messages have their own daily limits.</td>
+<td>Active or proposed wakes and watchers in one chat. Check-ins, own time and keep-warm don't count. Turns and messages have their own daily limits. <code>/pulse status</code> shows how many are in use.</td>
 </tr>
 <tr>
 <td>Active wakes across the profile</td>

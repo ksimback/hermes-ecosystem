@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>aivrar/portable-hermes-agent — Hermes Agent Workspaces &amp; GUIs | Hermes Atlas</title>
-<meta name="description" content="Portable Hermes Agent is a Windows desktop interface and CLI bundle built on NousResearch’s hermes-agent. It includes a Tkinter GUI, built-in and extension…">
+<meta name="description" content="Portable Hermes Agent is a Windows desktop interface for Hermes Agent, with chat, session management, multilingual support, and configurable permissions. It…">
 <link rel="canonical" href="https://hermesatlas.com/projects/aivrar/portable-hermes-agent">
 <meta property="og:title" content="aivrar/portable-hermes-agent — Hermes Atlas">
-<meta property="og:description" content="Portable Hermes Agent is a Windows desktop interface and CLI bundle built on NousResearch’s hermes-agent. It includes a Tkinter GUI, built-in and extension…">
+<meta property="og:description" content="Portable Hermes Agent is a Windows desktop interface for Hermes Agent, with chat, session management, multilingual support, and configurable permissions. It…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/aivrar/portable-hermes-agent">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="aivrar/portable-hermes-agent — Hermes Atlas">
-<meta name="twitter:description" content="Portable Hermes Agent is a Windows desktop interface and CLI bundle built on NousResearch’s hermes-agent. It includes a Tkinter GUI, built-in and extension…">
+<meta name="twitter:description" content="Portable Hermes Agent is a Windows desktop interface for Hermes Agent, with chat, session management, multilingual support, and configurable permissions. It…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=portable-hermes-agent&amp;subtitle=Hermes+Agent+made+portable+desktop+for+Windows+%E2%80%94+100+tools%2C+GUI%2C+local+models+via+LM+Studio%2C+TTS%2C+Music%2C+ComfyUI%2C+workflows%2C+tool+maker.+No+install.+No+Docker.+No+admin+rights.&amp;kind=project+%C2%B7+workspaces">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/aivrar/portable-hermes-agent#software",
   "name": "portable-hermes-agent",
-  "description": "Portable Hermes Agent is a Windows desktop interface and CLI bundle built on NousResearch’s hermes-agent. It includes a Tkinter GUI, built-in and extension tools for tasks such as local model management, text-to-speech, music generation, ComfyUI, and workflows, plus a guided mode that can work without an AI model connected.",
+  "description": "Portable Hermes Agent is a Windows desktop interface for Hermes Agent, with chat, session management, multilingual support, and configurable permissions. It includes tools for local models through LM Studio, TTS, music and image generation, workflows, and creating custom tools; guided mode provides an offline user guide when no AI model is connected.",
   "url": "https://hermesatlas.com/projects/aivrar/portable-hermes-agent",
   "codeRepository": "https://github.com/aivrar/portable-hermes-agent",
   "applicationCategory": "DesktopEnhancementApplication",
@@ -47,7 +47,7 @@
     "name": "aivrar",
     "url": "https://github.com/aivrar"
   },
-  "dateModified": "2026-11-14T06:43:38.000Z",
+  "dateModified": "2026-11-14T12:48:38.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Portable Hermes Agent is a Windows desktop interface and CLI bundle built on NousResearch’s hermes-agent. It includes a Tkinter GUI, built-in and extension tools for tasks such as local model management, text-to-speech, music generation, ComfyUI, and workflows, plus a guided mode that can work without an AI model connected.</p>
+    <p class="summary-text">Portable Hermes Agent is a Windows desktop interface for Hermes Agent, with chat, session management, multilingual support, and configurable permissions. It includes tools for local models through LM Studio, TTS, music and image generation, workflows, and creating custom tools; guided mode provides an offline user guide when no AI model is connected.</p>
     <ul class="summary-highlights">
-      <li>Includes a GUI with chat, sessions, and multiple languages</li>
-      <li>Supports workflow automation and runtime tool creation</li>
-      <li>Setup downloads Python and dependencies into the portable folder</li>
+      <li>Includes 100 tools across 20+ toolsets.</li>
+      <li>Supports English, Traditional Chinese, Simplified Chinese, and Spanish.</li>
+      <li>Setup downloads the portable runtime and Hermes Agent core into the folder.</li>
     </ul>
   </div>
 </section>
@@ -290,7 +290,7 @@ chat remain available when the optional SDK cannot connect.</p>
 <hr>
 <h3>Quick Start</h3>
 <h4>1. Download</h4>
-<p>Download the latest <code>portable-hermes-agent-v*.zip</code> from <a href="https://github.com/aivrar/portable-hermes-agent/releases/latest">Releases</a>, then extract it to a normal folder.</p>
+<p>Download the latest <code>portable-hermes-agent-v*.zip</code> from <a href="https://github.com/aivrar/portable-hermes-agent/releases/latest">Releases</a>, then extract it to a normal folder. Use that file: GitHub's green <strong>Code &gt; Download ZIP</strong> button and the "Source code" downloads lack the portable tools, and <code>START.bat</code> in such a folder only says so.</p>
 <p>Recommended:</p>
 <pre><code class="language-text">C:\Users\YourName\Portable-Hermes-Agent
 </code></pre>
@@ -374,7 +374,7 @@ hermes.bat          :: CLI mode
 <p>Restart Hermes after a core update so the running process loads the new code. Every launch also restores any portable file that something else (for example upstream's own <code>hermes update</code>) replaced or removed, so the portable tools never silently disappear.</p>
 <p>The four launchers in the folder (<code>START.bat</code>, <code>UPDATE.bat</code>, <code>hermes.bat</code>, <code>hermes_gui.bat</code>) are one-line files that start the real scripts in <code>portable_hermes\launch\</code>. Windows reads a running batch file from disk line by line, so keeping the root files to one line is what lets an update replace the launch scripts safely while a launcher is running. Your arguments reach Hermes exactly as typed, including <code>%</code>, <code>^</code>, <code>!</code>, <code>&amp;</code> in quotes, and parentheses.</p>
 <p>Most users do not need daily updates. Run <code>UPDATE.bat</code> when a release, fix, or security notice is published (or every week or two). Checking daily is optional.</p>
-<p><strong>Git checkouts</strong> (developers): both updaters refuse to rewrite a git clone. Update it with <code>git pull</code>.</p>
+<p><strong>Git clones</strong> (developers): this repository holds only the portable wrapper. Run <code>START.bat</code> in a clone to install the Hermes core into it (git ignores the core, the portable Python and your data at the paths Hermes uses); then <code>git pull</code> updates the wrapper and <code>UPDATE.bat</code> the core. Those ignored files live inside the git folder, so never run <code>git clean -x</code> (it deletes them) or <code>git clean -fd</code> (it deletes untracked files in the wrapper folders) in a clone you use; for a pristine tree, make a second clone. To run the tests, see <a href="https://github.com/aivrar/portable-hermes-agent/blob/main/docs/portable-release-checklist.md#developing-from-a-clone">Developing from a clone</a>.</p>
 <h4>4. Connect an AI Model</h4>
 <p><strong>Cloud (2 minutes, free):</strong></p>
 <ol>
@@ -404,7 +404,7 @@ hermes.bat          :: CLI mode
 <p>Key topics: getting started, API setup, the interface, permissions, LM Studio local models, extensions (TTS/Music/ComfyUI), all 100 tools, custom tool creation, workflows, and a glossary of AI terms.</p>
 <hr>
 <h3>Architecture</h3>
-<pre><code>Portable wrapper (this repository's release)      Hermes core (NousResearch/hermes-agent)
+<pre><code>Portable wrapper (this repository)                Hermes core (NousResearch/hermes-agent)
   START.bat / UPDATE.bat / hermes*.bat              installed by portable_hermes at setup,
   gui/            desktop GUI                       updated by UPDATE.bat --core,
   tools/*         portable tools (self-register)    recorded in .portable/core-state.json

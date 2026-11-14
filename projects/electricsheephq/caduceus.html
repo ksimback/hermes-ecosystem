@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>electricsheephq/caduceus — Hermes Agent Domain Applications | Hermes Atlas</title>
-<meta name="description" content="Caduceus is a Hermes plugin that imports DNA data, Apple Health exports, and health records into a SQLite vault on the user’s machine. It provides cited…">
+<meta name="description" content="Caduceus is a Hermes plugin that imports DNA data, Apple Health exports and health records into a SQLite vault on the user's machine. It provides cited answers…">
 <link rel="canonical" href="https://hermesatlas.com/projects/electricsheephq/caduceus">
 <meta property="og:title" content="electricsheephq/caduceus — Hermes Atlas">
-<meta property="og:description" content="Caduceus is a Hermes plugin that imports DNA data, Apple Health exports, and health records into a SQLite vault on the user’s machine. It provides cited…">
+<meta property="og:description" content="Caduceus is a Hermes plugin that imports DNA data, Apple Health exports and health records into a SQLite vault on the user's machine. It provides cited answers…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/electricsheephq/caduceus">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="electricsheephq/caduceus — Hermes Atlas">
-<meta name="twitter:description" content="Caduceus is a Hermes plugin that imports DNA data, Apple Health exports, and health records into a SQLite vault on the user’s machine. It provides cited…">
+<meta name="twitter:description" content="Caduceus is a Hermes plugin that imports DNA data, Apple Health exports and health records into a SQLite vault on the user's machine. It provides cited answers…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=caduceus&amp;subtitle=Health+answers+that+cite+your+own+DNA%2C+Apple+Health+and+records%2C+plus+new+research%2C+from+a+vault+on+your+machine.&amp;kind=project+%C2%B7+domain+applications">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/electricsheephq/caduceus#software",
   "name": "caduceus",
-  "description": "Caduceus is a Hermes plugin that imports DNA data, Apple Health exports, and health records into a SQLite vault on the user’s machine. It provides cited answers drawing on those sources and research, along with health trends, a rebuilt variant report, a health brief, and monitoring for new research on the user’s gene–drug pairs.",
+  "description": "Caduceus is a Hermes plugin that imports DNA data, Apple Health exports and health records into a SQLite vault on the user's machine. It provides cited answers drawing on those sources and research, can generate reports, and can watch for new research about the user's gene–drug pairs.",
   "url": "https://hermesatlas.com/projects/electricsheephq/caduceus",
   "codeRepository": "https://github.com/electricsheephq/caduceus",
   "applicationCategory": "BusinessApplication",
@@ -47,7 +47,7 @@
     "name": "electricsheephq",
     "url": "https://github.com/electricsheephq"
   },
-  "dateModified": "2026-11-11T22:00:41.000Z",
+  "dateModified": "2026-11-14T12:35:44.000Z",
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
   }
@@ -117,7 +117,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-11-11</span>
+    <span><span class="meta-label">updated</span>2026-11-14</span>
   </div>
 
   <div class="actions">
@@ -134,11 +134,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Caduceus is a Hermes plugin that imports DNA data, Apple Health exports, and health records into a SQLite vault on the user’s machine. It provides cited answers drawing on those sources and research, along with health trends, a rebuilt variant report, a health brief, and monitoring for new research on the user’s gene–drug pairs.</p>
+    <p class="summary-text">Caduceus is a Hermes plugin that imports DNA data, Apple Health exports and health records into a SQLite vault on the user's machine. It provides cited answers drawing on those sources and research, can generate reports, and can watch for new research about the user's gene–drug pairs.</p>
     <ul class="summary-highlights">
-      <li>Imports DNA, Apple Health, and health records into a local vault</li>
-      <li>Provides cited genome and health trend tools</li>
-      <li>Watches for research on personal gene–drug pairs</li>
+      <li>Imports DNA, Apple Health data and health records into a local vault</li>
+      <li>Answers cite sources and evidence levels</li>
+      <li>Generates reports and watches for relevant new research</li>
     </ul>
   </div>
 </section>
@@ -175,6 +175,27 @@ demo below. To use your own files, tell your agent <strong>"set up Caduceus"</st
 Hermes that can read the current catalog (<a href="https://github.com/NousResearch/hermes-agent/issues/151856">hermes-agent#151856</a>);
 the line above always works. Without <code>--enable</code>, Hermes installs the plugin switched off; <code>hermes plugins enable caduceus</code>
 turns it on.</p>
+<h4>Where each part runs</h4>
+<table>
+<thead>
+<tr>
+<th>Where</th>
+<th>What you use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hermes chat (CLI or Desktop; messaging apps are not tested yet)</td>
+<td>The commands you type: <code>/caduceus help</code>, <code>/caduceus demo</code>, <code>/caduceus privacy …</code>, <code>/caduceus erase</code>, and the watches <code>/blueprint caduceus:research-watch</code> and <code>/blueprint caduceus:daily-check</code></td>
+</tr>
+<tr>
+<td>Your agent</td>
+<td>The tools <code>caduceus_capture</code>, <code>caduceus_genome</code>, <code>caduceus_trend</code> and <code>caduceus_search</code>. Ask in plain words and the agent calls them</td>
+</tr>
+<tr>
+<td>A shell</td>
+<td>For Caduceus, only the <code>hermes plugins …</code> commands: install, enable and list (for example <code>hermes plugins install electricsheephq/caduceus --enable</code>). There is no <code>hermes caduceus</code> shell command</td>
+</tr>
+</tbody></table>
 <h3>Try it</h3>
 <ol>
 <li><p>Install with the line above and restart Hermes.</p>
@@ -307,6 +328,10 @@ turns it on.</p>
 <td>iPhone Health app → your picture → Export All Health Data. With Health Records connected, the zip includes your clinical records</td>
 </tr>
 <tr>
+<td>Health Auto Export JSON (or a zip of JSON exports)</td>
+<td>In Health Auto Export, use Manual Export or an automation that saves metrics as JSON</td>
+</tr>
+<tr>
 <td>FHIR R4 JSON (labs, conditions, medications)</td>
 <td>A patient portal's FHIR or "download my record" export</td>
 </tr>
@@ -319,6 +344,25 @@ turns it on.</p>
 <li>A vault holds one person. A second DNA file is compared with the first on shared markers, and if it looks like a
 different person, you are told, and answers carry a warning. Keep each person in their own Hermes profile.</li>
 </ul>
+<h4>Health Auto Export</h4>
+<p>For a <strong>JSON export</strong>, use Manual Export in Health Auto Export (HAE), or an automation that saves JSON files to a
+folder, then import the file with <code>caduceus_capture op=import</code>. <code>.hae</code> AutoSync files are HAE's private format and
+cannot be imported.</p>
+<p>For <strong>live sync</strong>, run the HAE app's MCP server and configure it in Hermes. The operator allows its server name in
+<code>config.yaml</code> (use your configured name if different):</p>
+<pre><code class="language-yaml">plugins:
+  entries:
+    caduceus:
+      mcp_allowlist: [health-auto-export]
+</code></pre>
+<p>Then call <code>caduceus_capture op=sync</code>. <code>/blueprint caduceus:hae-sync</code> keeps it current daily and stays silent unless a
+sync fails, including one that failed in the background after its call returned. The <code>hae_mcp_server</code> setting
+defaults to <code>health-auto-export</code>. If your server has another name, put that name in the allowlist and set
+<code>hae_mcp_server</code> to it too: the allowlist grants access, and the setting picks the server. <code>hae_backfill_days</code>
+defaults to 90 for the first sync, and a first sync that fails or is interrupted keeps that start for the next try.
+Later syncs start two days before the last day read in full. A day whose reply was too large is read again by the
+next sync. A sync in which no reply could be read fails and says so, and the next one reads those days again. When
+the server answers with an error, Caduceus reports a fixed message and never passes on the server's own text.</p>
 <h3>Tools</h3>
 <table>
 <thead>
@@ -375,7 +419,7 @@ them. Hidden results are counted, never described.</p>
 whole; tool results (slices of your data) enter the conversation, so the model provider you
 chose sees them; a hook adds one fixed note, holding none of your data, to the first health, medication or DNA question of each chat when the vault has data (off with the <code>vault_hint</code> setting); the research watch (on by default, runs when you or the agent ask for it or on a schedule you
 create, off with the <code>research_watch</code> setting) sends gene and topic terms, the names of medications you recorded,
-and public marker and article IDs, never genotypes, to Europe PMC and NCBI; scheduled checks run model turns billed
+and public marker and article IDs, never genotypes, to Europe PMC and NCBI; the Health Auto Export sync (off until you allow that app's MCP server for Caduceus in Hermes config, and run only when you or the agent ask for it or on a schedule you create) reads Apple Health data from that server through Hermes's own MCP client and sends nothing out; scheduled checks run model turns billed
 like any message;
 no telemetry. Includes a report-a-problem skill: the agent drafts a bug report, asks you to
 check it holds no health data, and files it to this repository with <code>gh</code> only after you
@@ -552,7 +596,7 @@ python -m pytest
         <div class="name"><span class="org">JackTheGit /</span> hermes-ai-infrastructure-monitoring-toolkit</div>
       </a>
       <a class="related-row" href="/projects/bigph00t/hermescraft">
-        <div class="stars">★ 77</div>
+        <div class="stars">★ 78</div>
         <div class="name"><span class="org">bigph00t /</span> hermescraft</div>
       </a>
       <a class="related-row" href="/projects/hxsteric/mercury">
