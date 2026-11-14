@@ -477,7 +477,7 @@ No
 
 `"none"`
 
-Controls how the bot handles messages from other Discord bots. `"none"` — ignore all other bots. `"mentions"` — only accept bot messages that `@mention` Hermes. `"all"` — accept all bot messages. By default, either enabled mode still requires a literal inline mention; see the next setting.
+Controls how the bot handles messages from other Discord bots and webhooks (any post carrying a `webhook_id`, such as CI or deploy alerts, counts as a bot even when Discord omits the bot flag). `"none"` — ignore all other bots. `"mentions"` — only accept bot messages that `@mention` Hermes. `"all"` — accept all bot messages. By default, either enabled mode still requires a literal inline mention; see the next setting.
 
 `DISCORD_BOTS_REQUIRE_INLINE_MENTION`
 
@@ -1281,6 +1281,8 @@ Semantics:
 -   **DM fallback.** In DMs the role check scans mutual guilds; a user with an allowed role in any shared server is authorized in DMs too.
 
 This is the preferred pattern when the moderation team churns — new moderators get access the moment the role is granted, with no `.env` edit or gateway restart.
+
+**Editing the lists in `config.yaml` takes effect on the next message.** `discord.allowed_roles`, `discord.allow_from` and the channel lists are re-read when `config.yaml` changes, with no gateway restart: a role or user you remove is refused from their next message, slash command or button click. This holds for every profile a multiplexed gateway (`gateway.multiplex_profiles`) serves, including the host profile it was started with. A value set in `.env`, an external secret source or the gateway's own environment still wins over `config.yaml`. Adding the _first_ role or username to a bot connected without the Server Members intent still needs a restart, because the intent is chosen at connect. A username added later is matched only after the next reconnect resolves it to an ID.
 
 ### Mention Control
 

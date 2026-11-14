@@ -318,7 +318,7 @@ def register(ctx):
         ctx.register_tool(...)   # register under a non-conflicting name
 ```
 
-Known capability ids: `tools.override`, `llm.provider_override`, `llm.model_override`, `llm.agent_id_override`, `llm.profile_override`, `llm.task_override`, `llm.side_question` (ask the session's own agent after a turn, see [Plugin LLM Access](/docs/developer-guide/plugin-llm-access#asking-the-sessions-own-agent-ctxside_question)), `gateway.platform_actions` (see `hermes_cli/plugin_capabilities.py` for the canonical registry). Unknown ids are ignored. The older per-capability config keys (`plugins.entries.<id>.allow_tool_override`, …) still work but are deprecated — declare capabilities instead so users get a single, auditable consent screen. Capabilities are consent + audit, **not a sandbox**: they gate host API surfaces, nothing more.
+Known capability ids: `tools.override`, `llm.provider_override`, `llm.model_override`, `llm.agent_id_override`, `llm.profile_override`, `llm.task_override`, `llm.side_question` (ask the session's own agent after a turn, see [Plugin LLM Access](/docs/developer-guide/plugin-llm-access#asking-the-sessions-own-agent-ctxside_question)), `llm.session_fork` (run a bounded background copy of the session's agent, see [Plugin LLM Access](/docs/developer-guide/plugin-llm-access#forking-the-sessions-own-agent-ctxfork_session)), `gateway.platform_actions` (see `hermes_cli/plugin_capabilities.py` for the canonical registry). Unknown ids are ignored. The older per-capability config keys (`plugins.entries.<id>.allow_tool_override`, …) still work but are deprecated — declare capabilities instead so users get a single, auditable consent screen. Capabilities are consent + audit, **not a sandbox**: they gate host API surfaces, nothing more.
 
 **Pip-distributed plugins** have no `plugin.yaml` directory once installed, so declare capabilities in distribution metadata instead, via the companion `hermes_agent.plugin_capabilities` entry-point group. Each declaration is named `<plugin-id>.<capability-id>` and points at the same object as your `hermes_agent.plugins` entry point:
 
@@ -733,7 +733,7 @@ def unit_convert(args: dict, **kwargs) -> str:
 1.  **Signature:** `def my_handler(args: dict, **kwargs) -> str`
 2.  **Return:** Always a JSON string. Success and errors alike.
 3.  **Never raise:** Catch all exceptions, return error JSON instead.
-4.  **Accept `**kwargs`:** Hermes injects context keywords (`task_id`, `session_id`, `conversation_id`, `user_task`, `parent_agent`, ...) and only forwards the ones your signature names, so `def handler(args)` works; `**kwargs` is how you opt into the full, additively growing context.
+4.  **Accept `**kwargs`:** Hermes injects context keywords (`task_id`, `session_id`, `conversation_id`, `user_task`, `parent_agent`, ...) and only forwards the ones your signature names, so `def handler(args)` works; `**kwargs` is how you opt into the full, additively growing context. Inside a plugin's [session fork](/docs/developer-guide/plugin-llm-access#forking-the-sessions-own-agent-ctxfork_session) the handler also receives `turn_origin="plugin_fork:<plugin id>"`; live-turn calls carry none.
 5.  **Key per-conversation state on `conversation_id`:** `session_id` names the current transcript segment, and a rotating compression (`compression.in_place: false`) replaces it mid-conversation. `conversation_id` is the id of the conversation's first session and does not change. `/new` and `/branch` start a new conversation. A delegated subagent's calls carry its own `session_id` and its delegator's `conversation_id`. Both are empty when the call has no session (for example, a tool call from inside an `execute_code` script).
 
 ## Step 5: Write the registration
@@ -1006,6 +1006,16 @@ conn.execute("CREATE TABLE IF NOT EXISTS runs (id TEXT PRIMARY KEY)")
 ```
 
 One directory per plugin means every plugin's data is inspectable in one predictable place. Secrets don't belong here — credential reads go through the standard `.env` / secret-scope path like everywhere else.
+
+### Redact secrets before storing or sending text
+
+Text your plugin saves or uploads (a transcript, a diff, a log) can carry API keys the user pasted. Run it through `ctx.redact_text()` first instead of importing Hermes internals:
+
+```
+safe = ctx.redact_text(transcript, force=True)  # force: this text leaves the machine
+```
+
+It uses the same scrubber as Hermes's own output, at its strongest setting: prefixed keys become a sentinel such as `«redacted:sk-…»` with no key characters left, and assignments like `API_KEY=…` are masked. Patterns registered with `ctx.register_redaction_patterns()` apply too. Without `force`, a user who set `security.redact_secrets: false` gets the text back unchanged.
 
 ### Bundle skills
 
@@ -1431,7 +1441,7 @@ Once per turn, before the tool-calling loop
 
 Once per turn, after the tool-calling loop (successful turns only)
 
-`session_id: str, user_message: str, assistant_response: str, conversation_history: list, model: str, platform: str`
+`session_id: str, user_message: str, assistant_response: str, conversation_history: list, model: str, platform: str, side_question_token: str | None, review_signals: dict`
 
 ignored
 
@@ -2282,6 +2292,57 @@ The client calls `plugin.<plugin_id>.pane.state` with any JSON params (`session_
 -   **Detect it first.** An owner that serves plugin methods lists `plugin-rpc-v1` in `runtime.describe`'s `capabilities`. With it, `-32601` means that plugin method is not loaded (the plugin is disabled, not installed, or has no such method). Without `plugin-rpc-v1`, clients must not assume plugin RPC is supported (an older owner may still serve it without listing the capability). The contract declares the namespace once as `plugin.{plugin_id}.{name}` (`CanonicalRpcNamespaces` in the generated TypeScript, `x-canonical-namespaces` in the OpenRPC document): params are an open object with an optional `session_id`, and the result is whatever JSON your handler returns.
 
 **Security.** A plugin method gets the same gate as a plugin slash command on that gateway: the connection needs the `session:control` capability, and a call that names a `session_id` must pass that session's authorization (the right profile, the owner of a local session, a superseded conversation is read-only). Beyond that, any client the gateway authenticated can call any plugin method with any params. Hermes does not check callers per method (`SECURITY.md` §2.6, rule 4): treat a plugin method like a plugin tool, validate its params, and never expose through it more than the plugin's own data and actions.
+
+### Follow the user's self-learning cadence (`review_signals`)
+
+After every successful turn, `post_llm_call` carries `review_signals`: the counters behind Hermes' own background memory/skill review (`skills.creation_nudge_interval`, `memory.nudge_interval`) and whether that review is due and enabled this turn. A plugin with after-turn work of its own (judging the skills a turn touched, say) can run on the same cadence the user already tuned instead of counting tool calls itself:
+
+```
+def register(ctx):
+    def on_post_llm_call(review_signals=None, **kwargs):
+        if not review_signals or not review_signals["background_review_enabled"]:
+            return  # cron run, subagent, or the user turned background review off
+        if review_signals["skill_review_due"]:
+            ...  # the same turn Hermes reviews skills on
+
+    ctx.register_hook("post_llm_call", on_post_llm_call)
+```
+
+The hook fires before Hermes decides, and the due flags are the values that decision uses. Keys and semantics: [`post_llm_call`](/docs/user-guide/features/hooks#review_signals). To do that work the way Hermes' own review does (a background copy of the session's agent with a narrow tool list), pair the signal with [`ctx.fork_session`](/docs/developer-guide/plugin-llm-access#forking-the-sessions-own-agent-ctxfork_session).
+
+### Run a job when Hermes is idle (`ctx.register_idle_task`)
+
+Experimental: the signature may change in a later release ([details](/docs/developer-guide/plugin-llm-access#idle-tasks-ctxregister_idle_task)).
+
+Some work has no turn to hang off: re-scoring your plugin's data once a day, suggesting a cleanup, compacting a cache. `ctx.register_idle_task` runs it on the same scheduler as the skill [curator](/docs/user-guide/features/curator), from the same places (gateway housekeeping for every served profile, CLI/TUI startup, the `hermes serve` maintenance tick):
+
+```
+def register(ctx):
+    def suggest(run):
+        # run.name, run.idle_for_seconds, run.last_run_at (ISO or None), run.run_count
+        candidates = ctx.state.get("candidates", [])
+        if not candidates:
+            return None
+        result = ctx.llm.complete(
+            messages=[{"role": "user", "content": f"Rank these for promotion: {candidates}"}],
+            task="suggest",  # a task this plugin registered with ctx.register_auxiliary_task
+        )
+        ctx.state.set("ranking", result.text)
+        return f"ranked {len(candidates)} skills"  # optional summary, shown by `hermes plugins idle-tasks`
+
+    ctx.register_idle_task("suggest", suggest, interval_hours=24, min_idle_hours=2)
+```
+
+`register_idle_task(name, fn, *, interval_hours, min_idle_hours=2, first_run="defer")` returns a `PluginRegistration` (dispose it to stop polling). A task runs when:
+
+-   the host has been idle `min_idle_hours` (gateway housekeeping and CLI startup count as fully idle, `hermes serve` measures chat inactivity);
+-   `interval_hours` (floored to 1) have passed since its last run. The first poll records "now" and waits one interval, like the curator, so an install or update never runs the job straight away; `first_run="immediate"` runs it on the first idle poll instead;
+-   it is not paused (`hermes plugins idle-tasks <plugin> --pause <task>`);
+-   no other run of it is in flight, in this process or another one.
+
+`fn` runs on its own thread, in the profile that registered it, and the host does not wait for it: the poll returns at once, and no second run of the task starts while one is in flight. Keep a run short and safe to repeat: when the gateway stops, a run still going records nothing and runs again later ([shutdown contract](/docs/developer-guide/plugin-llm-access#idle-tasks-ctxregister_idle_task)). An exception is logged and recorded as `last_status: error` and never reaches the host. State lives in the plugin's data dir, `<data dir>/idle-tasks/<name>.json` (`last_run_at`, `run_count`, `paused`, `last_summary`, `last_status`, `last_error`), so each profile schedules its own copy.
+
+No capability gates this: the scheduler only calls your own function. Anything privileged that function does goes through its own gate (model calls through the [`ctx.llm` trust gate](/docs/developer-guide/plugin-llm-access#trust-gate), and so on).
 
 ### Send raw CDP commands to the agent's browser
 

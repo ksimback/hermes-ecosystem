@@ -37,7 +37,7 @@ The existing `release-signing` environment supplies:
 -   `CLOUDFLARE_R2_ACCOUNT_ID`, `CLOUDFLARE_R2_ACCESS_KEY_ID`, `CLOUDFLARE_R2_SECRET_ACCESS_KEY`: bucket access secrets.
 -   `CLOUDFLARE_R2_BUCKET`, `CLOUDFLARE_R2_PUBLIC_URL`: repository/environment vars.
 
-Publishing requires the Apple credentials. The existing after-sign hook owns notarization, so electron-builder's second notarization path is disabled. The publish gate verifies the signature, stapled ticket and Gatekeeper assessment. The Darwin publish job waits for the arm64 build and its smoke, and serializes channel writes.
+Publishing requires the Apple credentials. The existing after-sign hook owns notarization, so electron-builder's second notarization path is disabled. The publish gate verifies the signature, stapled ticket and Gatekeeper assessment. Recording the build refuses an update ZIP of 1 GiB (1,073,741,824 bytes) or more: Squirrel.Mac before Electron 44.7, which v0.22.0 ships, reads the whole ZIP into memory and crashes downloading one that size ([electron/electron#55089](https://github.com/electron/electron/issues/55089)). The Darwin publish job waits for the arm64 build and its smoke, and serializes channel writes.
 
 ## Verification limits
 

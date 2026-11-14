@@ -492,6 +492,12 @@ adding-platform-adapters.md § Public helpers for platform plugins
 
 adding-platform-adapters.md § Public helpers for platform plugins
 
+`tools.url_safety`
+
+`create_ssrf_safe_client`
+
+adding-platform-adapters.md § Public helpers for platform plugins
+
 `gateway.platforms._http_client_limits`
 
 `platform_httpx_limits`
@@ -665,3 +671,39 @@ plugins/index.md § Check file paths and read YAML with Hermes's own helpers
 `open_credentialed_url`
 
 plugins/index.md § Send a credentialed HTTP request without leaking it on redirect
+
+`hermes_cli.chat_launch`
+
+`hermes_command`
+
+user-guide/features/plugins.md § A plugin with its own chat client
+
+`hermes_cli.chat_launch`
+
+`print_exit_summary`
+
+user-guide/features/plugins.md § A plugin with its own chat client
+
+`hermes_cli.gateway_chat`
+
+`shell_client_env`
+
+user-guide/features/plugins.md § A plugin with its own chat client
+
+`hermes_cli.session_worktree`
+
+`create`
+
+user-guide/features/plugins.md § A plugin with its own chat client
+
+`hermes_cli.session_worktree`
+
+`restore`
+
+user-guide/features/plugins.md § A plugin with its own chat client
+
+`hermes_cli.session_worktree`
+
+`finish`
+
+user-guide/features/plugins.md § A plugin with its own chat client

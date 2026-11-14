@@ -52,7 +52,7 @@ off
 
 off
 
-When launched from a named profile (`worker dashboard`), run a dedicated per-profile server instead of routing to the machine dashboard
+When launched from a named profile (`worker dashboard`), run a dedicated per-profile server instead of routing to the machine dashboard. It lists only that profile; this is not a security boundary (see [Managing multiple profiles](#managing-multiple-profiles))
 
 ```
 # Custom port
@@ -81,7 +81,11 @@ worker dashboard
 
 A dashboard started this way keeps `worker` as its fallback scope for the whole server lifetime: a deep link that omits `?profile=` (for example a `/chat?resume=<id>` link) still opens under `worker`, so the embedded chat sees that profile's MCP servers, model and skills. An explicit `?profile=` in the URL always wins.
 
-Pass `--isolated` to opt out and run a dedicated server scoped to that profile (the pre-unification behavior — useful if you deliberately expose different profiles' dashboards with different auth).
+Pass `--isolated` to opt out and run a dedicated server for that profile (the pre-unification behavior). Its profile list, `/api/status` profile names, unified session sidebar and the Desktop profile rail (and so its SOUL editor) show only the launch profile.
+
+`--isolated` is not a security boundary
+
+`--isolated` is a routing and operations convenience, not tenant isolation. Every profile under one OS user can read every other profile's files: on the dedicated server, routes that take a profile selector, `/api/fs/*` and the agent's own terminal and file tools can still reach sibling profiles (`~/.hermes/profiles/*`). Different auth per profile's server does not change that. To keep people's data apart (family members, customers, teams), run each tenant's Hermes as a **separate OS user** or in a **separate container**. See [SECURITY.md](https://github.com/NousResearch/hermes-agent/blob/main/SECURITY.md) §2.2.
 
 The **Chat** tab follows the switcher too: a scoped chat spawns its PTY child with the selected profile's `HERMES_HOME`, so the conversation runs with that profile's model, skills, memory, and session history. Switching profiles starts a fresh terminal session.
 
@@ -681,6 +685,10 @@ Nous Portal auth + Tool Gateway routing (read-only)
 `POST /api/ops/prompt-size` · `/dump` · `/config-migrate`
 
 Diagnostics (backgrounded)
+
+`POST /api/ops/debug-share`
+
+Upload the allowlisted debug summary (no log lines or message text) to a public paste and return the URL (synchronous). Body: `{consent: true, redact?, lines?}`; without `"consent": true` it returns `400` and uploads nothing
 
 `PUT /api/webhooks/{name}/enabled`
 

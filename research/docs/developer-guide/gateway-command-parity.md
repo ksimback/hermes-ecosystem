@@ -312,7 +312,7 @@ slash.exec
 
 slash.exec
 
-uploads logs to a public paste
+`/debug upload` uploads a summary to a public paste (bare `/debug` is the privacy notice)
 
 `/deny`
 

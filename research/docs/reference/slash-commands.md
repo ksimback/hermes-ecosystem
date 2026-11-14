@@ -424,9 +424,9 @@ Copy the last assistant response to clipboard (or the Nth-from-last with a numbe
 
 Attach a local image file for your next prompt.
 
-`/debug`
+`/debug [upload|nous upload|local]`
 
-Upload debug report (system info + logs) and get shareable links. Also available in messaging.
+Debug report. Bare `/debug` shows the privacy notice and uploads nothing; `/debug upload` uploads to a public paste and returns shareable links, `/debug nous upload` uploads to Nous-internal storage (classic CLI only: messaging, the TUI and the desktop app refuse it and point to `hermes debug share --nous` or Desktop's Send diagnostics), `/debug local` prints the report without uploading. Also available in messaging.
 
 `/update`
 
@@ -800,9 +800,9 @@ Update Hermes Agent to the latest version.
 
 Gracefully restart the gateway after draining active runs. When the gateway comes back online, it sends a confirmation to the requester's chat/thread.
 
-`/debug`
+`/debug [upload]`
 
-Upload debug report (system info + logs) and get shareable links.
+Bare `/debug` shows the privacy notice and uploads nothing; `/debug upload` uploads an allowlisted summary (versions, config key names, error counts; no log or message text) to a public paste and returns a shareable link; full logs go only to private storage via `hermes debug share --nous`.
 
 `/help`
 

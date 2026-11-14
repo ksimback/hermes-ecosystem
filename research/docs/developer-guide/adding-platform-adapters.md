@@ -392,7 +392,11 @@ SSRF-safe HTTP client: connect-time IP validation, per-redirect re-check, shared
 
 The pieces of that client, to build your own
 
-`gateway.platforms.base.ssrf_redirect_guard` (httpx `response` hook), `tools.url_safety.create_ssrf_safe_async_client`, `tools.url_safety.is_safe_url`, `gateway.platforms._http_client_limits.platform_httpx_limits`
+`gateway.platforms.base.ssrf_redirect_guard` (httpx `response` hook), `tools.url_safety.create_ssrf_safe_async_client` (sync: `create_ssrf_safe_client`), `tools.url_safety.is_safe_url`, `gateway.platforms._http_client_limits.platform_httpx_limits`
+
+Fetch a URL with an existing `aiohttp.ClientSession`, every redirect hop SSRF-checked (credential-bearing cross-origin hops refused, one `total` timeout for the chain)
+
+`async with gateway.platforms.helpers.ssrf_checked_aiohttp_get(session, url, **get_kwargs) as resp:` (raises `ValueError` on a blocked hop)
 
 Own DM/group policy (`dm_policy` / `group_policy` / allowlists)
 

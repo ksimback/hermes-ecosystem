@@ -193,7 +193,7 @@ whatsapp:
 
 ### Group chats (bot mode)
 
-Groups are gated by **group policy**, not by the DM allowlist. `WHATSAPP_GROUP_POLICY` / `whatsapp.group_policy` defaults to `pairing`, which forwards nothing from groups. `allowlist` plus `WHATSAPP_GROUP_ALLOWED_USERS` / `whatsapp.group_allow_from` (comma-separated **group JIDs**, e.g. `120363001234567890@g.us`) admits the listed groups; `open` admits every group the bot is a member of. The sender is then checked like any other gateway principal: with `WHATSAPP_ALLOWED_USERS` set, a participant must be on it (or paired) — a sender WhatsApp addresses by LID matches through the phone number Baileys supplies alongside it, so a first contact with no `lid-mapping` file yet is not dropped; with no sender allowlist, `allowlist` trusts the group-JID list alone and admits every participant of a listed group, while `open` still needs the participant paired or `WHATSAPP_ALLOW_ALL_USERS=true`. By default the bot answers every admitted group message; set `require_mention: true` / `WHATSAPP_REQUIRE_MENTION=true` to answer only @mentions, replies to the bot, or `/commands` (groups in `free_response_chats` are exempt).
+Groups are gated by **group policy**, not by the DM allowlist. `WHATSAPP_GROUP_POLICY` / `whatsapp.group_policy` defaults to `pairing`, which forwards nothing from groups. `allowlist` plus `WHATSAPP_GROUP_ALLOWED_USERS` / `whatsapp.group_allow_from` (comma-separated **group JIDs**, e.g. `120363001234567890@g.us`) admits the listed groups; `open` admits every group the bot is a member of. The sender is then checked like any other gateway principal: with `WHATSAPP_ALLOWED_USERS` set, a participant must be on it (or paired) — a sender WhatsApp addresses by LID matches through the phone number Baileys supplies alongside it, so a first contact with no `lid-mapping` file yet is not dropped; with no sender allowlist, `allowlist` trusts the group-JID list alone and admits every participant of a listed group, while `open` still needs the participant paired or `WHATSAPP_ALLOW_ALL_USERS=true`. By default the bot answers every admitted group message; set `require_mention: true` / `WHATSAPP_REQUIRE_MENTION=true` to answer only @mentions, replies to the bot, or `/commands` (groups in `free_response_chats` are exempt). Regex wake words go in `mention_patterns`. A captionless voice note can only match them with `voice_mention_patterns: true`, which transcribes the group voice note first (off by default: every unaddressed voice note then goes to your speech-to-text provider; the turn reuses that transcript).
 
 Then start the gateway:
 
@@ -333,6 +333,41 @@ Set `text_batch_delay_seconds: 0` to dispatch each message immediately (disables
 ### Quoted Replies
 
 Replying to (quoting) an earlier message gives the agent the quoted text as context. Quoting an image, voice note, video or document also attaches that file to the turn, so "what is this?" under a quoted image works — whether the attachment came from another person or from the bot itself (a cron-delivered chart, a generated image). WhatsApp only ships a thumbnail stub with a quote, so the file is resolved from the bridge's download cache (inbound media, in-memory for the bridge's lifetime) or from a local index of the bot's own sends (last 1000 messages); quotes of anything older arrive without the attachment.
+
+* * *
+
+## Customer-facing bot
+
+Defaults assume the people on the allowlist are you and your team. If the bot number answers customers (`WHATSAPP_ALLOWED_USERS=*`, `WHATSAPP_ALLOW_ALL_USERS=true`, or a list of customer numbers), everyone on the allowlist is trusted the same way, so harden the gateway before going live:
+
+```
+# ~/.hermes/config.yaml
+display:
+  platforms:
+    whatsapp:
+      tool_progress: "off"              # or "log": no tool-progress bubbles in the chat
+      interim_assistant_messages: false # no mid-turn commentary, only the final reply
+
+platforms:
+  whatsapp:
+    home_channel:                       # or WHATSAPP_HOME_CHANNEL in ~/.hermes/.env
+      platform: whatsapp
+      chat_id: "15551234567@s.whatsapp.net"   # your operator chat, not a customer's
+      name: Operator
+    extra:
+      allow_admin_from:                 # only these senders may run admin slash commands
+        - "15551234567@s.whatsapp.net"
+      group_allow_admin_from:           # same, for group chats (DM admins are not group admins)
+        - "15551234567@s.whatsapp.net"
+      # user_allowed_commands: [new]    # optional: commands customers may still run
+```
+
+-   **`tool_progress`** defaults to `new` on WhatsApp, so customers see each tool the agent runs.
+-   **`interim_assistant_messages`** defaults to `true`, so customers see the agent's mid-turn commentary.
+-   **Home channel:** without one, every sender's first message in a new session (a new customer, or anyone after `/new`) gets a "type /sethome" prompt, and any sender who runs `/sethome` takes over cron and notification delivery. Set it to your own chat.
+-   **`allow_admin_from`** (DMs) and **`group_allow_admin_from`** (groups) turn on [slash-command access control](/docs/reference/slash-commands#permissions-and-adminuser-split): customers keep only `/help` and `/whoami` (plus anything in `user_allowed_commands`), can't run `/sethome`, and never get the `/sethome` prompt. Send `/whoami` from your own phone to get the exact ID to list.
+
+`hermes whatsapp` prints a warning pointing here when bot mode allows everyone and no home channel is set.
 
 * * *
 
