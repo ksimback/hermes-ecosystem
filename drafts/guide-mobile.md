@@ -1,6 +1,6 @@
 # Hermes Mobile: your agent, away from your desk
 
-Published November 13, 2026. Sources checked November 12, 2026.
+Published November 13, 2026. Updated November 14, 2026 with Alex Finn’s November 11 beta walkthrough; official access page rechecked November 14.
 
 Start here: the official [Hermes Mobile page](https://hermes-agent.nousresearch.com/mobile) currently offers an iOS and Android beta waitlist, not a guaranteed immediate download. If you need phone access now, Nous also documents opening a Cloud agent in your phone’s browser. That is a separate route, not admission to the native beta.
 
@@ -76,6 +76,18 @@ Tonbi’s [7-minute tour](https://www.youtube.com/watch?v=7hbT1EzTquI) is a usef
 
 - Tool and subagent visibility. The example opens details of a loaded skill and later shows a delegated task. This makes mobile useful for checking what an agent is doing, not merely sending prompts. [5:32](https://www.youtube.com/watch?v=7hbT1EzTquI&t=332s) · [7:03](https://www.youtube.com/watch?v=7hbT1EzTquI&t=423s)
 
+### A second beta walkthrough: sessions, model choice, and home hardware
+
+Alex Finn’s [November 11 walkthrough](https://www.youtube.com/watch?v=f_NfbjaSJ-k) adds a closer look at how he uses the app day to day. These are observations from his configured beta, not a setup or feature-parity guarantee for every build.
+
+- **One agent, separate conversations.** He opens distinct sessions under the same agent for different projects. Use one session per task or idea instead of feeding unrelated work into one growing thread. Profiles choose the configured agent; sessions separate its conversations. [1:56](https://www.youtube.com/watch?v=f_NfbjaSJ-k&t=116s) · [5:14](https://www.youtube.com/watch?v=f_NfbjaSJ-k&t=314s)
+- **Model controls on the phone.** His settings show favorite and all-model lists, model switching, skill toggles, and agent-creation controls for the name and SOUL. Available models depend on backend providers, credentials, and capacity. [2:32–3:54](https://www.youtube.com/watch?v=f_NfbjaSJ-k&t=152s)
+- **A memory-graph view.** He opens a map of connected memories. This does not establish identical graph or editing support for every memory provider on mobile. [3:17](https://www.youtube.com/watch?v=f_NfbjaSJ-k&t=197s)
+- **Local models, remotely accessed.** Finn describes an agent backed by models on his own DGX Spark hardware—not on his phone. This is an alternative to hosted inference, not unlimited free computing: hardware, power, capacity, and connectivity still matter. [0:59](https://www.youtube.com/watch?v=f_NfbjaSJ-k&t=59s) · [6:38](https://www.youtube.com/watch?v=f_NfbjaSJ-k&t=398s) · [Official local-model docs](https://hermes-agent.nousresearch.com/docs/user-guide/local-models)
+- **Remote computer errands.** He reports requesting app installation and configuration across his connected computers. These are creator-reported outcomes, not independently verified one-click setup. Establish host access and permissions; review the target, plan, and changes before authorizing installs or deletions. [7:06–9:17](https://www.youtube.com/watch?v=f_NfbjaSJ-k&t=426s)
+
+**Where it fits:** capture a task in its own session and check backend work away from a desk. Finn keeps other tools for deeper work; that is his preference, not a benchmark. His free/wider-release predictions are not confirmed by the official access page, which still shows a beta waitlist when checked November 14. [10:41](https://www.youtube.com/watch?v=f_NfbjaSJ-k&t=641s) · [Official access page](https://hermes-agent.nousresearch.com/mobile)
+
 ### Voice: dictation is not the same as Live Mode
 
 The tour identifies voice dictation and a Live Mode control. Crucially, the creator says Live Mode is not configured in his demonstration. Do not infer tested pause-to-send timing, lock-screen listening, offline transcription, or always-on conversation from that menu. Voice may depend on microphone permission and backend speech-provider configuration. [[Video]](https://www.youtube.com/watch?v=7hbT1EzTquI&t=117s) [[General Hermes voice docs]](https://hermes-agent.nousresearch.com/docs/user-guide/features/voice-mode)
@@ -121,6 +133,8 @@ Treat backend access like access to a powerful computer account. The official We
 Bottom line: Hermes Mobile is most useful as a way to direct, inspect, and approve backend work while away from a desk. Start with one profile and one read-only workflow, then add accounts, automation, and delegation only when you understand where execution and data actually live.
 
 ## Sources and verification notes
+
+Additional source: [Alex Finn: The Hermes Mobile App is AWESOME](https://www.youtube.com/watch?v=f_NfbjaSJ-k), November 11, 2026; 13:43; English auto-generated captions reviewed November 14. Uncertain model names and competitive exclusivity claims were not treated as verified facts.
 
 This guide combines the video’s recovered public transcript, first-party Nous announcements, current official documentation, and Composio’s public docs. No native app was installed or independently exercised. Beta UI observations are attributed rather than presented as current setup guarantees.
 

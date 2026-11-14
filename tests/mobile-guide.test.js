@@ -8,6 +8,9 @@ test('Mobile guide is publishable and discoverable',()=>{
  const doc=new JSDOM(html).window.document;
  assert.equal(doc.querySelector('link[rel="canonical"]').href,'https://hermesatlas.com/guide/mobile/');
  assert.equal(doc.querySelectorAll('h1').length,1);
+ assert.ok(doc.getElementById("alex-finn-update"));
+ assert.ok(doc.querySelector('a[href*="f_NfbjaSJ-k"]'));
+ assert.ok(read("drafts/guide-mobile.md").includes("f_NfbjaSJ-k"));
  // Production CSP rejects inline CSS: use the maintained handbook shell.
  assert.equal(doc.querySelectorAll('style, [style]').length,0);
  for(const href of ['/assets/css/tokens.css','/assets/css/base.css','/assets/css/page.css']){
