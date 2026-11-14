@@ -281,7 +281,7 @@ Valid `deliver` values: `log` · `github_comment` · `telegram` · `discord` · 
 
 ## GitLab support
 
-The same adapter works with GitLab. GitLab authenticates with `X-Gitlab-Token` (plain string match, not HMAC) or, when a signing token is configured, a Standard Webhooks `webhook-signature`. Change the route's pin to `signature: gitlab`: a route left at `signature: github` rejects every GitLab delivery with `401`, even with the correct secret.
+The same adapter works with GitLab. GitLab authenticates with `X-Gitlab-Token` (plain string match, not HMAC) or, when a signing token is configured, a Standard Webhooks `webhook-signature`. Change the route's pin to `signature: gitlab`: a route left at `signature: github` rejects every GitLab delivery with `404`, even with the correct secret.
 
 For event filtering, GitLab sets `X-GitLab-Event` to values like `Merge Request Hook`, `Push Hook`, `Pipeline Hook`. Use the exact header value in `events`:
 
@@ -311,13 +311,9 @@ Symptom
 
 Check
 
-`401 Invalid signature`
-
-Secret in config.yaml doesn't match GitHub webhook secret
-
 `404 Unknown route`
 
-Route name in the URL doesn't match the key in `routes:`
+Route name in the URL doesn't match the key in `routes:`, or the secret in config.yaml doesn't match the GitHub webhook secret (a bad signature gets the same 404 so route names can't be probed; the gateway log says `Invalid signature`)
 
 `429 Rate limit exceeded`
 

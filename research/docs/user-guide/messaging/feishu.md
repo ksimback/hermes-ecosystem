@@ -238,7 +238,7 @@ This key is found in the **Event Subscriptions** section of your Feishu app conf
 SHA256(timestamp + nonce + encrypt_key + body)
 ```
 
-The computed hash is compared against the `x-lark-signature` header using timing-safe comparison. Requests with invalid or missing signatures are rejected with HTTP 401.
+The computed hash is compared against the `x-lark-signature` header using timing-safe comparison, and the signed `x-lark-request-timestamp` must be within 5 minutes of the gateway's clock, so a captured request cannot be replayed later. Requests with invalid or missing signatures, or a stale timestamp, are rejected with HTTP 401.
 
 tip
 
@@ -937,7 +937,7 @@ Ensure `FEISHU_VERIFICATION_TOKEN` matches the token in your Feishu app's Event 
 
 `Webhook rejected: invalid signature`
 
-Ensure `FEISHU_ENCRYPT_KEY` matches the encrypt key in your Feishu app config
+Ensure `FEISHU_ENCRYPT_KEY` matches the encrypt key in your Feishu app config, and that the gateway host's clock is in sync (a timestamp more than 5 minutes off is refused as a replay)
 
 Post messages show as plain text
 

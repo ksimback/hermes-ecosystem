@@ -558,7 +558,7 @@ OS credential stores
 
 Hermes secret stores
 
-`.env`, `.anthropic_oauth.json`, `auth/google_oauth.json`, Bitwarden and 1Password caches (`bws_cache.json`, `bws_cache.enc.json`, `op_cache.json`), the Photon sidecar token (`photon-sidecar.json`), `vault/`, `browser-profile/`, `mcp-tokens/`, `pairing/` under HERMES\_HOME: the active profile, every profile under `profiles/`, and the global root. Control files (`auth.json`, `config.yaml`, `webhook_subscriptions.json`) are read-denied but stay writable.
+`.env`, `.anthropic_oauth.json`, `auth/google_oauth.json`, the google-workspace skill's `google_token.json`, `google_client_secret.json` and `google_oauth_pending.json`, Bitwarden and 1Password caches (`bws_cache.json`, `bws_cache.enc.json`, `op_cache.json`), the Photon sidecar token (`photon-sidecar.json`), `vault/`, `browser-profile/`, `mcp-tokens/`, `pairing/` under HERMES\_HOME: the active profile, every profile under `profiles/`, and the global root. Control files (`auth.json`, `config.yaml`, `webhook_subscriptions.json`) are read-denied but stay writable.
 
 Windows NT/device-namespace paths
 

@@ -84,7 +84,7 @@ HMAC secret for signature validation. Falls back to the global `secret` if not s
 
 No
 
-Pin the route to one signature scheme: `generic` (`X-Webhook-Signature-V2` + `X-Webhook-Timestamp`, or Standard Webhooks / Svix headers), `github` (`X-Hub-Signature-256`), `gitlab` (`X-Gitlab-Token`, or a GitLab signing token sent as Standard Webhooks headers) or `linear` (`Linear-Signature`). Every other header family gets `401`. Omit it to accept every supported scheme (the behaviour before this key existed). `hermes webhook subscribe` writes `signature: generic` for new routes. Recommended; see [Pin the signature scheme](#pin-the-signature-scheme).
+Pin the route to one signature scheme: `generic` (`X-Webhook-Signature-V2` + `X-Webhook-Timestamp`, or Standard Webhooks / Svix headers), `github` (`X-Hub-Signature-256`), `gitlab` (`X-Gitlab-Token`, or a GitLab signing token sent as Standard Webhooks headers) or `linear` (`Linear-Signature`). Every other header family gets the same `404` as an unknown route. Omit it to accept every supported scheme (the behaviour before this key existed). `hermes webhook subscribe` writes `signature: generic` for new routes. Recommended; see [Pin the signature scheme](#pin-the-signature-scheme).
 
 `profile`
 
@@ -556,17 +556,13 @@ Delivered successfully. Body: `{"status": "delivered", "route": "...", "target":
 
 Duplicate `X-GitHub-Delivery` ID within the idempotency TTL (1 hour). Not re-delivered.
 
-`401 Unauthorized`
-
-HMAC signature invalid or missing.
-
 `400 Bad Request`
 
 Malformed JSON body.
 
 `404 Not Found`
 
-Unknown route name.
+Unknown route name, or HMAC signature invalid or missing (same response, so route names can't be probed).
 
 `413 Payload Too Large`
 
@@ -750,7 +746,7 @@ The adapter validates incoming webhook signatures using the appropriate method f
 -   **GitLab**: `X-Gitlab-Token` header — plain secret string match
 -   **Standard Webhooks**: `webhook-id`, `webhook-timestamp`, and `webhook-signature` headers — signed content is `{id}.{timestamp}.{raw_body}` with a `v1,<base64-hmac-sha256>` signature
 -   **Generic (V2, recommended)**: `X-Webhook-Signature-V2` + `X-Webhook-Timestamp` headers — HMAC-SHA256 hex digest of `<timestamp>.<body>`. The timestamp (Unix seconds) must be within ±300 seconds of the server clock, which prevents captured requests from being replayed later.
--   **Generic (V1, rejected)**: `X-Webhook-Signature` signs only the body, so a captured request remains valid after the delivery-ID cache expires. V1-only requests receive `401 Unauthorized`, including on loopback. Switch senders to the timestamp-bound V2 format above; the gateway logs migration instructions once per route.
+-   **Generic (V1, rejected)**: `X-Webhook-Signature` signs only the body, so a captured request remains valid after the delivery-ID cache expires. V1-only requests receive the same `404` as an unknown route, including on loopback. Switch senders to the timestamp-bound V2 format above; the gateway logs migration instructions once per route.
 
 If a secret is configured but no recognized signature header is present, the request is rejected.
 
@@ -838,8 +834,8 @@ This is the same trust model that applies to everything the agent reads: web pag
 -   For GitHub, the secret is HMAC-based — check `X-Hub-Signature-256`
 -   For GitLab, the secret is a plain token match — check `X-Gitlab-Token`
 -   For generic senders, use `X-Webhook-Signature-V2` and `X-Webhook-Timestamp`; body-only V1 signatures are rejected
--   A route with `signature` set rejects every other scheme with `401` (look for `is pinned to signature` in the gateway log); a subscription created by `hermes webhook subscribe` without `--signature` is pinned to `generic`
--   Check gateway logs for `Invalid signature` warnings
+-   A route with `signature` set rejects every other scheme with the same `404 Unknown route` as a missing route (look for `is pinned to signature` in the gateway log); a subscription created by `hermes webhook subscribe` without `--signature` is pinned to `generic`
+-   A bad signature returns the same `404 Unknown route` as a missing route; check gateway logs for `Invalid signature` warnings to tell them apart
 
 ### Event being ignored
 

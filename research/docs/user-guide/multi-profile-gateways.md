@@ -386,7 +386,7 @@ HTTP endpoints (`/p/<profile>/api/...`, `/p/<profile>/webhooks/...`, platform ev
 
 The named profile's `API_SERVER_KEY`, `profile:`\-bound webhook routes, and its own adapter
 
-`401`/`404`; delivery without an adapter is `502`/`503`, never another profile's bot
+`401` (API server) or `404` (webhook routes, including a bad signature); delivery without an adapter is `502`/`503`, never another profile's bot
 
 Inbound-port platforms (`/p/<profile>/webhooks/twilio`, `/p/<profile>/line/webhook`, `/p/<profile>/api/messages`, …)
 
