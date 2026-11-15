@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>vshulcz/deja-vu — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="deja-vu indexes coding-agent session histories stored on disk so they can be searched locally across supported agents. It also supports cross-agent session…">
+<meta name="description" content="deja-vu indexes coding-agent session histories locally so they can be searched across agents. It also supports resuming or handing off sessions, recovering…">
 <link rel="canonical" href="https://hermesatlas.com/projects/vshulcz/deja-vu">
 <meta property="og:title" content="vshulcz/deja-vu — Hermes Atlas">
-<meta property="og:description" content="deja-vu indexes coding-agent session histories stored on disk so they can be searched locally across supported agents. It also supports cross-agent session…">
+<meta property="og:description" content="deja-vu indexes coding-agent session histories locally so they can be searched across agents. It also supports resuming or handing off sessions, recovering…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/vshulcz/deja-vu">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="vshulcz/deja-vu — Hermes Atlas">
-<meta name="twitter:description" content="deja-vu indexes coding-agent session histories stored on disk so they can be searched locally across supported agents. It also supports cross-agent session…">
+<meta name="twitter:description" content="deja-vu indexes coding-agent session histories locally so they can be searched across agents. It also supports resuming or handing off sessions, recovering…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=deja-vu&amp;subtitle=Shared+local+memory%2C+session+history+search%2C+cross-agent+handoff%2C+and+uncommitted+code+recovery+across+46+coding+agents+%E2%80%94+Claude+Code%2C+Codex%2C+Cursor%2C+OpenCode%2C+Gemini+CLI%2C+OpenClaw&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/vshulcz/deja-vu#software",
   "name": "deja-vu",
-  "description": "deja-vu indexes coding-agent session histories stored on disk so they can be searched locally across supported agents. It also supports cross-agent session handoff, automatic recall through hooks and MCP, and recovery or tracing of code changes made during sessions.",
+  "description": "deja-vu indexes coding-agent session histories locally so they can be searched across agents. It also supports resuming or handing off sessions, recovering overwritten code, and surfacing relevant past sessions through hooks and MCP.",
   "url": "https://hermesatlas.com/projects/vshulcz/deja-vu",
   "codeRepository": "https://github.com/vshulcz/deja-vu",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "vshulcz",
     "url": "https://github.com/vshulcz"
   },
-  "dateModified": "2026-11-15T06:43:45.000Z",
+  "dateModified": "2026-11-15T13:37:37.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 1553
+    "userInteractionCount": 1557
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">deja-vu indexes coding-agent session histories stored on disk so they can be searched locally across supported agents. It also supports cross-agent session handoff, automatic recall through hooks and MCP, and recovery or tracing of code changes made during sessions.</p>
+    <p class="summary-text">deja-vu indexes coding-agent session histories locally so they can be searched across agents. It also supports resuming or handing off sessions, recovering overwritten code, and surfacing relevant past sessions through hooks and MCP.</p>
     <ul class="summary-highlights">
-      <li>Search session histories across 46 coding agents.</li>
-      <li>Hand off an active session to another agent.</li>
-      <li>Recover overwritten code and trace line changes to sessions.</li>
+      <li>Searches existing transcripts across 48 coding agents.</li>
+      <li>Supports cross-agent session handoff and code recovery.</li>
+      <li>Indexes locally without LLM calls.</li>
     </ul>
   </div>
 </section>
@@ -162,8 +162,8 @@
   </picture>
 </p>
 
-<p align="center"><b>Shared local memory, session history search, cross-agent handoff, and code recovery across 46 coding agents.</b><br>
-Claude Code, Codex, Cursor, OpenClaw, Gemini CLI, OpenCode, Hermes and 36 more agents already save every session to disk.<br>
+<p align="center"><b>Shared local memory, session history search, cross-agent handoff, and code recovery across 48 coding agents.</b><br>
+Claude Code, Codex, Cursor, OpenClaw, Gemini CLI, OpenCode, Hermes and 40 more agents already save every session to disk.<br>
 <b>deja-vu</b> (<code>deja</code>) indexes all of it locally in one Go binary — zero LLM calls, 0.7 ms in-process lookup, ~4% index footprint.</p>
 
 <p align="center">English | <a href="docs/readme/README.zh.md">简体中文</a> | <a href="docs/readme/README.zh-TW.md">繁體中文</a> | <a href="docs/readme/README.ja.md">日本語</a> | <a href="docs/readme/README.ko.md">한국어</a> | <a href="docs/readme/README.es.md">Español</a> | <a href="docs/readme/README.pt.md">Português</a> | <a href="docs/readme/README.fr.md">Français</a> | <a href="docs/readme/README.de.md">Deutsch</a> | <a href="docs/readme/README.ru.md">Русский</a> | <a href="docs/readme/README.tr.md">Türkçe</a> | <a href="docs/readme/README.hi.md">हिन्दी</a></p>
@@ -186,11 +186,11 @@ curl -fsSL https://raw.githubusercontent.com/vshulcz/deja-vu/main/install.sh | s
 </code></pre>
 <p align="center"><sub>Homebrew: <code>brew install deja-vu &amp;&amp; deja install --auto</code> · Claude Code: <code>claude plugin marketplace add vshulcz/deja-vu &amp;&amp; claude plugin install deja-vu@deja-vu</code> · Skills: <code>npx skills add vshulcz/deja-vu</code><br><a href="#install">Windows (Scoop / winget), Codex, OpenCode, OpenClaw and more</a> · Try without installing: <code>npx @vshulcz/deja-vu stats --no-index --card</code> or <code>npx @vshulcz/deja-vu audit</code></sub></p>
 
-<pre><code class="language-sh">$ deja "jwt refresh token"             # lexical + structural search across all 46 agent stores
+<pre><code class="language-sh">$ deja "jwt refresh token"             # lexical + structural search across all 47 agent stores
 $ deja handoff --to codex              # continue the active session's goal &amp; state in another agent
 $ deja restore internal/auth/jwt.go    # recover code an agent overwrote before git commit
 $ deja blame internal/auth/jwt.go:42   # trace which agent session wrote or replaced a line
-$ deja audit                           # check retention risk, purged chats &amp; index health across all 46 stores
+$ deja audit                           # check retention risk, purged chats &amp; index health across all 47 stores
 </code></pre>
 <table align="center">
 <tbody><tr>
@@ -216,7 +216,7 @@ the sessions behind your uncommitted changes, then recent work in the current pr
 <p>Prefer a browser? <code>deja view</code> exports the store — sessions, the recall audit trail, and promoted notes — into one local HTML file (<a href="https://vshulcz.github.io/deja-vu/view/">try the live demo</a>). With <code>DEJA_TUI=0</code> (or <code>deja brief</code>), <code>deja</code> prints a plain-text summary.</p>
 <h3>Highlights</h3>
 <ul>
-<li><strong>Starts full on day one.</strong> Months of existing transcripts across all <a href="#supported-harnesses">forty-six agents</a> are searchable immediately — fix a bug in Codex and Claude Code, Cursor or OpenCode recalls it.</li>
+<li><strong>Starts full on day one.</strong> Months of existing transcripts across all <a href="#supported-harnesses">forty-eight agents</a> are searchable immediately — fix a bug in Codex and Claude Code, Cursor or OpenCode recalls it.</li>
 <li><strong>Survives <code>/compact</code> and context resets.</strong> Over 43 measured compactions, summaries kept 77% of decisions and 0.2% of commands; deja hands back the exact commands, errors, and decisions (<a href="https://github.com/vshulcz/deja-vu/blob/main/docs/compaction.md">how</a>).</li>
 <li><strong>Cross-agent handoff (<code>deja handoff</code>).</strong> Hit a rate limit or get stuck in Claude Code? Hand the active session's goal, decisions, touched files, and open work straight into Codex, Cursor, or OpenCode.</li>
 <li><strong>Undo overwritten code (<code>deja restore</code> &amp; <code>deja blame</code>).</strong> Indexes opened files, commands with exit codes, and exact <code>Edit</code> spans so <code>deja restore &lt;path&gt;</code> recovers code an agent clobbered even before <code>git commit</code> (<code>deja blame &lt;file&gt;:&lt;line&gt;</code>).</li>
@@ -553,7 +553,7 @@ whether or not the tool is called.</p>
 
 <h3>Supported harnesses</h3>
 
-<p>aider · Amp · Antigravity · Claude Code · Cline · Codex CLI · Copilot CLI · VS Code Copilot Chat · Cursor · DeepSeek Harness · Gemini CLI · Goose · Grok Build · Hermes · Kimi Code · omp (Oh My Pi) · OpenClaw · opencode · Continue · Crush · pi · prime-agent (PrimeIntellect) · Qwen Code · Cherry Studio · Senpi · gajae-code · Kimchi Coding · Command Code · ZCode · Kiro · Kilo Code · Roo Code · Zed · Devin CLI · CodeWhale · Junie · JetBrains AI Assistant · Windsurf / Devin Desktop · CodeBuddy Code · Reasonix · TRAE CLI · Muse Code · MiniMax Code · MiMo-Code · Omnigent · Orca.</p>
+<p>aider · Amp · Antigravity · Cherry Studio · Claude Code · Claw Code · Cline · CodeArts Desktop · CodeBuddy Code · CodeWhale · Codex CLI · Command Code · Continue · Copilot CLI · VS Code Copilot Chat · Crush · Cursor · DeepSeek Harness · Devin CLI · Gemini CLI · gajae-code · Goose · Grok Build · Hermes · JetBrains AI Assistant · Junie · Kilo Code · Kimchi Coding · Kimi Code · Kiro · MiniMax Code · MiMo-Code · Muse Code · Omnigent · omp (Oh My Pi) · OpenClaw · opencode · Orca · pi · prime-agent (PrimeIntellect) · Qwen Code · Reasonix · Roo Code · Senpi · TRAE CLI · Windsurf / Devin Desktop · ZCode · Zed.</p>
 <details>
 <summary>What each one supports</summary>
 
@@ -601,6 +601,16 @@ whether or not the tool is called.</p>
 <td>—</td>
 </tr>
 <tr>
+<td>Cherry Studio</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✕</td>
+<td align="center">✕</td>
+<td align="center">paste</td>
+<td>import the server once in Settings -&gt; MCP; enable the skill for the agent</td>
+</tr>
+<tr>
 <td>Claude Code</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
@@ -609,6 +619,16 @@ whether or not the tool is called.</p>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td>—</td>
+</tr>
+<tr>
+<td>Claw Code</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>none</td>
 </tr>
 <tr>
 <td>Cline</td>
@@ -621,9 +641,59 @@ whether or not the tool is called.</p>
 <td>—</td>
 </tr>
 <tr>
+<td>CodeArts Desktop</td>
+<td align="center">⚠</td>
+<td align="center">⚠</td>
+<td align="center">⚠</td>
+<td align="center">⚠</td>
+<td align="center">✕</td>
+<td align="center">paste</td>
+<td>—</td>
+</tr>
+<tr>
+<td>CodeBuddy Code</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>none</td>
+</tr>
+<tr>
+<td>CodeWhale</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>none</td>
+</tr>
+<tr>
 <td>Codex CLI</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Command Code</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>none</td>
+</tr>
+<tr>
+<td>Continue</td>
+<td align="center">✅</td>
+<td align="center">⚠</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
@@ -651,6 +721,16 @@ whether or not the tool is called.</p>
 <td>—</td>
 </tr>
 <tr>
+<td>Crush</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>sqlite3</td>
+</tr>
+<tr>
 <td>Cursor</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
@@ -671,6 +751,16 @@ whether or not the tool is called.</p>
 <td>zstd</td>
 </tr>
 <tr>
+<td>Devin CLI</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✕</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>sqlite3</td>
+</tr>
+<tr>
 <td>Gemini CLI</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
@@ -679,6 +769,16 @@ whether or not the tool is called.</p>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td>—</td>
+</tr>
+<tr>
+<td>gajae-code</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>none</td>
 </tr>
 <tr>
 <td>Goose</td>
@@ -711,6 +811,46 @@ whether or not the tool is called.</p>
 <td>sqlite3</td>
 </tr>
 <tr>
+<td>JetBrains AI Assistant</td>
+<td align="center">✅</td>
+<td align="center">⚠</td>
+<td align="center">⚠</td>
+<td align="center">⚠</td>
+<td align="center">✕</td>
+<td align="center">paste</td>
+<td>none</td>
+</tr>
+<tr>
+<td>Junie</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>none</td>
+</tr>
+<tr>
+<td>Kilo Code</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>sqlite3 for the CLI store</td>
+</tr>
+<tr>
+<td>Kimchi Coding</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>none</td>
+</tr>
+<tr>
 <td>Kimi Code</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
@@ -719,6 +859,56 @@ whether or not the tool is called.</p>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td>—</td>
+</tr>
+<tr>
+<td>Kiro</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>sqlite3 for the CLI database</td>
+</tr>
+<tr>
+<td>MiniMax Code</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✕</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>the MiniMax Code CLI (<code>mcode</code>) for <code>deja resume</code> and <code>deja handoff --to mcode --exec</code>; <code>sqlite3</code> for the session's workspace</td>
+</tr>
+<tr>
+<td>MiMo-Code</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>sqlite3</td>
+</tr>
+<tr>
+<td>Muse Code</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>none</td>
+</tr>
+<tr>
+<td>Omnigent</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td>sqlite3</td>
 </tr>
 <tr>
 <td>omp (Oh My Pi)</td>
@@ -751,17 +941,7 @@ whether or not the tool is called.</p>
 <td>sqlite3</td>
 </tr>
 <tr>
-<td>Continue</td>
-<td align="center">✅</td>
-<td align="center">⚠</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td>—</td>
-</tr>
-<tr>
-<td>Crush</td>
+<td>Orca</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
@@ -801,84 +981,14 @@ whether or not the tool is called.</p>
 <td>—</td>
 </tr>
 <tr>
-<td>Cherry Studio</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✕</td>
-<td align="center">✕</td>
-<td align="center">paste</td>
-<td>import the server once in Settings -&gt; MCP; enable the skill for the agent</td>
-</tr>
-<tr>
-<td>Senpi</td>
+<td>Reasonix</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
-<td>none</td>
-</tr>
-<tr>
-<td>gajae-code</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td>none</td>
-</tr>
-<tr>
-<td>Kimchi Coding</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td>none</td>
-</tr>
-<tr>
-<td>Command Code</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td>none</td>
-</tr>
-<tr>
-<td>ZCode</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td>sqlite3 for the CLI database</td>
-</tr>
-<tr>
-<td>Kiro</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td>sqlite3 for the CLI database</td>
-</tr>
-<tr>
-<td>Kilo Code</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td>sqlite3 for the CLI store</td>
+<td>zstd for 1.x sessions</td>
 </tr>
 <tr>
 <td>Roo Code</td>
@@ -891,27 +1001,7 @@ whether or not the tool is called.</p>
 <td>roo CLI (editor tasks reopen in the editor)</td>
 </tr>
 <tr>
-<td>Zed</td>
-<td align="center">✅</td>
-<td align="center">✕</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✕</td>
-<td align="center">paste</td>
-<td>sqlite3 + zstd</td>
-</tr>
-<tr>
-<td>Devin CLI</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✕</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td>sqlite3</td>
-</tr>
-<tr>
-<td>CodeWhale</td>
+<td>Senpi</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
@@ -921,23 +1011,13 @@ whether or not the tool is called.</p>
 <td>none</td>
 </tr>
 <tr>
-<td>Junie</td>
+<td>TRAE CLI</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
-<td>none</td>
-</tr>
-<tr>
-<td>JetBrains AI Assistant</td>
-<td align="center">✅</td>
-<td align="center">⚠</td>
-<td align="center">⚠</td>
-<td align="center">⚠</td>
-<td align="center">✕</td>
-<td align="center">paste</td>
 <td>none</td>
 </tr>
 <tr>
@@ -951,84 +1031,24 @@ whether or not the tool is called.</p>
 <td>none</td>
 </tr>
 <tr>
-<td>CodeBuddy Code</td>
+<td>ZCode</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
-<td>none</td>
+<td>sqlite3 for the CLI database</td>
 </tr>
 <tr>
-<td>Reasonix</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td>zstd for 1.x sessions</td>
-</tr>
-<tr>
-<td>TRAE CLI</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td>none</td>
-</tr>
-<tr>
-<td>Muse Code</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td>none</td>
-</tr>
-<tr>
-<td>MiniMax Code</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
+<td>Zed</td>
 <td align="center">✅</td>
 <td align="center">✕</td>
 <td align="center">✅</td>
 <td align="center">✅</td>
-<td>the MiniMax Code CLI (<code>mcode</code>) for <code>deja resume</code> and <code>deja handoff --to mcode --exec</code>; <code>sqlite3</code> for the session's workspace</td>
-</tr>
-<tr>
-<td>MiMo-Code</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td>sqlite3</td>
-</tr>
-<tr>
-<td>Omnigent</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td>sqlite3</td>
-</tr>
-<tr>
-<td>Orca</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td align="center">✅</td>
-<td>sqlite3</td>
+<td align="center">✕</td>
+<td align="center">paste</td>
+<td>sqlite3 + zstd</td>
 </tr>
 </tbody></table>
 <p>✅ works · — possible, not built yet · ✕ the harness has no such mechanism · ⚠ waiting on the harness itself · ? not investigated</p>
@@ -1114,6 +1134,16 @@ for people who install extensions there rather than from a CLI:</p>
 <td>Magpie</td>
 <td>npm <code>@vshulcz/magpie-deja</code></td>
 <td><code>magpie plugin add @vshulcz/magpie-deja</code></td>
+</tr>
+<tr>
+<td>Orca</td>
+<td>v2 <code>trusted-worker</code> plugin <code>deja</code></td>
+<td><code>Orca → Plugins → extensions/orca</code> (and <code>deja install orca</code> for native MCP and hooks)</td>
+</tr>
+<tr>
+<td>CodeWhale</td>
+<td>Claude-compatible bundle <code>deja-vu</code></td>
+<td><code>/plugin install extensions/codewhale</code> (and <code>deja install codewhale</code> for native hooks)</td>
 </tr>
 <tr>
 <td>VS Code / Cursor / Windsurf</td>
@@ -1347,7 +1377,7 @@ and a search for a word most sessions hold takes about a second.</p>
 </tr>
 <tr>
 <td>Agents shared</td>
-<td>46 harnesses</td>
+<td>48 harnesses</td>
 <td>9 (hooks)</td>
 <td>3 (CLI)</td>
 </tr>
@@ -1513,7 +1543,7 @@ Windows the notes are in <code>%AppData%\deja</code>).</p>
 <details>
 <summary><b>Per-harness setup guides (Claude Code, Codex, Cursor, OpenClaw, Hermes…)</b></summary>
 
-<p><a href="https://vshulcz.github.io/deja-vu/guide/memory-for-claude-code.html">Claude Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-codex.html">Codex</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-cursor.html">Cursor</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-windsurf.html">Windsurf</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-opencode.html">opencode</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-dsh.html">DeepSeek Harness</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kimi.html">Kimi Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-zed.html">Zed</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-grok.html">Grok Build</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-gemini.html">Gemini CLI</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-qwen.html">Qwen Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-openclaw.html">OpenClaw</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-goose.html">Goose</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-cline.html">Cline</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-pi.html">pi</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-hermes.html">Hermes</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-copilot.html">Copilot CLI</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-copilot-chat.html">Copilot Chat</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-aider.html">aider</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-amp.html">Amp</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-antigravity.html">Antigravity</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-continue.html">Continue</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-crush.html">Crush</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-roo.html">Roo Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kilocode.html">Kilo Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kiro.html">Kiro</a> · [Cherry Studio](<a href="https://vshulcz.github.io/deja-vu/guide/memory-for-">https://vshulcz.github.io/deja-vu/guide/memory-for-</a></p>
+<p><a href="https://vshulcz.github.io/deja-vu/guide/memory-for-claude-code.html">Claude Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-codex.html">Codex</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-cursor.html">Cursor</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-windsurf.html">Windsurf</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-opencode.html">opencode</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-dsh.html">DeepSeek Harness</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-kimi.html">Kimi Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-zed.html">Zed</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-grok.html">Grok Build</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-gemini.html">Gemini CLI</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-qwen.html">Qwen Code</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-openclaw.html">OpenClaw</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-goose.html">Goose</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-cline.html">Cline</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-pi.html">pi</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-hermes.html">Hermes</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-copilot.html">Copilot CLI</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-copilot-chat.html">Copilot Chat</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-aider.html">aider</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-amp.html">Amp</a> · <a href="https://vshulcz.github.io/deja-vu/guide/memory-for-antigravity.html">Antigravity</a> · [Continue](<a href="https://vshulcz">https://vshulcz</a></p>
 <hr>
 <p><em>README truncated. <a href="https://github.com/vshulcz/deja-vu#readme">Continue reading on GitHub</a></em></p>
 </details>
@@ -1532,7 +1562,7 @@ Windows the notes are in <code>%AppData%\deja</code>).</p>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 61.1K</div>
+        <div class="stars">★ 61.2K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
