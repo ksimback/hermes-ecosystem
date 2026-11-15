@@ -104,7 +104,7 @@ Behavior
 
 **smart** (default)
 
-Use an auxiliary LLM to assess risk. Low-risk commands (e.g., `python -c "print('hello')"`) are auto-approved for that command only. Genuinely dangerous commands are auto-denied. Uncertain cases escalate to a manual prompt.
+Use an auxiliary LLM to assess risk. Low-risk commands (e.g., `python -c "print('hello')"`) are auto-approved for that command only. Genuinely dangerous commands are auto-denied. Uncertain cases escalate to a manual prompt. One class never reaches the auxiliary LLM: `osascript` that can destroy work the agent did not create (closing a document with `saving no`, quitting an app, deleting files, sending keystrokes, `do shell script`), or whose script is not visible on the command line. Only the operator can consent to that, so it always prompts, and the answer covers that one command.
 
 **manual**
 
@@ -176,7 +176,7 @@ Some commands are so catastrophic — irreversible filesystem wipes, fork bombs,
 -   Cron jobs running in headless `approve` mode
 -   User explicitly clicking "allow always"
 
-The blocklist is the floor below `--yolo`. It trips **before** the approval layer even sees the command, and there's no override flag. Patterns currently covered (not exhaustive; kept in sync with `tools/approval.py::UNRECOVERABLE_BLOCKLIST`):
+The blocklist is the floor below `--yolo`. It trips **before** the approval layer even sees the command, and there's no override flag. Patterns currently covered (not exhaustive; kept in sync with `tools/approval_detection.py::HARDLINE_PATTERNS`):
 
 Pattern
 
@@ -201,6 +201,14 @@ Formats the live system
 `dd if=/dev/zero of=/dev/sd*`
 
 Zeroes a physical disk
+
+`format C:`, `Format-Volume`, `Clear-Disk`, `rd /s /q C:\`, `Remove-Item -Recurse C:\` (a literal `-Include *.tmp` filter and a plain `Clear-Disk -WhatIf` preview stay approvable)
+
+Windows analogues: format/wipe a volume or recursively delete a drive root
+
+`Restart-Computer` / `Stop-Computer` (a plain `-WhatIf` preview stays approvable)
+
+Windows analogue of `shutdown`/`reboot`
 
 Piping untrusted URLs to `sh` at the rootfs top level
 
@@ -391,6 +399,10 @@ Switches the default daemon for all future docker commands
 `podman --remote`/`-r`/`--url`/`--connection`/`--identity`, `CONTAINER_HOST=`
 
 Podman remote daemon redirect
+
+`osascript` or `osacompile` whose script closes, quits, saves, deletes, moves, writes, sends keystrokes/clicks or runs `do shell script` / Terminal's `do script` (any JXA `-l JavaScript` program counts; `¬` continuations and comments are read through), or whose script comes from a file, pipe, `$VAR`/`$(...)` expansion or a carrier (`sh -c`, `eval`, `ssh`, `xargs`, ...)
+
+AppleScript can discard the operator's unsaved work in any app. Always a manual, one-time prompt, even in `smart` mode. Detection is a command-line heuristic, not a boundary. Read-only literal scripts (`get name of first application process whose frontmost is true`, `activate`, `display notification`) are not flagged
 
 info
 

@@ -531,7 +531,7 @@ Alias for `{input_path}`
 
 `{output_path}`
 
-Path the command must write audio to
+Path the command must write audio to (a Hermes-named temp file, moved to the requested location afterwards)
 
 `{format}`
 
@@ -605,7 +605,7 @@ Shell commands run when a surface toggles speech output on / when the last lease
 
 #### Security
 
-Command-type providers run whatever shell command you configure, with your user's permissions. Hermes quotes placeholder values and enforces the configured timeout, but the command template itself is trusted local input — treat it the same way you would a shell script on your PATH.
+Command-type providers run whatever shell command you configure, with your user's permissions. Hermes quotes placeholder values, never puts a caller-chosen output path into the command (the command writes a Hermes-named temp file), and enforces the configured timeout, but the command template itself is trusted local input — treat it the same way you would a shell script on your PATH.
 
 ### Python plugin providers
 
