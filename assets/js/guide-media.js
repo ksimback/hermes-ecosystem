@@ -27,7 +27,8 @@
     if (!['twttr.private.resize', 'twttr.private.rendered'].includes(message?.method)) return;
     const height = Number(message.params?.[0]?.height);
     if (Number.isFinite(height) && height >= 150 && height <= 1800) {
-      frame.setAttribute('height', String(Math.ceil(height)));
+      // Leave a small gutter so fractional layout/font rounding does not add a nested scrollbar.
+      frame.setAttribute('height', String(Math.ceil(height) + 24));
     }
   });
 })();

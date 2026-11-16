@@ -41,10 +41,10 @@ test('embedded-video chapter controls seek locally and X resize validates sender
  const frame=w.document.querySelector('.x-embed iframe');
  const message={origin:'https://platform.twitter.com',source:frame.contentWindow,data:{'twttr.embed':{method:'twttr.private.resize',params:[{height:740}]}}};
  w.dispatchEvent(new w.MessageEvent('message',{...message,origin:'https://evil.example'}));
- assert.notEqual(frame.getAttribute('height'),'740');
+ assert.notEqual(frame.getAttribute('height'),'764');
  w.dispatchEvent(new w.MessageEvent('message',message));
- assert.equal(frame.getAttribute('height'),'740');
+ assert.equal(frame.getAttribute('height'),'764');
  w.dispatchEvent(new w.MessageEvent('message',{...message,data:{'twttr.embed':{method:'twttr.private.resize',params:[{height:999999}]}}}));
- assert.equal(frame.getAttribute('height'),'740');
+ assert.equal(frame.getAttribute('height'),'764');
  dom.window.close();
 });
