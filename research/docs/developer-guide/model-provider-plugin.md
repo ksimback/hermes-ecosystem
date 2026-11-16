@@ -501,6 +501,12 @@ Chat Completions endpoint documents `prompt_cache_key`
 
 `False`
 
+`prompt_cache_max_ttl`
+
+Longest prompt-cache tier the route really keeps (`"5m"`/`"1h"`); Hermes never asks for, or believes, more. Config `prompt_caching.route_ttl_ceilings` overrides it
+
+`None`
+
 `native_reasoning_details_type`
 
 Namespaced `<provider>.native_assistant` reasoning carrier only this profile receives

@@ -710,7 +710,7 @@ Browse and resume previous sessions.
 
 `/context [all]` (alias: `/ctx`)
 
-Context-window usage gauge and category breakdown (messaging-friendly text form). `/context all` adds per-skill / per-toolset cost detail.
+Context-window usage gauge and category breakdown (messaging-friendly text form). `/context all` adds per-skill / per-toolset cost detail. A prompt-cache line says until when the cached prompt stays warm (with how sure Hermes is: proven, declared or assumed), how long ago it expired, or that it is unknown.
 
 `/egress [status]`
 
