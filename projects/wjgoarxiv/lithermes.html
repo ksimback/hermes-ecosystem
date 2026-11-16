@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>wjgoarxiv/lithermes — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="LitHermes is a plugin for Hermes Agent that adds a workflow for planning work, checking results, and recording progress for the next session. It tracks goals…">
+<meta name="description" content="LitHermes is a plugin for Hermes Agent that adds a workflow for planning work, checking results, and recording handoff notes. It tracks goals and test evidence…">
 <link rel="canonical" href="https://hermesatlas.com/projects/wjgoarxiv/lithermes">
 <meta property="og:title" content="wjgoarxiv/lithermes — Hermes Atlas">
-<meta property="og:description" content="LitHermes is a plugin for Hermes Agent that adds a workflow for planning work, checking results, and recording progress for the next session. It tracks goals…">
+<meta property="og:description" content="LitHermes is a plugin for Hermes Agent that adds a workflow for planning work, checking results, and recording handoff notes. It tracks goals and test evidence…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/wjgoarxiv/lithermes">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="wjgoarxiv/lithermes — Hermes Atlas">
-<meta name="twitter:description" content="LitHermes is a plugin for Hermes Agent that adds a workflow for planning work, checking results, and recording progress for the next session. It tracks goals…">
+<meta name="twitter:description" content="LitHermes is a plugin for Hermes Agent that adds a workflow for planning work, checking results, and recording handoff notes. It tracks goals and test evidence…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=lithermes&amp;subtitle=Add+one+word%2C+%60lit%60%2C+to+a+Hermes+Agent+request+and+get+a+planned%2C+tested%2C+reviewed+workflow%2C+plus+a+handoff+note+so+the+next+session+knows+where+you+left+off.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/wjgoarxiv/lithermes#software",
   "name": "lithermes",
-  "description": "LitHermes is a plugin for Hermes Agent that adds a workflow for planning work, checking results, and recording progress for the next session. It tracks goals and test evidence, and writes a handoff card when a session with a goal closes.",
+  "description": "LitHermes is a plugin for Hermes Agent that adds a workflow for planning work, checking results, and recording handoff notes. It tracks goals and test evidence on disk, can prevent a goal from closing when checks remain open, and lets a later session resume unfinished work.",
   "url": "https://hermesatlas.com/projects/wjgoarxiv/lithermes",
   "codeRepository": "https://github.com/wjgoarxiv/lithermes",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "wjgoarxiv",
     "url": "https://github.com/wjgoarxiv"
   },
-  "dateModified": "2026-11-13T23:10:26.000Z",
+  "dateModified": "2026-11-15T15:44:06.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-13</span>
+    <span><span class="meta-label">updated</span>2026-11-15</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">LitHermes is a plugin for Hermes Agent that adds a workflow for planning work, checking results, and recording progress for the next session. It tracks goals and test evidence, and writes a handoff card when a session with a goal closes.</p>
+    <p class="summary-text">LitHermes is a plugin for Hermes Agent that adds a workflow for planning work, checking results, and recording handoff notes. It tracks goals and test evidence on disk, can prevent a goal from closing when checks remain open, and lets a later session resume unfinished work.</p>
     <ul class="summary-highlights">
-      <li>Use `lit` to start a request or resume an unfinished goal.</li>
-      <li>Tracks whether checks pass and test evidence remains current.</li>
-      <li>Shows a goal and workflow timeline in Hermes Desktop.</li>
+      <li>Use `lit` to start a workflow.</li>
+      <li>Writes handoff cards under `.hermes/lithermes/handoff/`.</li>
+      <li>Includes a right-hand pane in Hermes Desktop 0.23 or later.</li>
     </ul>
   </div>
 </section>
@@ -205,7 +205,7 @@ Run the one line under <a href="#install">Install</a>, restart Hermes, then give
 🔥 LIT · lit-recap — 📝 plan ✓ › 🔨 work ✓ › 🔍 review ✓ › 🏁 done ✓
 </code></pre>
 <h3>Install</h3>
-<p>You need Hermes Agent, Node.js 18 or later, and write access to your Hermes home (normally <code>~/.hermes</code>). This page describes <code>@litfamily/lithermes@1.0.41</code>. Run this in any terminal:</p>
+<p>You need Hermes Agent, Node.js 18 or later, and write access to your Hermes home (normally <code>~/.hermes</code>). This page describes <code>@litfamily/lithermes@1.0.42</code>. Run this in any terminal:</p>
 <pre><code class="language-sh">npx --yes --package @litfamily/lithermes@latest -- lithermes install --yes --no-style
 </code></pre>
 <table>
@@ -365,6 +365,7 @@ printf '{"id":"%s","source":"%s","variant":"lithermes","installed_at":"%s"}\n' "
 </tr>
 </tbody></table>
 <p>The choice is saved in your Hermes home at <code>~/.hermes/lithermes/auto-handoff.json</code>, so it follows you from project to project.</p>
+<p>Separately, a shorter save already runs with nothing to set: when a turn ends with the context at 40% or more, LitHermes writes <code>.hermes/lithermes/handoff/auto-&lt;session&gt;.md</code> itself (the open plan and its current row, the goal card, the last request and reply), and after Hermes compacts, the next turn carries a digest of it once. <code>/lit-handoff auto save off</code> (or <code>LITHERMES_HANDOFF_SAVE=0</code>) turns that save off.</p>
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="./docs/assets/handoff/auto-handoff-switch-dark.webp"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/handoff/auto-handoff-switch-light.webp" width="960" alt="Terminal card titled demo — hermes. &quot;/lit-handoff auto on 60&quot; answers &quot;Automatic handoff is ON at 60%. Once a model call passes 60% of the context window, your next message carries a request to write a handoff, and you then run /compact. It starts with your next message.&quot; and &quot;Hermes' own compaction point is about 64% of the window, above yours.&quot;. &quot;/lit-handoff auto status&quot; answers &quot;Automatic handoff: ON at 60% (percent from your saved setting)&quot;, &quot;Last reading in this session: 41% (164,000 of 400,000 tokens)&quot; and &quot;Hermes' own compaction point is about 64% of the window, above yours.&quot;. Then &quot;/lit-handoff auto off&quot; answers &quot;Automatic handoff is off. Your last percent, 60%, is remembered for the next time you turn it on.&quot;."></picture></p>
 
 <p>Once a model call passes your percent, your next message carries a short request to write a handoff; the model saves <code>HANDOFF.md</code>, tells you <code>Handoff saved. Run /compact now.</code> and carries on. A Hermes plugin cannot start a compaction, so <code>/compact</code> stays with you. Afterwards, your next message brings a short digest of that handoff back to the model, and the work picks up where it stopped.</p>
@@ -374,6 +375,12 @@ printf '{"id":"%s","source":"%s","variant":"lithermes","installed_at":"%s"}\n' "
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="./docs/assets/handoff/auto-handoff-shell-dark.webp"><img src="https://raw.githubusercontent.com/wjgoarxiv/lithermes/main/docs/assets/handoff/auto-handoff-shell-light.webp" width="960" alt="Terminal card titled demo — zsh. &quot;export LITHERMES_AUTO_HANDOFF=1 LITHERMES_AUTO_HANDOFF_PERCENT=60&quot;, then &quot;hermes lithermes status | grep 'Automatic handoff'&quot; prints &quot;Automatic handoff: on at 60%&quot;, and &quot;hermes lithermes doctor | grep 'Automatic handoff'&quot; prints &quot;[OK] Automatic handoff: on at 60% (Hermes compacts at about 64% of the window)&quot;."></picture></p>
 
 <p><a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/automatic-handoff.md">Automatic handoff</a> goes through each step and says who does it.</p>
+<h4>While you are away</h4>
+<p>Two helpers tell you when a long run needs you. Both stay off until you turn them on.</p>
+<ul>
+<li><strong>A message when a step parks.</strong> Type <code>/lit-loop ping on</code> (or set <code>LITHERMES_PARK_PING=1</code>). When a bounded run parks a step, Hermes posts one line: the run, the step, and that <code>lit approve</code> allows it and <code>lit deny</code> refuses it. On a messaging gateway it lands in the chat; in the TUI or Desktop it is a notification. Approving stays with you. <code>/lit-loop ping off</code> turns it off.</li>
+<li><strong>A follow-up report.</strong> <code>hermes lithermes followup --every "every 2h"</code> prints a job for Hermes' cron scheduler and creates nothing itself; add it with the <code>hermes cron create</code> line it shows. Each time the job fires, LitHermes reads the plan rows, bounded runs and parked steps, and sends one report only when something changed. That cron session can only read.</li>
+</ul>
 <h3>What you get</h3>
 <p>LitHermes installs 40 skills, their slash commands and the <code>goal_*</code> work tools. Most days you will use a handful, each started with a word or two; <a href="https://github.com/wjgoarxiv/lithermes/blob/main/docs/skills.md#everyday-routes">Everyday routes</a> walks through each one.</p>
 <table>
@@ -495,11 +502,11 @@ npx --package @litfamily/lithermes -- lithermes uninstall --yes
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
-        <div class="stars">★ 444</div>
+        <div class="stars">★ 445</div>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 551</div>
+        <div class="stars">★ 553</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">
@@ -514,17 +521,17 @@ npx --package @litfamily/lithermes -- lithermes uninstall --yes
         <div class="stars">★ 14</div>
         <div class="name"><span class="org">nativ3ai /</span> hermes-payguard</div>
       </a>
-      <a class="related-row" href="/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server">
-        <div class="stars">★ 405</div>
-        <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
-      </a>
       <a class="related-row" href="/projects/stainlu/hermes-labyrinth">
         <div class="stars">★ 311</div>
         <div class="name"><span class="org">stainlu /</span> hermes-labyrinth</div>
       </a>
-      <a class="related-row" href="/projects/runta-dev/clawshell">
-        <div class="stars">★ 351</div>
-        <div class="name"><span class="org">runta-dev /</span> clawshell</div>
+      <a class="related-row" href="/projects/briancaffey/hermes-otel">
+        <div class="stars">★ 87</div>
+        <div class="name"><span class="org">briancaffey /</span> hermes-otel</div>
+      </a>
+      <a class="related-row" href="/projects/Xquik-dev/hermes-tweet">
+        <div class="stars">★ 40</div>
+        <div class="name"><span class="org">Xquik-dev /</span> hermes-tweet</div>
       </a>
     </div>
     
