@@ -228,7 +228,7 @@ Cron delivery
 
 `requires_env` / `optional_env` in `plugin.yaml` auto-populate
 
-send engine (`tools/send_message_tool.py`)
+send engine (`gateway/outbound/send.py`)
 
 Routes through live gateway adapter
 
@@ -930,7 +930,7 @@ Six touchpoints:
 
 ### 7\. Tools
 
-1.  **`tools/send_message_tool.py`** — Add `"newplat": Platform.NEWPLAT` to platform map
+1.  **`gateway/outbound/send.py`** — Add `"newplat": Platform.NEWPLAT` to platform map
 2.  **`tools/cronjob_tools.py`** — Add `newplat` to the delivery target description string
 
 ### 8\. Toolsets
