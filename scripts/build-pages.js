@@ -311,12 +311,13 @@ const FAVICON = `<link rel="icon" href="/favicon.ico" sizes="any">
 function renderMasthead(activeNav) {
   // "newsletter" was dropped when "ecosystem" was added (homepage redesign):
   // the nav stays at 10 items, and the signup keeps its /#newsletter anchor
-  // via the homepage email-cta + footer links.
+  // via the homepage email-cta + footer links. "home" gave way to "plugins"
+  // (2026-11-16): the brand mark already links home.
   const nav = [
-    { href: "/", label: "home", id: "home" },
     { href: "/ecosystem/", label: "ecosystem", id: "ecosystem" },
     { href: "/lists/", label: "lists", id: "lists" },
     { href: "/skills/", label: "skills", id: "skills" },
+    { href: "/plugins/", label: "plugins", id: "plugins" },
     { href: "/use-cases/", label: "use cases", id: "use-cases" },
     { href: "/guide/", label: "handbook", id: "handbook" },
     { href: "/masterclass/", label: "masterclass", id: "masterclass" },
