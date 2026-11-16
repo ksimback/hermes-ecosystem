@@ -39,7 +39,7 @@ General plugins can be enabled in any combination. Some backend kinds are single
 
 The Hermes plugin catalog is a human-reviewed directory: every entry is added by a reviewed pull request and pins an exact 40-character commit, so a catalog install checks out the code the reviewer saw, not a branch tip. Browse it in Desktop (Capabilities → Plugins), on the docs site, or with `hermes plugins search <term>`.
 
-Tiers: **Official** (maintained by Nous Research), **Verified** (verified by the Nous team to come from the company whose product it integrates), and **Community** (everything else). The catalog source in the hermes-agent repo lists 2,382 entries as of 2026-11-16 — 21 official, 13 verified, and the rest community — up from about 600 at v0.22.0 and over 1,050 at v0.23.0. The biggest shelves are tools (1,150) and Desktop (416), then automation, models and memory.
+Tiers: **Official** (maintained by Nous Research), **Verified** (verified by the Nous team to come from the company whose product it integrates), and **Community** (everything else). The catalog source in the hermes-agent repo lists 2,381 entries as of 2026-11-16 — 21 official, 13 verified, and the rest community — up from about 600 at v0.22.0 and over 1,050 at v0.23.0. The biggest shelves are tools (1,150) and Desktop (416), then automation, models and memory.
 
 The official docs are explicit that catalog review is a point-in-time review, not a security audit. With thousands of community entries, the hard part is no longer finding a plugin — it is knowing which few are worth running. That is why the Atlas curates instead of mirroring the catalog.
 

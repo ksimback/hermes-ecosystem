@@ -1,0 +1,95 @@
+name: Audit Plugins Hub
+
+# Opt actions into Node.js 24 now (becomes the default June 2 2026, Node 20
+# removed Sep 16 2026). Same value set across every workflow.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+# Weekly drift check of data/plugins.json (the curated /plugins/ hub) against
+# the official Hermes plugin catalog. The hub's tiers, version floors and
+# "catalog installs only" promise are copied by hand, so they drift silently
+# when Nous re-tiers, re-pins or drops an entry, or when a pick's repo goes
+# stale. Opens (or updates) one tracking issue labelled plugins-audit when any
+# pick drifts or could not be checked, and closes it once everything is clean.
+
+on:
+  schedule:
+    - cron: '0 10 * * 1'  # Mondays 10:00 UTC (1h after audit-repos)
+  workflow_dispatch: {}
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Run audit
+        id: audit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Never let a failure here skip the issue step: the report file says
+        # what happened, including picks that could not be checked.
+        continue-on-error: true
+        run: node scripts/audit-plugins.js --json plugins-audit.json
+
+      - name: Open, update or close the tracking issue
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            if (!fs.existsSync('plugins-audit.json')) {
+              core.setFailed('audit-plugins.js produced no report (crashed before writing it)');
+              return;
+            }
+            const report = JSON.parse(fs.readFileSync('plugins-audit.json', 'utf-8'));
+            const bad = report.results.filter(r => r.status !== 'ok');
+            const needsAttention = bad.length > 0 || report.catalogEntries == null;
+
+            const { data: open } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              labels: 'plugins-audit', state: 'open', per_page: 5,
+            });
+
+            if (!needsAttention) {
+              console.log(report.markdown);
+              for (const issue of open) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner, repo: context.repo.repo, issue_number: issue.number,
+                  body: `Audit ${report.checkedAt}: all ${report.results.length} picks are back in sync. Closing.`,
+                });
+                await github.rest.issues.update({
+                  owner: context.repo.owner, repo: context.repo.repo, issue_number: issue.number, state: 'closed',
+                });
+              }
+              return;
+            }
+
+            const title = `[Plugins audit] ${bad.length} pick${bad.length === 1 ? '' : 's'} need attention (${report.checkedAt})`;
+            const body = [
+              report.markdown,
+              '',
+              '**Action**: update `data/plugins.json` (tier, `requiresHermes`, repo), or replace the pick if it left the catalog or went stale. "unchecked" means the fetch failed; re-run the workflow before acting.',
+              '',
+              '_Auto-managed by `.github/workflows/audit-plugins.yml`; re-runs weekly._',
+            ].join('\n');
+
+            if (open.length > 0) {
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo, issue_number: open[0].number, title, body,
+              });
+              console.log(`Updated #${open[0].number}`);
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo, title, body, labels: ['plugins-audit'],
+              });
+              console.log('Created a plugins-audit issue');
+            }
