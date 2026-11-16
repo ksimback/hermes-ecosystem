@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>abundantbeing/hermes-browser-extension — Hermes Agent Workspaces &amp; GUIs | Hermes Atlas</title>
-<meta name="description" content="Hermes Browser Extension provides a Chromium side panel or Firefox sidebar for connecting browser context to a Hermes Agent runtime through a local gateway,…">
+<meta name="description" content="Hermes Browser Extension provides a Chromium side panel or Firefox sidebar for connecting browser context to the Hermes Agent runtime. It can connect through a…">
 <link rel="canonical" href="https://hermesatlas.com/projects/abundantbeing/hermes-browser-extension">
 <meta property="og:title" content="abundantbeing/hermes-browser-extension — Hermes Atlas">
-<meta property="og:description" content="Hermes Browser Extension provides a Chromium side panel or Firefox sidebar for connecting browser context to a Hermes Agent runtime through a local gateway,…">
+<meta property="og:description" content="Hermes Browser Extension provides a Chromium side panel or Firefox sidebar for connecting browser context to the Hermes Agent runtime. It can connect through a…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/abundantbeing/hermes-browser-extension">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="abundantbeing/hermes-browser-extension — Hermes Atlas">
-<meta name="twitter:description" content="Hermes Browser Extension provides a Chromium side panel or Firefox sidebar for connecting browser context to a Hermes Agent runtime through a local gateway,…">
+<meta name="twitter:description" content="Hermes Browser Extension provides a Chromium side panel or Firefox sidebar for connecting browser context to the Hermes Agent runtime. It can connect through a…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-browser-extension&amp;subtitle=Browser-native+side+panel+for+Hermes+Agent+%E2%80%94+connect+web+context+to+your+local+Hermes+runtime.&amp;kind=project+%C2%B7+workspaces">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/abundantbeing/hermes-browser-extension#software",
   "name": "hermes-browser-extension",
-  "description": "Hermes Browser Extension provides a Chromium side panel or Firefox sidebar for connecting browser context to a Hermes Agent runtime through a local gateway, Hermes Cloud, or a self-hosted remote gateway. It supports chat and, where available, browser controls such as selecting tabs for Hermes to operate, alongside features including file attachments, sessions, and saved connections.",
+  "description": "Hermes Browser Extension provides a Chromium side panel or Firefox sidebar for connecting browser context to the Hermes Agent runtime. It can connect through a local gateway, Hermes Cloud, or a self-hosted remote gateway, with available tools and page-control capabilities varying by connection and browser.",
   "url": "https://hermesatlas.com/projects/abundantbeing/hermes-browser-extension",
   "codeRepository": "https://github.com/abundantbeing/hermes-browser-extension",
   "applicationCategory": "DesktopEnhancementApplication",
@@ -47,7 +47,7 @@
     "name": "abundantbeing",
     "url": "https://github.com/abundantbeing"
   },
-  "dateModified": "2026-11-16T13:06:24.000Z",
+  "dateModified": "2026-11-16T15:26:56.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Browser Extension provides a Chromium side panel or Firefox sidebar for connecting browser context to a Hermes Agent runtime through a local gateway, Hermes Cloud, or a self-hosted remote gateway. It supports chat and, where available, browser controls such as selecting tabs for Hermes to operate, alongside features including file attachments, sessions, and saved connections.</p>
+    <p class="summary-text">Hermes Browser Extension provides a Chromium side panel or Firefox sidebar for connecting browser context to the Hermes Agent runtime. It can connect through a local gateway, Hermes Cloud, or a self-hosted remote gateway, with available tools and page-control capabilities varying by connection and browser.</p>
     <ul class="summary-highlights">
-      <li>Connect through local, Cloud, or self-hosted remote options</li>
-      <li>Select tabs Hermes may operate on supported browsers</li>
-      <li>Includes attachments, sessions, and saved connections</li>
+      <li>Supports local, Hermes Cloud, and self-hosted remote connections.</li>
+      <li>Offers chats, file attachments, and optional tab screenshots.</li>
+      <li>Firefox cannot click or type with Hermes Control.</li>
     </ul>
   </div>
 </section>
@@ -419,6 +419,44 @@ hermes gateway restart
 </ul>
 <p>See <a href="https://github.com/abundantbeing/hermes-browser-extension/blob/main/SECURITY.md"><code>SECURITY.md</code></a>, <a href="https://github.com/abundantbeing/hermes-browser-extension/blob/main/PERMISSIONS.md"><code>PERMISSIONS.md</code></a>, <a href="https://github.com/abundantbeing/hermes-browser-extension/blob/main/DATA-FLOW.md"><code>DATA-FLOW.md</code></a>, and <a href="https://github.com/abundantbeing/hermes-browser-extension/blob/main/PRIVACY.md"><code>PRIVACY.md</code></a> for details.</p>
 <h3>Troubleshooting</h3>
+<h4>Self-hosted LAN or router dashboards look blank</h4>
+<p>Some self-hosted dashboards (router admin UIs, Clash or mihomo panels, other Vue or workbox PWAs on private IP addresses) can stop painting when a browser extension injects heavy page scripts at <code>document_idle</code>. Hermes now skips its page-context bundle on private and LAN hosts by default. Chat, Hermes Control, and Hermes Web launch still work; only Assist, extraction, and inline page helpers stay off until you opt in.</p>
+<p>In <strong>Settings → Permissions → Private and LAN pages</strong>, turn on <strong>Run page scripts on private and LAN sites</strong> when you want page context on those addresses. To block page scripts on a specific origin (public or private), add it under <strong>Exclude these origins from page scripts</strong> (one origin per line, for example <code>https://192.168.8.1:9443</code>). The side panel explains when page context is skipped on the active tab.</p>
+<p>Private or LAN hosts (the same classifier the extension and guard use):</p>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IPv4 loopback</td>
+<td><code>127.0.0.0/8</code> (including <code>127.0.0.2</code>)</td>
+</tr>
+<tr>
+<td>RFC1918</td>
+<td><code>10.0.0.0/8</code>, <code>172.16.0.0–172.31.255.0</code>, <code>192.168.0.0/16</code></td>
+</tr>
+<tr>
+<td>Link-local / CGNAT</td>
+<td><code>169.254.0.0/16</code>, Tailscale <code>100.64.0.0/10</code> (<code>100.64.x.x–100.127.x.x</code>)</td>
+</tr>
+<tr>
+<td>IPv6 loopback / ULA / link-local</td>
+<td><code>::1</code>, <code>fc00::/7</code>, <code>fe80::/10</code></td>
+</tr>
+<tr>
+<td>Local names</td>
+<td><code>localhost</code>, <code>*.localhost</code>, <code>*.local</code>, <code>*.lan</code>, <code>*.internal</code>, <code>*.home.arpa</code>, <code>*.ts.net</code></td>
+</tr>
+<tr>
+<td>Single-label hostnames</td>
+<td>names with no dots (for example a machine name on the LAN)</td>
+</tr>
+</tbody></table>
+<p>Port-specific excludes (for example <code>https://example.com:9443</code>) are enforced at runtime in the install guard, not via registration match patterns, so other ports on the same host stay eligible for page scripts unless you exclude them too.</p>
+<h4>Tools available to the agent</h4>
 <p>Tools available to the agent come from your Hermes setup. See the <a href="https://hermes-agent.nousresearch.com/docs">Hermes docs</a>.</p>
 <h4>I loaded the extension but nothing works</h4>
 <p>Make sure you loaded <code>dist/</code>, not the repo root. The selected folder must contain <code>manifest.json</code> directly.</p>
