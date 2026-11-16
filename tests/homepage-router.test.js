@@ -81,12 +81,11 @@ test("the 'community map' framing is fully retired", () => {
   assert.ok(!/community map/i.test(html), "index.html still says 'community map'");
 });
 
-test("nav marks home active and links the ecosystem catalog", () => {
+test("nav links the ecosystem catalog and the plugins hub (brand mark is home)", () => {
   const { document } = loadHomepage({ runScripts: false });
-  const active = document.querySelector(".mast-nav a.active");
-  assert.ok(active, "an active nav item exists");
-  assert.equal(active.getAttribute("href"), "/");
-  assert.equal(active.textContent, "home");
+  assert.equal(document.querySelector(".mast-nav a.active"), null, "no nav item is active on the homepage");
+  assert.ok(document.querySelector('a.brand[href="/"]'), "brand mark links home");
+  assert.ok(document.querySelector('.mast-nav a[href="/plugins/"]'), "nav links /plugins/");
   assert.ok(
     document.querySelector('.mast-nav a[href="/ecosystem/"]'),
     "nav links /ecosystem/",
