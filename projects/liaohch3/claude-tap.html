@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>liaohch3/claude-tap — Hermes Agent Developer Tools | Hermes Atlas</title>
-<meta name="description" content="claude-tap is a local proxy and trace viewer for inspecting API traffic and agent context from AI coding clients. It can run a client through the proxy or…">
+<meta name="description" content="claude-tap is a local proxy and trace viewer for AI coding agents. It records API traffic and agent context, including prompts, conversation history, tool…">
 <link rel="canonical" href="https://hermesatlas.com/projects/liaohch3/claude-tap">
 <meta property="og:title" content="liaohch3/claude-tap — Hermes Atlas">
-<meta property="og:description" content="claude-tap is a local proxy and trace viewer for inspecting API traffic and agent context from AI coding clients. It can run a client through the proxy or…">
+<meta property="og:description" content="claude-tap is a local proxy and trace viewer for AI coding agents. It records API traffic and agent context, including prompts, conversation history, tool…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/liaohch3/claude-tap">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="liaohch3/claude-tap — Hermes Atlas">
-<meta name="twitter:description" content="claude-tap is a local proxy and trace viewer for inspecting API traffic and agent context from AI coding clients. It can run a client through the proxy or…">
+<meta name="twitter:description" content="claude-tap is a local proxy and trace viewer for AI coding agents. It records API traffic and agent context, including prompts, conversation history, tool…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=claude-tap&amp;subtitle=Intercept+and+inspect+Coding+Agent+API+traffic+from+Claude+Code%2C+Codex+CLI%2C+Gemini+CLI%2C+Cursor+CLI%2C+OpenCode%2C+Kimi%2FKimi+Code%2C+Pi%2C+and+Hermes+in+a+local+trace+viewer.&amp;kind=project+%C2%B7+developer+tools">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/liaohch3/claude-tap#software",
   "name": "claude-tap",
-  "description": "claude-tap is a local proxy and trace viewer for inspecting API traffic and agent context from AI coding clients. It can run a client through the proxy or listen to local app transcripts, and can export trace sessions as self-contained HTML viewers.",
+  "description": "claude-tap is a local proxy and trace viewer for AI coding agents. It records API traffic and agent context, including prompts, conversation history, tool calls, streaming responses, token usage, and request differences, and can export a trace session as a self-contained HTML viewer.",
   "url": "https://hermesatlas.com/projects/liaohch3/claude-tap",
   "codeRepository": "https://github.com/liaohch3/claude-tap",
   "applicationCategory": "DeveloperApplication",
@@ -47,7 +47,7 @@
     "name": "liaohch3",
     "url": "https://github.com/liaohch3"
   },
-  "dateModified": "2026-11-15T23:21:04.000Z",
+  "dateModified": "2026-11-16T14:07:49.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -86,10 +86,10 @@
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
-    <a href="/">home</a>
     <a href="/ecosystem/" class="active">ecosystem</a>
     <a href="/lists/">lists</a>
     <a href="/skills/">skills</a>
+    <a href="/plugins/">plugins</a>
     <a href="/use-cases/">use cases</a>
     <a href="/guide/">handbook</a>
     <a href="/masterclass/">masterclass</a>
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-15</span>
+    <span><span class="meta-label">updated</span>2026-11-16</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">claude-tap is a local proxy and trace viewer for inspecting API traffic and agent context from AI coding clients. It can run a client through the proxy or listen to local app transcripts, and can export trace sessions as self-contained HTML viewers.</p>
+    <p class="summary-text">claude-tap is a local proxy and trace viewer for AI coding agents. It records API traffic and agent context, including prompts, conversation history, tool calls, streaming responses, token usage, and request differences, and can export a trace session as a self-contained HTML viewer.</p>
     <ul class="summary-highlights">
-      <li>Inspect prompts, tool calls, streaming responses, and token usage.</li>
-      <li>Compare adjacent requests to see changes in context.</li>
-      <li>Redacts common auth headers before recording traces.</li>
+      <li>Supports a range of coding-agent clients, including Claude Code, Codex, and Gemini CLI.</li>
+      <li>Replaces common authentication headers with *** before recording.</li>
+      <li>Requires Python 3.11 or later.</li>
     </ul>
   </div>
 </section>
@@ -213,7 +213,7 @@
 <li>👀 <strong>See the exact context</strong>: inspect prompts, messages, tool definitions, tool calls, tool results, reconstructed streaming responses, and token usage.</li>
 <li>🔎 <strong>Debug behavior with evidence</strong>: compare adjacent requests and pinpoint which prompt, message, tool, or parameter changed.</li>
 <li>📦 <strong>Share one portable artifact</strong>: each run writes a local trace session that can be exported to a self-contained HTML viewer for review or archiving.</li>
-<li>🔒 <strong>Keep traces on your machine</strong>: no hosted dashboard is required, and common auth headers are redacted before recording.</li>
+<li>🔒 <strong>Keep traces on your machine</strong>: no hosted dashboard is required, and common auth headers are fully replaced with <code>***</code> before recording, without retaining credential prefixes. Upstream requests receive the original headers. Request/response bodies, URLs, and diagnostic text are not covered by this header redaction.</li>
 <li>🧩 <strong>Use one workflow across clients</strong>: trace Claude Code, Codex CLI, Codex App, Gemini CLI, Grok Build CLI, DeepSeek Harness, Kimi CLI, MiMo Code, OpenCode, OpenClaw, Pi, Hermes Agent, Cursor CLI, Qoder CLI, and CodeBuddy.</li>
 </ul>
 <h3>Supported Clients</h3>
