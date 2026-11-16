@@ -62,6 +62,7 @@ test("guide pages carry the current Hermes release, not a stale one", () => {
     "guide/install/linux/index.html",
     "guide/install/raspberry-pi/index.html",
     "guide/install/vps/index.html",
+    "guide/plugins/index.html",
   ]) {
     assert.ok(
       read(rel).includes(`hermes·${version}`),

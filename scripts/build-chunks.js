@@ -88,6 +88,7 @@ async function main() {
     { file: "guide-install-linux.md", source: "guide/install/linux/" },
     { file: "guide-install-raspberry-pi.md", source: "guide/install/raspberry-pi/" },
     { file: "guide-install-vps.md", source: "guide/install/vps/" },
+    { file: "guide-plugins.md", source: "guide/plugins/" },
   ];
   for (const g of guideSources) {
     const filePath = path.join(ROOT, "drafts", g.file);

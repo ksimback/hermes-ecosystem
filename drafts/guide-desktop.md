@@ -22,7 +22,7 @@ Hermes Desktop is not a separate product — it is the same agent as the CLI wit
 
 ## Plugins and skills
 
-Desktop uses the same skills, plugins, and MCP servers as every other Hermes surface — there is no separate desktop plugin format. Anything installed for the CLI is live in the app; Bot Mode profiles inherit the same capabilities. Curated picks: the Hermes Skills Hub (hermesatlas.com/skills/); community plugins & extensions in the ecosystem catalog (hermesatlas.com/ecosystem/); memory setups in the Memory Guidebook (hermesatlas.com/guide/memory/).
+Python plugins, skills, and MCP servers are shared with every Hermes surface, because every session runs in the one gateway: anything installed for the CLI is live in the app, and Bot Mode profiles inherit the same capabilities. Desktop also has its own separate plugin format — a single ESM file at `$HERMES_HOME/desktop-plugins/<id>/plugin.js` that imports `@hermes/plugin-sdk` and adds panes, pages, sidebar items, palette commands and themes to the app, hot-reloading on save. Installing, enabling and troubleshooting plugins: the plugins guide (hermesatlas.com/guide/plugins/). Curated picks: the Hermes Skills Hub (hermesatlas.com/skills/); community plugins & extensions in the ecosystem catalog (hermesatlas.com/ecosystem/); memory setups in the Memory Guidebook (hermesatlas.com/guide/memory/).
 
 ## Connecting to a VPS or cloud instance
 
@@ -49,7 +49,7 @@ Same agent, shared state — start in one, resume in the other. Desktop is best 
 
 **Install on Ubuntu?** Download the Linux build, or run `hermes desktop` if the CLI is installed.
 
-**Plugins?** Yes — same skills/plugins/MCP servers as every surface; browse curated skills and community plugins on the Atlas.
+**Plugins?** Yes — Python plugins, skills and MCP servers are shared with every surface, and Desktop also has its own plugin format (a single `plugin.js` file using `@hermes/plugin-sdk`) for panes, pages and themes. See the plugins guide (hermesatlas.com/guide/plugins/); browse curated skills and community plugins on the Atlas.
 
 **Connect to a VPS or Hermes Cloud?** Yes, several at once. OAuth for public reachability; username/password only over LAN/VPN.
 

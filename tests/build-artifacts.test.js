@@ -22,6 +22,7 @@ test("refreshed content manifest covers the hand-authored pages + drafts", () =>
     "guide/install/linux/index.html",
     "guide/install/raspberry-pi/index.html",
     "guide/install/vps/index.html",
+    "guide/plugins/index.html",
     "drafts/handbook-hub.md",
     "drafts/handbook-vs-claude-code.md",
     "drafts/guide-memory.md",
@@ -32,6 +33,7 @@ test("refreshed content manifest covers the hand-authored pages + drafts", () =>
     "drafts/guide-install-linux.md",
     "drafts/guide-install-raspberry-pi.md",
     "drafts/guide-install-vps.md",
+    "drafts/guide-plugins.md",
   ]);
 });
 
