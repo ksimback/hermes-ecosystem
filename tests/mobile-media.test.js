@@ -26,7 +26,7 @@ test('Mobile guide explains the backend directly and embeds every cited video/po
  assert.ok(doc.querySelector('script[src="/assets/js/guide-media.js"]'));
  assert.ok(doc.querySelector('link[href="/assets/css/guide-media.css"]'));
  const config=JSON.parse(read('vercel.json'));
- const policy=config.headers.find(h=>h.source==='/guide/mobile/:path*').headers.find(h=>h.key==='Content-Security-Policy').value;
+ const policy=config.headers.find(h=>h.source==='/guide/mobile(.*)').headers.find(h=>h.key==='Content-Security-Policy').value;
  assert.ok(policy.includes('frame-src https://www.youtube-nocookie.com https://platform.twitter.com'));
  assert.ok(!policy.includes('unsafe-inline'));
 });
