@@ -55,7 +55,7 @@ async function withAtlasFixture({ stars = {}, releaseTag = "v2026.7.7.2" } = {})
 
     if (url.pathname === "/") return send(200, "text/html", "<!doctype html><html><body>home</body></html>");
     if (url.pathname === "/ecosystem/") return send(200, "text/html", catalogPage());
-    if (["/guide/", "/lists/", "/skills/", "/use-cases/", "/reports/", "/privacy/", "/robots.txt"].includes(url.pathname)) return send(200, "text/plain", "ok");
+    if (["/guide/", "/lists/", "/skills/", "/plugins/", "/use-cases/", "/reports/", "/privacy/", "/robots.txt"].includes(url.pathname)) return send(200, "text/plain", "ok");
     if (url.pathname === "/sitemap.xml") return send(200, "application/xml", sitemap(base));
     if (url.pathname === "/rss.xml") return send(200, "application/xml", "<rss><channel><item>ok</item></channel></rss>");
     if (url.pathname === "/llms.txt") return send(200, "text/plain", `All ${repos.length} tracked projects across 12 categories.`);

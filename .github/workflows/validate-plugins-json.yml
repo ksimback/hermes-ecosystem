@@ -1,0 +1,42 @@
+name: Validate plugins.json
+
+# Gates the curated Plugins Hub (/plugins/). The failure modes worth blocking a
+# merge for: a pick that isn't a catalog install (`hermes plugins install
+# <name>`), a group without enough picks or with two top picks, and a dangling
+# use-case reference. Plugins don't have to be in data/repos.json, so this
+# workflow doesn't trigger on catalog edits.
+
+on:
+  pull_request:
+    paths:
+      - 'data/plugins.json'
+      - 'scripts/validate-plugins-json.js'
+      - 'tests/validate-plugins-json.test.js'
+      - '.github/workflows/validate-plugins-json.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/plugins.json'
+      - 'scripts/validate-plugins-json.js'
+      - 'tests/validate-plugins-json.test.js'
+      - '.github/workflows/validate-plugins-json.yml'
+  workflow_dispatch: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Run plugins.json tests
+        run: node --test tests/validate-plugins-json.test.js
+
+      - name: Validate data/plugins.json
+        run: node scripts/validate-plugins-json.js
