@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hermes Agent Plugins: What They Are, When You Need One, and Why Yours Won't Load | Hermes Atlas</title>
+<meta name="description" content="Hermes Agent plugins explained: plugin vs skill vs MCP server, the three plugin systems, the official plugin catalog and its tiers, how to install and enable plugins, a checklist for why a plugin won't load, and plugin safety.">
+<meta name="keywords" content="hermes agent plugins, hermes plugins, hermes plugin not loading, hermes plugins vs skills, hermes agent plugin marketplace, hermes plugin catalog, hermes desktop plugins">
+<link rel="canonical" href="https://hermesatlas.com/guide/plugins/">
+<meta property="og:title" content="Hermes Agent Plugins: What They Are and Why Yours Won't Load">
+<meta property="og:description" content="Plugin vs skill vs MCP server, the official catalog and its tiers, install and enable, a won't-load checklist, and plugin safety.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/guide/plugins/">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="article:published_time" content="2026-11-16T00:00:00Z">
+<meta property="article:modified_time" content="2026-11-16T00:00:00Z">
+<meta property="article:author" content="https://x.com/ksimback">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=Hermes+Agent+Plugins&amp;subtitle=What+they+are%2C+when+you+need+one%2C+and+why+yours+won%27t+load&amp;kind=handbook+%C2%B7+guide">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hermes Agent Plugins: What They Are and Why Yours Won't Load">
+<meta name="twitter:description" content="Plugin vs skill vs MCP server, the official catalog, install and enable, a won't-load checklist, and plugin safety.">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=Hermes+Agent+Plugins&amp;subtitle=What+they+are%2C+when+you+need+one%2C+and+why+yours+won%27t+load&amp;kind=handbook+%C2%B7+guide">
+<meta name="twitter:creator" content="@ksimback">
+<meta name="author" content="Kevin Simback">
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Hermes Agent Plugins: What They Are, When You Need One, and Why Yours Won't Load",
+  "description": "What a Hermes Agent plugin is, how it differs from a skill or an MCP server, the official plugin catalog and its tiers, how to install and enable plugins, why a plugin won't load, and plugin safety.",
+  "image": "https://hermesatlas.com/api/og?title=Hermes+Agent+Plugins&subtitle=What+they+are%2C+when+you+need+one%2C+and+why+yours+won%27t+load&kind=handbook+%C2%B7+guide",
+  "keywords": ["hermes agent plugins", "hermes plugins", "hermes plugin not loading", "hermes plugins vs skills", "hermes agent plugin marketplace"],
+  "datePublished": "2026-11-16T00:00:00Z",
+  "dateModified": "2026-11-16T00:00:00Z",
+  "author": {"@type": "Person", "name": "Kevin Simback", "url": "https://x.com/ksimback"},
+  "publisher": {"@type": "Organization", "name": "Hermes Atlas", "url": "https://hermesatlas.com"},
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://hermesatlas.com/guide/plugins/"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do I need plugins at all?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Not to start. Hermes is complete without them. Add one when you hit a specific gap — cost control, observability, a messaging platform, a memory backend."}
+    },
+    {
+      "@type": "Question",
+      "name": "Plugin or MCP server?",
+      "acceptedAnswer": {"@type": "Answer", "text": "If it is \"let the agent use service X\", prefer MCP: portable and out-of-process. If it is \"change how Hermes behaves\", that is a plugin."}
+    },
+    {
+      "@type": "Question",
+      "name": "Are catalog plugins safe?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Safer than random repos — reviewed, pinned and scanned — but the docs call review point-in-time, not an audit, and plugins run unsandboxed by default."}
+    },
+    {
+      "@type": "Question",
+      "name": "I installed a plugin and nothing happened.",
+      "acceptedAnswer": {"@type": "Answer", "text": "It is almost certainly not enabled: run `hermes plugins enable <name>` and start a new session. See the checklist above."}
+    },
+    {
+      "@type": "Question",
+      "name": "Do Desktop and the CLI share plugins?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Python plugins load in the gateway that serves every surface, Desktop included. Desktop plugins are a separate format that only the app loads."}
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/"},
+    {"@type": "ListItem", "position": 2, "name": "handbook", "item": "https://hermesatlas.com/guide/"},
+    {"@type": "ListItem", "position": 3, "name": "plugins"}
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">318·repos</span>
+    <span id="meta-version">hermes·v0.23.1</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/">home</a>
+    <a href="/ecosystem/">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/" class="active">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/guide/">handbook</a><span class="sep">/</span>plugins
+</div>
+<main class="article" id="main">
+
+<header class="article-header">
+  <div class="article-badge">handbook · plugins</div>
+  <h1>Hermes Agent Plugins: What They Are, When You Need One, and Why Yours Won't Load</h1>
+  <p class="subtitle">Plugin vs skill vs MCP server, the official catalog, install and enable, a won't-load checklist, and the safety model. A satellite of <a href="/guide/">The Hermes Handbook</a>.</p>
+  <p class="meta">By <a href="https://x.com/ksimback">Kevin Simback</a> · Hermes Atlas maintainer · Updated 2026-11-16 · ~7 min read</p>
+</header>
+
+<nav class="toc" aria-label="Contents"><div class="toc-label">In this guide</div><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#plugin-vs-skill-vs-mcp">Plugin vs skill vs MCP server</a></li><li><a href="#three-systems">"Plugin" means three things</a></li><li><a href="#types">Plugin types</a></li><li><a href="#catalog">The official catalog</a></li><li><a href="#install">Install, enable, update</a></li><li><a href="#wont-load">Why won't my plugin load?</a></li><li><a href="#safety">Plugin safety</a></li><li><a href="#moved">What moved into plugins</a></li><li><a href="#bundled">Bundled plugins</a></li><li><a href="#frequently-asked-questions">FAQ</a></li></ul></nav>
+
+<h2 id="tldr">TL;DR</h2>
+
+<p><strong>A Hermes plugin is code that changes how the agent itself behaves:</strong> new tools, lifecycle hooks, slash commands, CLI subcommands, or a swapped-in backend (memory, model provider, messaging platform, terminal sandbox). Most people need fewer plugins than they think. Reach for a <a href="/skills/">skill</a> when the agent needs to know how to do something, an MCP server when it needs to reach an outside service, and a plugin only when you need to change the runtime. Plugins are off until you enable them, run with your user's permissions, and are not sandboxed by default — so pick a few good ones instead of installing a shelf.</p>
+
+<p>Facts on this page are sourced from the official Hermes <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/plugins" target="_blank" rel="noopener">plugin</a>, <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/plugin-catalog" target="_blank" rel="noopener">plugin-catalog</a>, built-in-plugin and <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/desktop-plugin-sdk" target="_blank" rel="noopener">Desktop Plugin SDK</a> docs, plus the v0.22.0 and v0.23.0 release notes. Current release is v0.23.1 (as of 2026-11-10).</p>
+
+<h2 id="plugin-vs-skill-vs-mcp">Plugin vs skill vs MCP server</h2>
+
+<div class="article-table-scroll" tabindex="0">
+<table>
+<thead><tr><th></th><th><strong>What it is</strong></th><th><strong>Use it to</strong></th></tr></thead>
+<tbody>
+<tr><td><strong>Skill</strong></td><td>A SKILL.md document: instructions and know-how the agent loads when relevant. No code runs.</td><td>Teach a workflow, a house style, or a procedure.</td></tr>
+<tr><td><strong>MCP server</strong></td><td>An external process the agent calls over the Model Context Protocol, configured under <code>mcp_servers</code> in config.yaml.</td><td>Reach a service (GitHub, a database, a SaaS API) — and the same server works with Claude Code, Codex and other agents.</td></tr>
+<tr><td><strong>Plugin</strong></td><td>Python loaded into Hermes itself (<code>plugin.yaml</code> + a <code>register(ctx)</code> function).</td><td>Intercept or change behaviour: veto a tool call (<code>pre_tool_call</code>), rewrite tool output, track cost, add a slash command, or replace a backend.</td></tr>
+<tr><td><strong>Toolset</strong></td><td>Not a separate thing to install: a named group of tools.</td><td>Disabling a plugin also drops its toolset from your saved tool selection.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>A plugin can also bundle skills (namespaced <code>plugin:skill</code>) and call MCP tools (capability-gated, off by default).</p>
+
+<p><strong>Rule of thumb:</strong> if a skill or an MCP server can do it, use that — they are portable and lower-risk. Plugins earn their place when the job is Hermes-specific runtime behaviour.</p>
+
+<h2 id="three-systems">"Plugin" means three different things</h2>
+
+<p>The <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/plugins" target="_blank" rel="noopener">official docs</a> warn that "plugin" names several unrelated systems that do not share code, APIs, or delivery:</p>
+
+<div class="article-table-scroll" tabindex="0">
+<table>
+<thead><tr><th></th><th><strong>Where it lives</strong></th><th><strong>What it does</strong></th></tr></thead>
+<tbody>
+<tr><td><strong>Python plugins</strong> (CLI and gateway)</td><td><code>~/.hermes/plugins/&lt;name&gt;/</code> with <code>plugin.yaml</code> and <code>__init__.py</code></td><td>What <code>hermes plugins install</code> manages and what most of this guide covers.</td></tr>
+<tr><td><strong>Desktop plugins</strong></td><td>A single ESM file at <code>$HERMES_HOME/desktop-plugins/&lt;id&gt;/plugin.js</code> that imports <code>@hermes/plugin-sdk</code></td><td>Add panes, pages, sidebar items, status-bar items, palette commands and themes to the native <a href="/guide/desktop/">Hermes Desktop</a> app, and hot-reload on save. Desktop plugins run with the app's authority.</td></tr>
+<tr><td><strong>Web dashboard plugins</strong></td><td>A <code>manifest.json</code> plus a bundle on <code>window.__HERMES_PLUGIN_SDK__</code></td><td>Extend <code>hermes dashboard</code>.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Only the backend <code>plugin_api.py</code> namespace (<code>/api/plugins/&lt;id&gt;</code>) is shared between the Desktop and dashboard systems. A catalog entry can ship a Python half, a Desktop half, or both. Building a Desktop plugin? See the <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/desktop-plugin-sdk" target="_blank" rel="noopener">Desktop Plugin SDK docs</a>.</p>
+
+<h2 id="types">Plugin types</h2>
+
+<p>General plugins can be enabled in any combination. Some backend kinds are single-select:</p>
+<ul>
+  <li><strong>General plugins</strong> — tools, hooks, slash commands, CLI commands, bundled skills. Multi-select.</li>
+  <li><strong>Memory providers</strong> — replace or augment built-in memory. One active at a time, chosen by <code>memory.provider</code> (see <a href="/guide/memory/">the Memory Guidebook</a>).</li>
+  <li><strong>Context engines</strong> — replace the built-in context compressor. One active at a time.</li>
+  <li><strong>Model providers</strong> — declare an inference backend; many can load, you pick one with <code>--provider</code> or config.</li>
+  <li><strong>Backend plugins</strong> — messaging platform adapters, image and video generation, delegation strategies, terminal sandboxes, computer-use drivers, TTS/STT, secret sources, web search and browser backends, approval transports.</li>
+</ul>
+
+<h2 id="catalog">Finding plugins: the official catalog</h2>
+
+<p>The <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/plugin-catalog" target="_blank" rel="noopener">Hermes plugin catalog</a> is a human-reviewed directory: every entry is added by a reviewed pull request and pins an exact 40-character commit, so a catalog install checks out the code the reviewer saw, not a branch tip. Browse it in Desktop (Capabilities → Plugins), on the docs site, or with <code>hermes plugins search &lt;term&gt;</code>.</p>
+
+<p>Tiers: <strong>Official</strong> (maintained by Nous Research), <strong>Verified</strong> (verified by the Nous team to come from the company whose product it integrates), and <strong>Community</strong> (everything else). The catalog source in the hermes-agent repo lists 2,382 entries as of 2026-11-16 — 21 official, 13 verified, and the rest community — up from about 600 at v0.22.0 and over 1,050 at v0.23.0. The biggest shelves are tools (1,150) and Desktop (416), then automation, models and memory.</p>
+
+<p>The official docs are explicit that catalog review is a point-in-time review, not a security audit. With thousands of community entries, the hard part is no longer finding a plugin — it is knowing which few are worth running. That is why the Atlas curates instead of mirroring the catalog: see <a href="/ecosystem/">the ecosystem catalog</a> and <a href="/skills/">the Skills Hub</a>.</p>
+
+<h2 id="install">Install, enable, update</h2>
+
+<pre><code>hermes plugins search &lt;term&gt;          # search the catalog
+hermes plugins install &lt;name&gt;         # catalog entry, at its reviewed pin
+hermes plugins install owner/repo     # straight from Git (no review)
+hermes plugins enable &lt;name&gt;          # add to plugins.enabled
+hermes plugins list                   # enabled / disabled / not enabled
+hermes plugins update                 # list available updates, update all
+hermes plugins remove &lt;name&gt;</code></pre>
+
+<ul>
+  <li><strong>Installing does not enable.</strong> After <code>hermes plugins install</code> you are asked <code>Enable 'name' now? [y/N]</code> — the default is no. Use <code>--enable</code> for scripted installs.</li>
+  <li>A memory provider asks a different question: <code>Use 'name' as the memory provider now?</code>. Only <code>memory.provider</code> activates a provider; <code>hermes memory setup</code> sets it later.</li>
+  <li>For a reproducible Git install, pin a full commit: <code>hermes plugins install owner/repo --ref &lt;40-char sha&gt;</code>.</li>
+  <li>Auto-update (<code>plugins.auto_apply</code>) is off by default. Updates that add capabilities ask for consent again.</li>
+  <li>Inside a running session, <code>/plugins</code> shows what is actually loaded.</li>
+</ul>
+
+<h2 id="wont-load">Why won't my plugin load? A checklist</h2>
+
+<ol>
+  <li><strong>It is installed but not enabled.</strong> <code>hermes plugins list</code> shows three states: enabled, disabled, and <em>not enabled</em> (discovered, never opted in). The default for a new install is not enabled. Run <code>hermes plugins enable &lt;name&gt;</code>. A name in <code>plugins.disabled</code> always wins over <code>plugins.enabled</code>.</li>
+  <li><strong>It is a memory provider.</strong> Enabling is not enough — set <code>memory.provider</code> (<code>hermes memory setup</code>). Only one provider runs at a time.</li>
+  <li><strong>It is in your project folder.</strong> The gateway that runs every session never loads <code>./.hermes/plugins/</code>, and <code>HERMES_ENABLE_PROJECT_PLUGINS</code> has no effect on sessions. Install it as a user plugin instead.</li>
+  <li><strong>You changed config mid-session.</strong> Enabled plugins load on the next session. Start a new one and check <code>/plugins</code>.</li>
+  <li><strong>It failed at load time.</strong> The reason appears in the startup warning and the <code>/plugins</code> listing. A plugin whose import and <code>register()</code> take longer than <code>plugins.load_timeout_seconds</code> (default 10) is skipped with "load timed out" — usually a heavy or missing Python dependency.</li>
+  <li><strong>Its capabilities were never granted.</strong> Installs without a terminal (scripts, CI) complete but do not grant declared capabilities. Run <code>hermes plugins enable &lt;id&gt;</code> interactively to grant them, and check with <code>hermes plugins capabilities &lt;id&gt;</code>.</li>
+  <li><strong>Wrong profile.</strong> Installs and grants are recorded per profile, and a catalog install from Desktop goes to your default profile. Check the profile you are actually running.</li>
+  <li><strong>It is a Desktop plugin.</strong> Desktop plugins live in <code>$HERMES_HOME/desktop-plugins/&lt;id&gt;/</code> and load in the app, not in <code>hermes plugins</code> sessions.</li>
+  <li><strong>Your Hermes is too old.</strong> Catalog entries carry a <code>requires_hermes</code> floor that blocks installs on older versions. Run <code>hermes update</code>.</li>
+  <li><strong>You are writing it.</strong> <code>hermes plugins doctor &lt;path-or-id&gt;</code> runs the real discovery, manifest parser and <code>register(ctx)</code> against a temporary home; <code>hermes plugins validate &lt;path&gt;</code> runs the catalog's admission check. Plugin authors: start with the <a href="https://hermes-agent.nousresearch.com/docs/developer-guide/plugins" target="_blank" rel="noopener">developer guide to plugins</a> and the Atlas tutorial's <a href="/dev/building-on-hermes">Building on Hermes</a> module.</li>
+</ol>
+
+<h2 id="safety">Plugin safety</h2>
+
+<ul>
+  <li><strong>Opt-in.</strong> Nothing with hooks or tools loads until you enable it.</li>
+  <li><strong>Install-time scan.</strong> Every install and update runs a static scan with three verdicts: safe (installs), caution (you confirm), dangerous (blocked — <code>--force</code> does not override). It catches known bad patterns, not everything.</li>
+  <li><strong>Consent for privileged surfaces.</strong> Capabilities such as overriding built-in tools are shown with a risk line and asked once; an update can never silently widen access.</li>
+  <li><strong>Not a sandbox.</strong> By default third-party Python plugins run inside the Hermes process with your user's permissions. <code>plugins.isolation: host</code> moves user-installed plugins into a separate process per profile; bundled plugins stay in-process. Desktop plugins run with the app's authority.</li>
+  <li><strong>Tier is provenance, not an audit.</strong> Official means Nous maintains it; Verified means it comes from the vendor; Community means a reviewer looked at one commit.</li>
+</ul>
+
+<p><strong>Before you install a community plugin:</strong> prefer catalog installs (pinned and reviewed) over raw <code>owner/repo</code>; read what it declares (tools, hooks, capabilities, required environment variables); be most careful with anything that gets credentials, a <code>pre_tool_call</code> or <code>transform_*</code> hook, or a messaging platform; and check that the repo is maintained.</p>
+
+<h2 id="moved">What moved into plugins in v0.22 and v0.23</h2>
+
+<ul>
+  <li><strong>Memory providers</strong> (v0.22.0) — Honcho, Supermemory, Hindsight, Mem0, OpenViking and Holographic moved out of core to plugins maintained with their makers. Existing users were migrated automatically. ByteRover and RetainDB remain bundled.</li>
+  <li><strong>Home Assistant, Spotify, Langfuse</strong> (v0.22.0) — now official catalog plugins; migrated automatically.</li>
+  <li><strong>Camofox, <code>mcp-serve</code>, the agent importers, Singularity</strong> (v0.23.0) — moved to plugins that install themselves for anyone who used them.</li>
+  <li><strong><code>hermes mcp serve</code> is now <code>hermes mcp-serve</code></strong> (v0.23.0). MCP clients that launch Hermes as a server need their command updated — nothing rewrites it for you.</li>
+  <li><strong>GitHub Copilot</strong> (v0.23.0) — moved to the <code>github-copilot</code> Hermes Labs plugin, installed automatically for profiles that use it.</li>
+  <li><strong>Browser tools</strong> (v0.23.0) — the ten <code>browser_*</code> tools were removed in favour of <code>browser_exec</code>; Camofox users get the <code>camofox</code> plugin automatically. Update any skills or toolset lists that name the old tools.</li>
+</ul>
+
+<h2 id="bundled">Bundled plugins worth knowing</h2>
+
+<p>Hermes ships a few plugins in the box, all opt-in: <code>disk-cleanup</code> (tracks and removes temporary files at session end), <code>security-guidance</code> (pattern-matches dangerous code on file writes and warns or blocks), <code>google_meet</code> and <code>teams_pipeline</code> (meeting transcription), image backends for OpenAI and xAI, and two dashboard tabs (Kanban and achievements).</p>
+
+<h2 id="frequently-asked-questions">FAQ</h2>
+
+<h3>Do I need plugins at all?</h3>
+<p>Not to start. Hermes is complete without them. Add one when you hit a specific gap — cost control, observability, a messaging platform, a memory backend.</p>
+
+<h3>Plugin or MCP server?</h3>
+<p>If it is "let the agent use service X", prefer MCP: portable and out-of-process. If it is "change how Hermes behaves", that is a plugin.</p>
+
+<h3>Are catalog plugins safe?</h3>
+<p>Safer than random repos — reviewed, pinned and scanned — but the docs call review point-in-time, not an audit, and plugins run unsandboxed by default.</p>
+
+<h3>I installed a plugin and nothing happened.</h3>
+<p>It is almost certainly not enabled: run <code>hermes plugins enable &lt;name&gt;</code> and start a new session. See <a href="#wont-load">the checklist above</a>.</p>
+
+<h3>Do Desktop and the CLI share plugins?</h3>
+<p>Python plugins load in the gateway that serves every surface, Desktop included. Desktop plugins are a separate format that only the app loads.</p>
+
+<div class="article-footer">
+  <p>Maintained by <a href="https://x.com/ksimback">Kevin Simback</a> · Part of <a href="/guide/">The Hermes Handbook</a> · Facts sourced from the official Hermes <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/plugins" target="_blank" rel="noopener">plugins</a> and <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/plugin-catalog" target="_blank" rel="noopener">plugin catalog</a> docs · if this was useful, drop a ★ on <a href="https://github.com/ksimback/hermes-ecosystem">the atlas repo</a> →</p>
+</div>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="/about">about</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues/new?template=suggest-repo.yml">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

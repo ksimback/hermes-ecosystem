@@ -675,6 +675,7 @@ Hermes Atlas tracks every open-source project in the Hermes Agent ecosystem acro
 - [How to Run Hermes Agent: Desktop vs CLI vs Docker/VPS vs Bot Gateway](${SITE_URL}/guide/modes/): Every way to run Hermes compared — front-ends share state; the real decision is where the agent lives.
 - [Hermes Mobile: your agent, away from your desk](${SITE_URL}/guide/mobile/): Official beta access, Cloud and self-hosted backends, mobile features and safe workflows.
 - [Hermes Desktop: The Complete Guide](${SITE_URL}/guide/desktop/): Install on macOS/Windows/Linux, desktop-only features, plugins, remote/VPS connections, and known rough edges.
+- [Hermes Agent Plugins: What They Are, When You Need One, and Why Yours Won't Load](${SITE_URL}/guide/plugins/): Plugin vs skill vs MCP server, the official catalog and its tiers, install and enable, a won't-load checklist, and plugin safety.
 - [Hermes Agent vs. Claude Code](${SITE_URL}/guide/vs-claude-code/): Feature-by-feature comparison for choosing between the two.
 
 ## Masterclass
@@ -795,6 +796,11 @@ This file is the companion to ${SITE_URL}/llms.txt (the concise index).`);
   try {
     const desktopDraft = fs.readFileSync(path.join(ROOT, "drafts", "guide-desktop.md"), "utf-8");
     sections.push(`# Hermes Desktop: The Complete Guide (/guide/desktop/)\n\nCanonical URL: ${SITE_URL}/guide/desktop/\n\n${desktopDraft}`);
+  } catch {}
+
+  try {
+    const pluginsDraft = fs.readFileSync(path.join(ROOT, "drafts", "guide-plugins.md"), "utf-8");
+    sections.push(`# Hermes Agent Plugins (/guide/plugins/)\n\nCanonical URL: ${SITE_URL}/guide/plugins/\n\n${pluginsDraft}`);
   } catch {}
 
   try {
