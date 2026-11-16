@@ -1,0 +1,402 @@
+{
+  "updatedAt": "2026-11-16",
+  "catalogCheckedAt": "2026-11-16",
+  "catalogEntries": 2382,
+  "testedAgainst": null,
+  "useCases": [
+    {
+      "slug": "observability-and-cost",
+      "title": "See what your agent does and spends",
+      "intent": "Traces, metrics and budget limits for people running Hermes every day or on cron.",
+      "description": "The first plugin most serious setups add. Pick one tracing plugin for your existing stack, and add a budget guard if anything runs unattended."
+    },
+    {
+      "slug": "safety-and-sandboxing",
+      "title": "Sandbox the terminal and guard tool calls",
+      "intent": "Contain what the agent can touch, put policy in front of tool calls, and scan your own code.",
+      "description": "Hermes runs commands as your user by default. These plugins move execution into a sandbox, add a policy layer in front of tool calls, or turn the agent into a security reviewer."
+    },
+    {
+      "slug": "web-and-browser",
+      "title": "Better web search and browsing",
+      "intent": "Search, extraction and browser backends that beat the defaults.",
+      "description": "Web access is where most agents fail quietly. Choose one search provider, and add a browser backend only if you need logins or bot-resistant browsing."
+    },
+    {
+      "slug": "voice",
+      "title": "Talk to Hermes",
+      "intent": "Realtime voice, spoken replies and dictation.",
+      "description": "Voice plugins become Hermes's speech and transcription providers, so they work across the CLI, messaging and Desktop."
+    },
+    {
+      "slug": "messaging-and-home",
+      "title": "Reach Hermes from more places",
+      "intent": "Gateway platforms for chat apps and the smart home.",
+      "description": "Platform plugins add new places to talk to Hermes. The core apps (Telegram, Discord, Slack and more) are already bundled, so these are the ones worth adding."
+    },
+    {
+      "slug": "models-and-subscriptions",
+      "title": "Run Hermes on a subscription you already pay for",
+      "intent": "Model-provider plugins that use an existing subscription instead of per-token API billing.",
+      "description": "Both picks trade some stability for cost. Read the caveat before you rely on either one for unattended work."
+    },
+    {
+      "slug": "desktop-add-ons",
+      "title": "Make Hermes Desktop yours",
+      "intent": "Desktop plugins: themes, panes and remote connections for the native app.",
+      "description": "Desktop plugins are a separate format that only the app loads. They change the app, not the agent, so they are the lowest-risk plugins to try."
+    },
+    {
+      "slug": "creative-and-3d",
+      "title": "Creative tools: 3D, music and scenes",
+      "intent": "Drive Blender, generate 3D models and music from chat.",
+      "description": "Mostly official plugins that bundle a vendor MCP server with a workflow skill, the cleanest plugin pattern."
+    },
+    {
+      "slug": "delegation-and-teams",
+      "title": "Smarter subagents",
+      "intent": "Route subagents to different models or profiles, or give the agent a fixed team.",
+      "description": "Built-in delegation gives every subagent the parent's model and tools. These plugins make delegation deliberate."
+    }
+  ],
+  "plugins": [
+    {
+      "name": "langfuse",
+      "title": "Langfuse",
+      "repo": "NousResearch/hermes-official-plugins",
+      "tier": "official",
+      "shelf": "general",
+      "requiresHermes": ">=0.21.7",
+      "install": "hermes plugins install langfuse",
+      "verdict": "The default tracing pick: one trace per turn, one generation per LLM call with cost, one observation per tool call and subagent. Content capture is sanitized by default. It used to be built into core.",
+      "useCases": ["observability-and-cost"],
+      "topPick": true
+    },
+    {
+      "name": "hermes_otel",
+      "title": "Hermes OTel",
+      "repo": "briancaffey/hermes-otel",
+      "tier": "community",
+      "shelf": "general",
+      "requiresHermes": ">=0.21",
+      "install": "hermes plugins install hermes_otel",
+      "verdict": "Choose this over Langfuse if you already run an OpenTelemetry backend. It declares more lifecycle hooks (34) than any other entry in the official catalog, including approvals, Kanban and subagents.",
+      "caveat": "It can send prompts, tool arguments and tool output to the backends you configure, so point it only at a backend you control.",
+      "useCases": ["observability-and-cost"]
+    },
+    {
+      "name": "hermes-telemetry",
+      "title": "Hermes Telemetry",
+      "repo": "nujovich/hermes-telemetry",
+      "tier": "community",
+      "shelf": "general",
+      "requiresHermes": null,
+      "install": "hermes plugins install hermes-telemetry",
+      "verdict": "The budget guard. It tracks tokens, cost and latency per session and cron job in local SQLite, and /budget can stop runaway spend before the bill arrives.",
+      "caveat": "Enforce mode is the default: first load writes a $5/day and $100/month budget, and a hard breach blocks every tool call. Set your own limits right after installing.",
+      "useCases": ["observability-and-cost"]
+    },
+    {
+      "name": "tokenjuice",
+      "title": "tokenjuice",
+      "repo": "vincentkoc/tokenjuice",
+      "tier": "community",
+      "shelf": "tools",
+      "requiresHermes": ">=0.22.5",
+      "install": "hermes plugins install tokenjuice",
+      "verdict": "Compacts successful terminal output locally before the model sees it. That's a cheap win for coding-heavy sessions where build logs eat your context.",
+      "caveat": "Needs the separate tokenjuice CLI installed with npm, outside the pinned commit.",
+      "useCases": ["observability-and-cost"]
+    },
+    {
+      "name": "bubblewrap",
+      "title": "Bubblewrap sandbox",
+      "repo": "NousResearch/hermes-official-plugins",
+      "tier": "official",
+      "shelf": "tools",
+      "requiresHermes": ">=0.22.6",
+      "install": "hermes plugins install bubblewrap",
+      "verdict": "The most important safety plugin on Linux. Every terminal and execute_code command runs in its own bwrap sandbox with a read-only root, hidden credential stores and per-command limits. Turn it on with terminal.backend: bubblewrap.",
+      "caveat": "Linux only.",
+      "useCases": ["safety-and-sandboxing"],
+      "topPick": true
+    },
+    {
+      "name": "cua-spaces",
+      "title": "Cua Spaces",
+      "repo": "trycua/hermes-cua-spaces",
+      "tier": "verified",
+      "shelf": "tools",
+      "requiresHermes": ">=0.21.6",
+      "install": "hermes plugins install cua-spaces",
+      "verdict": "Runs the agent's terminal, file and code tools inside an isolated Linux, macOS or Windows machine you can watch live. From 0.22.3 the browser and computer use follow it in. This is the pick on macOS and Windows, where Bubblewrap doesn't run.",
+      "caveat": "Everything the agent runs goes to the Space, which is on Cua's cloud unless you run one locally.",
+      "useCases": ["safety-and-sandboxing"]
+    },
+    {
+      "name": "tracekit",
+      "title": "Tracekit",
+      "repo": "cygnux-labs/tracekit",
+      "tier": "community",
+      "shelf": "tools",
+      "requiresHermes": ">=0.22.5",
+      "install": "hermes plugins install tracekit",
+      "verdict": "A policy layer in front of every tool call: deny blocks it, ask waits for a person. Each call and its outcome is signed into a run you can verify offline. Built for setups that need an audit trail.",
+      "caveat": "It starts a background signer process that keeps running for 15 minutes after Hermes exits.",
+      "useCases": ["safety-and-sandboxing"]
+    },
+    {
+      "name": "hermes-security",
+      "title": "Security review",
+      "repo": "NousResearch/hermes-official-plugins",
+      "tier": "official",
+      "shelf": "tools",
+      "requiresHermes": ">=0.21.5",
+      "install": "hermes plugins install hermes-security",
+      "verdict": "Turns Hermes into a security reviewer for your own repository. It builds a threat model, reviews the code with parallel subagents and checks whether an attacker can actually reach each finding. Exports to SARIF.",
+      "useCases": ["safety-and-sandboxing"]
+    },
+    {
+      "name": "snyk",
+      "title": "Snyk",
+      "repo": "NousResearch/hermes-official-plugins",
+      "tier": "official",
+      "shelf": "tools",
+      "requiresHermes": null,
+      "install": "hermes plugins install snyk",
+      "verdict": "Snyk's own MCP server, pinned, with a scan workflow skill. It covers code, dependencies, containers, IaC and SBOMs. It pairs with Security review: Snyk finds known-vulnerable dependencies, the review finds logic bugs.",
+      "caveat": "Needs Node.js and a free Snyk account.",
+      "useCases": ["safety-and-sandboxing"]
+    },
+    {
+      "name": "tavily-plugin",
+      "title": "Tavily",
+      "repo": "tavily-ai/tavily-hermes-plugin",
+      "tier": "verified",
+      "shelf": "web",
+      "requiresHermes": ">=0.22.2",
+      "install": "hermes plugins install tavily-plugin",
+      "verdict": "The safe default for search: published by Tavily itself, with search, extract, map, crawl and research through its hosted MCP server, plus Tavily's skills.",
+      "caveat": "Needs TAVILY_API_KEY or a Hermes-managed Tavily sign-in.",
+      "useCases": ["web-and-browser"],
+      "topPick": true
+    },
+    {
+      "name": "tinyfish",
+      "title": "TinyFish",
+      "repo": "tinyfish-io/tinyfish-web-agent-integrations",
+      "tier": "verified",
+      "shelf": "web",
+      "requiresHermes": ">=0.19",
+      "install": "hermes plugins install tinyfish",
+      "verdict": "Free search and fetch that replace Hermes's own web_search and web_extract, with a remote browser agent for sites that need clicks, forms or a login.",
+      "caveat": "Browser sessions spend TinyFish credits. Each one asks for approval by default, and unattended runs are denied unless you allow them.",
+      "useCases": ["web-and-browser"]
+    },
+    {
+      "name": "web-search-plus",
+      "title": "Web Search Plus",
+      "repo": "robbyczgw-cla/hermes-web-search-plus",
+      "tier": "community",
+      "shelf": "web",
+      "requiresHermes": null,
+      "install": "hermes plugins install web-search-plus",
+      "verdict": "The community pick if you don't want to depend on one vendor. It routes across several search providers, including self-hosted SearXNG, with quality reports and an opt-in research mode.",
+      "useCases": ["web-and-browser"]
+    },
+    {
+      "name": "camofox",
+      "title": "Camofox",
+      "repo": "NousResearch/hermes-official-plugins",
+      "tier": "official",
+      "shelf": "web",
+      "requiresHermes": null,
+      "install": "hermes plugins install camofox",
+      "verdict": "A self-hosted anti-detection Firefox as the browser backend, for sites that block ordinary automated browsers. It moved out of core in v0.23.0, and existing users get it automatically.",
+      "caveat": "You run the Camofox server yourself.",
+      "useCases": ["web-and-browser"]
+    },
+    {
+      "name": "hermes-talk",
+      "title": "Hermes Talk",
+      "repo": "TheSmokeDev/hermes-talk",
+      "tier": "community",
+      "shelf": "voice",
+      "requiresHermes": ">=0.21.7",
+      "install": "hermes plugins install hermes-talk",
+      "verdict": "Realtime voice across the terminal, Discord, the dashboard and Desktop. It's the most complete voice plugin and is actively maintained.",
+      "caveat": "Its GPT-Live subscription mode uses an undocumented ChatGPT endpoint that may stop working without notice. Use the API-key modes for anything you depend on.",
+      "useCases": ["voice"],
+      "topPick": true
+    },
+    {
+      "name": "fish-audio",
+      "title": "Fish Audio",
+      "repo": "100yenadmin/fish-audio-hermes",
+      "tier": "community",
+      "shelf": "voice",
+      "requiresHermes": ">=0.21.5",
+      "install": "hermes plugins install fish-audio",
+      "verdict": "Fish Audio's plugin for expressive speech: 80+ languages, voice design from a sentence, voice cloning and live word-by-word dictation, with a Voices page in Desktop.",
+      "caveat": "Four known issues are listed in the catalog, including Desktop sometimes leaving part of a reply unspoken (which affects every speech provider).",
+      "useCases": ["voice"]
+    },
+    {
+      "name": "homeassistant",
+      "title": "Home Assistant",
+      "repo": "NousResearch/hermes-official-plugins",
+      "tier": "official",
+      "shelf": "platform",
+      "requiresHermes": ">=0.21.5",
+      "install": "hermes plugins install homeassistant",
+      "verdict": "The best smart-home plugin. State changes come into Hermes as events, notifications go out, and four tools let the agent read and control entities. It used to be built into core.",
+      "useCases": ["messaging-and-home"],
+      "topPick": true
+    },
+    {
+      "name": "xchat",
+      "title": "X Chat",
+      "repo": "NousResearch/hermes-official-plugins",
+      "tier": "official",
+      "shelf": "platform",
+      "requiresHermes": ">=0.21.5",
+      "install": "hermes plugins install xchat",
+      "verdict": "Talk to Hermes in X's end-to-end encrypted DMs, either in your own self-chat or through a separate account. Messages are encrypted and decrypted locally, so X only routes ciphertext.",
+      "useCases": ["messaging-and-home"]
+    },
+    {
+      "name": "hermes-telegram-business",
+      "title": "Telegram Business",
+      "repo": "NousResearch/hermes-labs-plugins",
+      "tier": "community",
+      "shelf": "platform",
+      "requiresHermes": null,
+      "install": "hermes plugins install hermes-telegram-business",
+      "verdict": "The right design for an agent that talks to customers: Hermes drafts every reply and sends it to you with Send, Edit and Discard buttons, and nothing reaches a customer until you tap Send.",
+      "caveat": "A Hermes Labs plugin: built by Nous Research but unsupported.",
+      "useCases": ["messaging-and-home"]
+    },
+    {
+      "name": "claude-subscription-directsdk",
+      "title": "Claude subscription",
+      "repo": "NousResearch/hermes-official-plugins",
+      "tier": "official",
+      "shelf": "models",
+      "requiresHermes": ">=0.21.4",
+      "install": "hermes plugins install claude-subscription-directsdk",
+      "verdict": "Runs Hermes turns on a Claude Pro or Max subscription through the official Claude Code CLI, so there's no API key and no per-token bill.",
+      "caveat": "Experimental. Every turn counts against your subscription's Agent SDK allowance, and it uses whatever account the claude CLI is logged into.",
+      "useCases": ["models-and-subscriptions"]
+    },
+    {
+      "name": "github-copilot",
+      "title": "GitHub Copilot",
+      "repo": "NousResearch/hermes-labs-plugins",
+      "tier": "community",
+      "shelf": "models",
+      "requiresHermes": null,
+      "install": "hermes plugins install github-copilot",
+      "verdict": "Use a Copilot subscription's GPT, Claude, Gemini and Grok models as Hermes providers, or drive the Copilot CLI over ACP. It moved out of core in v0.23.0.",
+      "caveat": "A Hermes Labs plugin: built by Nous Research but unsupported.",
+      "useCases": ["models-and-subscriptions"]
+    },
+    {
+      "name": "minimalist-themes",
+      "title": "Minimalist Themes",
+      "repo": "mykeura/minimalist-themes-for-hermes",
+      "tier": "community",
+      "shelf": "desktop",
+      "requiresHermes": ">=0.21.3",
+      "install": "hermes plugins install minimalist-themes",
+      "verdict": "Eighteen warm, readable palettes assigned per profile, so each bot looks different, with matching terminal colours. A theme-only plugin with no tools, no hooks and no network calls.",
+      "useCases": ["desktop-add-ons"],
+      "topPick": true
+    },
+    {
+      "name": "hermes-tailscale",
+      "title": "Hermes Tailscale",
+      "repo": "Adolanium/hermes-tailscale",
+      "tier": "community",
+      "shelf": "desktop",
+      "requiresHermes": null,
+      "install": "hermes plugins install hermes-tailscale",
+      "verdict": "Browse your Tailscale devices and connect Desktop to remote Hermes instances from one pane. A good fit if you reach a VPS over Tailscale, which the docs suggest for password-authenticated remote connections.",
+      "useCases": ["desktop-add-ons"]
+    },
+    {
+      "name": "accent-picker",
+      "title": "Accent Picker",
+      "repo": "NousResearch/hermes-official-plugins",
+      "tier": "official",
+      "shelf": "desktop",
+      "requiresHermes": null,
+      "install": "hermes plugins install accent-picker",
+      "verdict": "A tiny official Desktop plugin: drag an accent colour in the status bar and the whole theme retints. Also the best small example to read if you want to write a Desktop plugin.",
+      "useCases": ["desktop-add-ons"]
+    },
+    {
+      "name": "blender",
+      "title": "Blender",
+      "repo": "NousResearch/hermes-official-plugins",
+      "tier": "official",
+      "shelf": "tools",
+      "requiresHermes": null,
+      "install": "hermes plugins install blender",
+      "verdict": "Blender Lab's official MCP server with a workflow skill that opens Blender when a task needs it. This is how to model, light and render from chat.",
+      "caveat": "Its tools run arbitrary Python in Blender with your privileges, and the add-on's local port has no password while Blender is open.",
+      "useCases": ["creative-and-3d"],
+      "topPick": true
+    },
+    {
+      "name": "meshy",
+      "title": "Meshy",
+      "repo": "NousResearch/hermes-official-plugins",
+      "tier": "official",
+      "shelf": "tools",
+      "requiresHermes": ">=0.22.3",
+      "install": "hermes plugins install meshy",
+      "verdict": "Text and image to 3D, texturing, rigging, animation and 3D-print prep, with inline 3D cards and a gallery in Desktop. Every credit-spending call shows its estimated cost and asks for approval first.",
+      "caveat": "Needs MESHY_API_KEY and Node.js 18+.",
+      "useCases": ["creative-and-3d"]
+    },
+    {
+      "name": "elevenlabs-music",
+      "title": "ElevenLabs Music",
+      "repo": "NousResearch/hermes-official-plugins",
+      "tier": "official",
+      "shelf": "tools",
+      "requiresHermes": ">=0.22.0",
+      "install": "hermes plugins install elevenlabs-music",
+      "verdict": "Describe a song or paste lyrics, and Hermes writes and generates the track. The official plugin, new in v0.23.0.",
+      "useCases": ["creative-and-3d"]
+    },
+    {
+      "name": "advanced-delegation",
+      "title": "Advanced Delegation",
+      "repo": "NousResearch/hermes-official-plugins",
+      "tier": "official",
+      "shelf": "tools",
+      "requiresHermes": ">=0.22.5",
+      "install": "hermes plugins install advanced-delegation",
+      "verdict": "Two delegation modes worth having. Model routes let the agent pick fast, deep or local per subagent. Profile routes run a subagent as one of your Hermes profiles, with its own model, credentials and skills.",
+      "useCases": ["delegation-and-teams"],
+      "topPick": true
+    },
+    {
+      "name": "hermes-teammates",
+      "title": "Hermes Teammates",
+      "repo": "100yenadmin/hermes-teammates",
+      "tier": "community",
+      "shelf": "automation",
+      "requiresHermes": ">=0.21.4",
+      "install": "hermes plugins install hermes-teammates",
+      "verdict": "Define a fixed team once (instructions, toolsets and model per specialist), and the agent picks one by name. Tool limits are actually enforced: a reviewer limited to todo gets no web, file or terminal tools. Uses only public plugin APIs.",
+      "useCases": ["delegation-and-teams"]
+    }
+  ],
+  "skipped": [
+    "Plugins that sign in with another app's client identity or call undocumented endpoints. They can break, or put your account at risk, without warning.",
+    "Repos that call themselves plugins but are really MCP servers. Add those under mcp_servers instead: they're portable, and you don't need a plugin.",
+    "Uncataloged plugins installed from a branch tip, when a catalog entry pinned to a reviewed commit exists for the same job."
+  ]
+}

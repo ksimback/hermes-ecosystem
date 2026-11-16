@@ -20,6 +20,7 @@ import createDOMPurify from "dompurify";
 import { githubHeaders, fetchReadme, fetchAllMetadata } from "../lib/github.js";
 import { REFRESHED_CONTENT_PATHS } from "../lib/build-artifacts.js";
 import { validateSkills, SKILLS_CATEGORY } from "./validate-skills-json.js";
+import { validatePlugins } from "./validate-plugins-json.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -243,6 +244,9 @@ if (fs.existsSync(reportsPath)) {
 // so a malformed hand-edit fails the build with the other data gates rather
 // than at import time; held here so the render pass can reach it.
 let skillsData = null;
+
+// Plugins Hub curation (data/plugins.json) — same load-in-main() contract.
+let pluginsData = null;
 
 // Catalog category presentation (order, § numbers, display titles, intro
 // lines) for the generated /ecosystem/ page. Hand-curated; every category in
@@ -708,6 +712,10 @@ ${skillsData ? `
 The decision layer over the ${SKILLS_CATEGORY} category: hand-picked groups, one top pick each, install command read from the project's own README, and a verdict per entry. ${skillsData.skills.length} curated entries across ${skillsData.useCases.length} use cases. Updated ${skillsData.updatedAt}, tested against Hermes ${skillsData.testedAgainst}.
 - [Hermes Skills Hub](${SITE_URL}/skills/): Every curated pick, the top pick per use case, and the full ${repos.filter((r) => r.category === SKILLS_CATEGORY).length}-project skills catalog.
 ${skillsData.useCases.map((g) => `- [${g.title}](${SITE_URL}/skills/for-${g.slug}): ${g.intent}`).join("\n")}
+` : ""}${pluginsData ? `
+## Plugins
+A short list of official-catalog Hermes plugins worth running, grouped by job: catalog installs only (reviewed, pinned to a commit), tier shown as provenance, a verdict and caveats per pick. ${pluginsData.plugins.length} picks across ${pluginsData.useCases.length} use cases, from a catalog of ${pluginsData.catalogEntries} entries checked ${pluginsData.catalogCheckedAt}.${pluginsData.testedAgainst ? ` Tested against Hermes ${pluginsData.testedAgainst}.` : " Not install-tested by the Atlas."}
+- [Hermes Plugins Hub](${SITE_URL}/plugins/): Every curated pick by use case, the top pick per group, and what we skip.
 ` : ""}
 ## Use Cases
 Cross-category repo bundles for a specific buildable outcome ("I want to build X"), each with a rationale and links to real community posts that prove people ship it.
@@ -832,6 +840,31 @@ This file is the companion to ${SITE_URL}/llms.txt (the concise index).`);
       `# Skills Hub (/skills/)\n\nCanonical URL: ${SITE_URL}/skills/\n\n` +
       `Hand-curated judgment layer over the ${SKILLS_CATEGORY} category. Updated ${skillsData.updatedAt}, tested against Hermes ${skillsData.testedAgainst}.\n\n` +
       skillLines.join("\n\n")
+    );
+  }
+
+  if (pluginsData) {
+    const pluginLines = pluginsData.useCases.map((group) => {
+      const members = pluginsData.plugins.filter((p) => p.useCases.includes(group.slug));
+      const body = members
+        .map((p) => [
+          `- ${p.title} (${p.name}; ${p.tier}, ${p.shelf})${p.topPick ? " — TOP PICK" : ""}: ${p.verdict}`,
+          p.caveat ? `  Caveat: ${p.caveat}` : null,
+          `  Install: ${p.install}`,
+          p.requiresHermes ? `  Requires Hermes: ${p.requiresHermes}` : null,
+          `  GitHub: https://github.com/${p.repo}`,
+        ].filter(Boolean).join("\n"))
+        .join("\n");
+      return `## ${group.title}\n\n${group.intent}\n\n${group.description}\n\n${body}`;
+    });
+    const tested = pluginsData.testedAgainst
+      ? `Tested against Hermes ${pluginsData.testedAgainst}.`
+      : "The Atlas has not install-tested these.";
+    sections.push(
+      `# Plugins Hub (/plugins/)\n\nCanonical URL: ${SITE_URL}/plugins/\n\n` +
+      `Hand-curated short list of official-catalog Hermes plugins worth running, by job. The official catalog lists ${pluginsData.catalogEntries} plugins (checked ${pluginsData.catalogCheckedAt}). Only catalog entries are picked (reviewed, pinned to a commit); tier is provenance, not an audit. ${tested} Memory providers are deliberately excluded — see ${SITE_URL}/guide/memory/.\n\n` +
+      pluginLines.join("\n\n") +
+      `\n\n## What we skip\n\n${pluginsData.skipped.map((x) => `- ${x}`).join("\n")}`
     );
   }
 
@@ -1433,7 +1466,7 @@ ${renderMasthead("ecosystem")}
 
 <section class="list-page">
   <h1 class="list-title">The Hermes Agent ecosystem</h1>
-  <p class="list-intro">Every open-source tool, skill, plugin, workspace, and integration built for or integrated with Hermes Agent — <strong>${repos.length} projects across 12 categories</strong>, quality-filtered, with live GitHub data (<a href="/about">what gets listed</a>). Know what you want to build? <a href="/use-cases/">Find repos by use case →</a> Looking for skills? <a href="/skills/">Best picks by use case →</a></p>
+  <p class="list-intro">Every open-source tool, skill, plugin, workspace, and integration built for or integrated with Hermes Agent — <strong>${repos.length} projects across 12 categories</strong>, quality-filtered, with live GitHub data (<a href="/about">what gets listed</a>). Know what you want to build? <a href="/use-cases/">Find repos by use case →</a> Looking for skills? <a href="/skills/">Best picks by use case →</a>${pluginsData ? ' Looking for plugins? <a href="/plugins/">Curated picks →</a>' : ""}</p>
 </section>
 
 <!-- Catalog search + sort. Progressive enhancement: hidden by default and
@@ -1726,7 +1759,7 @@ ${renderMasthead("skills")}
   <h1 class="list-title">Hermes Agent skills</h1>
   <p class="list-intro">A registry tells you what exists. This is the decision layer: ${model.entries.length} hand-checked skills, plugins, registries, and collections across ${model.groups.length} use cases — each with the install command taken from its README, what it's compatible with, and a one-line verdict on why you'd pick it over the alternatives.</p>
   <p class="list-intro sk-lede">Want the whole category ranked by stars instead? That's <a href="/lists/top-skills">the ranked list — top Hermes skills</a>, all ${model.catalog.length} of them.</p>
-  ${fresh.html}
+${pluginsData ? '  <p class="list-intro sk-lede">Looking for plugins instead? <a href="/plugins/">The Plugins Hub</a> picks the official-catalog plugins worth running, by job.</p>\n' : ""}  ${fresh.html}
 </section>
 
 <section class="uc-section" aria-label="Top picks">
@@ -1933,6 +1966,258 @@ ${renderMasthead("skills")}
 ${relatedHtml}
 
 <div class="back-link"><a href="/skills/">← all skills</a></div>
+
+</main>
+
+${PAGE_FOOTER}
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>`;
+}
+
+// ── Plugins Hub (/plugins/) ──
+// The official plugin catalog lists thousands of entries; this page is the
+// short list worth running, grouped by job. Curation lives in
+// data/plugins.json (gated by scripts/validate-plugins-json.js): catalog
+// installs only, tier is provenance (not an audit), and testedAgainst stays
+// null until the Atlas actually install-tests the picks — see
+// pluginsFreshness(). Plugins don't have to be Atlas catalog repos; a card
+// links an Atlas project page only when its repo is in data/repos.json.
+
+const PLUGIN_TIER_LABELS = { official: "Official", verified: "Verified", community: "Community" };
+const PLUGIN_SHELF_LABELS = { desktop: "Desktop plugin" };
+const PLUGINS_CATALOG_URL = "https://hermes-agent.nousresearch.com/docs/plugins";
+const MONTH_NAMES = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
+function pluginShelfLabel(shelf) {
+  return PLUGIN_SHELF_LABELS[shelf] || shelf;
+}
+
+// "2026-11-16" → "November 2026" (UTC parts, so the title can't drift a month
+// on a build machine west of Greenwich).
+function monthYear(isoDate) {
+  const [y, m] = isoDate.split("-").map(Number);
+  return `${MONTH_NAMES[m - 1]} ${y}`;
+}
+
+// Honest freshness, mirroring skillsFreshness(): the catalog check date comes
+// from the curated file, and the install-tested claim is only made once
+// testedAgainst is set — then it gets the same stale warning skills do.
+function pluginsFreshness(data) {
+  const checked = `Checked against the official catalog on ${data.catalogCheckedAt}.`;
+  if (!data.testedAgainst) {
+    const base = `${checked} Install commands use catalog names at their reviewed pins; the Atlas has not install-tested these.`;
+    return { text: base, html: `<p class="sk-freshness">${escapeHtml(base)}</p>` };
+  }
+  const base = `${checked} Picks install-tested against Hermes ${data.testedAgainst}.`;
+  const stale = data.testedAgainst !== latestHermesVersion
+    ? `Hermes ${latestHermesVersion} is out — re-verification pending`
+    : null;
+  return {
+    text: stale ? `${base} ${stale}` : base,
+    html: `<p class="sk-freshness">${escapeHtml(base)}${stale ? ` <span class="sk-stale">${escapeHtml(stale)}</span>` : ""}</p>`,
+  };
+}
+
+// Join curated plugins to the Atlas catalog (case-insensitive, repos.json
+// casing wins for the URL) and to their groups, once.
+function buildPluginsModel(data, allRepos) {
+  const repoIndex = new Map(allRepos.map((r) => [`${r.owner}/${r.repo}`.toLowerCase(), r]));
+  const entries = data.plugins.map((p) => {
+    const catalogRepo = repoIndex.get(p.repo.toLowerCase()) || null;
+    return {
+      ...p,
+      atlasPath: catalogRepo ? `/projects/${catalogRepo.owner}/${catalogRepo.repo}` : null,
+    };
+  });
+  const groups = data.useCases.map((group) => {
+    const members = entries.filter((e) => e.useCases.includes(group.slug));
+    const topPick = members.find((e) => e.topPick === true) || null;
+    return { ...group, topPick, rest: members.filter((e) => e !== topPick), entries: members };
+  });
+  return { entries, groups };
+}
+
+function renderPluginCard(entry, { hero = false } = {}) {
+  const tier = PLUGIN_TIER_LABELS[entry.tier] || entry.tier;
+  const links = [
+    `<a class="sk-card-link" href="https://github.com/${escapeHtml(entry.repo)}" rel="noopener">github: ${escapeHtml(entry.repo)} →</a>`,
+    entry.atlasPath
+      ? `<a class="sk-card-link" href="${escapeHtml(entry.atlasPath)}">atlas project page →</a>`
+      : "",
+  ].filter(Boolean).join("\n        ");
+  return `<article class="sk-card pl-card${hero ? " pl-hero" : ""}" data-plugin="${escapeHtml(entry.name)}">
+      ${hero ? '<div class="sk-card-group">top pick</div>\n      ' : ""}<div class="sk-card-head">
+        <h3 class="sk-card-name">${escapeHtml(entry.title)}</h3>
+      </div>
+      <div class="pl-badges"><span class="pl-tier pl-tier-${escapeHtml(entry.tier)}">${escapeHtml(tier)}</span><span class="sk-type">${escapeHtml(pluginShelfLabel(entry.shelf))}</span></div>
+      <p class="sk-verdict">${escapeHtml(entry.verdict)}</p>
+      ${entry.caveat ? `<p class="pl-caveat"><span class="pl-caveat-label">caveat</span>${escapeHtml(entry.caveat)}</p>\n      ` : ""}<div class="sk-install-label">install</div>
+      <code class="sk-install">${escapeHtml(entry.install)}</code>
+      ${entry.requiresHermes ? `<p class="sk-compat">Requires Hermes ${escapeHtml(entry.requiresHermes)}</p>\n      ` : ""}<div class="pl-links">
+        ${links}
+      </div>
+    </article>`;
+}
+
+function renderPluginsHub(data, model) {
+  const when = monthYear(data.updatedAt);
+  const title = `Best Hermes Agent Plugins (${when}): Curated Picks by Use Case | Hermes Atlas`;
+  const desc = `The Hermes Agent plugins worth running, picked by job from the ${data.catalogEntries.toLocaleString("en-US")}-entry official catalog — tracing, sandboxing, web search, voice, messaging, Desktop add-ons and more. Install command, tier, verdict and caveats for every pick.`;
+  const canonicalUrl = `${SITE_URL}/plugins/`;
+  const ogTitle = "Hermes Plugins Hub — Hermes Atlas";
+  const ogSubtitle = "The Hermes Agent plugins worth running, by use case — catalog installs only.";
+  const fresh = pluginsFreshness(data);
+
+  const groupSections = model.groups
+    .map((group) => `
+<section class="uc-section" id="${escapeHtml(group.slug)}" aria-label="${escapeHtml(group.title)}">
+  <div class="section-label">${escapeHtml(group.title)}</div>
+  <p class="pl-intent">${escapeHtml(group.intent)}</p>
+  <p class="uc-section-note">${escapeHtml(group.description)}</p>
+  ${group.topPick ? `${renderPluginCard(group.topPick, { hero: true })}\n  ` : ""}<div class="sk-card-grid">
+    ${group.rest.map((e) => renderPluginCard(e)).join("\n    ")}
+  </div>
+</section>`)
+    .join("");
+
+  const jumpLinks = model.groups
+    .map((g) => `<a class="uc-related-link" href="#${escapeHtml(g.slug)}">${escapeHtml(g.title)}</a>`)
+    .join("\n    ");
+
+  // Unique plugins in render order (hero first per group).
+  const ordered = [];
+  const seen = new Set();
+  for (const g of model.groups) {
+    for (const e of [g.topPick, ...g.rest].filter(Boolean)) {
+      if (!seen.has(e.name)) { seen.add(e.name); ordered.push(e); }
+    }
+  }
+
+  const collectionLD = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": canonicalUrl,
+    name: "Hermes Plugins Hub — the best Hermes Agent plugins by use case",
+    description: desc,
+    url: canonicalUrl,
+    isPartOf: { "@id": "https://hermesatlas.com/#website" },
+    dateModified: data.updatedAt,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: ordered.length,
+      itemListElement: ordered.map((e, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: e.atlasPath ? `${SITE_URL}${e.atlasPath}` : `https://github.com/${e.repo}`,
+        name: e.title,
+        description: e.verdict,
+      })),
+    },
+  };
+
+  const breadcrumbLD = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "home", item: "https://hermesatlas.com/" },
+      { "@type": "ListItem", position: 2, name: "plugins" },
+    ],
+  };
+
+  const skippedHtml = data.skipped.length
+    ? `
+<section class="uc-section" aria-label="What we skip">
+  <div class="section-label">what we skip</div>
+  <ul class="pl-skipped">
+    ${data.skipped.map((s) => `<li>${escapeHtml(s)}</li>`).join("\n    ")}
+  </ul>
+</section>`
+    : "";
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtml(title)}</title>
+<meta name="description" content="${escapeHtml(desc)}">
+<link rel="canonical" href="${canonicalUrl}">
+<meta property="og:title" content="${escapeHtml(ogTitle)}">
+<meta property="og:description" content="${escapeHtml(desc)}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="${canonicalUrl}">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="${escapeHtml(ogImageUrl({ title: ogTitle, subtitle: ogSubtitle, kind: "plugins" }))}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${escapeHtml(ogTitle)}">
+<meta name="twitter:image" content="${escapeHtml(ogImageUrl({ title: ogTitle, subtitle: ogSubtitle, kind: "plugins" }))}">
+${ldJson(breadcrumbLD)}
+${ldJson(collectionLD)}
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+${FAVICON}
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+<link rel="stylesheet" href="/assets/css/use-cases.css">
+<link rel="stylesheet" href="/assets/css/skills.css">
+<link rel="stylesheet" href="/assets/css/plugins.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+${renderMasthead("plugins")}
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span>plugins
+</div>
+
+<main id="main">
+
+<section class="list-page">
+  <h1 class="list-title">Hermes Agent plugins</h1>
+  <p class="list-intro">The official Hermes plugin catalog lists ${data.catalogEntries.toLocaleString("en-US")} plugins (as of ${escapeHtml(data.catalogCheckedAt)}). This page is the short list of the ones worth running, grouped by the job they do — ${model.entries.length} picks across ${model.groups.length} use cases, each with a verdict and the caveats worth knowing first.</p>
+  <p class="list-intro sk-lede">We only pick catalog entries: each one has been reviewed and is pinned to a commit, so <code>hermes plugins install &lt;name&gt;</code> gets you what was reviewed rather than whatever is on a branch today. The tier badge (Official, Verified, Community) says who publishes a plugin — it is provenance, not a security audit.</p>
+  <p class="list-intro sk-lede">New to plugins? <a href="/guide/plugins/">The plugins guide</a> covers what plugins are, why yours won't load, and how to stay safe. Looking for skills? <a href="/skills/">The Skills Hub →</a></p>
+  ${fresh.html}
+</section>
+
+<section class="uc-section" aria-label="Jump to a use case">
+  <div class="section-label">jump to a use case</div>
+  <div class="uc-related">
+    ${jumpLinks}
+  </div>
+</section>
+${groupSections}
+
+<section class="uc-section" aria-label="Memory providers">
+  <div class="section-label">memory providers</div>
+  <p class="pl-callout">Memory providers are deliberately not listed here: picking one is a bigger decision than adding a plugin, and it has its own guide. See <a href="/guide/memory/">the Hermes memory guide</a> and <a href="/lists/best-memory-providers">the best memory providers list</a>.</p>
+</section>
+${skippedHtml}
+
+<section class="uc-section" aria-label="More">
+  <div class="section-label">more</div>
+  <p class="uc-section-note">Browse every entry in <a href="${PLUGINS_CATALOG_URL}" rel="noopener">the official plugin catalog</a>, or see <a href="/skills/">the Skills Hub</a> for skills picked the same way.</p>
+</section>
+
+<div class="back-link"><a href="/skills/">← looking for skills? the skills hub</a></div>
 
 </main>
 
@@ -2443,7 +2728,7 @@ ${PAGE_FOOTER}
 // without touching this function), and <lastmod> is the file's real last
 // change: today if this build rewrote it, otherwise its last git commit date.
 // Stamping everything "today" trains crawlers to ignore the signal entirely.
-function generateSitemap(projectPages, listPages, reportPages = [], useCasePages = [], skillGroups = []) {
+function generateSitemap(projectPages, listPages, reportPages = [], useCasePages = [], skillGroups = [], hasPluginsHub = false) {
   const entry = (urlPath, relFile, changefreq, priority) =>
     `  <url><loc>${SITE_URL}${urlPath}</loc><changefreq>${changefreq}</changefreq><priority>${priority}</priority><lastmod>${lastmodFor(relFile)}</lastmod></url>\n`;
 
@@ -2507,6 +2792,10 @@ function generateSitemap(projectPages, listPages, reportPages = [], useCasePages
     for (const group of skillGroups) {
       urls += entry(`/skills/for-${group.slug}`, `skills/for-${group.slug}.html`, "weekly", "0.8");
     }
+  }
+
+  if (hasPluginsHub) {
+    urls += entry("/plugins/", "plugins/index.html", "weekly", "0.9");
   }
 
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}</urlset>\n`;
@@ -2763,6 +3052,22 @@ async function main() {
   } else {
     console.log("  data/skills.json not present; skills hub skipped");
   }
+
+  // Plugins Hub data (hand-curated — data/plugins.json), gated the same way
+  // validate-plugins-json.js gates CI: a bad hand-edit fails the build.
+  const pluginsPath = path.join(ROOT, "data", "plugins.json");
+  let pluginsModel = null;
+  if (fs.existsSync(pluginsPath)) {
+    pluginsData = JSON.parse(fs.readFileSync(pluginsPath, "utf-8"));
+    const pluginsErrors = validatePlugins(pluginsData, repos);
+    if (pluginsErrors.length > 0) {
+      throw new Error(`data/plugins.json validation failed:\n- ${pluginsErrors.join("\n- ")}`);
+    }
+    pluginsModel = buildPluginsModel(pluginsData, repos);
+    console.log(`  Loaded data/plugins.json (${pluginsData.plugins.length} plugins)`);
+  } else {
+    console.log("  data/plugins.json not present; plugins hub skipped");
+  }
   console.log();
 
   // Ensure output directories exist
@@ -3008,6 +3313,15 @@ async function main() {
     console.log("\nNo data/skills.json found — skipping skills hub");
   }
 
+  // Generate the Plugins Hub (/plugins/) — one page, no per-group subpages.
+  if (pluginsModel) {
+    console.log("\nGenerating plugins hub...");
+    const pluginsDir = path.join(ROOT, "plugins");
+    fs.mkdirSync(pluginsDir, { recursive: true });
+    writePage(path.join(pluginsDir, "index.html"), renderPluginsHub(pluginsData, pluginsModel));
+    console.log(`  index (${pluginsModel.entries.length} plugins, ${pluginsModel.groups.length} groups)`);
+  }
+
   // Generate reports index page
   if (reports.length > 0) {
     console.log("\nGenerating reports index...");
@@ -3019,7 +3333,7 @@ async function main() {
 
   // Generate sitemap
   console.log("\nGenerating sitemap.xml...");
-  const sitemap = generateSitemap(repos, lists, reports, useCases, skillsModel?.groups || []);
+  const sitemap = generateSitemap(repos, lists, reports, useCases, skillsModel?.groups || [], !!pluginsModel);
   fs.writeFileSync(path.join(ROOT, "sitemap.xml"), sitemap, "utf-8");
   console.log(`  ${(sitemap.match(/<url>/g) || []).length} URLs (${changedPages.size} pages changed this build)`);
 

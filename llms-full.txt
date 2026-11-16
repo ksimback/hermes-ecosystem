@@ -2817,6 +2817,203 @@ Skills that connect Hermes to personal infrastructure like self-hosted Nextcloud
 
 ---
 
+# Plugins Hub (/plugins/)
+
+Canonical URL: https://hermesatlas.com/plugins/
+
+Hand-curated short list of official-catalog Hermes plugins worth running, by job. The official catalog lists 2382 plugins (checked 2026-11-16). Only catalog entries are picked (reviewed, pinned to a commit); tier is provenance, not an audit. The Atlas has not install-tested these. Memory providers are deliberately excluded — see https://hermesatlas.com/guide/memory/.
+
+## See what your agent does and spends
+
+Traces, metrics and budget limits for people running Hermes every day or on cron.
+
+The first plugin most serious setups add. Pick one tracing plugin for your existing stack, and add a budget guard if anything runs unattended.
+
+- Langfuse (langfuse; official, general) — TOP PICK: The default tracing pick: one trace per turn, one generation per LLM call with cost, one observation per tool call and subagent. Content capture is sanitized by default. It used to be built into core.
+  Install: hermes plugins install langfuse
+  Requires Hermes: >=0.21.7
+  GitHub: https://github.com/NousResearch/hermes-official-plugins
+- Hermes OTel (hermes_otel; community, general): Choose this over Langfuse if you already run an OpenTelemetry backend. It declares more lifecycle hooks (34) than any other entry in the official catalog, including approvals, Kanban and subagents.
+  Caveat: It can send prompts, tool arguments and tool output to the backends you configure, so point it only at a backend you control.
+  Install: hermes plugins install hermes_otel
+  Requires Hermes: >=0.21
+  GitHub: https://github.com/briancaffey/hermes-otel
+- Hermes Telemetry (hermes-telemetry; community, general): The budget guard. It tracks tokens, cost and latency per session and cron job in local SQLite, and /budget can stop runaway spend before the bill arrives.
+  Caveat: Enforce mode is the default: first load writes a $5/day and $100/month budget, and a hard breach blocks every tool call. Set your own limits right after installing.
+  Install: hermes plugins install hermes-telemetry
+  GitHub: https://github.com/nujovich/hermes-telemetry
+- tokenjuice (tokenjuice; community, tools): Compacts successful terminal output locally before the model sees it. That's a cheap win for coding-heavy sessions where build logs eat your context.
+  Caveat: Needs the separate tokenjuice CLI installed with npm, outside the pinned commit.
+  Install: hermes plugins install tokenjuice
+  Requires Hermes: >=0.22.5
+  GitHub: https://github.com/vincentkoc/tokenjuice
+
+## Sandbox the terminal and guard tool calls
+
+Contain what the agent can touch, put policy in front of tool calls, and scan your own code.
+
+Hermes runs commands as your user by default. These plugins move execution into a sandbox, add a policy layer in front of tool calls, or turn the agent into a security reviewer.
+
+- Bubblewrap sandbox (bubblewrap; official, tools) — TOP PICK: The most important safety plugin on Linux. Every terminal and execute_code command runs in its own bwrap sandbox with a read-only root, hidden credential stores and per-command limits. Turn it on with terminal.backend: bubblewrap.
+  Caveat: Linux only.
+  Install: hermes plugins install bubblewrap
+  Requires Hermes: >=0.22.6
+  GitHub: https://github.com/NousResearch/hermes-official-plugins
+- Cua Spaces (cua-spaces; verified, tools): Runs the agent's terminal, file and code tools inside an isolated Linux, macOS or Windows machine you can watch live. From 0.22.3 the browser and computer use follow it in. This is the pick on macOS and Windows, where Bubblewrap doesn't run.
+  Caveat: Everything the agent runs goes to the Space, which is on Cua's cloud unless you run one locally.
+  Install: hermes plugins install cua-spaces
+  Requires Hermes: >=0.21.6
+  GitHub: https://github.com/trycua/hermes-cua-spaces
+- Tracekit (tracekit; community, tools): A policy layer in front of every tool call: deny blocks it, ask waits for a person. Each call and its outcome is signed into a run you can verify offline. Built for setups that need an audit trail.
+  Caveat: It starts a background signer process that keeps running for 15 minutes after Hermes exits.
+  Install: hermes plugins install tracekit
+  Requires Hermes: >=0.22.5
+  GitHub: https://github.com/cygnux-labs/tracekit
+- Security review (hermes-security; official, tools): Turns Hermes into a security reviewer for your own repository. It builds a threat model, reviews the code with parallel subagents and checks whether an attacker can actually reach each finding. Exports to SARIF.
+  Install: hermes plugins install hermes-security
+  Requires Hermes: >=0.21.5
+  GitHub: https://github.com/NousResearch/hermes-official-plugins
+- Snyk (snyk; official, tools): Snyk's own MCP server, pinned, with a scan workflow skill. It covers code, dependencies, containers, IaC and SBOMs. It pairs with Security review: Snyk finds known-vulnerable dependencies, the review finds logic bugs.
+  Caveat: Needs Node.js and a free Snyk account.
+  Install: hermes plugins install snyk
+  GitHub: https://github.com/NousResearch/hermes-official-plugins
+
+## Better web search and browsing
+
+Search, extraction and browser backends that beat the defaults.
+
+Web access is where most agents fail quietly. Choose one search provider, and add a browser backend only if you need logins or bot-resistant browsing.
+
+- Tavily (tavily-plugin; verified, web) — TOP PICK: The safe default for search: published by Tavily itself, with search, extract, map, crawl and research through its hosted MCP server, plus Tavily's skills.
+  Caveat: Needs TAVILY_API_KEY or a Hermes-managed Tavily sign-in.
+  Install: hermes plugins install tavily-plugin
+  Requires Hermes: >=0.22.2
+  GitHub: https://github.com/tavily-ai/tavily-hermes-plugin
+- TinyFish (tinyfish; verified, web): Free search and fetch that replace Hermes's own web_search and web_extract, with a remote browser agent for sites that need clicks, forms or a login.
+  Caveat: Browser sessions spend TinyFish credits. Each one asks for approval by default, and unattended runs are denied unless you allow them.
+  Install: hermes plugins install tinyfish
+  Requires Hermes: >=0.19
+  GitHub: https://github.com/tinyfish-io/tinyfish-web-agent-integrations
+- Web Search Plus (web-search-plus; community, web): The community pick if you don't want to depend on one vendor. It routes across several search providers, including self-hosted SearXNG, with quality reports and an opt-in research mode.
+  Install: hermes plugins install web-search-plus
+  GitHub: https://github.com/robbyczgw-cla/hermes-web-search-plus
+- Camofox (camofox; official, web): A self-hosted anti-detection Firefox as the browser backend, for sites that block ordinary automated browsers. It moved out of core in v0.23.0, and existing users get it automatically.
+  Caveat: You run the Camofox server yourself.
+  Install: hermes plugins install camofox
+  GitHub: https://github.com/NousResearch/hermes-official-plugins
+
+## Talk to Hermes
+
+Realtime voice, spoken replies and dictation.
+
+Voice plugins become Hermes's speech and transcription providers, so they work across the CLI, messaging and Desktop.
+
+- Hermes Talk (hermes-talk; community, voice) — TOP PICK: Realtime voice across the terminal, Discord, the dashboard and Desktop. It's the most complete voice plugin and is actively maintained.
+  Caveat: Its GPT-Live subscription mode uses an undocumented ChatGPT endpoint that may stop working without notice. Use the API-key modes for anything you depend on.
+  Install: hermes plugins install hermes-talk
+  Requires Hermes: >=0.21.7
+  GitHub: https://github.com/TheSmokeDev/hermes-talk
+- Fish Audio (fish-audio; community, voice): Fish Audio's plugin for expressive speech: 80+ languages, voice design from a sentence, voice cloning and live word-by-word dictation, with a Voices page in Desktop.
+  Caveat: Four known issues are listed in the catalog, including Desktop sometimes leaving part of a reply unspoken (which affects every speech provider).
+  Install: hermes plugins install fish-audio
+  Requires Hermes: >=0.21.5
+  GitHub: https://github.com/100yenadmin/fish-audio-hermes
+
+## Reach Hermes from more places
+
+Gateway platforms for chat apps and the smart home.
+
+Platform plugins add new places to talk to Hermes. The core apps (Telegram, Discord, Slack and more) are already bundled, so these are the ones worth adding.
+
+- Home Assistant (homeassistant; official, platform) — TOP PICK: The best smart-home plugin. State changes come into Hermes as events, notifications go out, and four tools let the agent read and control entities. It used to be built into core.
+  Install: hermes plugins install homeassistant
+  Requires Hermes: >=0.21.5
+  GitHub: https://github.com/NousResearch/hermes-official-plugins
+- X Chat (xchat; official, platform): Talk to Hermes in X's end-to-end encrypted DMs, either in your own self-chat or through a separate account. Messages are encrypted and decrypted locally, so X only routes ciphertext.
+  Install: hermes plugins install xchat
+  Requires Hermes: >=0.21.5
+  GitHub: https://github.com/NousResearch/hermes-official-plugins
+- Telegram Business (hermes-telegram-business; community, platform): The right design for an agent that talks to customers: Hermes drafts every reply and sends it to you with Send, Edit and Discard buttons, and nothing reaches a customer until you tap Send.
+  Caveat: A Hermes Labs plugin: built by Nous Research but unsupported.
+  Install: hermes plugins install hermes-telegram-business
+  GitHub: https://github.com/NousResearch/hermes-labs-plugins
+
+## Run Hermes on a subscription you already pay for
+
+Model-provider plugins that use an existing subscription instead of per-token API billing.
+
+Both picks trade some stability for cost. Read the caveat before you rely on either one for unattended work.
+
+- Claude subscription (claude-subscription-directsdk; official, models): Runs Hermes turns on a Claude Pro or Max subscription through the official Claude Code CLI, so there's no API key and no per-token bill.
+  Caveat: Experimental. Every turn counts against your subscription's Agent SDK allowance, and it uses whatever account the claude CLI is logged into.
+  Install: hermes plugins install claude-subscription-directsdk
+  Requires Hermes: >=0.21.4
+  GitHub: https://github.com/NousResearch/hermes-official-plugins
+- GitHub Copilot (github-copilot; community, models): Use a Copilot subscription's GPT, Claude, Gemini and Grok models as Hermes providers, or drive the Copilot CLI over ACP. It moved out of core in v0.23.0.
+  Caveat: A Hermes Labs plugin: built by Nous Research but unsupported.
+  Install: hermes plugins install github-copilot
+  GitHub: https://github.com/NousResearch/hermes-labs-plugins
+
+## Make Hermes Desktop yours
+
+Desktop plugins: themes, panes and remote connections for the native app.
+
+Desktop plugins are a separate format that only the app loads. They change the app, not the agent, so they are the lowest-risk plugins to try.
+
+- Minimalist Themes (minimalist-themes; community, desktop) — TOP PICK: Eighteen warm, readable palettes assigned per profile, so each bot looks different, with matching terminal colours. A theme-only plugin with no tools, no hooks and no network calls.
+  Install: hermes plugins install minimalist-themes
+  Requires Hermes: >=0.21.3
+  GitHub: https://github.com/mykeura/minimalist-themes-for-hermes
+- Hermes Tailscale (hermes-tailscale; community, desktop): Browse your Tailscale devices and connect Desktop to remote Hermes instances from one pane. A good fit if you reach a VPS over Tailscale, which the docs suggest for password-authenticated remote connections.
+  Install: hermes plugins install hermes-tailscale
+  GitHub: https://github.com/Adolanium/hermes-tailscale
+- Accent Picker (accent-picker; official, desktop): A tiny official Desktop plugin: drag an accent colour in the status bar and the whole theme retints. Also the best small example to read if you want to write a Desktop plugin.
+  Install: hermes plugins install accent-picker
+  GitHub: https://github.com/NousResearch/hermes-official-plugins
+
+## Creative tools: 3D, music and scenes
+
+Drive Blender, generate 3D models and music from chat.
+
+Mostly official plugins that bundle a vendor MCP server with a workflow skill, the cleanest plugin pattern.
+
+- Blender (blender; official, tools) — TOP PICK: Blender Lab's official MCP server with a workflow skill that opens Blender when a task needs it. This is how to model, light and render from chat.
+  Caveat: Its tools run arbitrary Python in Blender with your privileges, and the add-on's local port has no password while Blender is open.
+  Install: hermes plugins install blender
+  GitHub: https://github.com/NousResearch/hermes-official-plugins
+- Meshy (meshy; official, tools): Text and image to 3D, texturing, rigging, animation and 3D-print prep, with inline 3D cards and a gallery in Desktop. Every credit-spending call shows its estimated cost and asks for approval first.
+  Caveat: Needs MESHY_API_KEY and Node.js 18+.
+  Install: hermes plugins install meshy
+  Requires Hermes: >=0.22.3
+  GitHub: https://github.com/NousResearch/hermes-official-plugins
+- ElevenLabs Music (elevenlabs-music; official, tools): Describe a song or paste lyrics, and Hermes writes and generates the track. The official plugin, new in v0.23.0.
+  Install: hermes plugins install elevenlabs-music
+  Requires Hermes: >=0.22.0
+  GitHub: https://github.com/NousResearch/hermes-official-plugins
+
+## Smarter subagents
+
+Route subagents to different models or profiles, or give the agent a fixed team.
+
+Built-in delegation gives every subagent the parent's model and tools. These plugins make delegation deliberate.
+
+- Advanced Delegation (advanced-delegation; official, tools) — TOP PICK: Two delegation modes worth having. Model routes let the agent pick fast, deep or local per subagent. Profile routes run a subagent as one of your Hermes profiles, with its own model, credentials and skills.
+  Install: hermes plugins install advanced-delegation
+  Requires Hermes: >=0.22.5
+  GitHub: https://github.com/NousResearch/hermes-official-plugins
+- Hermes Teammates (hermes-teammates; community, automation): Define a fixed team once (instructions, toolsets and model per specialist), and the agent picks one by name. Tool limits are actually enforced: a reviewer limited to todo gets no web, file or terminal tools. Uses only public plugin APIs.
+  Install: hermes plugins install hermes-teammates
+  Requires Hermes: >=0.21.4
+  GitHub: https://github.com/100yenadmin/hermes-teammates
+
+## What we skip
+
+- Plugins that sign in with another app's client identity or call undocumented endpoints. They can break, or put your account at risk, without warning.
+- Repos that call themselves plugins but are really MCP servers. Add those under mcp_servers instead: they're portable, and you don't need a plugin.
+- Uncataloged plugins installed from a branch tip, when a catalog entry pinned to a reviewed commit exists for the same job.
+
+---
+
 # Project Catalog (318 projects)
 
 ---
