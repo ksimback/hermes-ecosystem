@@ -672,6 +672,12 @@ plugins/index.md § Check file paths and read YAML with Hermes's own helpers
 
 plugins/index.md § Send a credentialed HTTP request without leaking it on redirect
 
+`agent.retry_utils`
+
+`parse_retry_after_seconds`
+
+plugins/index.md § Read a Retry-After header the way Hermes does
+
 `hermes_cli.chat_launch`
 
 `hermes_command`
