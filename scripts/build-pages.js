@@ -2020,7 +2020,10 @@ function pluginsFreshness(data) {
     return { text: base, html: `<p class="sk-freshness">${escapeHtml(base)}</p>` };
   }
   const base = `${checked} Picks install-tested against Hermes ${data.testedAgainst}.${data.testNote ? ` ${data.testNote}` : ""}`;
-  const stale = data.testedAgainst !== latestHermesVersion
+  // Patch releases (v0.23.1 -> v0.23.2) do not invalidate an install test;
+  // a new minor release (v0.24) does, since catalog floors move by minor.
+  const minor = (v) => String(v).replace(/^v/, "").split(".").slice(0, 2).join(".");
+  const stale = minor(data.testedAgainst) !== minor(latestHermesVersion)
     ? `Hermes ${latestHermesVersion} is out — re-verification pending`
     : null;
   return {
