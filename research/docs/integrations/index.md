@@ -264,6 +264,10 @@ Each platform's setup page walks through what to do once you're there.
 -   **[Plugin System](/docs/user-guide/features/plugins)** — Extend Hermes with custom tools, lifecycle hooks, and CLI commands without modifying core code. Plugins are discovered from `~/.hermes/plugins/`, project-local `.hermes/plugins/`, and pip-installed entry points.
 -   **[Build a Plugin](/docs/developer-guide/plugins)** — Step-by-step guide for creating Hermes plugins with tools, hooks, and CLI commands.
 
+## Observability
+
+-   **[NeMo Relay](/docs/integrations/nemo-relay)** — Inspect model and tool calls, export ATOF or ATIF data, send OpenTelemetry traces, and configure Relay plugins.
+
 ## Training & Evaluation
 
 -   **[Batch Processing](/docs/user-guide/features/batch-processing)** — Run the agent across hundreds of prompts in parallel, generating structured ShareGPT-format trajectory data for training data generation or evaluation.

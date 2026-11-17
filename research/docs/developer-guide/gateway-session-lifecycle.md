@@ -429,7 +429,7 @@ Timestamp of the last resume-pending marking.
 
 ## 3\. SessionStore — Storage and Operations
 
-`SessionStore` is the main storage layer. It maintains an in-memory dict (`_entries`) persisted to `sessions.json`, with SQLite (`SessionDB`) as the canonical store for session metadata and message transcripts.
+`SessionStore` is the main storage layer. It maintains an in-memory dict (`_entries`) persisted to `sessions.json`, with SQLite (the storage interface's `sessions` and `messages` repositories) as the canonical store for session metadata and message transcripts.
 
 ### Constructor
 
@@ -509,7 +509,7 @@ Load all messages from a session's SQLite transcript.
 
 `rewind_session(session_id, n=1)`
 
-Back up `n` user turns via soft-delete (keeps audit trail); thin wrapper over `SessionDB.rewind_user_turn` (`hermes_state_rewind.py`), the one rewind shared with CLI `/undo`/`/retry` and the TUI. Returns `{rewound_count, turns_undone, target_text}`.
+Back up `n` user turns via soft-delete (keeps audit trail); thin wrapper over the store's `messages.rewind_user_turn` (`persistence/sqlite/conversation/_store/rewind.py`), the one rewind shared with CLI `/undo`/`/retry` and the TUI. Returns `{rewound_count, turns_undone, target_text}`.
 
 ### Internal Helpers
 
@@ -526,7 +526,7 @@ Back up `n` user turns via soft-delete (keeps audit trail); thin wrapper over `S
   {session_id}.jsonl     # (Legacy, removed in spec 002)
 ```
 
-The canonical transcript store is SQLite via `SessionDB` (from `hermes_state`). The `sessions.json` file persists the `session_key → session_id` mapping and entry metadata (flags, timestamps, token counts). If SQLite is unavailable, the store falls back to JSONL, but this is a degradation path.
+The canonical transcript store is SQLite through the storage interface (`persistence_assembly.open_persistence`). The `sessions.json` file persists the `session_key → session_id` mapping and entry metadata (flags, timestamps, token counts). If SQLite is unavailable, the store falls back to JSONL, but this is a degradation path.
 
 * * *
 

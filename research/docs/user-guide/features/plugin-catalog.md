@@ -8,9 +8,7 @@ The plugin catalog is a curated, human-reviewed directory of Hermes plugins you 
 hermes plugins install <name>
 ```
 
-Browse it visually at **[/docs/plugins](/docs/plugins)** — entries are shelved by category (Memory, Desktop, Platforms, Web & Browser, Tools, Voice, Automation, Models), with search, tier filters (Official / Verified / Community), capability chips, and copyable install commands for every entry.
-
-Every entry also has its own page at `/docs/plugins/<name>` (click a card): the full description and any disclosure, the pinned commit, tools, hooks and environment variables, the Desktop install button and CLI command, optional screenshots and the README from the reviewed commit, plus a **More by this author** shelf. Authors have a page at `/docs/plugins/by/<maintainer>` listing everything they maintain in the catalog. Both are generated at build time from the same catalog files, so a merged PR is the only way a page changes.
+Browse it on the **[Hermes Marketplace](https://hermes-agent.nousresearch.com/marketplace)**, with search, categories, tier labels (Official / Verified / Community) and an install button or CLI command for every entry. Each entry has its own page at `/marketplace/<name>` with the description, the pinned commit, optional screenshots, the README from the reviewed commit and more plugins by the same maintainer. The Marketplace reads the same catalog files, so a merged PR is the only way a listing changes.
 
 The catalog complements — it does not replace — the existing [plugin system](/docs/user-guide/features/plugins). Anything you can install from the catalog is a normal plugin under the hood; the catalog just adds discovery and a review layer on top.
 
@@ -184,5 +182,5 @@ In short, a listed plugin is submitted by its owner (or added in a reviewed main
 -   [Plugins](/docs/user-guide/features/plugins) — the plugin system itself: manifest format, enabling, configuration
 -   [Built-in Plugins](/docs/user-guide/features/built-in-plugins) — plugins that ship with Hermes
 -   [Build a Hermes Plugin](/docs/developer-guide/plugins) — write your own
--   [Plugin Catalog page](/docs/plugins) — the browsable catalog
+-   [Hermes Marketplace](https://hermes-agent.nousresearch.com/marketplace) — browse the catalog
 -   [Submitting to the plugin catalog](/docs/developer-guide/plugins/catalog-submission) — admission rules and the submission guide

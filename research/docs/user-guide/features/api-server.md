@@ -568,7 +568,7 @@ Message history for a session. `include_compacted=true` also returns the turns a
 
 `/api/sessions/{id}/fork`
 
-Branch the session via `SessionDB` lineage (matches CLI `/branch` semantics)
+Branch the session via the session store's lineage (matches CLI `/branch` semantics)
 
 `POST`
 

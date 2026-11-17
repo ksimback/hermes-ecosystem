@@ -999,23 +999,19 @@ With the default `plugins.isolation: in_process`, API handlers run on the gatewa
 
 #### Accessing Hermes internals
 
-Backend routes run inside the dashboard process, so they can import from the hermes-agent codebase directly:
+Backend routes run inside the dashboard process, so they can import from the hermes-agent codebase directly. Session history is read through the storage interface (`persistence_assembly`, see [Session Storage](/docs/developer-guide/session-storage#common-operations)); a reader handle never creates or migrates the store, and a plain `def` route keeps the read off the event loop:
 
 ```
 from fastapi import APIRouter
-from hermes_state import SessionDB
 from hermes_cli.config import load_config
+from persistence_assembly import open_persistence_reader, profile_scope
 
 router = APIRouter()
 
 @router.get("/session-count")
-async def session_count():
-    db = SessionDB()
-    try:
-        count = len(db.list_sessions(limit=9999))
-        return {"count": count}
-    finally:
-        db.close()
+def session_count():
+    with open_persistence_reader(profile_scope().profile_dir) as store:
+        return {"count": store.sessions.count_sessions()}
 
 @router.get("/config-snapshot")
 async def config_snapshot():

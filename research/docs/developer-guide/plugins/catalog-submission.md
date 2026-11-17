@@ -30,7 +30,7 @@ The canonical copy of the admission rules is [`plugin-catalog/README.md`](https:
 3.  Wait for the catalog CI job to go green. It clones your repo at the pinned commit and runs `hermes plugins validate`.
 4.  A maintainer reviews the pinned tree and merges, asks for changes, or declines. Rule 3 and rule 9 problems are declines rather than bug-fix requests: the plugin has to change its design before it can be listed.
 
-Your plugin's page at `/docs/plugins/<name>` is built from the same file. The README at the pinned commit renders there by default, and `screenshots:` fills the gallery. There is no separate listing to maintain.
+Your plugin's [Marketplace](https://hermes-agent.nousresearch.com/marketplace) page at `/marketplace/<name>` is built from the same file. The README at the pinned commit renders there by default, and `screenshots:` fills the gallery. There is no separate listing to maintain.
 
 ## Admission rules
 

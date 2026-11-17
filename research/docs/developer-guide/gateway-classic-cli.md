@@ -66,7 +66,7 @@ Nothing to create by name
 
 Full legacy presentation, slash registry parity, interactive history editing, auto-reconnect, lost-ACK durable client journals, remote login bootstrap, cold-owner resume and native Windows/macOS QA remain outstanding. The client preserves an explicit remote URL's existing authentication mechanism; it does not acquire or mint remote credentials.
 
-`tests/hermes_cli/test_gateway_chat_native.py` exercises native tmux/PTY classic fresh input, detach, persisted-ID resume and one-shot through the ordinary daemon with a loopback model, isolated HOME/HERMES\_HOME and caller cwd. Constructor instrumentation records no client AIAgent, SessionDB or GatewayRunner. The test also denies an invalid approval choice, then reconnects and consents before a real terminal effect on an owned fixture. Stale-control/active-Stop native coverage and native clarify interaction remain separate acceptance work.
+`tests/hermes_cli/test_gateway_chat_native.py` exercises native tmux/PTY classic fresh input, detach, persisted-ID resume and one-shot through the ordinary daemon with a loopback model, isolated HOME/HERMES\_HOME and caller cwd. Constructor instrumentation records no client AIAgent, writable session store or GatewayRunner. The test also denies an invalid approval choice, then reconnects and consents before a real terminal effect on an owned fixture. Stale-control/active-Stop native coverage and native clarify interaction remain separate acceptance work.
 
 For two-checkout compatibility testing, load the narrowly scoped pytest option plugin and specify the disposable gateway peer's checkout (the normal runner's hermetic environment deliberately removes arbitrary environment overrides):
 

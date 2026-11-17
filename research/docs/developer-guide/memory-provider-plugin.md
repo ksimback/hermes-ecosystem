@@ -131,7 +131,7 @@ Stored session title, when available. A display label is not necessarily a user-
 
 `session_title_source`
 
-Stored title provenance, when available: `derived`, `llm`, or `user`. Automatic sources must not be mistaken for explicit identity overrides; missing provenance retains a provider's legacy behavior. Shared constants live in `hermes_state_common.py`.
+Stored title provenance, when available: `derived`, `llm`, or `user`. Automatic sources must not be mistaken for explicit identity overrides; missing provenance retains a provider's legacy behavior. The values are `persistence.conversation.sessions.TitleSource`.
 
 `cwd`
 
