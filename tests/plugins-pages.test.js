@@ -86,6 +86,16 @@ test("freshness line, memory callout, skipped list and cross-links render", () =
     "untested disclaimer shows exactly when testedAgainst is null"
   );
   assert.ok(html.includes(`lists ${plugins.catalogEntries.toLocaleString("en-US")} plugins`), "states catalog size");
+  // Stale notice fires on a new minor release only, not a patch release.
+  const latest = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "latest-release.json"), "utf-8")).version;
+  const minor = (v) => String(v).replace(/^v/, "").split(".").slice(0, 2).join(".");
+  if (plugins.testedAgainst) {
+    assert.equal(
+      stamp.includes("re-verification pending"),
+      minor(plugins.testedAgainst) !== minor(latest),
+      "stale notice shows exactly when the tested minor version is behind the latest release"
+    );
+  }
 
   const callout = document.querySelector(".pl-callout");
   assert.ok(callout?.textContent.includes("Memory providers are deliberately not listed"));

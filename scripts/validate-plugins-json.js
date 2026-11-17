@@ -78,6 +78,10 @@ export function validatePlugins(pluginsData, reposData) {
     errors.push('testedAgainst must be null (not install-tested) or a string starting with "v" (e.g. "v0.22.6")');
   }
 
+  if (pluginsData.testNote !== undefined && (!isNonEmptyString(pluginsData.testNote) || tested === null)) {
+    errors.push("testNote, when present, must be a non-empty string and needs testedAgainst set");
+  }
+
   if (!Array.isArray(pluginsData.skipped) || pluginsData.skipped.some((s) => !isNonEmptyString(s))) {
     errors.push("skipped must be an array of non-empty strings");
   }
