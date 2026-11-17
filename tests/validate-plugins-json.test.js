@@ -128,6 +128,22 @@ test("testedAgainst must be null or a v-prefixed version", () => {
   assert.deepEqual(validatePlugins(tested, []), []);
 });
 
+test("testNote needs a non-empty string and testedAgainst set", () => {
+  const orphan = makePluginsData();
+  orphan.testNote = "Tested on Windows.";
+  expectError(orphan, /^testNote, when present/);
+
+  const empty = makePluginsData();
+  empty.testedAgainst = "v0.23.1";
+  empty.testNote = " ";
+  expectError(empty, /^testNote, when present/);
+
+  const ok = makePluginsData();
+  ok.testedAgainst = "v0.23.1";
+  ok.testNote = "Tested on Windows.";
+  assert.deepEqual(validatePlugins(ok, []), []);
+});
+
 test("skipped must be an array of non-empty strings", () => {
   const data = makePluginsData();
   data.skipped = ["ok", ""];

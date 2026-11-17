@@ -859,7 +859,7 @@ This file is the companion to ${SITE_URL}/llms.txt (the concise index).`);
       return `## ${group.title}\n\n${group.intent}\n\n${group.description}\n\n${body}`;
     });
     const tested = pluginsData.testedAgainst
-      ? `Tested against Hermes ${pluginsData.testedAgainst}.`
+      ? `Tested against Hermes ${pluginsData.testedAgainst}.${pluginsData.testNote ? ` ${pluginsData.testNote}` : ""}`
       : "The Atlas has not install-tested these.";
     sections.push(
       `# Plugins Hub (/plugins/)\n\nCanonical URL: ${SITE_URL}/plugins/\n\n` +
@@ -2019,7 +2019,7 @@ function pluginsFreshness(data) {
     const base = `${checked} Install commands use catalog names at their reviewed pins; the Atlas has not install-tested these.`;
     return { text: base, html: `<p class="sk-freshness">${escapeHtml(base)}</p>` };
   }
-  const base = `${checked} Picks install-tested against Hermes ${data.testedAgainst}.`;
+  const base = `${checked} Picks install-tested against Hermes ${data.testedAgainst}.${data.testNote ? ` ${data.testNote}` : ""}`;
   const stale = data.testedAgainst !== latestHermesVersion
     ? `Hermes ${latestHermesVersion} is out — re-verification pending`
     : null;
