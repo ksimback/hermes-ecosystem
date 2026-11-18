@@ -63,7 +63,7 @@ From inside the pokemon-agent directory with the venv activated, run pokemon-age
 
 ### 3\. Set up live dashboard for user to watch
 
-Use an SSH reverse tunnel via localhost.run so the user can view the dashboard in their browser. Connect with ssh, forwarding local port 9876 to remote port 80 on the keyless localhost.run endpoint (ssh -R 80:localhost:9876 ssh://nokey@localhost.run). Redirect output to a log file, wait 10 seconds, then grep the log for the .lhr.life URL. Give the user the URL with /dashboard/ appended. The tunnel URL changes each time — give the user the new one if restarted.
+Use an SSH reverse tunnel via localhost.run so the user can view the dashboard in their browser. Connect with ssh, forwarding local port 9876 to remote port 80 on the keyless localhost.run endpoint (ssh -R 80:localhost:9876 ssh://nokey@localhost.run). Redirect output to a log file, wait 10 seconds, then search\_files the log for the .lhr.life URL. Give the user the URL with /dashboard/ appended. The tunnel URL changes each time — give the user the new one if restarted.
 
 ## Save and Load
 

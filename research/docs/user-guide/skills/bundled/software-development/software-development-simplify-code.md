@@ -98,7 +98,7 @@ Use `delegate_task` **batch mode** — pass all four tasks in one `tasks` array 
 
 **No delegation available?** If you can't call `delegate_task` in this context (you're a leaf subagent, delegation is disabled, or the budget is exhausted), do NOT skip the review or drop angles. Work through all four reviewer angles yourself, sequentially, in this context — same search standards, same finding format. Then say clearly in your final summary that this was a single-pass inline review, not the parallel fan-out, so the user knows what actually ran.
 
-Give **every** reviewer the **complete diff** (not fragments — cross-file issues hide in the gaps) plus the absolute repo path so they can search the wider codebase. Each reviewer gets `terminal`, `file`, and `search` toolsets (so they can `git`, `read_file`, and `search_files`/grep).
+Give **every** reviewer the **complete diff** (not fragments — cross-file issues hide in the gaps) plus the absolute repo path so they can search the wider codebase. Each reviewer gets `terminal`, `file`, and `search` toolsets (so they can `git`, `read_file`, and `search_files`).
 
 Tell each reviewer to:
 
@@ -120,7 +120,7 @@ Pass these four goals (drop any the user's focus excludes):
 
 **Reviewer 1 — Code Reuse**
 
-> Review this diff for code that duplicates functionality already in the codebase. Search utility modules, shared helpers, and adjacent files (use search\_files / grep) for existing functions, constants, or patterns the new code could call instead of reimplementing. Flag: new functions that duplicate existing ones; hand-rolled logic that an existing utility already does (manual string/path manipulation, custom env checks, ad-hoc type guards, re-implemented parsing). For each, name the existing thing to use and where it lives.
+> Review this diff for code that duplicates functionality already in the codebase. Search utility modules, shared helpers, and adjacent files (use search\_files) for existing functions, constants, or patterns the new code could call instead of reimplementing. Flag: new functions that duplicate existing ones; hand-rolled logic that an existing utility already does (manual string/path manipulation, custom env checks, ad-hoc type guards, re-implemented parsing). For each, name the existing thing to use and where it lives.
 
 **Reviewer 2 — Code Quality**
 
@@ -157,7 +157,7 @@ Wait for all four to return (batch mode returns them together).
 -   **Don't drift into bug-hunting.** If a reviewer surfaces a genuine correctness bug, report it prominently — but as a separate "found a bug" note, not folded into cleanup fixes. Correctness review is a different pass with different verification standards.
 -   **Respect project conventions.** If the repo has AGENTS.md / CLAUDE.md / HERMES.md or a linter config, fold those rules into the reviewer prompts so suggestions match house style instead of fighting it.
 -   **Large diffs blow context.** If the diff is huge, scope it down before delegating — four subagents each carrying a 5000-line diff is expensive and may truncate.
--   **Over-trusting dead code tools.** `knip`, `ts-prune`, and `depcheck` flag exports that ARE used dynamically (string-based imports, reflection). Always grep for the symbol name before removing — a clean tool report is not proof.
+-   **Over-trusting dead code tools.** `knip`, `ts-prune`, and `depcheck` flag exports that ARE used dynamically (string-based imports, reflection). Always `search_files` for the symbol name before removing — a clean tool report is not proof.
 -   **Renaming without checking public contracts.** Export names, API route paths, DB column names, and config keys are contracts — even if the name is bad, renaming breaks consumers. Tag public-contract changes as RISKY; never auto-rename them.
 -   **Removing "unnecessary" error handling.** An empty catch block or ignored error might be intentional — the error is expected and benign in that context. Flag it, don't remove it; let the human decide.
 -   **Not every special case is a band-aid.** Compat shims, staged migrations, and isolation layers around vendored code look like altitude violations but are deliberate design. Check `git blame` and surrounding comments before flagging; when the intent is unclear, mark `confidence: low`.

@@ -185,11 +185,7 @@ def compute(x, y):
 
 Run the code normally. You land at the `breakpoint()` line with full access to locals.
 
-**Don't forget to remove `breakpoint()` before committing.** Use `git diff` or a pre-commit grep:
-
-```
-rg -n 'breakpoint\(\)' --type py
-```
+**Don't forget to remove `breakpoint()` before committing.** Use `git diff` or `search_files` with `pattern="breakpoint\(\)"`, `file_glob="*.py"`.
 
 ## Recipe 2: Launch a script under pdb (no source edits)
 
@@ -451,12 +447,7 @@ Long-lived. Use `remote-pdb` at a handler, or `debugpy` with `--wait-for-client`
 -    For remote debug, confirm the port is actually listening: `ss -tlnp | grep 5678`
 -    First breakpoint actually hits (if it doesn't, you likely have `PYTHONBREAKPOINT=0`, you're under a parallel/capturing runner, or execution finished before attach)
 -    `where` / `w` shows the expected call stack
--    Post-debug cleanup: no stray `breakpoint()` / `set_trace()` in committed code
-    
-    ```
-    rg -n 'breakpoint\(\)|set_trace\(|debugpy\.listen' --type py
-    ```
-    
+-    Post-debug cleanup: no stray `breakpoint()` / `set_trace()` in committed code (`search_files` with `pattern="breakpoint\(\)|set_trace\(|debugpy\.listen"`, `file_glob="*.py"`)
 
 ## One-Shot Recipes
 
