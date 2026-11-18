@@ -18,7 +18,7 @@ import { marked } from "marked";
 import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
 import { githubHeaders, fetchReadme, fetchAllMetadata } from "../lib/github.js";
-import { REFRESHED_CONTENT_PATHS } from "../lib/build-artifacts.js";
+import { REFRESHED_CONTENT_PATHS, SITE_CHROME_ROOTS } from "../lib/build-artifacts.js";
 import { validateSkills, SKILLS_CATEGORY } from "./validate-skills-json.js";
 import { validatePlugins } from "./validate-plugins-json.js";
 
@@ -364,7 +364,6 @@ const PAGE_FOOTER = `<footer class="page-footer">
 // document itself (not injected client-side) for keyboard users and crawlers.
 function refreshSiteChrome() {
   const targets = ["index.html", "404.html"];
-  const roots = ["guide", "dev", "reports", "privacy", "about", "masterclass"];
 
   const collect = (relDir) => {
     const absDir = path.join(ROOT, relDir);
@@ -375,7 +374,7 @@ function refreshSiteChrome() {
       else if (entry.name.endsWith(".html")) targets.push(rel);
     }
   };
-  for (const relDir of roots) collect(relDir);
+  for (const relDir of SITE_CHROME_ROOTS) collect(relDir);
 
   const activeFor = (rel) => {
     if (rel === "index.html") return "home";
