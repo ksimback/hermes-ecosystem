@@ -162,7 +162,7 @@ Nothing points a client at an attempt until publish. The updater compares versio
 
 The desktop workflow's optional `termux_upgrade_from_tag` input names an exact published release with a Termux R2 handoff. Explicit non-publishing desktop builds retain no downloadable job artifacts.
 
-The desktop workflow takes a `jobs` input with the groups `darwin-arm64`, `win32-arm64`, `win32-x64`, `win32-bundle`, `linux-x64`, `linux-arm64`, and `termux`. Stable calls it once per group, except the linux groups, which wait for a real Linux build, and the `termux` and any other group whose lane the claim leaves out, which it does not call. The Mac arch and the Windows bundle stage a receipt, and each install arm starts from its own receipt as soon as its own bytes are staged. `acceptance` is the one join that blocks publication.
+The desktop workflow takes a `jobs` input with the groups `darwin-arm64`, `win32-arm64`, `win32-x64`, `win32-bundle`, `linux-x64`, `linux-arm64`, and `termux`. Stable calls it once per group, except the linux groups, whose diagnostic AppImage builds no lane selects yet, and the `termux` and any other group whose lane the claim leaves out, which it does not call. The Mac arch and the Windows bundle stage a receipt, and each install arm starts from its own receipt as soon as its own bytes are staged. `acceptance` is the one join that blocks publication.
 
 Every gate and every candidate starts straight after `admit`. CI is a gate that `acceptance` requires, not a lock the signed builds wait behind, so a slow gate cannot delay a bundle; the price is that a broken `main` still pays for signed candidates that `acceptance` then refuses. The `smoke-win32-universal` job is gone; the per-arch MSIX smokes cover each arch, and the Windows install arms install the `.msixbundle` on both arches. Stable runs those two MSIX smokes in its `win32-bundle` call, beside assembly, not in the per-arch calls: assembly starts as soon as both arches are built instead of waiting for the slower arch's smoke, and the bundle call (so `candidate-manifest`) still fails when either smoke fails.
 
@@ -234,7 +234,7 @@ For an existing stable release that predates this metadata, supply `baseline-man
 -   Install/update E2E and native signed-package acceptance are **not** deferred. Only a claim without the `install-e2e`, `smoke` or `upgrade` lane removes them, and the gate then requires them to be skipped.
 -   PR-only history, label and diff review checks do not apply to a stable tag. All applicable source CI jobs still run, regardless of changed paths.
 -   OSV vulnerability findings retain their existing advisory policy. Required scanner execution failures are failures, not advisory findings.
--   Disabled Linux desktop packaging is not claimed as shipped. Native Linux PM bundles, Docker, Nix and install/update checks remain required.
+-   Linux desktop AppImages, diagnostic canary builds, are not claimed as shipped. Native Linux PM bundles, Docker, Nix and install/update checks remain required.
 -   Housekeeping, autofix, comment and skills-index/deploy workflows are not release acceptance suites.
 
 ## Implementation ownership

@@ -152,6 +152,14 @@ both
 
 Allow tools from this server to run concurrently
 
+`single_instance`
+
+bool
+
+stdio
+
+Only one live child may exist system-wide (single-writer datastore). A second context that finds the resource already held parks quietly (no timed self-probe) and revives on an explicit reconnect — see the MCP guide
+
 `skip_preflight`
 
 bool

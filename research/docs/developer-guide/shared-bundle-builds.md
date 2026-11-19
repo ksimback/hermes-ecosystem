@@ -282,7 +282,7 @@ The archive must have no expiration lifecycle rule. Release pruning does not cov
 
 The checks below distinguish product tests from distribution acceptance. Signed installers and Android device execution require their native runners.
 
-The macOS dmgbuild acquisition owner is part of packaging preparation, not the strict build. Native DMG creation, detach diagnostics, signing and notarization must be exercised after tool-provider changes. Windows x64/ARM64 and macOS x64/ARM64 cold/warm and signed-artifact acceptance remain separate from Linux helper tests. Linux desktop release lanes remain disabled.
+The macOS dmgbuild acquisition owner is part of packaging preparation, not the strict build. Native DMG creation, detach diagnostics, signing and notarization must be exercised after tool-provider changes. Windows x64/ARM64 and macOS x64/ARM64 cold/warm and signed-artifact acceptance remain separate from Linux helper tests. Linux desktop AppImages build on canary tags as diagnostic artifacts, with no smoke and no feed.
 
 Focused helper tests cannot establish all of these requirements:
 
