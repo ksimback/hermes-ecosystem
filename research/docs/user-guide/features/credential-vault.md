@@ -21,7 +21,7 @@ There is nothing to set up.
 
 **Desktop** — a "Save your github.com login?" card with an identifier field and a masked password field. _Save & sign in_ stores it and continues; _Don't save_ tells the agent to stop asking for this turn.
 
-From then on the agent lists your saved logins, types the identifier itself and fills the password through Hermes. The tool result it sees is `{filled_fields: 1, origin: "https://github.com"}`; the password is also registered with the redactor so a later page read cannot echo it back.
+From then on the agent lists your saved logins and fills the identifier and the password through Hermes: the identifier is typed as trusted browser input so framework-controlled forms keep it, and the password is written straight into its field, never as keystrokes another frame on the page could catch. A fill counts only once the page has held every value for a moment; a page that reverts it, moves focus while it is being typed, or leaves the login's site before the fill is checked gets a refusal instead. The tool result it sees is `{filled_fields: 2, identifier_filled: true, origin: "https://github.com"}` (when the form has no single box for the identifier, the fill skips it and tells the agent to type it before submitting); the password is also registered with the redactor so a later page read cannot echo it back.
 
 ### Desktop preview or managed browser
 
@@ -51,7 +51,7 @@ It is **read-only** and needs no master password: Hermes reads only the site and
 
 ## Paying and filling addresses
 
-Cards and addresses work the same way as logins: saved once (**Settings → Passwords & Logins → Add**, or `hermes vault add`), bound to the checkout site, and filled by the agent on that site only. **Every card fill asks you first**, with the same approval prompt as a dangerous command; declining writes nothing. Headless sessions (cron, webhooks, the API server) cannot confirm and are refused, so a prompt injection that reaches a checkout page can ask, but it cannot spend. Address fills need no confirmation.
+Cards and addresses work the same way as logins: saved once (**Settings → Passwords & Logins → Add**, or `hermes vault add`), bound to the checkout site, and filled by the agent on that site only. **Every card fill asks you first**, with the same approval prompt as a dangerous command; declining writes nothing. Headless sessions (cron, webhooks, the API server) cannot confirm and are refused, so a prompt injection that reaches a checkout page can ask, but it cannot spend. Address fills need no confirmation. Card and address values are written straight into their fields like the password; only a login's identifier is ever typed as browser input.
 
 ## Managing what's saved
 

@@ -78,7 +78,7 @@ Precedence note
 
 For the keys it pins, managed scope deliberately wins over the shell environment too — otherwise it would not be "managed." This is the one place that inverts the usual "an environment variable overrides config.yaml" rule, and it applies only to the specific keys the managed layer specifies.
 
-When the managed `config.yaml` pins a non-empty `terminal.backend`, a profile `.env` that exists but cannot be read (a sandbox launcher withholds it and passes the keys as environment) loads as absent with a warning; without that pin the read error still stops Hermes.
+When the managed `config.yaml` pins a non-empty `terminal.backend`, a profile `.env` or `.op.env` that exists but cannot be read (a sandbox launcher withholds them and passes the keys as environment) loads as absent with a warning; without that pin the read error still stops Hermes.
 
 ## Seeing what's managed
 
