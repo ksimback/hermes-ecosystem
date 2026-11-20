@@ -92,6 +92,22 @@ Gemini 3.8 Flash
 
 `google/gemini-3.8-flash`
 
+Gemini 4 Neon
+
+`google/gemini-4-neon`
+
+Gemini 4 Hydrogen
+
+`google/gemini-4-hydrogen`
+
+Gemini 4 Carbon
+
+`google/gemini-4-carbon`
+
+Gemini 4 Argon
+
+`google/gemini-4-argon`
+
 Gemini 3.7 Flash
 
 `google/gemini-3.7-flash`
@@ -122,7 +138,7 @@ Gemini 2.5 Flash
 
 `global` region for Gemini 3.x
 
-The Gemini 3.x preview models are served through the `global` endpoint. Regional endpoints (`us-central1`, etc.) may 404 them. Leave `region: global` unless you have a specific reason to pin a region.
+The Gemini 3.x preview models and the Gemini 4 models are served through the `global` endpoint. Regional endpoints (`us-central1`, etc.) may 404 them. Leave `region: global` unless you have a specific reason to pin a region.
 
 ## Switching Models Mid-Session
 
@@ -135,7 +151,7 @@ The Gemini 3.x preview models are served through the `global` endpoint. Regional
 
 ## Reasoning / Thinking
 
-Vertex exposes Gemini's thinking budget through the OpenAI-compatible surface. Hermes maps its reasoning-effort setting onto `extra_body.google.thinking_config` automatically, so `reasoning_effort` works the same way it does on other Gemini surfaces.
+Vertex exposes Gemini's thinking budget through the OpenAI-compatible surface. Hermes maps its reasoning-effort setting onto `extra_body.google.thinking_config` automatically, so `reasoning_effort` works the same way it does on other Gemini surfaces. On Gemini 4 Hydrogen and Neon, the `xhigh`, `max` and `ultra` efforts send the `xhigh` thinking level; Gemini 4 Argon and Carbon stop at `high`. Long decode (output past 64K) is not available on this surface.
 
 ## Diagnostics
 

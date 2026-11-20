@@ -137,6 +137,12 @@ ID
 
 Notes
 
+Gemini 4 Neon
+
+`gemini-4-neon`
+
+Gemini 4 model with 1M context window, 64K single-request output (long decode up to 1M), and an `xhigh` thinking level. Paid tier only
+
 Gemini 4 Hydrogen
 
 `gemini-4-hydrogen`
@@ -237,7 +243,7 @@ Per-request cap
 
 1,048,576 tokens minus the input (long decode)
 
-Gemini 4 Hydrogen has a fourth level, `xhigh`: on Hydrogen, Hermes sends `xhigh` for the `xhigh`, `max` and `ultra` efforts, with the same output budgets as above. Google's own default level for Hydrogen is `high`.
+Gemini 4 Hydrogen and Gemini 4 Neon have a fourth level, `xhigh`: on Hydrogen and Neon, Hermes sends `xhigh` for the `xhigh`, `max` and `ultra` efforts, with the same output budgets as above. Google's own default level for Hydrogen and Neon is `high`.
 
 Without long decode a single request stops at 65,536 output tokens when streaming (32,768 non-streaming), thinking included. With `xhigh` or `max`, Hermes raises `maxOutputTokens` and, when a request reaches the per-request cap with budget left (`finishReason: CONTINUATION`), resends the same request with Google's `continuationToken` until the model finishes. The hops are joined into one reply.
 
