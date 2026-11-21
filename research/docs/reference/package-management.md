@@ -86,6 +86,18 @@ Python generations
 
 `installs/INSTALL_KEY/environments/`.
 
+PM runtime generations
+
+`installs/INSTALL_KEY/pm-runtime/generations/`.
+
+Generation leases
+
+`installs/INSTALL_KEY/leases/environments/GENERATION/` and `leases/pm-runtime/GENERATION/`.
+
+Install and runtime-preparation locks
+
+`installs/INSTALL_KEY/locks/`.
+
 Sync and update receipts
 
 `logs/update_receipts/` under the active home.
@@ -93,6 +105,8 @@ Sync and update receipts
 The install key derives from the canonical source or payload-repository path. Separate checkouts therefore have separate Python selections. Profiles that share an installation can contribute dependencies to the same environment. Their configuration and credentials remain profile-scoped.
 
 Do not edit facts or generation paths manually. Launchers resolve the selected environment before third-party imports. Processes retain their existing imports until they restart. Garbage collection preserves selected generations and lease-managed generations with live readers.
+
+A launch writes its leases and locks beside the generations, never inside them. A sandbox (Landlock, a rootless container mount, systemd `ReadOnlyPaths=`) can therefore keep `environments/` and `pm-runtime/generations/` read-only and grant write access to `installs/INSTALL_KEY/leases/` and `installs/INSTALL_KEY/locks/` alone. Those two paths do not change between builds, so the policy needs no new exception after an update. Both directories exist after the first launch on a writable install. Processes started on an earlier release keep leasing inside each generation (`.leases/`) and locking `installs/INSTALL_KEY/.install.lock` and `pm-runtime/.prepare.lock` until they exit. Garbage collection honours a lease in either place, and installers also lock the old files whenever they can open them.
 
 Downloads share a lock per partial URL. A failed or paused transfer cannot publish a partial destination, and garbage collection cannot delete a live transfer's files. Resume reuses ranges only when their recorded length, validator, and optional hash still match. Without a strong ETag or pinned hash, an interrupted transfer restarts instead of mixing different versions. The small `.locks/` files remain after completion so waiting processes use the same lock.
 
