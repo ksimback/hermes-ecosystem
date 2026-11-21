@@ -1,12 +1,17 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { test } from "node:test";
 
 import {
   GENERATED_ARTIFACT_PATHS,
   REFRESHED_CONTENT_PATHS,
+  SITE_CHROME_ROOTS,
   assertNoUnstagedChanges,
+  git,
   parsePorcelainStatus,
+  stageGeneratedArtifacts,
 } from "../lib/build-artifacts.js";
 
 test("refreshed content manifest covers the hand-authored pages + drafts", () => {
@@ -41,8 +46,10 @@ test("generated artifact manifest covers current build outputs", () => {
   assert.deepEqual(GENERATED_ARTIFACT_PATHS, [
     "index.html",
     "404.html",
-    ...REFRESHED_CONTENT_PATHS,
+    ...REFRESHED_CONTENT_PATHS.filter((file) => file.startsWith("drafts/")),
+    "guide/",
     "dev/",
+    "reports/",
     "privacy/",
     "about/",
     "masterclass/",
@@ -52,7 +59,6 @@ test("generated artifact manifest covers current build outputs", () => {
     "use-cases/",
     "skills/",
     "plugins/",
-    "reports/",
     "sitemap.xml",
     "robots.txt",
     "llms.txt",
@@ -70,24 +76,18 @@ test("generated artifact manifest covers current build outputs", () => {
 test("every hand-authored page refreshed by the build is staged", () => {
   for (const outputPath of REFRESHED_CONTENT_PATHS) {
     assert.ok(
-      GENERATED_ARTIFACT_PATHS.includes(outputPath),
+      GENERATED_ARTIFACT_PATHS.some((entry) => entry === outputPath || (entry.endsWith("/") && outputPath.startsWith(entry))),
       `${outputPath} is missing from the generated artifact manifest`
     );
   }
 });
 
 test("every root refreshSiteChrome rewrites is staged", () => {
-  // refreshSiteChrome() restamps nav/footer on these hand-authored trees; a
-  // root missing from the manifest leaves an unstaged change and fails the
-  // bot commit (the /about launch did exactly this).
   const src = fs.readFileSync("scripts/build-pages.js", "utf-8");
-  const m = src.match(/const roots = \[([^\]]*)\];/);
-  assert.ok(m, "refreshSiteChrome roots list not found in build-pages.js");
-  const roots = [...m[1].matchAll(/"([^"]+)"/g)].map((r) => r[1]);
-  assert.ok(roots.length > 0);
-  for (const root of roots) {
+  assert.match(src, /for \(const relDir of SITE_CHROME_ROOTS\) collect\(relDir\)/);
+  for (const root of SITE_CHROME_ROOTS) {
     assert.ok(
-      GENERATED_ARTIFACT_PATHS.some((p) => p === `${root}/` || p.startsWith(`${root}/`)),
+      GENERATED_ARTIFACT_PATHS.includes(`${root}/`),
       `${root}/ is refreshed by build-pages but missing from the generated artifact manifest`
     );
   }
@@ -131,4 +131,25 @@ test("assertNoUnstagedChanges fails loudly on silently dropped artifacts", () =>
     }),
     /data\/new-generated-file\.json/
   );
+});
+
+test("stages a refreshed mobile guide without weakening the unstaged-file guard", (t) => {
+  const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "atlas-artifacts-"));
+  t.after(() => fs.rmSync(cwd, { recursive: true, force: true }));
+  git(["init", "-q"], { cwd });
+
+  for (const entry of [...GENERATED_ARTIFACT_PATHS, "guide/mobile/index.html"]) {
+    const file = path.join(cwd, entry.endsWith("/") ? `${entry}index.html` : entry);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, "old masthead\n");
+  }
+  git(["add", "."], { cwd });
+  git(["-c", "user.name=Test", "-c", "user.email=test@example.invalid", "commit", "-qm", "fixture"], { cwd });
+
+  fs.writeFileSync(path.join(cwd, "guide/mobile/index.html"), "refreshed masthead\n");
+  stageGeneratedArtifacts({ cwd });
+  assert.equal(git(["diff", "--cached", "--name-only"], { cwd }).trim(), "guide/mobile/index.html");
+
+  fs.writeFileSync(path.join(cwd, "unexpected-output.json"), "{}\n");
+  assert.throws(() => stageGeneratedArtifacts({ cwd }), /unexpected-output\.json/);
 });
