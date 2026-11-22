@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>0xrsydn/nix-hermes-agent — Hermes Agent Deployment &amp; Infra | Hermes Atlas</title>
-<meta name="description" content="nix-hermes-agent provides a Nix package and NixOS module for the declarative deployment of Hermes Agent. It allows users to manage the entire agent…">
+<meta name="description" content="nix-hermes-agent provides a Nix package and NixOS module for Hermes Agent, building on upstream’s package and module. It starts from upstream’s minimal…">
 <link rel="canonical" href="https://hermesatlas.com/projects/0xrsydn/nix-hermes-agent">
 <meta property="og:title" content="0xrsydn/nix-hermes-agent — Hermes Atlas">
-<meta property="og:description" content="nix-hermes-agent provides a Nix package and NixOS module for the declarative deployment of Hermes Agent. It allows users to manage the entire agent…">
+<meta property="og:description" content="nix-hermes-agent provides a Nix package and NixOS module for Hermes Agent, building on upstream’s package and module. It starts from upstream’s minimal…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/0xrsydn/nix-hermes-agent">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="0xrsydn/nix-hermes-agent — Hermes Atlas">
-<meta name="twitter:description" content="nix-hermes-agent provides a Nix package and NixOS module for the declarative deployment of Hermes Agent. It allows users to manage the entire agent…">
+<meta name="twitter:description" content="nix-hermes-agent provides a Nix package and NixOS module for Hermes Agent, building on upstream’s package and module. It starts from upstream’s minimal…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=nix-hermes-agent&amp;subtitle=Nix+package+and+NixOS+module+for+Hermes+Agent+by+Nous+Research&amp;kind=project+%C2%B7+deployment">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/0xrsydn/nix-hermes-agent#software",
   "name": "nix-hermes-agent",
-  "description": "nix-hermes-agent provides a Nix package and NixOS module for the declarative deployment of Hermes Agent. It allows users to manage the entire agent lifecycle—including configurations, workspace documents, and systemd services—through a single Nix configuration file. The module features a robust update policy that uses quarantined candidate pull requests to prevent broken upstream releases from affecting stable deployments. It also supports secure secrets management by keeping API keys and authen",
+  "description": "nix-hermes-agent provides a Nix package and NixOS module for Hermes Agent, building on upstream’s package and module. It starts from upstream’s minimal variant, lets users select optional dependency groups, and uses upstream’s locked Python dependencies.",
   "url": "https://hermesatlas.com/projects/0xrsydn/nix-hermes-agent",
   "codeRepository": "https://github.com/0xrsydn/nix-hermes-agent",
   "applicationCategory": "DeveloperApplication",
@@ -46,7 +46,7 @@
     "name": "0xrsydn",
     "url": "https://github.com/0xrsydn"
   },
-  "dateModified": "2026-11-22T21:18:48.000Z",
+  "dateModified": "2026-11-22T22:04:04.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -80,7 +80,7 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">321·repos</span>
+    <span id="meta-count">322·repos</span>
     <span id="meta-version">hermes·v0.23.3</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
@@ -140,11 +140,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">nix-hermes-agent provides a Nix package and NixOS module for the declarative deployment of Hermes Agent. It allows users to manage the entire agent lifecycle—including configurations, workspace documents, and systemd services—through a single Nix configuration file. The module features a robust update policy that uses quarantined candidate pull requests to prevent broken upstream releases from affecting stable deployments. It also supports secure secrets management by keeping API keys and authentication tokens outside of the Nix store.</p>
+    <p class="summary-text">nix-hermes-agent provides a Nix package and NixOS module for Hermes Agent, building on upstream’s package and module. It starts from upstream’s minimal variant, lets users select optional dependency groups, and uses upstream’s locked Python dependencies.</p>
     <ul class="summary-highlights">
-      <li>Declarative configuration for cli-config.yaml and workspace documents</li>
-      <li>Hybrid skill management supporting both Nix-managed and CLI-installed skills</li>
-      <li>Secure secrets integration via systemd EnvironmentFiles and sops-nix</li>
+      <li>Provides an upstream-based NixOS module and standalone package.</li>
+      <li>Allows selecting optional dependency groups.</li>
+      <li>Applies patches to the installed Python code.</li>
     </ul>
   </div>
 </section>
@@ -155,448 +155,111 @@
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
     <h2>nix-hermes-agent</h2>
-<p>Declarative Nix package and NixOS module for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research.</p>
-<p>Everything is configured in Nix. Config, documents, secrets, service — one <code>nixos-rebuild switch</code> and it's live.</p>
-<p>Upstream pins are promoted through quarantined candidate PRs so a broken Hermes
-release cannot replace the last-known-good package. See
-<a href="https://github.com/0xrsydn/nix-hermes-agent/blob/main/docs/UPDATE-POLICY.md">the upstream update policy</a>.</p>
-<h3>Quick Start</h3>
-<h4>1. Add to your flake</h4>
+<p>A lean Nix package and NixOS module for
+<a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> by Nous Research.</p>
+<p>Upstream ships its own uv2nix package and NixOS module. This flake builds on
+both and changes what gets installed:</p>
+<ul>
+<li><strong>Only the integrations you use.</strong> Upstream's default package turns on every
+optional dependency group: local speech-to-text, premium TTS, DingTalk,
+Feishu, Matrix, Bedrock, Modal, Daytona, Vercel and more. This package starts
+from upstream's <code>minimal</code> variant and adds only the groups you list.</li>
+<li><strong>Shared tools.</strong> <code>ffmpeg</code>, <code>git</code> and <code>openssh</code> come from your nixpkgs, so
+Hermes uses the same store paths as the rest of your system instead of
+bringing its own (upstream's ffmpeg alone is 432 MiB).</li>
+<li><strong>A real version.</strong> Upstream's package reports <code>0.0.0</code>, which makes plugins
+with a <code>requires_hermes</code> gate refuse to load. This package stamps the release
+version from <code>release.nix</code>.</li>
+<li><strong>Carried fixes.</strong> Patches in <code>patches/</code> apply to the installed Python code,
+and every launcher points at the patched environment.</li>
+</ul>
+<p>Python dependencies stay exactly as upstream locks them in <code>uv.lock</code>, so you
+run the dependency set upstream tested.</p>
+<h3>Use the NixOS module</h3>
 <pre><code class="language-nix">{
   inputs.nix-hermes.url = "github:0xrsydn/nix-hermes-agent";
 
-  outputs = { self, nixpkgs, nix-hermes, ... }: {
+  outputs = { nixpkgs, nix-hermes, ... }: {
     nixosConfigurations.myhost = nixpkgs.lib.nixosSystem {
       modules = [
-        nix-hermes.nixosModules.hermes-agent
-        ./hermes.nix  # your config (see below)
+        nix-hermes.nixosModules.default
+        {
+          services.hermes-agent = {
+            enable = true;
+            settings.model.default = "anthropic/claude-sonnet-4.6";
+            environmentFiles = [ "/run/secrets/hermes-env" ];
+          };
+        }
       ];
     };
   };
 }
 </code></pre>
-<h4>2. Configure declaratively</h4>
-<pre><code class="language-nix"># hermes.nix
-{ ... }:
-{
-  services.hermes-agent = {
-    enable = true;
-
-    # ── Declarative config (renders to cli-config.yaml) ──
-    config = {
-      model = {
-        default = "anthropic/claude-opus-4.6";
-        provider = "openrouter";
-      };
-      terminal = {
-        backend = "local";
-        timeout = 180;
-        lifetime_seconds = 300;
-      };
-      agent = {
-        max_turns = 60;
-        reasoning_effort = "medium";
-      };
-      memory = {
-        memory_enabled = true;
-        user_profile_enabled = true;
-        memory_char_limit = 2200;
-        nudge_interval = 10;
-      };
-      compression = {
-        enabled = true;
-        threshold = 0.85;
-        summary_model = "google/gemini-3-flash-preview";
-      };
-      toolsets = [ "all" ];
-    };
-
-    # ── Secrets (not in Nix store) ──
-    environmentFiles = [
-      "/run/secrets/hermes-env"  # ANTHROPIC_API_KEY, TELEGRAM_TOKEN, etc.
-    ];
-
-    # ── Non-secret env vars ──
-    environment = {
-      LLM_MODEL = "anthropic/claude-opus-4.6";
-    };
-
-    # ── Workspace documents (inline or file paths) ──
-    documents = {
-      "SOUL.md" = ''
-        # SOUL.md
-        You are a sharp, pragmatic AI assistant.
-      '';
-      "AGENTS.md" = ''
-        # AGENTS.md
-        Read SOUL.md first. Then help the user.
-      '';
-      "USER.md" = ''
-        # USER.md
-        Name: Your Human
-      '';
-      # Or reference a file:
-      # "SOUL.md" = ./documents/SOUL.md;
-    };
-
-    # ── Declarative skills (phase 1) ──
-    skills = {
-      bundled.enable = true;
-      optional = [
-        "creative/blender-mcp"
-      ];
-      custom = {
-        repo-watch = {
-          category = "research";
-          source = ./skills/repo-watch;
-        };
-      };
-    };
-
-    # ── MCP servers ──
-    mcpServers = {
-      context7 = {
-        command = "npx";
-        args = [ "-y" "@upstash/context7-mcp@latest" ];
-      };
-    };
-
-    # ── Extra tools on PATH ──
-    extraPackages = with pkgs; [ jq ripgrep curl ];
-  };
-}
-</code></pre>
-<h4>Secrets Management</h4>
-<h5>Plain files approach</h5>
-<pre><code class="language-nix">services.hermes-agent = {
-  environmentFiles = [ "/run/secrets/hermes-env" ];
-  authFile = "/run/secrets/hermes-auth.json";  # optional, for OAuth tokens
+<p><code>nixosModules.default</code> is upstream's module with this package as the default
+<code>services.hermes-agent.package</code>. Every upstream option works unchanged; see
+upstream's <code>nix/moduleCommon.nix</code> and <code>nix/nixosModules.nix</code>.</p>
+<h3>Choose the integrations</h3>
+<pre><code class="language-nix">services.hermes-agent.package = nix-hermes.lib.mkHermesAgent {
+  inherit pkgs;
+  dependencyGroups = [ "messaging" "exa" "fal" "parallel-web" ];
+  ffmpeg = pkgs.ffmpeg;
 };
 </code></pre>
-<h5>sops-nix approach</h5>
-<pre><code class="language-nix">sops.secrets."hermes/env" = {
-  sopsFile = ./secrets/hermes.yaml;
-  owner = "hermes";
-  group = "hermes";
-};
-
-sops.secrets."hermes/auth" = {
-  sopsFile = ./secrets/hermes.yaml;
-  owner = "hermes";
-  group = "hermes";
-};
-
-services.hermes-agent = {
-  enable = true;
-  environmentFiles = [ config.sops.secrets."hermes/env".path ];
-  authFile = config.sops.secrets."hermes/auth".path;
-  config.model = {
-    default = "anthropic/claude-opus-4.6";
-    provider = "openrouter";
-  };
-};
-</code></pre>
-<h5>Example secrets file structure</h5>
-<pre><code class="language-yaml">hermes/env: |
-    OPENROUTER_API_KEY=sk-or-...
-    ANTHROPIC_API_KEY=sk-ant-...
-    TELEGRAM_TOKEN=123456:ABC...
-    GLM_API_KEY=...
-hermes/auth: |
-    {"nous": {"token": "...", "refresh": "..."}, "codex": {"token": "..."}}
-</code></pre>
-<h4>3. Create secrets file</h4>
-<pre><code class="language-bash"># /run/secrets/hermes-env (or wherever you manage secrets)
-OPENROUTER_API_KEY=sk-or-...
-ANTHROPIC_API_KEY=sk-ant-...
-TELEGRAM_TOKEN=123456:ABC...
-TELEGRAM_ALLOWED_USERS=your_user_id
-</code></pre>
-<h4>4. Deploy</h4>
-<pre><code class="language-bash">nixos-rebuild switch
-systemctl status hermes-agent
-journalctl -u hermes-agent -f
-</code></pre>
-<h3>Architecture</h3>
-<pre><code>You (Telegram/Discord/WhatsApp/Slack) → Gateway → Tools → Machine does things
-</code></pre>
-<h4>How it works</h4>
-<ol>
-<li><code>services.hermes-agent.config</code> attrset is deep-merged and rendered to <code>cli-config.yaml</code></li>
-<li>Documents are installed into the workspace directory</li>
-<li>Secrets stay outside the Nix store via <code>environmentFiles</code></li>
-<li>systemd service runs <code>hermes gateway</code> with everything wired up</li>
-</ol>
-<h4>Directory layout</h4>
-<pre><code>/var/lib/hermes/              # stateDir
-├── .hermes/                  # Hermes home (HERMES_HOME)
-│   ├── cli-config.yaml       # Generated from config option
-│   ├── .env                  # Secrets (from environmentFiles)
-│   ├── memory/               # Agent memory (runtime)
-│   ├── skills/               # Skills (runtime)
-│   └── logs/                 # Session logs
-├── workspace/                # workingDirectory
-│   ├── SOUL.md               # From documents option
-│   ├── AGENTS.md
-│   └── USER.md
-└── logs/
-    └── gateway.log           # Service log
-</code></pre>
-<h3>Declarative Skills vs Native Hermes Skills</h3>
-<p>The <code>skills</code> option is designed to <strong>augment Hermes</strong>, not replace Hermes' native skill workflow.</p>
-<p>Both approaches compose into the same runtime directory:</p>
-<ul>
-<li><code>${stateDir}/.hermes/skills/</code></li>
-</ul>
-<p>That means you can use both:</p>
-<ul>
-<li><strong>declarative skills</strong> from Nix</li>
-<li><strong>interactive/runtime skills</strong> from <code>hermes skills install</code></li>
-</ul>
-<h4>Ownership model</h4>
-<h5>Nix-managed</h5>
-<p>Skills declared via:</p>
-<ul>
-<li><code>services.hermes-agent.skills.bundled</code></li>
-<li><code>services.hermes-agent.skills.optional</code></li>
-<li><code>services.hermes-agent.skills.custom</code></li>
-</ul>
-<p>are reconciled by the module and tracked in:</p>
-<ul>
-<li><code>.nix-managed-skills.json</code></li>
-</ul>
-<p>These paths are considered <strong>owned by Nix</strong>.</p>
-<h5>Hermes-managed</h5>
-<p>Skills installed later via Hermes CLI, plus hub metadata under:</p>
-<ul>
-<li><code>.hermes/skills/.hub/</code></li>
-</ul>
-<p>are left alone by the module <strong>unless they collide with a Nix-managed path</strong>.</p>
-<h4>Collision rule</h4>
-<p>If a Hermes CLI install and a declarative Nix skill target the same installed path,
-<strong>the declarative Nix version wins on the next activation/rebuild</strong>.</p>
-<p>Example:</p>
-<ul>
-<li>Nix declares <code>creative/blender-mcp</code></li>
-<li>user later installs another <code>creative/blender-mcp</code> via Hermes CLI</li>
-</ul>
-<p>On the next rebuild, the Nix-declared version is restored.</p>
-<h4>Recommended workflow</h4>
-<p>Use <strong>Hermes CLI</strong> for:</p>
-<ul>
-<li>experimentation</li>
-<li>hub/community skill discovery</li>
-<li>temporary installs</li>
-<li>trying before keeping</li>
-</ul>
-<p>Use <strong>Nix declarative skills</strong> for:</p>
-<ul>
-<li>stable/reproducible deployments</li>
-<li>bundled upstream skills you always want</li>
-<li>selected optional skills you want pinned to the package revision</li>
-<li>local custom house skills stored in git</li>
-</ul>
-<p>A good pattern is:</p>
-<ol>
-<li>install/try a skill interactively,</li>
-<li>decide it is worth keeping,</li>
-<li>promote it into Nix config if you want it reproducible.</li>
-</ol>
-<p>This keeps <code>nix-hermes-agent</code> useful without interfering with the native Hermes experience.</p>
-<h3>Module Options</h3>
 <table>
 <thead>
 <tr>
-<th>Option</th>
-<th>Type</th>
+<th>Argument</th>
 <th>Default</th>
-<th>Description</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>enable</code></td>
-<td>bool</td>
-<td><code>false</code></td>
-<td>Enable Hermes Agent gateway</td>
+<td><code>pkgs</code></td>
+<td>required</td>
+<td>Your nixpkgs. <code>ffmpeg</code>, <code>git</code> and <code>openssh</code> default to its packages.</td>
 </tr>
 <tr>
-<td><code>config</code></td>
-<td>attrset</td>
-<td><code>{}</code></td>
-<td>Declarative config (→ cli-config.yaml)</td>
+<td><code>dependencyGroups</code></td>
+<td><code>[ "messaging" ]</code></td>
+<td>Upstream's optional dependency groups (the extras in its <code>pyproject.toml</code>). <code>messaging</code> covers Telegram, Discord and Slack.</td>
 </tr>
 <tr>
-<td><code>configFile</code></td>
-<td>path</td>
-<td><code>null</code></td>
-<td>Use existing config file (overrides <code>config</code>)</td>
+<td><code>ffmpeg</code></td>
+<td><code>pkgs.ffmpeg-headless</code></td>
+<td>The ffmpeg on Hermes' <code>PATH</code>. Pass the one already on your system to share it.</td>
 </tr>
 <tr>
-<td><code>documents</code></td>
-<td>attrset</td>
-<td><code>{}</code></td>
-<td>Workspace files (string or path values)</td>
+<td><code>git</code>, <code>openssh</code></td>
+<td><code>pkgs.git</code>, <code>pkgs.openssh</code></td>
+<td>The same, for git and ssh.</td>
 </tr>
 <tr>
-<td><code>skills</code></td>
-<td>attrset</td>
-<td><code>{}</code></td>
-<td>Declarative Hermes skills (bundled, optional, custom local)</td>
-</tr>
-<tr>
-<td><code>environmentFiles</code></td>
-<td>list</td>
-<td><code>[]</code></td>
-<td>Secret env files (systemd EnvironmentFile)</td>
-</tr>
-<tr>
-<td><code>environment</code></td>
-<td>attrset</td>
-<td><code>{}</code></td>
-<td>Non-secret env vars</td>
-</tr>
-<tr>
-<td><code>authFile</code></td>
-<td>path</td>
-<td><code>null</code></td>
-<td>OAuth credentials file (auth.json)</td>
-</tr>
-<tr>
-<td><code>mcpServers</code></td>
-<td>attrset</td>
-<td><code>{}</code></td>
-<td>MCP server configs (merged into config)</td>
-</tr>
-<tr>
-<td><code>user</code></td>
-<td>string</td>
-<td><code>"hermes"</code></td>
-<td>Service user</td>
-</tr>
-<tr>
-<td><code>group</code></td>
-<td>string</td>
-<td><code>"hermes"</code></td>
-<td>Service group</td>
-</tr>
-<tr>
-<td><code>stateDir</code></td>
-<td>path</td>
-<td><code>/var/lib/hermes</code></td>
-<td>State directory</td>
-</tr>
-<tr>
-<td><code>workingDirectory</code></td>
-<td>path</td>
-<td><code>${stateDir}/workspace</code></td>
-<td>Working directory</td>
-</tr>
-<tr>
-<td><code>extraPackages</code></td>
-<td>list</td>
-<td><code>[]</code></td>
-<td>Extra packages on PATH</td>
-</tr>
-<tr>
-<td><code>extraArgs</code></td>
-<td>list</td>
-<td><code>[]</code></td>
-<td>Extra <code>hermes gateway</code> args</td>
-</tr>
-<tr>
-<td><code>logPath</code></td>
-<td>path</td>
-<td><code>${stateDir}/logs/gateway.log</code></td>
-<td>Log file</td>
-</tr>
-<tr>
-<td><code>restart</code></td>
-<td>string</td>
-<td><code>"always"</code></td>
-<td>systemd Restart policy</td>
-</tr>
-<tr>
-<td><code>restartSec</code></td>
-<td>int</td>
-<td><code>5</code></td>
-<td>Restart delay</td>
+<td><code>patches</code></td>
+<td><code>patches/*.patch</code></td>
+<td>Patches applied to the installed Python code; <code>[ ]</code> disables them.</td>
 </tr>
 </tbody></table>
-<h3>Config Reference</h3>
-<p>The <code>config</code> attrset maps directly to Hermes' <code>cli-config.yaml</code>. Key sections:</p>
-<table>
-<thead>
-<tr>
-<th>Section</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>model</code></td>
-<td>Default model, provider, base_url</td>
-</tr>
-<tr>
-<td><code>terminal</code></td>
-<td>Backend (local/ssh/docker/modal), cwd, timeout</td>
-</tr>
-<tr>
-<td><code>agent</code></td>
-<td>max_turns, verbose, reasoning_effort, personalities</td>
-</tr>
-<tr>
-<td><code>memory</code></td>
-<td>memory_enabled, user_profile_enabled, char limits</td>
-</tr>
-<tr>
-<td><code>compression</code></td>
-<td>Context compression settings</td>
-</tr>
-<tr>
-<td><code>session_reset</code></td>
-<td>Auto-reset policy for messaging</td>
-</tr>
-<tr>
-<td><code>skills</code></td>
-<td>Skill creation nudge settings</td>
-</tr>
-<tr>
-<td><code>toolsets</code></td>
-<td>Which tool groups to enable</td>
-</tr>
-<tr>
-<td><code>mcp_servers</code></td>
-<td>MCP server connections</td>
-</tr>
-<tr>
-<td><code>delegation</code></td>
-<td>Subagent settings</td>
-</tr>
-<tr>
-<td><code>browser</code></td>
-<td>Browser tool settings</td>
-</tr>
-<tr>
-<td><code>stt</code></td>
-<td>Voice transcription config</td>
-</tr>
-<tr>
-<td><code>display</code></td>
-<td>UI/skin settings</td>
-</tr>
-</tbody></table>
-<p>See the <a href="https://raw.githubusercontent.com/NousResearch/hermes-agent/main/cli-config.yaml.example">full config reference</a>.</p>
-<h3>Just the Package</h3>
-<pre><code class="language-bash"># Run directly
-nix run github:0xrsydn/nix-hermes-agent -- --help
-
-# In a dev shell
-nix develop github:0xrsydn/nix-hermes-agent
-
-# Use the overlay
-nixpkgs.overlays = [ nix-hermes.overlays.default ];
+<p>The result keeps <code>.override</code>, so upstream's module options
+<code>extraDependencyGroups</code> and <code>extraPythonPackages</code> still add to it, and the
+version and patches survive the override.</p>
+<h3>Just the package</h3>
+<pre><code class="language-bash">nix run github:0xrsydn/nix-hermes-agent -- --version
 </code></pre>
+<h3>Updates</h3>
+<p><code>release.nix</code> names the upstream release, and the <code>hermes-agent</code> input in
+<code>flake.nix</code> pins its tag. A scheduled workflow opens a candidate PR for each new
+release, and a nightly job checks this layer against upstream <code>main</code>. See
+<a href="https://github.com/0xrsydn/nix-hermes-agent/blob/main/docs/UPDATE-POLICY.md">docs/UPDATE-POLICY.md</a>.</p>
+<h3>Upgrading from the 0.21 module</h3>
+<p>Up to Hermes 0.21 this flake had its own NixOS module (<code>services.hermes-agent.config</code>,
+<code>skills</code>, rendered <code>cli-config.yaml</code>) and rebuilt the Python dependencies from
+nixpkgs. Upstream's module now covers the same ground, and upstream pins its
+dependencies exactly, so both were replaced. The last version is tagged
+<code>legacy-0.21</code>; pin <code>github:0xrsydn/nix-hermes-agent/legacy-0.21</code> to stay on it.
+To migrate, move <code>config</code> to upstream's <code>settings</code>, and keep <code>documents</code>,
+<code>environment</code> and <code>environmentFiles</code> as they are.</p>
 <h3>License</h3>
-<p>MIT (same as upstream)</p>
+<p>MIT</p>
 
   </section>
 </details>
