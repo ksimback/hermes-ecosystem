@@ -1,0 +1,57 @@
+name: Unit tests
+
+# Runs the full unit suite (tests/*.test.js) on every PR and on main.
+#
+# Before 2026-11-22 CI ran only four targeted validator tests, so a PR could
+# break the page build without any check failing (#1440 -> a week of failed
+# build-pages runs, fixed in #1490).
+#
+# Several tests check *generated* output (masthead version, homepage counters,
+# sitemap coverage). Against the committed tree they go red whenever a Hermes
+# release or catalog change lands before the bot rebuild, which would block
+# unrelated PRs. So the job first regenerates pages from this checkout's
+# inputs (no LLM calls; build-pages only reads cached summaries), and the
+# suite then checks exactly what this PR would ship. The regenerated files
+# are discarded with the runner.
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: unit-tests-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Regenerate pages from this checkout
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/build-pages.js
+
+      - name: Run full unit suite
+        run: npm test
