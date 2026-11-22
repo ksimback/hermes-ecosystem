@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>conorbronsdon/agent-memory-kit — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="agent-memory-kit is a file-based curation loop designed to identify contradictions and outdated information within an agent's memory store. It uses a set of…">
+<meta name="description" content="agent-memory-kit provides five commands for capturing, recalling, and curating agent memory stored as Markdown files. Its read-only curation pass checks for…">
 <link rel="canonical" href="https://hermesatlas.com/projects/conorbronsdon/agent-memory-kit">
 <meta property="og:title" content="conorbronsdon/agent-memory-kit — Hermes Atlas">
-<meta property="og:description" content="agent-memory-kit is a file-based curation loop designed to identify contradictions and outdated information within an agent's memory store. It uses a set of…">
+<meta property="og:description" content="agent-memory-kit provides five commands for capturing, recalling, and curating agent memory stored as Markdown files. Its read-only curation pass checks for…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/conorbronsdon/agent-memory-kit">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="conorbronsdon/agent-memory-kit — Hermes Atlas">
-<meta name="twitter:description" content="agent-memory-kit is a file-based curation loop designed to identify contradictions and outdated information within an agent's memory store. It uses a set of…">
+<meta name="twitter:description" content="agent-memory-kit provides five commands for capturing, recalling, and curating agent memory stored as Markdown files. Its read-only curation pass checks for…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=agent-memory-kit&amp;subtitle=The+curation+pass+for+agent+memory%3A+a+thin%2C+file-based+loop+that+finds+rot+and+contradictions+and+proposes+evidence-cited+diffs+you+review.+Markdown+in%2C+JSON+out%2C+no+database.+The+&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/conorbronsdon/agent-memory-kit#software",
   "name": "agent-memory-kit",
-  "description": "agent-memory-kit is a file-based curation loop designed to identify contradictions and outdated information within an agent's memory store. It uses a set of five markdown-based commands to capture, recall, and audit memory through evidence-cited diffs without requiring a database or vector store.",
+  "description": "agent-memory-kit provides five commands for capturing, recalling, and curating agent memory stored as Markdown files. Its read-only curation pass checks for stale facts and inconsistencies, then proposes evidence-cited diffs for human review.",
   "url": "https://hermesatlas.com/projects/conorbronsdon/agent-memory-kit",
   "codeRepository": "https://github.com/conorbronsdon/agent-memory-kit",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "conorbronsdon",
     "url": "https://github.com/conorbronsdon"
   },
-  "dateModified": "2026-09-24T08:56:53.000Z",
+  "dateModified": "2026-11-18T08:07:55.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -81,8 +81,8 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">318·repos</span>
-    <span id="meta-version">hermes·v0.23.1</span>
+    <span id="meta-count">321·repos</span>
+    <span id="meta-version">hermes·v0.23.3</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Shell</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-09-24</span>
+    <span><span class="meta-label">updated</span>2026-11-18</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">agent-memory-kit is a file-based curation loop designed to identify contradictions and outdated information within an agent's memory store. It uses a set of five markdown-based commands to capture, recall, and audit memory through evidence-cited diffs without requiring a database or vector store.</p>
+    <p class="summary-text">agent-memory-kit provides five commands for capturing, recalling, and curating agent memory stored as Markdown files. Its read-only curation pass checks for stale facts and inconsistencies, then proposes evidence-cited diffs for human review.</p>
     <ul class="summary-highlights">
-      <li>Operates using plain markdown files and JSON diffs.</li>
-      <li>Includes 'rot' and 'lint' curators to find stale or conflicting facts.</li>
-      <li>Uses a local git repository to track and revert memory changes.</li>
+      <li>Includes rot and lint curators.</li>
+      <li>Uses Markdown and JSON, with no database.</li>
+      <li>Memory changes can be reviewed and reverted with Git.</li>
     </ul>
   </div>
 </section>
@@ -228,6 +228,10 @@
 </ul>
 <p>Trade-off: no automatic relevance-decay daemon. So the forgetting has to be a deliberate pass, which is exactly what <code>/dream</code> is.</p>
 <h3>Install (Claude Code)</h3>
+<p>You need <code>git</code> with a commit identity set, because <code>init.sh</code> makes a seed commit in the memory repo. On a fresh machine, set one first:</p>
+<pre><code class="language-bash">git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+</code></pre>
 <p>From zero, clone the kit and point <code>init.sh</code> at where your context should live:</p>
 <pre><code class="language-bash">git clone https://github.com/conorbronsdon/agent-memory-kit.git
 cd agent-memory-kit
@@ -255,6 +259,14 @@ Done. Next:
   1. Fill in CONTEXT.md (who you are + routing) and state/current.md.
   2. If memory lives outside this repo, export AGENT_MEMORY_DIR=/home/you/my-context/memory
   3. Open your agent here and run /start. Close with /end. Curate with /dream.
+
+Try it now: run /dream against the seeded memory to see an empty-but-valid pass.
+
+Memory dir: /home/you/my-context/memory  (keep it local if it holds anything private)
+</code></pre>
+<p>If the seed commit fails (for example, no git identity), <code>init.sh</code> exits with <code>seed commit failed</code> and leaves the memory repo initialized with its files staged. A re-run then stops with <code>memory git repository exists but has no seed commit</code>. Set your identity, make the commit yourself, then re-run to finish:</p>
+<pre><code class="language-bash">git -C ~/my-context/memory commit -m "seed memory"
+./init.sh --path ~/my-context
 </code></pre>
 <p><strong>Windows:</strong> run <code>init.sh</code> from Git Bash or WSL. The manual steps below work in any shell, including PowerShell and <code>cmd</code>.</p>
 <p>Manual install, if you'd rather wire it yourself:</p>
@@ -281,6 +293,7 @@ Done. Next:
 <p><code>init.sh</code> builds this for you. To do it by hand: copy the <code>context-starter/</code> tree, fill in <code>CONTEXT.md</code> and <code>state/current.md</code>, then <code>git init</code> inside <code>memory/</code>:</p>
 <pre><code class="language-bash">cd memory &amp;&amp; git init &amp;&amp; git add -A &amp;&amp; git commit -m "seed memory"
 </code></pre>
+<p>The tree above shows <code>ARCHIVE.md</code> and <code>archive/</code>, but <code>context-starter/</code> does not include them. <code>/dream-apply</code> creates <code>archive/</code> and appends the first row to <code>ARCHIVE.md</code> the first time it retires a memory, so neither is needed up front.</p>
 <h3>Memory directory resolution</h3>
 <p>The dream commands resolve the memory dir in this order:</p>
 <ol>
@@ -317,11 +330,11 @@ Done. Next:
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 69.1K</div>
+        <div class="stars">★ 69.3K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 61.4K</div>
+        <div class="stars">★ 62.7K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -337,11 +350,11 @@ Done. Next:
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/Signet-AI/signetai">
-        <div class="stars">★ 315</div>
+        <div class="stars">★ 317</div>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 317</div>
+        <div class="stars">★ 318</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">

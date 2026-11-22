@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>jiangxingfan1-coder/Open-Agent-API — Hermes Agent Integrations &amp; Bridges | Hermes Atlas</title>
+<meta name="description" content="Open Agent API exposes agents through an API-compatible gateway: callers use an agent ID as the `model` value and can connect through OpenAI, Anthropic, or…">
+<link rel="canonical" href="https://hermesatlas.com/projects/jiangxingfan1-coder/Open-Agent-API">
+<meta property="og:title" content="jiangxingfan1-coder/Open-Agent-API — Hermes Atlas">
+<meta property="og:description" content="Open Agent API exposes agents through an API-compatible gateway: callers use an agent ID as the `model` value and can connect through OpenAI, Anthropic, or…">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://hermesatlas.com/projects/jiangxingfan1-coder/Open-Agent-API">
+<meta property="og:site_name" content="Hermes Atlas">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=Open-Agent-API&amp;subtitle=Turn+agents+into+an+API.+Call+an+agent%2C+not+a+model%2C+with+the+official+OpenAI%2C+Claude+or+Gemini+SDK.+%E6%8A%8A%E6%99%BA%E8%83%BD%E4%BD%93%E5%8F%98%E6%88%90+API%E3%80%82&amp;kind=project+%C2%B7+integrations">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="jiangxingfan1-coder/Open-Agent-API — Hermes Atlas">
+<meta name="twitter:description" content="Open Agent API exposes agents through an API-compatible gateway: callers use an agent ID as the `model` value and can connect through OpenAI, Anthropic, or…">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=Open-Agent-API&amp;subtitle=Turn+agents+into+an+API.+Call+an+agent%2C+not+a+model%2C+with+the+official+OpenAI%2C+Claude+or+Gemini+SDK.+%E6%8A%8A%E6%99%BA%E8%83%BD%E4%BD%93%E5%8F%98%E6%88%90+API%E3%80%82&amp;kind=project+%C2%B7+integrations">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "home", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 2, "name": "integrations &amp; bridges", "item": "https://hermesatlas.com/" },
+    { "@type": "ListItem", "position": 3, "name": "open-agent-api" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://hermesatlas.com/projects/jiangxingfan1-coder/Open-Agent-API#software",
+  "name": "Open-Agent-API",
+  "description": "Open Agent API exposes agents through an API-compatible gateway: callers use an agent ID as the `model` value and can connect through OpenAI, Anthropic, or Gemini SDKs. The README describes publishing agents, issuing API keys, and handling approval pauses for sensitive actions; it also includes a local sample agent and a quickstart flow.",
+  "url": "https://hermesatlas.com/projects/jiangxingfan1-coder/Open-Agent-API",
+  "codeRepository": "https://github.com/jiangxingfan1-coder/Open-Agent-API",
+  "applicationCategory": "CommunicationApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "TypeScript",
+  "license": "https://spdx.org/licenses/Apache-2.0.html",
+  "author": {
+    "@type": "Organization",
+    "name": "jiangxingfan1-coder",
+    "url": "https://github.com/jiangxingfan1-coder"
+  },
+  "dateModified": "2026-11-22T18:07:00.000Z",
+  "interactionStatistic": {
+    "@type": "InteractionCounter",
+    "interactionType": {
+      "@type": "LikeAction"
+    },
+    "userInteractionCount": 3
+  },
+  "isPartOf": {
+    "@id": "https://hermesatlas.com/#website"
+  }
+}
+</script>
+<link rel="alternate" type="application/rss+xml" title="Hermes Atlas — new projects" href="/rss.xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/js/theme-init.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/page.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
+  <div class="mast-meta" aria-label="Site metadata">
+    <span id="meta-count">321·repos</span>
+    <span id="meta-version">hermes·v0.23.3</span>
+    <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
+  </div>
+  <nav class="mast-nav" aria-label="Primary">
+    <a href="/ecosystem/" class="active">ecosystem</a>
+    <a href="/lists/">lists</a>
+    <a href="/skills/">skills</a>
+    <a href="/plugins/">plugins</a>
+    <a href="/use-cases/">use cases</a>
+    <a href="/guide/">handbook</a>
+    <a href="/masterclass/">masterclass</a>
+    <a href="/dev/">dev</a>
+    <a href="/reports/">reports</a>
+    <a href="https://github.com/ksimback/hermes-ecosystem">source</a>
+  </nav>
+  <button id="theme-toggle" class="mast-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <span class="tt-icon tt-light" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.25M12 19.75V22M4.93 4.93l1.59 1.59M17.48 17.48l1.59 1.59M2 12h2.25M19.75 12H22M4.93 19.07l1.59-1.59M17.48 6.52l1.59-1.59"/></svg>
+    </span>
+    <span class="tt-icon tt-dark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="breadcrumb" aria-label="Breadcrumb">
+  <a href="/">home</a><span class="sep">/</span><a href="/">integrations &amp; bridges</a><span class="sep">/</span>open-agent-api
+</div>
+
+<main id="main">
+
+<section class="project">
+  <h1 class="project-name">
+    <span class="org">jiangxingfan1-coder</span><span class="slash">/</span>Open-Agent-API
+  </h1>
+  <p class="project-desc">Turn agents into an API. Call an agent, not a model, with the official OpenAI, Claude or Gemini SDK. 把智能体变成 API。</p>
+
+  <div class="meta-row">
+    <span class="stars">★ 3</span>
+    <span><span class="meta-label">lang</span>TypeScript</span>
+    <span><span class="meta-label">license</span>Apache-2.0</span>
+    
+    <span><span class="meta-label">updated</span>2026-11-22</span>
+  </div>
+
+  <div class="actions">
+    <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API" target="_blank" rel="noopener" class="btn-primary">view on github →</a>
+    <a href="https://openagentapi.pages.dev/" target="_blank" rel="noopener" class="btn-secondary">homepage</a>
+  </div>
+</section>
+
+
+
+
+
+
+<section class="project-summary">
+  <div class="section-label">overview</div>
+  <div>
+    <p class="summary-text">Open Agent API exposes agents through an API-compatible gateway: callers use an agent ID as the `model` value and can connect through OpenAI, Anthropic, or Gemini SDKs. The README describes publishing agents, issuing API keys, and handling approval pauses for sensitive actions; it also includes a local sample agent and a quickstart flow.</p>
+    <ul class="summary-highlights">
+      <li>Uses SDK clients with a gateway Base URL and API key</li>
+      <li>Publishes agents and creates scoped caller keys</li>
+      <li>Sample agent runs without a model or network access</li>
+    </ul>
+  </div>
+</section>
+
+
+
+<details class="readme-details">
+  <summary class="readme-toggle">full readme from github</summary>
+  <section class="readme" data-nosnippet>
+    <p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/brand/oaa-mark-inverse.svg">
+    <img src="https://raw.githubusercontent.com/jiangxingfan1-coder/Open-Agent-API/main/docs/brand/oaa-mark-ink.svg" alt="Open Agent API logo: a single line weaving an O and an A together" width="64">
+  </picture>
+</p>
+
+<h1 align="center">Open Agent API</h1>
+
+<p align="center">
+  <strong>Turn agents into an API.</strong><br>
+  You call an agent, not a model: one with its own tools, skills, and permissions. One call is one task.
+</p>
+
+<p align="center">
+  English · <a href="README.zh-CN.md">简体中文</a>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-0e6b63?style=flat-square"></a>
+  <a href="package.json"><img alt="Node.js 24.18 or newer on the 24 or 26 line" src="https://img.shields.io/badge/node-%E2%89%A524.18%20%3C27-0e6b63?style=flat-square"></a>
+  <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/jiangxingfan1-coder/Open-Agent-API/actions/workflows/ci.yml/badge.svg"></a>
+</p>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-dark-en.png">
+    <img src="https://raw.githubusercontent.com/jiangxingfan1-coder/Open-Agent-API/main/docs/assets/hero-light-en.png" alt="The Open Agent API console overview (sample data): two tasks waiting for you at the top, then task count, success rate and median duration, then recent activity and the agent list." width="100%">
+  </picture>
+</p>
+
+<h3>Live Walkthrough: Publish → Key → SDK Call</h3>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/jiangxingfan1-coder/Open-Agent-API/main/docs/assets/demo-light-en.gif" width="830" height="525" alt="End-to-end onboarding demo (light mode): publishing the local Antigravity agent in the console, issuing a scoped sk-oaa API key, and streaming an OpenAI SDK call synced live to the task inspector">
+  <br>
+  <sub>Light-mode end-to-end flow: 1. Publish local agent (<code>agent/antigravity</code>) → 2. Issue a scoped <code>sk-oaa-…</code> key → 3. Stream an official OpenAI SDK call and inspect the completed timeline · See the <a href="docs/quickstart.md">Five-Minute Quickstart</a></sub>
+</p>
+
+<h3>Thirty seconds</h3>
+<p>Skip the rewrite. Swap two lines in your existing OpenAI, Anthropic, or Gemini SDK client—point <code>base_url</code> at the gateway and put an agent ID in <code>model</code>—and your app calls a full agent that uses its own tools, remembers across turns, and stops when a sensitive action needs your sign-off.</p>
+<pre><code class="language-diff"> from openai import OpenAI
+
+ client = OpenAI(
+-    base_url="https://api.openai.com/v1",
+-    api_key=OPENAI_API_KEY,
++    base_url="http://127.0.0.1:8787/v1",  # your Open Agent API
++    api_key="sk-oaa-…",                   # an API key created in the console
+ )
+
+ resp = client.chat.completions.create(
+-    model="&lt;some-model&gt;",
++    model="agent/research",               # the agent's call name
+     messages=[{"role": "user", "content": "Compare these three quotes on lead time and total price"}],
+ )
+ print(resp.choices[0].message.content)
+</code></pre>
+<p>The same in Node.js:</p>
+<pre><code class="language-diff"> import OpenAI from 'openai';
+
+ const client = new OpenAI({
+-  baseURL: 'https://api.openai.com/v1',
+-  apiKey: process.env.OPENAI_API_KEY,
++  baseURL: 'http://127.0.0.1:8787/v1', // your Open Agent API
++  apiKey: process.env.OAA_API_KEY, // an API key created in the console
+ });
+
+ const resp = await client.chat.completions.create({
+-  model: '&lt;some-model&gt;',
++  model: 'agent/research', // the agent's call name
+   messages: [{ role: 'user', content: 'Compare these three quotes on lead time and total price' }],
+ });
+ console.log(resp.choices[0].message.content);
+</code></pre>
+<p>From the caller's side, there are only a Base URL and an API key. <code>model</code> names the agent, not a raw model; which model runs behind it, what tools it gets, and what requires approval stay on the gateway side. See <a href="#protocols-and-sdks">Protocols and SDKs</a> for Anthropic, Gemini, MCP, and other clients.</p>
+<h3>Running in three minutes</h3>
+<p>The source route below requires Node.js 24.18 or newer on the 24 or 26 line (<code>engines</code> in <code>package.json</code> is <code>&gt;=24.18.0 &lt;27</code>). Use it on Linux, or see <a href="#other-ways-to-install">Other ways to install</a> for desktop downloads and Docker. No Redis or model keys are needed.</p>
+<h4>Start from source</h4>
+<pre><code class="language-sh">git clone https://github.com/jiangxingfan1-coder/Open-Agent-API.git
+cd Open-Agent-API
+npm ci --omit=optional --ignore-scripts
+npm run build
+npm run oaa -- quickstart
+</code></pre>
+<p><code>quickstart</code> does five things and prints each one: initializes <code>.oaa/</code> (skipped if already done) → starts the gateway in the background, listening on <code>127.0.0.1</code> only (reused if already running) → publishes the offline sample agent <code>agent/sample</code> → creates a caller key stored in the private file <code>.oaa/keys/quickstart.key</code> (reused if it still works; the key itself is not printed) → makes one real call with that key and prints the answer. It ends with the Base URL, the <code>model</code>, a curl command you can paste and run, a minimal snippet for the official OpenAI SDK, and the next steps to connect your own agent: one line such as <code>oaa connect codex</code> for each of codex, claude, or agy that is installed; otherwise how to use a built-in agent with a model key. Running it again creates nothing new.</p>
+<p>The sample agent is <code>examples/sample-agent.mjs</code> in the repository: it <strong>calls no model, uses no network, and costs nothing</strong>; its answer is generated by fixed rules and opens by saying it is the Open Agent API offline sample agent. It demonstrates steps, one tool call, and, when the task contains "approve", a pause for your approval (approve in the console, or with the caller key via <code>POST /v1/runs/{id}/actions/{action}</code>), after which the same task finishes.</p>
+<p>The default port is 8787; if it is taken, <code>quickstart</code> reports <code>port_in_use</code> and you can pick another with <code>npm run oaa -- quickstart --port 18787</code> (the port is saved in <code>.oaa/config.json</code>; replace <code>8787</code> below accordingly). Stop the gateway with <code>npm run oaa -- stop</code>.</p>
+<h4>Other ways to install</h4>
+<p>Choose an asset from the <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/releases/latest">latest product release</a> and follow <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/install.md">the installation guide</a>. Older releases have different assets: v0.0.64, for example, had macOS and Windows installers but no Linux archive or npm tarball.</p>
+<ul>
+<li><strong>macOS and Windows</strong>: download the macOS <code>arm64</code>/<code>x64</code> DMG or Windows <code>x64</code> ZIP from <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/releases">Releases</a>. The bundles include Node.js and are not Apple-notarized or commercially signed.</li>
+<li><strong>Linux</strong>: <a href="#start-from-source">start from source</a> or <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/install.md#docker">build with Docker Compose</a>. Use the <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/install.md#linux">Linux package instructions</a> only for a release that actually lists Linux assets.</li>
+<li><strong>Docker</strong> (<code>docker compose up --build -d</code> from a checkout): binds only to host <code>127.0.0.1:8787</code>. Because the container does not ship your host agent CLIs, use it for built-in agents with model keys, remote ACP / A2A agents, or external workers connecting in. CI builds and smoke-tests the <code>amd64</code> image on every push; multi-arch <code>ghcr.io</code> images push on published releases.</li>
+<li><strong>npm tarball</strong> (requires Node.js 24.18+ on line 24 or 26): <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/install.md#npm">use a release that lists the tarball, or build it locally</a>. The package is not on npmjs.org.</li>
+</ul>
+<h4>Connect your own agent: <code>oaa connect</code></h4>
+<p><code>npm run oaa -- connect codex</code> (or <code>claude</code>, <code>agy</code>, or an ACP agent name listed by <code>oaa doctor</code>) does it in one step: checks that it is installed → enables it on this gateway (only this gateway's record; its own configuration and sign-in are untouched) → publishes it as <code>agent/codex</code> (skipped if already published) → checks that the quickstart key can call it → prints the <code>model</code> and a curl you can paste. connect <strong>does not call</strong> the agent: the first call uses its own sign-in and quota on this machine. If it is not installed, connect says to install and sign in to it, then run quickstart so the gateway sees it.</p>
+<h4>Give the built-in agent a model: <code>oaa connect &lt;preset&gt;</code></h4>
+<p>The built-in agent (the gateway's own agent loop) needs a model provider. <code>oaa connect ollama</code> (a local model, no key) or <code>oaa connect deepseek --key-file ~/.config/deepseek.key</code> (also <code>openai</code>, <code>anthropic</code>, <code>gemini-api</code>, <code>openrouter</code>, <code>lmstudio</code>, <code>openai-compatible</code> and others) writes the provider into <code>.oaa/config.json</code>, restarts a gateway that this data directory started, publishes <code>agent/assistant</code> (a general assistant with the workspace file tools), checks the quickstart key and prints a curl. A key is never typed on the command line: <code>--key-env</code> names a variable and <code>--key-file</code> points to a file. It does not call a model unless you add <code>--test</code> (loopback endpoints only), and <code>oaa models</code> lists the configured providers and whether their keys resolve. The presets were taken from each service's documentation and have only been run against fake services. See <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/models.md">docs/models.md</a>.</p>
+<h4>Step by step</h4>
+<p>To publish an agent that does real work, you need Codex, Claude Code, Antigravity, or an ACP agent installed and signed in on this machine (<code>npm run oaa -- doctor</code> lists what it finds), or an API key for a model provider (to run a built-in agent). These are the steps behind <code>quickstart</code>:</p>
+<pre><code class="language-sh">npm run oaa -- init                 # writes .oaa/config.json and the admin key .oaa/admin.token
+npm run oaa -- serve --detach       # starts in the background, prints {"url": …, "pid": …}; stop with npm run oaa -- stop
+</code></pre>
+<p>To run in the foreground use <code>npm start</code> (it holds the terminal; run the next commands in a second one).</p>
+<ol>
+<li><p><strong>Open the console</strong> at <code>http://127.0.0.1:8787</code> and select <code>.oaa/admin.token</code> in the connection settings. Keep this admin key private.</p>
+</li>
+<li><p><strong>Publish an agent</strong> using "Publish agent" in the console. From a source checkout (<code>oaa init</code>), discovered CLI agents start disabled until you toggle them on under <strong>Execution machines</strong>; the unified desktop app enables detected local engines (<code>codex</code>, <code>claude</code>, <code>agy</code>, <code>dsh</code>) automatically on first launch while binding only to <code>127.0.0.1</code>. Preferences stay local in the gateway's database—it never touches an external tool's global config or extracts credentials—and you can disable any engine at any time. CLI equivalent (<code>default</code> inherits the CLI's own configured model):</p>
+<pre><code class="language-sh">npm run oaa -- publish-native --id agent/codex --engine codex --models default \
+  --url http://127.0.0.1:8787 --token-file .oaa/admin.token
+</code></pre>
+<p>You can also define a built-in agent in OAA-Lang or JSON; see <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/language.md">docs/language.md</a> and <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/operations.md">docs/operations.md</a> (this needs a model provider: <code>oaa connect &lt;preset&gt;</code> above sets one up, and the definition templates in <code>examples/</code> use placeholders).</p>
+</li>
+<li><p><strong>Create an API key</strong> on the console's "API keys" page ("Generate key"). The result page shows the service address (Base URL), the API key (it looks like <code>sk-oaa-…</code> and is shown once), and the model name, each with a copy button. Create one key per calling application. The command-line equivalent (the key goes into a private file and is not printed):</p>
+<pre><code class="language-sh">npm run oaa -- key create --name myapp --agent agent/codex \
+  --url http://127.0.0.1:8787 --token-file .oaa/admin.token
+</code></pre>
+<p>In the output, <code>token_file</code> is the file holding the key (by default <code>.oaa/keys/myapp.key</code>), <code>base_url</code> and <code>model</code> are the two values the SDK code above needs, and <code>try</code> is a curl command you can paste and run. The default scopes are invoke, read, and files; add <code>--approve</code> to let this key approve pending actions too.</p>
+</li>
+<li><p><strong>Make your first call</strong>: put those three values into the Python or Node code above, or run the <code>try</code> command from the previous step. The command line can also submit a background task:</p>
+<pre><code class="language-sh">npm run oaa -- invoke agent/codex --input 'Your task' \
+  --url http://127.0.0.1:8787 --token-file .oaa/keys/myapp.key
+npm run oaa -- wait &lt;the id printed above&gt; --url http://127.0.0.1:8787 --token-file .oaa/keys/myapp.key
+</code></pre>
+<p><code>invoke</code> returns the task <code>id</code> immediately (status <code>queued</code>), <code>wait</code> waits for it to finish, and <code>output</code> reads its text. To avoid repeating <code>--url</code> and <code>--token-file</code>, set <code>OAA_GATEWAY_URL</code> and <code>OAA_TOKEN_FILE</code>. The call shows up in the console's task list.</p>
+</li>
+</ol>
+<p>Model aliases are declared by the publisher and do not guarantee that the upstream account can access them.</p>
+<h4>Common errors</h4>
+<table>
+<thead>
+<tr>
+<th>What you see</th>
+<th>Cause and next step</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HTTP 401 <code>unauthorized</code></td>
+<td>No key, or an invalid one. The OpenAI / Claude / Gemini SDKs send it as <code>Authorization: Bearer</code>, <code>x-api-key</code>, and <code>x-goog-api-key</code>; use the key from step 3</td>
+</tr>
+<tr>
+<td>HTTP 403 <code>scope_denied</code></td>
+<td>This key is not granted this <code>model</code>. The usual cause is a misspelled <code>model</code>: request <code>GET /v1/models</code> with the same key to see which agents it can call</td>
+</tr>
+<tr>
+<td>HTTP 404 <code>agent_not_found</code></td>
+<td>The gateway has no such agent (you see this code with an admin key). Check <code>GET /v1/models</code> as well</td>
+</tr>
+<tr>
+<td>HTTP 503 <code>model_unavailable</code></td>
+<td>The agent is published but nothing can run it: the external agent is not installed or not enabled under "Execution machines", or the built-in agent's model provider is unavailable (for example <code>OPENAI_API_KEY</code> is not set). <code>npm run oaa -- doctor</code> lists the agents found on this machine</td>
+</tr>
+<tr>
+<td>CLI <code>gateway_unreachable</code>, SDK <code>Connection error</code></td>
+<td>The gateway is not running or the address is wrong: <code>npm run oaa -- serve --detach</code>, or check <code>--url</code> and <code>port</code> in <code>.oaa/config.json</code></td>
+</tr>
+</tbody></table>
+<h4>What you can see without installing any agent</h4>
+<p>The <code>agent/sample</code> that <code>quickstart</code> publishes exists for this: with it you can see steps and a tool call (the timeline and steps in the task inspector), and a durable approval when the task contains "approve". It cannot continue a session (a <code>previous_response_id</code> call is refused with <code>native_resume_unsupported</code>, because its ACP process declares neither <code>session/load</code> nor <code>session/resume</code>), and a cancel ends its run <code>incomplete</code> rather than <code>cancelled</code>. For continuation, cancellation, resume, and failure behaviour, <code>test/fixtures/acp-agent.mjs</code> in the repository is the ACP test double (source checkouts only), connected the same way as the sample agent: add <code>{"transport":"acp","command":"&lt;absolute node path&gt;","args":["&lt;absolute repo path&gt;/test/fixtures/acp-agent.mjs","stream"],"enabled":true}</code> under <code>localWorker.adapters</code> in <code>.oaa/config.json</code>, restart the gateway, then <code>publish-native --engine adapter/&lt;name&gt;</code>; with <code>MODE:permission</code> in the input the task stops for approval, and with <code>MODE:hang</code> it keeps running until you cancel it with <code>npm run oaa -- cancel &lt;id&gt;</code>.</p>
+<p>There is also <code>npm run demo</code>: it runs the kernel in-process with a local deterministic model (no gateway) and writes <code>.oaa-demo/report.md</code>.</p>
+<h3>How it differs from model relay platforms</h3>
+<p>Model relay platforms distribute model inference capacity; this distributes complete agents. It borrows the platform shape of that category (accounts, keys, quotas, usage, an admin console) but not its supply model: no subscription pooling, no relaying of login sessions.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Model relay platforms</th>
+<th>Open Agent API</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>What is distributed</td>
+<td>Model inference capacity</td>
+<td>Agents: complete execution units with their own tools, skills, model routes, and permissions</td>
+</tr>
+<tr>
+<td>What goes in <code>model</code></td>
+<td>A model name</td>
+<td>An agent's call name, such as <code>agent/research</code></td>
+</tr>
+<tr>
+<td>What one call is</td>
+<td>One model completion</td>
+<td>One task: a multi-turn tool loop that can be approved, interrupted, and resumed, and that produces artifacts</td>
+</tr>
+</tbody></table>
+<h3>Which agents can be connected</h3>
+<p>You can call agents defined in OAA-Lang or JSON running on the built-in kernel, or local CLI agents already installed on your machine. External agents keep their own tools, model config, and sign-in; the gateway wraps them into one API and takes over queuing, durable approvals, checkpoints, and crash recovery.</p>
+<table>
+<thead>
+<tr>
+<th>Connection</th>
+<th>Streamed text</th>
+<th>Approvals while running</th>
+<th>Caller-tool bridging</th>
+<th>Image input</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Built-in kernel (OAA-Lang / JSON)</td>
+<td>Per token</td>
+<td>Yes; parks on tools needing approval</td>
+<td>Yes</td>
+<td>When the model route accepts images</td>
+<td>Multi-route failover, OAA-Lang 2.5, cron and webhook triggers</td>
+</tr>
+<tr>
+<td>Codex CLI</td>
+<td>Per token</td>
+<td>Yes</td>
+<td>Yes (<code>oaa-caller</code> MCP + elicitation auto-allow)</td>
+<td>Protocol items implemented from docs (not live-tested with images)</td>
+<td>App-server transport with <code>thread/resume</code>, cooperative <code>turn/interrupt</code>, and tool-free planning</td>
+</tr>
+<tr>
+<td>Claude Code</td>
+<td>Per token (deduplicated partial stream)</td>
+<td>Yes</td>
+<td>Yes (<code>oaa-caller</code> MCP)</td>
+<td>Image blocks implemented from docs (not live-tested)</td>
+<td>Official Agent SDK (proprietary package installed separately) using the local CLI sign-in</td>
+</tr>
+<tr>
+<td>Antigravity</td>
+<td>Per token</td>
+<td>Via <code>agy acp</code>; legacy headless denials remain failures</td>
+<td>Yes on both native headless and <code>agy acp</code></td>
+<td>Agent-declared via ACP; else workspace files</td>
+<td>Live model discovery and capability-gated transport selection</td>
+</tr>
+<tr>
+<td>ACP agents</td>
+<td>Per token</td>
+<td>Yes (<code>allow_once</code>)</td>
+<td>Yes</td>
+<td>ACP image block if declared, else workspace file</td>
+<td><a href="https://agentclientprotocol.com">Agent Client Protocol</a>; built-in presets for <code>qoder</code>, <code>opencode-acp</code>, <code>grok-build-acp</code>, <code>deepseek-harness</code>, etc.</td>
+</tr>
+<tr>
+<td>Custom adapter (<code>oaa/1</code> / HTTP)</td>
+<td>Depends on mode</td>
+<td>Yes on <code>oaa/1-stream</code></td>
+<td>No</td>
+<td>stdio: workspace file; HTTP: no</td>
+<td>Lightweight wrapper for any bespoke agent binary</td>
+</tr>
+<tr>
+<td>A2A remote agents</td>
+<td>Yes (SSE)</td>
+<td>Not bridged (<code>input-required</code> ends turn with question)</td>
+<td>No</td>
+<td>No</td>
+<td>Continues the same task via <code>contextId</code></td>
+</tr>
+</tbody></table>
+<p>The full per-protocol capability matrix lives in <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/adapters.md#agentapi-conversion-contract-2026-11-08">docs/adapters.md</a> and is exposed on every agent's <code>conversion</code> field:</p>
+<ul>
+<li>The gap between paths is <strong>interaction depth</strong> (<code>basic</code>, <code>streaming</code>, <code>interactive</code>), not whether an agent can be served as an Agent API.</li>
+<li>External agents inherit host privileges unless sandboxed (POSIX); caller keys must carry <code>host</code> execution scope. Review <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/deploy-public.md">docs/deploy-public.md</a> before exposing keys externally.</li>
+<li>Setting <code>--approvals auto</code> passes permission checks through without pausing—keep it restricted to trusted callers (<a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/protocol.md#approval-policy-for-external-agents-approval-policy-v1">docs/protocol.md</a>).</li>
+<li>When the caller is itself an agent (Cursor, Cline, Claude Code), <code>auto</code> mode delegates client-sent <code>tools</code> to bridging-capable backends as standard <code>tool_calls</code> and resumes the same task with tool results. You can also force <code>managed</code>, <code>bridge</code>, <code>reject</code>, or set <code>clientTools.default</code> (<a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/harness.md">docs/harness.md</a>).</li>
+<li>Image payloads sent to text-only agents are rejected before a run starts (<code>image_input</code> appears in <code>GET /v1/models</code>); remote image URLs are not fetched by default (<a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/images.md">docs/images.md</a>).</li>
+<li>Agents are also callable via MCP (<code>npm run oaa -- mcp</code> or configured in one click via the console's Connections view / <code>oaa integration</code>; see <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/operations.md">docs/operations.md</a>). For safety, MCP deliberately exposes no approval tools.</li>
+</ul>
+<h3>Protocols and SDKs</h3>
+<table>
+<thead>
+<tr>
+<th>Entry</th>
+<th>How it was checked with the official SDKs</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OpenAI Chat Completions and Responses (streaming and not)</td>
+<td>Regression tests live in the repository, using the official <code>openai</code> Node SDK against an in-process gateway, without listening on a port; the compatibility lab below also runs the Python and Node SDKs over a socket</td>
+</tr>
+<tr>
+<td>Claude Messages</td>
+<td>Also regression tests, using the official <code>@anthropic-ai/sdk</code> 1.3.0; the lab runs the Python SDK and a newer Node SDK</td>
+</tr>
+<tr>
+<td>Gemini <code>generateContent</code> / <code>streamGenerateContent</code></td>
+<td>The lab runs <code>google-genai</code> (Python) and <code>@google/genai</code> (Node); regression tests assert the wire format. An earlier one-off check with a temporarily installed <code>@google/genai</code> 3.2.0 is the probe script <a href="examples/gemini-sdk-probe.mjs">examples/gemini-sdk-probe.mjs</a></td>
+</tr>
+<tr>
+<td>The native <code>oaa/1</code> protocol, UAP/1, MCP</td>
+<td>See <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/protocol.md">docs/protocol.md</a></td>
+</tr>
+</tbody></table>
+<p>Beyond those regression tests, a compatibility lab (<code>npm run compat</code>, also run on every push and weekly in CI) runs the real packages against an isolated, offline gateway whose agent is a sample or a deterministic fixture, not a real one: the official <code>openai</code>, <code>anthropic</code> and <code>google-genai</code> Python SDKs and their Node counterparts, the Vercel AI SDK, LangChain, LiteLLM, the OpenAI Agents SDK and LlamaIndex. Open WebUI, LibreChat, Chatbox, Cherry Studio, LobeChat, NextChat, Dify, n8n, Continue, Cline / Roo Code and Zed cannot be installed in a test run, so the request each one sends was read from its source and is replayed against the gateway; Cursor (closed source) is unverified. Which is which, how to configure each client, and how unsupported or ignored parameters are treated: <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/compatibility.md">docs/compatibility.md</a>.</p>
+<p>Any client that speaks one of these protocols works with just a Base URL and an API key; the <code>Authorization: Bearer</code>, <code>x-api-key</code>, and <code>x-goog-api-key</code> headers are all accepted. Unsupported input fails loudly instead of degrading silently: audio and other inline binary parts, for example, are always rejected with 400 <code>unsupported_content</code>; upload the file with <code>POST /v1/files</code> and reference it instead. Parameters that only influence sampling (<code>temperature</code>, <code>top_k</code>, ...) are accepted and ignored, and the response header <code>X-OAA-Ignored-Params</code> says which. See <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/protocol.md#compatibility-endpoint-parameters-errors-and-finish-reasons-060">docs/protocol.md</a>.</p>
+<p><strong>Progress in streams.</strong> A streaming call can also show what the agent is doing: one short line per phase of the run (queued, a tool called, waiting for an approval) is sent in the protocol's own thinking shape, so a client that already shows a model's thinking shows it with no changes. It is on by default for Responses and Gemini, off for Chat Completions and Claude Messages; switch it per request with <code>X-OAA-Progress: reasoning | off</code> or per protocol with <code>streamProgress</code> in the configuration. The answer itself does not change. See <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/progress.md">docs/progress.md</a>.</p>
+<p>Beyond plain text, callers can send <strong>images</strong> on every endpoint (<a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/images.md">docs/images.md</a>), force <strong><code>tool_choice</code></strong> (<code>none</code>, <code>auto</code>, <code>required</code>, or a named function—pushed straight to native drivers and bounded with correction turns on bridged agents, failing cleanly with <code>tool_choice_unmet</code> if unmet), and enforce <strong>schema-validated JSON output</strong> (<code>response_format</code>, <code>text.format</code>, <code>responseSchema</code>, <code>output_config.format</code>): pushed natively where supported (with zero-repair streaming passthrough) and repaired or failed cleanly (<code>structured_output_invalid</code>) everywhere else (<a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/structured-output.md">docs/structured-output.md</a>).</p>
+<h3>Control plane, workbench, and workstation</h3>
+<p>Agents read files, shell out, and edit workspaces. Rather than burying those actions inside ephemeral HTTP calls, the gateway turns every run into a durable task you can pause, inspect, approve, and resume.</p>
+<ul>
+<li><strong>Approvals &amp; quick tray panel</strong>: Actions marked for review pause the run in <code>requires_action</code>. Approve or deny from the console, the inline <code>#workbench</code> card, the desktop tray quick-approval panel, the terminal (<code>oaa approvals</code>, <code>oaa approve</code>, <code>oaa deny</code>), or via API with an <code>approve</code>-scoped key.</li>
+<li><strong>Console <code>#workbench</code> &amp; Local Connections</strong>: Test multi-turn continuation (<code>previous_response_id</code>), paste screenshots, inspect caller-tool bridge rounds, and copy four-protocol SDK snippets right inside the console. Under Connections, configure Codex / OpenCode / DSH API providers or inject one-click MCP bridges for Claude Desktop, Cursor, Windsurf, and Claude Code backed by <code>0600</code> private key files.</li>
+<li><strong>Universal orchestration, durable memory &amp; streaming artifacts</strong>: Route <code>@fast</code>, <code>@best</code>, <code>@eco</code>, <code>recommend</code> (tool-free planner), or an explicit <code>orchestration.planner</code> across engines with automatic failover and OAA-Lang 2.5 pipelines. Persist cross-session context with SQLite FTS5 memory (<code>memory_read</code>, <code>memory_write</code>, <code>memory_search</code>), schedule cron or SHA-256-authenticated inbound webhook triggers, and stream signed artifacts (64 MiB default ceiling, configurable to 256 MiB).</li>
+<li><strong>Cancel, resume, idempotency &amp; observability</strong>: Cancel runs any time (writes cut off mid-flight require human confirmation of outcome before resuming); enforce single-execution via <code>Idempotency-Key</code> (409 on mismatched replay); push signed webhooks (<code>oaa webhook add</code>); and observe runs through timeline replay, W3C <code>traceparent</code>, Prometheus <code>/metrics</code>, and POSIX per-subject <code>srt</code> sandbox pools.</li>
+</ul>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/inspector-dark-en.png">
+    <img src="https://raw.githubusercontent.com/jiangxingfan1-coder/Open-Agent-API/main/docs/assets/inspector-light-en.png" alt="The task inspector (sample data): a coding agent's task stopped at awaiting approval, expanded to show the command it wants to run, npm test, with Reject and Approve buttons at the bottom right." width="100%">
+  </picture>
+</p>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/runs-dark-en.png">
+    <img src="https://raw.githubusercontent.com/jiangxingfan1-coder/Open-Agent-API/main/docs/assets/runs-light-en.png" alt="The task list (sample data): filters for all, running, needs attention, completed, and failed; each row shows the agent, the task, its status, and its duration." width="100%">
+  </picture>
+</p>
+
+<p>After you create an API key in the console, the result page gives the caller everything it needs:</p>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/api-key-dark-en.png">
+    <img src="https://raw.githubusercontent.com/jiangxingfan1-coder/Open-Agent-API/main/docs/assets/api-key-light-en.png" alt="The result page after creating an API key (sample data): the service address https://api.example.com/v1, an obviously fake sample key sk-oaa-exampleexample…, and the model name agent/research, each with a copy button." width="560">
+  </picture>
+</p>
+
+<p>How to use the console is described in <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/console.md">docs/console.md</a>.</p>
+<h3>Offer it as a developer platform</h3>
+<p>The gateway can be offered to developers as a platform: they register themselves, create their own API keys in a portal, and call the agents you list, billed in credits per task. Click "Enable" on the console's developer platform page (saved in the gateway's data, effective after a restart); on the same page you list agents, set prices, issue credits, and manage accounts. You can also add a <code>platform</code> block to the configuration file. When it is not enabled none of this exists, and the gateway behaves as before.</p>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/portal-dark-en.png">
+    <img src="https://raw.githubusercontent.com/jiangxingfan1-coder/Open-Agent-API/main/docs/assets/portal-light-en.png" alt="The developer portal home page (sample data): the headline says you call an agent, not a model, followed by the service address and three ways it differs from model relay platforms." width="100%">
+  </picture>
+</p>
+
+<p>By default developers can call only built-in agents. An operator can also list an external agent (Codex, Claude Code, an ACP agent) for platform accounts, one listing at a time, with a switch that is off by default: the agent then runs as the system user that runs the gateway, so read the security notes first. A per-task price is held when a task starts and released if the task does not complete, token charges never take a balance below zero, and an agent that reports no token usage can only be priced per task.</p>
+<p>Credits are an accounting unit that the operator issues; the platform has no payment channel and sends no email. Billing rules, the API, and limits are in <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/platform.md">docs/platform.md</a>.</p>
+<h3>Desktop app and command line</h3>
+<ul>
+<li><strong>Command line</strong>: <code>oaa --help</code> (<code>npm run oaa -- --help</code> from source) lists all operator commands: <code>quickstart</code>, <code>connect</code>, <code>init</code>, <code>serve</code>, <code>stop</code>, <code>status</code>, <code>doctor</code>, <code>models</code>, <code>prune</code>, <code>key create</code>, <code>publish</code>, <code>publish-native</code>, <code>invoke</code>, <code>wait</code>, <code>approvals</code>, <code>approve</code>, <code>deny</code>, <code>webhook</code>, <code>verify</code>, <code>cancel</code>, <code>resume</code>, <code>nodes</code>, <code>mcp</code>, plus zero-cost <code>check</code> and <code>fmt</code> for OAA-Lang. See <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/cli.md">docs/cli.md</a>.</li>
+<li><strong>Unified Electron desktop app</strong>: lives in <code>desktop/cross-platform</code> (superseding the archived <code>desktop/macos</code> Swift shell) across macOS (<code>arm64</code>/<code>x64</code>), Windows (<code>x64</code>), and Linux (<code>x64</code>/<code>arm64</code>). It enforces renderer sandboxing and <code>contextIsolation</code>, embeds the console, adds a tray quick-approval panel, Dock/tray pending badges, bilingual notifications, three-state port-ownership detection (adopting an orphaned gateway from the same data folder without hijacking foreign instances), and isolated launch-at-login controls. Key scripts: <code>npm run desktop:dev</code>, <code>desktop:smoke</code>, <code>desktop:smoke:matrix</code>, <code>package:mac</code>, <code>package:win</code>, and <code>package:release:linux</code> (<code>OAA_DESKTOP_HOME</code> / <code>OAA_DESKTOP_PORT</code> details in <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/install.md#macos">install.md</a> and <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/releasing.md">releasing.md</a>).</li>
+</ul>
+<h3>Documentation</h3>
+<p>The full index, organized by what you want to do, is in <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/README.md">docs/README.md</a>. Common entry points: <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/quickstart.md">Five-Minute Quickstart</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/install.md">Installing</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/cli.md">Command line</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/operations.md">Operations</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/protocol.md">Protocol</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/compatibility.md">Compatibility with SDKs and clients</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/structured-output.md">Structured output</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/images.md">Image input</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/webhooks.md">Webhooks</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/models.md">Model providers</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/progress.md">Run progress in streams</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/stability.md">Stability and data retention</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/harness.md">Two-layer harness</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/language.md">OAA-Lang</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/adapters.md">Connecting external agents</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/console.md">Console</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/windows.md">Windows</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/deploy-public.md">Public deployment</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/security-model.md">Security model</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/platform.md">Developer platform</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/architecture.md">Architecture</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/evidence.md">Evidence</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/engineering.md">Engineering conventions</a>, <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/CHANGELOG.md">Changelog</a> and <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/ROADMAP.md">Roadmap</a>. Copy-and-run calls (curl, Python, Node) are in the <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/examples/cookbook/README.md">cookbook</a>. <code>node tools/docs-site/build.mjs</code> generates the whole documentation, in English and Chinese with search, as a static site, and the Pages workflow publishes it. Every document is also available in Chinese under <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/zh-CN/README.md"><code>docs/zh-CN/</code></a>.</p>
+<h3>Status and limits</h3>
+<p>What has actually been tested and what has not—not a roadmap. Exact dates and logs are in <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/evidence.md">docs/evidence.md</a>.</p>
+<p><strong>Tests and CI</strong></p>
+<ul>
+<li>The suite comprises <code>1,305</code> <code>node:test</code> cases (<code>npm run verify</code> runs <code>tsc</code>, Prettier, and every test; <code>npm run test:offline</code> skips port-binding suites).</li>
+<li>CI runs verification across Ubuntu (<code>x64</code>/<code>arm64</code>), macOS (<code>arm64</code>/<code>Intel</code>), and Windows (skipping POSIX-only suites with explicit reasons), builds and smoke-tests the <code>amd64</code> Docker image, and runs the compatibility lab.</li>
+<li>Automated suites rely on deterministic local fixtures rather than paid provider quotas. The compatibility lab (<code>npm run compat</code>) verifies <code>456</code> scenarios across <code>14</code> real SDK packages and source-inspected client request replays (<code>Cursor</code>, closed-source, stays unverified; <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/compatibility.md">docs/compatibility.md</a>).</li>
+<li><code>npm run soak</code> has passed 32-minute (with 3 restarts) and 62-minute single-segment macOS/Linux runs plus a <code>0.0.70</code> 2-minute macOS spot run (<code>ok=2357</code>, <code>unexpected=0</code>), alongside <code>test/sandbox-srt.test.ts</code> (5/5 pass) and <code>upgrade-check</code> (<a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/stability.md">docs/stability.md</a>).</li>
+</ul>
+<p><strong>Live agent validation</strong></p>
+<ul>
+<li><strong>Qoder CLI <code>1.1.52</code> (<code>adapter/qoder</code>)</strong>: Passed all <code>11</code> <code>oaa verify</code> scenarios (14 live invocations, 0 failures—including approvals, cancel, caller-tool bridge, and 3-way concurrency) and the end-to-end <code>S10</code> developer-platform <code>host_execution</code> billing loop. Qoder currently reports <code>null</code>/0 token usage over ACP, so per-run pricing applies.</li>
+<li><strong>Antigravity <code>1.5.10</code></strong>: Passed <code>S1</code>–<code>S5</code>, <code>S7</code>, <code>S8</code> (native caller-tool bridging), <code>S9</code>, <code>S11</code>–<code>S12</code>, and <code>agy acp</code>; only native headless <code>S6</code> mid-run approvals stay <code>unsupported</code> (<code>approvals_not_bridged</code>) by design.</li>
+<li><strong>Codex <code>0.167.0</code></strong>: Passed <code>S2</code> streaming (with token usage), protocol-level <code>turn/interrupt</code> cancellation (<code>S7</code>), and tool-free orchestration (<code>recommend</code>); live <code>S8</code> caller-tool bridge re-testing was blocked by upstream account quota exhaustion until Nov 21 (elicitation parsing/auto-allow is covered in offline unit/integration suites).</li>
+<li><strong>Other local CLIs &amp; gaps</strong>: <code>Claude Code 2.1.318</code> and <code>Grok 1.0.77</code> returned <code>adapter_auth_required</code> when unauthenticated; <code>OpenCode 1.18.29</code> relayed its expired API key error verbatim; <code>DeepSeek Harness</code> timed out on a host <code>~/.dsh</code> lock. Real-agent image uploads to Codex/Claude and broad live model-provider benchmarks beyond Ollama/llama.cpp smoke runs remain untested; community <code>oaa verify</code> reports are welcome via the <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/issues/new/choose">agent verification issue template</a>.</li>
+</ul>
+<p><strong>Installers and platforms</strong></p>
+<ul>
+<li>On Apple silicon macOS, automated Playwright checks (<code>desktop:smoke</code> and <code>desktop:smoke:matrix</code>) pass on both source builds and the installed <code>/Applications/Open Agent API.app</code>, and a mounted <code>0.0.70</code> <code>--release</code> <code>.dmg</code> passed full <code>smoke-release.mjs</code> + <code>smoke-flow.mjs</code> checks (all 353 ESM imports, 3 protocols, API/CLI approvals, idempotency, clean stop).</li>
+<li>Remaining physical-device gaps: macOS Intel (<code>x64</code>) execution, OS System Settings language switching across desktop restarts, native OS notification click-through, Windows/Linux physical desktop UI and live agent runs, and lack of a Windows process sandbox. Desktop installers are not code-signed or Apple-notarized.</li>
+</ul>
+<p><strong>Developer platform and boundaries</strong></p>
+<ul>
+<li>Single SQLite gateway only: no multi-instance clustering, Postgres, cross-publisher settlement, payment processor, or email password reset (operator hands reset codes out-of-band).</li>
+<li>Account keys are blocked from calling external agents by default (<code>403 isolation_required</code>) until an operator explicitly toggles <code>host_execution: true</code> per listing (audited, and now live-verified on <code>qoder-cli</code>).</li>
+<li>External agents that do not report usage can only be billed per task; reported token usage is informational rather than a hard spend cap.</li>
+<li>Webhooks have only been exercised against local loopback receivers, not public HTTPS behind a reverse proxy; data stays on disk until you configure <code>retention.runsDays</code> or run <code>oaa prune</code> (<a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/stability.md#4-data-retention-and-oaa-prune">docs/stability.md</a>).</li>
+<li>Security scope and threat boundaries (for example, no home-directory credential harvesting, no base-model training, no subscription pooling): <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/docs/security-model.md">docs/security-model.md</a>.</li>
+</ul>
+<h3>Contributing, security, and conduct</h3>
+<p>Issues and pull requests are welcome; see <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>. To report a security vulnerability, read <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/SECURITY.md">SECURITY.md</a> and do not file it publicly. Taking part means agreeing to follow the <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/CODE_OF_CONDUCT.md">CODE_OF_CONDUCT.md</a>.</p>
+<h3>Licenses and attribution</h3>
+<p>Open Agent API is licensed under the <a href="LICENSE">Apache License 2.0</a>; the copyright notice and the attributions that must be preserved are in <a href="NOTICE">NOTICE</a>. Third-party licenses and attribution are in <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/THIRD_PARTY_NOTICES.md">THIRD_PARTY_NOTICES.md</a>. Note that the runtime dependency <code>@anthropic-ai/claude-agent-sdk</code> is proprietary software from Anthropic: you install it yourself from npm, it is governed by its own terms, and this project's license does not cover it (see THIRD_PARTY_NOTICES.md).</p>
+<p>The metadata for the ACP agent presets, and some agent icons, are adapted from <a href="https://github.com/nexu-io/open-design">Open Design</a> (Apache-2.0, Copyright 2026 Open Design contributors); the exact scope and the license text are in <a href="NOTICE">NOTICE</a> and <a href="https://github.com/jiangxingfan1-coder/Open-Agent-API/blob/main/licenses/OpenDesign-APACHE-2.0.txt">licenses/OpenDesign-APACHE-2.0.txt</a>. The fonts used by the interface (Geist, Geist Mono, Instrument Serif, Noto Serif SC) are licensed under SIL OFL 1.1; the license texts are in the <a href="licenses/">licenses/</a> directory.</p>
+
+  </section>
+</details>
+
+<aside class="related" aria-label="Related repos">
+  <div>
+    <div class="section-label">more in integrations &amp; bridges</div>
+    <div class="section-sub">other repos in this category, ranked by stars.</div>
+  </div>
+  <div>
+    <div class="related-list">
+      <a class="related-row" href="/projects/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server">
+        <div class="stars">★ 406</div>
+        <div class="name"><span class="org">Shelpuk-AI-Technology-Consulting /</span> kindly-web-search-mcp-server</div>
+      </a>
+      <a class="related-row" href="/projects/teknium1/hermes-miniverse">
+        <div class="stars">★ 60</div>
+        <div class="name"><span class="org">teknium1 /</span> hermes-miniverse</div>
+      </a>
+      <a class="related-row" href="/projects/Ridwannurudeen/hermes-council">
+        <div class="stars">★ 54</div>
+        <div class="name"><span class="org">Ridwannurudeen /</span> hermes-council</div>
+      </a>
+      <a class="related-row" href="/projects/gizdusum/hermes-blockchain-oracle">
+        <div class="stars">★ 6</div>
+        <div class="name"><span class="org">gizdusum /</span> hermes-blockchain-oracle</div>
+      </a>
+      <a class="related-row" href="/projects/kevinmarmstrong/hermes-claude-code-rc">
+        <div class="stars">★ 4</div>
+        <div class="name"><span class="org">kevinmarmstrong /</span> hermes-claude-code-rc</div>
+      </a>
+      <a class="related-row" href="/projects/AaronWong1999/hermesclaw">
+        <div class="stars">★ 765</div>
+        <div class="name"><span class="org">AaronWong1999 /</span> hermesclaw</div>
+      </a>
+      <a class="related-row" href="/projects/Codename-11/hermes-relay">
+        <div class="stars">★ 459</div>
+        <div class="name"><span class="org">Codename-11 /</span> hermes-relay</div>
+      </a>
+      <a class="related-row" href="/projects/Azheyc/agent-browser-mcp">
+        <div class="stars">★ 243</div>
+        <div class="name"><span class="org">Azheyc /</span> agent-browser-mcp</div>
+      </a>
+    </div>
+    
+  </div>
+</aside>
+
+</main>
+
+<footer class="page-footer">
+  <div class="fn-left">hermes atlas · curated by <a href="https://github.com/ksimback">ksimback</a> · <a href="/about">about</a> · <a href="https://github.com/ksimback/hermes-ecosystem/issues/new?template=suggest-repo.yml">suggest a repo</a> · <a href="/privacy">privacy</a></div>
+  <div>v2 · 2026.04</div>
+</footer>
+
+<script src="/assets/js/theme-toggle.js" defer></script>
+<script src="/assets/js/masthead-fetch.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "fe0d4d79280b4386b6b0cd99b2d94dbc"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>

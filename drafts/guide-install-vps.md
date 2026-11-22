@@ -1,6 +1,6 @@
 # How to Install Hermes Agent on a VPS (Always-On Server Setup)
 
-The VPS/server install guide. Live version: https://hermesatlas.com/guide/install/vps/ — facts sourced from the official docs. Current release is v0.23.1 (as of 2026-11-10).
+The VPS/server install guide. Live version: https://hermesatlas.com/guide/install/vps/ — facts sourced from the official docs. Current release is v0.23.3 (as of 2026-11-20).
 
 ## TL;DR
 
@@ -8,7 +8,7 @@ A **$5 VPS (1 CPU, 1 GB RAM)** is enough to run Hermes as an always-on agent —
 
 **Connect over SSH, not your provider's browser console** — official docs warn that browser-based VPS consoles (Hetzner Cloud and others) mis-transmit characters like `:` and `@`, silently corrupting `docker run -v/-e` arguments and pasted API keys.
 
-This guide covers Hermes Agent **v0.23.1**.
+This guide covers Hermes Agent **v0.23.3**.
 
 ## Sizing
 

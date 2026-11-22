@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>electricsheephq/lcm-x — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and keeps the active prompt bounded. It provides tools for agents to…">
+<meta name="description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into hierarchical summaries. It keeps the…">
 <link rel="canonical" href="https://hermesatlas.com/projects/electricsheephq/lcm-x">
 <meta property="og:title" content="electricsheephq/lcm-x — Hermes Atlas">
-<meta property="og:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and keeps the active prompt bounded. It provides tools for agents to…">
+<meta property="og:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into hierarchical summaries. It keeps the…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/electricsheephq/lcm-x">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="electricsheephq/lcm-x — Hermes Atlas">
-<meta name="twitter:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and keeps the active prompt bounded. It provides tools for agents to…">
+<meta name="twitter:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into hierarchical summaries. It keeps the…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=lcm-x&amp;subtitle=Lossless+memory+for+Hermes+Agent%3A+every+turn+kept+in+a+local+store%2C+not+compacted+away%2C+and+searchable+by+your+agent.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/electricsheephq/lcm-x#software",
   "name": "lcm-x",
-  "description": "LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and keeps the active prompt bounded. It provides tools for agents to search and recover exact details after compaction, and uses a DAG-based approach to context management.",
+  "description": "LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into hierarchical summaries. It keeps the active prompt bounded and provides tools to search and recover details from stored messages and summaries.",
   "url": "https://hermesatlas.com/projects/electricsheephq/lcm-x",
   "codeRepository": "https://github.com/electricsheephq/lcm-x",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "electricsheephq",
     "url": "https://github.com/electricsheephq"
   },
-  "dateModified": "2026-11-16T15:07:31.000Z",
+  "dateModified": "2026-11-22T21:25:43.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 158
+    "userInteractionCount": 178
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,8 +81,8 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">318·repos</span>
-    <span id="meta-version">hermes·v0.23.1</span>
+    <span id="meta-count">321·repos</span>
+    <span id="meta-version">hermes·v0.23.3</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -120,11 +120,11 @@
   <p class="project-desc">Lossless memory for Hermes Agent: every turn kept in a local store, not compacted away, and searchable by your agent.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 158</span>
+    <span class="stars">★ 178</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-16</span>
+    <span><span class="meta-label">updated</span>2026-11-22</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and keeps the active prompt bounded. It provides tools for agents to search and recover exact details after compaction, and uses a DAG-based approach to context management.</p>
+    <p class="summary-text">LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into hierarchical summaries. It keeps the active prompt bounded and provides tools to search and recover details from stored messages and summaries.</p>
     <ul class="summary-highlights">
-      <li>Preserves raw messages in a plugin-local SQLite store.</li>
-      <li>Provides agent tools to search and inspect memory.</li>
-      <li>Assembles active context with summaries and a protected fresh tail.</li>
+      <li>Stores messages in a plugin-local SQLite database.</li>
+      <li>Builds a hierarchical DAG of context summaries.</li>
+      <li>Includes tools to search and expand compacted material.</li>
     </ul>
   </div>
 </section>
@@ -343,8 +343,8 @@ glob patterns</li>
 protect SQLite from inline media-ish base64 blobs</li>
 <li><strong>Sensitive-pattern controls</strong> - two independent layers: opt-in durable redaction of API
 keys, bearer tokens, passwords, and private keys before LCM stores or summarizes them
-(off by default — the durable store is lossless), and automatic protection of the copies
-sent to known cloud embedding providers</li>
+and a separate experimental opt-in filter for copies sent to known cloud embedding
+providers. Both flags default to off</li>
 <li><strong>Diagnostics</strong> - runtime health, database checks, optional <code>/lcm</code> slash
 commands, backup-first repair/rotate paths</li>
 </ul>
@@ -397,6 +397,14 @@ See <a href="https://github.com/electricsheephq/lcm-x/blob/main/VISION.md">VISIO
 <a href="https://github.com/electricsheephq/lcm-x/blob/main/docs/project-status.md">Current project state</a> and
 <a href="https://github.com/electricsheephq/lcm-x/blob/main/benchmarks/METHODOLOGY.md">Benchmark methodology</a> for current identities,
 gaps, and proof boundaries.</p>
+<h4>AML Cycle 2</h4>
+<p>Both entries ran the LCM-X v0.28.0 engine (<a href="https://github.com/electricsheephq/lcm-x/tree/v0.28.0"><code>v0.28.0</code></a>, <code>709099b3</code>) behind our AML gateway, <code>bench/aml/aml_server.py</code>. They used the OmniMemEval client adapter in <a href="https://github.com/electricsheephq/OmniMemEval/tree/162640314863db64b5af62138b5b81776516d1ff">our OmniMemEval fork</a> (<code>scripts/client_factory/lcmx_client.py</code>, commit <code>16264031</code>).</p>
+<ul>
+<li>Coding: tag <a href="https://github.com/electricsheephq/lcm-x/tree/v0.28.0-coding-r3"><code>v0.28.0-coding-r3</code></a> at <code>9917c35b</code>. The gateway file is byte-identical to the one that ran.</li>
+<li>Textual: tag <a href="https://github.com/electricsheephq/lcm-x/tree/v0.28.0-aml-textual"><code>v0.28.0-aml-textual</code></a> at <code>533c5956</code>. The gateway file is content-equivalent: the deployed copy differed only in how it found the OmniMemEval checkout.</li>
+<li>Embedder: a local BAAI/bge-small-en-v1.5 through FastEmbed, with no generative LLM in the memory path. We disclosed this deviation to AML, which acknowledged it in writing on 6 November 2026.</li>
+<li>Prior work: the <a href="https://papers.voltropy.com/LCM">LCM paper</a> by Ehrlich &amp; Blackman; <a href="https://github.com/martian-engineering/lossless-claw">lossless-claw</a>; and <a href="https://github.com/stephenschoettler/hermes-lcm">stephenschoettler/hermes-lcm</a>, the repository LCM-X continues (its root commit is <code>d6c32609</code>).</li>
+</ul>
 <h4>Results</h4>
 <p>BEAM 100K 1st of 12; BEAM 10M 1st of 12 among backends in the upstream reproduced Result Summary.
 See the <a href="#benchmark-highlights">benchmark highlights</a> above and <a href="https://github.com/electricsheephq/lcm-x/blob/main/benchmarks/RESULTS.md">results, configuration, evidence and disclosures</a>.</p>
@@ -573,10 +581,10 @@ is required for the upgrade itself. Existing cloud vectors from a pre-v0.23.1 id
 identity check from the warmup/profile output, and the finite monotonic
 dry-run/apply loop in the operator guide before semantic coverage is complete.</p>
 <p><a id="cloud-embedding-privacy"></a>
-Cloud embeddings are a separate opt-in. Provider-bound copies use the configured
-sensitive-pattern catalog by default, while durable messages and FTS remain raw.
-<code>LCM_EMBEDDING_PRIVACY_ENABLED=false</code> explicitly opts out and binds vectors to
-the distinguished <code>privacy:off</code> revision. When provider-copy privacy is on, the
+Cloud embeddings are a separate opt-in. The experimental provider-input filter
+defaults to off, which sends unfiltered copies under the <code>privacy:off</code> vector
+revision. Set <code>LCM_EMBEDDING_PRIVACY_ENABLED=true</code> to opt in to filtering through
+the configured sensitive-pattern catalog. When the filter is on, the
 catalog must be nonempty and contain only supported pattern names (any unknown
 name fails warmup and dispatch loudly). Dry-run the backfill first;
 raw-chunk cloud backfill also requires explicit raw-text consent.
@@ -916,7 +924,12 @@ use the default with one WARNING per process. <code>/lcm doctor</code> shows the
 <tr>
 <td><code>LCM_SUMMARY_PREFIX_TARGET_TOKENS</code></td>
 <td><code>0</code></td>
-<td>Sweep-only summary-frontier target; <code>0</code> uses one leaf budget, capped at a quarter of the compaction threshold</td>
+<td>Positive values override the ratio. When the tokens setting is not positive and the ratio is <code>0</code>, the sweep uses one leaf budget capped at a quarter of the compaction threshold</td>
+</tr>
+<tr>
+<td><code>LCM_SUMMARY_PREFIX_TARGET_RATIO</code></td>
+<td><code>0</code></td>
+<td>Summary-frontier budget as a share of the model window, used when the tokens setting is not positive. Env only, valid from <code>0</code> up to but excluding <code>1</code></td>
 </tr>
 <tr>
 <td><code>LCM_BACKGROUND_LEAF_PREP_ENABLED</code></td>
@@ -970,6 +983,17 @@ the newest message is never dropped (<code>0</code> keeps no fresh tail), and a 
 that would begin inside an assistant tool-call/result group is moved back to that
 assistant even when doing so exceeds a configured bound.</p>
 <h4>Filtering and storage settings</h4>
+<p>Recall experiments can opt into a different recency floor or stemmed full-text
+grep through <code>config.yaml</code> (the corresponding environment variables take precedence):</p>
+<pre><code class="language-yaml">lcm:
+  recall_recency_floor: 0.5  # LCM_RECALL_RECENCY_FLOOR; 0..1, 1 disables decay
+  recall_grep_stemmed: false  # LCM_RECALL_GREP_STEMMED; ready Porter index, OR relevance
+</code></pre>
+<p>These values preserve existing recall and grep answers. Invalid recency floors
+warn and use <code>0.5</code>. Enabling stemmed grep also sorts a top-level uppercase <code>OR</code>
+query by relevance when <code>sort</code> is omitted; an explicit sort is preserved.
+The <a href="https://github.com/electricsheephq/lcm-x/blob/main/skills/hermes-lcm/references/configuration.md#recall-ranking">configuration reference</a>
+describes index fallback and timestamp handling.</p>
 <p><strong>What is stored where</strong></p>
 <ul>
 <li>Raw messages and summaries live in the local SQLite store, <code>lcm.db</code>.</li>
@@ -1008,67 +1032,12 @@ assistant even when doing so exceeds a configured bound.</p>
 </tr>
 <tr>
 <td><code>LCM_EMBEDDING_PRIVACY_ENABLED</code></td>
-<td>unset (<code>auto</code>)</td>
-<td>Protect provider-bound copies for known cloud embedding providers without rewriting durable data. Set <code>false</code> for an explicit raw-cloud opt-out (<code>privacy:off</code> vector revision); local providers remain unchanged</td>
+<td>off (unset or <code>false</code>)</td>
+<td>Experimental filter for provider-bound copies on known cloud embedding providers. Opt in with <code>true</code>. The default sends unfiltered input under the <code>privacy:off</code> vector revision</td>
 </tr>
 <tr>
 <td><code>LCM_SENSITIVE_PATTERNS</code></td>
-<td><code>api_key,bearer_token,password_assignment,private_key</code></td>
-<td>Comma-separated named sensitive pattern catalog entries to apply when redaction is enabled</td>
-</tr>
-<tr>
-<td><code>LCM_HOST_ROW_RECOVERY_ENABLED</code></td>
-<td><code>false</code></td>
-<td>Off by default because of two known issues: live-child recovery duplicates (#2624) and task-list user-row loss during catch-up reconciliation (#2042). <code>true</code> enables host-row recovery, recent unended failed-turn catch-up, and the ingest guard together; recovery uses background host reads and a strict durable proof.</td>
-</tr>
-<tr>
-<td><code>LCM_LARGE_OUTPUT_EXTERNALIZATION_ENABLED</code></td>
-<td><code>true</code></td>
-<td>Store oversized ingest payloads, including tool results, media blocks, and generic raw content, in plugin-managed JSON files</td>
-</tr>
-<tr>
-<td><code>LCM_LARGE_OUTPUT_EXTERNALIZATION_THRESHOLD_CHARS</code></td>
-<td><code>12000</code></td>
-<td>Externalization threshold for normalized payload text</td>
-</tr>
-<tr>
-<td><code>LCM_LARGE_OUTPUT_ACTIVE_REPLAY_STUBBING_ENABLED</code></td>
-<td><code>true</code></td>
-<td>Externalize token-heavy textual tool results at ingest; below-threshold size-only host adoption waits for a real compression boundary; historical assembly respects the protected fresh tail; requires large-output externalization</td>
-</tr>
-<tr>
-<td><code>LCM_LARGE_OUTPUT_ACTIVE_REPLAY_STUB_THRESHOLD_TOKENS</code></td>
-<td><code>10000</code></td>
-<td>First-sight threshold: a new tool result over this many tokens is stubbed at ingest</td>
-</tr>
-<tr>
-<td><code>LCM_LARGE_OUTPUT_ACTIVE_REPLAY_STUB_AGED_THRESHOLD_TOKENS</code></td>
-<td><code>2000</code></td>
-<td>Aged tier: at a compaction, a tool result outside the fresh tail is stubbed from this many tokens (<code>0</code> = the first-sight threshold; never above it)</td>
-</tr>
-<tr>
-<td><code>LCM_STUB_FIRST_EXIT_TARGET_RATIO</code></td>
-<td><code>0</code></td>
-<td>Lowers the stub-first exit's target (#671) to min(built-in, int(ratio x threshold)); <code>0</code> keeps the built-in min(threshold - <code>LCM_LEAF_CHUNK_TOKENS</code>, 0.95 x threshold); <code>&gt;= 0</code> and <code>&lt;= 1</code>, else the built-in target with a config warning</td>
-</tr>
-<tr>
-<td><code>LCM_LARGE_OUTPUT_TRANSCRIPT_GC_ENABLED</code></td>
-<td><code>false</code></td>
-<td>Removed in v0.30.0; parsed and ignored (#1246). Setting it true logs one warning per process; summarized tool rows are no longer rewritten</td>
-</tr>
-<tr>
-<td><code>LCM_DOCTOR_CLEAN_APPLY_ENABLED</code></td>
-<td><code>false</code></td>
-<td>Permit destructive <code>/lcm doctor clean apply</code> in trusted operator contexts</td>
-</tr>
-<tr>
-<td><code>LCM_EMPTY_LIFECYCLE_GC_ENABLED</code></td>
-<td><code>true</code></td>
-<td>Master toggle for automatic pruning of lifecycle rows for sessions that never ingested any messages or summary nodes</td>
-</tr>
-<tr>
-<td>`LCM_EMPTY_LIFECYCLE</td>
-<td></td>
+<td>`api_key,</td>
 <td></td>
 </tr>
 </tbody></table>
@@ -1086,11 +1055,11 @@ assistant even when doing so exceeds a configured bound.</p>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 69.1K</div>
+        <div class="stars">★ 69.3K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 61.4K</div>
+        <div class="stars">★ 62.7K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -1106,11 +1075,11 @@ assistant even when doing so exceeds a configured bound.</p>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/Signet-AI/signetai">
-        <div class="stars">★ 315</div>
+        <div class="stars">★ 317</div>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 317</div>
+        <div class="stars">★ 318</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">

@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>colbymchenry/codegraph — Hermes Agent Developer Tools | Hermes Atlas</title>
-<meta name="description" content="CodeGraph provides semantic code intelligence for coding agents, with a local code graph and an MCP server. Its installer can connect it to agents including…">
+<meta name="description" content="CodeGraph builds a local code graph for coding agents and connects through an MCP server. It can automatically update a project's graph when files change and…">
 <link rel="canonical" href="https://hermesatlas.com/projects/colbymchenry/codegraph">
 <meta property="og:title" content="colbymchenry/codegraph — Hermes Atlas">
-<meta property="og:description" content="CodeGraph provides semantic code intelligence for coding agents, with a local code graph and an MCP server. Its installer can connect it to agents including…">
+<meta property="og:description" content="CodeGraph builds a local code graph for coding agents and connects through an MCP server. It can automatically update a project's graph when files change and…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/colbymchenry/codegraph">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="colbymchenry/codegraph — Hermes Atlas">
-<meta name="twitter:description" content="CodeGraph provides semantic code intelligence for coding agents, with a local code graph and an MCP server. Its installer can connect it to agents including…">
+<meta name="twitter:description" content="CodeGraph builds a local code graph for coding agents and connects through an MCP server. It can automatically update a project's graph when files change and…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=codegraph&amp;subtitle=Pre-indexed+code+knowledge+graph%2C+auto+syncs+on+code+changes%2C+for+Claude+Code%2C+Codex%2C+Gemini%2C+Cursor%2C+OpenCode%2C+AntiGravity%2C+Kiro%2C+CoPilot%2C+and+Hermes+Agent+%E2%80%94+fewer+tokens%2C+fewer+t&amp;kind=project+%C2%B7+developer+tools">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/colbymchenry/codegraph#software",
   "name": "codegraph",
-  "description": "CodeGraph provides semantic code intelligence for coding agents, with a local code graph and an MCP server. Its installer can connect it to agents including Hermes Agent, Claude Code, Cursor, and GitHub Copilot.",
+  "description": "CodeGraph builds a local code graph for coding agents and connects through an MCP server. It can automatically update a project's graph when files change and supports multiple coding agents.",
   "url": "https://hermesatlas.com/projects/colbymchenry/codegraph",
   "codeRepository": "https://github.com/colbymchenry/codegraph",
   "applicationCategory": "DeveloperApplication",
@@ -47,13 +47,13 @@
     "name": "colbymchenry",
     "url": "https://github.com/colbymchenry"
   },
-  "dateModified": "2026-11-16T17:37:40.000Z",
+  "dateModified": "2026-11-20T23:39:45.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 77738
+    "userInteractionCount": 78408
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,8 +81,8 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">318·repos</span>
-    <span id="meta-version">hermes·v0.23.1</span>
+    <span id="meta-count">321·repos</span>
+    <span id="meta-version">hermes·v0.23.3</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -120,11 +120,11 @@
   <p class="project-desc">Pre-indexed code knowledge graph, auto syncs on code changes, for Claude Code, Codex, Gemini, Cursor, OpenCode, AntiGravity, Kiro, CoPilot, and Hermes Agent — fewer tokens, fewer tool calls, 100% local</p>
 
   <div class="meta-row">
-    <span class="stars">★ 77.7K</span>
+    <span class="stars">★ 78.4K</span>
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-16</span>
+    <span><span class="meta-label">updated</span>2026-11-20</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">CodeGraph provides semantic code intelligence for coding agents, with a local code graph and an MCP server. Its installer can connect it to agents including Hermes Agent, Claude Code, Cursor, and GitHub Copilot.</p>
+    <p class="summary-text">CodeGraph builds a local code graph for coding agents and connects through an MCP server. It can automatically update a project's graph when files change and supports multiple coding agents.</p>
     <ul class="summary-highlights">
-      <li>Kernel powered by Rust</li>
-      <li>Supports multiple coding agents</li>
-      <li>CLI available as a bundled install or npm package</li>
+      <li>Creates a project graph with `codegraph init`.</li>
+      <li>Auto-syncs the graph as files change.</li>
+      <li>Supports a range of coding agents.</li>
     </ul>
   </div>
 </section>
@@ -240,7 +240,7 @@ irm https://raw.githubusercontent.com/colbymchenry/codegraph/main/install.ps1 | 
 <pre><code class="language-bash">npm i -g @colbymchenry/codegraph
 </code></pre>
 <p><sub>CodeGraph bundles its own runtime — nothing to compile, no native build, works the same everywhere. The installer puts <code>codegraph</code> on your PATH but <strong>doesn't change your current shell</strong> — open a new terminal before the next step so the command resolves.</sub></p>
-<p><sub><strong>Upgrade any time</strong> with <code>codegraph upgrade</code> — it detects how you installed (bundle, npm, or npx) and updates in place. Add <code>--check</code> to see if an update is available, or <code>codegraph upgrade &lt;version&gt;</code> to pin one.</sub></p>
+<p><sub><strong>Upgrade any time</strong> with <code>codegraph upgrade</code> — it detects how you installed (bundle, npm, or npx) and updates in place. Add <code>--check</code> to see if an update is available, or <code>codegraph upgrade &lt;version&gt;</code> to pin one. After an upgrade, <code>codegraph status</code> and your agent tell you when a project's index was built by an older version: run <code>codegraph index</code> there to rebuild it.</sub></p>
 </details>
 
 <h4>2. Wire up your agent(s)</h4>
@@ -548,11 +548,11 @@ codegraph init
 </tr>
 <tr>
 <td><strong>20+ Languages</strong></td>
-<td>TypeScript, JavaScript, ArkTS, Python, Go, Rust, Java, C#, VB.NET, PHP, Ruby, C, C++, CUDA, Objective-C, Metal, Swift, Kotlin, Scala, Dart, Lua, Luau, R, Nix, Erlang, CFML, COBOL, Solidity, Terraform/OpenTofu, Svelte, Vue, Astro, Liquid, Pascal/Delphi</td>
+<td>TypeScript, JavaScript, ArkTS, Python, Go, Rust, Java, C#, VB.NET, PHP, Ruby, C, C++, CUDA, Objective-C, Metal, Swift, Kotlin, Scala, Dart, Lua, Luau, R, Nix, Erlang, CFML, COBOL, Solidity, Terraform/OpenTofu, Svelte, Vue, Astro, Razor/Blazor, Liquid, Pascal/Delphi</td>
 </tr>
 <tr>
 <td><strong>Framework-aware Routes</strong></td>
-<td>Recognizes web-framework routing files and links URL patterns to their handlers across 17 frameworks</td>
+<td>Recognizes web-framework routing files and links URL patterns to their handlers across more than 20 web frameworks and routers</td>
 </tr>
 <tr>
 <td><strong>Mixed iOS / React Native / Expo</strong></td>
@@ -615,6 +615,10 @@ codegraph init
 <tr>
 <td><strong>Express</strong></td>
 <td><code>app.get(...)</code>, <code>router.post(...)</code> with middleware chains</td>
+</tr>
+<tr>
+<td><strong>Elysia</strong></td>
+<td><code>new Elysia({ prefix })</code> chains of <code>.get(...)</code>, <code>.post(...)</code>, <code>.route('TRACE', ...)</code> and <code>.ws(...)</code>, <code>.group()</code> and <code>.guard()</code> callbacks, functional plugins, and <code>.use(plugin)</code> prefixes composed across files</td>
 </tr>
 <tr>
 <td><strong>NestJS</strong></td>
@@ -682,7 +686,7 @@ codegraph init
 </tr>
 <tr>
 <td><strong>Next.js</strong></td>
-<td>App Router <code>app/**/page.tsx</code> and Pages Router pages (<code>(group)</code> stripped, <code>[slug]</code> → <code>:slug</code>); <code>app/api/**/route.ts</code> exports and <code>pages/api/*</code> are endpoints, not screens</td>
+<td>App Router <code>app/**/page.tsx</code> and Pages Router pages (<code>(group)</code> stripped, <code>[slug]</code> → <code>:slug</code>); <code>app/api/**/route.ts</code> exports and <code>pages/api/*</code> are endpoints, not screens; each route also links to the <code>proxy.ts</code> or <code>middleware.ts</code> that runs before it, as its <code>config.matcher</code> decides</td>
 <td><code>router.push</code> / <code>replace</code> / <code>prefetch</code>, <code>redirect()</code> / <code>permanentRedirect()</code> in a server action or page, <code>NextResponse.redirect(new URL(…))</code> in middleware, <code>&lt;Link href&gt;</code> and internal <code>&lt;a href&gt;</code></td>
 </tr>
 <tr>
@@ -967,14 +971,15 @@ codegraph install                 # Run installer (explicit)
 codegraph uninstall               # Remove CodeGraph from your agents AND the CLI (--keep-cli for configs only)
 codegraph init [path]             # Initialize a project + build its graph (one step; --local-only keeps .codegraph/ out of git)
 codegraph uninit [path]           # Remove CodeGraph from a project (--force to skip prompt)
-codegraph index [path]            # Full index (--force to re-index, --quiet for less output)
+codegraph index [path]            # Rebuild the full index from scratch (--quiet for less output; --force to allow a home folder or drive root)
 codegraph sync [path]             # Incremental update
 codegraph status [path]           # Show statistics (--json, --strict)
 codegraph unlock [path]           # Remove a stale lock file that's blocking indexing
 codegraph query &lt;search&gt;          # Search symbols (--kind, --limit, --json)
 codegraph explore &lt;query&gt;         # Relevant symbols' source + call paths in one shot (same output as the codegraph_explore MCP tool)
+codegraph context &lt;task&gt;          # Relevant symbols, relationships and code for a task description (--format markdown|json)
 codegraph node &lt;symbol|file&gt;      # One symbol's source + callers, or read a file with line numbers (same output as codegraph_node)
-codegraph files [path]            # Show file structure (--format, --filter, --max-depth, --tests, --json)
+codegraph files                   # Show file structure (--format tree|flat|grouped|package, --tests/--no-tests, --filter, --max-depth, --json)
 codegraph callers &lt;symbol&gt;        # Find what calls a function/method (--limit, --json)
 codegraph callees &lt;symbol&gt;        # Find what a function/method calls (--limit, --json)
 codegraph impact &lt;symbol&gt;         # Analyze what code is affected by changing a symbol (--depth, --json)
@@ -1013,7 +1018,7 @@ codegraph affected src/auth.ts --filter "e2e/*"     # Custom test file pattern
 </tr>
 <tr>
 <td><code>-f, --filter &lt;glob&gt;</code></td>
-<td>Custom glob to identify test files</td>
+<td>Glob for the files that count as tests (see below)</td>
 <td>auto-detect</td>
 </tr>
 <tr>
@@ -1026,27 +1031,10 @@ codegraph affected src/auth.ts --filter "e2e/*"     # Custom test file pattern
 <td>Output file paths only</td>
 <td><code>false</code></td>
 </tr>
-</tbody></table>
-<p><strong>CI/hook example:</strong></p>
-<pre><code class="language-bash">#!/usr/bin/env bash
-AFFECTED=$(git diff --name-only HEAD | codegraph affected --stdin --quiet)
-if [ -n "$AFFECTED" ]; then
-  npx vitest run $AFFECTED
-fi
-</code></pre>
-<hr>
-<h3>MCP Tools</h3>
-<p>When running as an MCP server, CodeGraph exposes a <strong>single tool</strong> — <code>codegraph_explore</code>. Measured agent behavior showed that one strong tool steers agents better than a menu of narrower ones — fewer mis-picks, and it saves context every session:</p>
-<table>
-<thead>
 <tr>
-<th>Tool</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>codegraph_explore</code></td>
-<td>Answer almost any question in one call — "how does X work", a flow ("how does X reach Y"), or surveying an area — returning the relevant symbols' verbatim source grouped by file, plus the call paths between them and a blast-radius summary. Surfaces dynamic-dispatch hops (callbacks, React re-render, interface→impl) grep can't follow. Name a file or symbol in the query to read its current li</td>
+<td><code>--cross-tier</code></td>
+<td>Also follow links across a process boundary: a client's HTTP call to its server's route, a queue job to its consumer, an event</td>
+<td></td>
 </tr>
 </tbody></table>
 <hr>
@@ -1067,7 +1055,7 @@ fi
         <div class="name"><span class="org">Salomondiei08 /</span> oh-my-hermes</div>
       </a>
       <a class="related-row" href="/projects/liaohch3/claude-tap">
-        <div class="stars">★ 3.3K</div>
+        <div class="stars">★ 3.4K</div>
         <div class="name"><span class="org">liaohch3 /</span> claude-tap</div>
       </a>
       <a class="related-row" href="/projects/adityahimaone/hermes-agent-rtk-caveman">
@@ -1079,11 +1067,11 @@ fi
         <div class="name"><span class="org">junhoyeo /</span> tokscale</div>
       </a>
       <a class="related-row" href="/projects/joeynyc/hermes-skins">
-        <div class="stars">★ 633</div>
+        <div class="stars">★ 635</div>
         <div class="name"><span class="org">joeynyc /</span> hermes-skins</div>
       </a>
       <a class="related-row" href="/projects/AlexAI-MCP/hermes-CCC">
-        <div class="stars">★ 135</div>
+        <div class="stars">★ 134</div>
         <div class="name"><span class="org">AlexAI-MCP /</span> hermes-CCC</div>
       </a>
       <a class="related-row" href="/projects/unmodeled-tyler/vessel-browser">

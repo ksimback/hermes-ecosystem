@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>conorbronsdon/demo-gif-skill — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
-<meta name="description" content="This project is a skill for Claude Code and agentskills.io-compatible agents that automates the creation of reproducible demo GIFs for repositories. It…">
+<meta name="description" content="demo-gif is a skill for Claude Code and agents compatible with agentskills.io that creates reproducible demo GIFs and embeds them in a repository’s README. It…">
 <link rel="canonical" href="https://hermesatlas.com/projects/conorbronsdon/demo-gif-skill">
 <meta property="og:title" content="conorbronsdon/demo-gif-skill — Hermes Atlas">
-<meta property="og:description" content="This project is a skill for Claude Code and agentskills.io-compatible agents that automates the creation of reproducible demo GIFs for repositories. It…">
+<meta property="og:description" content="demo-gif is a skill for Claude Code and agents compatible with agentskills.io that creates reproducible demo GIFs and embeds them in a repository’s README. It…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/conorbronsdon/demo-gif-skill">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="conorbronsdon/demo-gif-skill — Hermes Atlas">
-<meta name="twitter:description" content="This project is a skill for Claude Code and agentskills.io-compatible agents that automates the creation of reproducible demo GIFs for repositories. It…">
+<meta name="twitter:description" content="demo-gif is a skill for Claude Code and agents compatible with agentskills.io that creates reproducible demo GIFs and embeds them in a repository’s README. It…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=demo-gif-skill&amp;subtitle=Claude+Code+skill%3A+add+a+reproducible+demo+GIF+to+any+repo%27s+README+%28vhs%2C+Playwright%2C+ffmpeg%2C+gifsicle%29&amp;kind=project+%C2%B7+skills">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/conorbronsdon/demo-gif-skill#software",
   "name": "demo-gif-skill",
-  "description": "This project is a skill for Claude Code and agentskills.io-compatible agents that automates the creation of reproducible demo GIFs for repositories. It generates recording scripts using vhs for terminal interfaces or Playwright for web applications, then renders, optimizes, and embeds the resulting GIF into the README.",
+  "description": "demo-gif is a skill for Claude Code and agents compatible with agentskills.io that creates reproducible demo GIFs and embeds them in a repository’s README. It selects a recording approach for terminal, web app, or library demos, then renders and optimizes the GIF; the project is in maintenance mode, with security fixes but no planned new features.",
   "url": "https://hermesatlas.com/projects/conorbronsdon/demo-gif-skill",
   "codeRepository": "https://github.com/conorbronsdon/demo-gif-skill",
   "applicationCategory": "DeveloperApplication",
@@ -46,7 +46,7 @@
     "name": "conorbronsdon",
     "url": "https://github.com/conorbronsdon"
   },
-  "dateModified": "2026-09-24T08:56:36.000Z",
+  "dateModified": "2026-11-17T18:07:58.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -80,8 +80,8 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">318·repos</span>
-    <span id="meta-version">hermes·v0.23.1</span>
+    <span id="meta-count">321·repos</span>
+    <span id="meta-version">hermes·v0.23.3</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -123,7 +123,7 @@
     
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-09-24</span>
+    <span><span class="meta-label">updated</span>2026-11-17</span>
   </div>
 
   <div class="actions">
@@ -140,11 +140,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">This project is a skill for Claude Code and agentskills.io-compatible agents that automates the creation of reproducible demo GIFs for repositories. It generates recording scripts using vhs for terminal interfaces or Playwright for web applications, then renders, optimizes, and embeds the resulting GIF into the README.</p>
+    <p class="summary-text">demo-gif is a skill for Claude Code and agents compatible with agentskills.io that creates reproducible demo GIFs and embeds them in a repository’s README. It selects a recording approach for terminal, web app, or library demos, then renders and optimizes the GIF; the project is in maintenance mode, with security fixes but no planned new features.</p>
     <ul class="summary-highlights">
-      <li>Generates reproducible vhs .tape or Playwright recording scripts.</li>
-      <li>Optimizes GIF files to target sizes under 8 MB.</li>
-      <li>Supports terminal CLIs, TUIs, web apps, and libraries.</li>
+      <li>Uses vhs tape files for terminal demos and Playwright scripts for web demos.</li>
+      <li>Optimizes GIFs toward a file size under 8 MB.</li>
+      <li>Includes Codex plugin packaging and example recording scripts.</li>
     </ul>
   </div>
 </section>
@@ -179,11 +179,14 @@
 <li>Embeds it in the README with real alt text, committed to the repo instead of pointed at an external image host.</li>
 </ol>
 <h3>Install</h3>
-<p>Copy the skill folder into your project's skills directory:</p>
-<pre><code class="language-bash">cp -r demo-gif-skill /path/to/your-project/.claude/skills/demo-gif
+<p>Clone the repo, then copy it into your project's skills directory:</p>
+<pre><code class="language-bash">git clone https://github.com/conorbronsdon/demo-gif-skill
+mkdir -p /path/to/your-project/.claude/skills
+cp -r demo-gif-skill /path/to/your-project/.claude/skills/demo-gif
 </code></pre>
-<p>Or, if you're using Claude Code's plugin system, install it as a plugin per your plugin marketplace's normal flow and point it at this repo.</p>
-<p>Either way, once it's in place, Claude Code will pick it up automatically when a prompt matches (see below). No extra configuration needed.</p>
+<p>Use <code>~/.claude/skills/demo-gif</code> instead for a global install. Copy the whole folder, not just <code>SKILL.md</code>: the skill reads <code>references/</code> and <code>examples/</code> from beside it.</p>
+<p>This repo has no Claude Code plugin manifest, so <code>claude plugin marketplace add</code> does not work with it. For Codex, see <a href="#codex-plugin-packaging">Codex plugin packaging</a>.</p>
+<p>Once it's in place, Claude Code will pick it up automatically when a prompt matches (see below). No extra configuration needed.</p>
 <h3>Usage</h3>
 <p>Drop it into a Claude Code session in the target repo and ask for what you want:</p>
 <ul>
@@ -196,13 +199,17 @@
 <p>You need at least one of these installed, depending on what you're demoing:</p>
 <ul>
 <li><strong>Terminal demos:</strong> <a href="https://github.com/charmbracelet/vhs">vhs</a> (<code>brew install vhs</code>, <code>scoop install vhs</code>, <code>go install github.com/charmbracelet/vhs@latest</code>, or Docker). vhs itself shells out to <code>ttyd</code> and <code>ffmpeg</code>, so those need to be on PATH too (scoop's manifest installs both as dependencies automatically). No vhs available? Fall back to <a href="https://asciinema.org/">asciinema</a> + <a href="https://github.com/asciinema/agg">agg</a> — covered in <code>references/tape-cookbook.md</code>.</li>
-<li><strong>Web app demos:</strong> <a href="https://playwright.dev/">Playwright</a> (<code>npm install -D @playwright/test</code>) plus <a href="https://ffmpeg.org/">ffmpeg</a> for the video-to-GIF conversion.</li>
+<li><strong>Web app demos:</strong> <a href="https://playwright.dev/">Playwright</a> plus a browser for it (<code>npm install -D @playwright/test tsx</code>, then <code>npx playwright install chromium</code>; <code>tsx</code> runs <code>examples/web-demo.spec.ts</code>), and <a href="https://ffmpeg.org/">ffmpeg</a> for the video-to-GIF conversion.</li>
 <li><strong>Optimization:</strong> <a href="https://www.lcdf.org/gifsicle/">gifsicle</a> for the final size pass. Optional: <a href="https://gif.ski/">gifski</a> as an alternative GIF encoder for image-heavy content.</li>
 </ul>
 <p>None of these are bundled. The skill tells you what's missing and how to install it if a command fails.</p>
 <h3>What's in here</h3>
 <pre><code>demo-gif-skill/
 ├── SKILL.md                    # the skill itself — core flow and decision logic
+├── .codex-plugin/
+│   └── plugin.json             # Codex plugin manifest (see "Codex plugin packaging")
+├── skills/
+│   └── demo-gif/SKILL.md       # plugin discovery adapter; defers to the root SKILL.md
 ├── references/
 │   ├── tape-cookbook.md        # full vhs .tape command reference + patterns
 │   └── web-capture.md          # Playwright recording + ffmpeg GIF conversion recipes
@@ -213,9 +220,11 @@
 │   ├── demo.tape                # records this README's own demo.gif
 │   ├── demo.gif                 # embedded above — the skill dogfooding itself
 │   ├── sample.tape              # tiny sample tape — demo.tape cats it and checks its size
-│   └── sample.gif               # pre-rendered output of sample.tape
+│   ├── sample.gif               # pre-rendered output of sample.tape
+│   └── social-preview.png       # GitHub social preview image
 ├── LICENSE
-└── README.md
+├── README.md
+└── SECURITY.md
 </code></pre>
 <p><code>SKILL.md</code> is what Claude Code actually loads and follows. The <code>references/</code> files are pulled in as needed for the deeper command syntax so the main skill file stays short. <code>examples/</code> are working starting points, not templates to fill in blanks on — copy one, adapt the parts specific to your tool.</p>
 <h3>Notes on the approach</h3>
@@ -248,31 +257,31 @@ changes to your files.</p>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
-        <div class="stars">★ 36.2K</div>
+        <div class="stars">★ 36.6K</div>
         <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
       </a>
       <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
-        <div class="stars">★ 5.7K</div>
+        <div class="stars">★ 6.0K</div>
         <div class="name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
       </a>
       <a class="related-row" href="/projects/wondelai/skills">
-        <div class="stars">★ 2.7K</div>
+        <div class="stars">★ 2.8K</div>
         <div class="name"><span class="org">wondelai /</span> skills</div>
       </a>
       <a class="related-row" href="/projects/DougTrajano/pydantic-ai-skills">
-        <div class="stars">★ 381</div>
+        <div class="stars">★ 382</div>
         <div class="name"><span class="org">DougTrajano /</span> pydantic-ai-skills</div>
       </a>
       <a class="related-row" href="/projects/Agents365-ai/drawio-skill">
-        <div class="stars">★ 10.8K</div>
+        <div class="stars">★ 10.9K</div>
         <div class="name"><span class="org">Agents365-ai /</span> drawio-skill</div>
       </a>
       <a class="related-row" href="/projects/smartcontractkit/chainlink-agent-skills">
-        <div class="stars">★ 128</div>
+        <div class="stars">★ 130</div>
         <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
       </a>
       <a class="related-row" href="/projects/tlehman/litprog-skill">
-        <div class="stars">★ 279</div>
+        <div class="stars">★ 281</div>
         <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
       </a>
       <a class="related-row" href="/projects/esaradev/icarus-plugin">

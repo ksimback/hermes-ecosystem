@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic#software",
   "name": "hermes-plugin-holographic",
-  "description": "Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it runs without an API key, network access, or model calls; searching by meaning is an optional online add-on.",
+  "description": "Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and holographic retrieval. By default, it works without an API key, network access, or model calls; searching by meaning is an optional online add-on.",
   "url": "https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic",
   "codeRepository": "https://github.com/itpartypattaya/hermes-plugin-holographic",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "itpartypattaya",
     "url": "https://github.com/itpartypattaya"
   },
-  "dateModified": "2026-11-16T14:55:16.000Z",
+  "dateModified": "2026-11-18T13:10:35.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 41
+    "userInteractionCount": 46
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,8 +81,8 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">318·repos</span>
-    <span id="meta-version">hermes·v0.23.1</span>
+    <span id="meta-count">321·repos</span>
+    <span id="meta-version">hermes·v0.23.3</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -120,11 +120,11 @@
   <p class="project-desc">Holographic memory provider for Hermes Agent: local SQLite fact store, HRR retrieval, 18 languages. Maintained by itpartypattaya.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 41</span>
+    <span class="stars">★ 46</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-16</span>
+    <span><span class="meta-label">updated</span>2026-11-18</span>
   </div>
 
   <div class="actions">
@@ -141,7 +141,7 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it runs without an API key, network access, or model calls; searching by meaning is an optional online add-on.</p>
+    <p class="summary-text">Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and holographic retrieval. By default, it works without an API key, network access, or model calls; searching by meaning is an optional online add-on.</p>
     <ul class="summary-highlights">
       <li>Stores facts in a local SQLite database</li>
       <li>Supports FTS5 search and trust scoring</li>
@@ -383,7 +383,7 @@ correct lists it under <code>entities_not_linked</code> by its position in the l
 the name itself (a refused name may be <code>KEY=secret</code>); the fact is stored all the same. <code>entities</code> given with a new
 text (change, correct, update) replace the names declared on the fact before; without them those stay, but for a
 name only the old text gave; revert brings back the names of the version it restores (see
-<a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/history.md#who-a-new-text-is-about-unreleased">Who a new text is about</a>). Its answer lists <code>similar</code> facts,
+<a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/history.md#who-a-new-text-is-about-0220">Who a new text is about</a>). Its answer lists <code>similar</code> facts,
 <code>possible_conflicts</code> (same subject, a different claim) and <code>past_versions</code>; the agent decides. Text that is not a
 fact (JSON, tool or chat-role markup, instruction-like phrasing, a credential with its value or a token whose shape
 alone says it is one — an API key prefix, a Telegram bot token (also inside a Bot API address), a JWT, a private key
@@ -404,7 +404,13 @@ no extension (<code>password-Qwerty.123</code>), a one-letter or a key file's ex
 chosen: <code>password-hunter2.txt</code> is not caught. A request to send a credential stays refused whatever follows the word ("send credentials-backup.json",
 and so "share the token-saver report" too); a Russian credential word counts as a word, not as the start of one
 (<code>секретарю</code>, <code>ключевые цифры</code>, <code>учётная политика</code>, <code>токенизатор</code>, "пин на карте" are none; <code>пин-код</code>, "пин от
-карты", <code>секретная фраза</code>, <code>фраза восстановления</code> are). Recall
+карты", <code>секретная фраза</code>, <code>фраза восстановления</code> are). Keys to a flat, a bike or a door are things («ключи от
+квартиры»; «от сервера» they are credentials), the tokens a model counts are a count («токены GPT-4o»), and a
+service named with dots is a name («ключ API Яндекс.Метрики»); refused besides: a password after a name and a dash
+(«Пароль Олега — …») or after «у него», <code>pass:</code> / <code>pw:</code>, a Latin word after «пароль:», a seed phrase after its
+name, Stripe keys, a 2FA secret, Slack and Discord webhooks, an instruction in full-width or lookalike letters.
+Tags and the category are screened as a fact's text is, and a name given in <code>entities</code> that holds a credential or
+an instruction is not linked (0.30.0). Recall
 checks a stored fact again before it goes into a prompt (0.13.0): one an older release, or another program, wrote
 past today's rules (markup, instructions, credentials, invisible characters, images) is left out of recall
 and logged once; <code>search</code>, <code>list</code> and <code>history</code> still show it, so it can be changed or forgotten. A quoted
@@ -729,13 +735,7 @@ language. A root counts 0.6 of the word itself and <strong>never recalls a fact 
 derivation from a look-alike (<code>войной</code> / <code>вой</code>, <code>полный</code> / <code>пол</code>), so automatic recall needs a word of the message
 itself, and roots add to it. In <code>search</code> a root brings in facts the word's forms missed and ranks them below facts
 with the word. Not joined: alternating consonants and prefixes (<code>друг</code> / <code>дружба</code>, <code>страховка</code> / <code>застрахован</code>),
-four-letter beginnings (<code>большое</code> is not <code>больница</code>). Duplicate and conflict checks do not use roots.</li>
-<li><strong>Courtesy</strong> (0.9.0): a message whose every clause is greetings, thanks, sign-offs, reactions or "how are you",
-at least one of them more than padding, recalls nothing ("Hi, good morning!", "Thanks, that's all for now",
-"спасибо, на этом всё", "Grazie mille, a domani!", "Wielkie dzięki, do jutra!", "Heel erg bedankt, tot morgen!",
-and any combination of the whole-message greetings of every language). Pieces start and end
-at word boundaries; padding alone ("fine?", "сегодня?") is a question. Russian question words (<code>какой</code>, <code>который</code>,
-<code>сколько</code>, `по</li>
+four-l</li>
 </ul>
 <hr>
 <p><em>README truncated. <a href="https://github.com/itpartypattaya/hermes-plugin-holographic#readme">Continue reading on GitHub</a></em></p>
@@ -751,11 +751,11 @@ at word boundaries; padding alone ("fine?", "сегодня?") is a question. Ru
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 69.1K</div>
+        <div class="stars">★ 69.3K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 61.4K</div>
+        <div class="stars">★ 62.7K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -771,11 +771,11 @@ at word boundaries; padding alone ("fine?", "сегодня?") is a question. Ru
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/Signet-AI/signetai">
-        <div class="stars">★ 315</div>
+        <div class="stars">★ 317</div>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 317</div>
+        <div class="stars">★ 318</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">

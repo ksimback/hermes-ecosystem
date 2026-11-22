@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Shine8592/china-briefing — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
-<meta name="description" content="China Briefing is a multi-scale Chinese news briefing generator designed for Hermes Agent. It generates structured reports ranging from global to street-level…">
+<meta name="description" content="China Briefing is a skill for generating structured Chinese news briefings at different geographic scales, from streets to global coverage. It uses search…">
 <link rel="canonical" href="https://hermesatlas.com/projects/Shine8592/china-briefing">
 <meta property="og:title" content="Shine8592/china-briefing — Hermes Atlas">
-<meta property="og:description" content="China Briefing is a multi-scale Chinese news briefing generator designed for Hermes Agent. It generates structured reports ranging from global to street-level…">
+<meta property="og:description" content="China Briefing is a skill for generating structured Chinese news briefings at different geographic scales, from streets to global coverage. It uses search…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/Shine8592/china-briefing">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Shine8592/china-briefing — Hermes Atlas">
-<meta name="twitter:description" content="China Briefing is a multi-scale Chinese news briefing generator designed for Hermes Agent. It generates structured reports ranging from global to street-level…">
+<meta name="twitter:description" content="China Briefing is a skill for generating structured Chinese news briefings at different geographic scales, from streets to global coverage. It uses search…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=china-briefing&amp;subtitle=%E5%A4%9A%E5%B0%BA%E5%BA%A6%E4%B8%AD%E6%96%87%E8%B5%84%E8%AE%AF%E7%AE%80%E6%8A%A5%E6%8A%80%E8%83%BD+-+Multi-scale+Chinese+news+briefing+generator+for+Hermes+Agent.+From+global+to+street+level%2C+with+quality+gates+and+AI+analysis.&amp;kind=project+%C2%B7+skills">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/Shine8592/china-briefing#software",
   "name": "china-briefing",
-  "description": "China Briefing is a multi-scale Chinese news briefing generator designed for Hermes Agent. It generates structured reports ranging from global to street-level geographic scales using Tavily API for web searches.",
+  "description": "China Briefing is a skill for generating structured Chinese news briefings at different geographic scales, from streets to global coverage. It uses search engines according to their roles, cross-checks key facts across two sources, and applies a quality gate before delivering a briefing.",
   "url": "https://hermesatlas.com/projects/Shine8592/china-briefing",
   "codeRepository": "https://github.com/Shine8592/china-briefing",
   "applicationCategory": "DeveloperApplication",
@@ -46,7 +46,7 @@
     "name": "Shine8592",
     "url": "https://github.com/Shine8592"
   },
-  "dateModified": "2026-07-02T03:49:45.000Z",
+  "dateModified": "2026-11-19T01:53:59.000Z",
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
   }
@@ -73,8 +73,8 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">318·repos</span>
-    <span id="meta-version">hermes·v0.23.1</span>
+    <span id="meta-count">321·repos</span>
+    <span id="meta-version">hermes·v0.23.3</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -116,7 +116,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     
     
-    <span><span class="meta-label">updated</span>2026-07-02</span>
+    <span><span class="meta-label">updated</span>2026-11-19</span>
   </div>
 
   <div class="actions">
@@ -133,11 +133,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">China Briefing is a multi-scale Chinese news briefing generator designed for Hermes Agent. It generates structured reports ranging from global to street-level geographic scales using Tavily API for web searches.</p>
+    <p class="summary-text">China Briefing is a skill for generating structured Chinese news briefings at different geographic scales, from streets to global coverage. It uses search engines according to their roles, cross-checks key facts across two sources, and applies a quality gate before delivering a briefing.</p>
     <ul class="summary-highlights">
-      <li>Supports multiple geographic scales from global to street level</li>
-      <li>Generates structured reports with core conclusions and action suggestions</li>
-      <li>Integrates user interests via semantic memory for search expansion</li>
+      <li>Supports Chinese and international news searches.</li>
+      <li>Includes source links, commentary, and action recommendations.</li>
+      <li>API keys are kept in local configuration or environment variables.</li>
     </ul>
   </div>
 </section>
@@ -147,111 +147,216 @@
 <details class="readme-details">
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
-    <h2>📰 China Briefing — 多尺度中文资讯简报 v3.0</h2>
+    <h2>📰 China Briefing — 多尺度中文资讯简报 v4 · 四引擎协作版</h2>
 <blockquote>
-<p><strong>升级版本：</strong> 2026-07-01 — 架构重构，搜索精细化，质量门禁标准化</p>
+<p><strong>版本：</strong> v4.0（2026-11-18）——从"单引擎/线性降级"升级为"四引擎按环节协作、关键事实双源交叉"。</p>
 </blockquote>
-<p>多尺度中文资讯简报技能，从一条街道到全球，任意地理范围均可生成。</p>
-<h3>✨ 新版本亮点 (v3.0)</h3>
+<p>多尺度中文资讯简报技能：从一条街道到全球，任意地理范围都能生成一份结构化、带来源、有深度点评的简报。</p>
+<hr>
+<h3>✨ v4.0 核心：四引擎协作矩阵</h3>
+<p><strong>核心理念</strong>：四家检索引擎强弱互补、不在同一条线上，<strong>不排队等前一个挂了才降级</strong>，而是按环节各守岗位、关键事实由两家不同来源交叉印证。同时<strong>不是每条都调四个</strong>——按场景精准调用，控成本、控速度。</p>
 <table>
 <thead>
 <tr>
-<th>改进项</th>
+<th>环节</th>
+<th>主用</th>
+<th>辅用</th>
 <th>说明</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>🔒 <strong>规则优先级排序</strong></td>
-<td>安全底线 &gt; 结构完整性 &gt; 来源可信度 &gt; 内容质量 &gt; 风格优化，冲突时有据可依</td>
+<td>中文发现</td>
+<td><strong>wb2a</strong></td>
+<td>Exa</td>
+<td>wb2a 免费、权威中文源、长正文；Exa 补语义检索</td>
 </tr>
 <tr>
-<td>🔍 <strong>搜索参数与尺度绑定</strong></td>
-<td>全球→<code>advanced/10条</code>，区县/街道→<code>basic/5条</code>，每层自动匹配搜索深度</td>
+<td>国际/英文发现</td>
+<td><strong>Exa</strong></td>
+<td>Tavily</td>
+<td>两家不同源，天然满足"≥2 家通讯社"门禁</td>
 </tr>
 <tr>
-<td>⚙️ <strong>故障回退机制</strong></td>
-<td>超时重试 → 放宽尺度 → 历史缓存，三级保障</td>
+<td>中文视角补充</td>
+<td>wb2a</td>
+<td>—</td>
+<td>英文查询 wb2a 只回中文转述，仅作补充、不作国际主源</td>
 </tr>
 <tr>
-<td>🧪 <strong>质量门禁归一化</strong></td>
-<td>代码内联 → 独立 <code>references/quality-gate.md</code>，单⼀实现源，统一引用</td>
+<td>正文抓取</td>
+<td><strong>wb2a <code>--fetch</code></strong></td>
+<td>Exa <code>--url</code> → Firecrawl</td>
+<td>免费先上；Exa $1/1k 页；Firecrawl 仅硬反爬、403/404 也扣费</td>
 </tr>
 <tr>
-<td>🔐 <strong>API 密钥硬编码清理</strong></td>
-<td>所有明文密钥已移除，统一走环境变量和 <code>config.yaml</code>，安全合规</td>
-</tr>
-<tr>
-<td>📚 <strong>搜索源库分离</strong></td>
-<td>旧版内联 → 独立 <code>references/international-sources.md</code> + <code>search-sources.md</code></td>
-</tr>
-<tr>
-<td>🎯 <strong>用户兴趣集成</strong></td>
-<td>通过语义记忆自动扩展搜索词（住房、就业、社保、物价、政策、技能提升）</td>
+<td>关键事实交叉验证</td>
+<td>任意两家不同源</td>
+<td>—</td>
+<td>同一事实两家原文印证才进头条；单源标注"待交叉核实"</td>
 </tr>
 </tbody></table>
+<p><strong>四引擎能力对比（2026-11-18 实测）</strong></p>
+<table>
+<thead>
+<tr>
+<th>引擎</th>
+<th>中文发现</th>
+<th>国际英文</th>
+<th>正文抓取</th>
+<th>独立日期</th>
+<th>成本</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>wb2a</strong></td>
+<td>★★★</td>
+<td>★（中文转述）</td>
+<td>★★★ 免费</td>
+<td>需 DSH UA，值可能为 null</td>
+<td>免费</td>
+</tr>
+<tr>
+<td><strong>Exa</strong></td>
+<td>★★</td>
+<td>★★★ 权威原站</td>
+<td>★★</td>
+<td>有</td>
+<td>$4/1k 搜索、$1/1k 页</td>
+</tr>
+<tr>
+<td><strong>Tavily</strong></td>
+<td>★</td>
+<td>★★★ 通讯社+精确时间</td>
+<td>★ 仅摘要</td>
+<td>有 GMT 时间</td>
+<td>1–2 credits/次</td>
+</tr>
+<tr>
+<td><strong>Firecrawl</strong></td>
+<td>—</td>
+<td>—</td>
+<td>★★★ 硬反爬唯一解</td>
+<td>—</td>
+<td>1 credit/页</td>
+</tr>
+</tbody></table>
+<p><strong>成本 / 速度护栏</strong></p>
+<ul>
+<li>发现阶段每期中文线 2 家 + 国际线 2 家即可，<strong>勿四家全开</strong></li>
+<li>正文能免费就免费（wb2a <code>--fetch</code>），Firecrawl 只在硬反爬出场</li>
+<li>⛔ 不用 Firecrawl 试错 URL（403/404 照样扣费）、不整站 <code>/crawl</code></li>
+<li>关键数字至少双源；普通条目单源即可</li>
+</ul>
+<blockquote>
+<p>📌 <strong>一条重要经验</strong>：把分工写成一致的"信号"比写成硬约束更有效。文档中自相矛盾的表述（旧版曾同时写"wb2a 是全球主力"和"wb2a 国际仅补充"）会让执行模型偏向免费万能的引擎。v4.0 已清理矛盾，实测三轮均自然收敛到正确分工。</p>
+</blockquote>
+<hr>
+<h3>✨ 沿袭能力（v3.0 及以前）</h3>
+<table>
+<thead>
+<tr>
+<th>能力</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>🔒 规则优先级排序</td>
+<td>安全底线 &gt; 结构完整性 &gt; 来源可信度 &gt; 内容质量 &gt; 风格优化</td>
+</tr>
+<tr>
+<td>🔍 搜索与尺度绑定</td>
+<td>全球→多源多线，区县/街道→具体查询，每层自动匹配</td>
+</tr>
+<tr>
+<td>🧪 质量门禁归一化</td>
+<td>独立 <code>references/quality-gate.md</code>，单一实现源</td>
+</tr>
+<tr>
+<td>🔐 明文密钥清理</td>
+<td>密钥不入库，统一走 provider 配置 / 环境变量</td>
+</tr>
+<tr>
+<td>📚 搜索源库分离</td>
+<td>国际源、全尺度源各自独立文档</td>
+</tr>
+<tr>
+<td>🎯 用户兴趣集成</td>
+<td>语义记忆扩展搜索词（住房、就业、社保、物价、政策等）</td>
+</tr>
+</tbody></table>
+<hr>
 <h3>📂 项目结构</h3>
 <pre><code>china-briefing/
-├── SKILL.md                       # 主技能定义（规则+流程）
-├── README.md                      # 本文件
-├── _meta.json                     # 技能元数据
-├── config.example.yaml            # 配置模板
+├── SKILL.md                          # 主技能定义（规则 + 流程 + 四引擎协作矩阵）
+├── README.md                         # 中文说明（本文件）
+├── README_EN.md                      # English documentation
+├── _meta.json                        # 技能元数据
+├── config.example.yaml               # 配置模板
+├── config/
+│   └── detailed_mode.json            # 详细模式配置
 ├── references/
-│   ├── formatting.md              # 嘟嘟点评格式规范
-│   ├── international-sources.md   # 国际新闻来源库
-│   ├── quality-gate.md            # 质量门禁（单一实现源）
-│   ├── search-sources.md          # 全尺度搜索源库
-│   ├── tavily-setup.md            # Tavily API 配置指南
-│   ├── tavily-usage.md            # Tavily API 使用参考
-│   └── user-interest-integration.md  # 用户兴趣集成文档
-└── config/
-    └── detailed_mode.json         # 详细模式配置
+│   ├── formatting.md                 # 嘟嘟点评格式规范
+│   ├── international-sources.md      # 国际新闻来源库
+│   ├── quality-gate.md               # 质量门禁（单一实现源）
+│   ├── search-sources.md             # 全尺度搜索源库
+│   ├── search-templates.md           # 搜索模板
+│   ├── source-library.md             # 新闻来源库
+│   ├── user-interest-integration.md  # 用户兴趣集成
+│   ├── tavily-setup.md               # [已废弃] Tavily 配置（存档）
+│   └── tavily-usage.md               # [已废弃] Tavily 用法（存档）
+└── scripts/
+    ├── briefing_helper.py
+    ├── briefing_helper_enhanced.py
+    ├── personal_briefing.py
+    ├── quality_gate.py
+    └── server_cleanup.py
 </code></pre>
+<hr>
 <h3>🔧 安装</h3>
-<h4>环境要求</h4>
+<p><strong>环境要求</strong></p>
 <ul>
-<li><a href="https://app.tavily.com/">Tavily API Key</a>（免费：1000次/天）</li>
-<li>Hermes Agent</li>
+<li>QwenPaw / Hermes Agent（支持 Skill 工具）</li>
+<li>四引擎接入（按你实际拥有的配置，并非四家都必须）：<ul>
+<li><strong>wb2a / Exa / Tavily / Firecrawl</strong> 的脚本或 MCP 工具</li>
+<li>wb2a 复用 <code>yaner</code> provider 的 API key，端点 <code>POST https://token.yaner.fun/v1/search</code> 与 <code>POST /v1/fetch</code>（透传腾讯 CodeBuddy agenttool，查询免费）</li>
+<li>Exa / Tavily / Firecrawl 各自的 API key 走环境变量或 <code>config.yaml</code>，<strong>不要提交明文</strong></li>
 </ul>
-<h4>安装步骤</h4>
-<pre><code class="language-bash"># 1. 将技能目录放入 Hermes skills 目录
-cp -r china-briefing ~/.hermes/skills/
+</li>
+</ul>
+<pre><code class="language-bash"># 将技能放入工作区
+cp -r china-briefing &lt;workspace&gt;/skills/
 
-# 2. 配置 Tavily API Key（二选一）
-# 方式 A：环境变量（推荐）
-echo 'TAVILY_API_KEY="your-key"' &gt;&gt; ~/.hermes/.env
-
-# 方式 B：配置文件
-cp config.example.yaml config.yaml
-# 编辑 config.yaml 填入密钥
+# 私钥类配置只放本地，切勿提交
+cp config.example.yaml config.yaml   # 然后填入自己的 key（已在 .gitignore 中排除）
 </code></pre>
+<hr>
 <h3>🚀 使用</h3>
-<p>生成简报时直接告诉需求：</p>
-<pre><code># 全球简报
-给我今天的全球简报
-
-# 国内简报
+<p>直接说出需求即可：</p>
+<pre><code>给我今天的全球简报
 今天国内有什么大事
-
-# 本地简报
 江川路街道最近有什么新动态
-
-# 行业简报
 AI 行业最新动态
 </code></pre>
-<p>技能自动：</p>
+<p>技能自动完成：</p>
 <ol>
-<li>确定地理尺度和搜索词</li>
-<li>用 <code>web_search</code>（Tavily）搜索实时资讯</li>
-<li>生成结构化简报（核心结论 + 3条头条 + 分类热点 + 行动建议）</li>
-<li>执行质量门禁检查</li>
-<li>交付最终简报</li>
+<li>判定地理尺度与搜索线（中文线 / 国际线）</li>
+<li>按四引擎矩阵调用检索（各守岗位、关键事实双源交叉）</li>
+<li>生成结构化简报</li>
+<li>执行质量门禁</li>
+<li>交付</li>
 </ol>
+<hr>
 <h3>📋 输出格式</h3>
-<p>📌 <strong>核心结论</strong> — 1-2句总览（必填）
-📌 <strong>头条速报</strong> — 3条头条 + 嘟嘟点评（必填）
-📌 <strong>分类热点</strong> — 2-4大类（必填）
-📌 <strong>数据看板</strong> — 关键数据（可选）
-📌 <strong>行动建议</strong> — 优先级表格（必填）</p>
+<ul>
+<li>📌 <strong>核心结论</strong> — 1–2 句总览（必填）</li>
+<li>📌 <strong>头条速报</strong> — 3 条头条 + 点评（必填，每条事实+来源超链接+点评）</li>
+<li>📌 <strong>分类热点</strong> — 2–4 大类（必填）</li>
+<li>📌 <strong>数据看板</strong> — 关键数据（可选）</li>
+<li>📌 <strong>行动建议</strong> — 优先级表格（必填）</li>
+<li>📌 <strong>时间窗口</strong> — 诚实标注覆盖区间，不把多日内容伪装成"今日"</li>
+</ul>
+<p>来源统一用 <code>[媒体名](URL)</code> 超链接，不贴裸网址；媒体名用中文译名。</p>
+<hr>
 <h3>🔒 版本历史</h3>
 <table>
 <thead>
@@ -262,26 +367,38 @@ AI 行业最新动态
 </tr>
 </thead>
 <tbody><tr>
+<td><strong>v4.0</strong></td>
+<td>2026-11-18</td>
+<td>四引擎协作矩阵：wb2a/Exa/Tavily/Firecrawl 按环节分工、关键事实双源交叉、成本速度护栏；清理矛盾表述</td>
+</tr>
+<tr>
+<td>v3.1</td>
+<td>2026-10-04</td>
+<td>搜索后端切换：web_search/tavily → free_search MCP</td>
+</tr>
+<tr>
 <td>v3.0</td>
 <td>2026-07-01</td>
-<td>架构重构：规则优先级排序、搜索参数绑定、故障回退、质量门禁归一化、API密钥清理</td>
+<td>架构重构：规则优先级、尺度绑定、故障回退、质量门禁归一化、密钥清理</td>
 </tr>
 <tr>
 <td>v2.0</td>
 <td>2026-05</td>
-<td>强化质量门禁系统：引入自动检查、来源多样性规则、反注水机制</td>
+<td>强化质量门禁：自动检查、来源多样性、反注水</td>
 </tr>
 <tr>
 <td>v1.0</td>
 <td>2026-04</td>
-<td>初始发布：支持多尺度简报生成</td>
+<td>初始发布：多尺度简报生成</td>
 </tr>
 </tbody></table>
+<hr>
 <h3>🔐 安全说明</h3>
 <ul>
-<li><strong>不提交明文密钥到公开仓库</strong> — API 密钥通过 <code>~/.hermes/.env</code> 或 <code>config.yaml</code> 单独配置</li>
-<li><code>config.yaml</code> 和 <code>.env</code> 已被 <code>.gitignore</code> 排除</li>
-<li>所有引用外部配置文件中的敏感信息均已移除</li>
+<li><strong>不向公开仓库提交明文密钥</strong>——所有 key 走 provider 配置或环境变量</li>
+<li><code>config.yaml</code>、<code>.env</code>、<code>*_api_key*</code>、<code>*_secret*</code> 均已在 <code>.gitignore</code> 排除</li>
+<li>wb2a 端点复用现有 provider 凭据，不新增落盘密钥</li>
+<li>第三方检索服务（含腾讯 CodeBuddy agenttool）为非官方通道，稳定性以其上游为准；本技能保留 free_search 兜底</li>
 </ul>
 <h3>📜 许可证</h3>
 <p>MIT License</p>
@@ -301,31 +418,31 @@ AI 行业最新动态
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mukul975/Anthropic-Cybersecurity-Skills">
-        <div class="stars">★ 36.2K</div>
+        <div class="stars">★ 36.6K</div>
         <div class="name"><span class="org">mukul975 /</span> Anthropic-Cybersecurity-Skills</div>
       </a>
       <a class="related-row" href="/projects/conorbronsdon/avoid-ai-writing">
-        <div class="stars">★ 5.7K</div>
+        <div class="stars">★ 6.0K</div>
         <div class="name"><span class="org">conorbronsdon /</span> avoid-ai-writing</div>
       </a>
       <a class="related-row" href="/projects/wondelai/skills">
-        <div class="stars">★ 2.7K</div>
+        <div class="stars">★ 2.8K</div>
         <div class="name"><span class="org">wondelai /</span> skills</div>
       </a>
       <a class="related-row" href="/projects/DougTrajano/pydantic-ai-skills">
-        <div class="stars">★ 381</div>
+        <div class="stars">★ 382</div>
         <div class="name"><span class="org">DougTrajano /</span> pydantic-ai-skills</div>
       </a>
       <a class="related-row" href="/projects/Agents365-ai/drawio-skill">
-        <div class="stars">★ 10.8K</div>
+        <div class="stars">★ 10.9K</div>
         <div class="name"><span class="org">Agents365-ai /</span> drawio-skill</div>
       </a>
       <a class="related-row" href="/projects/smartcontractkit/chainlink-agent-skills">
-        <div class="stars">★ 128</div>
+        <div class="stars">★ 130</div>
         <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
       </a>
       <a class="related-row" href="/projects/tlehman/litprog-skill">
-        <div class="stars">★ 279</div>
+        <div class="stars">★ 281</div>
         <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
       </a>
       <a class="related-row" href="/projects/esaradev/icarus-plugin">

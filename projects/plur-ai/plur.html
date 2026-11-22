@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>plur-ai/plur — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="PLUR provides persistent, shared memory for AI agents through plain-text YAML engrams stored locally. It integrates with MCP tools and offers local search,…">
+<meta name="description" content="PLUR provides persistent, shared memory for AI agents, stored as plain-text YAML files on the user's disk. It integrates with MCP tools and supports searching…">
 <link rel="canonical" href="https://hermesatlas.com/projects/plur-ai/plur">
 <meta property="og:title" content="plur-ai/plur — Hermes Atlas">
-<meta property="og:description" content="PLUR provides persistent, shared memory for AI agents through plain-text YAML engrams stored locally. It integrates with MCP tools and offers local search,…">
+<meta property="og:description" content="PLUR provides persistent, shared memory for AI agents, stored as plain-text YAML files on the user's disk. It integrates with MCP tools and supports searching…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/plur-ai/plur">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="plur-ai/plur — Hermes Atlas">
-<meta name="twitter:description" content="PLUR provides persistent, shared memory for AI agents through plain-text YAML engrams stored locally. It integrates with MCP tools and offers local search,…">
+<meta name="twitter:description" content="PLUR provides persistent, shared memory for AI agents, stored as plain-text YAML files on the user's disk. It integrates with MCP tools and supports searching…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=plur&amp;subtitle=Shared+memory+for+AI+agents&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/plur-ai/plur#software",
   "name": "plur",
-  "description": "PLUR provides persistent, shared memory for AI agents through plain-text YAML engrams stored locally. It integrates with MCP tools and offers local search, with keyword-search fallback when the search model is unavailable.",
+  "description": "PLUR provides persistent, shared memory for AI agents, stored as plain-text YAML files on the user's disk. It integrates with MCP tools and supports searching and managing memories across sessions and tools.",
   "url": "https://hermesatlas.com/projects/plur-ai/plur",
   "codeRepository": "https://github.com/plur-ai/plur",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "plur-ai",
     "url": "https://github.com/plur-ai"
   },
-  "dateModified": "2026-11-16T15:00:13.000Z",
+  "dateModified": "2026-11-21T10:24:32.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 317
+    "userInteractionCount": 318
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,8 +81,8 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">318·repos</span>
-    <span id="meta-version">hermes·v0.23.1</span>
+    <span id="meta-count">321·repos</span>
+    <span id="meta-version">hermes·v0.23.3</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -120,11 +120,11 @@
   <p class="project-desc">Shared memory for AI agents</p>
 
   <div class="meta-row">
-    <span class="stars">★ 317</span>
+    <span class="stars">★ 318</span>
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-11-16</span>
+    <span><span class="meta-label">updated</span>2026-11-21</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">PLUR provides persistent, shared memory for AI agents through plain-text YAML engrams stored locally. It integrates with MCP tools and offers local search, with keyword-search fallback when the search model is unavailable.</p>
+    <p class="summary-text">PLUR provides persistent, shared memory for AI agents, stored as plain-text YAML files on the user's disk. It integrates with MCP tools and supports searching and managing memories across sessions and tools.</p>
     <ul class="summary-highlights">
-      <li>Engrams can be read, corrected, and deleted.</li>
-      <li>Memory can persist across sessions and tools.</li>
-      <li>Setup uses the PLUR CLI and MCP server.</li>
+      <li>Stores memories as inspectable, editable, deletable YAML files.</li>
+      <li>Search runs locally after the model download.</li>
+      <li>Includes CLI setup and an MCP server.</li>
     </ul>
   </div>
 </section>
@@ -234,6 +234,13 @@ plur init
 plur doctor
 </code></pre>
 <p>Restart the editor so it launches the updated MCP server.</p>
+<p>PLUR asks your own npm what <code>latest</code> is, so the update notice uses the same
+registry, scoped <code>@plur-ai:registry</code> mirror, proxy, certificate and token as
+<code>npm install</code>. Behind a company mirror the notice reports the mirror's
+<code>latest</code>, not npmjs.org's. When that registry cannot be reached, PLUR says
+<code>Could not reach &lt;host&gt; to check for updates (&lt;reason&gt;). No update is advertised.</code> and runs normally. The answer is kept in
+<code>~/.plur/cache/update-check.json</code> (6 hours, or 30 minutes after a failure).
+<code>PLUR_NO_UPDATE_CHECK=1</code> or <code>NO_UPDATE_NOTIFIER=1</code> turns the check off.</p>
 <h4>Cursor</h4>
 <p>From your project root:</p>
 <pre><code class="language-bash">plur init --cursor
@@ -606,6 +613,15 @@ remote-only folder refuses and what happens when the team server is down:
 </code></pre>
 <p>(REUSE stats and coverage caveats are also shown; trimmed here for length.)</p>
 <p>It is local and read-only, and carries <strong>no dollar or token figure by design</strong>: on a subscription your marginal token cost is zero, and the value of an avoided rediscovery is not measurable from this data. The receipt reports only what it can count. Activation rate is store <em>coverage over the logging window</em>, not a quality score — it is naturally low and falls as you add engrams. <code>--days N</code> narrows the window; <code>--json</code> emits the raw shape. (The <code>plur_receipt</code> MCP tool returns the same figures plus a one-line <code>summary</code> that carries this framing to the agent.)</p>
+<h3>Proving what your agent remembered (experimental)</h3>
+<p>Since 0.23, PLUR can show which memories an agent had in context in one session, and whether any of them changed afterwards. It is a test feature: the manifest format, the provenance gateway and its notary may change.</p>
+<p>All of it works offline by default:</p>
+<pre><code class="language-bash">plur verify                                       # was the history edited outside PLUR?
+plur keys init &amp;&amp; plur verify --signatures        # checkpoints signed with your own key
+plur manifest --session &lt;id&gt; --out session.json   # the memories one session had in context
+plur verify --manifest session.json               # MATCH / CHANGED / NOT AVAILABLE per memory
+</code></pre>
+<p>Storing those session lists on Swarm is opt-in (<code>receipts.store: swarm</code> in <code>~/.plur/config.yaml</code>). The provenance gateway stores the list and its notary signs it, so anyone with the reference can check it. Nothing leaves your machine until you turn it on. The manifest carries ids and hashes, never memory text. Details: <a href="https://github.com/plur-ai/plur/blob/main/docs/provenance.md#proving-what-an-agent-had-in-mind-experimental">docs/provenance.md</a>.</p>
 <h3>Syncing across devices</h3>
 <p><code>plur.sync(remote)</code> is git underneath: it commits your engram store and pushes it to the remote you give it. What gets pushed depends on the remote's declared type (<code>sync.remote_type</code> in <code>config.yaml</code>, or the <code>remote_type</code> argument):</p>
 <ul>
@@ -868,7 +884,7 @@ pnpm install &amp;&amp; pnpm build &amp;&amp; pnpm test
 <ul>
 <li><strong>Bug reports</strong> — issue with reproduction steps</li>
 <li><strong>Feature requests</strong> — issue describing the use case</li>
-<li><strong>Code</strong> — fork, branch, PR. Tests required.</li>
+<li><strong>Code</strong> — fork, branch from <code>development</code>, open a PR into <code>development</code>. Tests required. See <a href="https://github.com/plur-ai/plur/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>.</li>
 <li><strong>Integrations</strong> — build PLUR support for other tools</li>
 </ul>
 <p>Before submitting: <code>pnpm test</code> passes, <code>pnpm build</code> succeeds, no new external deps in core without discussion.</p>
@@ -887,11 +903,11 @@ pnpm install &amp;&amp; pnpm build &amp;&amp; pnpm test
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 69.1K</div>
+        <div class="stars">★ 69.3K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 61.4K</div>
+        <div class="stars">★ 62.7K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -907,7 +923,7 @@ pnpm install &amp;&amp; pnpm build &amp;&amp; pnpm test
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/Signet-AI/signetai">
-        <div class="stars">★ 315</div>
+        <div class="stars">★ 317</div>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
@@ -915,7 +931,7 @@ pnpm install &amp;&amp; pnpm build &amp;&amp; pnpm test
         <div class="name"><span class="org">amanning3390 /</span> flowstate-qmd</div>
       </a>
       <a class="related-row" href="/projects/garrytan/gbrain">
-        <div class="stars">★ 33.1K</div>
+        <div class="stars">★ 33.4K</div>
         <div class="name"><span class="org">garrytan /</span> gbrain</div>
       </a>
     </div>

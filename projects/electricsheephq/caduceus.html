@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>electricsheephq/caduceus — Hermes Agent Domain Applications | Hermes Atlas</title>
-<meta name="description" content="Caduceus is a Hermes plugin that combines DNA data, health information and research in a SQLite vault on the user's machine. It provides cited health answers,…">
+<meta name="description" content="Caduceus is a Hermes plugin that imports DNA data, Apple Health exports, and health records into a SQLite vault on the user's machine. It provides cited health…">
 <link rel="canonical" href="https://hermesatlas.com/projects/electricsheephq/caduceus">
 <meta property="og:title" content="electricsheephq/caduceus — Hermes Atlas">
-<meta property="og:description" content="Caduceus is a Hermes plugin that combines DNA data, health information and research in a SQLite vault on the user's machine. It provides cited health answers,…">
+<meta property="og:description" content="Caduceus is a Hermes plugin that imports DNA data, Apple Health exports, and health records into a SQLite vault on the user's machine. It provides cited health…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/electricsheephq/caduceus">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="electricsheephq/caduceus — Hermes Atlas">
-<meta name="twitter:description" content="Caduceus is a Hermes plugin that combines DNA data, health information and research in a SQLite vault on the user's machine. It provides cited health answers,…">
+<meta name="twitter:description" content="Caduceus is a Hermes plugin that imports DNA data, Apple Health exports, and health records into a SQLite vault on the user's machine. It provides cited health…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=caduceus&amp;subtitle=Health+answers+that+cite+your+own+DNA%2C+Apple+Health+and+records%2C+plus+new+research%2C+from+a+vault+on+your+machine.&amp;kind=project+%C2%B7+domain+applications">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/electricsheephq/caduceus#software",
   "name": "caduceus",
-  "description": "Caduceus is a Hermes plugin that combines DNA data, health information and research in a SQLite vault on the user's machine. It provides cited health answers, rebuilds Promethease reports, creates a brief for a clinician and can watch for new research on the user's gene–drug pairs.",
+  "description": "Caduceus is a Hermes plugin that imports DNA data, Apple Health exports, and health records into a SQLite vault on the user's machine. It provides cited health answers using those sources and published research, and can generate a health brief and watch for new research on the user's gene–drug pairs.",
   "url": "https://hermesatlas.com/projects/electricsheephq/caduceus",
   "codeRepository": "https://github.com/electricsheephq/caduceus",
   "applicationCategory": "BusinessApplication",
@@ -47,7 +47,7 @@
     "name": "electricsheephq",
     "url": "https://github.com/electricsheephq"
   },
-  "dateModified": "2026-11-15T16:25:28.000Z",
+  "dateModified": "2026-11-21T16:21:31.000Z",
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
   }
@@ -74,8 +74,8 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">318·repos</span>
-    <span id="meta-version">hermes·v0.23.1</span>
+    <span id="meta-count">321·repos</span>
+    <span id="meta-version">hermes·v0.23.3</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -117,7 +117,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-11-15</span>
+    <span><span class="meta-label">updated</span>2026-11-21</span>
   </div>
 
   <div class="actions">
@@ -134,11 +134,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Caduceus is a Hermes plugin that combines DNA data, health information and research in a SQLite vault on the user's machine. It provides cited health answers, rebuilds Promethease reports, creates a brief for a clinician and can watch for new research on the user's gene–drug pairs.</p>
+    <p class="summary-text">Caduceus is a Hermes plugin that imports DNA data, Apple Health exports, and health records into a SQLite vault on the user's machine. It provides cited health answers using those sources and published research, and can generate a health brief and watch for new research on the user's gene–drug pairs.</p>
     <ul class="summary-highlights">
-      <li>Imports DNA, Apple Health and health-record files.</li>
-      <li>Keeps the vault and imports on the user's machine.</li>
-      <li>Includes research-watch and clinician-brief features.</li>
+      <li>Imports data from several DNA services and health-record formats.</li>
+      <li>Stores the vault and runs searches locally.</li>
+      <li>Provides cited answers and a research watch.</li>
     </ul>
   </div>
 </section>
@@ -334,7 +334,7 @@ turns it on.</p>
 <td>In Health Auto Export, use Manual Export or an automation that saves metrics as JSON</td>
 </tr>
 <tr>
-<td>FHIR R4 JSON (labs, conditions, medications)</td>
+<td>FHIR R4 JSON (labs, conditions, medications, reports and documents)</td>
 <td>A patient portal's FHIR or "download my record" export</td>
 </tr>
 </tbody></table>
@@ -345,6 +345,11 @@ turns it on.</p>
 <li>An interrupted import resumes where it stopped.</li>
 <li>A FHIR condition that gives only the date it was recorded is kept, with its onset unknown. Results without a code
 are told apart by name.</li>
+<li>Diagnostic reports, documents and notes are stored and searchable; imaging studies are kept as metadata. Text
+attachments sent inline are read locally; PDFs and images are only listed, and attachment links are never followed.</li>
+<li>After an update, <code>caduceus_capture op=settings</code> says when stored clinical files hold records an earlier version skipped, merged
+or ignored. <code>caduceus_capture op=replay</code> re-reads them locally and adds only what is missing, never changing a stored
+record; it refuses, writing nothing, when the history can't be rebuilt exactly.</li>
 <li>A vault holds one person. A second DNA file is compared with the first on shared markers, and if it looks like a
 different person, you are told, and answers carry a warning. Keep each person in their own Hermes profile.</li>
 </ul>
@@ -381,7 +386,7 @@ night counts once.</p>
 </thead>
 <tbody><tr>
 <td><code>caduceus_search</code></td>
-<td>Full-text search across your annotations, research, labs, conditions, medications and notes, with cited snippets; lists everything of one kind, such as your medications</td>
+<td>Full-text search across your annotations, research, labs, conditions, medications, clinical reports and notes, with cited snippets; lists everything of one kind, such as your medications; fetches a report with its linked results</td>
 </tr>
 <tr>
 <td><code>caduceus_genome</code></td>
@@ -389,11 +394,11 @@ night counts once.</p>
 </tr>
 <tr>
 <td><code>caduceus_trend</code></td>
-<td>Apple Health trends with units, coverage gaps and a calculation version; before and after a medication start; lab results over time; a daily signal check</td>
+<td>Apple Health trends with units, coverage gaps and a calculation version; before and after a medication start; lab results over time with reference ranges as recorded; every clinical series you hold; a daily signal check</td>
 </tr>
 <tr>
 <td><code>caduceus_capture</code></td>
-<td>Imports and their progress, medications (recorded only after you confirm), notes, the research watch, settings, and the health brief</td>
+<td>Imports and their progress, medications (recorded only after you confirm), notes, phenotype notes that confirm or correct a finding, consent answers for a guided session, a one-call plan for a first session, the research watch, settings, the health brief (also for a specialty, with your questions), and recovery of records earlier versions missed</td>
 </tr>
 </tbody></table>
 <p>A gene–drug result keeps three outcomes apart:</p>
@@ -425,7 +430,10 @@ and so on (<code>/caduceus help</code> lists them), or in the plugin settings. Y
 them. Hidden results are counted, never described. A marker follows its gene's category: hiding <code>pgx</code> hides the
 drug-response genes' markers in gene views, lookups, gene–drug checks and the summary's gene–drug profile, and a
 derived call shows only when every marker behind it can. Variant-report listings (filters, top findings, the rebuilt
-report) follow each annotation's own category.</p>
+report) follow each annotation's own category. Your own words (notes, phenotype notes, medication notes and doses,
+report text and brief questions) are shown only when every sensitive topic they name is visible, so a note about
+anxiety during pregnancy stays hidden when either topic is. A clinical report is withheld whole when anything it links
+is hidden. Consent answers are remembered so a guided session asks once, but they never change what is shown.</p>
 <p>Disclosure — imports, search and reports run locally, and the vault is never uploaded as a
 whole; tool results (slices of your data) enter the conversation, so the model provider you
 chose sees them; a hook adds one fixed note, holding none of your data, to the first health, medication or DNA question of each chat when the vault has data (off with the <code>vault_hint</code> setting); the research watch (on by default, runs when you or the agent ask for it or on a schedule you
@@ -437,7 +445,7 @@ check it holds no health data, and files it to this repository with <code>gh</co
 approve the draft.</p>
 <p>To delete everything Caduceus stored, run <code>/caduceus erase</code>: it shows what would go, and <code>/caduceus erase confirm</code> deletes it. Your settings stay, and so do schedules you created with <code>/blueprint</code>: the
 preview names each one and what its next run will do.</p>
-<p>Your data lives in your Hermes profile's <code>plugin-data/caduceus/</code>. In v0.1 it is not encrypted at rest; encrypted and local-model levels are planned for v0.4. See <a href="https://github.com/electricsheephq/caduceus/blob/main/SECURITY.md">SECURITY.md</a> for the boundaries.</p>
+<p>Your data lives in your Hermes profile's <code>plugin-data/caduceus/</code>. It is not encrypted at rest. Encrypted and local-model privacy levels are not built yet, and no release is scheduled for them. See <a href="https://github.com/electricsheephq/caduceus/blob/main/SECURITY.md">SECURITY.md</a> for the boundaries.</p>
 <h3>Settings</h3>
 <table>
 <thead>
@@ -534,7 +542,7 @@ python -m pytest
 </code></pre>
 <p>Tests use synthetic data generated at test time and never touch the network. Module contracts are in
 <a href="https://github.com/electricsheephq/caduceus/blob/main/docs/contracts.md">docs/contracts.md</a>, agent guidance in <a href="https://github.com/electricsheephq/caduceus/blob/main/AGENTS.md">AGENTS.md</a>, and how to contribute in
-<a href="https://github.com/electricsheephq/caduceus/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>.</p>
+<a href="https://github.com/electricsheephq/caduceus/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>. Where Caduceus is going: <a href="https://github.com/electricsheephq/caduceus/blob/main/VISION.md">VISION.md</a> and <a href="https://github.com/electricsheephq/caduceus/blob/main/ROADMAP.md">ROADMAP.md</a>.</p>
 <h3>Troubleshooting</h3>
 <table>
 <thead>
@@ -592,7 +600,7 @@ python -m pytest
         <div class="name"><span class="org">ucsandman /</span> DashClaw</div>
       </a>
       <a class="related-row" href="/projects/Lethe044/hermes-incident-commander">
-        <div class="stars">★ 75</div>
+        <div class="stars">★ 77</div>
         <div class="name"><span class="org">Lethe044 /</span> hermes-incident-commander</div>
       </a>
       <a class="related-row" href="/projects/Christabel337/job-scout-agent">

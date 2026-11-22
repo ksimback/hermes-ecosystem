@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>itpartypattaya/hermes-dreaming — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="hermes-dreaming is a scheduled, deterministic memory-consolidation tool for Hermes Agent. Its Python script reviews conversations and stored memory, then…">
+<meta name="description" content="hermes-dreaming runs nightly, deterministic memory consolidation for Hermes Agent. A Python script checks conversations and stored memory, then presents…">
 <link rel="canonical" href="https://hermesatlas.com/projects/itpartypattaya/hermes-dreaming">
 <meta property="og:title" content="itpartypattaya/hermes-dreaming — Hermes Atlas">
-<meta property="og:description" content="hermes-dreaming is a scheduled, deterministic memory-consolidation tool for Hermes Agent. Its Python script reviews conversations and stored memory, then…">
+<meta property="og:description" content="hermes-dreaming runs nightly, deterministic memory consolidation for Hermes Agent. A Python script checks conversations and stored memory, then presents…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/itpartypattaya/hermes-dreaming">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="itpartypattaya/hermes-dreaming — Hermes Atlas">
-<meta name="twitter:description" content="hermes-dreaming is a scheduled, deterministic memory-consolidation tool for Hermes Agent. Its Python script reviews conversations and stored memory, then…">
+<meta name="twitter:description" content="hermes-dreaming runs nightly, deterministic memory consolidation for Hermes Agent. A Python script checks conversations and stored memory, then presents…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-dreaming&amp;subtitle=Nightly+deterministic+memory+consolidation+%28%22dreaming%22%29+skill+for+Hermes+Agent&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/itpartypattaya/hermes-dreaming#software",
   "name": "hermes-dreaming",
-  "description": "hermes-dreaming is a scheduled, deterministic memory-consolidation tool for Hermes Agent. Its Python script reviews conversations and stored memory, then presents proposals for the agent to handle through the regular memory tool; the script itself does not write memory or call an LLM for its rules.",
+  "description": "hermes-dreaming runs nightly, deterministic memory consolidation for Hermes Agent. A Python script checks conversations and stored memory, then presents proposals for the agent to apply through its regular memory tool; it does not call an LLM or write memory itself. It also records candidate provenance and can report task outcomes when enabled.",
   "url": "https://hermesatlas.com/projects/itpartypattaya/hermes-dreaming",
   "codeRepository": "https://github.com/itpartypattaya/hermes-dreaming",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "itpartypattaya",
     "url": "https://github.com/itpartypattaya"
   },
-  "dateModified": "2026-11-07T12:38:48.000Z",
+  "dateModified": "2026-11-18T14:06:06.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 26
+    "userInteractionCount": 33
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,8 +81,8 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">318·repos</span>
-    <span id="meta-version">hermes·v0.23.1</span>
+    <span id="meta-count">321·repos</span>
+    <span id="meta-version">hermes·v0.23.3</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -120,11 +120,11 @@
   <p class="project-desc">Nightly deterministic memory consolidation (&quot;dreaming&quot;) skill for Hermes Agent</p>
 
   <div class="meta-row">
-    <span class="stars">★ 26</span>
+    <span class="stars">★ 33</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-07</span>
+    <span><span class="meta-label">updated</span>2026-11-18</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">hermes-dreaming is a scheduled, deterministic memory-consolidation tool for Hermes Agent. Its Python script reviews conversations and stored memory, then presents proposals for the agent to handle through the regular memory tool; the script itself does not write memory or call an LLM for its rules.</p>
+    <p class="summary-text">hermes-dreaming runs nightly, deterministic memory consolidation for Hermes Agent. A Python script checks conversations and stored memory, then presents proposals for the agent to apply through its regular memory tool; it does not call an LLM or write memory itself. It also records candidate provenance and can report task outcomes when enabled.</p>
     <ul class="summary-highlights">
-      <li>Corroborates facts mentioned by humans on distinct days.</li>
-      <li>Screens candidates and flags duplicates, conflicts, and possible memory loss.</li>
-      <li>A wake gate prevents the model from starting on quiet nights.</li>
+      <li>Corroborates facts using human mentions on distinct days.</li>
+      <li>Screens candidates and flags duplicates, conflicts, and memory loss.</li>
+      <li>Quiet nights can skip starting the model.</li>
     </ul>
   </div>
 </section>
@@ -209,7 +209,9 @@ provider's prefetch goes on offering it. Such facts are listed with a ready
 <code>fact_feedback(unhelpful)</code> call, so a rejection teaches retrieval too.</li>
 <li><strong>Confirmations</strong> (holographic ≥ 0.15.0). A fact people said again — on two different days, in messages that
 hold most of its words and neither negate it nor give it a new number — is listed with a ready <code>fact_feedback(confirmed)</code> call: its trust
-rises a little, and the agent's own conclusion counts as confirmed. Naming the topic is not saying it again, so
+rises a little. The agent's own conclusion (<code>inferred</code>) is not confirmed that way: words are not a person's
+confirmation, so it goes to <code>confirm_ask</code>, and the agent asks the person and confirms it only on their yes
+(3.8.12; before, the agent confirmed it itself). Naming the topic is not saying it again, so
 this is rare by design (none of 58 facts on a live family store; the loose rule would have offered 26). It never
 wakes the model. Items also carry the fact's <code>origin</code> — <code>said</code>, <code>confirmed</code> or <code>inferred</code> (an agent's conclusion
 nobody confirmed, asked about rather than written).</li>
@@ -444,7 +446,7 @@ loud too.</li>
 </tr>
 </tbody></table>
 <p><code>fact_columns</code> maps your names onto <code>id</code> and <code>content</code> (required) and <code>created_at</code>, <code>updated_at</code>
-(ISO or epoch), <code>category</code>, <code>tags</code> (string or list), <code>trust</code> (0..1). Example:
+(ISO, <code>17.11.2026 09:30</code> read as UTC, or an epoch in s/ms/µs/ns, number or string), <code>category</code>, <code>tags</code> (string or list), <code>trust</code> (0..1). Example:
 <code>{"fact_source": "jsonl", "fact_store_path": "exports/facts.jsonl", "fact_columns": {"content": "memory"}}</code>.</p>
 <p>Hosted providers (mem0, Honcho, Supermemory, RetainDB) extract and deduplicate facts on their own
 servers; reading them would need API keys in a cron job for little gain, so there is no adapter. If
@@ -680,7 +682,7 @@ past it and say so. Precedence: CLI flag &gt; <code>DREAM_*</code> env &gt; conf
 </thead>
 <tbody><tr>
 <td><code>timezone</code></td>
-<td>IANA zone for the diary date and day-bucketing of mentions. Not set → Hermes' own <code>timezone</code>, then UTC</td>
+<td>IANA zone for the diary date and day-bucketing of mentions. Not set → Hermes' own <code>timezone</code>, then UTC. On Windows Python has no zone database of its own: without the <code>tzdata</code> package (<code>pip install tzdata</code> into the interpreter that runs the jobs) every zone falls back to UTC, with a warning in the job's log</td>
 </tr>
 <tr>
 <td><code>trusted_chat_ids</code></td>
@@ -868,13 +870,7 @@ behaviour against <code>SKILL.md</code> with skill-creator; CI does not run them
 <h3>Design notes</h3>
 <ul>
 <li>Corroboration must come from <strong>humans</strong>; machine text never counts.</li>
-<li><strong>Every candidate needs an outcome.</strong> What the agent cannot close at night (there is no terminal
-in the cron session) is closed by cooldowns on the script side, not by agent discipline.</li>
-<li><strong>Text, not ids.</strong> SQLite reuses ids; state is keyed by a text fingerprint, so a re-extracted fact
-is recognised.</li>
-<li><strong>Zero writes is a success.</strong> A night is capped at 6 memory changes, and an entry is changed only
-with text the script hands over verbatim.</li>
-<li>Borrowed ideas: OpenClaw (phases, weights, gates, loss fraction, explain), mem0 (nearest entry</li>
+<li><strong>Every candidate needs an outcome.</strong> What the agent cannot close at nig</li>
 </ul>
 <hr>
 <p><em>README truncated. <a href="https://github.com/itpartypattaya/hermes-dreaming#readme">Continue reading on GitHub</a></em></p>
@@ -890,11 +886,11 @@ with text the script hands over verbatim.</li>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 69.1K</div>
+        <div class="stars">★ 69.3K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 61.4K</div>
+        <div class="stars">★ 62.7K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -910,11 +906,11 @@ with text the script hands over verbatim.</li>
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/Signet-AI/signetai">
-        <div class="stars">★ 315</div>
+        <div class="stars">★ 317</div>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 317</div>
+        <div class="stars">★ 318</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">

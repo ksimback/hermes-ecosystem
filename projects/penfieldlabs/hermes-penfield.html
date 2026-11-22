@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>penfieldlabs/hermes-penfield — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="hermes-penfield is a persistent memory provider that enables Hermes Agent to maintain memory across different sessions and agents. It connects the agent to the…">
+<meta name="description" content="hermes-penfield makes Penfield the memory provider for Hermes Agent. It loads a Penfield briefing at session start, recalls relevant memories before each turn,…">
 <link rel="canonical" href="https://hermesatlas.com/projects/penfieldlabs/hermes-penfield">
 <meta property="og:title" content="penfieldlabs/hermes-penfield — Hermes Atlas">
-<meta property="og:description" content="hermes-penfield is a persistent memory provider that enables Hermes Agent to maintain memory across different sessions and agents. It connects the agent to the…">
+<meta property="og:description" content="hermes-penfield makes Penfield the memory provider for Hermes Agent. It loads a Penfield briefing at session start, recalls relevant memories before each turn,…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/penfieldlabs/hermes-penfield">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="penfieldlabs/hermes-penfield — Hermes Atlas">
-<meta name="twitter:description" content="hermes-penfield is a persistent memory provider that enables Hermes Agent to maintain memory across different sessions and agents. It connects the agent to the…">
+<meta name="twitter:description" content="hermes-penfield makes Penfield the memory provider for Hermes Agent. It loads a Penfield briefing at session start, recalls relevant memories before each turn,…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-penfield&amp;subtitle=%F0%9F%A7%A0+Penfield+memory+provider+for+Hermes+agent&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/penfieldlabs/hermes-penfield#software",
   "name": "hermes-penfield",
-  "description": "hermes-penfield is a persistent memory provider that enables Hermes Agent to maintain memory across different sessions and agents. It connects the agent to the Penfield memory API using a stdlib-only HTTP implementation with OAuth and API-key authentication. The provider utilizes hybrid search and a knowledge graph with 24 relationship types to manage memories and artifacts. It also automatically saves checkpoints of relevant memories when context compression occurs.",
+  "description": "hermes-penfield makes Penfield the memory provider for Hermes Agent. It loads a Penfield briefing at session start, recalls relevant memories before each turn, and provides tools for storing, searching, connecting, and managing memories and context checkpoints.",
   "url": "https://hermesatlas.com/projects/penfieldlabs/hermes-penfield",
   "codeRepository": "https://github.com/penfieldlabs/hermes-penfield",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "penfieldlabs",
     "url": "https://github.com/penfieldlabs"
   },
-  "dateModified": "2026-07-01T19:08:04.000Z",
+  "dateModified": "2026-11-22T15:34:41.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -81,8 +81,8 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">318·repos</span>
-    <span id="meta-version">hermes·v0.23.1</span>
+    <span id="meta-count">321·repos</span>
+    <span id="meta-version">hermes·v0.23.3</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-07-01</span>
+    <span><span class="meta-label">updated</span>2026-11-22</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">hermes-penfield is a persistent memory provider that enables Hermes Agent to maintain memory across different sessions and agents. It connects the agent to the Penfield memory API using a stdlib-only HTTP implementation with OAuth and API-key authentication. The provider utilizes hybrid search and a knowledge graph with 24 relationship types to manage memories and artifacts. It also automatically saves checkpoints of relevant memories when context compression occurs.</p>
+    <p class="summary-text">hermes-penfield makes Penfield the memory provider for Hermes Agent. It loads a Penfield briefing at session start, recalls relevant memories before each turn, and provides tools for storing, searching, connecting, and managing memories and context checkpoints.</p>
     <ul class="summary-highlights">
-      <li>17 tools for memory management and knowledge graph traversal</li>
-      <li>Hybrid search combining BM25, vector, and graph methods</li>
-      <li>Automatic context checkpointing during message compression</li>
+      <li>Supports hybrid memory recall using keywords, vectors, and graph links.</li>
+      <li>Provides tools for saving and restoring context checkpoints.</li>
+      <li>Can save and retrieve files as artifacts.</li>
     </ul>
   </div>
 </section>
@@ -156,47 +156,119 @@
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
     <h2>hermes-penfield</h2>
-<p><strong>Penfield persistent memory provider for Hermes Agent.</strong></p>
-<p>Connects Hermes Agent to the Penfield memory API. Exposes 17 tools
-mirroring the Penfield MCP surface. Stdlib-only HTTP, OAuth device-code</p>
-<ul>
-<li>API-key authentication, dev/prod environment switching.</li>
-</ul>
-<p>Penfield gives Hermes cross-session, cross-agent memory with hybrid
-search (BM25 + vector + graph), typed connections (24 relationship
-types), and artifact storage.</p>
-<hr>
+<p><strong>Penfield persistent memory for <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>.</strong></p>
+<p>Penfield gives an agent a memory that outlives the session: a knowledge
+graph with hybrid search (keyword, vector and graph), typed connections
+between memories, saved context checkpoints and file storage. The same
+memory is shared with every other agent connected to your Penfield account.</p>
+<p>This plugin makes Penfield the memory provider of a Hermes agent. Hermes
+loads your Penfield briefing at session start, recalls relevant memories
+before each turn, and gives the agent 17 <code>penfield_*</code> tools to store,
+search and connect what it learns.</p>
 <h3>Requirements</h3>
 <ul>
-<li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> installed
-and runnable (<code>hermes</code> on your PATH).</li>
-<li>A Penfield account and API key — create one at
-<a href="https://portal.penfield.app">portal.penfield.app</a>.</li>
+<li>Hermes Agent 0.21.6 or newer.</li>
+<li>A Penfield account.</li>
 </ul>
+<p>The plugin has no dependencies of its own. It uses the Python standard
+library only.</p>
 <h3>Install</h3>
-<pre><code>hermes plugins install penfieldlabs/hermes-penfield --enable
+<pre><code class="language-bash">hermes plugins install penfieldlabs/hermes-penfield --enable
 </code></pre>
-<p>That's it. Hermes clones the repo, drops it into <code>~/.hermes/plugins/penfield/</code>,
-and enables it. The plugin is self-contained — no pip install needed.</p>
-<h3>Configure</h3>
-<p>Set <code>memory.provider: penfield</code> in <code>~/.hermes/config.yaml</code>:</p>
-<pre><code class="language-bash">hermes config set memory.provider penfield
+<p>Hermes copies the plugin into your profile's <code>plugins/penfield/</code> directory
+and selects it as the memory provider.</p>
+<p>To upgrade an existing install:</p>
+<pre><code class="language-bash">hermes plugins update penfield
 </code></pre>
-<p>Then authenticate:</p>
-<pre><code class="language-bash">hermes penfield login
+<h3>Connect</h3>
+<pre><code class="language-bash">hermes memory setup penfield
 </code></pre>
-<p>Or set an API key directly in <code>~/.hermes/.env</code>:</p>
-<pre><code>PENFIELD_API_KEY=tm_pf_yourtenant_ak_yourkey
-PENFIELD_ENV=prod
+<p>Press Enter to sign in with your browser, the recommended way. The
+command shows a link and a code. Open the link in a browser on any
+device and approve it within ten minutes. The profile is then connected
+and Penfield is its memory provider. The tokens are kept in
+<code>penfield/tokens.json</code> in your profile, readable only by you, and renewed
+automatically.</p>
+<p>A profile registers with Penfield as "Hermes Agent (Penfield plugin)" at
+its first sign-in and uses the same registration for every later one. It
+is kept in <code>penfield/client.json</code>. Should a sign-in ever be refused
+because of it, delete that file and sign in again: the profile then
+registers anew.</p>
+<p>Check the result at any time:</p>
+<pre><code class="language-bash">hermes memory status
 </code></pre>
-<p>When context compression discards messages, the provider saves a Penfield
-checkpoint capturing the relevant memories from your knowledge graph. On by
-default; set <code>pre_compress_save: false</code> in <code>penfield/config.json</code> to disable.</p>
-<h3>Use</h3>
-<pre><code>hermes
-</code></pre>
-<p>The persona and persistent context load automatically on every session.
-The 17 tools are available to the agent:</p>
+<p>It names the login in use and what that login may do. Start a new session
+and Penfield is active.</p>
+<p><code>hermes penfield login</code> signs in the same way, and <code>hermes penfield logout</code> revokes the sign-in at Penfield and deletes the file.</p>
+<p>Run the setup command again whenever you like. It asks Penfield whether
+the sign-in still works and offers to keep it, or to sign in again when
+it has run out or was revoked. Signing in again ends the earlier sign-in
+at Penfield.</p>
+<h4>Using an API key instead</h4>
+<p>An API key is the backup for a machine nobody sits at, and the way to
+limit what the agent may do: a key can be read-only, read and write, or
+read, write and delete. Create one at
+<a href="https://portal.penfield.app/api-keys">portal.penfield.app/api-keys</a>, run
+<code>hermes memory setup penfield</code> and choose the API key.</p>
+<p>Paste the key; it is not shown as you type. The plugin checks the key
+with Penfield and Hermes stores it in the profile's <code>.env</code> as
+<code>PENFIELD_API_KEY</code>. A key Penfield does not accept is not saved, and
+neither is one with a character that cannot be part of a key, such as an
+invisible character picked up while copying; the command names it.
+Whitespace around a key is ignored. You can also add that line to <code>.env</code>
+yourself.</p>
+<p>With a key that may not write or delete, the tools that need more are
+refused, and the agent is told what its login may do.</p>
+<p>A profile uses one login at a time, and an API key takes precedence, so
+a key you set to limit access is always the one in use. While
+<code>PENFIELD_API_KEY</code> is set, setup asks about the key only and
+<code>hermes penfield login</code> does not start. Storing a key that Penfield
+accepted ends a saved sign-in. If Penfield could not be reached to check
+the key, the sign-in is kept; run the setup command again later and
+enter the key again to end it. To go back to a browser sign-in, remove
+the key from <code>.env</code> and run the setup command again.</p>
+<h4>Without a terminal, and with plugin isolation</h4>
+<p>The setup command asks its questions on a terminal. Run from a script or
+a service it only selects Penfield, and the profile needs
+<code>PENFIELD_API_KEY</code> in its <code>.env</code>.</p>
+<p>With <code>plugins.isolation: host</code>, <code>hermes memory setup penfield</code> works as
+described above. The <code>hermes penfield</code> commands exist only when Hermes
+runs plugins in-process, which is the default.</p>
+<h3>What it does in a session</h3>
+<table>
+<thead>
+<tr>
+<th>When</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Session start</td>
+<td>Your Penfield briefing (persona and custom instructions) is added to the system prompt, next to Hermes's own <code>SOUL.md</code>.</td>
+</tr>
+<tr>
+<td>Before each turn</td>
+<td>Memories and document passages relevant to your message are recalled and shown to the agent, each with its id, type and date. Saved checkpoints are left out.</td>
+</tr>
+<tr>
+<td>During a turn</td>
+<td>The agent uses the <code>penfield_*</code> tools as it sees fit.</td>
+</tr>
+<tr>
+<td>Before Hermes compresses a long conversation</td>
+<td>Nothing, unless you turn on <code>pre_compress_save</code>. Then a context checkpoint is saved, linking the memories the conversation was about, and Hermes is given its name for the compression summary so the agent can restore it later.</td>
+</tr>
+</tbody></table>
+<p>Penfield stores what the agent decides to remember. Conversation turns are
+not copied into it.</p>
+<p>If Penfield is slow or unreachable, the session carries on without it.
+Session start waits at most 6 seconds for the briefing, a turn at most
+2.5 seconds for recall, and a compression at most 8 seconds for its
+checkpoint. A tool call reports a failure to the agent instead of
+hanging. Recall on the current message normally adds about a second to a
+turn. A session that had to start without your briefing says so, with the
+reason, in Hermes's log.</p>
+<h3>Tools</h3>
 <table>
 <thead>
 <tr>
@@ -205,81 +277,228 @@ The 17 tools are available to the agent:</p>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>penfield_awaken</code></td>
-<td>Load persona + persistent context briefing</td>
-</tr>
-<tr>
 <td><code>penfield_store</code></td>
-<td>Store a memory (auto-detected type)</td>
+<td>Store a memory. Penfield detects its type.</td>
 </tr>
 <tr>
 <td><code>penfield_recall</code></td>
-<td>Hybrid search (BM25 + vector + graph)</td>
+<td>Hybrid search: keywords, meaning and graph links, with filters for tags, dates and source. The one to use for names, ids and exact phrases.</td>
 </tr>
 <tr>
 <td><code>penfield_search</code></td>
-<td>Semantic search for fuzzy concept matching</td>
+<td>Semantic search: ranks by meaning far more than by shared words. For when you do not know how a memory was worded.</td>
 </tr>
 <tr>
 <td><code>penfield_fetch</code></td>
-<td>Get a memory by ID</td>
+<td>Get one memory by id.</td>
 </tr>
 <tr>
 <td><code>penfield_update_memory</code></td>
-<td>Update a memory</td>
+<td>Change a memory's content, importance or tags.</td>
 </tr>
 <tr>
 <td><code>penfield_connect</code></td>
-<td>Create a relationship between memories</td>
+<td>Link two memories with one of 24 relationship types.</td>
 </tr>
 <tr>
 <td><code>penfield_disconnect</code></td>
-<td>Remove a relationship between memories</td>
+<td>Remove the link between two memories.</td>
 </tr>
 <tr>
 <td><code>penfield_explore</code></td>
-<td>Traverse the knowledge graph from a memory</td>
+<td>Walk the graph outwards from a memory.</td>
 </tr>
 <tr>
 <td><code>penfield_reflect</code></td>
-<td>Analyze memory patterns over a time window</td>
-</tr>
-<tr>
-<td><code>penfield_save_artifact</code></td>
-<td>Store a file (not searchable via recall)</td>
-</tr>
-<tr>
-<td><code>penfield_retrieve_artifact</code></td>
-<td>Get a stored file by path</td>
-</tr>
-<tr>
-<td><code>penfield_list_artifacts</code></td>
-<td>List files under a directory prefix</td>
-</tr>
-<tr>
-<td><code>penfield_delete_artifact</code></td>
-<td>Delete a stored file by path</td>
-</tr>
-<tr>
-<td><code>penfield_list_contexts</code></td>
-<td>List saved context checkpoints</td>
-</tr>
-<tr>
-<td><code>penfield_restore_context</code></td>
-<td>Restore a checkpoint by name</td>
+<td>Summarise recent activity: topics, patterns, saved contexts.</td>
 </tr>
 <tr>
 <td><code>penfield_save_context</code></td>
-<td>Create a checkpoint with reference parsing</td>
+<td>Save a checkpoint for a later session or another agent.</td>
+</tr>
+<tr>
+<td><code>penfield_list_contexts</code></td>
+<td>List saved checkpoints.</td>
+</tr>
+<tr>
+<td><code>penfield_restore_context</code></td>
+<td>Load a checkpoint and the memories it links.</td>
+</tr>
+<tr>
+<td><code>penfield_save_artifact</code></td>
+<td>Save a file at a path. Files are not searched by recall; store a memory that points to the file.</td>
+</tr>
+<tr>
+<td><code>penfield_retrieve_artifact</code></td>
+<td>Read a file by path.</td>
+</tr>
+<tr>
+<td><code>penfield_list_artifacts</code></td>
+<td>List the files and folders in a directory.</td>
+</tr>
+<tr>
+<td><code>penfield_delete_artifact</code></td>
+<td>Delete a file.</td>
+</tr>
+<tr>
+<td><code>penfield_awaken</code></td>
+<td>Reload the briefing. Hermes already does this at session start.</td>
 </tr>
 </tbody></table>
-<h3>Development</h3>
-<pre><code class="language-bash">git clone https://github.com/penfieldlabs/hermes-penfield.git
-cd hermes-penfield
-python -m venv .venv &amp;&amp; source .venv/bin/activate
-pip install -e ".[dev]"
-pytest -m "not integration"
+<p>Tool names and parameters match Penfield's MCP server, with a <code>penfield_</code>
+prefix, so an agent that knows Penfield from another client works the
+same way here. One parameter is missing: <code>include_inactive</code> on recall and
+search, which Penfield's REST API does not act on.</p>
+<p>Penfield rewrites a tag before it stores it: lower case, spaces and
+underscores as hyphens, and every other character that is not a-z, 0-9
+or a hyphen removed, so <code>C++ Tips</code> is stored as <code>c-tips</code>. What is left
+has to be 2 to 50 characters long, and a memory can have up to 10 tags.
+<code>penfield_store</code> and <code>penfield_update_memory</code> refuse a tag that would be
+left shorter or longer than that, naming it by its position in the list,
+and refuse more than 10 tags, so the agent can correct the call and make
+it again.</p>
+<h3>Settings</h3>
+<p>Everything works without configuration. To change behaviour, create
+<code>penfield/config.json</code> in your Hermes profile directory (<code>~/.hermes</code> unless
+you use profiles):</p>
+<pre><code class="language-json">{
+  "recall_limit": 8,
+  "pre_compress_save": true
+}
 </code></pre>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>auto_recall</code></td>
+<td><code>true</code></td>
+<td>Recall memories before each turn.</td>
+</tr>
+<tr>
+<td><code>recall_limit</code></td>
+<td><code>5</code></td>
+<td>Most memories recalled per turn (1 to 100).</td>
+</tr>
+<tr>
+<td><code>recall_threshold</code></td>
+<td><code>0.25</code></td>
+<td>Lowest search score a recalled memory may have (0 to 1). Penfield scores each result relative to the best keyword match of the same search, so this trims the weak end of a result list. Lower <code>recall_limit</code> if you want less recalled.</td>
+</tr>
+<tr>
+<td><code>max_prefetch_chars</code></td>
+<td><code>3000</code></td>
+<td>Size limit of the recalled text added to a turn.</td>
+</tr>
+<tr>
+<td><code>pre_compress_save</code></td>
+<td><code>false</code></td>
+<td>Save a checkpoint before Hermes compresses the conversation. Each one is added to your saved contexts with the tag <code>auto-checkpoint</code>, so a long-running agent adds several a day.</td>
+</tr>
+<tr>
+<td><code>mirror_builtin_writes</code></td>
+<td><code>false</code></td>
+<td>Also copy what Hermes's built-in memory tool writes (<code>MEMORY.md</code>, <code>USER.md</code>) into Penfield, tagged <code>hermes-builtin</code>. Edits update the copy. Removals delete it if your login has the delete permission.</td>
+</tr>
+</tbody></table>
+<p>Environment settings, read from the profile's <code>.env</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>PENFIELD_API_KEY</code></td>
+<td>An API key, if you use one.</td>
+</tr>
+<tr>
+<td><code>PENFIELD_URL</code></td>
+<td>Use a different API base URL. It must be <code>https</code>; plain <code>http</code> is accepted for <code>localhost</code> only.</td>
+</tr>
+<tr>
+<td><code>PENFIELD_ENV</code></td>
+<td><code>prod</code> (default) or <code>dev</code>.</td>
+</tr>
+</tbody></table>
+<h3>What is sent to Penfield</h3>
+<p>The plugin talks to the Penfield API at <code>api.penfield.app</code> and to nothing
+else. Browser sign-in also contacts <code>auth.penfield.app</code>. It does not
+follow redirects. There is no telemetry. Requests identify themselves as
+<code>hermes-penfield/&lt;version&gt;</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Your message text, as a search query</td>
+<td>Before each turn, unless <code>auto_recall</code> is off. Hermes skips greetings, one-word replies and slash commands.</td>
+</tr>
+<tr>
+<td>Whatever the agent puts in a tool call: memory text, tags, search queries, file content</td>
+<td>When the agent calls a <code>penfield_*</code> tool.</td>
+</tr>
+<tr>
+<td>Up to five of your recent messages, 160 characters each, as the checkpoint description</td>
+<td>Before a compression, only with <code>pre_compress_save</code> on.</td>
+</tr>
+<tr>
+<td>Entries of Hermes's built-in memory</td>
+<td>Only with <code>mirror_builtin_writes</code> on.</td>
+</tr>
+</tbody></table>
+<p>Hermes removes credentials it recognises from all of this before the
+plugin sees it.</p>
+<p>On your machine the plugin writes up to three files in the profile
+directory: <code>penfield/config.json</code> (settings, never the API key), after a
+browser sign-in or a token exchange <code>penfield/tokens.json</code>, and after a
+browser sign-in <code>penfield/client.json</code>, the profile's registration with
+Penfield's sign-in server. The last two have mode <code>0600</code>.</p>
+<h3>Command line</h3>
+<p>Available when plugins run in-process (the default):</p>
+<pre><code class="language-bash">hermes penfield status     # the login in use, what it may do, whether it works
+hermes penfield search "launch checklist" --limit 5
+hermes penfield stats
+hermes penfield login      # browser sign-in
+hermes penfield logout     # revoke the sign-in and forget cached tokens
+hermes penfield version
+</code></pre>
+<h3>Troubleshooting</h3>
+<ul>
+<li><code>hermes memory status</code> shows whether the provider is available, which
+login and settings are in effect, and what the login may do.</li>
+<li>"Memory provider 'penfield' is selected but reports unavailable": the
+profile has no sign-in and no API key. Run <code>hermes memory setup penfield</code>. A gateway started by systemd does not read your shell's
+environment, so an API key has to be in the profile's <code>.env</code>. A browser
+sign-in is kept in the profile itself.</li>
+<li>"The saved Penfield sign-in is no longer valid": it ran out or was
+revoked. Run <code>hermes memory setup penfield</code> or <code>hermes penfield login</code>
+to sign in again. Sessions that are already running use the new
+sign-in from their next request.</li>
+<li>"The API key cannot be used": the key holds a character that cannot be
+part of one, usually picked up while copying. The message names the
+character and where it is. Copy the key again and run <code>hermes memory setup penfield</code>.</li>
+<li>"Penfield is off": a setting cannot be used, for example an unknown
+<code>PENFIELD_ENV</code> or a <code>PENFIELD_URL</code> that is not <code>https</code>. The message
+names it. The agent is told the same, so it can say why its memory
+tools fail.</li>
+<li>"Penfield refused this": the login may not do what the tool needs.
+The message says what it may do.</li>
+<li><code>hermes penfield status</code> makes a request with the login in use and
+says whether Penfield accepts it.</li>
+<li><code>hermes plugins doctor penfield</code> checks the installed plugin.</li>
+</ul>
+<h3>Development</h3>
+<p>See <a href="https://github.com/penfieldlabs/hermes-penfield/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>. Design decisions are recorded in
+<a href="https://github.com/penfieldlabs/hermes-penfield/blob/main/docs/adr/README.md">docs/adr</a>.</p>
 <h3>License</h3>
 <p>MIT. Copyright (C) 2026 Penfield.</p>
 
@@ -294,11 +513,11 @@ pytest -m "not integration"
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 69.1K</div>
+        <div class="stars">★ 69.3K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 61.4K</div>
+        <div class="stars">★ 62.7K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -314,11 +533,11 @@ pytest -m "not integration"
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/Signet-AI/signetai">
-        <div class="stars">★ 315</div>
+        <div class="stars">★ 317</div>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 317</div>
+        <div class="stars">★ 318</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">

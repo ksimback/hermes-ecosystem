@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>roboticforce/sugar — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, with atomic claims and leases. It also provides project…">
+<meta name="description" content="Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, with atomic claims, leases, and a shared activity…">
 <link rel="canonical" href="https://hermesatlas.com/projects/roboticforce/sugar">
 <meta property="og:title" content="roboticforce/sugar — Hermes Atlas">
-<meta property="og:description" content="Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, with atomic claims and leases. It also provides project…">
+<meta property="og:description" content="Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, with atomic claims, leases, and a shared activity…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/roboticforce/sugar">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="roboticforce/sugar — Hermes Atlas">
-<meta name="twitter:description" content="Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, with atomic claims and leases. It also provides project…">
+<meta name="twitter:description" content="Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, with atomic claims, leases, and a shared activity…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=sugar&amp;subtitle=Mission+control+for+your+agent+fleet.+One+local-first+board+for+Claude+Code%2C+Codex%2C+Goose%2C+Cursor+and+any+MCP+harness%3A+durable+tasks%2C+live+activity%2C+cost+attribution+and+audit+expo&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/roboticforce/sugar#software",
   "name": "sugar",
-  "description": "Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, with atomic claims and leases. It also provides project and global memory, searchable locally with embeddings or FTS5, and records task and harness activity in an append-only event history.",
+  "description": "Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, with atomic claims, leases, and a shared activity history. It also provides project and global memory stores, searchable through local embeddings or FTS5 keyword search, and exposes tasks and memory through MCP, a CLI, REST, and a dashboard.",
   "url": "https://hermesatlas.com/projects/roboticforce/sugar",
   "codeRepository": "https://github.com/roboticforce/sugar",
   "applicationCategory": "UtilitiesApplication",
@@ -46,13 +46,13 @@
     "name": "roboticforce",
     "url": "https://github.com/roboticforce"
   },
-  "dateModified": "2026-11-10T16:36:18.000Z",
+  "dateModified": "2026-11-21T15:00:51.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 101
+    "userInteractionCount": 102
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -80,8 +80,8 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">318·repos</span>
-    <span id="meta-version">hermes·v0.23.1</span>
+    <span id="meta-count">321·repos</span>
+    <span id="meta-version">hermes·v0.23.3</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -119,11 +119,11 @@
   <p class="project-desc">Mission control for your agent fleet. One local-first board for Claude Code, Codex, Goose, Cursor and any MCP harness: durable tasks, live activity, cost attribution and audit exports.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 101</span>
+    <span class="stars">★ 102</span>
     <span><span class="meta-label">lang</span>Python</span>
     
     
-    <span><span class="meta-label">updated</span>2026-11-10</span>
+    <span><span class="meta-label">updated</span>2026-11-21</span>
   </div>
 
   <div class="actions">
@@ -140,11 +140,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, with atomic claims and leases. It also provides project and global memory, searchable locally with embeddings or FTS5, and records task and harness activity in an append-only event history.</p>
+    <p class="summary-text">Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, with atomic claims, leases, and a shared activity history. It also provides project and global memory stores, searchable through local embeddings or FTS5 keyword search, and exposes tasks and memory through MCP, a CLI, REST, and a dashboard.</p>
     <ul class="summary-highlights">
-      <li>Provides CLI, MCP, REST, and dashboard access to tasks.</li>
-      <li>Stores project and global memory in SQLite.</li>
-      <li>Supports memory search with local embeddings or FTS5 fallback.</li>
+      <li>Project and global memory databases with seven memory types</li>
+      <li>Atomic task claims, leases, heartbeats, and retries</li>
+      <li>Append-only event history with audit exports</li>
     </ul>
   </div>
 </section>
@@ -244,8 +244,9 @@ sugar init
 sugar add "Fix the auth timeout" --type bug_fix --urgent
 sugar add "Add profile settings" --type feature
 
-# Watch it, or let Sugar run it
+# Watch it, instrument your harnesses, or let Sugar run it
 sugar dashboard --open
+sugar connect --yes        # Claude Code / Cursor / Codex / Goose adapters
 sugar run
 </code></pre>
 <p>Your agent gets memory and the board over MCP:</p>
@@ -262,6 +263,35 @@ Harnesses stream their tool calls with one line each:</p>
 <pre><code class="language-bash">sugar emit --kind tool.invoked --task-id "$TASK_ID" \
   --message "running pytest tests/test_api.py" --payload file=src/api.py
 </code></pre>
+<h4>Connect your agents (one command)</h4>
+<pre><code class="language-bash">sugar connect --check   # detected harnesses, fidelity and transport
+sugar connect --yes     # Claude Code, Cursor, Codex, Goose; DSH tail (macOS)
+sugar doctor            # end-to-end check: board + adapter + activity
+</code></pre>
+<p>Claude Code gets native <strong>HTTP hooks</strong>; Cursor, Codex and Goose get command
+hooks that call a fail-open <code>sugar hook</code> shim. Sugar records tool calls,
+sessions, prompts, usage and failures as canonical events, and the Coverage
+panel shows each harness at <strong>L3/L2/L1/L0</strong>, events/24h, transport and last
+seen. Codex hooks stay trust-gated: approve them once via <code>/hooks</code>.</p>
+<p>For OTel-native agents (Google ADK, Codex OTel, Goose OTel), export OTLP to
+the same board — protobuf (the OTel default) or JSON, optionally gzipped:</p>
+<pre><code class="language-bash">export OTEL_EXPORTER_OTLP_ENDPOINT=http://127.0.0.1:7331
+# protobuf is the default; set http/json only if you prefer it
+</code></pre>
+<p>SDK agents get first-class helpers with no extra dependencies:</p>
+<pre><code class="language-python"># Google ADK
+from sugar.integrations.adk import SugarADKPlugin
+app = App(name="my_app", root_agent=agent, plugins=[SugarADKPlugin()])
+
+# OpenAI Agents SDK
+from sugar.integrations.openai_agents import install
+install()
+
+# Claude Agent SDK
+from sugar.integrations.claude_sdk import make_hooks
+options = ClaudeAgentOptions(hooks=make_hooks())
+</code></pre>
+<p>Full matrix and caveats: <a href="https://github.com/roboticforce/sugar/blob/main/docs/telemetry-adapters.md">Telemetry Adapters</a>.</p>
 <img src="https://raw.githubusercontent.com/roboticforce/sugar/main/docs/images/live-floor.png" alt="SugarDash Live floor: agents at work with real leases, current actions and countdowns" width="880">
 
 <p>No harness wired up yet? The repo ships a simulator for demos:</p>
@@ -272,17 +302,19 @@ python scripts/simulate_agent_activity.py            # live agents in a second s
 <p>Trends need history; seed a throwaway spine and open the Trends view:</p>
 <pre><code class="language-bash">python scripts/seed_demo_trends.py --db /tmp/sugar-dashboard-demo/.sugar/events.db --reset
 </code></pre>
-<p>Full walkthrough: <a href="https://github.com/roboticforce/sugar/blob/main/docs/mission-control.md">Mission Control</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/telemetry.md">Telemetry</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/trends.md">Trends</a></p>
+<p>Full walkthrough: <a href="https://github.com/roboticforce/sugar/blob/main/docs/mission-control.md">Mission Control</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/telemetry.md">Telemetry</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/telemetry-adapters.md">Telemetry Adapters</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/trends.md">Trends</a></p>
 <h3>Works with your harnesses</h3>
-<p>Any harness that can run a CLI or speak MCP can use the board and the memory. The built-in runner
-(<code>sugar run</code>) drives Claude Code through the Agent SDK today; the other harnesses keep doing their own thing
-while Sugar coordinates them.</p>
+<p>Any harness that can run a CLI or speak MCP can use the board and the memory.
+The built-in runner (<code>sugar run</code>) drives Claude Code through the Agent SDK
+today; the other harnesses keep doing their own thing while Sugar coordinates
+them and records what they do.</p>
 <table>
 <thead>
 <tr>
 <th>Harness</th>
 <th>Board (MCP / CLI / REST)</th>
 <th>Shared memory</th>
+<th>Live telemetry</th>
 <th>Notes</th>
 </tr>
 </thead>
@@ -290,48 +322,63 @@ while Sugar coordinates them.</p>
 <td><a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a></td>
 <td>Yes</td>
 <td>Yes</td>
-<td>Built-in runner; plugin + Skills; full support</td>
+<td><strong>L3</strong> HTTP hooks</td>
+<td>Built-in runner; plugin + Skills</td>
 </tr>
 <tr>
 <td>Codex</td>
 <td>Yes</td>
 <td>Yes</td>
-<td>Via MCP/CLI; no runner coupling</td>
+<td><strong>L3</strong> command hooks</td>
+<td>Via MCP/CLI; approve hooks once via <code>/hooks</code></td>
 </tr>
 <tr>
 <td>Cursor</td>
 <td>Yes</td>
 <td>Yes</td>
-<td>Via MCP</td>
+<td><strong>L3</strong> command hooks</td>
+<td>Via MCP; imports Claude-style hooks</td>
 </tr>
 <tr>
 <td><a href="https://block.github.io/goose">Goose</a></td>
 <td>Yes</td>
 <td>Yes</td>
-<td>Via MCP extension</td>
+<td><strong>L3</strong> hook plugin</td>
+<td><code>sugar connect --harness goose</code></td>
 </tr>
 <tr>
 <td><a href="https://github.com/opencode-ai/opencode">OpenCode</a></td>
 <td>Yes</td>
 <td>Yes</td>
+<td>L0 board/leases</td>
 <td><code>sugar opencode setup</code></td>
 </tr>
 <tr>
 <td><a href="https://aider.chat">Aider</a></td>
 <td>Yes</td>
 <td>Yes</td>
+<td>L0 board/leases</td>
 <td>Via CLI/MCP</td>
 </tr>
 <tr>
 <td>Hermes Kanban</td>
 <td>Yes</td>
 <td>—</td>
-<td>Mirror a board with <code>--board kanban</code>; Hermes owns writes</td>
+<td>L0 board events</td>
+<td>Mirror a board with <code>--board kanban</code></td>
+</tr>
+<tr>
+<td>DeepSeek Harness</td>
+<td>Yes</td>
+<td>Yes</td>
+<td><strong>L3</strong> session tail</td>
+<td><code>sugar connect --harness dsh</code>; macOS LaunchAgent, manual tail elsewhere</td>
 </tr>
 <tr>
 <td>Custom scripts / bots</td>
 <td>Yes</td>
 <td>Yes</td>
+<td><strong>L3</strong> via SDK/<code>sugar emit</code></td>
 <td>REST + SSE, or MCP</td>
 </tr>
 </tbody></table>
@@ -418,7 +465,7 @@ with evaluation data in <code>skills/</code>.</li>
 <ul>
 <li><a href="https://github.com/roboticforce/sugar/blob/main/docs/mission-control.md">Mission Control</a> — dashboard, macOS app, event spine</li>
 <li><a href="https://github.com/roboticforce/sugar/blob/main/docs/local-dashboard.md">Local Dashboard API</a> — frozen REST/SSE contract</li>
-<li><a href="https://github.com/roboticforce/sugar/blob/main/docs/trends.md">Trends</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/telemetry.md">Telemetry</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/usage.md">Usage &amp; cost</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/audit.md">Audit exports</a></li>
+<li><a href="https://github.com/roboticforce/sugar/blob/main/docs/trends.md">Trends</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/telemetry.md">Telemetry</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/telemetry-adapters.md">Telemetry Adapters</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/usage.md">Usage &amp; cost</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/audit.md">Audit exports</a></li>
 <li><a href="https://github.com/roboticforce/sugar/blob/main/docs/board-server.md">Board Server</a> — team/remote access and TLS</li>
 <li><a href="https://github.com/roboticforce/sugar/blob/main/docs/storage-port.md">Storage Port</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/adapters.md">Adapters</a> — backends and harness playbook</li>
 <li><a href="https://github.com/roboticforce/sugar/blob/main/docs/user/memory.md">Memory System</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/user/cli-reference.md">CLI Reference</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/user/quick-start.md">Quick Start</a></li>
@@ -461,11 +508,11 @@ pytest tests/ -v
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 69.1K</div>
+        <div class="stars">★ 69.3K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 61.4K</div>
+        <div class="stars">★ 62.7K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -481,11 +528,11 @@ pytest tests/ -v
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/Signet-AI/signetai">
-        <div class="stars">★ 315</div>
+        <div class="stars">★ 317</div>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 317</div>
+        <div class="stars">★ 318</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">

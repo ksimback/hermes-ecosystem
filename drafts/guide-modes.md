@@ -1,6 +1,6 @@
 # How to Run Hermes Agent: Desktop vs CLI vs Docker/VPS vs Bot Gateway
 
-The decision guide to every way of running Hermes Agent. Live version: https://hermesatlas.com/guide/modes/ — facts sourced from the official docs. Current release is v0.23.1 (as of 2026-11-10).
+The decision guide to every way of running Hermes Agent. Live version: https://hermesatlas.com/guide/modes/ — facts sourced from the official docs. Current release is v0.23.3 (as of 2026-11-20).
 
 ## TL;DR
 

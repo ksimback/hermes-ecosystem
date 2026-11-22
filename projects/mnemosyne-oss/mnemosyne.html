@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>mnemosyne-oss/mnemosyne — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Mnemosyne is a local AI memory layer that uses SQLite and requires no external services. The README says it works with several agent platforms through MCP,…">
+<meta name="description" content="Mnemosyne is a local AI memory layer that uses SQLite and requires no external services. It offers a Python SDK, command-line tools, and MCP support, with…">
 <link rel="canonical" href="https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne">
 <meta property="og:title" content="mnemosyne-oss/mnemosyne — Hermes Atlas">
-<meta property="og:description" content="Mnemosyne is a local AI memory layer that uses SQLite and requires no external services. The README says it works with several agent platforms through MCP,…">
+<meta property="og:description" content="Mnemosyne is a local AI memory layer that uses SQLite and requires no external services. It offers a Python SDK, command-line tools, and MCP support, with…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="mnemosyne-oss/mnemosyne — Hermes Atlas">
-<meta name="twitter:description" content="Mnemosyne is a local AI memory layer that uses SQLite and requires no external services. The README says it works with several agent platforms through MCP,…">
+<meta name="twitter:description" content="Mnemosyne is a local AI memory layer that uses SQLite and requires no external services. It offers a Python SDK, command-line tools, and MCP support, with…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=mnemosyne&amp;subtitle=Zero-cloud+AI+memory+that+works+everywhere.+SQLite-backed.+One+pure-Python+dependency.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne#software",
   "name": "mnemosyne",
-  "description": "Mnemosyne is a local AI memory layer that uses SQLite and requires no external services. The README says it works with several agent platforms through MCP, integrations, or a Python SDK.",
+  "description": "Mnemosyne is a local AI memory layer that uses SQLite and requires no external services. It offers a Python SDK, command-line tools, and MCP support, with setup guides for several agent platforms.",
   "url": "https://hermesatlas.com/projects/mnemosyne-oss/mnemosyne",
   "codeRepository": "https://github.com/mnemosyne-oss/mnemosyne",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "mnemosyne-oss",
     "url": "https://github.com/mnemosyne-oss"
   },
-  "dateModified": "2026-11-16T15:44:14.000Z",
+  "dateModified": "2026-11-22T17:21:23.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 3660
+    "userInteractionCount": 3692
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -81,8 +81,8 @@
 <header class="masthead">
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
-    <span id="meta-count">318·repos</span>
-    <span id="meta-version">hermes·v0.23.1</span>
+    <span id="meta-count">321·repos</span>
+    <span id="meta-version">hermes·v0.23.3</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-16</span>
+    <span><span class="meta-label">updated</span>2026-11-22</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Mnemosyne is a local AI memory layer that uses SQLite and requires no external services. The README says it works with several agent platforms through MCP, integrations, or a Python SDK.</p>
+    <p class="summary-text">Mnemosyne is a local AI memory layer that uses SQLite and requires no external services. It offers a Python SDK, command-line tools, and MCP support, with setup guides for several agent platforms.</p>
     <ul class="summary-highlights">
-      <li>SQLite-backed; no external services required</li>
-      <li>Supports MCP and a Python SDK</li>
-      <li>Provides integrations for multiple agent platforms</li>
+      <li>Stores memory in a SQLite database.</li>
+      <li>Provides Python, CLI, and MCP interfaces.</li>
+      <li>Supports memory export, import, and synchronization.</li>
     </ul>
   </div>
 </section>
@@ -446,6 +446,12 @@ work_mem = Mnemosyne(bank="work")
 work_mem.remember("Sprint review on Friday")
 </code></pre>
 <h4>Advanced: BEAM Direct Access</h4>
+<p>Direct reads with <code>beam.get(memory_id)</code>, <code>Mnemosyne.get()</code>, and MCP
+<code>mnemosyne_get</code> include the stored <code>channel_id</code> and <code>trust_tier</code> for working
+and episodic memories. These fields may be <code>None</code> in rows without recorded values.
+JSON export/import preserves both fields, including explicit <code>None</code> values.
+Older exports without these keys retain the import defaults (<code>channel_id=None</code>,
+<code>trust_tier="STATED"</code>).</p>
 <p>When consolidation uses an OpenAI-compatible LLM endpoint (<code>MNEMOSYNE_LLM_BASE_URL</code>),
 Markdown bullet facts in its summaries are preserved. Prompt/token cleanup and
 reasoning safeguards still apply; local GGUF bullet-echo cleanup is unchanged.</p>
@@ -766,7 +772,7 @@ export MNEMOSYNE_EMBEDDING_MODEL=BAAI/bge-small-zh-v1.5
 <p>See <a href="https://github.com/mnemosyne-oss/mnemosyne/blob/main/docs/configuration.md#custom-embedding-models">docs/configuration.md#custom-embedding-models</a> for tradeoffs (RAM, speed, dimension changes).</p>
 <hr>
 <h3>Hermes Plugin</h3>
-<p>When used with Hermes Agent, Mnemosyne exposes provider tools for the memory lifecycle, lifecycle hooks for automatic context injection, and MCP support.</p>
+<p>When used with Hermes Agent, Mnemosyne exposes provider tools for the memory lifecycle, lifecycle hooks for automatic context injection, and MCP support. Automatic prefetch retains an answer-bearing conversation fact when an earlier question contains only a subset of its content, even if a separate follow-up question ends the fact row; exact and near duplicates are still removed. Explicit recall uses its existing duplicate rules.</p>
 <p>The packaged <code>hermes mnemosyne</code> CLI uses the provider's database under <code>HERMES_HOME/mnemosyne/data</code>, even when <code>MNEMOSYNE_DATA_DIR</code> points elsewhere. Profile-isolated commands select the active profile bank below that root; <code>doctor</code> reports its selected database. Standalone Core commands still honor <code>MNEMOSYNE_DATA_DIR</code>, and the packaged CLI uses the Core resolver when <code>HERMES_HOME</code> is unset. Existing stores are not moved or merged.</p>
 <p><code>mnemosyne_resolve_conflicts</code> remains gated off by default. Its <code>dry_run</code>
 argument defaults to <code>false</code> (apply): use <code>dry_run=true</code> for deterministic
@@ -900,6 +906,9 @@ mnemosyne sync-status --remote https://my-vps:8765
   <em>"The faintest ink is more powerful than the strongest memory." -- Hermes Trismegistus</em>
 </p>
 
+<h3>Docker self-hosting</h3>
+<p>For shared MCP memory on a NAS or VPS, see the <a href="https://github.com/mnemosyne-oss/mnemosyne/blob/main/deploy/docker/README.md">Docker deployment guide</a>, including direct LAN HTTP, existing reverse proxies and optional Caddy HTTPS. See its verification record for tested platforms and clients.</p>
+
   </section>
 </details>
 
@@ -911,11 +920,11 @@ mnemosyne sync-status --remote https://my-vps:8765
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 69.1K</div>
+        <div class="stars">★ 69.3K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 61.4K</div>
+        <div class="stars">★ 62.7K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -931,11 +940,11 @@ mnemosyne sync-status --remote https://my-vps:8765
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/Signet-AI/signetai">
-        <div class="stars">★ 315</div>
+        <div class="stars">★ 317</div>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 317</div>
+        <div class="stars">★ 318</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">
