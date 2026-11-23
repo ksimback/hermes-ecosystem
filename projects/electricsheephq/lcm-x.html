@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>electricsheephq/lcm-x — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into hierarchical summaries. It keeps the…">
+<meta name="description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into a hierarchical summary DAG. It keeps…">
 <link rel="canonical" href="https://hermesatlas.com/projects/electricsheephq/lcm-x">
 <meta property="og:title" content="electricsheephq/lcm-x — Hermes Atlas">
-<meta property="og:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into hierarchical summaries. It keeps the…">
+<meta property="og:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into a hierarchical summary DAG. It keeps…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/electricsheephq/lcm-x">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="electricsheephq/lcm-x — Hermes Atlas">
-<meta name="twitter:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into hierarchical summaries. It keeps the…">
+<meta name="twitter:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into a hierarchical summary DAG. It keeps…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=lcm-x&amp;subtitle=Lossless+memory+for+Hermes+Agent%3A+every+turn+kept+in+a+local+store%2C+not+compacted+away%2C+and+searchable+by+your+agent.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/electricsheephq/lcm-x#software",
   "name": "lcm-x",
-  "description": "LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into hierarchical summaries. It keeps the active prompt bounded and provides tools to search and recover details from stored messages and summaries.",
+  "description": "LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into a hierarchical summary DAG. It keeps the active prompt bounded and provides tools to search and recover details from compacted messages.",
   "url": "https://hermesatlas.com/projects/electricsheephq/lcm-x",
   "codeRepository": "https://github.com/electricsheephq/lcm-x",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "electricsheephq",
     "url": "https://github.com/electricsheephq"
   },
-  "dateModified": "2026-11-23T12:02:34.000Z",
+  "dateModified": "2026-11-23T18:20:05.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into hierarchical summaries. It keeps the active prompt bounded and provides tools to search and recover details from stored messages and summaries.</p>
+    <p class="summary-text">LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into a hierarchical summary DAG. It keeps the active prompt bounded and provides tools to search and recover details from compacted messages.</p>
     <ul class="summary-highlights">
-      <li>Stores messages in a plugin-local SQLite database.</li>
-      <li>Builds a hierarchical DAG of context summaries.</li>
-      <li>Includes tools to search and expand compacted material.</li>
+      <li>Preserves raw messages in a plugin-local store.</li>
+      <li>Builds depth-aware summaries and condenses them into a DAG.</li>
+      <li>Provides agent tools to search and expand stored context.</li>
     </ul>
   </div>
 </section>
@@ -852,6 +852,11 @@ use the default with one WARNING per process. <code>/lcm doctor</code> shows the
 <td>Fraction of the context window that triggers LCM compaction; the survival fit (<code>LCM_SURVIVAL_FIT</code>) protects against overflow, so the trigger does not need to be low for safety</td>
 </tr>
 <tr>
+<td><code>LCM_TURN_START_DEFER_CEILING</code></td>
+<td><code>0</code></td>
+<td>Opt-in share of the model window below which automatic compaction waits during a tool turn. Requires host response stop reasons. Use <code>0</code> to disable or a finite ratio greater than zero and below <code>1 - LCM_SURVIVAL_RESERVE</code>.</td>
+</tr>
+<tr>
 <td><code>LCM_ABSOLUTE_THRESHOLD_TOKENS</code></td>
 <td><code>0</code></td>
 <td>If <code>&gt; 0</code>, force compaction at this absolute prompt-token count instead of <code>context_length × LCM_CONTEXT_THRESHOLD</code>. Cross-model context-health setpoint (common coding default: <code>130000</code>) so large windows do not delay compaction and degrade recall. Also settable as <code>lcm.context_threshold_tokens</code> in config.yaml; the environment variable wins when it holds an integer (<code>0</code> turns the YAML value off); an empty or non-integer value falls back to the YAML key.</td>
@@ -1031,13 +1036,8 @@ describes index fallback and timestamp handling.</p>
 <td>Opt in to durable deterministic redaction before LCM storage, FTS indexing, summarization, active replay, and externalized ingest payloads; it does not control cloud embedding privacy</td>
 </tr>
 <tr>
-<td><code>LCM_EMBEDDING_PRIVACY_ENABLED</code></td>
-<td>off (unset or <code>false</code>)</td>
-<td>Experimental filter for provider-bound copies on known cloud embedding providers. Opt in with <code>true</code>. The default sends unfiltered input under the <code>privacy:off</code> vector revision</td>
-</tr>
-<tr>
-<td><code>LCM_SENSITIVE_PATTERNS</code></td>
-<td>`api_key,</td>
+<td>`LCM_EMBEDD</td>
+<td></td>
 <td></td>
 </tr>
 </tbody></table>
@@ -1059,7 +1059,7 @@ describes index fallback and timestamp handling.</p>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 62.8K</div>
+        <div class="stars">★ 62.9K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">

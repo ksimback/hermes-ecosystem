@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>electricsheephq/heartbeat2 — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="HeartBeat 2.0 is a Hermes plugin that lets an agent work between messages through scheduled turns, standing roles, and watchers for files, processes, URLs,…">
+<meta name="description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring checks, roles, and other work between messages. It can monitor files,…">
 <link rel="canonical" href="https://hermesatlas.com/projects/electricsheephq/heartbeat2">
 <meta property="og:title" content="electricsheephq/heartbeat2 — Hermes Atlas">
-<meta property="og:description" content="HeartBeat 2.0 is a Hermes plugin that lets an agent work between messages through scheduled turns, standing roles, and watchers for files, processes, URLs,…">
+<meta property="og:description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring checks, roles, and other work between messages. It can monitor files,…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/electricsheephq/heartbeat2">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="electricsheephq/heartbeat2 — Hermes Atlas">
-<meta name="twitter:description" content="HeartBeat 2.0 is a Hermes plugin that lets an agent work between messages through scheduled turns, standing roles, and watchers for files, processes, URLs,…">
+<meta name="twitter:description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring checks, roles, and other work between messages. It can monitor files,…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=heartbeat2&amp;subtitle=Give+your+Hermes+agent+a+working+life+between+messages%3A+wakes%2C+watchers+and+roles%2C+within+daily+turn+and+message+caps.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/electricsheephq/heartbeat2#software",
   "name": "heartbeat2",
-  "description": "HeartBeat 2.0 is a Hermes plugin that lets an agent work between messages through scheduled turns, standing roles, and watchers for files, processes, URLs, commands, or Hermes events. It checks wakes and watchers with plain code and starts a model turn only when work is due or a watcher condition is met; daily turn and message limits, quiet hours, and other settings govern its activity.",
+  "description": "HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring checks, roles, and other work between messages. It can monitor files, processes, URLs, read-only commands, or Hermes events, and uses daily turn, message, and optional spending limits to govern activity.",
   "url": "https://hermesatlas.com/projects/electricsheephq/heartbeat2",
   "codeRepository": "https://github.com/electricsheephq/heartbeat2",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "electricsheephq",
     "url": "https://github.com/electricsheephq"
   },
-  "dateModified": "2026-11-21T16:23:59.000Z",
+  "dateModified": "2026-11-23T18:03:38.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-11-21</span>
+    <span><span class="meta-label">updated</span>2026-11-23</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">HeartBeat 2.0 is a Hermes plugin that lets an agent work between messages through scheduled turns, standing roles, and watchers for files, processes, URLs, commands, or Hermes events. It checks wakes and watchers with plain code and starts a model turn only when work is due or a watcher condition is met; daily turn and message limits, quiet hours, and other settings govern its activity.</p>
+    <p class="summary-text">HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring checks, roles, and other work between messages. It can monitor files, processes, URLs, read-only commands, or Hermes events, and uses daily turn, message, and optional spending limits to govern activity.</p>
     <ul class="summary-highlights">
-      <li>Watchers can check conditions without a model call.</li>
-      <li>Roles include a charter, notebook, and self-set rhythm.</li>
-      <li>/pulse displays upcoming work and recent trigger details.</li>
+      <li>Watchers check conditions without a model call until triggered.</li>
+      <li>Roles have a charter, notebook, and agent-set rhythm.</li>
+      <li>Commands include `/pulse`, `/pulse list`, and `/pulse why &lt;id&gt;`.</li>
     </ul>
   </div>
 </section>
@@ -842,11 +842,16 @@ that has already gone cold.</li>
 for the agent's own turns. <code>/pulse status</code> and <code>/pulse ledger</code> show them on their own row with their cost.</li>
 <li>Only you turn it on or off (<code>/pulse warm off</code>); the agent can't. When the route doesn't report the cache lifetime,
 HeartBeat uses the longest gap it has seen stay warm on that route. Claude caches last 5 minutes or 1 hour, so once a Claude
-route has stayed warm past 5 minutes, a shorter cold miss (a compaction or a rebuilt system prompt changes the prompt) doesn't
-stop keep-warm. Two pings in a row whose first model call finds the cache cold do, until a reply on that route reuses the
+route has stayed warm past 15 minutes HeartBeat counts on the hour, even on a route new after a model switch (a shorter
+warm gap can be timing skew on a 5-minute cache), and a shorter
+cold miss (a compaction or a rebuilt system prompt changes the prompt) doesn't stop keep-warm. Two pings in a row whose first model call finds the cache cold do, until a reply on that route reuses the
 cache after more than 15 minutes or you run <code>/pulse warm on</code> again. On other models' routes, a cold miss shorter than the
 longest warm gap stops it. <code>/pulse warm</code>,
-<code>/pulse status</code>, <code>/pulse list</code> and the agent's list say why no ping is due.</li>
+<code>/pulse status</code>, <code>/pulse list</code> and the agent's list say why no ping is due. When keep-warm has been unable to ping for two
+hours because the cache lifetime is unknown or short, caching is off, or two pings in a row found it cold, the agent tells
+you once, on the next message you send (not while HeartBeat is off in the chat). A model switch starts the two hours again
+for the new model. A small context or your rest is not a reason in itself, since keep-warm wouldn't ping then anyway, but
+time you spend resting still counts toward the two hours.</li>
 <li>Hermes has no per-turn output cap for plugins, so the ping asks for a one-word reply rather than enforcing it.</li>
 <li>Hermes builds that include its own prompt-cache warmer (NousResearch/hermes-agent#156455, merged after Hermes 0.23.2) keep
 most chats' caches warm by themselves, and HeartBeat can't yet see that schedule. In a chat that warmer handles, turn
@@ -921,8 +926,7 @@ HeartBeat will step aside on its own once Hermes lets plugins read the warm sche
 <ul>
 <li><strong>App windows:</strong> a silent or held-message turn still shows its text in the window (a Hermes limitation, <a href="https://github.com/NousResearch/hermes-agent/issues/156465">NousResearch/hermes-agent#156465</a>). The wake asks the model to reply with exactly <code>[SILENT]</code> when it is not notifying, and on every turn while messages are held (the summary it saves with <code>pulse respond</code> is what HeartBeat keeps), but streaming text cannot be hidden by the plugin. Nothing is pushed to a phone. When Hermes retires a closed window's session, a wake waits and retries every minute; reopening the conversation lets it run, subject to expiry and the usual limits. Hermes may keep a disconnected window's session live for about five minutes, so a wake can run unseen during that grace period.</li>
 <li><strong>Messaging groups/topics</strong> require <code>dm_only</code> off. Group and topic delivery has passed one live test in a Telegram forum topic (<a href="https://github.com/electricsheephq/heartbeat2/issues/98">#98</a>).</li>
-<li><strong>A wake turn that fails at the provider</strong> (quota, auth, outage) shows Hermes's own failure notice in the chat. The plugin cannot suppress it (<a href="https://github.com/NousResearch/hermes-agent/issues/136749">NousResearch/hermes-agent#136749</a>). HeartBeat 2.0 settles that wake once Hermes ends the turn (some provider errors leave it open until the agent timeout, <a href="https://github.com/electricsheephq/heartbeat2/issues/27">#27</a>, blocked upstream by <a href="https://github.com/NousResearch/hermes-agent/issues/137357">NousResearch/hermes-agent#137357</a>), then holds every pending wake back (5 min → 15 min → 1 h → 4 h) until a model call on the profile succeeds again. A wake already in flight when the error hits can still show one more notice. A long outage therefore costs about one notice per backoff step, not one per wake.</li>
-<li>**In messaging chats, silence covers the final re</li>
+<li><strong>A wake turn that fails at the provider</strong> (quota, auth, outage) shows Hermes's own failure notice in the chat. The plugin cannot suppress it (<a href="https://github.com/NousResearch/hermes-agent/issues/136749">NousResearch/hermes-agent#136749</a>). HeartB</li>
 </ul>
 <hr>
 <p><em>README truncated. <a href="https://github.com/electricsheephq/heartbeat2#readme">Continue reading on GitHub</a></em></p>
