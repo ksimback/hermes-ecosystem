@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>nujovich/hermes-telemetry — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="hermes-telemetry is a Hermes Agent plugin that records API and tool calls, including tokens, cost, and latency. It enforces budget limits by notifying at a…">
+<meta name="description" content="hermes-telemetry is a plugin for Hermes Agent that records API and tool-call usage, including tokens, estimated cost, and latency. It enforces configured…">
 <link rel="canonical" href="https://hermesatlas.com/projects/nujovich/hermes-telemetry">
 <meta property="og:title" content="nujovich/hermes-telemetry — Hermes Atlas">
-<meta property="og:description" content="hermes-telemetry is a Hermes Agent plugin that records API and tool calls, including tokens, cost, and latency. It enforces budget limits by notifying at a…">
+<meta property="og:description" content="hermes-telemetry is a plugin for Hermes Agent that records API and tool-call usage, including tokens, estimated cost, and latency. It enforces configured…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/nujovich/hermes-telemetry">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="nujovich/hermes-telemetry — Hermes Atlas">
-<meta name="twitter:description" content="hermes-telemetry is a Hermes Agent plugin that records API and tool calls, including tokens, cost, and latency. It enforces budget limits by notifying at a…">
+<meta name="twitter:description" content="hermes-telemetry is a plugin for Hermes Agent that records API and tool-call usage, including tokens, estimated cost, and latency. It enforces configured…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-telemetry&amp;subtitle=Budget+enforcement+%2B+observability+plugin+for+Hermes+Agent.+Stops+runaway+costs+before+they+happen.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/nujovich/hermes-telemetry#software",
   "name": "hermes-telemetry",
-  "description": "hermes-telemetry is a Hermes Agent plugin that records API and tool calls, including tokens, cost, and latency. It enforces budget limits by notifying at a soft limit and blocking further tool calls at a hard limit; a breached cron-job budget also pauses that job.",
+  "description": "hermes-telemetry is a plugin for Hermes Agent that records API and tool-call usage, including tokens, estimated cost, and latency. It enforces configured budgets by notifying at a soft limit and blocking further tool calls at a hard limit; a breached cron-job budget also pauses that job.",
   "url": "https://hermesatlas.com/projects/nujovich/hermes-telemetry",
   "codeRepository": "https://github.com/nujovich/hermes-telemetry",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "nujovich",
     "url": "https://github.com/nujovich"
   },
-  "dateModified": "2026-11-17T05:51:09.000Z",
+  "dateModified": "2026-11-23T11:30:59.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-17</span>
+    <span><span class="meta-label">updated</span>2026-11-23</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">hermes-telemetry is a Hermes Agent plugin that records API and tool calls, including tokens, cost, and latency. It enforces budget limits by notifying at a soft limit and blocking further tool calls at a hard limit; a breached cron-job budget also pauses that job.</p>
+    <p class="summary-text">hermes-telemetry is a plugin for Hermes Agent that records API and tool-call usage, including tokens, estimated cost, and latency. It enforces configured budgets by notifying at a soft limit and blocking further tool calls at a hard limit; a breached cron-job budget also pauses that job.</p>
     <ul class="summary-highlights">
-      <li>Records API and tool-call activity.</li>
-      <li>Provides `/stats` and `/budget` commands.</li>
-      <li>Logs telemetry to SQLite with WAL mode.</li>
+      <li>Records usage in SQLite with WAL mode</li>
+      <li>Provides `/stats` and `/budget` commands</li>
+      <li>Automatically syncs OpenRouter pricing</li>
     </ul>
   </div>
 </section>
@@ -168,7 +168,7 @@
 <p><img src="https://raw.githubusercontent.com/nujovich/hermes-telemetry/main/docs/budget_enforcement.gif" alt="Budget enforcement demo: a $0.001 daily global cap is set, current spend already exceeds it, and the next marketing cron run is blocked by the resulting hard breach" loading="lazy" decoding="async"></p>
 <p><em><code>/budget set global daily 0.001</code> writes the cap to <code>budget.yaml</code>; current spend ($0.0102) already exceeds it, so <code>/budget</code> re-renders at 1020% <code>[daily]</code> — a hard breach — and the next marketing cron run is blocked by the budget.</em></p>
 <p><a href="https://raw.githubusercontent.com/NousResearch/hermes-agent/HEAD/assets/banner.png"><img src="https://raw.githubusercontent.com/NousResearch/hermes-agent/HEAD/assets/banner.png" alt="Hermes Agent" loading="lazy" decoding="async"></a></p>
-<p><a href="https://camo.githubusercontent.com/08cef40a9105b6526ca22088bc514fbfdbc9aac1ddbf8d4e6c750e3a88a44dca/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4c6963656e73652d4d49542d626c75652e737667"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" loading="lazy" decoding="async"></a> <a href="https://img.shields.io/badge/Tests-890%20passing-green.svg"><img src="https://img.shields.io/badge/Tests-890%20passing-green.svg" alt="Tests: 890 passing" loading="lazy" decoding="async"></a> <a href="https://img.shields.io/badge/Providers-OpenRouter-orange.svg"><img src="https://img.shields.io/badge/Providers-OpenRouter-orange.svg" alt="Provider Support" loading="lazy" decoding="async"></a> <a href="https://camo.githubusercontent.com/d0c993fdf35127e435629279025d4b1892e351f5e04ce1547329686aa4223366/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4865726d65732532304167656e744d4368616c6c656e6765253230456e7472792d707572706c652e737667"><img src="https://img.shields.io/badge/Hermes%20Agent-Challenge%20Entry-purple.svg" alt="Challenge Entry" loading="lazy" decoding="async"></a></p>
+<p><a href="https://camo.githubusercontent.com/08cef40a9105b6526ca22088bc514fbfdbc9aac1ddbf8d4e6c750e3a88a44dca/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4c6963656e73652d4d49542d626c75652e737667"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" loading="lazy" decoding="async"></a> <a href="https://img.shields.io/badge/Tests-914%20passing-green.svg"><img src="https://img.shields.io/badge/Tests-914%20passing-green.svg" alt="Tests: 914 passing" loading="lazy" decoding="async"></a> <a href="https://img.shields.io/badge/Providers-OpenRouter-orange.svg"><img src="https://img.shields.io/badge/Providers-OpenRouter-orange.svg" alt="Provider Support" loading="lazy" decoding="async"></a> <a href="https://camo.githubusercontent.com/d0c993fdf35127e435629279025d4b1892e351f5e04ce1547329686aa4223366/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4865726d65732532304167656e744d4368616c6c656e6765253230456e7472792d707572706c652e737667"><img src="https://img.shields.io/badge/Hermes%20Agent-Challenge%20Entry-purple.svg" alt="Challenge Entry" loading="lazy" decoding="async"></a></p>
 <hr>
 <p>Hermes Agent runs autonomously — across sessions, platforms, and cron jobs — which
 means it can keep spending even when you're not watching.
@@ -370,7 +370,7 @@ always an estimate computed from a local pricing table; see
 pip install pytest pyyaml
 pytest tests/ -v
 </code></pre>
-<p><strong>Test suite (890 tests, 890 passing):</strong></p>
+<p><strong>Test suite (914 tests, 914 passing):</strong></p>
 <table>
 <thead>
 <tr>
@@ -382,7 +382,7 @@ pytest tests/ -v
 <tbody><tr>
 <td><code>test_db.py</code></td>
 <td>146</td>
-<td>Schema migrations (v1→v19, incl. the #89 known-free repair), CRUD, aggregations, concurrent WAL writes, <code>known_free_models</code>, pricing snapshots, subagent edges, turn identity + the failure ledger, ledger retention (v19 <code>ts</code> index, age prune, env policy), cache layer</td>
+<td>Schema migrations (v1→v20, incl. the #89 known-free repair), CRUD, aggregations, concurrent WAL writes, <code>known_free_models</code>, pricing snapshots, subagent edges, turn identity + the failure ledger, ledger retention (v19 <code>ts</code> index, age prune, env policy), schema-version markers (v19 + v20), cache layer</td>
 </tr>
 <tr>
 <td><code>test_pricing.py</code></td>
@@ -391,8 +391,8 @@ pytest tests/ -v
 </tr>
 <tr>
 <td><code>test_dashboard.py</code></td>
-<td>51</td>
-<td>HTML dashboard rendering, auto-refresh, chart data endpoints, viewer-timezone budget windows, cache layer (TTL / serve-stale)</td>
+<td>62</td>
+<td>HTML dashboard rendering, auto-refresh, chart data endpoints, viewer-timezone budget windows, cache layer (TTL / serve-stale), #128 shared-home visibility filter (<code>state.db</code> across profile homes, single-parameter <code>json_each</code> binding)</td>
 </tr>
 <tr>
 <td><code>test_telemetry_cli.py</code></td>
@@ -406,7 +406,7 @@ pytest tests/ -v
 </tr>
 <tr>
 <td><code>test_dashboard_plugin_api.py</code></td>
-<td>34</td>
+<td>35</td>
 <td>Plugin dashboard API: per-profile scoping clauses, efficiency/smells/budget endpoints</td>
 </tr>
 <tr>
@@ -423,6 +423,11 @@ pytest tests/ -v
 <td><code>test_stats_smells.py</code></td>
 <td>22</td>
 <td>Anti-pattern (smell) detection and scoring</td>
+</tr>
+<tr>
+<td><code>test_shared_home_profile_attribution.py</code></td>
+<td>12</td>
+<td>Shared-home DB path reporting + per-row profile attribution: v20 migration, backfill, <code>profile=</code> on <code>record_tool_call</code> / <code>record_llm_call</code>, NULL default</td>
 </tr>
 <tr>
 <td><code>test_packaging.py</code></td>
@@ -570,7 +575,7 @@ pytest tests/ -v
 <td><code>--profile</code> on cron and raw views (slash + CLI), <code>cost_by_job</code> / <code>recent_runs</code> / <code>unattributed_child_cost</code> filtering, empty-result labels, unfiltered default unchanged</td>
 </tr>
 </tbody></table>
-<p>Counts above are per-file collected totals, measured on this branch with <code>pytest tests/ -q</code> and the optional <code>fastapi</code> test dependency installed (890 collected; computed as the pre-change 884 + 6 new tests; this py3.8 shell shows 884 passed + 6 zoneinfo skips). CI installs only <code>pytest</code> + <code>pyyaml</code>, so <code>test_dashboard_plugin_api.py</code> skips there and the same command reports <strong>856 passed, 34 skipped</strong> (computed: 890 - 34).</p>
+<p>Counts above are per-file collected totals, measured on this branch with <code>pytest tests/ -q</code> and the optional <code>fastapi</code> test dependency installed (914 collected: 903 on <code>main</code> plus 11 visibility tests; a py3.8 shell shows 906 passed + 8 skipped — the six zoneinfo-guarded tests and the two <code>Connection.setlimit</code> tests, which need Python 3.11+). CI installs only <code>pytest</code> + <code>pyyaml</code>, so <code>test_dashboard_plugin_api.py</code> skips there and the same command reports <strong>879 passed, 35 skipped</strong> on Python 3.11+ (computed: 914 - 35).</p>
 <p>No live Hermes is required — all tests are self-contained with in-memory SQLite.</p>
 <hr>
 <h3>License</h3>

@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/apelabs-dev/hermes-mock-review#software",
   "name": "hermes-mock-review",
-  "description": "mock-review is a Hermes plugin that presents UI and design options as review boards. Reviewers can approve, request changes, or skip decisions, add notes and pins, and send feedback that wakes the agent in the originating chat. Plan boards can also pass an approved plan to the agent for building, with the result returning as another round on the same link.",
+  "description": "mock-review is a Hermes plugin that presents UI and design options as review boards. Reviewers can approve, request changes, or skip decisions, add notes and pins, then send feedback to the chat the review came from. Boards can display mocks at desktop, tablet, and phone widths in light and dark modes, and viewer-access users can export rounds in several formats.",
   "url": "https://hermesatlas.com/projects/apelabs-dev/hermes-mock-review",
   "codeRepository": "https://github.com/apelabs-dev/hermes-mock-review",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "apelabs-dev",
     "url": "https://github.com/apelabs-dev"
   },
-  "dateModified": "2026-11-22T21:47:43.000Z",
+  "dateModified": "2026-11-23T06:27:41.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-22</span>
+    <span><span class="meta-label">updated</span>2026-11-23</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">mock-review is a Hermes plugin that presents UI and design options as review boards. Reviewers can approve, request changes, or skip decisions, add notes and pins, and send feedback that wakes the agent in the originating chat. Plan boards can also pass an approved plan to the agent for building, with the result returning as another round on the same link.</p>
+    <p class="summary-text">mock-review is a Hermes plugin that presents UI and design options as review boards. Reviewers can approve, request changes, or skip decisions, add notes and pins, then send feedback to the chat the review came from. Boards can display mocks at desktop, tablet, and phone widths in light and dark modes, and viewer-access users can export rounds in several formats.</p>
     <ul class="summary-highlights">
-      <li>Boards show mocks at desktop, tablet, and phone widths.</li>
-      <li>Export rounds as PNG, PDF, HTML, or Markdown.</li>
-      <li>Design profiles can apply to projects.</li>
+      <li>Supports approval, change, and skip decisions with notes and pins.</li>
+      <li>Displays mocks at desktop, tablet, and phone widths.</li>
+      <li>Exports rounds as PNG, PDF, HTML, or Markdown.</li>
     </ul>
   </div>
 </section>
@@ -220,10 +220,12 @@ board that is already running, closes the earlier test review, and creates a new
 wake-up: press Send on the board and the agent answers in the chat.</li>
 </ol>
 <h4>Let the woken session build (opt-in)</h4>
-<p>Hermes runs the session Send wakes with its safe webhook tools only, so by default that session replies "Round N
-feedback is saved; the build continues in this thread's chat session." and the chat's own session builds the round. To
-let the woken session build right away, set the toolsets, re-run setup and add the line it prints by hand. Include <code>mock-review</code> so it can call the
-mock_review tools; the list replaces Hermes's webhook default rather than adding to it:</p>
+<p>Hermes runs the session Send wakes as a webhook session that keeps its safe webhook tools and also holds mock-review's
+own <code>mock_review_*</code> tools for every review on this install (plugin toolsets are on by default). It has no terminal or
+file tools, so by default that session replies "Round N feedback is saved; the build continues in this thread's chat
+session." and the chat's own session builds the round. To let the woken session build right away, set the toolsets,
+re-run setup and add the line it prints by hand. Include <code>mock-review</code> to keep the mock_review tools; the list
+replaces Hermes's webhook default rather than adding to it:</p>
 <pre><code>hermes config set plugins.entries.mock-review.settings.wake_toolsets "mock-review,terminal,file"
 hermes mockreview setup
 </code></pre>
@@ -263,14 +265,21 @@ guest's credential. A review has at most one share link, managed by its owner in
 <code>viewer</code> — and can be limited to signed-in members, given an expiry, and pinned to one round for viewer guests.</p>
 <p>A guest opens the link with its role and gets a server-assigned name such as "Calm Otter"; the name is unique among
 that review's live guests and can be changed. A viewer sees only the round the link names, with no feedback pins,
-notes or submit token. A commenter can comment on any round; a reviewer can also send feedback and ask for a pin fix,
-but a guest never wakes Hermes: Send is stored for the owner. Regenerating or stopping the link ends every guest
+notes or submit token. A commenter can comment on any round; a reviewer can also mark decisions and write notes in
+their own browser, ask for a pin fix (saved for the owner, never woken) and wake Hermes with an <code>@Hermes</code> mention on a
+board that wakes a messaging chat. Send and Build are the owner's alone: anyone else sees a line saying so where the
+buttons would be. Choosing Reviewer in the Share dialog asks first. Regenerating or stopping the link ends every guest
 session of the old link.</p>
+<p>Upgrading from an earlier version: a Reviewer link, person grant or invite made before this update starts saved. It
+keeps its board role but cannot wake Hermes until you pick Reviewer again in Share. An invite minted before the update
+stays usable for its board role; the person it admits needs the same re-confirmation.</p>
 <p>Pins are conversations now: each pin opens a thread with replies, resolve/reopen, optional <code>@Hermes</code> mentions, and live
-updates on every open board. An owner's or reviewer's <code>@Hermes</code> comment wakes Hermes once per comment; the board answers
-at once and the worker tick delivers it, coalescing a burst into one wake, and the anchored block carries a working
-chip until the session replies. It replies in the thread and patches the block in place when the comment asks for it; a
-guest, an agent token and a wake-off board never wake anyone. The wake goes to the chat the review was created
+updates on every open board. An owner's or reviewer's <code>@Hermes</code> comment wakes Hermes once per comment when the request
+gate allows it: the owner from this computer or the tailnet, a reviewer (guest or member) only on a board that wakes a
+messaging chat with no <code>wake_toolsets</code>. The board answers at once and the worker tick delivers it, coalescing a burst
+into one wake, and the anchored block carries a working chip until the session replies. It replies in the thread and
+patches the block in place when the comment asks for it; a commenter, an agent token and a wake-off board never wake
+anyone, and a saved mention says why on the board. The wake goes to the chat the review was created
 from; <a href="https://github.com/apelabs-dev/hermes-mock-review/blob/main/docs/comments.md">docs/comments.md</a> says what the session does there. Comments and their history live in the review's own
 database under the data root. See <a href="https://github.com/apelabs-dev/hermes-mock-review/blob/main/docs/comments.md">docs/comments.md</a> and <a href="https://github.com/apelabs-dev/hermes-mock-review/blob/main/docs/security.md">docs/security.md</a>.</p>
 <p><img src="https://raw.githubusercontent.com/apelabs-dev/hermes-mock-review/main/docs/img/share-dialog.png" alt="The Share dialog in the board, showing invites, the guest link, its role and expiry, and live seats" loading="lazy" decoding="async"></p>
@@ -287,8 +296,9 @@ off and the owner signs in with a one-time link instead, <code>hermes mockreview
 An invite creates an account; a share link does not.</li>
 <li>Accounts live in one flat user directory per install. Each account is a member or an admin; admins manage every
 review and see Members and Invites in Settings. The last admin cannot be demoted or the only admin deleted.</li>
-<li>Access is granted per review: <code>viewer</code> (look), <code>commenter</code> (look and comment) or <code>reviewer</code> (look, comment and send
-feedback), optionally with an expiry. A grant for all reviews is a convenience flag, not a workspace or a team.
+<li>Access is granted per review: <code>viewer</code> (look), <code>commenter</code> (look and comment) or <code>reviewer</code> (look, comment, ask for
+a pin fix and wake Hermes with an <code>@Hermes</code> mention), optionally with an expiry. Send and Build are the owner's
+alone; <a href="https://github.com/apelabs-dev/hermes-mock-review/blob/main/docs/security.md#who-may-wake-hermes">docs/security.md</a> has the full rule. A grant for all reviews is a convenience flag, not a workspace or a team.
 <code>hermes mockreview users grant &lt;name|id&gt; --review &lt;review id&gt; --role reviewer --expires 30d</code> is the CLI form.</li>
 <li>Personal access tokens (<code>hermes mockreview tokens create --user &lt;id&gt; &lt;name&gt;</code>) let a coding agent comment as that
 account; the token is shown once and stored hashed.</li>
