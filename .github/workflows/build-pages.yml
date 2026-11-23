@@ -35,9 +35,21 @@ jobs:
       issues: write
 
     steps:
+      # main is protected by a ruleset (PR + unit tests). Bot writes to main
+      # use the Hermes Atlas Bot app, which is on the bypass list; [skip ci]
+      # on its commits keeps today's behaviour (bot pushes trigger no other
+      # workflows; follow-ups are dispatched explicitly).
+      - name: Mint Atlas bot token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.ATLAS_BOT_APP_ID }}
+          private-key: ${{ secrets.ATLAS_BOT_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@v5
         with:
+          token: ${{ steps.app-token.outputs.token }}
           # Full history so computeAddedDates() in build-pages.js can walk the
           # git log of data/repos.json for per-repo first-seen dates. A shallow
           # clone (default depth 1) collapses every RSS <pubDate> to the latest
@@ -101,7 +113,7 @@ jobs:
         run: |
           git config user.name "Hermes Atlas Bot"
           git config user.email "bot@hermesatlas.com"
-          git commit -m "Rebuild project pages (${{ steps.diff.outputs.pages }} projects, ${{ steps.diff.outputs.lists }} lists)"
+          git commit -m "Rebuild project pages (${{ steps.diff.outputs.pages }} projects, ${{ steps.diff.outputs.lists }} lists) [skip ci]"
 
           # main can move during a multi-minute build (PR merge, another
           # bot workflow committing). Generated pages should never be rebased:
@@ -127,7 +139,7 @@ jobs:
             fi
             PAGES=$(find projects -name '*.html' | wc -l)
             LISTS=$(find lists -name '*.html' | wc -l)
-            git commit -m "Rebuild project pages ($PAGES projects, $LISTS lists)"
+            git commit -m "Rebuild project pages ($PAGES projects, $LISTS lists) [skip ci]"
           done
           echo "Push failed after 3 attempts"
           exit 1

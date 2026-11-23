@@ -466,6 +466,16 @@ jobs:
               body: 'Auto-closing — this repo is already in the ecosystem map. Reopen if you believe this is a mistake.'
             });
 
+      # main is protected by a ruleset (PR + unit tests). Merges use the
+      # Hermes Atlas Bot app (on the bypass list); PRs stay on GITHUB_TOKEN.
+      - name: Mint Atlas bot token
+        id: app-token
+        if: steps.validate.outputs.passed == 'true'
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.ATLAS_BOT_APP_ID }}
+          private-key: ${{ secrets.ATLAS_BOT_PRIVATE_KEY }}
+
       - name: Create PR to add repo (if passed)
         if: steps.validate.outputs.passed == 'true'
         uses: actions/github-script@v8
@@ -477,6 +487,7 @@ jobs:
           REPO_HTML_URL: ${{ steps.metadata.outputs.html_url }}
           REPO_CATEGORY: ${{ steps.extract.outputs.category }}
           INFERRED_CATEGORY: ${{ steps.metadata.outputs.inferred_category }}
+          MERGE_TOKEN: ${{ steps.app-token.outputs.token }}
         with:
           script: |
             const owner = process.env.REPO_OWNER;
@@ -690,14 +701,17 @@ jobs:
                 blockerReason = 'PR is dirty/conflicted';
                 break;
               }
-              if (requiredGreen && blocking.length === 0 && ['CLEAN', 'HAS_HOOKS', 'UNSTABLE'].includes(mergeState)) {
+              if (requiredGreen && blocking.length === 0 && ['CLEAN', 'HAS_HOOKS', 'UNSTABLE', 'BLOCKED'].includes(mergeState)) {
+                // BLOCKED = the main ruleset's required checks, which never run
+                // on GITHUB_TOKEN PRs; the bot app merging below bypasses them.
                 try {
-                  const { data: merge } = await github.rest.pulls.merge({
+                  const merger = getOctokit(process.env.MERGE_TOKEN);
+                  const { data: merge } = await merger.rest.pulls.merge({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
                     pull_number: pr.number,
                     merge_method: 'squash',
-                    commit_title: `Add ${owner}/${repo} to Atlas ecosystem (#${pr.number})`
+                    commit_title: `Add ${owner}/${repo} to Atlas ecosystem (#${pr.number}) [skip ci]`
                   });
                   if (!merge.merged) throw new Error(merge.message || 'GitHub declined the merge');
                   mergedByWorkflow = true;
@@ -798,7 +812,17 @@ jobs:
         with:
           node-version: '22'
 
+      # main is protected by a ruleset (PR + unit tests). Merges use the
+      # Hermes Atlas Bot app (on the bypass list); PRs stay on GITHUB_TOKEN.
+      - name: Mint Atlas bot token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.ATLAS_BOT_APP_ID }}
+          private-key: ${{ secrets.ATLAS_BOT_PRIVATE_KEY }}
+
       - name: Refresh and merge stuck repo-submission PRs sequentially
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_TOKEN: ${{ steps.app-token.outputs.token }}
         run: node scripts/recover-repo-submissions.js

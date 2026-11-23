@@ -275,7 +275,7 @@ test("recoverRepoSubmissions leaves multi-repo parents unlabeled for the splitte
 test("validator workflow does not wait for impossible bot-triggered CheckRuns", () => {
   const workflow = fs.readFileSync(".github/workflows/validate-repo-suggestion.yml", "utf-8");
   assert.match(workflow, /CANONICAL_CATEGORIES, validateRepos \} = await import/);
-  assert.match(workflow, /\['CLEAN', 'HAS_HOOKS', 'UNSTABLE'\]/);
+  assert.match(workflow, /\['CLEAN', 'HAS_HOOKS', 'UNSTABLE', 'BLOCKED'\]/);
   assert.match(workflow, /createWorkflowDispatch/);
   assert.match(workflow, /recover-open-prs:/);
   assert.match(workflow, /issue_number:/);

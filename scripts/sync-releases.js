@@ -227,11 +227,12 @@ export async function syncReleases({
   repository,
   researchFiles = readResearchFiles(),
   latestReleaseData = readLatestRelease(),
+  mergeClient = client,
 }) {
   const upstreamReleases = await listAllReleases(client);
   const plan = planReleaseBatch({ upstreamReleases, researchFiles });
   const upstreamLatest = latestStableRelease(upstreamReleases);
-  const result = await ingestPlannedReleases({ client, repository, plan, upstreamLatest, latestReleaseData });
+  const result = await ingestPlannedReleases({ client, mergeClient, repository, plan, upstreamLatest, latestReleaseData });
 
   // Ingest what is recognizable first, then fail the run so the workflow
   // escalates instead of reporting a healthy "no missing releases".
@@ -245,7 +246,7 @@ export async function syncReleases({
   return result;
 }
 
-async function ingestPlannedReleases({ client, repository, plan, upstreamLatest, latestReleaseData }) {
+async function ingestPlannedReleases({ client, mergeClient = client, repository, plan, upstreamLatest, latestReleaseData }) {
   if (plan.documents.length === 0) {
     try {
       await closeTrackedReleasePrs(client, repository, plan.trackedTags);
@@ -337,10 +338,10 @@ async function ingestPlannedReleases({ client, repository, plan, upstreamLatest,
     );
   }
 
-  const merge = await client.request("PUT", `/repos/${repository}/pulls/${pull.number}/merge`, {
+  const merge = await mergeClient.request("PUT", `/repos/${repository}/pulls/${pull.number}/merge`, {
     sha: commit.sha,
     merge_method: "merge",
-    commit_title: `Ingest Hermes Agent releases through ${latestTag}`,
+    commit_title: `Ingest Hermes Agent releases through ${latestTag} [skip ci]`,
   });
   if (!merge.merged) {
     throw new Error(`GitHub did not merge PR #${pull.number}: ${merge.message || "unknown reason"}`);
@@ -365,7 +366,13 @@ async function main() {
   if (!token) throw new Error("GITHUB_TOKEN is required");
   if (!repository) throw new Error("GITHUB_REPOSITORY is required");
 
-  await syncReleases({ client: new GitHubClient({ token }), repository });
+  // main is protected by a ruleset (PR + unit tests). The merge uses the
+  // Hermes Atlas Bot app (MERGE_TOKEN), which is on the bypass list; the PR
+  // itself stays on GITHUB_TOKEN so it fires no pull_request workflows. [skip ci]
+  // keeps the merge commit from triggering push workflows, as before.
+  const client = new GitHubClient({ token });
+  const mergeToken = process.env.MERGE_TOKEN;
+  await syncReleases({ client, repository, mergeClient: mergeToken ? new GitHubClient({ token: mergeToken }) : client });
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

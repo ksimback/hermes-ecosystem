@@ -28,11 +28,21 @@ jobs:
         with:
           node-version: '22'
 
+      # main is protected by a ruleset (PR + unit tests). Merges use the
+      # Hermes Atlas Bot app (on the bypass list); PRs stay on GITHUB_TOKEN.
+      - name: Mint Atlas bot token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.ATLAS_BOT_APP_ID }}
+          private-key: ${{ secrets.ATLAS_BOT_PRIVATE_KEY }}
+
       - name: Synchronize every missing Hermes Agent release
         id: releases
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_TOKEN: ${{ steps.app-token.outputs.token }}
         run: node scripts/sync-releases.js
 
       # The mirror is idempotent and owns its own change detection. Dispatch it

@@ -199,7 +199,7 @@ async function ensureTracker(client, repository, trackers, pull, reason) {
   trackers.set(title, issue);
 }
 
-export async function recoverRepoSubmissions({ client, repository }) {
+export async function recoverRepoSubmissions({ client, repository, mergeClient = client }) {
   const [allPulls, issueList, suggestionIssues, allOpenIssues] = await Promise.all([
     client.request("GET", `/repos/${repository}/pulls?state=open&per_page=100`),
     client.request("GET", `/repos/${repository}/issues?state=open&labels=workflow-issue&per_page=100`),
@@ -265,10 +265,10 @@ export async function recoverRepoSubmissions({ client, repository }) {
       if (!mergeable.mergeable) {
         throw new Error(`PR is not mergeable after refresh (state=${mergeable.mergeable_state})`);
       }
-      const merge = await client.request("PUT", `/repos/${repository}/pulls/${pull.number}/merge`, {
+      const merge = await mergeClient.request("PUT", `/repos/${repository}/pulls/${pull.number}/merge`, {
         sha: mergeable.head.sha,
         merge_method: "squash",
-        commit_title: `Add ${candidate.owner}/${candidate.repo} to Atlas ecosystem (#${pull.number})`,
+        commit_title: `Add ${candidate.owner}/${candidate.repo} to Atlas ecosystem (#${pull.number}) [skip ci]`,
       });
       if (!merge.merged) throw new Error(merge.message || "GitHub declined the merge");
 
@@ -334,7 +334,13 @@ async function main() {
   const repository = process.env.GITHUB_REPOSITORY;
   if (!token) throw new Error("GITHUB_TOKEN is required");
   if (!repository) throw new Error("GITHUB_REPOSITORY is required");
-  await recoverRepoSubmissions({ client: new GitHubClient({ token }), repository });
+  // main is protected by a ruleset (PR + unit tests). The merge uses the
+  // Hermes Atlas Bot app (MERGE_TOKEN), which is on the bypass list; the PR
+  // itself stays on GITHUB_TOKEN so it fires no pull_request workflows. [skip ci]
+  // keeps the merge commit from triggering push workflows, as before.
+  const client = new GitHubClient({ token });
+  const mergeToken = process.env.MERGE_TOKEN;
+  await recoverRepoSubmissions({ client, repository, mergeClient: mergeToken ? new GitHubClient({ token: mergeToken }) : client });
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
