@@ -1,0 +1,42 @@
+name: Ops Watchdog
+
+# Single health check for every scheduled workflow (list in lib/ops-watchdog.js).
+# Opens an `ops` alert issue when a workflow is red or has stopped running,
+# assigns OPS_ESCALATE_TO after 24h (GitHub emails the assignee), and closes
+# the issue on recovery.
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+on:
+  schedule:
+    - cron: '23 */3 * * *'
+  workflow_dispatch: {}
+
+concurrency:
+  group: ops-watchdog
+  cancel-in-progress: false
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  watchdog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Check workflow health
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPS_ESCALATE_TO: ksimback
+        run: node scripts/ops-watchdog.js
