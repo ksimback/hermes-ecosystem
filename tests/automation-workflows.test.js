@@ -186,3 +186,27 @@ test("conflicted PRs are told once per head commit that CI is not running", () =
   assert.match(alarm, /pr-conflict-alarm/);
   assert.match(alarm, /pr\.headRefOid/);
 });
+
+test("every bot write to main goes through the bypass app with [skip ci]", () => {
+  // main is protected by a ruleset (PR + unit tests) whose only bot bypass is
+  // the Hermes Atlas Bot app. A write made with GITHUB_TOKEN would be rejected;
+  // a write without [skip ci] would start re-triggering push workflows.
+  const pushers = ["build-pages", "rebuild-chunks", "refresh-docs", "audit-summaries", "rotate-featured"];
+  for (const name of pushers) {
+    const wf = fs.readFileSync(`.github/workflows/${name}.yml`, "utf-8");
+    assert.match(wf, /uses: actions\/create-github-app-token@v2[\s\S]*?app-id: \$\{\{ vars\.ATLAS_BOT_APP_ID \}\}/, `${name} mints the app token`);
+    assert.match(wf, /token: \$\{\{ steps\.app-token\.outputs\.token \}\}/, `${name} checks out with the app token`);
+    const commits = wf.match(/git commit -m "[^"]*"/g) || [];
+    assert.ok(commits.length > 0, `${name} commits`);
+    for (const c of commits) assert.match(c, /\[skip ci\]"$/, `${name}: ${c}`);
+  }
+  const intake = fs.readFileSync(".github/workflows/validate-repo-suggestion.yml", "utf-8");
+  assert.match(intake, /getOctokit\(process\.env\.MERGE_TOKEN\)/);
+  assert.equal((intake.match(/MERGE_TOKEN: \$\{\{ steps\.app-token\.outputs\.token \}\}/g) || []).length, 2, "intake + recovery merge with the app");
+  assert.match(fs.readFileSync(".github/workflows/release-monitor.yml", "utf-8"), /MERGE_TOKEN: \$\{\{ steps\.app-token\.outputs\.token \}\}/);
+  for (const script of ["scripts/sync-releases.js", "scripts/recover-repo-submissions.js"]) {
+    const src = fs.readFileSync(script, "utf-8");
+    assert.match(src, /mergeClient\.request\("PUT", `\/repos\/\$\{repository\}\/pulls\/\$\{pull\.number\}\/merge`/, `${script} merges with mergeClient`);
+    assert.match(src, /commit_title: `[^`]*\[skip ci\]`/, `${script} merge commit skips CI`);
+  }
+});
