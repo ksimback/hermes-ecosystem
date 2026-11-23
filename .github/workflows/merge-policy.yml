@@ -1,0 +1,65 @@
+name: Merge policy
+
+# Merges PRs by risk tier (lib/merge-tiers.js):
+#   auto   - data/, research/, drafts/ from a trusted author: merge when green.
+#   review - other changes from a trusted author: merge when green AND the
+#            Claude review (claude-review.yml) passed on the head commit.
+#   human  - workflows, vercel.json, lib/llm.js, dependencies, the policy
+#            itself, catalog deletions, forks: label needs-kevin, never merge.
+# Add the `hold` label to any PR to keep it from merging.
+#
+# Always runs main's copy of the policy (schedule / workflow_run / dispatch run
+# on the default branch). Merges go through the Hermes Atlas Bot app so the
+# merge commit triggers the usual push workflows, like a hand merge.
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+on:
+  workflow_run:
+    workflows: ["Unit tests", "Claude review"]
+    types: [completed]
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch: {}
+
+concurrency:
+  group: merge-policy
+  cancel-in-progress: false
+
+permissions:
+  checks: read
+  contents: read
+  issues: write
+  pull-requests: write
+  statuses: read
+
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Mint Atlas bot token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.ATLAS_BOT_APP_ID }}
+          private-key: ${{ secrets.ATLAS_BOT_PRIVATE_KEY }}
+
+      - name: Apply merge policy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_TOKEN: ${{ steps.app-token.outputs.token }}
+          TRUSTED_PR_AUTHORS: ${{ vars.TRUSTED_PR_AUTHORS || 'ksimback' }}
+          OPS_ESCALATE_TO: ksimback
+        run: node scripts/merge-policy.js
