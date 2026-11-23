@@ -7,7 +7,9 @@ name: Claude review
 # that status is green for the current head, so a new push needs a new review.
 #
 # Same-repo PRs only: fork PRs are human tier and get no secrets anyway.
-# Needs secrets.ANTHROPIC_API_KEY; without it the status goes red and says so.
+# Auth: secrets.CLAUDE_CODE_OAUTH_TOKEN (Claude subscription; create it with
+# `claude setup-token`, valid for a year). Without it the status goes red and
+# says so.
 # Model: vars.CLAUDE_REVIEW_MODEL (default claude-sonnet-5-5).
 
 env:
@@ -61,7 +63,7 @@ jobs:
     env:
       HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       # Step-level env is not visible to that step's own `if`, so set it here.
-      HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+      HAS_KEY: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN != '' }}
     steps:
       - name: Mark review pending
         uses: actions/github-script@v8
@@ -84,7 +86,7 @@ jobs:
         continue-on-error: true
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           allow_fork_prs: 'false'
           display_report: 'false'
@@ -129,7 +131,7 @@ jobs:
             try { result = JSON.parse(process.env.RESULT || 'null'); } catch {}
             let state, description;
             if (process.env.OUTCOME === 'skipped') {
-              state = 'error'; description = 'ANTHROPIC_API_KEY secret is not set';
+              state = 'error'; description = 'CLAUDE_CODE_OAUTH_TOKEN secret is not set';
             } else if (!result || !['approve', 'request_changes'].includes(result.verdict)) {
               state = 'error'; description = `Review did not complete (${process.env.OUTCOME}); see run`;
             } else {
