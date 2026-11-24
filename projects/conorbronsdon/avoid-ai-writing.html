@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>conorbronsdon/avoid-ai-writing — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
-<meta name="description" content="avoid-ai-writing is a portable writing skill for Claude Code, Codex, OpenClaw, Hermes, and other agents compatible with agentskills.io. It can detect…">
+<meta name="description" content="avoid-ai-writing is a portable writing skill for compatible AI agents that audits and rewrites English prose to address AI-writing patterns. It offers rewrite,…">
 <link rel="canonical" href="https://hermesatlas.com/projects/conorbronsdon/avoid-ai-writing">
 <meta property="og:title" content="conorbronsdon/avoid-ai-writing — Hermes Atlas">
-<meta property="og:description" content="avoid-ai-writing is a portable writing skill for Claude Code, Codex, OpenClaw, Hermes, and other agents compatible with agentskills.io. It can detect…">
+<meta property="og:description" content="avoid-ai-writing is a portable writing skill for compatible AI agents that audits and rewrites English prose to address AI-writing patterns. It offers rewrite,…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/conorbronsdon/avoid-ai-writing">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="conorbronsdon/avoid-ai-writing — Hermes Atlas">
-<meta name="twitter:description" content="avoid-ai-writing is a portable writing skill for Claude Code, Codex, OpenClaw, Hermes, and other agents compatible with agentskills.io. It can detect…">
+<meta name="twitter:description" content="avoid-ai-writing is a portable writing skill for compatible AI agents that audits and rewrites English prose to address AI-writing patterns. It offers rewrite,…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=avoid-ai-writing&amp;subtitle=Skill+that+audits+and+rewrites+content+to+remove+AI+writing+patterns.+Use+it+with+your+favorite+agents+including+Claude+Code%2C+OpenClaw%2C+Codex%2C+and+Hermes.&amp;kind=project+%C2%B7+skills">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/conorbronsdon/avoid-ai-writing#software",
   "name": "avoid-ai-writing",
-  "description": "avoid-ai-writing is a portable writing skill for Claude Code, Codex, OpenClaw, Hermes, and other agents compatible with agentskills.io. It can detect AI-writing patterns without editing, rewrite content, or make targeted in-place edits to prose files; it also supports optional voice profiles.",
+  "description": "avoid-ai-writing is a portable writing skill for compatible AI agents that audits and rewrites English prose to address AI-writing patterns. It offers rewrite, detect-only, and in-place editing modes, with optional voice profiles and configurable editing passes.",
   "url": "https://hermesatlas.com/projects/conorbronsdon/avoid-ai-writing",
   "codeRepository": "https://github.com/conorbronsdon/avoid-ai-writing",
   "applicationCategory": "DeveloperApplication",
@@ -47,13 +47,13 @@
     "name": "conorbronsdon",
     "url": "https://github.com/conorbronsdon"
   },
-  "dateModified": "2026-11-24T18:04:40.000Z",
+  "dateModified": "2026-11-24T19:31:54.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 6248
+    "userInteractionCount": 6258
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -120,7 +120,7 @@
   <p class="project-desc">Skill that audits and rewrites content to remove AI writing patterns. Use it with your favorite agents including Claude Code, OpenClaw, Codex, and Hermes.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 6.2K</span>
+    <span class="stars">★ 6.3K</span>
     <span><span class="meta-label">lang</span>JavaScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
@@ -148,11 +148,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">avoid-ai-writing is a portable writing skill for Claude Code, Codex, OpenClaw, Hermes, and other agents compatible with agentskills.io. It can detect AI-writing patterns without editing, rewrite content, or make targeted in-place edits to prose files; it also supports optional voice profiles.</p>
+    <p class="summary-text">avoid-ai-writing is a portable writing skill for compatible AI agents that audits and rewrites English prose to address AI-writing patterns. It offers rewrite, detect-only, and in-place editing modes, with optional voice profiles and configurable editing passes.</p>
     <ul class="summary-highlights">
-      <li>Offers rewrite, detect-only, and in-place edit modes.</li>
-      <li>Refuses in-place edits to source code, configuration, and generated data.</li>
-      <li>Rules and bundled detector are calibrated for English.</li>
+      <li>Flags patterns across content, language, structure, and communication.</li>
+      <li>Includes a bundled detector for scoring text.</li>
+      <li>Refuses in-place edits to source code and structured data.</li>
     </ul>
   </div>
 </section>
@@ -328,7 +328,7 @@ the plugin's skill loaded.</p>
 curl -o .cursor/rules/avoid-ai-writing.mdc \
   https://raw.githubusercontent.com/conorbronsdon/avoid-ai-writing/main/cursor-rules/avoid-ai-writing.mdc
 </code></pre>
-<p>See <a href="https://github.com/conorbronsdon/avoid-ai-writing/blob/main/cursor-rules/README.md"><code>cursor-rules/README.md</code></a> for activation globs and trigger phrases. Functionally identical to the Claude Code skill — same tier vocabulary, same context profiles, same modes.</p>
+<p>See <a href="https://github.com/conorbronsdon/avoid-ai-writing/blob/main/cursor-rules/README.md"><code>cursor-rules/README.md</code></a> for activation globs and trigger phrases. The port has the same rules, tier vocabulary, context profiles, and modes as the Claude Code skill, but ships without its scripts: the detector does not run, so audits are model-only, and the preservation validator, <code>--style</code> checker, and quote normalizer become manual steps.</p>
 <h4>Hermes</h4>
 <p>Drop the skill into Hermes's skills directory — it then appears automatically as <code>/avoid-ai-writing</code>, no registration needed:</p>
 <pre><code class="language-bash">git clone https://github.com/conorbronsdon/avoid-ai-writing ~/.hermes/skills/writing/avoid-ai-writing
@@ -1132,9 +1132,7 @@ guardrails first.</p>
 <li><a href="https://github.com/openclaw/openclaw">OpenClaw</a> humanizer skill ecosystem — community patterns and vocabulary research</li>
 </ul>
 <p>Pull requests get an automated first-pass review from <a href="https://github.com/marketplace/qodo-merge-pro-for-open-source">Qodo Merge</a>, free through Qodo's open source program. Thanks to the Qodo team for supporting OSS maintainers.</p>
-<p>Authored by <a href="https://github.com/conorbronsdon">Conor Bronsdon</a> · <a href="https://www.linkedin.com/in/conorbronsdon/">LinkedIn</a> · <a href="https://chainofthought.show/?utm_source=github&amp;utm_medium=referral&amp;utm_campaign=repo-readme&amp;utm_content=avoid-ai-writing">Chain of Thought podcast</a></p>
-<h3>Community / Multilingual</h3>
-<p>Community-maintained adaptations are linked </p>
+<p>Authored by <a href="https://github.com/conorbronsdon">Conor Bronsdon</a> · <a href="https://www.linkedin.com/in/conorbronsdon/">LinkedIn</a> · [Chain of Thought podcast](<a href="https://chainofthought.sho">https://chainofthought.sho</a></p>
 <hr>
 <p><em>README truncated. <a href="https://github.com/conorbronsdon/avoid-ai-writing#readme">Continue reading on GitHub</a></em></p>
 
