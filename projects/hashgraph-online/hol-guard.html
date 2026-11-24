@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>hashgraph-online/hol-guard — Hermes Agent Developer Tools | Hermes Atlas</title>
-<meta name="description" content="HOL Guard is a local-first security layer for AI agents and related tools, plugins, skills, MCP servers, and package installs. It reviews exposed agent events…">
+<meta name="description" content="HOL Guard is a local-first security layer that reviews AI agent actions, including shell commands, file access, package installs, and MCP tool calls. It…">
 <link rel="canonical" href="https://hermesatlas.com/projects/hashgraph-online/hol-guard">
 <meta property="og:title" content="hashgraph-online/hol-guard — Hermes Atlas">
-<meta property="og:description" content="HOL Guard is a local-first security layer for AI agents and related tools, plugins, skills, MCP servers, and package installs. It reviews exposed agent events…">
+<meta property="og:description" content="HOL Guard is a local-first security layer that reviews AI agent actions, including shell commands, file access, package installs, and MCP tool calls. It…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/hashgraph-online/hol-guard">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="hashgraph-online/hol-guard — Hermes Atlas">
-<meta name="twitter:description" content="HOL Guard is a local-first security layer for AI agents and related tools, plugins, skills, MCP servers, and package installs. It reviews exposed agent events…">
+<meta name="twitter:description" content="HOL Guard is a local-first security layer that reviews AI agent actions, including shell commands, file access, package installs, and MCP tool calls. It…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hol-guard&amp;subtitle=Open-source+antivirus+and+firewall+for+AI+agents%3A+block+risky+tools%2C+secret+access%2C+prompt+injection%2C+malicious+packages%2C+MCP+servers%2C+plugins%2C+and+skills+at+runtime.&amp;kind=project+%C2%B7+developer+tools">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/hashgraph-online/hol-guard#software",
   "name": "hol-guard",
-  "description": "HOL Guard is a local-first security layer for AI agents and related tools, plugins, skills, MCP servers, and package installs. It reviews exposed agent events such as shell commands, file access, package installs, and MCP tool calls, then allows, blocks, or requests approval based on policy; a CLI and local dashboard support management and review.",
+  "description": "HOL Guard is a local-first security layer that reviews AI agent actions, including shell commands, file access, package installs, and MCP tool calls. It detects risks such as secret exposure, destructive operations, prompt injection, and supply-chain issues, then allows, blocks, or requests approval according to policy.",
   "url": "https://hermesatlas.com/projects/hashgraph-online/hol-guard",
   "codeRepository": "https://github.com/hashgraph-online/hol-guard",
   "applicationCategory": "DeveloperApplication",
@@ -47,13 +47,13 @@
     "name": "hashgraph-online",
     "url": "https://github.com/hashgraph-online"
   },
-  "dateModified": "2026-11-23T19:38:24.000Z",
+  "dateModified": "2026-11-24T09:57:40.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 1122
+    "userInteractionCount": 1121
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -82,7 +82,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span id="meta-count">322·repos</span>
-    <span id="meta-version">hermes·v0.23.3</span>
+    <span id="meta-version">hermes·v0.23.4</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Rust</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-11-23</span>
+    <span><span class="meta-label">updated</span>2026-11-24</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">HOL Guard is a local-first security layer for AI agents and related tools, plugins, skills, MCP servers, and package installs. It reviews exposed agent events such as shell commands, file access, package installs, and MCP tool calls, then allows, blocks, or requests approval based on policy; a CLI and local dashboard support management and review.</p>
+    <p class="summary-text">HOL Guard is a local-first security layer that reviews AI agent actions, including shell commands, file access, package installs, and MCP tool calls. It detects risks such as secret exposure, destructive operations, prompt injection, and supply-chain issues, then allows, blocks, or requests approval according to policy.</p>
     <ul class="summary-highlights">
-      <li>Detects secret exposure, destructive operations, prompt injection, and supply-chain risks</li>
-      <li>CLI and local dashboard manage protection, approvals, and decision history</li>
-      <li>Optional Guard Cloud adds shared history, team policy, and fleet management</li>
+      <li>Reviews agent actions before they run</li>
+      <li>Includes a CLI and local dashboard</li>
+      <li>Optional Guard Cloud provides shared history and team policy</li>
     </ul>
   </div>
 </section>
@@ -360,6 +360,7 @@ plugin-scanner verify .
 </tbody></table>
 <p>The scanner detects Codex, Claude Code, DeepSeek Harness, Gemini CLI, Kimi Code, and OpenCode package formats. Use <code>plugin-scanner --list-ecosystems</code> to list them or <code>--ecosystem</code> to select one. At a Codex marketplace root, it discovers local plugin entries automatically.</p>
 <p>Checks cover manifests, secrets, MCP transport and command configuration, approval defaults, skills, dependency lockfiles, and GitHub Actions permissions. Optional Cisco integrations add skill and MCP analysis. Reports support text, JSON, Markdown, and SARIF.</p>
+<p>When the scanner detects a runtime-bearing surface such as a skill, command, hook, or MCP server, text, Markdown, JSON, and GitHub Action summaries include a report-only <strong>Guard coverage context</strong> section. It links the detected surface to the checked-in Guard harness claims and explains that static scanning does not prove a local Guard install or a live enforcement result. The section is omitted when no mapped runtime surface is present, and it does not make a network request. See the <a href="https://github.com/hashgraph-online/hol-guard/blob/main/docs/guard/scanner-coverage-bridge.md">coverage context contract</a> for the JSON shape and boundary.</p>
 <pre><code class="language-bash">plugin-scanner scan . --format sarif --output plugin-scanner.sarif
 plugin-scanner scan . --fail-on-severity high
 </code></pre>
@@ -789,7 +790,7 @@ uv build
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/colbymchenry/codegraph">
-        <div class="stars">★ 78.5K</div>
+        <div class="stars">★ 78.6K</div>
         <div class="name"><span class="org">colbymchenry /</span> codegraph</div>
       </a>
       <a class="related-row" href="/projects/Salomondiei08/oh-my-hermes">

@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>100yenadmin/hermes-plan-mode — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="Hermes Plan Mode is a plugin that lets Hermes explore a task with read-only tools, write a plan, and require approval before implementation. After approval, it…">
+<meta name="description" content="Hermes Plan Mode is a plugin that lets Hermes explore with read-only tools, write a plan, and block other dispatched tools until the plan is approved. After…">
 <link rel="canonical" href="https://hermesatlas.com/projects/100yenadmin/hermes-plan-mode">
 <meta property="og:title" content="100yenadmin/hermes-plan-mode — Hermes Atlas">
-<meta property="og:description" content="Hermes Plan Mode is a plugin that lets Hermes explore a task with read-only tools, write a plan, and require approval before implementation. After approval, it…">
+<meta property="og:description" content="Hermes Plan Mode is a plugin that lets Hermes explore with read-only tools, write a plan, and block other dispatched tools until the plan is approved. After…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/100yenadmin/hermes-plan-mode">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="100yenadmin/hermes-plan-mode — Hermes Atlas">
-<meta name="twitter:description" content="Hermes Plan Mode is a plugin that lets Hermes explore a task with read-only tools, write a plan, and require approval before implementation. After approval, it…">
+<meta name="twitter:description" content="Hermes Plan Mode is a plugin that lets Hermes explore with read-only tools, write a plan, and block other dispatched tools until the plan is approved. After…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-plan-mode&amp;subtitle=Plan+mode+for+Hermes+Agent%3A+it+explores+read-only+and+writes+a+plan%2C+and+its+edit+tools+stay+blocked+until+you+approve.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/100yenadmin/hermes-plan-mode#software",
   "name": "hermes-plan-mode",
-  "description": "Hermes Plan Mode is a plugin that lets Hermes explore a task with read-only tools, write a plan, and require approval before implementation. After approval, it can implement the plan in the same turn and track progress in a todo list.",
+  "description": "Hermes Plan Mode is a plugin that lets Hermes explore with read-only tools, write a plan, and block other dispatched tools until the plan is approved. After approval, it can implement the plan in the same turn and track progress in a todo list.",
   "url": "https://hermesatlas.com/projects/100yenadmin/hermes-plan-mode",
   "codeRepository": "https://github.com/100yenadmin/hermes-plan-mode",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "100yenadmin",
     "url": "https://github.com/100yenadmin"
   },
-  "dateModified": "2026-11-21T16:22:17.000Z",
+  "dateModified": "2026-11-24T09:48:51.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -82,7 +82,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span id="meta-count">322·repos</span>
-    <span id="meta-version">hermes·v0.23.3</span>
+    <span id="meta-version">hermes·v0.23.4</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-21</span>
+    <span><span class="meta-label">updated</span>2026-11-24</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Plan Mode is a plugin that lets Hermes explore a task with read-only tools, write a plan, and require approval before implementation. After approval, it can implement the plan in the same turn and track progress in a todo list.</p>
+    <p class="summary-text">Hermes Plan Mode is a plugin that lets Hermes explore with read-only tools, write a plan, and block other dispatched tools until the plan is approved. After approval, it can implement the plan in the same turn and track progress in a todo list.</p>
     <ul class="summary-highlights">
-      <li>Blocks most tools while planning, including file edits and terminal commands.</li>
-      <li>Offers commands to start, review, resume, or leave a plan.</li>
-      <li>Provides progress cards on several Hermes surfaces and messaging platforms.</li>
+      <li>Start planning with `/plan` or `/planmode on`.</li>
+      <li>Plans are saved as Markdown under `&lt;cwd&gt;/.hermes/plans`.</li>
+      <li>Supports CLI, TUI, Desktop, and messaging platforms.</li>
     </ul>
   </div>
 </section>
@@ -475,6 +475,8 @@ off (the default);</li>
 <li>Tool Search: <code>tool_search</code> and <code>tool_describe</code> (calls made through <code>tool_call</code> are checked as the inner tool);</li>
 <li>media and browser reads: <code>vision_analyze</code>, <code>video_analyze</code>, <code>browser_snapshot</code>, <code>browser_get_images</code>,
 <code>browser_vision</code>;</li>
+<li>voice replies: <code>text_to_speech</code> with <code>output_path</code> omitted, null, or an empty string, using Hermes' default
+audio location (it still runs your configured TTS provider, including a command provider, before approval);</li>
 <li>local UI reads: <code>read_terminal</code>, <code>read_window_below</code>;</li>
 <li><code>write_file</code> and <code>patch</code> only when every target is an absolute path whose real path stays inside the plans
 directory.</li>
@@ -932,10 +934,7 @@ median of 2 calls and about 1,350 output tokens per round, against 1–2 calls a
 <li><strong>A first run of the Codex column was not a fair comparison and is not used.</strong> It ran without the shared Python user
 site that PARITY-3 and PARITY-4 used, so Codex's <code>python3</code> had no pytest.<ul>
 <li>Codex then lost 4 of 6 T6 runs to a type annotation that fails on the repository's Python 3.9. It had checked
-that code only under Python 3.12.</li>
-<li>That run is kept in the evidence (Codex 8 of 12).</li>
-<li>The Codex column was then re-run with the user site, under a declaration written before the re-run. That re-run
-gives the number</li>
+that</li>
 </ul>
 </li>
 </ul>
@@ -953,11 +952,11 @@ gives the number</li>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
-        <div class="stars">★ 446</div>
+        <div class="stars">★ 447</div>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 558</div>
+        <div class="stars">★ 559</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">

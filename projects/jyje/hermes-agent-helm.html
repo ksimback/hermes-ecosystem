@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>jyje/hermes-agent-helm — Hermes Agent Deployment &amp; Infra | Hermes Atlas</title>
-<meta name="description" content="A Helm chart for running Hermes Agent on Kubernetes, with configuration examples for built-in providers and OpenAI-compatible endpoints. It can run Hermes’s…">
+<meta name="description" content="A Helm chart for running Hermes Agent on Kubernetes, with provider configuration exposed through values.yaml and examples for supported providers. It supports…">
 <link rel="canonical" href="https://hermesatlas.com/projects/jyje/hermes-agent-helm">
 <meta property="og:title" content="jyje/hermes-agent-helm — Hermes Atlas">
-<meta property="og:description" content="A Helm chart for running Hermes Agent on Kubernetes, with configuration examples for built-in providers and OpenAI-compatible endpoints. It can run Hermes’s…">
+<meta property="og:description" content="A Helm chart for running Hermes Agent on Kubernetes, with provider configuration exposed through values.yaml and examples for supported providers. It supports…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/jyje/hermes-agent-helm">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="jyje/hermes-agent-helm — Hermes Atlas">
-<meta name="twitter:description" content="A Helm chart for running Hermes Agent on Kubernetes, with configuration examples for built-in providers and OpenAI-compatible endpoints. It can run Hermes’s…">
+<meta name="twitter:description" content="A Helm chart for running Hermes Agent on Kubernetes, with provider configuration exposed through values.yaml and examples for supported providers. It supports…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-agent-helm&amp;subtitle=%F0%9F%91%A9%F0%9F%8F%BB%E2%80%8D%F0%9F%92%BB+Hermes+Agent+on+Kubernetes+-+sign+in+with+Codex%2FCopilot%2C+run+agent+teams%2C+stay+lightweight.&amp;kind=project+%C2%B7+deployment">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/jyje/hermes-agent-helm#software",
   "name": "hermes-agent-helm",
-  "description": "A Helm chart for running Hermes Agent on Kubernetes, with configuration examples for built-in providers and OpenAI-compatible endpoints. It can run Hermes’s outbound gateway with a Discord or Telegram bot token, supports optional Codex or GitHub Copilot device login, and can enable the web dashboard.",
+  "description": "A Helm chart for running Hermes Agent on Kubernetes, with provider configuration exposed through values.yaml and examples for supported providers. It supports Discord or Telegram gateways, optional Codex or GitHub Copilot device login, and an optional web dashboard; multiple instances can be grouped into a Hermes Team.",
   "url": "https://hermesatlas.com/projects/jyje/hermes-agent-helm",
   "codeRepository": "https://github.com/jyje/hermes-agent-helm",
   "applicationCategory": "DeveloperApplication",
@@ -47,13 +47,13 @@
     "name": "jyje",
     "url": "https://github.com/jyje"
   },
-  "dateModified": "2026-11-23T16:23:49.000Z",
+  "dateModified": "2026-11-24T09:19:53.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 19
+    "userInteractionCount": 20
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -82,7 +82,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span id="meta-count">322·repos</span>
-    <span id="meta-version">hermes·v0.23.3</span>
+    <span id="meta-version">hermes·v0.23.4</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -120,11 +120,11 @@
   <p class="project-desc">👩🏻‍💻 Hermes Agent on Kubernetes - sign in with Codex/Copilot, run agent teams, stay lightweight.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 19</span>
+    <span class="stars">★ 20</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-23</span>
+    <span><span class="meta-label">updated</span>2026-11-24</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">A Helm chart for running Hermes Agent on Kubernetes, with configuration examples for built-in providers and OpenAI-compatible endpoints. It can run Hermes’s outbound gateway with a Discord or Telegram bot token, supports optional Codex or GitHub Copilot device login, and can enable the web dashboard.</p>
+    <p class="summary-text">A Helm chart for running Hermes Agent on Kubernetes, with provider configuration exposed through values.yaml and examples for supported providers. It supports Discord or Telegram gateways, optional Codex or GitHub Copilot device login, and an optional web dashboard; multiple instances can be grouped into a Hermes Team.</p>
     <ul class="summary-highlights">
-      <li>Install from OCI or a published Helm repository.</li>
-      <li>Supports grouping multiple instances into a Hermes Team.</li>
-      <li>Dashboard can be published through an Ingress or HTTPRoute.</li>
+      <li>Installs from an OCI registry or Helm repository.</li>
+      <li>Defaults target a single replica and modest resource requests.</li>
+      <li>CI installs the chart on an ephemeral kind cluster.</li>
     </ul>
   </div>
 </section>
@@ -246,6 +246,11 @@ that shares context over a common gateway channel. See
 cluster and runs the bundled test Job (<code>hermes doctor</code>). When the
 <code>NVIDIA_API_KEY</code> repository secret is available, it also runs a <strong>live
 <code>hermes chat</code> round-trip</strong> against NVIDIA NIM - not a mock.
+Provider setup is checked before image upgrades ship: the Google Vertex AI
+example runs the pinned Hermes image against a local mock with no cloud
+account or credentials, and fails if the request route or model changes.
+Vertex is the first covered provider, and the check does not exercise IAM
+or live inference.
 Leader teams have also completed a live human → leader → member → leader
 round-trip on Discord (threads) and on Telegram.</li>
 </ul>
@@ -410,7 +415,7 @@ Every merged contribution is credited in the changelog and release notes.</p>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/AbuZar-Ansarii/Hermes-Agent-On-Android">
-        <div class="stars">★ 294</div>
+        <div class="stars">★ 295</div>
         <div class="name"><span class="org">AbuZar-Ansarii /</span> Hermes-Agent-On-Android</div>
       </a>
       <a class="related-row" href="/projects/ultraworkers/hermes-agent-helm-chart">

@@ -47,13 +47,13 @@
     "name": "electricsheephq",
     "url": "https://github.com/electricsheephq"
   },
-  "dateModified": "2026-11-23T18:03:38.000Z",
+  "dateModified": "2026-11-24T10:08:41.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 25
+    "userInteractionCount": 26
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -82,7 +82,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span id="meta-count">322·repos</span>
-    <span id="meta-version">hermes·v0.23.3</span>
+    <span id="meta-version">hermes·v0.23.4</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -120,11 +120,11 @@
   <p class="project-desc">Give your Hermes agent a working life between messages: wakes, watchers and roles, within daily turn and message caps.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 25</span>
+    <span class="stars">★ 26</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-11-23</span>
+    <span><span class="meta-label">updated</span>2026-11-24</span>
   </div>
 
   <div class="actions">
@@ -343,7 +343,7 @@
 </code></pre>
 <p>One poller per profile runs inside the messaging gateway that serves that profile and ticks every 5 seconds. Hermes loads every profile's plugins when a gateway starts; a gateway that does not serve a profile leaves that profile's schedule alone and delivers nothing for it. A file lock guarantees only one poller even when several Hermes processes share the profile. Every fire is a durable claim with an attempt marker. An accepted turn that never starts is tried three times, and a refused messaging injection backs off and is tried five times, before it is marked dead. Desktop and TUI wakes wait while the app session is closed, retrying every minute until it reattaches or the wake expires. A turn that started but never finished (a crash or restart) is recorded as interrupted. Hermes may auto-resume that wake turn, sometimes before heartbeat2's restart recovery has run; heartbeat2 keeps the replay silent either way, never counts it as a fire or delivery, and counts it as a model turn toward the daily cap.</p>
 <h3>Setup</h3>
-<p>Requires <strong>Hermes ≥ 0.21.6</strong> and Python ≥ 3.11 on macOS or Linux. HeartBeat 2.0 delivers into <strong>messaging-gateway DMs</strong> (and group or topic chats when <code>dm_only</code> is off): Telegram, Discord, Slack, WhatsApp and the other gateway platforms. Desktop and TUI sessions also support wakes on capable Hermes 0.23+ hosts, using the same consent and limits.</p>
+<p>Requires <strong>Hermes ≥ 0.21.6</strong> and Python ≥ 3.11 on macOS or Linux. HeartBeat 2.0 delivers into <strong>messaging-gateway DMs</strong> (and group or topic chats when <code>dm_only</code> is off): Telegram, Discord, Slack, WhatsApp and the other gateway platforms. Desktop and TUI sessions also support wakes on capable Hermes 0.23+ hosts, using the same consent and limits. Chats that the Desktop app's own chat backend serves (<code>hermes serve</code>) can't receive wakes yet: HeartBeat's scheduler runs only in a messaging gateway, and Hermes gives plugins no session platform there, so HeartBeat refuses them and says so; arm the wake from a messaging chat on the same profile (#233).</p>
 <p>Install with the command at the top, add the <code>allow_gateway_injection</code> key shown in <a href="#try-it">Try it</a>, and restart the messaging gateway. Then send <code>/pulse</code> in your DM. It shows:</p>
 <ul>
 <li>whether the scheduler is running;</li>
@@ -925,8 +925,7 @@ HeartBeat will step aside on its own once Hermes lets plugins read the warm sche
 <h4>Known limits</h4>
 <ul>
 <li><strong>App windows:</strong> a silent or held-message turn still shows its text in the window (a Hermes limitation, <a href="https://github.com/NousResearch/hermes-agent/issues/156465">NousResearch/hermes-agent#156465</a>). The wake asks the model to reply with exactly <code>[SILENT]</code> when it is not notifying, and on every turn while messages are held (the summary it saves with <code>pulse respond</code> is what HeartBeat keeps), but streaming text cannot be hidden by the plugin. Nothing is pushed to a phone. When Hermes retires a closed window's session, a wake waits and retries every minute; reopening the conversation lets it run, subject to expiry and the usual limits. Hermes may keep a disconnected window's session live for about five minutes, so a wake can run unseen during that grace period.</li>
-<li><strong>Messaging groups/topics</strong> require <code>dm_only</code> off. Group and topic delivery has passed one live test in a Telegram forum topic (<a href="https://github.com/electricsheephq/heartbeat2/issues/98">#98</a>).</li>
-<li><strong>A wake turn that fails at the provider</strong> (quota, auth, outage) shows Hermes's own failure notice in the chat. The plugin cannot suppress it (<a href="https://github.com/NousResearch/hermes-agent/issues/136749">NousResearch/hermes-agent#136749</a>). HeartB</li>
+<li><strong>Messaging groups/topics</strong> require <code>dm_only</code> off. Group and topic delivery has passed one live test in a Telegram forum topic ([#98](ht</li>
 </ul>
 <hr>
 <p><em>README truncated. <a href="https://github.com/electricsheephq/heartbeat2#readme">Continue reading on GitHub</a></em></p>
@@ -942,11 +941,11 @@ HeartBeat will step aside on its own once Hermes lets plugins read the warm sche
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
-        <div class="stars">★ 446</div>
+        <div class="stars">★ 447</div>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 558</div>
+        <div class="stars">★ 559</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">

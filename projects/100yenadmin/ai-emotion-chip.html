@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>100yenadmin/ai-emotion-chip — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="Hermes Emotion Chip is a Hermes Agent plugin that adds written delivery cues, such as whispers, sighs, and pauses, to speech generated with ElevenLabs v4 or…">
+<meta name="description" content="Hermes Emotion Chip is a Hermes Agent plugin that lets the agent add delivery cues, such as whispers, sighs, and pauses, to text. It renders those cues for…">
 <link rel="canonical" href="https://hermesatlas.com/projects/100yenadmin/ai-emotion-chip">
 <meta property="og:title" content="100yenadmin/ai-emotion-chip — Hermes Atlas">
-<meta property="og:description" content="Hermes Emotion Chip is a Hermes Agent plugin that adds written delivery cues, such as whispers, sighs, and pauses, to speech generated with ElevenLabs v4 or…">
+<meta property="og:description" content="Hermes Emotion Chip is a Hermes Agent plugin that lets the agent add delivery cues, such as whispers, sighs, and pauses, to text. It renders those cues for…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/100yenadmin/ai-emotion-chip">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="100yenadmin/ai-emotion-chip — Hermes Atlas">
-<meta name="twitter:description" content="Hermes Emotion Chip is a Hermes Agent plugin that adds written delivery cues, such as whispers, sighs, and pauses, to speech generated with ElevenLabs v4 or…">
+<meta name="twitter:description" content="Hermes Emotion Chip is a Hermes Agent plugin that lets the agent add delivery cues, such as whispers, sighs, and pauses, to text. It renders those cues for…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=ai-emotion-chip&amp;subtitle=Your+Hermes+agent+decides+how+to+say+it%3A+the+sighs%2C+whispers+and+pauses+it+writes%2C+voiced+by+ElevenLabs+or+Fish+Audio.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/100yenadmin/ai-emotion-chip#software",
   "name": "ai-emotion-chip",
-  "description": "Hermes Emotion Chip is a Hermes Agent plugin that adds written delivery cues, such as whispers, sighs, and pauses, to speech generated with ElevenLabs v4 or Fish Audio. It provides commands to check settings and inspect how cues are rendered, and supports offline rendering without keys or network access.",
+  "description": "Hermes Emotion Chip is a Hermes Agent plugin that lets the agent add delivery cues, such as whispers, sighs, and pauses, to text. It renders those cues for ElevenLabs v4 or Fish Audio and includes commands to inspect cue rendering and check voice setup.",
   "url": "https://hermesatlas.com/projects/100yenadmin/ai-emotion-chip",
   "codeRepository": "https://github.com/100yenadmin/ai-emotion-chip",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "100yenadmin",
     "url": "https://github.com/100yenadmin"
   },
-  "dateModified": "2026-11-21T16:21:35.000Z",
+  "dateModified": "2026-11-24T10:04:59.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -82,7 +82,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span id="meta-count">322·repos</span>
-    <span id="meta-version">hermes·v0.23.3</span>
+    <span id="meta-version">hermes·v0.23.4</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-11-21</span>
+    <span><span class="meta-label">updated</span>2026-11-24</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Emotion Chip is a Hermes Agent plugin that adds written delivery cues, such as whispers, sighs, and pauses, to speech generated with ElevenLabs v4 or Fish Audio. It provides commands to check settings and inspect how cues are rendered, and supports offline rendering without keys or network access.</p>
+    <p class="summary-text">Hermes Emotion Chip is a Hermes Agent plugin that lets the agent add delivery cues, such as whispers, sighs, and pauses, to text. It renders those cues for ElevenLabs v4 or Fish Audio and includes commands to inspect cue rendering and check voice setup.</p>
     <ul class="summary-highlights">
-      <li>Supports ElevenLabs v4 and Fish Audio speech.</li>
-      <li>Agent-written cues are rendered in each provider’s dialect.</li>
-      <li>Includes status, cue-inspection, and offline-render commands.</li>
+      <li>Supports ElevenLabs v4 and Fish Audio.</li>
+      <li>Provides offline cue rendering and status commands.</li>
+      <li>Logs cue words and parameters, not spoken text.</li>
     </ul>
   </div>
 </section>
@@ -250,7 +250,8 @@ settings, and what to fix if not.</p>
 <ul>
 <li>Every <code>text_to_speech</code> call the agent makes carries its cues to the voice.</li>
 <li>With voice replies on in a chat (<code>/voice on</code>), the agent says its answer itself, cues included, so the voice note
-carries its delivery. Not on Discord, where Hermes plays its own reply in voice channels.</li>
+carries its delivery. On Discord this covers text channels, threads and DMs, but not while the bot is in a voice
+channel, where Hermes plays its own reply.</li>
 <li>Read-aloud and voice mode speak the reply text without cues: Hermes has no seam yet that keeps cues for speech and
 hides them in the chat (<a href="https://github.com/NousResearch/hermes-agent/issues/152238">proposed upstream</a>).</li>
 <li>GPT-Live voice chat speaks through OpenAI's live voice model, not a speech provider, so the chip does not reach it.</li>
@@ -349,11 +350,11 @@ measured internal state; see <a href="https://github.com/100yenadmin/ai-emotion-
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
-        <div class="stars">★ 446</div>
+        <div class="stars">★ 447</div>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">
-        <div class="stars">★ 558</div>
+        <div class="stars">★ 559</div>
         <div class="name"><span class="org">42-evey /</span> hermes-plugins</div>
       </a>
       <a class="related-row" href="/projects/FahrenheitResearch/hermes-weather-plugin">

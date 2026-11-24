@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic#software",
   "name": "hermes-plugin-holographic",
-  "description": "Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and holographic retrieval. By default, it works without an API key, network access, or model calls; searching by meaning is an optional online add-on.",
+  "description": "Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it uses no API key, network, or model calls; search by meaning is an optional online add-on.",
   "url": "https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic",
   "codeRepository": "https://github.com/itpartypattaya/hermes-plugin-holographic",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "itpartypattaya",
     "url": "https://github.com/itpartypattaya"
   },
-  "dateModified": "2026-11-18T13:10:35.000Z",
+  "dateModified": "2026-11-24T07:51:58.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -82,7 +82,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span id="meta-count">322·repos</span>
-    <span id="meta-version">hermes·v0.23.3</span>
+    <span id="meta-version">hermes·v0.23.4</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-18</span>
+    <span><span class="meta-label">updated</span>2026-11-24</span>
   </div>
 
   <div class="actions">
@@ -141,10 +141,10 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and holographic retrieval. By default, it works without an API key, network access, or model calls; searching by meaning is an optional online add-on.</p>
+    <p class="summary-text">Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it uses no API key, network, or model calls; search by meaning is an optional online add-on.</p>
     <ul class="summary-highlights">
-      <li>Stores facts in a local SQLite database</li>
-      <li>Supports FTS5 search and trust scoring</li>
+      <li>SQLite fact store with FTS5 search</li>
+      <li>Trust scoring and entity resolution</li>
       <li>Optional online search by meaning</li>
     </ul>
   </div>
@@ -241,7 +241,7 @@ if it fails on dependencies, update Hermes first — the cause is usually in cor
 <tr>
 <td><code>auto_extract</code></td>
 <td><code>false</code></td>
-<td>Store user sentences that state a preference or decision (English, Russian, Chinese, French) after each completed turn, and also before context compression and at session end (not in <code>scope: user</code>, where a whole transcript cannot be attributed), at trust 0.4; questions, replies to the assistant ("I like that, sounds good") and restatements of a stored fact are skipped</td>
+<td>Store user sentences that state a preference or decision (English, Russian, Chinese, French, Spanish) after each completed turn, and also before context compression and at session end (not in <code>scope: user</code>, where a whole transcript cannot be attributed), at trust 0.4; questions, replies to the assistant ("I like that, sounds good") and restatements of a stored fact are skipped</td>
 </tr>
 <tr>
 <td><code>mirror_memory_writes</code></td>
@@ -410,7 +410,8 @@ service named with dots is a name («ключ API Яндекс.Метрики»)
 («Пароль Олега — …») or after «у него», <code>pass:</code> / <code>pw:</code>, a Latin word after «пароль:», a seed phrase after its
 name, Stripe keys, a 2FA secret, Slack and Discord webhooks, an instruction in full-width or lookalike letters.
 Tags and the category are screened as a fact's text is, and a name given in <code>entities</code> that holds a credential or
-an instruction is not linked (0.30.0). Recall
+an instruction is not linked (0.30.0). A write takes one of the four categories the tool declares (<code>user_pref</code>,
+<code>project</code>, <code>tool</code>, <code>general</code>); search and list also filter by any category an older release stored. Recall
 checks a stored fact again before it goes into a prompt (0.13.0): one an older release, or another program, wrote
 past today's rules (markup, instructions, credentials, invisible characters, images) is left out of recall
 and logged once; <code>search</code>, <code>list</code> and <code>history</code> still show it, so it can be changed or forgotten. A quoted
@@ -733,9 +734,7 @@ stems of six letters also match on their first five (<code>покупа</code> /
 determined (English by its function words; Cyrillic without Ukrainian or Belarusian letters), and only within that
 language. A root counts 0.6 of the word itself and <strong>never recalls a fact on its own</strong>: suffix rules cannot tell a
 derivation from a look-alike (<code>войной</code> / <code>вой</code>, <code>полный</code> / <code>пол</code>), so automatic recall needs a word of the message
-itself, and roots add to it. In <code>search</code> a root brings in facts the word's forms missed and ranks them below facts
-with the word. Not joined: alternating consonants and prefixes (<code>друг</code> / <code>дружба</code>, <code>страховка</code> / <code>застрахован</code>),
-four-l</li>
+itself, and roots add to it. In <code>search</code> a root brings</li>
 </ul>
 <hr>
 <p><em>README truncated. <a href="https://github.com/itpartypattaya/hermes-plugin-holographic#readme">Continue reading on GitHub</a></em></p>
@@ -755,7 +754,7 @@ four-l</li>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 62.9K</div>
+        <div class="stars">★ 63.0K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">

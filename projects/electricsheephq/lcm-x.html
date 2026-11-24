@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>electricsheephq/lcm-x — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="LCM-X is a context engine for Hermes Agent that stores raw messages in a local SQLite database and keeps the active prompt bounded. It provides tools for…">
+<meta name="description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into a hierarchical DAG of summaries. It…">
 <link rel="canonical" href="https://hermesatlas.com/projects/electricsheephq/lcm-x">
 <meta property="og:title" content="electricsheephq/lcm-x — Hermes Atlas">
-<meta property="og:description" content="LCM-X is a context engine for Hermes Agent that stores raw messages in a local SQLite database and keeps the active prompt bounded. It provides tools for…">
+<meta property="og:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into a hierarchical DAG of summaries. It…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/electricsheephq/lcm-x">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="electricsheephq/lcm-x — Hermes Atlas">
-<meta name="twitter:description" content="LCM-X is a context engine for Hermes Agent that stores raw messages in a local SQLite database and keeps the active prompt bounded. It provides tools for…">
+<meta name="twitter:description" content="LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into a hierarchical DAG of summaries. It…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=lcm-x&amp;subtitle=Lossless+memory+for+Hermes+Agent%3A+every+turn+kept+in+a+local+store%2C+not+compacted+away%2C+and+searchable+by+your+agent.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/electricsheephq/lcm-x#software",
   "name": "lcm-x",
-  "description": "LCM-X is a context engine for Hermes Agent that stores raw messages in a local SQLite database and keeps the active prompt bounded. It provides tools for agents to recover details from compacted conversations. The README also describes a Claude Code version that stores sessions locally and offers the same five recall tools.",
+  "description": "LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into a hierarchical DAG of summaries. It keeps the active prompt bounded and provides tools to search, inspect, and expand compacted material.",
   "url": "https://hermesatlas.com/projects/electricsheephq/lcm-x",
   "codeRepository": "https://github.com/electricsheephq/lcm-x",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "electricsheephq",
     "url": "https://github.com/electricsheephq"
   },
-  "dateModified": "2026-11-23T19:36:36.000Z",
+  "dateModified": "2026-11-24T10:07:17.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 179
+    "userInteractionCount": 180
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -82,7 +82,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span id="meta-count">322·repos</span>
-    <span id="meta-version">hermes·v0.23.3</span>
+    <span id="meta-version">hermes·v0.23.4</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -120,11 +120,11 @@
   <p class="project-desc">Lossless memory for Hermes Agent: every turn kept in a local store, not compacted away, and searchable by your agent.</p>
 
   <div class="meta-row">
-    <span class="stars">★ 179</span>
+    <span class="stars">★ 180</span>
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-23</span>
+    <span><span class="meta-label">updated</span>2026-11-24</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">LCM-X is a context engine for Hermes Agent that stores raw messages in a local SQLite database and keeps the active prompt bounded. It provides tools for agents to recover details from compacted conversations. The README also describes a Claude Code version that stores sessions locally and offers the same five recall tools.</p>
+    <p class="summary-text">LCM-X is a context engine for Hermes Agent that stores messages in a local SQLite database and compacts older context into a hierarchical DAG of summaries. It keeps the active prompt bounded and provides tools to search, inspect, and expand compacted material.</p>
     <ul class="summary-highlights">
-      <li>Preserves raw messages in a local SQLite store.</li>
-      <li>Uses a DAG-based context engine.</li>
-      <li>Includes a Claude Code version with five recall tools.</li>
+      <li>Preserves raw messages in a plugin-local SQLite store.</li>
+      <li>Builds depth-aware summaries and a hierarchical DAG.</li>
+      <li>Provides tools to recall compacted conversation details.</li>
     </ul>
   </div>
 </section>
@@ -748,7 +748,7 @@ The manifest still declares all 16 tools.</p>
 </tr>
 <tr>
 <td><code>lcm_status</code></td>
-<td>Show runtime health, context pressure, config, source lineage, and lifecycle stats.</td>
+<td>Show runtime health, context pressure, config, source lineage, and lifecycle stats. <code>hidden_only_streak</code> counts passes that publish summaries but free no host row. It clears on a session reset, a conversation change, a pass that consumes a host row, or when pressure falls under the trigger. While the streak is positive, <code>hidden_only_last_pass</code> shows the latest frontier store ID, leaves, and hidden rows.</td>
 </tr>
 <tr>
 <td><code>lcm_inspect</code></td>
@@ -756,7 +756,7 @@ The manifest still declares all 16 tools.</p>
 </tr>
 <tr>
 <td><code>lcm_doctor</code></td>
-<td>Run database, FTS, lifecycle, config, and context-pressure diagnostics.</td>
+<td>Run database, FTS, lifecycle, config, and context-pressure diagnostics. <code>compaction_progress</code> warns at three hidden-only passes because the host context can only shrink once compaction reaches rows the host still holds.</td>
 </tr>
 <tr>
 <td><code>lcm_memory</code></td>
@@ -1020,26 +1020,6 @@ describes index fallback and timestamp handling.</p>
 <td>empty</td>
 <td>Comma-separated session globs excluded from LCM storage</td>
 </tr>
-<tr>
-<td><code>LCM_STATELESS_SESSION_PATTERNS</code></td>
-<td>empty</td>
-<td>Comma-separated session globs kept read-only</td>
-</tr>
-<tr>
-<td><code>LCM_IGNORE_MESSAGE_PATTERNS</code></td>
-<td>empty</td>
-<td>Comma-separated regex patterns; matching message content is excluded from LCM storage</td>
-</tr>
-<tr>
-<td><code>LCM_SENSITIVE_PATTERNS_ENABLED</code></td>
-<td><code>false</code></td>
-<td>Opt in to durable deterministic redaction before LCM storage, FTS indexing, summarization, active replay, and externalized ingest payloads; it does not control cloud embedding privacy</td>
-</tr>
-<tr>
-<td>`LCM_EMBEDD</td>
-<td></td>
-<td></td>
-</tr>
 </tbody></table>
 <hr>
 <p><em>README truncated. <a href="https://github.com/electricsheephq/lcm-x#readme">Continue reading on GitHub</a></em></p>
@@ -1059,7 +1039,7 @@ describes index fallback and timestamp handling.</p>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 62.9K</div>
+        <div class="stars">★ 63.0K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">

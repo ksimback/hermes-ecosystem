@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>yoloshii/ClawMem — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="ClawMem is an on-device memory layer for Claude Code, OpenClaw, Hermes, and other AI agents, with retrieval-augmented search, hooks, and an MCP server. It uses…">
+<meta name="description" content="ClawMem is a local memory layer for Claude Code, OpenClaw, Hermes, and other AI agents. It searches and surfaces context from notes and documents, captures…">
 <link rel="canonical" href="https://hermesatlas.com/projects/yoloshii/ClawMem">
 <meta property="og:title" content="yoloshii/ClawMem — Hermes Atlas">
-<meta property="og:description" content="ClawMem is an on-device memory layer for Claude Code, OpenClaw, Hermes, and other AI agents, with retrieval-augmented search, hooks, and an MCP server. It uses…">
+<meta property="og:description" content="ClawMem is a local memory layer for Claude Code, OpenClaw, Hermes, and other AI agents. It searches and surfaces context from notes and documents, captures…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/yoloshii/ClawMem">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="yoloshii/ClawMem — Hermes Atlas">
-<meta name="twitter:description" content="ClawMem is an on-device memory layer for Claude Code, OpenClaw, Hermes, and other AI agents, with retrieval-augmented search, hooks, and an MCP server. It uses…">
+<meta name="twitter:description" content="ClawMem is a local memory layer for Claude Code, OpenClaw, Hermes, and other AI agents. It searches and surfaces context from notes and documents, captures…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=ClawMem&amp;subtitle=On-device+memory+layer+for+AI+agents.+Claude+Code%2C+OpenClaw+and+Hermes.+Hooks+%2B+MCP+server+%2B+hybrid+RAG+search.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/yoloshii/ClawMem#software",
   "name": "ClawMem",
-  "description": "ClawMem is an on-device memory layer for Claude Code, OpenClaw, Hermes, and other AI agents, with retrieval-augmented search, hooks, and an MCP server. It uses a local SQLite vault and supports importing conversation exports from Claude Code, ChatGPT, Claude.ai, Slack, and plain text.",
+  "description": "ClawMem is a local memory layer for Claude Code, OpenClaw, Hermes, and other AI agents. It searches and surfaces context from notes and documents, captures session information, and provides integrations through hooks, an MCP server, and plugins that share a local SQLite vault.",
   "url": "https://hermesatlas.com/projects/yoloshii/ClawMem",
   "codeRepository": "https://github.com/yoloshii/ClawMem",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "yoloshii",
     "url": "https://github.com/yoloshii"
   },
-  "dateModified": "2026-11-07T19:36:15.000Z",
+  "dateModified": "2026-11-23T22:03:06.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -82,7 +82,7 @@
   <a href="/" class="brand" aria-label="Hermes Atlas — home">hermes atlas</a>
   <div class="mast-meta" aria-label="Site metadata">
     <span id="meta-count">322·repos</span>
-    <span id="meta-version">hermes·v0.23.3</span>
+    <span id="meta-version">hermes·v0.23.4</span>
     <a class="mast-star" id="meta-atlas" href="https://github.com/ksimback/hermes-ecosystem" target="_blank" rel="noopener" aria-label="Star Hermes Atlas on GitHub">★ star this repo</a>
   </div>
   <nav class="mast-nav" aria-label="Primary">
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-07</span>
+    <span><span class="meta-label">updated</span>2026-11-23</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">ClawMem is an on-device memory layer for Claude Code, OpenClaw, Hermes, and other AI agents, with retrieval-augmented search, hooks, and an MCP server. It uses a local SQLite vault and supports importing conversation exports from Claude Code, ChatGPT, Claude.ai, Slack, and plain text.</p>
+    <p class="summary-text">ClawMem is a local memory layer for Claude Code, OpenClaw, Hermes, and other AI agents. It searches and surfaces context from notes and documents, captures session information, and provides integrations through hooks, an MCP server, and plugins that share a local SQLite vault.</p>
     <ul class="summary-highlights">
-      <li>Combines BM25, vector search, rank fusion, and cross-encoder reranking.</li>
-      <li>Generates session handoffs and captures decisions and preferences.</li>
-      <li>Integrates through hooks, MCP, and native agent plugins.</li>
+      <li>Combines keyword, vector, and graph-based retrieval.</li>
+      <li>Imports conversation exports from several services and formats.</li>
+      <li>Runs on-device without API keys or cloud dependencies.</li>
     </ul>
   </div>
 </section>
@@ -243,7 +243,7 @@
 <h4>Prerequisites</h4>
 <p><strong>Required:</strong></p>
 <ul>
-<li><a href="https://bun.sh">Bun</a> v1.0+ — runtime for ClawMem. On Linux, install via <code>curl -fsSL https://bun.sh/install | bash</code> (not snap — snap Bun cannot read stdin, which breaks hooks).</li>
+<li><a href="https://bun.sh">Bun</a> v1.3.14+ — runtime for ClawMem (1.4.0 or later recommended; before 1.2.21 ClawMem refuses to open a vault). On Linux, install via <code>curl -fsSL https://bun.sh/install | bash</code> (not snap — snap Bun cannot read stdin, which breaks hooks).</li>
 <li>SQLite with FTS5 — included with Bun. On macOS, install <code>brew install sqlite</code> for extension loading support (ClawMem detects and uses Homebrew SQLite automatically).</li>
 </ul>
 <p><strong>Optional (for better performance):</strong></p>
@@ -1017,12 +1017,7 @@ clawmem status                                  Quick index status
 <tr>
 <td><code>decision-extractor</code></td>
 <td>Stop</td>
-<td>GGUF observer extracts structured observations (decisions, preferences, milestones, problems, bugfixes, features, refactors, discoveries) from the turns after its per-transcript cursor, each turn once (v0.41.0), into the session's own decision and antipattern docs; detects contradictions with prior decisions (judge-gated — requires <code>CLAWMEM_JUDGE_*</code>, v0.29.0)</td>
-</tr>
-<tr>
-<td><code>handoff-generator</code></td>
-<td>Stop</td>
-<td>Digests each new turn without a model, th</td>
+<td>GGUF observer extracts structured observations (decisions, preferences, milestones, problems, bugfixes, features, refactors, discoveries) from the turns after its per-transcript cursor, each turn once (v0.41.0), into the session's own decision and antipattern docs; detects contradictions with prior decisions (judge-gated — requires <code>CLAWMEM_JUDGE_*</code>, v0.2</td>
 </tr>
 </tbody></table>
 <hr>
@@ -1043,7 +1038,7 @@ clawmem status                                  Quick index status
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 62.9K</div>
+        <div class="stars">★ 63.0K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
