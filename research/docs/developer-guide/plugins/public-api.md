@@ -888,6 +888,24 @@ whole module
 
 adding-platform-adapters.md § Public helpers for platform plugins
 
+`gateway.response_filters`
+
+`is_autonomous_silence_response`
+
+adding-platform-adapters.md § Public helpers for platform plugins
+
+`gateway.response_filters`
+
+`is_intentional_silence_response`
+
+adding-platform-adapters.md § Public helpers for platform plugins
+
+`gateway.response_filters`
+
+`strip_trailing_silence_marker`
+
+adding-platform-adapters.md § Public helpers for platform plugins
+
 `gateway.platforms.session_model`
 
 `SessionModelPickerProvider`
@@ -959,6 +977,36 @@ plugin-llm-access.md § From the plugin's frontend: a plugin RPC method (`force=
 `session_client`
 
 user-guide/features/plugins.md § Plugin code inside the gateway: which client created the session
+
+`hermes_cli.plugin_session`
+
+`turn_client`
+
+user-guide/features/plugins.md § Plugin code inside the gateway: which client sent the turn and who is attached
+
+`hermes_cli.plugin_session`
+
+`session_viewers`
+
+user-guide/features/plugins.md § Plugin code inside the gateway: which client sent the turn and who is attached
+
+`hermes_cli.plugin_session`
+
+`session_source`
+
+user-guide/features/plugins.md § Plugin code inside the gateway: how the session was created, delegated children and forks
+
+`hermes_cli.plugin_session`
+
+`in_delegated_child`
+
+user-guide/features/plugins.md § Plugin code inside the gateway: how the session was created, delegated children and forks
+
+`hermes_cli.plugin_session`
+
+`fork_origin`
+
+user-guide/features/plugins.md § Plugin code inside the gateway: how the session was created, delegated children and forks
 
 `agent.file_safety`
 
@@ -1049,3 +1097,45 @@ user-guide/features/plugins.md § A plugin with its own chat client
 `finish`
 
 user-guide/features/plugins.md § A plugin with its own chat client
+
+`hermes_cli.profiles_run_elsewhere`
+
+`mark_profile_run_elsewhere`
+
+user-guide/multi-profile-gateways.md § Profiles a plugin runs elsewhere
+
+`hermes_cli.profiles_run_elsewhere`
+
+`clear_profile_run_elsewhere`
+
+user-guide/multi-profile-gateways.md § Profiles a plugin runs elsewhere
+
+`hermes_cli.profiles_run_elsewhere`
+
+`run_elsewhere`
+
+user-guide/multi-profile-gateways.md § Profiles a plugin runs elsewhere
+
+`cron.plugin_api`
+
+whole module
+
+plugins/index.md § Schedule a job once and read where cron delivers it
+
+`agent.reasoning_effort`
+
+`gemini_thinking_config`
+
+model-provider-plugin.md § Public helpers for native Gemini reasoning
+
+`agent.reasoning_effort`
+
+`clamp_effort`
+
+model-provider-plugin.md § Public helpers for native Gemini reasoning
+
+`agent.reasoning_effort`
+
+`bare_gemini_model_id`
+
+model-provider-plugin.md § Public helpers for native Gemini reasoning

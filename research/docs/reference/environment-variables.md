@@ -2916,6 +2916,10 @@ Optional directory prefix that **hard-blocks** `write_file`/`patch` writes outsi
 
 Internal PM policy used by tests and install probes. Truthy values refuse on-demand installation. It overrides the user-facing `security.allow_lazy_installs` setting. Do not put it in `.env`.
 
+`HERMES_INSTALL_STATE_DIR`
+
+Set by a launcher that starts Hermes on an interpreter it prepared, for that process and its children: the absolute path of a folder that stands in for `installs/<key>` in the Hermes data folder. Later locks and markers go there. Hermes reads nothing from it at start: the process is not restarted, repairs nothing and selects no recorded dependency environment (a sealed install still uses the environment it ships). `hermes pm install --extra`, `hermes pm repair` and every other command that would build a dependency environment are refused in such a process. The launcher keeps the interpreter's environment in place while the process runs: a Hermes process that runs on one of the install's environments holds its lease, and a launcher that is not one uses an interpreter it controls. Launch-only: a value in `.env` or from a secret source is ignored. A sandbox launcher uses it where the install's own state can be seen but neither read nor locked.
+
 `HERMES_DISABLE_FILE_STATE_GUARD`
 
 Set to `1` to turn off the "file changed since you read it" guard on `patch`/`write_file`.

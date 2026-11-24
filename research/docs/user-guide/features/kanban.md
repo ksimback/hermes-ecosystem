@@ -1615,7 +1615,7 @@ One spawn attempt failed (missing PATH, workspace unmountable, …). Counter inc
 
 `{assignee}`
 
-Dispatcher refused to spawn because the assignee profile does not exist in this home (or is not in `kanban.dispatch_profiles`). Written once per card — repeated only when another event landed in between — so `show`/`tail` name the missing profile without a row per tick. The card stays in `ready`; reassign it or install the profile.
+Dispatcher refused to spawn because the assignee profile does not exist in this home (or is not in `kanban.dispatch_profiles`, or a plugin runs it elsewhere). Written once per card — repeated only when another event landed in between — so `show`/`tail` name the missing profile without a row per tick. The card stays in `ready`; reassign it or install the profile.
 
 `protocol_violation`
 
