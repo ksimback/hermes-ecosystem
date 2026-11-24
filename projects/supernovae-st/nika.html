@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>supernovae-st/nika — Hermes Agent Skills &amp; Skill Registries | Hermes Atlas</title>
-<meta name="description" content="Nika turns repeatable AI work into readable `.nika` workflow files. It checks workflows before a model is called, runs them with a model the user chooses, and…">
+<meta name="description" content="Nika turns repeatable AI tasks into readable `.nika` workflow files. It checks a workflow before running it, lets you choose a model and run it on your machine…">
 <link rel="canonical" href="https://hermesatlas.com/projects/supernovae-st/nika">
 <meta property="og:title" content="supernovae-st/nika — Hermes Atlas">
-<meta property="og:description" content="Nika turns repeatable AI work into readable `.nika` workflow files. It checks workflows before a model is called, runs them with a model the user chooses, and…">
+<meta property="og:description" content="Nika turns repeatable AI tasks into readable `.nika` workflow files. It checks a workflow before running it, lets you choose a model and run it on your machine…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/supernovae-st/nika">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="supernovae-st/nika — Hermes Atlas">
-<meta name="twitter:description" content="Nika turns repeatable AI work into readable `.nika` workflow files. It checks workflows before a model is called, runs them with a model the user chooses, and…">
+<meta name="twitter:description" content="Nika turns repeatable AI tasks into readable `.nika` workflow files. It checks a workflow before running it, lets you choose a model and run it on your machine…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=nika&amp;subtitle=Intent+as+Code%3A+say+what+you+want+done%2C+keep+it+as+a+file.+Checked+before+it+runs%2C+run+with+the+model+you+choose%2C+proven+afterwards.+Rust+engine%2C+CLI%2FTUI+and+TypeScript+SDK.+AGPL-3&amp;kind=project+%C2%B7+skills">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/supernovae-st/nika#software",
   "name": "nika",
-  "description": "Nika turns repeatable AI work into readable `.nika` workflow files. It checks workflows before a model is called, runs them with a model the user chooses, and records runs in a verifiable, tamper-evident trace.",
+  "description": "Nika turns repeatable AI tasks into readable `.nika` workflow files. It checks a workflow before running it, lets you choose a model and run it on your machine or through a provider API, and records runs in a verifiable trace.",
   "url": "https://hermesatlas.com/projects/supernovae-st/nika",
   "codeRepository": "https://github.com/supernovae-st/nika",
   "applicationCategory": "DeveloperApplication",
@@ -47,7 +47,7 @@
     "name": "supernovae-st",
     "url": "https://github.com/supernovae-st"
   },
-  "dateModified": "2026-11-24T09:39:34.000Z",
+  "dateModified": "2026-11-24T17:49:01.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Nika turns repeatable AI work into readable `.nika` workflow files. It checks workflows before a model is called, runs them with a model the user chooses, and records runs in a verifiable, tamper-evident trace.</p>
+    <p class="summary-text">Nika turns repeatable AI tasks into readable `.nika` workflow files. It checks a workflow before running it, lets you choose a model and run it on your machine or through a provider API, and records runs in a verifiable trace.</p>
     <ul class="summary-highlights">
-      <li>Creates `.nika` workflows from plain-language descriptions.</li>
-      <li>Checks workflow actions, access, and costs before execution.</li>
-      <li>Includes a Rust binary and a TypeScript SDK.</li>
+      <li>Check workflows before any model is called.</li>
+      <li>Run with a model you choose.</li>
+      <li>Verify tamper-evident run records.</li>
     </ul>
   </div>
 </section>
@@ -235,6 +235,7 @@ local-first and fully open source (AGPL-3.0).</p>
   <a href="#what-you-can-hand-to-nika"><b>Examples</b></a> ·
   <a href="#why-a-file-and-not-a-chat"><b>Why a file</b></a> ·
   <a href="#works-where-you-already-work"><b>Where it works</b></a> ·
+  <a href="#behind-your-application-nika-serve"><b>Serve</b></a> ·
   <a href="#know-the-limits"><b>Limits</b></a> ·
   <a href="https://docs.nika.sh"><b>Docs</b></a>
 </p>
@@ -418,20 +419,20 @@ line that resumes it.</p>
 <code>node_modules/.bin</code>). The package bundles the engine of its own version:
 check <code>nika --version</code>.</li>
 <li><strong>A container</strong> (Linux, amd64 and arm64), built from the same release
-binaries: <code>docker run --rm ghcr.io/nika-open/nika:0.124.5 --version</code>.
+binaries: <code>docker run --rm ghcr.io/nika-open/nika:0.125.0 --version</code>.
 Mount a project to check or run its files, for example
-<code>docker run --rm -v "$PWD:/work" -w /work ghcr.io/nika-open/nika:0.124.5 check hello.nika</code>.
+<code>docker run --rm -v "$PWD:/work" -w /work ghcr.io/nika-open/nika:0.125.0 check hello.nika</code>.
 Images up to 0.124.4 stay at <code>ghcr.io/supernovae-st/nika</code>.</li>
 <li><strong>A release archive:</strong> download one from the
 <a href="https://github.com/nika-open/nika/releases/latest">latest release</a>.
 Every release ships a checksum manifest, a GitHub attestation and SLSA
 provenance; <a href="https://github.com/supernovae-st/nika/blob/main/RELEASING.md#what-a-user-can-prove">RELEASING.md</a> gives the
 three verification commands, for example
-<code>gh attestation verify nika-macos-arm64-0.124.5.tar.gz --repo nika-open/nika</code>.
+<code>gh attestation verify nika-macos-arm64-0.125.0.tar.gz --repo nika-open/nika</code>.
 Releases up to 0.124.4 were built in <code>supernovae-st/nika</code>, and that
 organization serves their attestations: verify one of them with
 <code>--owner supernovae-st --signer-repo supernovae-st/nika</code> instead of <code>--repo</code>.</li>
-<li><strong>Nix:</strong> <code>nix profile install github:nika-open/nika/v0.124.5</code> builds
+<li><strong>Nix:</strong> <code>nix profile install github:nika-open/nika/v0.125.0</code> builds
 the release from the repository's flake. Without the tag, the flake builds
 the default branch, which can be ahead of the latest release.</li>
 <li><strong>Windows:</strong> use WSL2 and the Linux binary. Native Windows binaries are
@@ -584,7 +585,7 @@ file for you, and the check keeps it honest:</p>
 </tr>
 <tr>
 <td><strong>Your editor</strong> · <code>nika lsp</code></td>
-<td>The language server inside the binary: the check's findings as you type, in any LSP client. The VS Code extension (<a href="https://github.com/nika-open/nika-vscode">nika-vscode</a>) stays at 0.120 and is not qualified with 0.124; point its <code>nika.server.path</code> at your 0.124 binary (<a href="https://docs.nika.sh/changelog/known-limits#the-vs-code-extension-stays-at-0-120">known limits</a>).</td>
+<td>The language server inside the binary: the check's findings as you type, in any LSP client. The VS Code extension (<a href="https://github.com/nika-open/nika-vscode">nika-vscode</a>) stays at 0.120 and is not qualified with 0.125; point its <code>nika.server.path</code> at your 0.125 binary (<a href="https://docs.nika.sh/changelog/known-limits#the-vs-code-extension-stays-at-0-120">known limits</a>).</td>
 <td>▶ <a href="media/gifs/editor-diagnostics.optimized.gif">The audit, as you type</a></td>
 </tr>
 <tr>
@@ -647,14 +648,51 @@ whole API.</p>
 </p>
 <p align="center"><sub>Your app asks, the engine decides, the receipt proves it. The code is the quick start above, which the capture ran, with lines 3 and 6 also shown as its server driver ran them against <code>nika serve</code>. Every event, verdict, hash and version on screen was captured from <code>@supernovae-st/nika</code> 0.124.0, the engine it bundles and <code>nika serve</code> in a <code>mock/echo</code> rehearsal; the cards, lanes, packets and pacing are illustration.</sub></p>
 
+<h4>Behind your application: <code>nika serve</code></h4>
+<p><code>nika serve --bind</code> runs the same engine as an HTTP server beside your
+backend. It admits a job by workflow name, queues and runs it, and keeps its
+record. Since 0.125 one server holds the jobs of the many users of an
+application:</p>
+<ul>
+<li>A job carries the <code>owner</code> and <code>labels</code> your backend states, and
+<code>GET /v1/jobs</code> finds jobs again by owner, label, status and date.</li>
+<li>Waiting jobs are shared fairly between owners: a user who submits fifty
+jobs does not delay the user who submits one. <code>--provider-concurrency</code>
+caps the model calls in flight on one provider across every job.</li>
+<li><code>--job-retention</code> forgets settled jobs after a window.</li>
+<li>A job a restart interrupted runs again as a new attempt of the same job
+only when asked: <code>--retry-interrupted</code> is off by default, and
+<code>POST /v1/jobs/{id}/retry</code> starts one on request.</li>
+</ul>
+<p>In a Nika project (a directory with a <code>nika.yaml</code>), with your workflows under
+<code>./workflows</code>:</p>
+<pre><code class="language-sh">umask 077 &amp;&amp; mkdir -p .nika &amp;&amp; openssl rand -hex 24 &gt; .nika/serve.token
+nika serve --bind 127.0.0.1:8787 --workflows ./workflows \
+  --token-file .nika/serve.token --job-retention 7d --max-concurrent-per-owner 2
+</code></pre>
+<p>Then, from your backend or another terminal:</p>
+<pre><code class="language-sh">AUTH="Authorization: Bearer $(cat .nika/serve.token)"
+curl -s -X POST http://127.0.0.1:8787/v1/jobs -H "$AUTH" \
+  -H 'Idempotency-Key: report-user_123-1' -H 'Content-Type: application/json' \
+  -d '{"workflow": "workflows/report.nika", "owner": "user_123"}'
+curl -s -H "$AUTH" 'http://127.0.0.1:8787/v1/jobs?owner=user_123&amp;status=failed,interrupted'
+</code></pre>
+<p><code>owner</code> attributes a job; it does not control access. Whoever holds the token
+reads, lists, cancels and retries every job, so keep the token in your
+backend and apply your own authorization there. The TypeScript SDK does not
+call these routes yet: call them over HTTP. The
+<a href="https://docs.nika.sh/sdk/operations/resident-server">resident server guide</a>
+covers the routes, and the
+<a href="https://docs.nika.sh/sdk/operations/server-runbook">server runbook</a> covers
+sizing, an upgrade that keeps a way back and a support retry.</p>
 <h3>Know the limits</h3>
 <ul>
-<li><strong>0.124 is the current release line.</strong> Work stays focused on
+<li><strong>0.125 is the current release line.</strong> Work stays focused on
 maintenance, security and the media capabilities workflows need; native
-video is planned for 0.125. The 0.123.x line is the previous one, and
-there is no hosted service. The known limits are listed in plain words,
+video is planned for a later release. The 0.124.x line is the previous
+one, and there is no hosted service. The known limits are listed in plain words,
 each with a way around it:
-<a href="https://docs.nika.sh/changelog/known-limits">Known limits in 0.124</a>.</li>
+<a href="https://docs.nika.sh/changelog/known-limits">Known limits in 0.125</a>.</li>
 <li><strong>Some requests cannot be expressed.</strong> Nika then says what stopped it
 and writes nothing.</li>
 <li><strong>A clean check is not a true answer.</strong> It describes a file's structure
@@ -663,9 +701,9 @@ and boundary; it does not prove that model output is right.</li>
 read a page or a model's answer for injected instructions, and a person
 who answers yes approves what follows. On a harness seat, what <code>permits:</code>
 covers is listed per seat (<a href="https://github.com/supernovae-st/nika/blob/main/docs/usage/harness-agents.md">harness agents</a>).</li>
-<li><strong>This README describes the released 0.124.5.</strong> Compare <code>nika --version</code>
+<li><strong>This README describes the released 0.125.0.</strong> Compare <code>nika --version</code>
 with the <a href="https://github.com/supernovae-st/nika/blob/main/CHANGELOG.md">changelog</a>, which lists what each release
-changed. Until the next release, each change merged after 0.124.5 is
+changed. Until the next release, each change merged after 0.125.0 is
 described in its own file under <a href="https://github.com/supernovae-st/nika/blob/main/changelog.d/README.md"><code>changelog.d/</code></a>,
 and the release folds those files into the changelog.</li>
 </ul>
@@ -776,7 +814,7 @@ judgement.</p>
 <tr>
 <td>🧩</td>
 <td><a href="https://github.com/nika-open/nika-vscode">nika-vscode</a></td>
-<td>The editor extension, frozen at 0.120 and not qualified with 0.124: use <code>nika lsp</code> and the JSON Schema</td>
+<td>The editor extension, frozen at 0.120 and not qualified with 0.125: use <code>nika lsp</code> and the JSON Schema</td>
 </tr>
 <tr>
 <td>🟦</td>
@@ -829,12 +867,12 @@ repositories drive this engine without adding to its authority.</p>
 <a href="https://github.com/supernovae-st/nika/blob/main/examples/README.md">Examples</a> ·
 <a href="https://docs.nika.sh">Documentation</a> ·
 <a href="https://www.npmjs.com/package/@nika-open/nika">TypeScript SDK</a> ·
-<a href="https://marketplace.visualstudio.com/items?itemName=supernovae.nika">Editor extension (0.120, not qualified with 0.124)</a> ·
+<a href="https://marketplace.visualstudio.com/items?itemName=supernovae.nika">Editor extension (0.120, not qualified with 0.125)</a> ·
 <a href="https://github.com/nika-open/nika-spec">Open specification</a> ·
 <a href="https://github.com/nika-open/nika-registry">Registry</a> ·
 <a href="https://github.com/orgs/supernovae-st/projects/3">Planning archive</a> ·
 <a href="https://nika.sh">Website</a></p>
-<p>Nika 0.124 is the current open-source release line, usable today and
+<p>Nika 0.125 is the current open-source release line, usable today and
 maintained. The engine is
 <a href="LICENSE">AGPL-3.0-or-later</a>; the specification and the TypeScript SDK are
 Apache-2.0.</p>
@@ -876,7 +914,7 @@ SuperNovae Studio.</p>
         <div class="name"><span class="org">smartcontractkit /</span> chainlink-agent-skills</div>
       </a>
       <a class="related-row" href="/projects/tlehman/litprog-skill">
-        <div class="stars">★ 281</div>
+        <div class="stars">★ 282</div>
         <div class="name"><span class="org">tlehman /</span> litprog-skill</div>
       </a>
       <a class="related-row" href="/projects/esaradev/icarus-plugin">

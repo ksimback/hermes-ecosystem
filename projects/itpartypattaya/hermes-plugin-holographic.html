@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic#software",
   "name": "hermes-plugin-holographic",
-  "description": "Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it uses no API key, network, or model calls; search by meaning is an optional online add-on.",
+  "description": "Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and holographic retrieval. By default, it requires no API key, network access, or model calls; searching by meaning is an optional online add-on.",
   "url": "https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic",
   "codeRepository": "https://github.com/itpartypattaya/hermes-plugin-holographic",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "itpartypattaya",
     "url": "https://github.com/itpartypattaya"
   },
-  "dateModified": "2026-11-24T07:51:58.000Z",
+  "dateModified": "2026-11-24T15:19:51.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it uses no API key, network, or model calls; search by meaning is an optional online add-on.</p>
+    <p class="summary-text">Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and holographic retrieval. By default, it requires no API key, network access, or model calls; searching by meaning is an optional online add-on.</p>
     <ul class="summary-highlights">
-      <li>SQLite fact store with FTS5 search</li>
-      <li>Trust scoring and entity resolution</li>
-      <li>Optional online search by meaning</li>
+      <li>Stores facts in a local SQLite database.</li>
+      <li>Uses FTS5, trust scoring, and entity resolution.</li>
+      <li>Optional online search by meaning is off by default.</li>
     </ul>
   </div>
 </section>
@@ -301,7 +301,7 @@ if it fails on dependencies, update Hermes first — the cause is usually in cor
 <tr>
 <td><code>recall_source</code></td>
 <td><code>off</code></td>
-<td><code>short</code>: each fact recalled before a turn also says where it was written (<code>recorded 2026-10-12 · Anton · this chat</code>; no ids). Off by default: it costs tokens and tells the room which chat a fact came from. <code>list</code>, <code>history</code> and <code>export</code> always show the source in full</td>
+<td><code>short</code>: each fact recalled before a turn also says where it was written (<code>recorded 2026-10-12 · Leon · this chat</code>; no ids). Off by default: it costs tokens and tells the room which chat a fact came from. <code>list</code>, <code>history</code> and <code>export</code> always show the source in full</td>
 </tr>
 <tr>
 <td><code>cron_writes</code></td>
@@ -652,7 +652,7 @@ words of the four newer languages that are also everyday words, names or abbrevi
 dropped only where that language alone fits the other words: "Ana come carne" stays Spanish, "Kim Lane lives in Oslo"
 keeps <code>kim</code>. Italian <code>mia</code> (my) is not on the list: it is a common name.</li>
 <li><strong>Folding</strong>: Latin accents and ligatures (<code>esta</code> finds <code>está</code>, <code>coeur</code> finds <code>cœur</code>), Arabic vowel marks and letter
-variants, the Indic nukta, and native digits (<code>2027</code> finds <code>২০২৭</code>, <code>HR24</code> finds <code>HR২৪</code>). Folding also merges what
+variants, the Indic nukta, and native digits (<code>2027</code> finds <code>২০২৭</code>, <code>QX24</code> finds <code>QX২৪</code>). Folding also merges what
 only an accent tells apart (Spanish <code>año</code> / <code>ano</code>), as the FTS5 index already did. Turkish <code>ı</code> and Polish <code>ł</code> compare
 as <code>i</code> and <code>l</code> (<code>İstanbul</code>, <code>ISTANBUL</code> and <code>istanbul</code> meet, <code>KIZIM</code> meets <code>kızım</code>, <code>szkola</code> meets <code>szkoła</code>); since the
 FTS5 index keeps those two letters, such a word is also searched as written.</li>
@@ -669,13 +669,13 @@ its group only in English or in text of no known language (0.14.6): French <code
 keywords are for.</li>
 <li><strong>Hyphens</strong>: French elision and inversion (<code>d'Irma</code>, <code>prend-il</code>, <code>est-ce</code>) and Portuguese enclisis (<code>chama-se</code>) are
 taken apart in text of that language, reduplication (<code>anak-anak</code>) in any; a hyphen between scripts splits
-(<code>hr-vps-এর</code>). A letters-only hyphenated token is an identifier in English text or text of no determined language
-(<code>hr-vps</code>, <code>carry-on</code>): a message naming it is about that one, and a fact about <code>hr-other</code> is not recalled for it.
+(<code>qx-vps-এর</code>). A letters-only hyphenated token is an identifier in English text or text of no determined language
+(<code>qx-vps</code>, <code>carry-on</code>): a message naming it is about that one, and a fact about <code>qx-other</code> is not recalled for it.
 In Spanish, French, Portuguese, Indonesian and German text it is a compound word (<code>week-end</code>, <code>sexta-feira</code>,
 <code>IT-Treffen</code>), so a host name in a question in those languages is matched like any word, not enforced.</li>
 <li><strong>Apostrophes</strong>: Italian elision as French (<code>dell'anno</code>, <code>l'ospedale</code>, <code>quest'anno</code>, <code>dov'è</code>, <code>anch'io</code>; not before
 a lone <code>s</code>, so English <code>dev's</code> stays). A Turkish case ending after a name comes off in text that may be Turkish
-(<code>Ankara'da</code>, <code>Ayşe'nin</code>, <code>HR24'ün</code>, <code>hr-vps'de</code> are Ankara, Ayşe, HR24, hr-vps), so the name is mentioned and an
+(<code>Ankara'da</code>, <code>Ayşe'nin</code>, <code>QX24'ün</code>, <code>qx-vps'de</code> are Ankara, Ayşe, QX24, qx-vps), so the name is mentioned and an
 identifier stays required; only Turkish endings, so <code>Irma's</code>, <code>o'clock</code> and <code>rock'n'roll</code> are left alone. In Dutch
 text the plural and possessive <code>'s</code> comes off (<code>pinda's</code>).</li>
 <li><strong>German compounds</strong> (0.11.0): in text determined as German, a compound is split by a dictionary of German lexemes
@@ -754,7 +754,7 @@ itself, and roots add to it. In <code>search</code> a root brings</li>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 63.0K</div>
+        <div class="stars">★ 63.1K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
