@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>roboticforce/sugar — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, shared memory, and a web dashboard or native macOS app.…">
+<meta name="description" content="Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, with atomic claims, leases, and a web dashboard or…">
 <link rel="canonical" href="https://hermesatlas.com/projects/roboticforce/sugar">
 <meta property="og:title" content="roboticforce/sugar — Hermes Atlas">
-<meta property="og:description" content="Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, shared memory, and a web dashboard or native macOS app.…">
+<meta property="og:description" content="Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, with atomic claims, leases, and a web dashboard or…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/roboticforce/sugar">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="roboticforce/sugar — Hermes Atlas">
-<meta name="twitter:description" content="Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, shared memory, and a web dashboard or native macOS app.…">
+<meta name="twitter:description" content="Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, with atomic claims, leases, and a web dashboard or…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=sugar&amp;subtitle=Mission+control+for+your+agent+fleet.+One+local-first+board+for+Claude+Code%2C+Codex%2C+Goose%2C+Cursor+and+any+MCP+harness%3A+durable+tasks%2C+live+activity%2C+cost+attribution+and+audit+expo&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/roboticforce/sugar#software",
   "name": "sugar",
-  "description": "Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, shared memory, and a web dashboard or native macOS app. It supports task claims and leases, records task and harness events, and provides MCP, REST, and CLI interfaces for supported agents and other clients.",
+  "description": "Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, with atomic claims, leases, and a web dashboard or native macOS app. It also provides project and global memory with local semantic search and keyword fallback, plus an append-only event history and tools for reviewing and exporting evidence.",
   "url": "https://hermesatlas.com/projects/roboticforce/sugar",
   "codeRepository": "https://github.com/roboticforce/sugar",
   "applicationCategory": "UtilitiesApplication",
@@ -46,7 +46,7 @@
     "name": "roboticforce",
     "url": "https://github.com/roboticforce"
   },
-  "dateModified": "2026-11-24T22:34:42.000Z",
+  "dateModified": "2026-11-25T15:47:52.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -123,7 +123,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     
     
-    <span><span class="meta-label">updated</span>2026-11-24</span>
+    <span><span class="meta-label">updated</span>2026-11-25</span>
   </div>
 
   <div class="actions">
@@ -140,11 +140,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, shared memory, and a web dashboard or native macOS app. It supports task claims and leases, records task and harness events, and provides MCP, REST, and CLI interfaces for supported agents and other clients.</p>
+    <p class="summary-text">Sugar is local-first infrastructure for coordinating coding agents through a durable SQLite task queue, with atomic claims, leases, and a web dashboard or native macOS app. It also provides project and global memory with local semantic search and keyword fallback, plus an append-only event history and tools for reviewing and exporting evidence.</p>
     <ul class="summary-highlights">
-      <li>SQLite queue with atomic claims, leases, and retries</li>
-      <li>Project and global memory with local semantic search</li>
-      <li>Append-only event history with audit export tools</li>
+      <li>Coordinates tasks through CLI, MCP, REST API, and dashboard</li>
+      <li>Stores project and global memory in SQLite</li>
+      <li>Records task and harness events in an append-only history</li>
     </ul>
   </div>
 </section>
@@ -214,10 +214,17 @@ every harness event: actor, harness, machine, session, task, project, run and tr
 <li><strong>Verification ledger</strong> (<code>sugar evidence</code>, <code>/api/evidence</code>): record test runs, checks, reviews, approvals,
 policy decisions, artifacts and commit links against a task; list and summarize them from the CLI, the
 browser <strong>Evidence</strong> panel or the API. Export the same records with the audit tools.</li>
-<li><strong>Usage and cost attribution</strong> (<code>sugar usage</code>, <code>/api/usage</code>): tokens and cost as your harness reports them —
-no invented pricing table.</li>
+<li><strong>Spend attribution</strong> (<code>sugar usage</code>, <code>/api/usage</code>): tokens and cost as your harness reports them, grouped by
+model, project or task, plus optional cost estimates from your own price table — reported and estimated values
+are always labelled separately.</li>
+<li><strong>Trace Explorer</strong> (<code>/api/traces</code>, dashboard Traces tab): per-session traces with actor swimlanes, a call tree,
+a span inspector and a layered architecture/artifact graph, including DSH subagent/team/artifact spans.</li>
+<li><strong>Observed AIBOM</strong> (<code>sugar aibom</code>, <code>/api/aibom</code>): the models, harnesses, tools, MCP servers and artifacts Sugar
+actually saw, with honest CycloneDX 1.6/SPDX 2.3-shaped projections and explicit limitations.</li>
 <li><strong>Tamper-evident audit exports</strong> (<code>sugar audit export</code> / <code>sugar audit verify</code>): canonical JSONL plus a
 SHA-256 manifest and optional HMAC signature. Export before retention prunes, keep the evidence.</li>
+<li><strong>Audit packages</strong> (<code>sugar audit package</code> / <code>sugar audit verify-package</code>): a scoped, self-verifying evidence
+directory with events, tasks, verification, traces, observed AIBOM, coverage and a claims matrix.</li>
 <li>Claims are recorded in the same transaction as the work item, so "who is holding this task?" is a query,
 not a guess.</li>
 </ul>
@@ -473,7 +480,8 @@ with evaluation data in <code>skills/</code>.</li>
 <li><a href="https://github.com/roboticforce/sugar/blob/main/docs/mission-control.md">Mission Control</a> — dashboard, macOS app, event spine</li>
 <li><a href="https://github.com/roboticforce/sugar/blob/main/docs/web-mission-control.md">Web Mission Control</a> — browser UI on macOS/Linux/Windows, screenshots, live Activity clip</li>
 <li><a href="https://github.com/roboticforce/sugar/blob/main/docs/local-dashboard.md">Local Dashboard API</a> — frozen REST/SSE contract</li>
-<li><a href="https://github.com/roboticforce/sugar/blob/main/docs/trends.md">Trends</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/telemetry.md">Telemetry</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/telemetry-adapters.md">Telemetry Adapters</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/usage.md">Usage &amp; cost</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/evidence.md">Evidence ledger</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/audit.md">Audit exports</a></li>
+<li><a href="https://github.com/roboticforce/sugar/blob/main/docs/trends.md">Trends</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/telemetry.md">Telemetry</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/telemetry-adapters.md">Telemetry Adapters</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/usage.md">Usage &amp; cost</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/spend-attribution.md">Spend attribution</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/evidence.md">Evidence ledger</a></li>
+<li><a href="https://github.com/roboticforce/sugar/blob/main/docs/traces.md">Trace Explorer</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/aibom.md">Observed AIBOM</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/audit.md">Audit exports</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/audit-package.md">Audit packages</a></li>
 <li><a href="https://github.com/roboticforce/sugar/blob/main/docs/board-server.md">Board Server</a> — team/remote access and TLS</li>
 <li><a href="https://github.com/roboticforce/sugar/blob/main/docs/storage-port.md">Storage Port</a> · <a href="https://github.com/roboticforce/sugar/blob/main/docs/adapters.md">Adapters</a> — backends and harness playbook</li>
 <li><a href="https://github.com/roboticforce/sugar/blob/main/docs/harness-verification.md">Harness verification</a> — real CLI/config checks for the installed harnesses</li>
@@ -517,11 +525,11 @@ pytest tests/ -v
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 69.4K</div>
+        <div class="stars">★ 69.5K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 63.2K</div>
+        <div class="stars">★ 63.4K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -541,7 +549,7 @@ pytest tests/ -v
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 319</div>
+        <div class="stars">★ 320</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">

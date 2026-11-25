@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>agentscope-ai/ReMe — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="ReMe is a local-first knowledge base for AI agents that stores durable memory as readable, editable Markdown with frontmatter and wikilinks. It turns…">
+<meta name="description" content="ReMe is a local-first knowledge base for AI agents that turns conversations and resources into readable, editable, searchable Markdown memory. It supports…">
 <link rel="canonical" href="https://hermesatlas.com/projects/agentscope-ai/ReMe">
 <meta property="og:title" content="agentscope-ai/ReMe — Hermes Atlas">
-<meta property="og:description" content="ReMe is a local-first knowledge base for AI agents that stores durable memory as readable, editable Markdown with frontmatter and wikilinks. It turns…">
+<meta property="og:description" content="ReMe is a local-first knowledge base for AI agents that turns conversations and resources into readable, editable, searchable Markdown memory. It supports…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/agentscope-ai/ReMe">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="agentscope-ai/ReMe — Hermes Atlas">
-<meta name="twitter:description" content="ReMe is a local-first knowledge base for AI agents that stores durable memory as readable, editable Markdown with frontmatter and wikilinks. It turns…">
+<meta name="twitter:description" content="ReMe is a local-first knowledge base for AI agents that turns conversations and resources into readable, editable, searchable Markdown memory. It supports…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=ReMe&amp;subtitle=ReMe%3A+Memory+Management+Kit+for+Agents+-+Remember+Me%2C+Refine+Me.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/agentscope-ai/ReMe#software",
   "name": "ReMe",
-  "description": "ReMe is a local-first knowledge base for AI agents that stores durable memory as readable, editable Markdown with frontmatter and wikilinks. It turns conversations and resources into notes and searchable knowledge, using BM25, optional embeddings, and wikilink expansion to retrieve relevant passages. Agents can access a shared workspace through integrations, a CLI, HTTP, MCP, or Python APIs.",
+  "description": "ReMe is a local-first knowledge base for AI agents that turns conversations and resources into readable, editable, searchable Markdown memory. It supports recall using BM25, optional embeddings, and wikilink expansion, and can share a workspace across agents through integrations including HTTP, MCP, CLI, and Python APIs.",
   "url": "https://hermesatlas.com/projects/agentscope-ai/ReMe",
   "codeRepository": "https://github.com/agentscope-ai/ReMe",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "agentscope-ai",
     "url": "https://github.com/agentscope-ai"
   },
-  "dateModified": "2026-11-24T08:39:47.000Z",
+  "dateModified": "2026-11-25T13:33:16.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 3837
+    "userInteractionCount": 3841
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-11-24</span>
+    <span><span class="meta-label">updated</span>2026-11-25</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">ReMe is a local-first knowledge base for AI agents that stores durable memory as readable, editable Markdown with frontmatter and wikilinks. It turns conversations and resources into notes and searchable knowledge, using BM25, optional embeddings, and wikilink expansion to retrieve relevant passages. Agents can access a shared workspace through integrations, a CLI, HTTP, MCP, or Python APIs.</p>
+    <p class="summary-text">ReMe is a local-first knowledge base for AI agents that turns conversations and resources into readable, editable, searchable Markdown memory. It supports recall using BM25, optional embeddings, and wikilink expansion, and can share a workspace across agents through integrations including HTTP, MCP, CLI, and Python APIs.</p>
     <ul class="summary-highlights">
-      <li>Stores durable memory in ordinary Markdown files</li>
-      <li>Retrieves relevant passages with BM25 and optional embeddings</li>
-      <li>Supports shared workspaces across agents</li>
+      <li>Stores durable memory as Markdown with frontmatter and wikilinks</li>
+      <li>Retrieves relevant line-level passages and relationships</li>
+      <li>Supports shared workspaces across agent runtimes</li>
     </ul>
   </div>
 </section>
@@ -210,7 +210,7 @@ the same local workspace through native integrations, SKILL.md, CLI, HTTP, MCP, 
 
 <ul>
 <li>[ROADMAP] - <strong><a href="https://github.com/agentscope-ai/ReMe/blob/main/docs/en/reme5_preview.md">ReMe5 Preview — Proactive Runtime</a></strong>. ReMe puts file-native memory at
-the core of its event-driven and scheduled agents. Give ReMe a task to follow, and it will record new developments
+the core of its event-triggered and time-triggered agents. Give ReMe a task to follow, and it will record new developments
 and let you know when your attention is needed. We aim to release ReMe5 <strong>by the end of 2026</strong>. Read the preview
 for the design, development plan, and milestones.</li>
 <li>[2026.10] - <strong><a href="https://github.com/agentscope-ai/ReMe/blob/main/docs/en/context_compaction.md">Decision-model context compaction</a></strong>: score old tool calls and results
@@ -394,6 +394,11 @@ lifecycle according to the capabilities of each runtime.</p>
 <td><strong>Qoder</strong></td>
 <td>Start ReMe, then install the <a href="https://github.com/agentscope-ai/ReMe/blob/main/integrations/qoder/README.md">Qoder plugin</a>.</td>
 <td>Automatic recall, retryable completed-turn recording, MCP tools, and the bundled skill.</td>
+</tr>
+<tr>
+<td><strong>ZCode</strong></td>
+<td>Start ReMe, then install the <a href="https://github.com/agentscope-ai/ReMe/blob/main/integrations/zcode/README.md">ZCode plugin</a>.</td>
+<td>Automatic recall, detached retryable recording, MCP tools, and the bundled skill.</td>
 </tr>
 <tr>
 <td><strong>Hermes</strong></td>
@@ -683,10 +688,10 @@ plugins; see their documentation for <a href="https://reme.agentscope.io/en/plug
 </tr>
 <tr>
 <td><a href="https://reme.agentscope.io/en/integrations">Agent Integrations</a></td>
-<td>Choose an interface and connect DSH, Claude Code, Codex, Qoder, OpenClaw, Hermes, or another agent.</td>
+<td>Choose an interface and connect DSH, Claude Code, Codex, Qoder, ZCode, OpenClaw, Hermes, or another agent.</td>
 </tr>
 <tr>
-<td><a href="https://reme.agentscope.io/en/integrations/dsh">DSH plugin</a>, <a href="https://reme.agentscope.io/en/integrations/claude-code">Claude Code plugin</a>, and <a href="https://reme.agentscope.io/en/integrations/qoder">Qoder plugin</a></td>
+<td><a href="https://reme.agentscope.io/en/integrations/dsh">DSH plugin</a>, <a href="https://reme.agentscope.io/en/integrations/claude-code">Claude Code plugin</a>, <a href="https://reme.agentscope.io/en/integrations/qoder">Qoder plugin</a>, and <a href="https://reme.agentscope.io/en/integrations/zcode">ZCode plugin</a></td>
 <td>Configure host-native recall, automatic capture, consolidation, and diagnostics.</td>
 </tr>
 <tr>
@@ -779,11 +784,11 @@ depend on LLMs, embeddings, or external services cannot run, explain that in the
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 69.4K</div>
+        <div class="stars">★ 69.5K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 63.2K</div>
+        <div class="stars">★ 63.4K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -803,7 +808,7 @@ depend on LLMs, embeddings, or external services cannot run, explain that in the
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 319</div>
+        <div class="stars">★ 320</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">

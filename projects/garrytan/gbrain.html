@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>garrytan/gbrain — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="GBrain is a self-hostable place for personal notes and company documents that connected AI agents can search and use as context. It supports agents including…">
+<meta name="description" content="GBrain is a self-hosted memory system where people can keep notes and company documents for connected AI agents to search and use. It supports agents including…">
 <link rel="canonical" href="https://hermesatlas.com/projects/garrytan/gbrain">
 <meta property="og:title" content="garrytan/gbrain — Hermes Atlas">
-<meta property="og:description" content="GBrain is a self-hostable place for personal notes and company documents that connected AI agents can search and use as context. It supports agents including…">
+<meta property="og:description" content="GBrain is a self-hosted memory system where people can keep notes and company documents for connected AI agents to search and use. It supports agents including…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/garrytan/gbrain">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="garrytan/gbrain — Hermes Atlas">
-<meta name="twitter:description" content="GBrain is a self-hostable place for personal notes and company documents that connected AI agents can search and use as context. It supports agents including…">
+<meta name="twitter:description" content="GBrain is a self-hosted memory system where people can keep notes and company documents for connected AI agents to search and use. It supports agents including…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=gbrain&amp;subtitle=Garry%27s+Opinionated+OpenClaw%2FHermes+Agent+Brain&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/garrytan/gbrain#software",
   "name": "gbrain",
-  "description": "GBrain is a self-hostable place for personal notes and company documents that connected AI agents can search and use as context. It supports agents including Claude Code, Codex, Hermes, OpenClaw, ChatGPT, and Cursor, with setup instructions for connecting them. Search works by keyword without API keys; gbrain.io is an optional hosted service.",
+  "description": "GBrain is a self-hosted memory system where people can keep notes and company documents for connected AI agents to search and use. It supports agents including Claude Code, Codex, Hermes, OpenClaw, ChatGPT, and Cursor, with setup options that connect agents to its memory and add brain-first instructions.",
   "url": "https://hermesatlas.com/projects/garrytan/gbrain",
   "codeRepository": "https://github.com/garrytan/gbrain",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "garrytan",
     "url": "https://github.com/garrytan"
   },
-  "dateModified": "2026-11-24T22:39:03.000Z",
+  "dateModified": "2026-11-25T17:31:19.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 33538
+    "userInteractionCount": 33583
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -120,11 +120,11 @@
   <p class="project-desc">Garry's Opinionated OpenClaw/Hermes Agent Brain</p>
 
   <div class="meta-row">
-    <span class="stars">★ 33.5K</span>
+    <span class="stars">★ 33.6K</span>
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-24</span>
+    <span><span class="meta-label">updated</span>2026-11-25</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">GBrain is a self-hostable place for personal notes and company documents that connected AI agents can search and use as context. It supports agents including Claude Code, Codex, Hermes, OpenClaw, ChatGPT, and Cursor, with setup instructions for connecting them. Search works by keyword without API keys; gbrain.io is an optional hosted service.</p>
+    <p class="summary-text">GBrain is a self-hosted memory system where people can keep notes and company documents for connected AI agents to search and use. It supports agents including Claude Code, Codex, Hermes, OpenClaw, ChatGPT, and Cursor, with setup options that connect agents to its memory and add brain-first instructions.</p>
     <ul class="summary-highlights">
-      <li>MIT-licensed and free to self-host</li>
-      <li>Keyword search works without API keys</li>
-      <li>Connects to multiple AI agents</li>
+      <li>Stores notes, company documents, facts, and decisions.</li>
+      <li>Search starts with keywords and no API keys.</li>
+      <li>MIT-licensed and free to self-host.</li>
     </ul>
   </div>
 </section>
@@ -276,7 +276,7 @@ answers. Ask before anything destructive. You are not done until
 <p>The repo is not a complete backup; see the <a href="https://github.com/garrytan/gbrain/blob/main/docs/guides/bootstrap.md">bootstrap guide</a>. For the always-on version (24/7 ingestion and the overnight dream cycle on a server with 8GB+ RAM and its own API usage), run GBrain under <a href="https://github.com/openclaw/openclaw">OpenClaw</a> or <a href="https://github.com/NousResearch/hermes-agent">Hermes</a> and point it at <code>INSTALL_FOR_AGENTS.md</code>; the <a href="https://github.com/garrytan/gbrain/blob/main/docs/tutorials/personal-brain.md">personal-brain tutorial</a> walks it end to end.</p>
 <h4>Connect GBrain to your AI client (MCP)</h4>
 <ul>
-<li><strong>Local stdio client:</strong> <code>gbrain setup claude-code</code> or <code>gbrain setup codex</code> registers <code>gbrain serve</code> (lists the memory verbs; <code>--surface full</code> lists every tool) behind gbrain's launcher, so a session opened in a cloned repository never loads that repository's <code>bunfig.toml</code> or <code>.env</code>, and adds the brain-first instructions: agents seldom call a brain nobody told them about. Cursor, Windsurf and other stdio clients take <code>"$(command -v gbrain)" serve --surface starter --advertise verbs</code>.</li>
+<li><strong>Local stdio client:</strong> <code>gbrain setup claude-code</code> or <code>gbrain setup codex</code> registers <code>gbrain serve</code> (Claude Code lists the memory verbs, Codex every tool) behind gbrain's launcher, so a session opened in a cloned repository never loads that repository's <code>bunfig.toml</code> or <code>.env</code>, and adds the brain-first instructions: agents seldom call a brain nobody told them about. Cursor, Windsurf and other stdio clients take <code>"$(command -v gbrain)" serve --surface starter --advertise verbs</code>.</li>
 <li><strong>Plugins with curated skills:</strong> Codex <code>codex plugin marketplace add garrytan/gbrain@codex-plugin</code> + <code>codex plugin add gbrain@gbrain</code>; Claude Code <code>/plugin marketplace add garrytan/gbrain</code> + <code>/plugin install gbrain@gbrain</code>.</li>
 <li><strong>This brain from anywhere:</strong> <code>gbrain mcp expose</code> publishes it on your Tailscale tailnet as a user service (<code>--funnel</code> for cloud agents such as Grok Bot, Muse and ChatGPT). <a href="https://github.com/garrytan/gbrain/blob/main/docs/guides/remote-mcp.md">Guide</a>.</li>
 <li><strong>A brain on another host:</strong> <code>gbrain connect https://your-host/mcp --token gbrain_xxx --install</code> (add <code>--agent codex</code> for Codex). Hosted brains use <a href="https://github.com/garrytan/gbrain/blob/main/docs/guides/hosted-harness-access.md">native OAuth or a private handoff</a>; dashboard, clients and permissions live in <a href="https://github.com/garrytan/gbrain/blob/main/docs/mcp/ADMIN.md">MCP administration</a>.</li>
@@ -302,9 +302,9 @@ choices and personal edits. See <a href="https://github.com/garrytan/gbrain/blob
 <li><strong>A typed knowledge graph.</strong> Trusted local page writes extract supported references without LLM calls when auto-linking is enabled. Remote <code>put_page</code> edges arrive later, via sweeps, maintenance or <code>add_link</code>. Ask "who works at acme-example?": walks are breadth-first, milliseconds on dense clusters (<a href="https://github.com/garrytan/gbrain/blob/main/docs/architecture/RETRIEVAL.md#breadth-first-graph-walks">how</a>). On BrainBench relationship questions, relationship retrieval lifts production <strong>R@5 from 0.6626 to 0.7241</strong> (<a href="https://github.com/garrytan/gbrain/blob/main/docs/architecture/RETRIEVAL.md#the-benchmark">benchmark</a>); 0.9791 is the <code>graph-oracle-parse</code> upper bound, not a product score.</li>
 </ul>
 <p>The point of building a 150K-page brain is to use it as a strategic moat. To never lose context. To query what's in your own head without re-reading it. The brain layer is what makes the moat usable. The 24/7 dream cycle is what keeps it sharp. Both run on your hardware, your DB, your keys.</p>
-<p>It's easier to ship a daemon that runs 24/7 to ingest, enrich, and consolidate than it is to keep an agent in chat working hard. GBrain is that daemon, generalized. Install in 30 minutes. Your agent does the work. As my personal agent gets smarter, so does yours.</p>
+<p>It's easier to ship a daemon that runs 24/7 to ingest, enrich, and consolidate than it is to keep an agent in chat working hard. GBrain is that daemon, generalized. Install in a few minutes: on a cloud machine a cold <code>bun install -g</code> took about 11 seconds and <code>gbrain setup claude-code</code> about 10 (gbrain v0.60.769.0); the rest is you reading the output and opening a new session. Your agent does the work. As my personal agent gets smarter, so does yours.</p>
 <blockquote>
-<p><strong>Start keyless.</strong> Your harness subscription and any separately configured model API usage are different costs. The optional personal-agent bootstrap takes about 15 minutes; always-on enrichment needs its own compute and API configuration.</p>
+<p><strong>Start keyless.</strong> Your harness subscription and any separately configured model API usage are different costs. The optional personal-agent bootstrap takes about 15 more minutes of your time, mostly answering its interview; always-on enrichment needs its own compute and API configuration.</p>
 </blockquote>
 <p>Durable preferences and facts can be shared across agents; transient task and
 harness configuration state stay local. Configured cloud embedding, reranking,
@@ -416,6 +416,7 @@ gbrain schema use my-pack           # activate
 <li><strong>Brain-first lookup</strong> before any external API call. The cheapest, fastest, most personal information source you have.</li>
 <li><strong>Auto-link</strong> extracts graph links for trusted local page writes. No LLM calls; pure pattern matching on page references such as <code>[[people/alice-example]]</code>. Unresolved extracted facts keep their provenance without inventing a backing page.</li>
 <li><strong>Cron-driven enrichment</strong> runs while you sleep: dedup people pages, fix citations, score salience, find contradictions, prep tomorrow's tasks.</li>
+<li><strong>The morning note</strong> shows what the night learned, each item with where it came from, and lets you keep it or undo it: see <a href="https://github.com/garrytan/gbrain/blob/main/docs/guides/morning-note.md">the morning note</a>.</li>
 </ul>
 <p>The whole loop is described in <a href="https://github.com/garrytan/gbrain/blob/main/docs/architecture/topologies.md"><code>docs/architecture/topologies.md</code></a> with diagrams.</p>
 <p><strong>Say to your agent:</strong> <em>"Did upkeep run?"</em> (your agent's open <code>gbrain serve</code> runs the free upkeep while it is idle; <code>gbrain maintain --schedule</code> adds a timer for a brain no agent opens) — <em>"Run dream"</em> — <em>"Did the dream cycle run?"</em></p>
@@ -509,11 +510,11 @@ for installation, data flow, per-harness limitations, and removal.</p>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 69.4K</div>
+        <div class="stars">★ 69.5K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 63.2K</div>
+        <div class="stars">★ 63.4K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -533,7 +534,7 @@ for installation, data flow, per-harness limitations, and removal.</p>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 319</div>
+        <div class="stars">★ 320</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">

@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>yantrikos/yantrikdb-hermes-plugin — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="yantrikdb-hermes-plugin provides YantrikDB memory for Hermes Agent as a standalone plugin. Its README describes an in-process default backend and memory…">
+<meta name="description" content="YantrikDB is a memory provider for Hermes Agent, available as a plugin with an in-process backend by default. It supports memory recall with reasons attached,…">
 <link rel="canonical" href="https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin">
 <meta property="og:title" content="yantrikos/yantrikdb-hermes-plugin — Hermes Atlas">
-<meta property="og:description" content="yantrikdb-hermes-plugin provides YantrikDB memory for Hermes Agent as a standalone plugin. Its README describes an in-process default backend and memory…">
+<meta property="og:description" content="YantrikDB is a memory provider for Hermes Agent, available as a plugin with an in-process backend by default. It supports memory recall with reasons attached,…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="yantrikos/yantrikdb-hermes-plugin — Hermes Atlas">
-<meta name="twitter:description" content="yantrikdb-hermes-plugin provides YantrikDB memory for Hermes Agent as a standalone plugin. Its README describes an in-process default backend and memory…">
+<meta name="twitter:description" content="YantrikDB is a memory provider for Hermes Agent, available as a plugin with an in-process backend by default. It supports memory recall with reasons attached,…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=yantrikdb-hermes-plugin&amp;subtitle=YantrikDB+memory+provider+for+NousResearch%2Fhermes-agent+%E2%80%94+self-maintaining+memory+with+benchmarked+recall%2C+self-tuning+ranking%2C+contradiction+tracking%2C+proactive+hygiene%2C+and+expla&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin#software",
   "name": "yantrikdb-hermes-plugin",
-  "description": "yantrikdb-hermes-plugin provides YantrikDB memory for Hermes Agent as a standalone plugin. Its README describes an in-process default backend and memory features including canonicalization, contradiction tracking, and recall results with scoring reasons. It also supports an HTTP backend and includes maintenance features such as memory hygiene and a self-directing gap-to-task loop.",
+  "description": "YantrikDB is a memory provider for Hermes Agent, available as a plugin with an in-process backend by default. It supports memory recall with reasons attached, duplicate canonicalization, contradiction tracking, and maintenance features such as surfacing knowledge gaps and creating tasks.",
   "url": "https://hermesatlas.com/projects/yantrikos/yantrikdb-hermes-plugin",
   "codeRepository": "https://github.com/yantrikos/yantrikdb-hermes-plugin",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "yantrikos",
     "url": "https://github.com/yantrikos"
   },
-  "dateModified": "2026-11-22T03:08:18.000Z",
+  "dateModified": "2026-11-25T15:33:20.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-22</span>
+    <span><span class="meta-label">updated</span>2026-11-25</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">yantrikdb-hermes-plugin provides YantrikDB memory for Hermes Agent as a standalone plugin. Its README describes an in-process default backend and memory features including canonicalization, contradiction tracking, and recall results with scoring reasons. It also supports an HTTP backend and includes maintenance features such as memory hygiene and a self-directing gap-to-task loop.</p>
+    <p class="summary-text">YantrikDB is a memory provider for Hermes Agent, available as a plugin with an in-process backend by default. It supports memory recall with reasons attached, duplicate canonicalization, contradiction tracking, and maintenance features such as surfacing knowledge gaps and creating tasks.</p>
     <ul class="summary-highlights">
-      <li>In-process backend is the default; HTTP backend is also available.</li>
-      <li>Recall results include reasons explaining why memories were retrieved.</li>
-      <li>Tracks contradictions and supports memory canonicalization.</li>
+      <li>Default in-process backend requires no separate server.</li>
+      <li>Recall results include a why_retrieved reason.</li>
+      <li>Tracks contradictions and canonicalizes duplicate memories.</li>
     </ul>
   </div>
 </section>
@@ -601,6 +601,13 @@ tool call:</p>
 <p><code>supersedes_rid</code> and <code>idempotency_key</code> are mutually exclusive: a superseding
 write must never collapse onto an existing rid, because that would silently
 turn a correction into a no-op.</p>
+<h4>Recall feedback and write provenance (merged to <code>main</code>, unreleased)</h4>
+<p>Two more additions landed on <code>main</code> after v0.28.0 but aren't in a tagged release yet — noted here so they aren't shipped-but-invisible before the next cut:</p>
+<ul>
+<li><strong><code>yantrikdb_reject_recalled(rids)</code></strong> marks recalled results irrelevant and sends the label to the engine's <code>recall_feedback</code>, the same call <code>recall(reinforce=[...])</code> now also makes. Previously <code>reinforce</code> only bumped a local JSON sidecar — the engine's own learning loop never received a label, so it could report having insufficient feedback to tune ranking even with real recall traffic already happening. Embedded-only, like the other link/correction primitives above.</li>
+<li><strong>Write provenance.</strong> Every new <code>yantrikdb_remember</code> write now carries <code>temporal_kind</code> (default <code>asserted</code>) and <code>confidence_basis</code> (default <code>observation</code>); explicit values always win and a partial claim is completed rather than overwritten. Existing records are not backfilled — a deliberate cut, not a migration, since inventing provenance for old writes would repeat the problem it's meant to fix.</li>
+</ul>
+<p>Once released, <code>yantrikdb_reject_recalled</code> joins the core tool set (core 9 / full 20 tools) — the <a href="#context-cost">Context cost</a> counts above are current for the last tagged release, v0.28.0.</p>
 <h4>Compared to other Hermes memory providers</h4>
 <p>Each row in the table below is backed by <a href="tests/comparison/findings_scale_lxc/"><code>tests/comparison/findings_scale_lxc/&lt;provider&gt;/</code></a> — the actual <code>findings_scale.yaml</code>, <code>transcript.md</code>, and <code>raw/</code> response capture from running a 1000-fact + 20-query probe against that provider on a real Hermes 0.9.0 install (LXC 129, commit <code>4610551</code>). The corpus is deterministic (<code>fixtures/corpus_1k.json</code>, seed=20260512: 600 realistic agent-memory facts + 300 noise + 50 planted duplicates + 50 planted contradictions); the probe is provider-agnostic and reproducible. Methodology details in <a href="https://github.com/yantrikos/yantrikdb-hermes-plugin/blob/main/tests/comparison/README.md"><code>tests/comparison/README.md</code></a>.</p>
 <table>
@@ -948,21 +955,9 @@ YANTRIKDB_INTEGRATION_TOKEN=ydb_... \
 <ul>
 <li>Every release ships with tests + CI (Python 3.11 / 3.12 / 3.13 / 3.14) + tagged CHANGELOG + a publish gate where the full test suite + ruff + mypy must pass before the wheel uploads to PyPI.</li>
 <li>First user issue on this repo (multilingual embedding support) was filed and shipped to PyPI the same day — 25 minutes from raised to released.</li>
-<li>Underlying yantrikdb engine: ~4.9k/mo PyPI downloads (pypistats <code>overall</code>, trailing 30 days); flagship server repo has 179 GitHub stars. Cross-stack ownership (engine + HTTP server + MCP server + this plugin) — 8+ months of parallel maintenance, not a one-week hobby.</li>
+<li>Underlying yantrikdb engine: ~4.3k/mo PyPI downloads (pypistats <code>overall</code>, trailing 30 days); flagship server repo has 182 GitHub stars. Cross-stack ownership (engine + HTTP server + MCP server + this plugin) — 8+ months of parallel maintenance, not a one-week hobby.</li>
 <li>Independent recognition: accepted into the <a href="https://cursor.directory/plugins/yantrikdb">Cursor Directory</a> (300k+ developer reach) and (sibling project) the Anthropic MCP Directory.</li>
-<li>Substrate design deposited as a peer-citable preprint: <a href="https://doi.org/10.5281/zenodo.20128887">10.5281/zenodo.20128887</a>.</li>
-</ul>
-<p>That's what I can give you. The technical merits are above; the maintenance shape is here so you can audit before adopting.</p>
-<p>See <a href="https://github.com/yantrikos/yantrikdb-hermes-plugin/blob/main/yantrikdb/CHANGELOG.md">yantrikdb/CHANGELOG.md</a> for full release notes and <a href="https://github.com/yantrikos/yantrikdb-hermes-plugin/blob/main/yantrikdb/ARCHITECTURE.md">yantrikdb/ARCHITECTURE.md</a> for the control flow, error taxonomy, and threading model (covering both backends).</p>
-<h3>Related projects</h3>
-<p>The rest of the YantrikDB stack, if you need memory somewhere other than Hermes:</p>
-<ul>
-<li><a href="https://github.com/yantrikos/yantrikdb">yantrikdb</a> — the embeddable Rust/Python engine this plugin runs in-process (<code>pip install yantrikdb</code>).</li>
-<li><a href="https://github.com/yantrikos/yantrikdb-server">yantrikdb-server</a> — HTTP gateway and HA cluster, for the alternative HTTP backend above.</li>
-<li><a href="https://github.com/yantrikos/yantrikdb-mcp">yantrikdb-mcp</a> — the same memory as an MCP server for Claude Code, Cursor and Windsurf (<code>pip install yantrikdb-mcp</code>).</li>
-<li><a href="https://github.com/yantrikos/openclaw-memory-yantrikdb">openclaw-memory-yantrikdb</a> — the same substrate as a memory plugin for OpenClaw, over plain HTTP.</li>
-<li><a href="https://github.com/yantrikos/yantrikdb-client">yantrikdb-client</a> — typed Python client for the HTTP server.</li>
-<li>[langchain-yantrikdb](<a href="https://github.com/yantrikos/langchain-ya">https://github.com/yantrikos/langchain-ya</a></li>
+<li>Substrate design deposited as a peer-citable preprint:</li>
 </ul>
 <hr>
 <p><em>README truncated. <a href="https://github.com/yantrikos/yantrikdb-hermes-plugin#readme">Continue reading on GitHub</a></em></p>
@@ -978,11 +973,11 @@ YANTRIKDB_INTEGRATION_TOKEN=ydb_... \
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 69.4K</div>
+        <div class="stars">★ 69.5K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 63.2K</div>
+        <div class="stars">★ 63.4K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -1002,7 +997,7 @@ YANTRIKDB_INTEGRATION_TOKEN=ydb_... \
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 319</div>
+        <div class="stars">★ 320</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">

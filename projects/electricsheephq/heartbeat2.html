@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>electricsheephq/heartbeat2 — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for follow-ups, recurring checks, roles, and agent-chosen work. It can monitor files, processes,…">
+<meta name="description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watcher checks. It uses code checks to determine whether…">
 <link rel="canonical" href="https://hermesatlas.com/projects/electricsheephq/heartbeat2">
 <meta property="og:title" content="electricsheephq/heartbeat2 — Hermes Atlas">
-<meta property="og:description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for follow-ups, recurring checks, roles, and agent-chosen work. It can monitor files, processes,…">
+<meta property="og:description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watcher checks. It uses code checks to determine whether…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/electricsheephq/heartbeat2">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="electricsheephq/heartbeat2 — Hermes Atlas">
-<meta name="twitter:description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for follow-ups, recurring checks, roles, and agent-chosen work. It can monitor files, processes,…">
+<meta name="twitter:description" content="HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watcher checks. It uses code checks to determine whether…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=heartbeat2&amp;subtitle=Give+your+Hermes+agent+a+working+life+between+messages%3A+wakes%2C+watchers+and+roles%2C+within+daily+turn+and+message+caps.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/electricsheephq/heartbeat2#software",
   "name": "heartbeat2",
-  "description": "HeartBeat 2.0 is a Hermes plugin that schedules agent turns for follow-ups, recurring checks, roles, and agent-chosen work. It can monitor files, processes, URLs, read-only commands, and Hermes events, and uses the same conversation and model for each wake. Daily turn and message limits, optional spend limits, unanswered mute, and quiet hours control activity and messaging.",
+  "description": "HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watcher checks. It uses code checks to determine whether work is due before starting a model turn, and provides commands such as `/pulse` to show upcoming work and trigger history.",
   "url": "https://hermesatlas.com/projects/electricsheephq/heartbeat2",
   "codeRepository": "https://github.com/electricsheephq/heartbeat2",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "electricsheephq",
     "url": "https://github.com/electricsheephq"
   },
-  "dateModified": "2026-11-24T18:39:59.000Z",
+  "dateModified": "2026-11-25T16:38:38.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-11-24</span>
+    <span><span class="meta-label">updated</span>2026-11-25</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">HeartBeat 2.0 is a Hermes plugin that schedules agent turns for follow-ups, recurring checks, roles, and agent-chosen work. It can monitor files, processes, URLs, read-only commands, and Hermes events, and uses the same conversation and model for each wake. Daily turn and message limits, optional spend limits, unanswered mute, and quiet hours control activity and messaging.</p>
+    <p class="summary-text">HeartBeat 2.0 is a Hermes plugin that schedules agent turns for reminders, recurring work, roles, and watcher checks. It uses code checks to determine whether work is due before starting a model turn, and provides commands such as `/pulse` to show upcoming work and trigger history.</p>
     <ul class="summary-highlights">
-      <li>Watchers check conditions without a model call until triggered.</li>
-      <li>Roles have a charter, notebook, and agent-set rhythm.</li>
-      <li>/pulse shows upcoming work and recent trigger details.</li>
+      <li>Supports timed follow-ups, recurring checks, roles, and watchers.</li>
+      <li>Watchers can monitor files, processes, URLs, commands, or Hermes events.</li>
+      <li>Daily turn, message, and optional spending limits are configurable.</li>
     </ul>
   </div>
 </section>
@@ -341,9 +341,9 @@
                                    │
           ledger + no-op governor (slow down → suggest a watcher → pause → ask once)
 </code></pre>
-<p>One poller per profile runs inside the messaging gateway that serves that profile and ticks every 5 seconds. Hermes loads every profile's plugins when a gateway starts; a gateway that does not serve a profile leaves that profile's schedule alone and delivers nothing for it. A file lock guarantees only one poller even when several Hermes processes share the profile. Every fire is a durable claim with an attempt marker. An accepted turn that never starts is tried three times, and a refused messaging injection backs off and is tried five times, before it is marked dead. Desktop and TUI wakes wait while the app session is closed, retrying every minute until it reattaches or the wake expires. A turn that started but never finished (a crash or restart) is recorded as interrupted. Hermes may auto-resume that wake turn, sometimes before heartbeat2's restart recovery has run; heartbeat2 keeps the replay silent either way, never counts it as a fire or delivery, and counts it as a model turn toward the daily cap.</p>
+<p>One poller per profile runs inside the messaging gateway that serves that profile and ticks every 5 seconds. Hermes loads every profile's plugins when a gateway starts; a gateway that does not serve a profile leaves that profile's schedule alone and delivers nothing for it. A file lock guarantees only one poller even when several Hermes processes share the profile. Chats served by an app backend of their own are scheduled by that backend under its own lock; the messaging gateway never touches them. Every fire is a durable claim with an attempt marker. In a messaging gateway, an accepted turn that never starts is tried three times, and a refused messaging injection backs off and is tried five times, before it is marked dead; app-backend wakes that the app accepted but never started wait instead and are never marked dead. Desktop and TUI wakes wait while the app session is closed, retrying every minute until it reattaches or the wake expires. A turn that started but never finished (a crash or restart) is recorded as interrupted. Hermes may auto-resume that wake turn, sometimes before heartbeat2's restart recovery has run; heartbeat2 keeps the replay silent either way, never counts it as a fire or delivery, and counts it as a model turn toward the daily cap.</p>
 <h3>Setup</h3>
-<p>Requires <strong>Hermes ≥ 0.21.6</strong> and Python ≥ 3.11 on macOS or Linux. HeartBeat 2.0 delivers into <strong>messaging-gateway DMs</strong> (and group or topic chats when <code>dm_only</code> is off): Telegram, Discord, Slack, WhatsApp and the other gateway platforms. Desktop and TUI sessions also support wakes on capable Hermes 0.23+ hosts, using the same consent and limits. Chats that the Desktop app's own chat backend serves (<code>hermes serve</code>) can't receive wakes yet: HeartBeat's scheduler runs only in a messaging gateway, and Hermes gives plugins no session platform there, so HeartBeat refuses them and says so; arm the wake from a messaging chat on the same profile (#233).</p>
+<p>Requires <strong>Hermes ≥ 0.21.6</strong> and Python ≥ 3.11 on macOS or Linux. HeartBeat 2.0 delivers into <strong>messaging-gateway DMs</strong> (and group or topic chats when <code>dm_only</code> is off): Telegram, Discord, Slack, WhatsApp and the other gateway platforms. Desktop and TUI sessions also support wakes on capable Hermes 0.23+ hosts, using the same consent and limits. Chats that an app backend of their own serves (the Desktop app's standalone <code>hermes serve</code>, or the terminal TUI's backend) take one-time and recurring schedules; the backend schedules and delivers them while the app has the chat open, and a wake that comes due while it is closed fires once when the chat is open again, unless it expires first under its own expiry or catch-up rule. Watchers, keep-warm and own time there need a messaging chat. Known limits: one app backend per profile delivers, so if the terminal TUI and the Desktop app each run their own backend on one profile, the one started first delivers and wakes armed in the other's chats wait until it closes (the arm reply says so; #241); after an app backend restart, Hermes can drop a wake due right then (NousResearch/hermes-agent#159694); HeartBeat finds it missing from the queue and sends it once more, labelled late, and on a Hermes version whose queue it cannot read the wake waits until the app process exits (with a heads-up for owner-asked wakes). It is never lost.</p>
 <p>Install with the command at the top, add the <code>allow_gateway_injection</code> key shown in <a href="#try-it">Try it</a>, and restart the messaging gateway. Then send <code>/pulse</code> in your DM. It shows:</p>
 <ul>
 <li>whether the scheduler is running;</li>
@@ -921,12 +921,7 @@ HeartBeat will step aside on its own once Hermes lets plugins read the warm sche
 <h4>Closed-window notices</h4>
 <p>The owner can set <code>plugins.entries.heartbeat2.settings.notify_via</code> to <code>birdie:assistant</code> (then restart Hermes). Install and configure the notifier plugin separately. Blank disables notices; invalid values are ignored. <code>/pulse status</code> shows whether the notifier is connected.</p>
 <p>After a chat's oldest closed-window hold reaches ten minutes, HeartBeat sends one short count-and-time notice per held episode. It includes no wake titles or contents. The chat's quiet-hours override (or profile quiet hours when there is no override) and daily message cap defer it; the unanswered mute does not. Off or paused chats send no notice. A queued notice counts as one message, without increasing the unanswered count. One wait gets one notice. Before a notice is sent, the wait ends when a wake in that chat runs (an accepted injection) or no wake is held there any more. After a notice is sent, it lasts until a wake runs in the reopened chat or the owner writes there, and at most a day after the notice, so a window closed for days gets at most one notice a day.</p>
-<p><code>queued</code> means accepted by the notifier's bus, not read by anyone. Failed sends retry after five minutes for the first three attempts, then hourly, stopping after 24 hours. A timeout or Birdie's “can't reach birdie” error shows <strong>may repeat</strong>: the notifier couldn't confirm the send, and the message may already have gone, so a retry can duplicate it. <strong>notifier not ready</strong> means no sending-profile token is available yet; Birdie obtains one after that profile's first turn. Hosts without the plugin event bus show <strong>not connected</strong>. Plugin authors: <a href="https://github.com/electricsheephq/heartbeat2/blob/main/docs/notifier.md">notifier handshake</a>.</p>
-<h4>Known limits</h4>
-<ul>
-<li><strong>App windows:</strong> a silent or held-message turn still shows its text in the window (a Hermes limitation, <a href="https://github.com/NousResearch/hermes-agent/issues/156465">NousResearch/hermes-agent#156465</a>). The wake asks the model to reply with exactly <code>[SILENT]</code> when it is not notifying, and on every turn while messages are held (the summary it saves with <code>pulse respond</code> is what HeartBeat keeps), but streaming text cannot be hidden by the plugin. Nothing is pushed to a phone. When Hermes retires a closed window's session, a wake waits and retries every minute; reopening the conversation lets it run, subject to expiry and the usual limits. Hermes may keep a disconnected window's session live for about five minutes, so a wake can run unseen during that grace period.</li>
-<li><strong>Messaging groups/topics</strong> require <code>dm_only</code> off. Group and topic delivery has passed one live test in a Telegram forum topic ([#98](ht</li>
-</ul>
+<p><code>queued</code> means accepted by the notifier's bus, not read by anyone. Failed sends retry after five minutes for the first three attempts, then hourly, stopping after 24 hours. A timeout or Birdie's “can't reach birdie” error shows <strong>may repeat</strong>: the notifier couldn't confirm the send, and the message may already have gone, so a retry can duplicate it. <strong>notifier not ready</strong> means no sending-profile token is available yet; Birdie obtains one after that profile's first turn. Hosts without the plugin event bus show **not conn</p>
 <hr>
 <p><em>README truncated. <a href="https://github.com/electricsheephq/heartbeat2#readme">Continue reading on GitHub</a></em></p>
 
