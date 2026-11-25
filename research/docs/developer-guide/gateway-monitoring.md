@@ -32,6 +32,12 @@ Diagnostics
 
 Warning/error gateway events with a constant body and bounded subsystem, severity, error class, and error code attributes; rendered log messages are never exported
 
+Gateway memory gauges
+
+`/v1/metrics`
+
+`hermes.gateway.previous_exit` = 1 with `hermes.previous_exit` in `none`, `unclean`, `suspected_oom`, `oom_kill_host`, `watchdog`, `watchdog_memory_starved`, `oom_kill_cgroup`, `unknown` (the strongest evidence recorded on how the previous gateway life ended; one series per boot); `hermes.gateway.memory_pressure` = 1 with `hermes.memory_pressure` in `ok`, `elevated`, `critical`, `unknown` (live host pressure from the 30 s heartbeat)
+
 Cron scheduler gauges
 
 `/v1/metrics`
@@ -47,6 +53,19 @@ Durable `claimed/running/completed/failed/unknown` states, bounded source and er
 Signals carry `service.name`, version, supervision mode, and a stable one-way hash of the install id so an operator can distinguish instances without exporting account/profile identity or the raw install identifier.
 
 `hermes.gateway.active_agents`, `hermes.gateway.background_work`, and `hermes.gateway.background_delegations` are complementary. `active_agents` counts foreground message turns plus in-flight cron jobs plus API runs — the work the gateway drains on shutdown. `background_work` counts detached work that `active_agents` never includes: backgrounded `delegate_task` subagents, `terminal(background=true)` processes, and kanban workers; it is **task-granular** — a fan-out batch of N subagents counts as N — so it reflects real concurrent subagent load. `background_delegations` counts only async delegation **units** (each `delegate_task` dispatch is one, a fan-out batch is one), matching the async pool's capacity accounting; alert it against `delegation.max_concurrent_children` to see slot pressure. Sum `active_agents` and `background_work` for total live work per instance; use `background_delegations` for pool-saturation.
+
+`hermes.gateway.previous_exit` and `hermes.gateway.memory_pressure` come from the same lifecycle-ledger and heartbeat files as the `memory` block of `/api/status`. `previous_exit` names the strongest evidence recorded on the previous life, in this order:
+
+-   `oom_kill_cgroup`: the gateway died uncleanly and, between its last heartbeat and this boot, the kernel OOM-killed a process in the gateway's cgroup (the gateway itself or a tool subprocess there; the counter does not say which);
+-   `watchdog_memory_starved`: a watchdog killed it while host memory pressure was `critical`;
+-   `watchdog`;
+-   `oom_kill_host`: the gateway died uncleanly and, in that window, the kernel OOM-killed a process somewhere on the host (any process, not necessarily the gateway);
+-   `suspected_oom`: an unclean death whose last heartbeat already showed critical pressure;
+-   `unclean`;
+-   `none`: no adverse evidence recorded (this includes a first boot);
+-   `unknown`: this life has no ledger claim.
+
+The OOM-kill scopes come from the kernel's `oom_kill` counters (cgroup v2 `memory.events`, `/proc/vmstat`), compared only when the dead life's last heartbeat is from that same life and at most 15 minutes old. A systemd unit or container restart recreates the cgroup with its counter at 0, so after a supervisor restart the comparison is usually host-scoped (`oom_kill_host`); `oom_kill_cgroup` applies only when the gateway restarts inside a surviving cgroup. The value only changes on the next boot. Nothing is exported when a watchdog fires: the process hard-exits right after and the emitter is asynchronous, so the record would never leave; the next boot's `previous_exit` carries it. `memory_pressure` reads `unknown` when the heartbeat is older than 150 s.
 
 ## Enabling
 
@@ -124,7 +143,13 @@ hermes_cron_jobs_overdue > 0
 # Catch-up counter increased, proving at least one stale occurrence was
 # collapsed and run once after a delay.
 increase(hermes_cron_scheduler_catch_up_occurrences[15m]) > 0
+
+# The previous gateway life died uncleanly while the kernel OOM-killed a process
+# in its cgroup, or a watchdog killed it while the host was out of memory.
+hermes_gateway_previous_exit{hermes_previous_exit=~"oom_kill_cgroup|watchdog_memory_starved"} == 1
 ```
+
+Collectors that front the exporter with a metric-name allowlist must add `hermes.gateway.previous_exit` and `hermes.gateway.memory_pressure` (see step 4 of "Adding a new gauge/metric" below).
 
 Cron execution lifecycle records arrive as `hermes.cron_execution` spans. Alert or derive events from bounded attributes such as:
 
