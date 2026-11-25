@@ -5,7 +5,7 @@
  * alert issue when one is red or has stopped running, escalates to a human
  * after 24h, and closes the issue on recovery.
  *
- * Env: GITHUB_TOKEN, GITHUB_REPOSITORY (owner/repo), OPS_ESCALATE_TO
+ * Env (all read from the workflow): GITHUB_TOKEN, GITHUB_REPOSITORY (owner/repo), OPS_ESCALATE_TO
  * (default ksimback), DRY_RUN=1 to print the plan without writing.
  */
 import { githubHeaders } from "../lib/github.js";
