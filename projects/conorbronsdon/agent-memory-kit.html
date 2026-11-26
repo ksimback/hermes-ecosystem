@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>conorbronsdon/agent-memory-kit — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="agent-memory-kit provides five commands for capturing, recalling, and curating agent memory stored as Markdown files. Its read-only curation pass checks for…">
+<meta name="description" content="agent-memory-kit provides five prompt-based commands for capturing, recalling, and curating agent memory stored as Markdown files. Its read-only rot and lint…">
 <link rel="canonical" href="https://hermesatlas.com/projects/conorbronsdon/agent-memory-kit">
 <meta property="og:title" content="conorbronsdon/agent-memory-kit — Hermes Atlas">
-<meta property="og:description" content="agent-memory-kit provides five commands for capturing, recalling, and curating agent memory stored as Markdown files. Its read-only curation pass checks for…">
+<meta property="og:description" content="agent-memory-kit provides five prompt-based commands for capturing, recalling, and curating agent memory stored as Markdown files. Its read-only rot and lint…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/conorbronsdon/agent-memory-kit">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="conorbronsdon/agent-memory-kit — Hermes Atlas">
-<meta name="twitter:description" content="agent-memory-kit provides five commands for capturing, recalling, and curating agent memory stored as Markdown files. Its read-only curation pass checks for…">
+<meta name="twitter:description" content="agent-memory-kit provides five prompt-based commands for capturing, recalling, and curating agent memory stored as Markdown files. Its read-only rot and lint…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=agent-memory-kit&amp;subtitle=The+curation+pass+for+agent+memory%3A+a+thin%2C+file-based+loop+that+finds+rot+and+contradictions+and+proposes+evidence-cited+diffs+you+review.+Markdown+in%2C+JSON+out%2C+no+database.+The+&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/conorbronsdon/agent-memory-kit#software",
   "name": "agent-memory-kit",
-  "description": "agent-memory-kit provides five commands for capturing, recalling, and curating agent memory stored as Markdown files. Its read-only curation pass checks for stale facts and inconsistencies, then proposes evidence-cited diffs for human review.",
+  "description": "agent-memory-kit provides five prompt-based commands for capturing, recalling, and curating agent memory stored as Markdown files. Its read-only rot and lint curators identify stale information and store inconsistencies, then propose evidence-cited diffs for review and application.",
   "url": "https://hermesatlas.com/projects/conorbronsdon/agent-memory-kit",
   "codeRepository": "https://github.com/conorbronsdon/agent-memory-kit",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "conorbronsdon",
     "url": "https://github.com/conorbronsdon"
   },
-  "dateModified": "2026-11-18T08:07:55.000Z",
+  "dateModified": "2026-11-26T05:41:57.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Shell</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-18</span>
+    <span><span class="meta-label">updated</span>2026-11-26</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">agent-memory-kit provides five commands for capturing, recalling, and curating agent memory stored as Markdown files. Its read-only curation pass checks for stale facts and inconsistencies, then proposes evidence-cited diffs for human review.</p>
+    <p class="summary-text">agent-memory-kit provides five prompt-based commands for capturing, recalling, and curating agent memory stored as Markdown files. Its read-only rot and lint curators identify stale information and store inconsistencies, then propose evidence-cited diffs for review and application.</p>
     <ul class="summary-highlights">
-      <li>Includes rot and lint curators.</li>
-      <li>Uses Markdown and JSON, with no database.</li>
-      <li>Memory changes can be reviewed and reverted with Git.</li>
+      <li>Uses Markdown and JSON; no database or vector store.</li>
+      <li>Includes capture, recall, update, and curation commands.</li>
+      <li>Memory directory is tracked in its own Git repository.</li>
     </ul>
   </div>
 </section>
@@ -254,6 +254,7 @@ cd agent-memory-kit
   wrote: memory/ARCHIVE.md
   wrote: memory/archive/.gitkeep
   memory git: initialized + seeded (local-only, no remote)
+  wrote: memory/.git/hooks/pre-push
 
 Done. Next:
   1. Fill in CONTEXT.md (who you are + routing) and state/current.md.
@@ -301,7 +302,7 @@ Memory dir: /home/you/my-context/memory  (keep it local if it holds anything pri
 <li><code>./memory/</code> if it exists in the repo</li>
 <li>Claude Code's per-project memory: <code>~/.claude/projects/&lt;encoded-cwd&gt;/memory/</code>, where <code>&lt;encoded-cwd&gt;</code> is your absolute path with <code>:</code> <code>\</code> <code>/</code> all replaced by <code>-</code>.</li>
 </ol>
-<p>Keep the memory repo <strong>local-only</strong> if it holds anything private. No remote. The dream commands refuse to push.</p>
+<p>Keep the memory repo <strong>local-only</strong> if it holds anything private. No remote. The dream commands are told never to push, and <code>init.sh</code> installs a <code>pre-push</code> hook that blocks pushes from the memory repo (bypassable with <code>--no-verify</code>).</p>
 <h3>Docs</h3>
 <ul>
 <li><a href="https://github.com/conorbronsdon/agent-memory-kit/blob/main/docs/philosophy.md"><code>docs/philosophy.md</code></a>: capture vs. curate vs. recall, and why curation is the missing one.</li>
@@ -334,7 +335,7 @@ Memory dir: /home/you/my-context/memory  (keep it local if it holds anything pri
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 63.4K</div>
+        <div class="stars">★ 63.5K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
@@ -354,7 +355,7 @@ Memory dir: /home/you/my-context/memory  (keep it local if it holds anything pri
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
-        <div class="stars">★ 320</div>
+        <div class="stars">★ 321</div>
         <div class="name"><span class="org">plur-ai /</span> plur</div>
       </a>
       <a class="related-row" href="/projects/amanning3390/flowstate-qmd">

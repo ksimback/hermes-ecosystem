@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>wjgoarxiv/lithermes — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="LitHermes is an add-on for Hermes Agent that tracks task goals, checks whether tests ran successfully, and reports what it verified. When a session with a goal…">
+<meta name="description" content="LitHermes is an add-on for Hermes Agent that helps track goals, verify test runs, and report when work is not yet complete. It can write handoff notes for…">
 <link rel="canonical" href="https://hermesatlas.com/projects/wjgoarxiv/lithermes">
 <meta property="og:title" content="wjgoarxiv/lithermes — Hermes Atlas">
-<meta property="og:description" content="LitHermes is an add-on for Hermes Agent that tracks task goals, checks whether tests ran successfully, and reports what it verified. When a session with a goal…">
+<meta property="og:description" content="LitHermes is an add-on for Hermes Agent that helps track goals, verify test runs, and report when work is not yet complete. It can write handoff notes for…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/wjgoarxiv/lithermes">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="wjgoarxiv/lithermes — Hermes Atlas">
-<meta name="twitter:description" content="LitHermes is an add-on for Hermes Agent that tracks task goals, checks whether tests ran successfully, and reports what it verified. When a session with a goal…">
+<meta name="twitter:description" content="LitHermes is an add-on for Hermes Agent that helps track goals, verify test runs, and report when work is not yet complete. It can write handoff notes for…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=lithermes&amp;subtitle=Add+one+word%2C+%60lit%60%2C+to+a+Hermes+Agent+request+and+get+a+planned%2C+tested%2C+reviewed+workflow%2C+plus+a+handoff+note+so+the+next+session+knows+where+you+left+off.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/wjgoarxiv/lithermes#software",
   "name": "lithermes",
-  "description": "LitHermes is an add-on for Hermes Agent that tracks task goals, checks whether tests ran successfully, and reports what it verified. When a session with a goal closes, it writes a handoff note that the next session can use to continue the work.",
+  "description": "LitHermes is an add-on for Hermes Agent that helps track goals, verify test runs, and report when work is not yet complete. It can write handoff notes for unfinished goals and provides a goal and timeline pane in Hermes Desktop 0.23 or later.",
   "url": "https://hermesatlas.com/projects/wjgoarxiv/lithermes",
   "codeRepository": "https://github.com/wjgoarxiv/lithermes",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "wjgoarxiv",
     "url": "https://github.com/wjgoarxiv"
   },
-  "dateModified": "2026-11-25T04:35:04.000Z",
+  "dateModified": "2026-11-26T05:14:10.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-25</span>
+    <span><span class="meta-label">updated</span>2026-11-26</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">LitHermes is an add-on for Hermes Agent that tracks task goals, checks whether tests ran successfully, and reports what it verified. When a session with a goal closes, it writes a handoff note that the next session can use to continue the work.</p>
+    <p class="summary-text">LitHermes is an add-on for Hermes Agent that helps track goals, verify test runs, and report when work is not yet complete. It can write handoff notes for unfinished goals and provides a goal and timeline pane in Hermes Desktop 0.23 or later.</p>
     <ul class="summary-highlights">
-      <li>Adds `lit`-prompted goal and test workflows.</li>
-      <li>Tracks test results and whether evidence is still current.</li>
-      <li>Writes session handoff notes under `.hermes/lithermes/handoff/`.</li>
+      <li>Add `lit` to a request to start a goal-based workflow.</li>
+      <li>Test receipts become stale when code changes.</li>
+      <li>Handoff cards are stored under `.hermes/lithermes/handoff/`.</li>
     </ul>
   </div>
 </section>
@@ -238,7 +238,7 @@
 <p>LitHermes gives each session a routine and keeps a record of it; for a bigger change, <code>lit plan</code> writes a plan you approve before anything is edited. Goals, plans and evidence stay on disk, so a fresh session reads them and carries on. Hermes still runs the model, the tools and your sign-in; LitHermes adds the way of working on top.</p>
 <p>It suits people who already use Hermes on work that has to hold up: code that must keep passing its tests, reports and decks that go to other people, research you want sources for. It helps most when the work outlasts one sitting, or when you start it at your desk and check on it later from a phone through a gateway.</p>
 <h3>Install</h3>
-<p>You need Hermes Agent, Node.js 18 or later, and write access to your Hermes home (normally <code>~/.hermes</code>). This page describes <code>@litfamily/lithermes@1.0.49</code>. Run this in any terminal:</p>
+<p>You need Hermes Agent, Node.js 18 or later, and write access to your Hermes home (normally <code>~/.hermes</code>). This page describes <code>@litfamily/lithermes@1.0.50</code>. Run this in any terminal:</p>
 <pre><code class="language-sh">npx --yes --package @litfamily/lithermes@latest -- lithermes install --yes --no-style
 </code></pre>
 <table>
@@ -262,7 +262,7 @@
 </tr>
 <tr>
 <td><code>--yes</code>, <code>--no-style</code></td>
-<td>Run it without stopping to ask, and skip the question about reply wording</td>
+<td>Run it without stopping to ask, and keep the reply wording as it is</td>
 </tr>
 </tbody></table>
 <p>Then restart the Hermes CLI and any running gateway, because Hermes loads a new plugin only when it starts.</p>
@@ -371,7 +371,7 @@ printf '{"id":"%s","source":"%s","variant":"lithermes","installed_at":"%s"}\n' "
 <p><em>Captured from a real Hermes session with the Ignition skin selected. The Hermes banner, tip and warnings between the pictured lines are cut.</em></p>
 <ul>
 <li><strong>Spinner and helpers.</strong> While Hermes works, the spinner turns in flame faces such as <code>(🔥 lit)</code> with short verbs like <code>lit-looping</code> and <code>verifying</code>, and <code>/agents</code> shows the helpers Hermes sent out with <code>delegate_task</code>.</li>
-<li><strong>Other skins.</strong> A fresh interactive install picks Ignition only when you have no skin set; <code>lithermes hud</code> lists the others, and <code>/skin lithermes-tokyonight-day</code> reads well on a light terminal.</li>
+<li><strong>Other skins.</strong> Pick Ignition on the HUD accent card, or with <code>install --hud ignition</code>; <code>lithermes hud</code> lists the others, and <code>/skin lithermes-tokyonight-day</code> reads well on a light terminal.</li>
 <li><strong>Bell.</strong> If you step away during long work, add <code>--bell</code> to the install and Hermes rings the terminal bell when a turn ends; it stays off otherwise, and a <code>display.bell_on_complete</code> value you chose is kept.</li>
 <li><strong>The LIT mark.</strong> <code>lithermes install</code>, <code>doctor</code> and <code>--help</code> open with a large synthwave LIT mark sized to your terminal, with the version under it. A pipe, a CI log, an agent's tool call or a terminal without UTF-8 gets one plain line, <code>LIT · hermes agent</code>, and the version. In the classic CLI on a truecolor terminal, on a dark background, the HUD card is one framed card (Hermes 0.23, which runs commands in its gateway, keeps plain bar rows) that starts with a small <code>🔥 LIT</code> pill, with a still sunset beside its words when there is room.</li>
 <li><strong>The goal card in <code>hermes --tui</code>.</strong> While your session has a lit goal, a framed card sits under the prompt: the stage, the goal, how much is proven and what comes next, and, when Hermes reports them, the running tool, the helpers working in parallel, the skills in use and how full the context is. A sun sets over a small sea in the empty part of the card. It moves only while a turn runs, stands still when it is your turn, and takes no rows at all when there is no goal. <code>lithermes hud card still</code> stops the motion, <code>lithermes hud card off</code> removes the card, and <code>lithermes hud caps round</code> or <code>square</code> sets the pill shape yourself.</li>

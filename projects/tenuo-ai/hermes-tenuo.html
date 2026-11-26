@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>tenuo-ai/hermes-tenuo — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="hermes-tenuo is a Tenuo plugin for Hermes Agent that uses signed, expiring warrants to limit tool calls and their arguments. Its Hands feature connects a…">
+<meta name="description" content="hermes-tenuo checks tool calls and their arguments against signed, expiring permissions before they reach tool handlers. It also supports narrowing permissions…">
 <link rel="canonical" href="https://hermesatlas.com/projects/tenuo-ai/hermes-tenuo">
 <meta property="og:title" content="tenuo-ai/hermes-tenuo — Hermes Atlas">
-<meta property="og:description" content="hermes-tenuo is a Tenuo plugin for Hermes Agent that uses signed, expiring warrants to limit tool calls and their arguments. Its Hands feature connects a…">
+<meta property="og:description" content="hermes-tenuo checks tool calls and their arguments against signed, expiring permissions before they reach tool handlers. It also supports narrowing permissions…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/tenuo-ai/hermes-tenuo">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="tenuo-ai/hermes-tenuo — Hermes Atlas">
-<meta name="twitter:description" content="hermes-tenuo is a Tenuo plugin for Hermes Agent that uses signed, expiring warrants to limit tool calls and their arguments. Its Hands feature connects a…">
+<meta name="twitter:description" content="hermes-tenuo checks tool calls and their arguments against signed, expiring permissions before they reach tool handlers. It also supports narrowing permissions…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-tenuo&amp;subtitle=Guardrails+Hermes+Agent+can%27t+talk+its+way+past%3A+enforce+tool+permissions+and+argument+limits+in+code%2C+and+give+subagents+and+Kanban+workers+only+what+their+task+needs.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/tenuo-ai/hermes-tenuo#software",
   "name": "hermes-tenuo",
-  "description": "hermes-tenuo is a Tenuo plugin for Hermes Agent that uses signed, expiring warrants to limit tool calls and their arguments. Its Hands feature connects a remote Hermes chat to a chosen folder on a Mac or Linux laptop for terminal and file work, with an OS sandbox.",
+  "description": "hermes-tenuo checks tool calls and their arguments against signed, expiring permissions before they reach tool handlers. It also supports narrowing permissions for subagents and includes Hands, which lets a remote Hermes work with a folder on a connected laptop using an OS sandbox.",
   "url": "https://hermesatlas.com/projects/tenuo-ai/hermes-tenuo",
   "codeRepository": "https://github.com/tenuo-ai/hermes-tenuo",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "tenuo-ai",
     "url": "https://github.com/tenuo-ai"
   },
-  "dateModified": "2026-11-25T19:46:20.000Z",
+  "dateModified": "2026-11-26T03:01:48.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-11-25</span>
+    <span><span class="meta-label">updated</span>2026-11-26</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">hermes-tenuo is a Tenuo plugin for Hermes Agent that uses signed, expiring warrants to limit tool calls and their arguments. Its Hands feature connects a remote Hermes chat to a chosen folder on a Mac or Linux laptop for terminal and file work, with an OS sandbox.</p>
+    <p class="summary-text">hermes-tenuo checks tool calls and their arguments against signed, expiring permissions before they reach tool handlers. It also supports narrowing permissions for subagents and includes Hands, which lets a remote Hermes work with a folder on a connected laptop using an OS sandbox.</p>
     <ul class="summary-highlights">
-      <li>Warrants can limit tools, arguments, and duration.</li>
-      <li>Hands supports local terminal and file work.</li>
-      <li>Hands internet access is off by default.</li>
+      <li>Permissions can restrict tools, arguments, and duration.</li>
+      <li>Subagents cannot receive more authority than their parent.</li>
+      <li>Hands supports terminal and file work, not GUI or browser control.</li>
     </ul>
   </div>
 </section>
@@ -156,24 +156,36 @@
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
     <h2>Tenuo for Hermes Agent</h2>
-<p><strong>Let Hermes work. Decide what it can do.</strong></p>
-<p>Give your Hermes agent <strong>signed, expiring permissions</strong> with Tenuo warrants:
-which tools it may call, which arguments it may use, and for how long.
-With <strong>Hands</strong>, connect your remote Hermes to a project on your Mac or Linux
-laptop while its memory and skills stay on the server.</p>
+<p><strong>Let Hermes work on its own, with rules it can't simply ignore.</strong></p>
+<p>Instructions in a prompt are requests. A model can forget them, misread them, or be talked out of them by a web page or email it reads. hermes-tenuo checks each tool call in code, before it runs, against a signed, expiring permission you create. A call outside it never reaches the tool, and Hermes is told why. With that in place you can leave Hermes to run a nightly job, share one bot with a team, or hand a subagent a single task.</p>
+<h3>What you can do</h3>
+<ul>
+<li><strong>Allow only the tools a task needs.</strong> Anything not on the list, such as <code>terminal</code> or <code>write_file</code>, is refused.</li>
+<li><strong>Limit the arguments too.</strong> Read files only under <code>/data/reports</code>, write only under <code>/tmp/nightly</code>, keep a number in a range. Path checks resist <code>../</code> tricks.</li>
+<li><strong>Keep destructive actions off the table.</strong> Leave shell and write tools out entirely, or limit an allowed terminal to the programs you name with a delegation plan or a role. That checks which program starts, not what it does next, so add patterns when only exact commands should run.</li>
+<li><strong>Give subagents less than their parent.</strong> A <code>delegate_task</code> child can never get more than its parent had, and you can narrow it further with <code>child_warrant</code> or a delegation plan.</li>
+<li><strong>Give each person in a shared chat their own limits.</strong> In a Telegram, Discord or Slack group, teammates can search and read while only you run commands. <a href="https://github.com/tenuo-ai/hermes-tenuo/blob/main/docs/reference.md#role-based-access-for-the-gateway">Roles</a> follow who sent each message, with no keys to manage.</li>
+<li><strong>Let a subagent do one thing, once.</strong> <code>max_uses</code> in a delegation plan <a href="https://github.com/tenuo-ai/hermes-tenuo/blob/main/docs/reference.md#use-limits">caps how often a tool is used</a>: per child, or in total for the warrant however many children it starts.</li>
+<li><strong>Scope Kanban workers per task.</strong> Each worker needs its own task warrant; without one, all its tool calls are blocked. When a worker's warrant refuses a call, the task is marked blocked on the board.</li>
+<li><strong>Limit what prompt injection can do.</strong> hermes-tenuo doesn't detect injected instructions. It limits what a misled agent can do: a call outside its permission is refused however the model was persuaded.</li>
+<li><strong>See every decision, and watch before you enforce.</strong> Calls checked against a permission are logged locally, allowed and refused (<code>hermes-tenuo audit --denied</code>). While you tune a permission, <code>on_denial: log</code> logs ordinary policy denials without blocking. Calls that start a subagent (<code>delegate_task</code>) or hand work to another agent (<code>tenuo_delegate</code>), denials under incoming A2A grants, and internal enforcement errors still block. A setup that blocks every call from startup, such as a permission that cannot be loaded, is reported in the Hermes log, not the audit log.</li>
+</ul>
+<p>Installing the plugin alone leaves ordinary sessions unrestricted; configure a warrant to protect them, as shown below. Kanban workers are an exception: once the plugin is enabled, each worker needs its own task warrant or all its tool calls are blocked.</p>
+<p><strong>Why it holds:</strong> the check runs outside the model, in Tenuo's Rust core, so no prompt can argue with it. Permissions are Ed25519-signed and expire, and Hermes accepts only those signed by a key you trust. Authority can only narrow as it is handed to subagents, other agents or <a href="https://github.com/tenuo-ai/hermes-guests">guests</a>, and each hop is verified as a chain.</p>
+<p>Also in this plugin:</p>
 <table>
 <thead>
 <tr>
-<th>What do you want Hermes to do?</th>
+<th>Want to</th>
 <th>Start here</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>Run a task with clear limits on tools, files and duration</td>
+<td>Limit tools, files and duration for a task</td>
 <td><a href="#try-tenuo-warrants">Try Tenuo warrants</a></td>
 </tr>
 <tr>
-<td>Work in a local project from your existing remote chat</td>
+<td>Let your remote Hermes work in a folder on your laptop</td>
 <td><a href="#try-hands">Try Hands</a></td>
 </tr>
 <tr>
@@ -181,11 +193,10 @@ laptop while its memory and skills stay on the server.</p>
 <td><a href="https://github.com/tenuo-ai/hermes-tenuo/blob/main/docs/mcp-wrapper.md">Verify delegated MCP calls</a></td>
 </tr>
 </tbody></table>
-<p>Use either feature on its own, or both together.</p>
 <h3>Try Tenuo warrants</h3>
-<p>Give a nightly report job access to its reports folder, let a researcher search
-without writing files, or give a delegated agent fewer permissions than its
-parent. The limits are checked before the tool handler runs.</p>
+<p>Let a research task search without writing files, keep a reporting session to its
+reports folder, or give a delegated agent fewer permissions than its parent. The
+limits are checked before the tool handler runs.</p>
 <p>A warrant is a signed permission slip with an expiry. Here is a shortened
 example from the runnable demo:</p>
 <pre><code class="language-text">ALLOW  read_file  path=/data/reports/q3.csv
@@ -203,7 +214,7 @@ For example, this grants only <code>web_search</code> for one hour:</p>
 </code></pre>
 <p>The command prints the configuration and signing-key instructions. Apply them
 in the Hermes profile serving the task, check the configuration, and restart
-that profile. Installing the plugin alone does not activate tool authorization.</p>
+that profile. In ordinary sessions, installing the plugin alone does not activate tool authorization.</p>
 <p><a href="https://github.com/tenuo-ai/hermes-tenuo/blob/main/docs/walkthrough.md">See a real-model prompt-injection walkthrough</a>
 or explore <a href="https://github.com/tenuo-ai/hermes-tenuo/blob/main/docs/reference.md#scoping-arguments">argument constraints and delegation</a>.
 Tool-call authorization checks the calls and arguments it covers; Hands adds
