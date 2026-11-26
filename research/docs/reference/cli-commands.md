@@ -3106,8 +3106,10 @@ You can also generate a brand-new pet from a text description with the `/hatch` 
 ## `hermes sessions`
 
 ```
-hermes sessions <subcommand>
+hermes sessions [<subcommand>]
 ```
+
+With no subcommand on a terminal, `hermes sessions` opens the same picker as `browse`: pick a recent conversation with the arrow keys and Enter resumes it (`hermes --resume <id>`). Off a terminal it prints the `list` output.
 
 Subcommands:
 
@@ -3117,7 +3119,7 @@ Description
 
 `list`
 
-List recent sessions.
+List recent conversations: one row per thread (a compressed thread shows its live continuation's id), ranked by last message. Subagent runs are left out; so are cron/webhook/push/kanban/tool/one-shot runs and empty sessions unless you pass `--all`.
 
 `browse`
 
