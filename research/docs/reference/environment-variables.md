@@ -2958,7 +2958,7 @@ Override the ASCII banner logo at CLI startup.
 
 `DELEGATION_MAX_CONCURRENT_CHILDREN`
 
-Max parallel subagents per `delegate_task` batch (default: `3`, floor of 1, no ceiling). Also configurable via `delegation.max_concurrent_children` in `config.yaml` — the config value takes priority.
+Max parallel subagents per `delegate_task` batch (default: `10`, floor of 1, no ceiling). Read only when no `delegation.max_concurrent_children` value is loaded: under `--ignore-user-config` or `--safe-mode`, or with the key set to `null` in `config.yaml`. Any config value, including the shipped default, takes priority.
 
 ### HERMES\_WRITE\_SAFE\_ROOT
 

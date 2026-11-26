@@ -1207,7 +1207,7 @@ Why look
 
 Aggregator with provider preferences, public model catalog
 
-`plugins/model-providers/gemini/`
+`plugins/model-providers/google/`
 
 `thinking_config` translation (native + OpenAI-compat nested forms)
 

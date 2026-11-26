@@ -986,6 +986,12 @@ user-guide/features/plugins.md § Plugin code inside the gateway: which client s
 
 `hermes_cli.plugin_session`
 
+`turn_origin`
+
+user-guide/features/plugins.md § Plugin code inside the gateway: which client sent the turn and who is attached
+
+`hermes_cli.plugin_session`
+
 `session_viewers`
 
 user-guide/features/plugins.md § Plugin code inside the gateway: which client sent the turn and who is attached
@@ -1122,9 +1128,39 @@ whole module
 
 plugins/index.md § Schedule a job once and read where cron delivers it
 
+`agent.bounded_response`
+
+`read_streaming_error_body`
+
+model-provider-plugin.md § Public helpers for native Gemini reasoning
+
+`agent.gemini_model_family`
+
+whole module
+
+model-provider-plugin.md § Public helpers for native Gemini reasoning
+
+`agent.gemini_urls`
+
+whole module
+
+model-provider-plugin.md § Public helpers for native Gemini reasoning
+
+`agent.output_budget_timeout`
+
+whole module
+
+model-provider-plugin.md § Public helpers for native Gemini reasoning
+
+`agent.process_bootstrap`
+
+`build_keepalive_http_client`
+
+model-provider-plugin.md § Public helpers for native Gemini reasoning
+
 `agent.reasoning_effort`
 
-`gemini_thinking_config`
+`bare_gemini_model_id`
 
 model-provider-plugin.md § Public helpers for native Gemini reasoning
 
@@ -1136,6 +1172,54 @@ model-provider-plugin.md § Public helpers for native Gemini reasoning
 
 `agent.reasoning_effort`
 
-`bare_gemini_model_id`
+`gemini_thinking_config`
+
+model-provider-plugin.md § Public helpers for native Gemini reasoning
+
+`agent.reasoning_effort`
+
+`gemini_top_thinking_level`
+
+model-provider-plugin.md § Public helpers for native Gemini reasoning
+
+`agent.ssl_verify`
+
+`resolve_httpx_verify`
+
+model-provider-plugin.md § Public helpers for native Gemini reasoning
+
+`hermes_cli.auth`
+
+`default_httpx_verify`
+
+model-provider-plugin.md § Public helpers for native Gemini reasoning
+
+`hermes_cli.auth`
+
+`get_provider_auth_state`
+
+model-provider-plugin.md § Public helpers for native Gemini reasoning
+
+`hermes_cli.auth`
+
+`nous_portal_base_url`
+
+model-provider-plugin.md § Public helpers for native Gemini reasoning
+
+`hermes_cli.auth`
+
+`resolve_nous_access_token`
+
+model-provider-plugin.md § Public helpers for native Gemini reasoning
+
+`hermes_cli.config_providers`
+
+`get_custom_provider_tls_settings`
+
+model-provider-plugin.md § Public helpers for native Gemini reasoning
+
+`tools.schema_sanitizer`
+
+`normalize_type_array`
 
 model-provider-plugin.md § Public helpers for native Gemini reasoning

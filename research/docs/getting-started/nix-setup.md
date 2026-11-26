@@ -916,7 +916,7 @@ Check it with `hermes webapp --status` (a gateway that has just restarted takes 
     
 -   **Sign-in.** Keep the sign-in the backend used, in `environmentFiles` (`HERMES_DASHBOARD_BASIC_AUTH_*`, `HERMES_DASHBOARD_OAUTH_CLIENT_ID`, `HERMES_DASHBOARD_OIDC_*`) or in `settings.dashboard`: the Webapp signs in with the same providers, and a non-loopback `host` needs one.
     
--   **The address.** `settings.webapp.host` takes `127.0.0.1`, `::1`, `localhost`, `0.0.0.0`, `::` or one IP address of this machine, not a hostname. A backend bound to a name (such as a Tailscale MagicDNS name) moves to that name's IP address. `settings.webapp` has no counterpart to `backend.waitFor` or `backend.interfaceName`, so the address must exist when the gateway starts.
+-   **The address.** `settings.webapp.host` takes `127.0.0.1`, `::1`, `localhost`, `0.0.0.0`, `::` or one IP address of this machine, not a hostname. A backend bound to a name (such as a Tailscale MagicDNS name) moves to that name's IP address. `settings.webapp` has no counterpart to `backend.waitFor` or `backend.interfaceName`: the gateway service waits up to 20 seconds for the address to be assigned to an interface, then keeps running without the Webapp until it restarts.
     
 -   **Desktop.** With `backend.mode = "none"`, the `programs.hermes-agent.desktop` wrapper no longer points the app at the backend (`HERMES_DESKTOP_REMOTE_URL`), and `backend.sessionTokenFile` has no effect. The app attaches to the gateway on this machine instead.
     

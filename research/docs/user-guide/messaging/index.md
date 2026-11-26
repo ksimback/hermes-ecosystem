@@ -573,7 +573,7 @@ hermes gateway install --force
 
 A positive value makes the generated unit use `Type=notify`, `NotifyAccess=main`, and the matching `WatchdogSec`. Hermes sends heartbeats only while its event loop is making timely progress; systemd restarts the process when they stop. The default `0` keeps the existing `Type=simple` behavior. This setting is Linux/systemd-only and does not treat an ordinary platform network disconnect as an event-loop failure.
 
-Under `Type=notify` the gateway reports ready only after every served profile's adapters connect, one profile at a time. Before each secondary profile's connect it sends systemd `EXTEND_TIMEOUT_USEC` for that connect's budget plus a margin. A large multi-profile boot can therefore run past systemd's default 90 s start timeout, while a boot that stops making progress is still killed.
+Under `Type=notify` the gateway reports ready only after every served profile's adapters have made their first connect attempt. Secondary profiles are prepared one at a time, then connect together in waves that never put two profiles on one bot token or listener. Before each preparation step and before each connect wave the gateway sends systemd `EXTEND_TIMEOUT_USEC` for the largest connect budget involved plus a margin. A large multi-profile boot can therefore run past systemd's default 90 s start timeout, while a boot that stops making progress is still killed.
 
 ## Chat Commands (Inside Messaging)
 
