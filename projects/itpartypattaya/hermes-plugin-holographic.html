@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic#software",
   "name": "hermes-plugin-holographic",
-  "description": "Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and holographic retrieval. By default, it requires no API key, network access, or model calls; searching by meaning is an optional online add-on.",
+  "description": "Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it uses no API key, network access, or model calls; search by meaning is an optional online add-on.",
   "url": "https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic",
   "codeRepository": "https://github.com/itpartypattaya/hermes-plugin-holographic",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "itpartypattaya",
     "url": "https://github.com/itpartypattaya"
   },
-  "dateModified": "2026-11-26T15:07:13.000Z",
+  "dateModified": "2026-11-26T20:28:30.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and holographic retrieval. By default, it requires no API key, network access, or model calls; searching by meaning is an optional online add-on.</p>
+    <p class="summary-text">Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it uses no API key, network access, or model calls; search by meaning is an optional online add-on.</p>
     <ul class="summary-highlights">
-      <li>Stores facts in a local SQLite database.</li>
-      <li>Uses FTS5, trust scoring, and entity resolution.</li>
-      <li>Optional online search by meaning is off by default.</li>
+      <li>Stores facts in a SQLite database.</li>
+      <li>Supports FTS5 search and HRR retrieval.</li>
+      <li>Optional online search by meaning.</li>
     </ul>
   </div>
 </section>
@@ -302,6 +302,16 @@ if it fails on dependencies, update Hermes first — the cause is usually in cor
 <td><code>recall_source</code></td>
 <td><code>off</code></td>
 <td><code>short</code>: each fact recalled before a turn also says where it was written (<code>recorded 2026-10-12 · Leon · this chat</code>; no ids). Off by default: it costs tokens and tells the room which chat a fact came from. <code>list</code>, <code>history</code> and <code>export</code> always show the source in full</td>
+</tr>
+<tr>
+<td><code>recall_history</code></td>
+<td><code>on</code></td>
+<td>A fact recalled before a turn whose text was changed or corrected in the last 90 days ends in <code>(changed 2026-10-12)</code> / <code>(corrected 2026-10-12)</code>; the old text is never shown. <code>off</code>: the lines of 0.31.7</td>
+</tr>
+<tr>
+<td><code>absolute_dates</code></td>
+<td><code>on</code></td>
+<td>A relative day word in a text <code>fact_store</code> stores (today, tomorrow, yesterday, сегодня, завтра, вчера, …) gets its day: <code>tomorrow (2026-11-28)</code>, listed in the result's <code>dates_added</code>; <code>dates: "keep"</code> on a call stores the text as written. Automatic extraction is not changed</td>
 </tr>
 <tr>
 <td><code>cron_writes</code></td>
@@ -729,12 +739,7 @@ stem is another, unrelated word (<code>pearly</code> stems to <code>pear</code>)
 (<a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/LICENSES/OEWN-CC-BY-4.0.md">licence</a>, <a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/LICENSES/OEWN-WNDB-License.txt">WordNet notice</a>), 30 KB, loaded on the
 first English word (0.04 s, 2.4 MB). Missing from it: <code>dentist</code> / <code>dental</code>, <code>anxiety</code> / <code>anxious</code>, <code>runner</code> /
 <code>run</code>, <code>rental</code> / <code>rent</code>, <code>medical</code> / <code>medicine</code> (left out by those filters); <code>pronunciation</code> / <code>pronounce</code> is in
-it but its spelling change is too large for the shape filter. <code>_EN_DERIVATION = "rules"</code> (and <code>_RU_DERIVATION</code>) restores 0.9.0's rules. Russian
-stems of six letters also match on their first five (<code>покупа</code> / <code>покупк</code>). Only in text whose language is
-determined (English by its function words; Cyrillic without Ukrainian or Belarusian letters), and only within that
-language. A root counts 0.6 of the word itself and <strong>never recalls a fact on its own</strong>: suffix rules cannot tell a
-derivation from a look-alike (<code>войной</code> / <code>вой</code>, <code>полный</code> / <code>пол</code>), so automatic recall needs a word of the message
-itself, and roots add to it. In <code>search</code> a root brings</li>
+it but its spelling change is too large for the shape filter. <code>_EN_DERIVATION = "rules"</code> (and <code>_RU_DERIVATION</code>) restores 0.9.0</li>
 </ul>
 <hr>
 <p><em>README truncated. <a href="https://github.com/itpartypattaya/hermes-plugin-holographic#readme">Continue reading on GitHub</a></em></p>
