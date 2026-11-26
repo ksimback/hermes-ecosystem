@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>nesquena/hermes-webui — Hermes Agent Workspaces &amp; GUIs | Hermes Atlas</title>
-<meta name="description" content="Hermes WebUI is a lightweight, dark-themed browser interface for Hermes Agent, with a three-panel layout for sessions, chat, and workspace files. The README…">
+<meta name="description" content="Hermes WebUI is a browser-based interface for Hermes Agent, with a three-panel layout for chat, sessions, navigation, and workspace files. The README says it…">
 <link rel="canonical" href="https://hermesatlas.com/projects/nesquena/hermes-webui">
 <meta property="og:title" content="nesquena/hermes-webui — Hermes Atlas">
-<meta property="og:description" content="Hermes WebUI is a lightweight, dark-themed browser interface for Hermes Agent, with a three-panel layout for sessions, chat, and workspace files. The README…">
+<meta property="og:description" content="Hermes WebUI is a browser-based interface for Hermes Agent, with a three-panel layout for chat, sessions, navigation, and workspace files. The README says it…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/nesquena/hermes-webui">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="nesquena/hermes-webui — Hermes Atlas">
-<meta name="twitter:description" content="Hermes WebUI is a lightweight, dark-themed browser interface for Hermes Agent, with a three-panel layout for sessions, chat, and workspace files. The README…">
+<meta name="twitter:description" content="Hermes WebUI is a browser-based interface for Hermes Agent, with a three-panel layout for chat, sessions, navigation, and workspace files. The README says it…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-webui&amp;subtitle=Hermes+WebUI%3A+The+best+way+to+use+Hermes+Agent+from+the+web+or+from+your+phone%21&amp;kind=project+%C2%B7+workspaces">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/nesquena/hermes-webui#software",
   "name": "hermes-webui",
-  "description": "Hermes WebUI is a lightweight, dark-themed browser interface for Hermes Agent, with a three-panel layout for sessions, chat, and workspace files. The README says it offers CLI parity, uses the existing Hermes agent and models, and can be accessed through an SSH tunnel.",
+  "description": "Hermes WebUI is a browser-based interface for Hermes Agent, with a three-panel layout for chat, sessions, navigation, and workspace files. The README says it offers near-parity with the CLI and can be accessed securely through an SSH tunnel, using the existing Hermes setup and models.",
   "url": "https://hermesatlas.com/projects/nesquena/hermes-webui",
   "codeRepository": "https://github.com/nesquena/hermes-webui",
   "applicationCategory": "DesktopEnhancementApplication",
@@ -47,13 +47,13 @@
     "name": "nesquena",
     "url": "https://github.com/nesquena"
   },
-  "dateModified": "2026-11-26T08:01:26.000Z",
+  "dateModified": "2026-11-26T16:58:28.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 19641
+    "userInteractionCount": 19638
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes WebUI is a lightweight, dark-themed browser interface for Hermes Agent, with a three-panel layout for sessions, chat, and workspace files. The README says it offers CLI parity, uses the existing Hermes agent and models, and can be accessed through an SSH tunnel.</p>
+    <p class="summary-text">Hermes WebUI is a browser-based interface for Hermes Agent, with a three-panel layout for chat, sessions, navigation, and workspace files. The README says it offers near-parity with the CLI and can be accessed securely through an SSH tunnel, using the existing Hermes setup and models.</p>
     <ul class="summary-highlights">
-      <li>Three-panel interface for sessions, chat, and workspace files</li>
-      <li>Includes model, profile, and workspace controls</li>
-      <li>Built with Python and vanilla JavaScript</li>
+      <li>Dark-themed interface with chat, sessions, and workspace browsing</li>
+      <li>Includes profile, model, workspace, and session controls</li>
+      <li>Can be launched with bootstrap.py or start.sh</li>
     </ul>
   </div>
 </section>
@@ -779,6 +779,11 @@ export HERMES_WEBUI_AUTO_INSTALL=1  # enable auto-install of agent deps (disable
 <td>Legacy operator override for the max compact <code>Session</code> objects held in the in-memory LRU. Prefer the <code>webui.sessions_cache_max</code> key in <code>config.yaml</code> (which takes precedence); this env var remains a fallback. Bounds resident memory so long-running installs cannot accumulate every session ever touched and eventually crash (#4765/#2233/#4633). Eviction only ever drops clean, persisted, non-active sessions; an evicted session lazily reloads from its JSON sidecar on next access</td>
 </tr>
 <tr>
+<td><code>HERMES_WEBUI_MALLOC_ARENA_MAX</code></td>
+<td><code>2</code></td>
+<td>Linux glibc only: caps the server's malloc arenas at startup so idle per-thread arenas cannot pile up resident memory (#9052). Set a positive integer to change the cap, or <code>0</code>/<code>off</code>/<code>false</code> to keep glibc's default. A <code>MALLOC_ARENA_MAX</code> or <code>GLIBC_TUNABLES=glibc.malloc.arena_max=N</code> in the launch environment wins. Read at process start, so set it in the launch environment; exec'd child processes keep glibc's default. Native code that allocates from many threads at once can be slower with a small cap; raise it or turn it off if that matters for your setup</td>
+</tr>
+<tr>
 <td><code>HERMES_WEBUI_RUN_JOURNAL_SWEEP</code></td>
 <td><em>(unset)</em></td>
 <td>Set to <code>0</code>/<code>false</code>/<code>off</code> to disable the run-journal retention sweep entirely (#7613)</td>
@@ -923,17 +928,12 @@ docker run -d \
 <h4>Multi-container setups</h4>
 <p>If you want the agent and WebUI in separate containers (for isolation, or because you're already running an agent gateway elsewhere):</p>
 <pre><code class="language-bash"># Agent + WebUI
-docker compose -f docker-compose.two-container.yml up -d
+docker compose -f docker-compo
 
-# Agent + Dashboard + WebUI
-docker compose -f docker-compose.three-container.yml up -d
+---
+
+*README truncated. [Continue reading on GitHub](https://github.com/nesquena/hermes-webui#readme)*
 </code></pre>
-<p>Both compose files use <strong>named Docker volumes</strong> by default, which solves the UID/GID problem by construction. If you need bind mounts to share an existing host directory, see <a href="https://github.com/nesquena/hermes-webui/blob/main/docs/docker.md"><code>docs/docker.md</code></a> for the full migration recipe.</p>
-<blockquote>
-<p><strong>Known limitation (#681)</strong>: in the two-container setup, tools triggered from the WebUI run in the <strong>WebUI container</strong>, not the agent container. If you need git/node/etc. on the WebUI's filesystem, either use the single-container setup, e</p>
-</blockquote>
-<hr>
-<p><em>README truncated. <a href="https://github.com/nesquena/hermes-webui#readme">Continue reading on GitHub</a></em></p>
 
   </section>
 </details>
