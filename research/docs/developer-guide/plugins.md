@@ -609,6 +609,12 @@ oauth:
     authorize_params: {access_type: offline, prompt: consent}  # Google issues a refresh token only with these
 ```
 
+Two optional fields cover authorization servers that are stricter than Google:
+
+-   `redirect_port` (1024–65535) and `redirect_path` (default `/callback`) pin the loopback redirect to `http://127.0.0.1:<port><path>`, for an IdP that only accepts a redirect URI registered verbatim in the app's settings (Linear, QuickBooks). Leave `redirect_port` out and the OS picks a free port per sign-in.
+-   `redirect_host: localhost` writes `http://localhost:<port><path>` into the redirect URI instead of `127.0.0.1`, for an IdP that refuses IP addresses in redirect URIs (QuickBooks). The listener still binds `127.0.0.1` only. QuickBooks accepts a `localhost` redirect for development (sandbox) keys only; its production keys need a public HTTPS redirect, which a loopback sign-in can't provide.
+-   `scope_separator: ","` joins the scopes with commas instead of spaces, for an IdP whose authorize endpoint wants `scope=read,write` (Linear). Granted scopes are read back whichever separator the IdP answers with.
+
 The user signs in once from a terminal with `hermes auth add gemini-voice:google` (the plugin's key, a colon, the entry's `id`). That is the same PKCE login the model-provider helper runs: a loopback redirect on `127.0.0.1`, with an SSH tunnel hint when Hermes runs on a remote host. If the IdP grants fewer scopes than declared, nothing is saved. `hermes auth status|refresh|logout gemini-voice:google` show, refresh and remove the grant. It lives in the active profile's `auth.json`; Hermes refreshes it on use once less than two minutes remain and never starts a sign-in under the gateway or cron.
 
 The plugin calls the API through the same helper, with the entry's `id` as the provider:
@@ -726,7 +732,7 @@ Providers whose sign-in the plugin uses through Hermes (today: `openai-codex`). 
 
 list of mappings
 
-OAuth clients the plugin uses through Hermes: `id`, `authorize_url`, `token_url`, `scopes`, `client_id_env`, optional `client_secret_env`, `hosts`, optional `authorize_params`. Signed in with `hermes auth add <plugin>:<id>`, used through `credentialed_provider_request`. See [Use your own OAuth client](#use-your-own-oauth-client-google-and-other-apis).
+OAuth clients the plugin uses through Hermes: `id`, `authorize_url`, `token_url`, `scopes`, `client_id_env`, optional `client_secret_env`, `hosts`, optional `authorize_params`, `scope_separator`, `redirect_port`, `redirect_path`, `redirect_host`. Signed in with `hermes auth add <plugin>:<id>`, used through `credentialed_provider_request`. See [Use your own OAuth client](#use-your-own-oauth-client-google-and-other-apis).
 
 ```
 # plugin.yaml — manifest v2 example
