@@ -11,13 +11,13 @@
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic">
 <meta property="og:site_name" content="Hermes Atlas">
-<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-plugin-holographic&amp;subtitle=Holographic+memory+provider+for+Hermes+Agent%3A+local+SQLite+fact+store%2C+HRR+retrieval%2C+18+languages.+Maintained+by+itpartypattaya.&amp;kind=project+%C2%B7+memory">
+<meta property="og:image" content="https://hermesatlas.com/api/og?title=hermes-plugin-holographic&amp;subtitle=Holographic+memory+provider+for+Hermes+Agent%3A+local+SQLite+fact+store%2C+HRR+retrieval%2C+28+languages.+Maintained+by+itpartypattaya.&amp;kind=project+%C2%B7+memory">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="itpartypattaya/hermes-plugin-holographic — Hermes Atlas">
 <meta name="twitter:description" content="Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution,…">
-<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-plugin-holographic&amp;subtitle=Holographic+memory+provider+for+Hermes+Agent%3A+local+SQLite+fact+store%2C+HRR+retrieval%2C+18+languages.+Maintained+by+itpartypattaya.&amp;kind=project+%C2%B7+memory">
+<meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-plugin-holographic&amp;subtitle=Holographic+memory+provider+for+Hermes+Agent%3A+local+SQLite+fact+store%2C+HRR+retrieval%2C+28+languages.+Maintained+by+itpartypattaya.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic#software",
   "name": "hermes-plugin-holographic",
-  "description": "Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it uses no API key, network access, or model calls; search by meaning is an optional online add-on.",
+  "description": "Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it uses no API key, network connection, or model calls; searching by meaning is an optional online add-on.",
   "url": "https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic",
   "codeRepository": "https://github.com/itpartypattaya/hermes-plugin-holographic",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "itpartypattaya",
     "url": "https://github.com/itpartypattaya"
   },
-  "dateModified": "2026-11-27T08:18:22.000Z",
+  "dateModified": "2026-11-27T13:12:53.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -117,7 +117,7 @@
   <h1 class="project-name">
     <span class="org">itpartypattaya</span><span class="slash">/</span>hermes-plugin-holographic
   </h1>
-  <p class="project-desc">Holographic memory provider for Hermes Agent: local SQLite fact store, HRR retrieval, 18 languages. Maintained by itpartypattaya.</p>
+  <p class="project-desc">Holographic memory provider for Hermes Agent: local SQLite fact store, HRR retrieval, 28 languages. Maintained by itpartypattaya.</p>
 
   <div class="meta-row">
     <span class="stars">★ 48</span>
@@ -141,7 +141,7 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it uses no API key, network access, or model calls; search by meaning is an optional online add-on.</p>
+    <p class="summary-text">Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it uses no API key, network connection, or model calls; searching by meaning is an optional online add-on.</p>
     <ul class="summary-highlights">
       <li>Stores facts in a SQLite database.</li>
       <li>Supports FTS5 search and HRR retrieval.</li>
@@ -276,7 +276,7 @@ if it fails on dependencies, update Hermes first — the cause is usually in cor
 <tr>
 <td><code>prefetch_min_coverage</code></td>
 <td><code>0.3</code></td>
-<td>Share of a message's informative words (rarer words weigh more) a fact must match to be recalled before the turn; a fact sharing one word of a longer message is recalled only when no other fact holds that word or it may be a name (capitalized inside the sentence, or in a script without capitals)</td>
+<td>Share of a message's informative words (rarer words weigh more) a fact must match to be recalled before the turn; a fact sharing one word of a longer message is recalled only when no other fact holds that word or it may be a name (capitalized inside the sentence; in a script without capitals, a word of a declared entity's name)</td>
 </tr>
 <tr>
 <td><code>prefetch_clause_coverage</code></td>
@@ -642,14 +642,16 @@ spelling variants) and examples that do not" loading="lazy" decoding="async"></p
 Polish and Dutch, with two plural rules it lacks (Portuguese <code>ação</code> / <code>ações</code>, Spanish <code>lápiz</code> / <code>lápices</code>); for
 Arabic, Larkey's light stemmer (the one Lucene ships) next to Snowball's, plus the word without a glued conjunction or
 preposition before an alef (<code>لإيرما</code>, "for Irma"; <code>ولإيرما</code>, "and for Irma"); for Bengali, a light suffix stripper
-(Snowball has none) that leaves at least three letters, so <code>মাটি</code> (soil) is not <code>মা</code> (mother). Italian, Turkish,
+(Snowball has none) that leaves at least three letters, so <code>মাটি</code> (soil) is not <code>মা</code> (mother); for Amharic,
+Ukrainian and Belarusian, light stemmers of the plugin's own (see below). Italian, Turkish,
 Polish and Dutch words (0.11.0) are stemmed as written and folded: Snowball's Turkish and Polish read the letters
 folding drops (<code>çocuğun</code> is <code>çocuk</code>, <code>domów</code> is <code>dom</code>), and a word typed without its marks still meets one typed with
 them. Turkish also gets the noun without the <code>s</code> of a possessive that Snowball leaves (<code>kedisi</code> → <code>kedi</code>); Dutch keeps
 a <code>ge-</code> that Snowball takes off (<code>gezin</code>, family, is not <code>zin</code>, sense). Polish needs snowballstemmer 3.1 or newer
 (current Hermes installs 3.1.1); with 2.x Polish words compare as written and the rest of Polish (function words,
 greetings) works.</li>
-<li><strong>Which language</strong>: the script decides for Cyrillic, Arabic, Devanagari and Bengali. Latin text is English, Spanish,
+<li><strong>Which language</strong>: the script decides for Arabic, Devanagari and Bengali; Cyrillic text is Russian unless its
+letters and function words say Ukrainian or Belarusian (see below, 0.33.1). Latin text is English, Spanish,
 French, Portuguese, Indonesian, German, Italian, Turkish, Polish or Dutch by the function words it uses ("the", "el",
 "le", "o", "yang", "der", "il", "bir", "się", "het"). Text with none of them is stemmed in English, Spanish, French,
 Portuguese, Indonesian and German, and in Turkish, Polish or Dutch only when it has their letters (<code>ı ğ ş</code>; <code>ą ę ł ń ś ź ż ć</code>; <code>ij</code>): Polish stems of English words join unrelated ones (<code>army</code> / <code>arm</code>, <code>apply</code> / <code>apple</code>), so a
@@ -660,7 +662,14 @@ French "his". With no other evidence the English list applies, as it did to all 
 words of the four newer languages that are also everyday words, names or abbreviations elsewhere (Italian <code>come</code>,
 <code>dove</code>, <code>per</code>; Turkish <code>kim</code>, <code>ben</code>; Polish <code>bo</code>; Dutch <code>door</code>, <code>met</code>, <code>van</code>, <code>wat</code>) do not tell the language and are
 dropped only where that language alone fits the other words: "Ana come carne" stays Spanish, "Kim Lane lives in Oslo"
-keeps <code>kim</code>. Italian <code>mia</code> (my) is not on the list: it is a common name.</li>
+keeps <code>kim</code>. Italian <code>mia</code> (my) is not on the list: it is a common name. 0.33.1: Turkish <code>ve</code> (and), its commonest
+word, no longer votes for Italian (except before a clitic, <code>ve lo dico</code>); Turkish postpositions and determiners
+(<code>tarafından</code>, <code>diğer</code>, <code>bazı</code>, <code>arasında</code>, <code>rağmen</code> …), more Polish ones (<code>gdy</code>, <code>aby</code>, <code>jako</code>, <code>podczas</code>, <code>również</code>
+…) and a few Dutch ones (<code>zich</code>, <code>toen</code>, <code>tijdens</code> …) tell the language and stay search words; Polish <code>w</code> (in) and <code>z</code>
+(with) vote when written alone in lower case before another word, <code>z</code> only beside other Polish evidence, so <code>George W. Bush</code>, <code>Gen Z</code> and <code>gen z trends</code> are not read as Polish. On FLORES-200 devtest Turkish is told exactly in 91 % of
+sentences (was 78 %; of no language 5 %, was 8 %), Polish in 96 % (was 84 %; of no language 1 %, was 3 %). Of the
+other languages only Dutch moves: four sentences that tied with Spanish are Dutch alone. Retrieval moves by at most
+0.1 point (Dutch).</li>
 <li><strong>Folding</strong>: Latin accents and ligatures (<code>esta</code> finds <code>está</code>, <code>coeur</code> finds <code>cœur</code>), Arabic vowel marks and letter
 variants, the Indic nukta, and native digits (<code>2027</code> finds <code>২০২৭</code>, <code>QX24</code> finds <code>QX২৪</code>). Folding also merges what
 only an accent tells apart (Spanish <code>año</code> / <code>ano</code>), as the FTS5 index already did. Turkish <code>ı</code> and Polish <code>ł</code> compare
@@ -730,16 +739,7 @@ pairs come from a dictionary (0.10.0): DerivBase.Ru, its direct derivation links
 has the shape of a derivation (<code>ночные</code> / <code>ночь</code>, <code>городской</code> / <code>город</code>, <code>учительница</code> / <code>учитель</code>, <code>дружеский</code> /
 <code>друг</code>; not <code>полный</code> / <code>пол</code> or <code>задача</code> / <code>дача</code>) — 46,756 pairs, Apache-2.0
 (<a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/LICENSES/DerivBase.Ru-Apache-2.0.txt">licence</a>), loaded on the first Russian word (about 0.3 s, 12 MB). English
-pairs come from Open English Wordnet 2025 (0.11.0): its derivation and pertainym links between single words, as stem
-pairs of the same shape (<code>teacher</code> / <code>teaches</code>, <code>pay</code> / <code>payment</code>, <code>deliver</code> / <code>delivery</code>, <code>decide</code> / <code>decision</code>,
-<code>angry</code> / <code>anger</code>, <code>allergic</code> / <code>allergy</code>; not <code>Peter</code> / <code>pet</code>, <code>meters</code> / <code>met</code> or <code>classic</code> / <code>class</code>, which
-0.9.0's suffix rules joined). A link is kept only when it is the derived word's commonest sense (<code>butter</code> is food
-before it is one who butts, <code>tower</code> a building before one who tows, <code>letter</code> writing before one who lets) and no
-stem is another, unrelated word (<code>pearly</code> stems to <code>pear</code>) — 5,428 pairs, CC BY 4.0 on Princeton WordNet 3.1
-(<a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/LICENSES/OEWN-CC-BY-4.0.md">licence</a>, <a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/LICENSES/OEWN-WNDB-License.txt">WordNet notice</a>), 30 KB, loaded on the
-first English word (0.04 s, 2.4 MB). Missing from it: <code>dentist</code> / <code>dental</code>, <code>anxiety</code> / <code>anxious</code>, <code>runner</code> /
-<code>run</code>, <code>rental</code> / <code>rent</code>, <code>medical</code> / <code>medicine</code> (left out by those filters); <code>pronunciation</code> / <code>pronounce</code> is in
-it but its spelling change is too large for the shape filter. <code>_EN_DERIVATION = "rules"</code> (and <code>_RU_DERIVATION</code>) restores 0.9.0</li>
+pairs come from Open English Wordnet 2025</li>
 </ul>
 <hr>
 <p><em>README truncated. <a href="https://github.com/itpartypattaya/hermes-plugin-holographic#readme">Continue reading on GitHub</a></em></p>
@@ -775,7 +775,7 @@ it but its spelling change is too large for the shape filter. <code>_EN_DERIVATI
         <div class="name"><span class="org">yoloshii /</span> ClawMem</div>
       </a>
       <a class="related-row" href="/projects/Signet-AI/signetai">
-        <div class="stars">★ 317</div>
+        <div class="stars">★ 318</div>
         <div class="name"><span class="org">Signet-AI /</span> signetai</div>
       </a>
       <a class="related-row" href="/projects/plur-ai/plur">
