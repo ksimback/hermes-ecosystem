@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>garrytan/gbrain — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="GBrain is a self-hostable place for personal notes and company documents, including facts, decisions, and call transcripts. Connected agents can search that…">
+<meta name="description" content="GBrain is a self-hostable memory system that lets AI agents read your notes and company documents from one place. It supports keyword search without API keys…">
 <link rel="canonical" href="https://hermesatlas.com/projects/garrytan/gbrain">
 <meta property="og:title" content="garrytan/gbrain — Hermes Atlas">
-<meta property="og:description" content="GBrain is a self-hostable place for personal notes and company documents, including facts, decisions, and call transcripts. Connected agents can search that…">
+<meta property="og:description" content="GBrain is a self-hostable memory system that lets AI agents read your notes and company documents from one place. It supports keyword search without API keys…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/garrytan/gbrain">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="garrytan/gbrain — Hermes Atlas">
-<meta name="twitter:description" content="GBrain is a self-hostable place for personal notes and company documents, including facts, decisions, and call transcripts. Connected agents can search that…">
+<meta name="twitter:description" content="GBrain is a self-hostable memory system that lets AI agents read your notes and company documents from one place. It supports keyword search without API keys…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=gbrain&amp;subtitle=Garry%27s+Opinionated+OpenClaw%2FHermes+Agent+Brain&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/garrytan/gbrain#software",
   "name": "gbrain",
-  "description": "GBrain is a self-hostable place for personal notes and company documents, including facts, decisions, and call transcripts. Connected agents can search that information and use it before answering; the README lists integrations including Claude Code, Codex, Hermes, OpenClaw, and ChatGPT.",
+  "description": "GBrain is a self-hostable memory system that lets AI agents read your notes and company documents from one place. It supports keyword search without API keys and connects to agents including Claude Code, Codex, Hermes, OpenClaw, Cursor, and ChatGPT.",
   "url": "https://hermesatlas.com/projects/garrytan/gbrain",
   "codeRepository": "https://github.com/garrytan/gbrain",
   "applicationCategory": "UtilitiesApplication",
@@ -47,13 +47,13 @@
     "name": "garrytan",
     "url": "https://github.com/garrytan"
   },
-  "dateModified": "2026-11-26T21:47:48.000Z",
+  "dateModified": "2026-11-27T08:48:20.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
       "@type": "LikeAction"
     },
-    "userInteractionCount": 33628
+    "userInteractionCount": 33647
   },
   "isPartOf": {
     "@id": "https://hermesatlas.com/#website"
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>TypeScript</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-26</span>
+    <span><span class="meta-label">updated</span>2026-11-27</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">GBrain is a self-hostable place for personal notes and company documents, including facts, decisions, and call transcripts. Connected agents can search that information and use it before answering; the README lists integrations including Claude Code, Codex, Hermes, OpenClaw, and ChatGPT.</p>
+    <p class="summary-text">GBrain is a self-hostable memory system that lets AI agents read your notes and company documents from one place. It supports keyword search without API keys and connects to agents including Claude Code, Codex, Hermes, OpenClaw, Cursor, and ChatGPT.</p>
     <ul class="summary-highlights">
       <li>MIT-licensed and free to self-host.</li>
-      <li>Search works by keyword before adding an API key.</li>
-      <li>Supports agent connections through MCP and setup commands.</li>
+      <li>Agents can search notes and company documents.</li>
+      <li>Setup can add MCP connections and brain-first instructions.</li>
     </ul>
   </div>
 </section>
@@ -466,6 +466,10 @@ for installation, data flow, per-harness limitations, and removal.</p>
 <p><strong>Canonical files preserve file-backed knowledge.</strong> Your brain repo holds the Markdown; the database is an index rebuildable from it, and git deletes become soft-deletes. DB-only pages, unresolved facts, history and operational state need a database backup: <a href="https://github.com/garrytan/gbrain/blob/main/docs/guides/where-your-memory-lives.md">where your memory lives</a>, <a href="https://github.com/garrytan/gbrain/blob/main/docs/architecture/system-of-record.md">system of record</a>. Publish public subsets, share team mounts, or point a thin client at a colleague's brain. Topologies in <a href="https://github.com/garrytan/gbrain/blob/main/docs/architecture/topologies.md"><code>docs/architecture/topologies.md</code></a>.</p>
 <p><strong>Two organizational axes (brain ⊥ source).</strong> A <em>brain</em> is a database (your personal brain, a team mount you joined). A <em>source</em> is a repo inside that brain. Routing uses <code>.gbrain-source</code> dotfiles and a 6-tier precedence chain. Diagrams in <a href="https://github.com/garrytan/gbrain/blob/main/docs/architecture/brains-and-sources.md"><code>docs/architecture/brains-and-sources.md</code></a>.</p>
 <p><strong>Why the graph matters.</strong> Vector search finds similar text; graph retrieval follows stored relationships. Extracted edges are evidence to inspect, not proof that a relationship is true. Graph freshness depends on the write path and maintenance described in <a href="https://github.com/garrytan/gbrain/blob/main/docs/guides/memory-boundaries.md#page-writes-and-the-graph-are-separate-outcomes">memory boundaries</a>. Deep dive: <a href="https://github.com/garrytan/gbrain/blob/main/docs/architecture/RETRIEVAL.md">retrieval architecture</a>; <a href="https://github.com/garrytan/gbrain/blob/main/docs/guides/entity-recall.md">entity recall</a>.</p>
+<h3>Privacy &amp; telemetry</h3>
+<p>gbrain sends no automatic usage reports unless you say yes. This release ships no telemetry address, so by default it sends nothing and setup doesn't ask. To test a server, set <code>GBRAIN_TELEMETRY_URL</code> in your own environment and supply its publishable key in <code>GBRAIN_TELEMETRY_KEY</code> if it needs one. A repository's <code>.env</code> cannot set these. Once a release ships an address, your agent asks you once on first setup. Any setup or upgrade results from before you answer wait in a local file (at most 50, for 7 days), are sent only if you say yes, and are deleted if you say no.</p>
+<p>A yes sends your answer, which harness setup ran and whether it worked, upgrade results, the doctor score band, counts of commands and error codes, the gbrain version, OS and, unless you pick <code>anonymous</code>, a random install id. It never sends your pages, slugs, titles, queries, file paths, source names, hostnames or error messages. <code>gbrain telemetry show</code> prints what is waiting, the next payload and a summary of recent sends; add <code>--json</code> to see their payloads. <code>gbrain telemetry off</code> turns off reporting and deletes the queue. <code>gbrain telemetry forget</code> asks the server to delete your install's record and unlink its stored events from the id, so they remain only as anonymous rows. Stored events are kept for 400 days. At any tier, <code>pulse</code> can contact a configured server, and <code>forget</code> can too if a local install id exists. The server side isn't deployed yet. The <a href="https://github.com/garrytan/gbrain/blob/main/TODOS.md#opt-in-telemetry-client-follow-ups-filed-2026-11-22-telemetry-pr-2">deployment blockers</a> include a send that finishes on the server after a successful <code>forget</code> and brings back the record.</p>
+<p>Data goes to a Supabase project gbrain shares with gstack, in its own tables, through one validated endpoint; the public key the client sends can't read or write any table. Aggregates are public (<code>gbrain telemetry pulse</code>). An agent can still answer for you if it ignores its instructions, which is why the question names you as the one to answer. Full field list: <a href="https://github.com/garrytan/gbrain/blob/main/docs/guides/telemetry.md">docs/guides/telemetry.md</a>.</p>
 <h3>Troubleshooting</h3>
 <p>Start with <code>gbrain doctor</code>. For database access failures, use <code>gbrain engine status --probe</code> and <code>gbrain db-repair</code> before changing configuration.</p>
 <p><strong>Say to your agent:</strong> <em>"Check my brain health and show me the repair plan before changing anything."</em></p>
@@ -515,7 +519,7 @@ for installation, data flow, per-harness limitations, and removal.</p>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 63.7K</div>
+        <div class="stars">★ 63.8K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">

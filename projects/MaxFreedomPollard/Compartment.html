@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MaxFreedomPollard/Compartment — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Compartment is an encrypted, offline memory vault stored on the user’s computer for AI agents and MCP clients. It records memories with their source and date,…">
+<meta name="description" content="Compartment is an encrypted, offline memory and document vault for AI agents, stored on the user's computer. Agents can share persistent memories across…">
 <link rel="canonical" href="https://hermesatlas.com/projects/MaxFreedomPollard/Compartment">
 <meta property="og:title" content="MaxFreedomPollard/Compartment — Hermes Atlas">
-<meta property="og:description" content="Compartment is an encrypted, offline memory vault stored on the user’s computer for AI agents and MCP clients. It records memories with their source and date,…">
+<meta property="og:description" content="Compartment is an encrypted, offline memory and document vault for AI agents, stored on the user's computer. Agents can share persistent memories across…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/MaxFreedomPollard/Compartment">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="MaxFreedomPollard/Compartment — Hermes Atlas">
-<meta name="twitter:description" content="Compartment is an encrypted, offline memory vault stored on the user’s computer for AI agents and MCP clients. It records memories with their source and date,…">
+<meta name="twitter:description" content="Compartment is an encrypted, offline memory and document vault for AI agents, stored on the user's computer. Agents can share persistent memories across…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=Compartment&amp;subtitle=Encrypted%2C+fully+offline+agentic+memory.+One+click+install%2C+GUI+w%2F+memory+map%2C+all+OS+and+agents.+Superior+memory+creation%2C+storage+and+retrieval.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/MaxFreedomPollard/Compartment#software",
   "name": "Compartment",
-  "description": "Compartment is an encrypted, offline memory vault stored on the user’s computer for AI agents and MCP clients. It records memories with their source and date, supports expiration, and retrieves them using hybrid vector and keyword search.",
+  "description": "Compartment is an encrypted, offline memory and document vault for AI agents, stored on the user's computer. Agents can share persistent memories across sessions and projects, with hybrid vector and keyword search; the README lists support for Claude Code, Claude Desktop, Hermes Agent, OpenClaw, AntiGravity, Cursor, Codex, and other MCP clients.",
   "url": "https://hermesatlas.com/projects/MaxFreedomPollard/Compartment",
   "codeRepository": "https://github.com/MaxFreedomPollard/Compartment",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "MaxFreedomPollard",
     "url": "https://github.com/MaxFreedomPollard"
   },
-  "dateModified": "2026-11-22T01:05:11.000Z",
+  "dateModified": "2026-11-27T05:10:45.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>Apache-2.0</span>
     
-    <span><span class="meta-label">updated</span>2026-11-22</span>
+    <span><span class="meta-label">updated</span>2026-11-27</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Compartment is an encrypted, offline memory vault stored on the user’s computer for AI agents and MCP clients. It records memories with their source and date, supports expiration, and retrieves them using hybrid vector and keyword search.</p>
+    <p class="summary-text">Compartment is an encrypted, offline memory and document vault for AI agents, stored on the user's computer. Agents can share persistent memories across sessions and projects, with hybrid vector and keyword search; the README lists support for Claude Code, Claude Desktop, Hermes Agent, OpenClaw, AntiGravity, Cursor, Codex, and other MCP clients.</p>
     <ul class="summary-highlights">
-      <li>Keeps vault data encrypted, including embedding vectors.</li>
-      <li>Shares persistent memories across agents on the same machine.</li>
-      <li>Includes an embedding model and reference facts.</li>
+      <li>Encrypts stored data, including embedding vectors.</li>
+      <li>Uses hybrid vector and keyword retrieval.</li>
+      <li>Memories can include sources, dates, and expiration dates.</li>
     </ul>
   </div>
 </section>
@@ -156,7 +156,7 @@
   <summary class="readme-toggle">full readme from github</summary>
   <section class="readme" data-nosnippet>
     <h2>Compartment</h2>
-<p><strong>Encrypted, fully offline memory for AI agents.</strong> One vault on your own
+<p><strong>Encrypted, fully offline memory and document vault for AI agents.</strong> One vault on your own
 computer, read and written by Claude Code, Claude Desktop, Hermes Agent,
 OpenClaw, AntiGravity, Cursor, Codex and any other MCP client. No API key, no account, no
 network, no telemetry.</p>
@@ -354,10 +354,25 @@ text, dates or embeddings. It only adds tags unless you pass <code>--prune</code
 <code>tags_origin</code> preserves the original tags, and <code>compartment retag --dry-run</code>
 shows what would change.</p>
 <p><strong>A graph as well as a list.</strong> <code>memory_link</code> records a relation: subject,
-predicate, object, optionally tied to a memory and to a validity window.
-<code>memory_relations</code> answers by entity, by predicate, or as of a date.
-Compartment stores and matches relations deterministically; the host model
-decides what to link.</p>
+predicate, object, optionally tied to a memory (<code>src_id</code>), a persistent
+document (<code>doc_id</code>), and a validity window. <code>memory_relations</code> answers by
+entity, by predicate, or as of a date. Compartment stores and matches
+relations deterministically; the host model decides what to link.</p>
+<p><strong>Persistent encrypted documents (DMS) that strengthen core memory.</strong>
+Atomic 200-character claims stay sharp because long-form specifications,
+runbooks, living notes, contracts, tax records, receipts, and binary files
+have a first-class encrypted, versioned home inside the same <code>.vault</code> file.
+Every content update creates an immutable version (<code>v1</code>, <code>v2</code>, ...) with full
+history and unified diffs, is chunked along Markdown section boundaries (with
+pure-stdlib text extraction for <code>.md</code>, <code>.txt</code>, <code>.html</code>, <code>.docx</code>, <code>.odt</code>,
+<code>.pptx</code>, <code>.xlsx</code>, <code>.epub</code>, <code>.rtf</code>, and simple <code>.pdf</code>), and is indexed for
+hybrid vector + keyword search (<code>doc_put</code>, <code>doc_patch</code>, <code>doc_get</code>, <code>doc_list</code>,
+<code>doc_search</code>, <code>doc_delete</code>, and <code>compartment doc ...</code>). Grounding an atomic
+memory with <code>doc_id</code> (and optional <code>doc_section</code>) pins it to that document
+version so later edits automatically flag outdated derived memories as stale
+(<code>doc_stale: true</code>), while reflexive <code>memory_search</code> calls automatically
+surface matching document passages alongside atomic memories without crowding
+them out.</p>
 <p><strong>Memories are data, not instructions.</strong> Recalled memories are wrapped with
 a notice that they are stored data. Content from an untrusted source can be
 marked <code>quarantined</code>, which adds a warning to every recall of it. The host
@@ -385,19 +400,25 @@ hiding the reference facts so your own memories are visible.
 in the applications menu. Linux gets a window on purpose: a tray icon may
 never appear on GNOME or Wayland, and the control that unlocks your memories
 must not fail silently.</p>
-<p>The panel shows whether the vault is open, how many memories it holds and how
-many you stored, the three settings worth changing (capture hook, whether
-reference facts appear in search, auto-lock), which agents are connected with
-buttons to connect Claude, Hermes Agent, OpenClaw, AntiGravity or Codex, and the last five
-memories. You can unlock, lock and change your passphrase there without a
-terminal. The panel opens instantly with what it last read and refreshes in
-the background, only when something actually changed. While you use it, one
-helper process keeps the vault open read-only and reads just the new memories
-as agents add them; after ten idle minutes it exits, so an idle app holds no
-vault and no key. Looking never locks, unlocks or rewrites the vault. It is
-meant to be one of the many apps on your
-computer, not something you have to learn: every function is a button or a
-switch, and the defaults were chosen by measurement.</p>
+<p>The panel shows whether the vault is open, how many memories and documents it
+holds, the settings worth changing (capture hook, whether reference facts appear
+in search, expiry, auto-lock), which agents are connected with buttons to
+connect Claude, Hermes Agent, OpenClaw, AntiGravity or Codex, inline <strong>Document
+Search</strong> with quick preview, and the last five memories. You can unlock, lock,
+back up, merge, and change your passphrase there without a terminal. The panel
+opens instantly with what it last read and refreshes in the background, only
+when something actually changed. While you use it, one helper process keeps the
+vault open read-only and reads just the new memories and documents as agents add
+them; after ten idle minutes it exits, so an idle app holds no vault and no key.
+Looking never locks, unlocks or rewrites the vault. It is meant to be one of the
+many apps on your computer, not something you have to learn: every function is a
+button or a switch, and the defaults were chosen by measurement.</p>
+<p>The <strong>Open GUI</strong> button (or <code>compartment gui</code> / <code>compartment app</code>) opens an
+optional full cross-platform desktop workspace (macOS, Windows, and Linux) for
+editing and browsing encrypted documents, viewing outlines, version history,
+diffs, grounded memories, staleness flags, relations, settings, backups, and
+imports/exports - with zero new dependencies and zero network sockets (it works
+even under <code>--assert-offline</code>).</p>
 <p>The <strong>Dashboard</strong> button opens the whole vault in your browser: growth over
 time, the relation graph with every entity named, tags, per-agent counts and
 live search. It is served from RAM on 127.0.0.1 only, read-only, with no
@@ -554,7 +575,7 @@ never a key · a runtime guard that aborts on any network socket attempt
 (<code>--assert-offline</code>), with CI running the whole suite under it on Linux,
 macOS and Windows. The full threat model,
 including what Compartment cannot protect against, is in
-<a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/SECURITY.md">SECURITY.md</a>.</p>
+<a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/docs/SECURITY.md">docs/SECURITY.md</a>.</p>
 <h4>From the app</h4>
 <p>Everything you do day to day is a button. <strong>Unlock</strong> asks for your
 passphrase; <strong>Lock</strong> closes the vault and clears every stored credential;
@@ -609,7 +630,7 @@ compartment --vault memory.vault unlock     # your passphrase (+ keyfile if 2FA)
 <p><code>lock --sign</code> adds an Ed25519 manifest that the recipient can check with
 <code>compartment verify</code> and no credential. <code>export --plaintext</code> writes the vault
 as JSONL and <code>import</code> reads it back, so you are never locked in.
-<a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/FORMAT.md">FORMAT.md</a> specifies the <code>.vault</code> and <code>.mpack</code> files byte by
+<a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/docs/FORMAT.md">docs/FORMAT.md</a> specifies the <code>.vault</code> and <code>.mpack</code> files byte by
 byte. Per-agent namespaces take <code>rw</code>, <code>ro</code> or <code>none</code> grants in the settings
 file, so a scratch agent can read without writing.</p>
 <p><strong>Memory packs</strong> are signed, read-only bundles of curated memories
@@ -618,7 +639,7 @@ under <code>packs/&lt;name&gt;</code>, read-only for every caller, and
 <code>include_packs_in_search</code> toggles them. A pack's signature is checked against
 a key you trust, never against the key inside the pack. The reference facts
 are the one pack that lives in <code>main</code> as ordinary memories.
-<a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/PACKS.md">PACKS.md</a> covers authoring.</p>
+<a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/docs/PACKS.md">docs/PACKS.md</a> covers authoring.</p>
 <p><code>compartment setup airgap-bundle</code> prepares an install for a machine with no
 network; <code>setup download-model</code> and <code>setup download-longmemeval</code> fetch what
 the optional benchmarks need.</p>
@@ -878,11 +899,13 @@ Desktop on macOS and Windows does not need it.</p>
 <p>Nothing here is required. Compartment installs configured; this is the whole
 surface if you want to change something.</p>
 <h4>In the app</h4>
-<p>The panel behind the icon: <strong>Unlock</strong> and <strong>Lock</strong>, <strong>Change password</strong>,
-<strong>Create memories automatically</strong> (the capture hook), <strong>Search starter
-facts</strong>, <strong>Auto-lock</strong> (15, 30, 60 minutes or never), the <strong>CONNECT AN
-AGENT</strong> buttons for Claude, Hermes Agent, OpenClaw, AntiGravity and Codex, <strong>Refresh</strong> and
-<strong>Quit</strong>.</p>
+<p>The panel behind the icon keeps every lightweight control: <strong>Unlock</strong> and
+<strong>Lock</strong>, <strong>Back up…</strong> and <strong>Merge…</strong>, <strong>Change password</strong>, <strong>Create memories
+automatically</strong> (the capture hook), <strong>Search starter facts</strong>, <strong>Forget memories
+when they expire</strong>, <strong>Auto-lock</strong> (15, 30, 60 minutes or never), the <strong>CONNECT
+AN AGENT</strong> buttons for Claude, Hermes Agent, OpenClaw, AntiGravity and Codex,
+inline <strong>Document Search</strong> with quick preview, <strong>Open GUI</strong>, <strong>Dashboard</strong>,
+<strong>Refresh</strong> and <strong>Quit</strong>.</p>
 <h4>Commands</h4>
 <p>Global flags, before the command: <code>--vault PATH</code>, <code>--caller NAME</code>,
 <code>--keyfile PATH</code>, <code>--assert-offline</code>, <code>--version</code>.</p>
@@ -907,11 +930,15 @@ AGENT</strong> buttons for Claude, Hermes Agent, OpenClaw, AntiGravity and Codex
 </tr>
 <tr>
 <td><code>store</code> / <code>get</code> / <code>forget</code></td>
-<td>one memory. <code>--source</code> (required), <code>--discovered</code>, <code>--expires</code>, <code>--namespace</code>, <code>--tag</code>, <code>--importance</code>, <code>--kind fact|opinion</code>, <code>--supersedes ID</code>, <code>--keep-both</code>, <code>--quarantined</code>, <code>--raw</code>; <code>forget --shred</code></td>
+<td>one memory. <code>--source</code> (required), <code>--discovered</code>, <code>--expires</code>, <code>--namespace</code>, <code>--tag</code>, <code>--importance</code>, <code>--kind fact|opinion</code>, <code>--supersedes ID</code>, <code>--keep-both</code>, <code>--doc-id</code>, <code>--doc-section</code>, <code>--quarantined</code>, <code>--raw</code>; <code>forget --shred</code></td>
 </tr>
 <tr>
 <td><code>search</code> / <code>recent</code></td>
-<td>find things. <code>--namespace</code>, <code>--tag</code>, <code>--top-k</code>, <code>--limit</code>, <code>--all</code>, <code>--json</code></td>
+<td>find things. <code>--namespace</code>, <code>--tag</code>, <code>--top-k</code>, <code>--doc-id</code>, <code>--no-documents</code>, <code>--limit</code>, <code>--all</code>, <code>--json</code></td>
+</tr>
+<tr>
+<td><code>doc</code></td>
+<td>encrypted, versioned document management: <code>put</code>, <code>patch</code>, <code>get</code>, <code>list</code>, <code>search</code>, <code>history</code>, <code>diff</code>, <code>memories</code>, <code>stale</code>, <code>compile</code>, <code>import</code>, <code>export</code>, <code>export-all</code>, <code>delete</code> (<code>--archive</code> / <code>--shred</code>)</td>
 </tr>
 <tr>
 <td><code>expire</code></td>
@@ -931,7 +958,11 @@ AGENT</strong> buttons for Claude, Hermes Agent, OpenClaw, AntiGravity and Codex
 </tr>
 <tr>
 <td><code>panel</code> (<code>menubar</code>, <code>tray</code>)</td>
-<td>the app. <code>--show</code>, <code>--self-check</code>, <code>--render</code>, <code>--login</code></td>
+<td>the status bar / tray app (includes inline document search). <code>--show</code>, <code>--self-check</code>, <code>--render</code>, <code>--login</code></td>
+</tr>
+<tr>
+<td><code>gui</code> (<code>app</code>)</td>
+<td>optional cross-platform desktop GUI for documents, versions, diffs, memories, relations, and vault settings. <code>--doc</code>, <code>--self-check</code></td>
 </tr>
 <tr>
 <td><code>integrate &lt;agent&gt;</code></td>
@@ -1123,6 +1154,16 @@ copy; a later install backs up a changed copy rather than overwriting it.</p>
 <td>ask the machine's shared embedding process for vectors instead of loading the model in this process</td>
 </tr>
 <tr>
+<td><code>max_document_bytes</code></td>
+<td><code>33554432</code></td>
+<td>maximum uncompressed byte size per stored document version (32 MiB)</td>
+</tr>
+<tr>
+<td><code>search_documents_in_memory_search</code></td>
+<td><code>true</code></td>
+<td>surface matching persistent document excerpts alongside atomic memories in <code>memory_search</code></td>
+</tr>
+<tr>
 <td><code>unlock_tool_enabled</code></td>
 <td><code>false</code></td>
 <td>lets an agent unlock the vault. Off because the passphrase would cross the model's context</td>
@@ -1139,12 +1180,13 @@ outlives its last client (300). <code>HERMES_HOME</code>, <code>OPENCLAW_HOME</c
 where they apply. Anything exported as <code>ENGRAM_*</code> still works.</p>
 <h4>MCP tools</h4>
 <p>Every tool has a title and a read-only or destructive annotation, so a
-client can tell the seven read-only tools from the ones that write before
-calling anything. <code>memory_search</code>, <code>memory_store</code>, <code>memory_store_many</code>,
-<code>memory_get</code>, <code>memory_recent</code>, <code>memory_forget</code>, <code>memory_link</code>,
-<code>memory_relations</code>, <code>memory_unlink</code>, <code>memory_list_namespaces</code>,
-<code>memory_status</code>, <code>memory_lock</code>, <code>memory_selftest</code>. <code>memory_unlock</code> exists but
-is off unless you turn it on above.</p>
+client can tell the ten read-only tools from the ones that write before
+calling anything. Memory tools: <code>memory_search</code>, <code>memory_store</code>,
+<code>memory_store_many</code>, <code>memory_get</code>, <code>memory_recent</code>, <code>memory_forget</code>,
+<code>memory_link</code>, <code>memory_relations</code>, <code>memory_unlink</code>, <code>memory_list_namespaces</code>,
+<code>memory_status</code>, <code>memory_lock</code>, <code>memory_selftest</code> (<code>memory_unlock</code> exists but
+is off unless you turn it on above). Document tools: <code>doc_put</code>, <code>doc_patch</code>,
+<code>doc_get</code>, <code>doc_list</code>, <code>doc_search</code>, <code>doc_delete</code>.</p>
 <h3>Documentation</h3>
 <table>
 <thead>
@@ -1170,23 +1212,23 @@ is off unless you turn it on above.</p>
 <td>other memory servers, with sources</td>
 </tr>
 <tr>
-<td><a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/SECURITY.md">SECURITY.md</a></td>
+<td><a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/docs/SECURITY.md">docs/SECURITY.md</a></td>
 <td>the full threat model and its limits</td>
 </tr>
 <tr>
-<td><a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/FORMAT.md">FORMAT.md</a></td>
+<td><a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/docs/FORMAT.md">docs/FORMAT.md</a></td>
 <td>byte-level <code>.vault</code> and <code>.mpack</code> specs (language-agnostic)</td>
 </tr>
 <tr>
-<td><a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/PACKS.md">PACKS.md</a></td>
+<td><a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/docs/PACKS.md">docs/PACKS.md</a></td>
 <td>authoring and shipping signed memory packs</td>
 </tr>
 <tr>
-<td><a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a></td>
+<td><a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/docs/CONTRIBUTING.md">docs/CONTRIBUTING.md</a></td>
 <td>setup, good issues, and the guarantees to keep</td>
 </tr>
 <tr>
-<td><a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/RELEASING.md">RELEASING.md</a></td>
+<td><a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/docs/RELEASING.md">docs/RELEASING.md</a></td>
 <td>how a release is cut</td>
 </tr>
 </tbody></table>
@@ -1209,20 +1251,9 @@ the <a href="https://cursor.directory/plugins/compartment">Cursor Directory</a>,
 <a href="https://www.tensorblock.co/mcp/servers/github-maxfreedompollard-compartment-4ab11161">TensorBlock</a>,
 the <a href="https://github.com/toolsdk-ai/toolsdk-mcp-registry/blob/main/packages/knowledge-memory/compartment.json">toolsdk.ai registry</a>,
 <a href="https://libraries.io/pypi/compartment">Libraries.io</a>,
-<a href="https://snyk.io/advisor/python/compartment">Snyk Advisor</a> and
-<a href="https://deps.dev/pypi/compartment">deps.dev</a>, and in the curated lists
-<a href="https://github.com/abordage/awesome-mcp">abordage/awesome-mcp</a>,
-<a href="https://github.com/TensorBlock/awesome-mcp-servers/blob/main/docs/knowledge-management--memory.md">TensorBlock/awesome-mcp-servers</a>
-and <a href="https://github.com/Jenqyang/Awesome-AI-Agents">Jenqyang/Awesome-AI-Agents</a>.</p>
-<p><a href="https://mcptoplist.com/server/io.github.MaxFreedomPollard%2Fcompartment"><img src="https://mcptoplist.com/badge/io.github.MaxFreedomPollard%2Fcompartment.svg" alt="MCP Toplist" loading="lazy" decoding="async"></a>
-<a href="https://lobehub.com/mcp/maxfreedompollard-compartment"><img src="https://lobehub.com/badge/mcp/maxfreedompollard-compartment" alt="LobeHub" loading="lazy" decoding="async"></a></p>
-<p><a href="https://glama.ai/mcp/servers/MaxFreedomPollard/Compartment"><img width="380" height="200" src="https://glama.ai/mcp/servers/MaxFreedomPollard/Compartment/badge" alt="Compartment MCP server"></a></p>
-<p>Bugs and feature requests: <a href="https://github.com/MaxFreedomPollard/Compartment/issues">Issues</a>.
-Support and questions: <a href="https://github.com/MaxFreedomPollard/Compartment/discussions">Discussions</a>;
-security reports: <a href="https://github.com/MaxFreedomPollard/Compartment/blob/main/SECURITY.md">SECURITY.md</a>.
-Questions and ideas: <a href="https://github.com/MaxFreedomPollard/Compartment/discussions">Discussions</a>.</p>
+[S</p>
 <hr>
-<p>mcp-name: io.github.MaxFreedomPollard/compartment</p>
+<p><em>README truncated. <a href="https://github.com/MaxFreedomPollard/Compartment#readme">Continue reading on GitHub</a></em></p>
 
   </section>
 </details>
@@ -1239,7 +1270,7 @@ Questions and ideas: <a href="https://github.com/MaxFreedomPollard/Compartment/d
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 63.7K</div>
+        <div class="stars">★ 63.8K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
