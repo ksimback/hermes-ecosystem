@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>itpartypattaya/hermes-plugin-holographic — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution,…">
+<meta name="description" content="Holographic is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and holographic…">
 <link rel="canonical" href="https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic">
 <meta property="og:title" content="itpartypattaya/hermes-plugin-holographic — Hermes Atlas">
-<meta property="og:description" content="Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution,…">
+<meta property="og:description" content="Holographic is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and holographic…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="itpartypattaya/hermes-plugin-holographic — Hermes Atlas">
-<meta name="twitter:description" content="Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution,…">
+<meta name="twitter:description" content="Holographic is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and holographic…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-plugin-holographic&amp;subtitle=Holographic+memory+provider+for+Hermes+Agent%3A+local+SQLite+fact+store%2C+HRR+retrieval%2C+28+languages.+Maintained+by+itpartypattaya.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic#software",
   "name": "hermes-plugin-holographic",
-  "description": "Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it uses no API key, network connection, or model calls; searching by meaning is an optional online add-on.",
+  "description": "Holographic is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and holographic retrieval. By default, it requires no API key, network access, or model calls; searching by meaning is an optional online feature.",
   "url": "https://hermesatlas.com/projects/itpartypattaya/hermes-plugin-holographic",
   "codeRepository": "https://github.com/itpartypattaya/hermes-plugin-holographic",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "itpartypattaya",
     "url": "https://github.com/itpartypattaya"
   },
-  "dateModified": "2026-11-27T13:12:53.000Z",
+  "dateModified": "2026-11-27T19:23:31.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Holographic Memory Provider is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and HRR retrieval. By default, it uses no API key, network connection, or model calls; searching by meaning is an optional online add-on.</p>
+    <p class="summary-text">Holographic is a local memory provider for Hermes Agent that stores facts in SQLite and supports FTS5 search, trust scoring, entity resolution, and holographic retrieval. By default, it requires no API key, network access, or model calls; searching by meaning is an optional online feature.</p>
     <ul class="summary-highlights">
-      <li>Stores facts in a SQLite database.</li>
-      <li>Supports FTS5 search and HRR retrieval.</li>
-      <li>Optional online search by meaning.</li>
+      <li>Stores facts in a SQLite database</li>
+      <li>Optional experience journal records task outcomes</li>
+      <li>Graph expansion is off by default</li>
     </ul>
   </div>
 </section>
@@ -189,18 +189,28 @@ receive an outcome. Slow-operation warnings contain stage timings only, not fact
 recording, not a guarantee against long locks, disk failures or process termination. See <a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/experience.md">the full behavior</a>.
 Dreaming 3.6.0 can read live summaries without another correction-text cache. See <a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/experience.md">the full contract and examples</a>.</p>
 <h3>How it works</h3>
-<p><img src="https://raw.githubusercontent.com/itpartypattaya/hermes-plugin-holographic/main/diagram/architecture.svg" alt="Architecture: before each turn Hermes core sends the message through the relevance gate and search; writes pass a
-validator that refuses instructions and credentials and land in one SQLite transaction with the fact's history; recall
-and history tools read the same file; search by meaning is an optional online add-on" loading="lazy" decoding="async"></p>
-<p><img src="https://raw.githubusercontent.com/itpartypattaya/hermes-plugin-holographic/main/diagram/recall.svg" alt="Recall before a turn: greetings recall nothing; the message's words become keys; 15 candidates come from FTS5,
-character n-grams or a word scan, reordered by meaning if that is on; a relevance gate, a repeat window and the screen
-decide; up to five facts by their words, one by meaning alone and two of named entities go into the turn as
-data" loading="lazy" decoding="async"></p>
+<p><img src="https://raw.githubusercontent.com/itpartypattaya/hermes-plugin-holographic/main/diagram/architecture.svg" alt="Architecture: before each turn Hermes core sends the message through the relevance gate and search (FTS5, n-grams,
+a word scan; a graph hop and a local reranker optional); writes pass a validator that refuses instructions, credentials
+and step reports and land in one SQLite transaction with the fact's history; recall and history tools read the same
+file; search by meaning is an optional online add-on" loading="lazy" decoding="async"></p>
+<p><img src="https://raw.githubusercontent.com/itpartypattaya/hermes-plugin-holographic/main/diagram/recall.svg" alt="Recall before a turn: the message's own words become keys; 15 candidates come from FTS5, character n-grams or a word
+scan, reordered by meaning if that is on; greetings recall nothing by words or meaning; a relevance gate (word coverage,
+one common word not enough, identifiers), a repeat window and the screen decide; up to five facts by their words, one by
+meaning alone and two of named entities go into the turn as data" loading="lazy" decoding="async"></p>
 <p>The graph (<code>graph_expansion</code>, off by default) is one bounded hop: a fact that names two entities makes those entities
 neighbours, and a search walks a single hop out of the entities its words resolve to, so a fact about a neighbouring
 entity is reachable without sharing a word with the query. Hub entities — a namespace, a project every fact mentions —
 are never traversed, and inside <code>search()</code> a discovery only fills the tail of the result list, never displacing a text
 hit (a reranker run afterwards may reorder the pool). Bounds, measurements and repair: <a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/docs/memory-graph.md">docs/memory-graph.md</a>.</p>
+<p><strong>Standing rules belong in the built-in memory.</strong> Recall is by relevance: a fact comes in when the message shares its
+words, a named entity or, with search by meaning on, its sense. A rule meant for every turn ("always answer in
+Russian", "never delete files without asking", "don't message Alice after 22:00") is easily missed by a message that
+needs it but says none of it ("write to her about the meeting"). Put such rules in Hermes' built-in memory
+(<code>MEMORY.md</code> / <code>USER.md</code>): it is in the system prompt on every turn. Holographic keeps the facts that are recalled
+when they matter. The core reads the built-in memory once, at the start of a session, so a rule added there holds from
+the next session on; it is small (2,200 and 1,375 characters by default, <code>memory_char_limit</code> / <code>user_char_limit</code>)
+and one per profile, so with <code>scope: user</code>, <code>chat</code> or <code>thread</code> a rule written there reaches every person and chat of
+the profile.</p>
 <h3>Install</h3>
 <p>While your Hermes still bundles <code>holographic</code>, the bundled copy is used and this plugin stays dormant. After core
 drops it, <code>hermes update</code> installs the catalog plugin named <code>holographic</code> for every profile that has it configured.
@@ -397,7 +407,8 @@ name only the old text gave; revert brings back the names of the version it rest
 <code>possible_conflicts</code> (same subject, a different claim) and <code>past_versions</code>; the agent decides. Text that is not a
 fact (JSON, tool or chat-role markup, instruction-like phrasing, a credential with its value or a token whose shape
 alone says it is one — an API key prefix, a Telegram bot token (also inside a Bot API address), a JWT, a private key
-(0.14.5) —; instructions and credentials in all eighteen languages of <a href="#languages">Languages</a>, also glued
+(0.14.5) —; instructions and credentials in the eighteen languages of 0.15.1 (not the ten added in 0.33, see
+<a href="#languages">Languages</a>), also glued
 to Chinese text (0.15.1); an environment variable that holds a key, a token or a password, by its name — any in
 capitals ending like <code>…_KEY</code> or <code>…_TOKEN</code> and 310 popular ones of model and service providers — and an address
 with a password in it (0.15.2) —, an image (markdown or
@@ -420,7 +431,9 @@ service named with dots is a name («ключ API Яндекс.Метрики»)
 («Пароль Олега — …») or after «у него», <code>pass:</code> / <code>pw:</code>, a Latin word after «пароль:», a seed phrase after its
 name, Stripe keys, a 2FA secret, Slack and Discord webhooks, an instruction in full-width or lookalike letters.
 Tags and the category are screened as a fact's text is, and a name given in <code>entities</code> that holds a credential or
-an instruction is not linked (0.30.0). A write takes one of the four categories the tool declares (<code>user_pref</code>,
+an instruction is not linked (0.30.0). Keywords and tags are screened as written and with their words side by
+side, so an instruction or a password split across them is refused, a merge's union of keywords too (0.33.2,
+issue #152). A write takes one of the four categories the tool declares (<code>user_pref</code>,
 <code>project</code>, <code>tool</code>, <code>general</code>); search and list also filter by any category an older release stored. Recall
 checks a stored fact again before it goes into a prompt (0.13.0): one an older release, or another program, wrote
 past today's rules (markup, instructions, credentials, invisible characters, images) is left out of recall
@@ -633,9 +646,10 @@ people told the agent).</li>
 <li>A ready-made standalone HTML file and a <code>fact_store</code> action that builds it are not in this release.</li>
 </ul>
 <h3>Languages</h3>
-<p><img src="https://raw.githubusercontent.com/itpartypattaya/hermes-plugin-holographic/main/diagram/languages.svg" alt="How a word is matched across languages: words, language, function words, keys, match; examples in eighteen languages
-that match (German compounds, Russian and English spellings of one word, Traditional and Simplified Chinese, Japanese
-spelling variants) and examples that do not" loading="lazy" decoding="async"></p>
+<p><img src="https://raw.githubusercontent.com/itpartypattaya/hermes-plugin-holographic/main/diagram/languages.svg" alt="How a word is matched across languages: words, language, function words, keys, match; examples in twenty-four of the
+twenty-eight languages that match (Ukrainian and Belarusian stems, Amharic plurals, Hausa hooked letters, German
+compounds, Russian and English spellings of one word, Traditional and Simplified Chinese, Japanese spelling variants) and
+examples that do not" loading="lazy" decoding="async"></p>
 <p>A word matches another when they share its plain form or its stem in the language of the text:</p>
 <ul>
 <li><strong>Stems</strong>: Snowball for English, Russian, Spanish, French, Portuguese, Indonesian, German, Hindi, Italian, Turkish,
@@ -726,20 +740,7 @@ stand-in for frequency ranks first) gives a form its lemmas' stems, in text of t
 with English: "he went"). Such a match counts 0.6, like a root, and never recalls a fact alone: a form can belong to
 two verbs (<code>fue</code> is <code>ir</code> and <code>ser</code>), the source has errors (<code>tuviese</code> under twelve verbs, dropped: a form under
 more than three is left out; <code>gelegt</code> under <code>liegen</code>), and a name can be spelled like a form (<code>Lucía</code> / <code>lucir</code>).
-Forms spelled like another word are left out (<code>Macht</code>, <code>vino</code>, <code>cuenta</code>, <code>hecho</code>), and so are forms spelled like a
-regular form of another verb (<code>fuhren</code> / <code>führen</code>). Separable verbs are not joined (<code>rief … an</code> / <code>anrufen</code>). German
-text is told by its function words, and the list lacks <code>zum</code>, <code>ins</code>, <code>wohin</code>: a short German sentence without others
-stays undetermined and gets neither compounds nor verb forms. <code>de_es_forms.tsv.gz</code> (251 KB): German 0.03 s and 2 MB, Spanish 0.05–0.09 s and
-11 MB on the first word of the language; <code>_LEMMA_FORMS = False</code> turns it off.</li>
-<li>Dutch compounds are not taken apart (<code>_NL_COMPOUNDS</code>, off): on 10 questions that ask by the end of
-a compound and 7 that use that end in its own sense, it found 2 more right facts and recalled 4 more wrong ones
-(<code>huis</code> in <code>ziekenhuis</code>, <code>weer</code> in <code>brandweer</code>, <code>kast</code> in <code>koelkast</code>).</li>
-<li><strong>Words of the same root</strong> (Russian and English): Snowball removes inflection but keeps derivations apart. Russian
-pairs come from a dictionary (0.10.0): DerivBase.Ru, its direct derivation links as stem pairs, kept when the pair
-has the shape of a derivation (<code>ночные</code> / <code>ночь</code>, <code>городской</code> / <code>город</code>, <code>учительница</code> / <code>учитель</code>, <code>дружеский</code> /
-<code>друг</code>; not <code>полный</code> / <code>пол</code> or <code>задача</code> / <code>дача</code>) — 46,756 pairs, Apache-2.0
-(<a href="https://github.com/itpartypattaya/hermes-plugin-holographic/blob/main/LICENSES/DerivBase.Ru-Apache-2.0.txt">licence</a>), loaded on the first Russian word (about 0.3 s, 12 MB). English
-pairs come from Open English Wordnet 2025</li>
+Forms spelled like ano</li>
 </ul>
 <hr>
 <p><em>README truncated. <a href="https://github.com/itpartypattaya/hermes-plugin-holographic#readme">Continue reading on GitHub</a></em></p>
@@ -755,7 +756,7 @@ pairs come from Open English Wordnet 2025</li>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/mem0ai/mem0">
-        <div class="stars">★ 69.5K</div>
+        <div class="stars">★ 69.6K</div>
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
