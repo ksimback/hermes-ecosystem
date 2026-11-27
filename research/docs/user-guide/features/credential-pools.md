@@ -21,7 +21,8 @@ Your request
   → Pick key from pool (round_robin / least_used / fill_first / random)
   → Send to provider
   → 429 rate limit?
-      → Plan/usage limit reached (e.g. ChatGPT/Codex "usage limit reached")?
+      → Plan/usage limit reached (e.g. ChatGPT/Codex "usage limit reached", or a Claude plan
+        window the response marks `rejected`)?
           → Rotate to next pool key immediately (no retry — the cap won't clear on retry)
       → Generic / transient 429?
           → Retry same key once (transient blip)
@@ -230,9 +231,9 @@ Cooldown
 
 **429 Rate Limit**
 
-Retry same key once (transient). Second consecutive 429 rotates to next key
+Retry same key once (transient). Second consecutive 429 rotates to next key; a usage-limit or rejected Claude plan-window 429 rotates at once (see below)
 
-1 hour
+1 hour, or the provider's reset
 
 **402 Billing/Quota**
 
@@ -264,7 +265,7 @@ The `has_retried_429` flag resets on every successful API call, so a single tran
 
 **Quota benches are temporary for the live session too.** When a 429/402 rotates a session off a credential, that session checks at the start of each turn whether the benched credential is back in rotation and moves back to it as soon as its cooldown lifts — the same choice a new session would make. A long-running chat (the gateway keeps agents cached) therefore returns to a subscription seat once its window reopens instead of billing the metered fallback for the rest of its life. A `401` bench does not trigger this; an explicit `/model` switch cancels a pending switch-back.
 
-**Anthropic 429s are per model.** Anthropic enforces its rate limits per model, so a generic 429 for one Claude model cools that credential down for _that model only_ — the same key keeps serving every other Claude model, and `ANTHROPIC_API_KEY` / borrowed Claude Code tokens honour the same per-model cooldown. Billing (`402`, usage-limit) and auth (`401`) failures still bench the whole credential.
+**Anthropic 429s are per model.** Anthropic enforces its rate limits per model, so a generic 429 for one Claude model cools that credential down for _that model only_ — the same key keeps serving every other Claude model, and `ANTHROPIC_API_KEY` / borrowed Claude Code tokens honour the same per-model cooldown. Billing (`402`, usage-limit) and auth (`401`) failures still bench the whole credential. A Claude subscription 429 that names a spent plan window (`anthropic-ratelimit-unified-status: rejected`, window in `anthropic-ratelimit-unified-representative-claim`) rotates on the first 429 instead of retrying the spent seat. An account-wide window (`five_hour`, `seven_day`) benches the whole credential, for every model, until the window's `anthropic-ratelimit-unified-reset`; a model-family window (`seven_day_opus`, …) benches that model only.
 
 **A dead OAuth login is reported, not benched.** When a refresh token is rejected for good (`invalid_grant`, `invalid_token`, `refresh_token_reused` — the token was revoked, or another program holding the same login rotated it first — or, for Nous, the profile holds no Portal login or token pair to refresh with), the pool logs one WARNING naming the entry and the repair command (`hermes auth add <provider>`), and the credential leaves rotation — marked `dead`, or dropped when it only mirrored a token file the pool has just cleared — until you sign in again. This applies to Anthropic, Codex, xAI and Nous OAuth logins alike. A dead credential never re-enters rotation on a timer, so a lost login shows up once in the log instead of failing quietly every hour.
 
