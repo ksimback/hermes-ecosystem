@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>100yenadmin/hermes-plan-mode — Hermes Agent Plugins &amp; Extensions | Hermes Atlas</title>
-<meta name="description" content="Hermes Plan Mode is a plugin that lets Hermes explore with read-only tools, write a plan, and block other dispatched tools until the plan is approved. After…">
+<meta name="description" content="Hermes Plan Mode is a plugin that lets Hermes explore with read-only tools, write a plan, and block other tools until you approve. After approval, it can…">
 <link rel="canonical" href="https://hermesatlas.com/projects/100yenadmin/hermes-plan-mode">
 <meta property="og:title" content="100yenadmin/hermes-plan-mode — Hermes Atlas">
-<meta property="og:description" content="Hermes Plan Mode is a plugin that lets Hermes explore with read-only tools, write a plan, and block other dispatched tools until the plan is approved. After…">
+<meta property="og:description" content="Hermes Plan Mode is a plugin that lets Hermes explore with read-only tools, write a plan, and block other tools until you approve. After approval, it can…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/100yenadmin/hermes-plan-mode">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="100yenadmin/hermes-plan-mode — Hermes Atlas">
-<meta name="twitter:description" content="Hermes Plan Mode is a plugin that lets Hermes explore with read-only tools, write a plan, and block other dispatched tools until the plan is approved. After…">
+<meta name="twitter:description" content="Hermes Plan Mode is a plugin that lets Hermes explore with read-only tools, write a plan, and block other tools until you approve. After approval, it can…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=hermes-plan-mode&amp;subtitle=Plan+mode+for+Hermes+Agent%3A+it+explores+read-only+and+writes+a+plan%2C+and+its+edit+tools+stay+blocked+until+you+approve.&amp;kind=project+%C2%B7+plugins">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/100yenadmin/hermes-plan-mode#software",
   "name": "hermes-plan-mode",
-  "description": "Hermes Plan Mode is a plugin that lets Hermes explore with read-only tools, write a plan, and block other dispatched tools until the plan is approved. After approval, it can implement the plan in the same turn and track progress in a todo list.",
+  "description": "Hermes Plan Mode is a plugin that lets Hermes explore with read-only tools, write a plan, and block other tools until you approve. After approval, it can implement the plan in the same turn and track progress in a todo list.",
   "url": "https://hermesatlas.com/projects/100yenadmin/hermes-plan-mode",
   "codeRepository": "https://github.com/100yenadmin/hermes-plan-mode",
   "applicationCategory": "BrowserApplication",
@@ -47,7 +47,7 @@
     "name": "100yenadmin",
     "url": "https://github.com/100yenadmin"
   },
-  "dateModified": "2026-11-24T14:51:36.000Z",
+  "dateModified": "2026-11-28T15:17:00.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -124,7 +124,7 @@
     <span><span class="meta-label">lang</span>Python</span>
     <span><span class="meta-label">license</span>MIT</span>
     
-    <span><span class="meta-label">updated</span>2026-11-24</span>
+    <span><span class="meta-label">updated</span>2026-11-28</span>
   </div>
 
   <div class="actions">
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">Hermes Plan Mode is a plugin that lets Hermes explore with read-only tools, write a plan, and block other dispatched tools until the plan is approved. After approval, it can implement the plan in the same turn and track progress in a todo list.</p>
+    <p class="summary-text">Hermes Plan Mode is a plugin that lets Hermes explore with read-only tools, write a plan, and block other tools until you approve. After approval, it can implement the plan in the same turn and track progress in a todo list.</p>
     <ul class="summary-highlights">
-      <li>Start planning with `/plan` or `/planmode on`.</li>
-      <li>Plans are saved as Markdown under `&lt;cwd&gt;/.hermes/plans`.</li>
-      <li>Supports CLI, TUI, Desktop, and messaging platforms.</li>
+      <li>Starts planning with `/plan` or `/planmode on`.</li>
+      <li>Stores plans as Markdown under `&lt;cwd&gt;/.hermes/plans`.</li>
+      <li>Provides approval cards on supported Hermes surfaces.</li>
     </ul>
   </div>
 </section>
@@ -508,6 +508,11 @@ plan-mode row under <strong>Capabilities ▸ Plugins</strong>.</p>
 <td>Progress card (<code>progress_card</code>)</td>
 <td>on</td>
 <td>While an approved plan is being built, one message lists its steps and updates as they finish. Shown on Desktop, the TUI and chat platforms that edit messages in place (Telegram, Discord, Slack, Matrix, Mattermost, WhatsApp, Feishu, DingTalk, Google Chat); needs Hermes 0.22.7 or newer. The classic CLI shows Hermes' own todo list instead</td>
+</tr>
+<tr>
+<td>Finish hold (<code>finish_hold</code>)</td>
+<td><code>on</code></td>
+<td>After edits made with Hermes' file tools (<code>write_file</code>, <code>patch</code>) on a user turn, Hermes can prompt the agent once to continue an approved plan with open todos; changes made only through shell commands do not trigger it. The hold skips turns Hermes marks as internal. If you send a message into a turn Hermes started (a steer), that turn counts as yours; on a Hermes without the <code>pre_api_request</code> hook it stays internal and is not held. Unmarked turns, including another agent's message delivered as an ordinary user message, are treated as user turns. The agent can stop after saying what is blocked, needs your decision, is waiting on a process or reply, or that you asked it to stop or to do something else. It can also cancel an unnecessary todo and say why. The hold skips turns where you just denied an edit through edit review, and silent replies stay silent. Set <code>finish_hold: off</code> to disable the prompt.</td>
 </tr>
 <tr>
 <td>Chat footer (<code>footer</code>)</td>
@@ -921,22 +926,7 @@ product on two tasks. Plan-mode used its lean defaults. The bars were pre-regist
 </ul>
 </li>
 <li><strong>Change applied in the finished code:</strong> 12 of 12 for plan-mode, 12 of 12 for Codex plan mode. A column-blind
-reviewer judged the T6 docstrings.</li>
-<li><strong>Original task still correct:</strong> 12 of 12 for each.</li>
-<li><strong>Cost of the revision round</strong> (from the feedback to the next plan decision): plan-mode used 1.75× Codex's
-cost-weighted tokens (95% CI 1.52–2.02).<ul>
-<li>Most of the difference is output. plan-mode writes the complete revised plan and submits it in a second call: a
-median of 2 calls and about 1,350 output tokens per round, against 1–2 calls and about 460 tokens for Codex.</li>
-<li>Whole runs cost 1.46–1.57× Codex's cost-weighted tokens.</li>
-<li>Median wall time was 94 s against 51 s (T6) and 207 s against 110 s (T7R). Wall time is reported only.</li>
-</ul>
-</li>
-<li><strong>A first run of the Codex column was not a fair comparison and is not used.</strong> It ran without the shared Python user
-site that PARITY-3 and PARITY-4 used, so Codex's <code>python3</code> had no pytest.<ul>
-<li>Codex then lost 4 of 6 T6 runs to a type annotation that fails on the repository's Python 3.9. It had checked
-that</li>
-</ul>
-</li>
+re</li>
 </ul>
 <hr>
 <p><em>README truncated. <a href="https://github.com/100yenadmin/hermes-plan-mode#readme">Continue reading on GitHub</a></em></p>
@@ -952,7 +942,7 @@ that</li>
   <div>
     <div class="related-list">
       <a class="related-row" href="/projects/robbyczgw-cla/hermes-web-search-plus">
-        <div class="stars">★ 450</div>
+        <div class="stars">★ 451</div>
         <div class="name"><span class="org">robbyczgw-cla /</span> hermes-web-search-plus</div>
       </a>
       <a class="related-row" href="/projects/42-evey/hermes-plugins">

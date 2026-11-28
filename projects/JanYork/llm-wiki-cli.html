@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JanYork/llm-wiki-cli — Hermes Agent Memory &amp; Context | Hermes Atlas</title>
-<meta name="description" content="LWC is an agent-driven proactive memory CLI that lets AI agents recall, maintain, and evolve persistent, source-grounded knowledge across sessions. It turns…">
+<meta name="description" content="LWC is a command-line tool that lets AI agents recall, maintain, and update persistent knowledge across sessions. It turns curated documents into a…">
 <link rel="canonical" href="https://hermesatlas.com/projects/JanYork/llm-wiki-cli">
 <meta property="og:title" content="JanYork/llm-wiki-cli — Hermes Atlas">
-<meta property="og:description" content="LWC is an agent-driven proactive memory CLI that lets AI agents recall, maintain, and evolve persistent, source-grounded knowledge across sessions. It turns…">
+<meta property="og:description" content="LWC is a command-line tool that lets AI agents recall, maintain, and update persistent knowledge across sessions. It turns curated documents into a…">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://hermesatlas.com/projects/JanYork/llm-wiki-cli">
 <meta property="og:site_name" content="Hermes Atlas">
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="JanYork/llm-wiki-cli — Hermes Atlas">
-<meta name="twitter:description" content="LWC is an agent-driven proactive memory CLI that lets AI agents recall, maintain, and evolve persistent, source-grounded knowledge across sessions. It turns…">
+<meta name="twitter:description" content="LWC is a command-line tool that lets AI agents recall, maintain, and update persistent knowledge across sessions. It turns curated documents into a…">
 <meta name="twitter:image" content="https://hermesatlas.com/api/og?title=llm-wiki-cli&amp;subtitle=Agent-driven+proactive+memory+CLI+for+AI+agents+%E2%80%94+autonomously+recall%2C+maintain%2C+and+evolve+persistent%2C+source-grounded+knowledge+across+sessions.&amp;kind=project+%C2%B7+memory">
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "@type": "SoftwareApplication",
   "@id": "https://hermesatlas.com/projects/JanYork/llm-wiki-cli#software",
   "name": "llm-wiki-cli",
-  "description": "LWC is an agent-driven proactive memory CLI that lets AI agents recall, maintain, and evolve persistent, source-grounded knowledge across sessions. It turns curated documents into a durable Wiki with preserved sources, pages, citations, links, indexes, and history, and it does not require embeddings or a vector database. A self-hosted team memory option keeps core memory in local SQLite and Wiki files synchronized through a self-hosted server.",
+  "description": "LWC is a command-line tool that lets AI agents recall, maintain, and update persistent knowledge across sessions. It turns curated documents into a source-grounded Wiki with pages, citations, links, indexes, and history; the README says it can complement RAG but does not require embeddings or a vector database.",
   "url": "https://hermesatlas.com/projects/JanYork/llm-wiki-cli",
   "codeRepository": "https://github.com/JanYork/llm-wiki-cli",
   "applicationCategory": "UtilitiesApplication",
@@ -47,7 +47,7 @@
     "name": "JanYork",
     "url": "https://github.com/JanYork"
   },
-  "dateModified": "2026-11-28T07:44:48.000Z",
+  "dateModified": "2026-11-28T11:39:09.000Z",
   "interactionStatistic": {
     "@type": "InteractionCounter",
     "interactionType": {
@@ -141,11 +141,11 @@
 <section class="project-summary">
   <div class="section-label">overview</div>
   <div>
-    <p class="summary-text">LWC is an agent-driven proactive memory CLI that lets AI agents recall, maintain, and evolve persistent, source-grounded knowledge across sessions. It turns curated documents into a durable Wiki with preserved sources, pages, citations, links, indexes, and history, and it does not require embeddings or a vector database. A self-hosted team memory option keeps core memory in local SQLite and Wiki files synchronized through a self-hosted server.</p>
+    <p class="summary-text">LWC is a command-line tool that lets AI agents recall, maintain, and update persistent knowledge across sessions. It turns curated documents into a source-grounded Wiki with pages, citations, links, indexes, and history; the README says it can complement RAG but does not require embeddings or a vector database.</p>
     <ul class="summary-highlights">
-      <li>Agent-driven proactive memory CLI for AI agents</li>
-      <li>Maintains a source-grounded Wiki with citations and history</li>
-      <li>No embeddings or vector database required</li>
+      <li>Agents maintain and update Wiki knowledge across sessions.</li>
+      <li>Preserves sources, citations, links, and history.</li>
+      <li>Supports self-hosted team spaces with local SQLite and Wiki files.</li>
     </ul>
   </div>
 </section>
@@ -196,7 +196,9 @@ query.</p>
   <img src="https://raw.githubusercontent.com/JanYork/llm-wiki-cli/main/docs/images/lwc-overview-en.png" alt="LWC product overview" width="820">
 </p>
 
-<h3>Self-hosted team memory — v0.19.5</h3>
+<h3>New in v0.20.0</h3>
+<p>Inspect CodeGraph coverage and unresolved references separately, diagnose worktree ownership, and hand off work with versioned evidence. <a href="https://github.com/JanYork/llm-wiki-cli/blob/main/docs/releases/v0.20.0.md">Release notes</a>.</p>
+<h3>Self-hosted team memory</h3>
 <p>LWC team spaces keep core memory in local SQLite and Wiki files and synchronize
 it automatically through a self-hosted server. External Agents resolve conflicts
 through CLI/MCP; LWC does not embed an LLM. The team console supports English and
@@ -430,6 +432,8 @@ consistent.</p>
 <p>Search is page-first and source-grounded. Agents retrieve maintained answers
 first, then open exact source evidence when a claim needs verification.</p>
 <h3>Agent Workflow</h3>
+<p>For multi-session handoff, record approved evidence with <code>lwc receipt record</code>, then resolve its immutable reference or use <code>lwc receipt brief --short</code> for the current handoff. <code>lwc ledger show</code> distinguishes delivery, ownership and acceptance. <code>lwc version-matrix</code> checks repository combinations, gitlinks and environment evidence. See the <a href="https://github.com/JanYork/llm-wiki-cli/blob/main/docs/evidence-receipts.md">receipt protocol</a>, <a href="https://github.com/JanYork/llm-wiki-cli/blob/main/docs/role-issue-ledger.md">issue ledger</a> and <a href="https://github.com/JanYork/llm-wiki-cli/blob/main/docs/version-matrix.md">matrix manifest</a>.</p>
+<p>Use <code>lwc doctor --verbose</code> to inspect the selected roots and write eligibility, <code>lwc cg status</code> for relationship completeness, and <code>lwc storage</code> for a read-only breakdown of local storage. Relationship queries support <code>--require-complete</code>.</p>
 <p>The normal loop is short:</p>
 <ol>
 <li>Recall relevant maintained knowledge.</li>
@@ -772,7 +776,7 @@ Report security issues according to <a href="https://github.com/JanYork/llm-wiki
         <div class="name"><span class="org">mem0ai /</span> mem0</div>
       </a>
       <a class="related-row" href="/projects/vectorize-io/hindsight">
-        <div class="stars">★ 63.9K</div>
+        <div class="stars">★ 64.0K</div>
         <div class="name"><span class="org">vectorize-io /</span> hindsight</div>
       </a>
       <a class="related-row" href="/projects/greyhaven-ai/autocontext">
