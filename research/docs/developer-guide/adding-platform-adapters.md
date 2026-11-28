@@ -1114,7 +1114,7 @@ High
 
 Media handling, encryption
 
-`plugins/platforms/wecom/callback_adapter.py`
+`wecom/callback_adapter.py` in [hermes-labs-plugins](https://github.com/NousResearch/hermes-labs-plugins/tree/main/wecom)
 
 Callback/webhook
 

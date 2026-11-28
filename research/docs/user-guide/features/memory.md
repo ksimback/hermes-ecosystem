@@ -526,7 +526,7 @@ On a messaging platform, approve a skill from its gist + metadata, or open `/ski
 
 ## External Memory Providers
 
-For deeper, persistent memory that goes beyond MEMORY.md and USER.md, Hermes ships with 2 external memory provider plugins — RetainDB and ByteRover — and more, such as Honcho, Hindsight, Supermemory, Mem0, OpenViking and Holographic, are available from the [plugin catalog](/docs/user-guide/features/plugins) via `hermes plugins install <name>`.
+For deeper, persistent memory that goes beyond MEMORY.md and USER.md, external memory provider plugins such as Honcho, Hindsight, Supermemory, Mem0, OpenViking and Holographic (plus the unsupported Hermes Labs ByteRover and RetainDB plugins) are available from the [plugin catalog](/docs/user-guide/features/plugins) via `hermes plugins install <name>`.
 
 External providers run **alongside** built-in memory (never replacing it) and add capabilities like knowledge graphs, semantic search, automatic fact extraction, and cross-session user modeling.
 

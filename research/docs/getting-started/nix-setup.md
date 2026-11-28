@@ -1139,10 +1139,6 @@ Discord, Telegram, Slack
 
 Matrix/Element (mautrix with encryption; Linux only)
 
-`dingtalk`
-
-DingTalk
-
 `feishu`
 
 Feishu/Lark

@@ -226,7 +226,7 @@ Matrix
 
 ✅
 
-DingTalk
+DingTalk (Labs plugin)
 
 —
 
@@ -258,7 +258,7 @@ Feishu/Lark
 
 ✅
 
-WeCom
+WeCom (Labs plugin)
 
 ✅
 
@@ -274,7 +274,7 @@ WeCom
 
 —
 
-WeCom Callback
+WeCom Callback (Labs plugin)
 
 —
 
@@ -1264,11 +1264,11 @@ Matrix
 
 Full tools including terminal
 
-DingTalk
+DingTalk (Labs plugin)
 
 `hermes-dingtalk`
 
-Full tools including terminal
+Full tools including terminal, from the `dingtalk` Hermes Labs plugin
 
 Feishu/Lark
 
@@ -1276,17 +1276,17 @@ Feishu/Lark
 
 Full tools including terminal
 
-WeCom
+WeCom (Labs plugin)
 
 `hermes-wecom`
 
-Full tools including terminal
+Full tools including terminal, from the `wecom` Hermes Labs plugin
 
-WeCom Callback
+WeCom Callback (Labs plugin)
 
 `hermes-wecom-callback`
 
-Full tools including terminal
+Full tools including terminal, from the `wecom` Hermes Labs plugin
 
 Weixin
 
@@ -1539,10 +1539,10 @@ Defaults to `false`. Only platforms whose adapter implements `delete_message` ho
 -   [Home Assistant Integration](/docs/user-guide/messaging/homeassistant) (plugin catalog)
 -   [Mattermost Setup](/docs/user-guide/messaging/mattermost)
 -   [Matrix Setup](/docs/user-guide/messaging/matrix)
--   [DingTalk Setup](/docs/user-guide/messaging/dingtalk)
+-   [DingTalk](/docs/user-guide/messaging/dingtalk) (Hermes Labs plugin)
 -   [Feishu/Lark Setup](/docs/user-guide/messaging/feishu)
--   [WeCom Setup](/docs/user-guide/messaging/wecom)
--   [WeCom Callback Setup](/docs/user-guide/messaging/wecom-callback)
+-   [WeCom](/docs/user-guide/messaging/wecom) (Hermes Labs plugin)
+-   [WeCom Callback](/docs/user-guide/messaging/wecom-callback) (Hermes Labs plugin)
 -   [Weixin Setup (WeChat)](/docs/user-guide/messaging/weixin)
 -   [BlueBubbles Setup (iMessage)](/docs/user-guide/messaging/bluebubbles)
 -   [Photon Setup (iMessage)](/docs/user-guide/messaging/photon)

@@ -670,11 +670,11 @@ Override the agent id Mem0 memories are tagged with
 
 `RETAINDB_API_KEY`
 
-RetainDB API key for persistent memory ([retaindb.com](https://retaindb.com))
+RetainDB API key, read by the [`retaindb` Hermes Labs plugin](https://github.com/NousResearch/hermes-labs-plugins/tree/main/retaindb) ([retaindb.com](https://retaindb.com))
 
 `RETAINDB_BASE_URL`
 
-Base URL for self-hosted RetainDB instances (default: `https://api.retaindb.com`)
+Base URL for self-hosted RetainDB instances (default: `https://api.retaindb.com`), read by the `retaindb` plugin
 
 `OPENVIKING_API_KEY`
 
@@ -686,7 +686,7 @@ OpenViking server URL (default: `http://127.0.0.1:1933`)
 
 `BRV_API_KEY`
 
-ByteRover API key (optional, for cloud sync — local-first by default) ([app.byterover.dev](https://app.byterover.dev))
+ByteRover cloud-sync key (optional, local-first by default), read by the [`byterover` Hermes Labs plugin](https://github.com/NousResearch/hermes-labs-plugins/tree/main/byterover)
 
 `SUPERMEMORY_API_KEY`
 
@@ -1550,27 +1550,27 @@ Allow all inbound email senders
 
 `DINGTALK_CLIENT_ID`
 
-DingTalk bot AppKey from developer portal ([open.dingtalk.com](https://open.dingtalk.com))
+DingTalk plugin: bot AppKey from developer portal ([open.dingtalk.com](https://open.dingtalk.com)); requires the `dingtalk` Hermes Labs plugin, see [DingTalk](/docs/user-guide/messaging/dingtalk)
 
 `DINGTALK_CLIENT_SECRET`
 
-DingTalk bot AppSecret from developer portal
+DingTalk plugin: bot AppSecret from developer portal
 
 `DINGTALK_ALLOWED_USERS`
 
-Comma-separated DingTalk user IDs allowed to message the bot
+DingTalk plugin: comma-separated DingTalk user IDs allowed to message the bot
 
 `DINGTALK_WEBHOOK_URL`
 
-Static robot webhook URL for cross-platform / cron delivery.
+DingTalk plugin: static robot webhook URL for cross-platform / cron delivery.
 
 `DINGTALK_HOME_CHANNEL`
 
-Default conversation ID for cron / notification delivery.
+DingTalk plugin: default conversation ID for cron / notification delivery.
 
 `DINGTALK_HOME_CHANNEL_NAME`
 
-Display name for the DingTalk home channel.
+DingTalk plugin: display name for the DingTalk home channel.
 
 `FEISHU_APP_ID`
 
