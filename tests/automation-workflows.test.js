@@ -210,3 +210,14 @@ test("every bot write to main goes through the bypass app with [skip ci]", () =>
     assert.match(src, /commit_title: `[^`]*\[skip ci\]`/, `${script} merge commit skips CI`);
   }
 });
+
+test("steps that call getOctokit run on github-script v9 (v8 does not inject it)", () => {
+  // #1501 sat unmerged because the intake merge step called getOctokit on v8:
+  // "getOctokit is not defined", caught and logged as a failed merge attempt.
+  for (const file of fs.readdirSync(".github/workflows")) {
+    const steps = fs.readFileSync(`.github/workflows/${file}`, "utf-8").split(/\n\s+- name: /);
+    for (const step of steps.filter((s) => /getOctokit\(/.test(s))) {
+      assert.match(step, /uses: actions\/github-script@v9/, `${file}: "${step.split("\n")[0]}" calls getOctokit but is not on github-script@v9`);
+    }
+  }
+});
