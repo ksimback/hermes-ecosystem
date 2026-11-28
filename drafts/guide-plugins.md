@@ -1,6 +1,6 @@
 # Hermes Agent Plugins: What They Are, When You Need One, and Why Yours Won't Load
 
-The Hermes plugins guide. Live version: https://hermesatlas.com/guide/plugins/ — facts sourced from the official Hermes plugin, plugin-catalog, built-in-plugin and Desktop Plugin SDK docs, plus the v0.22.0 and v0.23.0 release notes. Current release is v0.23.4 (as of 2026-11-24).
+The Hermes plugins guide. Live version: https://hermesatlas.com/guide/plugins/ — facts sourced from the official Hermes plugin, plugin-catalog, built-in-plugin and Desktop Plugin SDK docs, plus the v0.22.0 and v0.23.0 release notes. Current release is v0.23.5 (as of 2026-11-28).
 
 ## TL;DR
 
